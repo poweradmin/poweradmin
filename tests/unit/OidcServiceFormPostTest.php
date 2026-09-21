@@ -24,13 +24,13 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Unit;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
+use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Service\AuthenticationService;
@@ -76,9 +76,9 @@ class OidcServiceFormPostTest extends TestCase
             $this->createMock(OidcConfigurationService::class),
             $this->createMock(UserProvisioningService::class),
             $this->createMock(Logger::class),
-            $this->createMock(PDO::class),
             $this->createMock(AuthenticationService::class),
-            $this->createMock(AuditService::class)
+            $this->createMock(AuditService::class),
+            $this->createMock(MfaService::class)
         );
     }
 

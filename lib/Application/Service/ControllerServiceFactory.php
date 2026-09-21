@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
@@ -47,6 +48,7 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
@@ -81,6 +83,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
@@ -136,6 +139,8 @@ class ControllerServiceFactory
     private ?ZoneChangeRequestService $zoneChangeRequestService = null;
     private ?ChangeRequestNotificationService $changeRequestNotificationService = null;
     private ?ClientContext $clientContext = null;
+    private ?UserMfaRepositoryInterface $userMfaRepository = null;
+    private ?MfaService $mfaService = null;
     private ?SessionService $sessionService = null;
     private ?RedirectService $redirectService = null;
     private ?AuthenticationService $authenticationService = null;
@@ -329,6 +334,22 @@ class ControllerServiceFactory
     public function clientContext(): ClientContext
     {
         return $this->clientContext ??= ClientContext::fromServer($_SERVER);
+    }
+
+    public function userMfaRepository(): UserMfaRepositoryInterface
+    {
+        return $this->userMfaRepository ??= new DbUserMfaRepository($this->db, $this->config);
+    }
+
+    public function mfaService(): MfaService
+    {
+        return $this->mfaService ??= new MfaService(
+            $this->userMfaRepository(),
+            $this->config,
+            new MfaVerificationMailer(new MailService($this->config, $this->logger), $this->config),
+            null,
+            $this->userTimezoneService()
+        );
     }
 
     public function auditService(): AuditService

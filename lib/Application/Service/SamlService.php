@@ -33,10 +33,8 @@ use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
-use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 
 /**
  * Runs the SAML login flow: builds the IdP redirect, consumes the assertion and handles single logout.
@@ -50,8 +48,7 @@ class SamlService
     private UserProvisioningService $userProvisioningService;
     private Request $request;
     private CsrfTokenService $csrfTokenService;
-    private PDO $db;
-    private ?MfaService $mfaService = null;
+    private MfaService $mfaService;
     private AuditService $auditService;
 
     public function __construct(
@@ -59,9 +56,9 @@ class SamlService
         SamlConfigurationService $samlConfigurationService,
         UserProvisioningService $userProvisioningService,
         LoggerInterface $logger,
-        PDO $db,
         AuthenticationService $authenticationService,
         AuditService $auditService,
+        MfaService $mfaService,
         ?Request $request = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
@@ -70,27 +67,13 @@ class SamlService
         $this->samlConfigurationService = $samlConfigurationService;
         $this->userProvisioningService = $userProvisioningService;
         $this->request = $request ?: new Request();
-        $this->db = $db;
 
         $this->authenticationService = $authenticationService;
         $this->csrfTokenService = new CsrfTokenService();
         $this->auditService = $auditService;
+        $this->mfaService = $mfaService;
     }
 
-    /**
-     * Builds the MFA service on first use. The call site is already guarded by
-     * security.mfa.enabled, so installations without MFA never pay for the graph.
-     */
-    private function mfaService(): MfaService
-    {
-        return $this->mfaService ??= new MfaService(
-            new DbUserMfaRepository($this->db, $this->configManager),
-            $this->configManager,
-            new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
-            null,
-            (new ControllerServiceFactory($this->db, $this->configManager, $this->logger))->userTimezoneService()
-        );
-    }
 
     public function isEnabled(): bool
     {
@@ -326,7 +309,7 @@ class SamlService
             $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
 
             // Check if MFA is enabled for this user
-            $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($userId);
+            $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($userId);
 
             if ($mfaRequired) {
                 $this->logger->info('MFA is required for SAML user {username}', ['username' => $databaseUsername]);

@@ -52,9 +52,9 @@ class SamlLoginController extends BaseController
             $samlConfigService,
             $userProvisioningService,
             $this->logger,
-            $this->db,
             $this->services()->authenticationService(),
             $this->createAuditService(),
+            $this->services()->mfaService(),
             $this->httpRequest
         );
 

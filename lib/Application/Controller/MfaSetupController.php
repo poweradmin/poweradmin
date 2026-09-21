@@ -23,14 +23,12 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Service\MailService;
-use Poweradmin\Application\Service\MfaVerificationMailer;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use RuntimeException;
 
 /**
@@ -41,13 +39,11 @@ class MfaSetupController extends BaseController
     private MfaService $mfaService;
     private UserContextService $userContextService;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
-        parent::__construct($request);
+        parent::__construct($request, true, $environment);
 
-        $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
-        $mailer = new MfaVerificationMailer(new MailService($this->config, $this->logger), $this->config);
-        $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailer, null, $this->services()->userTimezoneService());
+        $this->mfaService = $this->services()->mfaService();
         $this->userContextService = new UserContextService();
     }
 

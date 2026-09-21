@@ -35,7 +35,6 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
-use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
@@ -44,9 +43,6 @@ use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
-use Poweradmin\Application\Service\MailService;
-use Poweradmin\Application\Service\MfaVerificationMailer;
 
 /**
  * Per-request login pipeline: CSRF and reCAPTCHA on the form, session expiry, then the SQL or LDAP authenticator.
@@ -101,7 +97,8 @@ class SessionAuthenticator
             $this->logger,
             $this->loginAttemptService,
             new UserContextService(),
-            $this->services->clientContext()
+            $this->services->clientContext(),
+            $this->services->mfaService()
         );
     }
 
@@ -119,7 +116,8 @@ class SessionAuthenticator
             $this->csrfTokenService,
             $this->logger,
             $this->loginAttemptService,
-            $this->services->clientContext()
+            $this->services->clientContext(),
+            $this->services->mfaService()
         );
     }
 
@@ -350,13 +348,7 @@ class SessionAuthenticator
         }
 
         // Create MFA service to check enforcement
-        $mfaService = new MfaService(
-            new DbUserMfaRepository($this->db, $this->configManager),
-            $this->configManager,
-            new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
-            null,
-            $this->services->userTimezoneService()
-        );
+        $mfaService = $this->services->mfaService();
 
         // Check if MFA setup is required for this user
         if ($mfaService->isMfaSetupRequired($userId, $this->db, $userContextService->getAuthMethod())) {

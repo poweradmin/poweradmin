@@ -52,9 +52,9 @@ class OidcLoginController extends BaseController
             $oidcConfigService,
             $oidcProvisioningService,
             $this->logger,
-            $this->db,
             $this->services()->authenticationService(),
             $this->createAuditService(),
+            $this->services()->mfaService(),
             $this->httpRequest
         );
 

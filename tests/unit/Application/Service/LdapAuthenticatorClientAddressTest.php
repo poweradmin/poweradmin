@@ -33,6 +33,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\AuthenticationService;
@@ -82,7 +83,8 @@ class LdapAuthenticatorClientAddressTest extends TestCase
             new NullLogger(),
             $attempts,
             new UserContextService(),
-            new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false)
+            new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
+            $this->createMock(MfaService::class)
         );
 
         $authenticator->authenticate();

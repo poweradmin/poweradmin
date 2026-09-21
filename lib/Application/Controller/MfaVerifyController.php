@@ -26,15 +26,13 @@ use Poweradmin\Application\Http\ClientContext;
 use Exception;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LoginAttemptService;
-use Poweradmin\Application\Service\MailService;
-use Poweradmin\Application\Service\MfaVerificationMailer;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\SessionPromotionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use RuntimeException;
 
 /**
@@ -48,13 +46,11 @@ class MfaVerifyController extends BaseController
     private ClientContext $client;
     private LoginAttemptService $loginAttemptService;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
-        parent::__construct($request, false);
+        parent::__construct($request, false, $environment);
 
-        $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
-        $mailer = new MfaVerificationMailer(new MailService($this->config, $this->logger), $this->config);
-        $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailer, null, $this->services()->userTimezoneService());
+        $this->mfaService = $this->services()->mfaService();
 
         $this->csrfTokenService = new CsrfTokenService();
         $this->userContextService = new UserContextService();

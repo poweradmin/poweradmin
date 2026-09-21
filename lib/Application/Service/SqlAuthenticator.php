@@ -34,7 +34,6 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
-use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
@@ -50,7 +49,7 @@ class SqlAuthenticator
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
     private ClientContext $client;
-    private ?MfaService $mfaService = null;
+    private MfaService $mfaService;
 
     public function __construct(
         PDO $connection,
@@ -60,7 +59,8 @@ class SqlAuthenticator
         CsrfTokenService $csrfTokenService,
         LoggerInterface $logger,
         LoginAttemptService $loginAttemptService,
-        ClientContext $client
+        ClientContext $client,
+        MfaService $mfaService
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -71,22 +71,9 @@ class SqlAuthenticator
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
         $this->client = $client;
+        $this->mfaService = $mfaService;
     }
 
-    /**
-     * Builds the MFA service on first use. The call site is already guarded by
-     * security.mfa.enabled, so installations without MFA never pay for the graph.
-     */
-    private function mfaService(): MfaService
-    {
-        return $this->mfaService ??= new MfaService(
-            new DbUserMfaRepository($this->connection, $this->configManager),
-            $this->configManager,
-            new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
-            null,
-            (new ControllerServiceFactory($this->connection, $this->configManager, $this->logger))->userTimezoneService()
-        );
-    }
 
     public function authenticate(): void
     {
@@ -195,7 +182,7 @@ class SqlAuthenticator
         $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
 
         // Check if MFA is enabled for this user
-        $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($rowObj['id']);
+        $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($rowObj['id']);
 
         if ($mfaRequired) {
             $this->logger->info('MFA is required for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);

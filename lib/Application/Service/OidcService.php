@@ -34,11 +34,9 @@ use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Network\ProxyContext;
-use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use RuntimeException;
 
 /**
@@ -58,8 +56,7 @@ class OidcService
     private UserProvisioningService $userProvisioningService;
     private Request $request;
     private CsrfTokenService $csrfTokenService;
-    private PDO $db;
-    private ?MfaService $mfaService = null;
+    private MfaService $mfaService;
     private AuditService $auditService;
 
     public function __construct(
@@ -67,9 +64,9 @@ class OidcService
         OidcConfigurationService $oidcConfigurationService,
         UserProvisioningService $userProvisioningService,
         LoggerInterface $logger,
-        PDO $db,
         AuthenticationService $authenticationService,
         AuditService $auditService,
+        MfaService $mfaService,
         ?Request $request = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
@@ -78,27 +75,13 @@ class OidcService
         $this->oidcConfigurationService = $oidcConfigurationService;
         $this->userProvisioningService = $userProvisioningService;
         $this->request = $request ?: new Request();
-        $this->db = $db;
 
         $this->authenticationService = $authenticationService;
         $this->csrfTokenService = new CsrfTokenService();
         $this->auditService = $auditService;
+        $this->mfaService = $mfaService;
     }
 
-    /**
-     * Builds the MFA service on first use. The call site is already guarded by
-     * security.mfa.enabled, so installations without MFA never pay for the graph.
-     */
-    private function mfaService(): MfaService
-    {
-        return $this->mfaService ??= new MfaService(
-            new DbUserMfaRepository($this->db, $this->configManager),
-            $this->configManager,
-            new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
-            null,
-            (new ControllerServiceFactory($this->db, $this->configManager, $this->logger))->userTimezoneService()
-        );
-    }
 
     public function isEnabled(): bool
     {
@@ -357,7 +340,7 @@ class OidcService
                 $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
 
                 // Check if MFA is enabled for this user
-                $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($userId);
+                $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($userId);
 
                 if ($mfaRequired) {
                     $this->logger->info('MFA is required for OIDC user {username}', ['username' => $databaseUsername]);

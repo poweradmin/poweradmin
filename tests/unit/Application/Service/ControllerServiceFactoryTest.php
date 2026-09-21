@@ -79,6 +79,14 @@ class ControllerServiceFactoryTest extends TestCase
         $this->assertSame($factory->clientContext(), $factory->clientContext());
     }
 
+    public function testMfaServiceAndItsRepositoryAreMemoized(): void
+    {
+        $factory = $this->makeFactory();
+
+        $this->assertSame($factory->userMfaRepository(), $factory->userMfaRepository());
+        $this->assertSame($factory->mfaService(), $factory->mfaService());
+    }
+
     public function testRepositoryFactoryMemoizesTheSharedProviderPath(): void
     {
         $factory = $this->makeFactory();

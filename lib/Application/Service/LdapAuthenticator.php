@@ -38,7 +38,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
-use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 
 /**
  * Session login against an LDAP directory, with lockout tracking, a cached bind result and MFA hand-off.
@@ -54,7 +53,7 @@ class LdapAuthenticator
     private LoginAttemptService $loginAttemptService;
     private UserContextService $userContextService;
     private ClientContext $client;
-    private ?MfaService $mfaService = null;
+    private MfaService $mfaService;
 
     /** Database driver name, used to build the LDAP username-match predicate. */
     private string $dbType = '';
@@ -68,7 +67,8 @@ class LdapAuthenticator
         LoggerInterface $logger,
         LoginAttemptService $loginAttemptService,
         UserContextService $userContextService,
-        ClientContext $client
+        ClientContext $client,
+        MfaService $mfaService
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -80,23 +80,10 @@ class LdapAuthenticator
         $this->loginAttemptService = $loginAttemptService;
         $this->userContextService = $userContextService;
         $this->client = $client;
+        $this->mfaService = $mfaService;
         $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
     }
 
-    /**
-     * Builds the MFA service on first use. The call site is already guarded by
-     * security.mfa.enabled, so installations without MFA never pay for the graph.
-     */
-    private function mfaService(): MfaService
-    {
-        return $this->mfaService ??= new MfaService(
-            new DbUserMfaRepository($this->db, $this->configManager),
-            $this->configManager,
-            new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
-            null,
-            (new ControllerServiceFactory($this->db, $this->configManager, $this->logger))->userTimezoneService()
-        );
-    }
 
     public function authenticate(): void
     {
@@ -309,7 +296,7 @@ class LdapAuthenticator
         $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
 
         // Check if MFA is enabled for this user
-        $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($rowObj['id']);
+        $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($rowObj['id']);
 
         if ($mfaRequired) {
             $this->logger->info('MFA is required for LDAP user {username}', ['username' => $username]);

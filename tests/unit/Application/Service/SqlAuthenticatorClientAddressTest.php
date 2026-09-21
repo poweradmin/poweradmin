@@ -33,6 +33,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\AuthenticationService;
 use Psr\Log\NullLogger;
@@ -80,7 +81,8 @@ class SqlAuthenticatorClientAddressTest extends TestCase
             $this->createMock(CsrfTokenService::class),
             new NullLogger(),
             $attempts,
-            new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false)
+            new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
+            $this->createMock(MfaService::class)
         );
 
         $authenticator->authenticate();
