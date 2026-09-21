@@ -31,7 +31,7 @@ use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;

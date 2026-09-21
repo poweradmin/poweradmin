@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -28,7 +28,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\DnsRecordValidationService;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;

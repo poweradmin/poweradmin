@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller\Api\Internal;
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
-use Poweradmin\Domain\Service\DnsRecordValidationService;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;

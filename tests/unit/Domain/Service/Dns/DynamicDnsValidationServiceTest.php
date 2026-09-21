@@ -1,9 +1,9 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DynamicDnsValidationService;
+use Poweradmin\Domain\Service\Dns\DynamicDnsValidationService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 

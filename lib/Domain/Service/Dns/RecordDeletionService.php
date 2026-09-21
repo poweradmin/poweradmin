@@ -26,7 +26,6 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
 
 /**
  * Deletes a record and, when asked and when interface.add_reverse_record is on,

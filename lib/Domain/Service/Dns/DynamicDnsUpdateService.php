@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Service\Dns;
 
 use Closure;
 use Poweradmin\Domain\Model\RecordType;

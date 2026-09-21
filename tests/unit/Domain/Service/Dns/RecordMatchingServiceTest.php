@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\RecordMatchingService;
+use Poweradmin\Domain\Service\Dns\RecordMatchingService;
 
 class RecordMatchingServiceTest extends TestCase
 {

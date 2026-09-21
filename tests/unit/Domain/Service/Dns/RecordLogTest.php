@@ -20,11 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Domain\Service\RecordLog;
+use Poweradmin\Domain\Service\Dns\RecordLog;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 
 /**

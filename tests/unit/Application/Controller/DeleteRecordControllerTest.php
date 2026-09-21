@@ -34,7 +34,7 @@ use Poweradmin\Domain\Service\Dns\RecordDeletionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;

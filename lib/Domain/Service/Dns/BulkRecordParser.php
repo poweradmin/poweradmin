@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Service\Dns;
 
 /**
  * Parses one CSV line of the bulk record form (name,type,content,prio,ttl[,disabled][,comment]) into a record.

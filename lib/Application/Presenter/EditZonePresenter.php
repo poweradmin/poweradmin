@@ -27,8 +27,8 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
-use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Domain\Service\Dns\RecordTypeService;
+use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 
 /**

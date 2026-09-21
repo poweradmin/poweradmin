@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use ReflectionMethod;
 use ReflectionProperty;

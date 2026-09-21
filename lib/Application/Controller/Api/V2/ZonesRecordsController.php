@@ -33,7 +33,7 @@ use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Database\DbCompat;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;

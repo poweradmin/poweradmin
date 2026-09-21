@@ -60,7 +60,7 @@ parameters:
     # reverse-record creation is finished; see the FIXME above that call.
     -
       identifier: method.unused
-      path: lib/Domain/Service/DomainRecordCreator.php
+      path: lib/Domain/Service/Dns/DomainRecordCreator.php
     # Defensive checks PHPStan can prove redundant today, kept on purpose.
     #   DbZoneRepository - is_int() picks PDO::PARAM_INT vs PARAM_STR in the
     #   bindValue loops. $params happens to be all-int now; hardcoding PARAM_INT
@@ -78,7 +78,7 @@ parameters:
     #   side is literally false on first use. Rewriting would only obscure it.
     -
       identifier: booleanOr.leftAlwaysFalse
-      path: lib/Domain/Service/DynamicDnsUpdateService.php
+      path: lib/Domain/Service/Dns/DynamicDnsUpdateService.php
     #   RRSIGRecordValidator - DateTime::modify() is typed DateTime by PHPStan but
     #   returns DateTime|false before PHP 8.3, which phan does flag. Dropping the
     #   truthiness check produces a TypeError on the ordering comparison.

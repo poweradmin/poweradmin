@@ -1,9 +1,9 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\BulkRecordParser;
+use Poweradmin\Domain\Service\Dns\BulkRecordParser;
 
 class BulkRecordParserTest extends TestCase
 {

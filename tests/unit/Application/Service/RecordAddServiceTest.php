@@ -33,10 +33,10 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
-use Poweradmin\Domain\Service\DomainRecordCreator;
+use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
+use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 
 /**
  * Every add-record entry point goes through one flow: open() gates the zone

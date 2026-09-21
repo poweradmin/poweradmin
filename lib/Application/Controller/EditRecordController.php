@@ -41,7 +41,7 @@ use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
-use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 

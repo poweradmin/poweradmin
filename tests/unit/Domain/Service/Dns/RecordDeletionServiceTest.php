@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\Dns\RecordDeletionOutcome;
 use Poweradmin\Domain\Service\Dns\RecordDeletionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 
 #[CoversClass(RecordDeletionService::class)]
 #[CoversClass(RecordDeletionOutcome::class)]

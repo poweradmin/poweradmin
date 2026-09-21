@@ -29,7 +29,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Database\PdnsTable;

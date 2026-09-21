@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
@@ -29,8 +29,6 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 
 /**
  * Keeps PTR records in step with A/AAAA records: adds, updates and deletes the counterpart in the paired zone.

@@ -35,7 +35,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 

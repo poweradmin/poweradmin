@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Zone;
 
-use Poweradmin\Domain\Service\RecordLog;
+use Poweradmin\Domain\Service\Dns\RecordLog;
 
 /**
  * One posted editor row that differs from the zone: the normalised row as it

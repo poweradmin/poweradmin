@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\PdnsCapabilities;
-use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use ReflectionClass;

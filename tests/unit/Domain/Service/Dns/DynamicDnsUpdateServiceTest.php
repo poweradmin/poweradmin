@@ -1,6 +1,6 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -8,8 +8,8 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\DynamicDnsAuthenticationService;
-use Poweradmin\Domain\Service\DynamicDnsUpdateService;
-use Poweradmin\Domain\Service\DynamicDnsValidationService;
+use Poweradmin\Domain\Service\Dns\DynamicDnsUpdateService;
+use Poweradmin\Domain\Service\Dns\DynamicDnsValidationService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;

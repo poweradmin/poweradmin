@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Service\Dns;
 
 use Closure;
 use Exception;
@@ -33,8 +33,6 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
-use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
 

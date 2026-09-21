@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service\Template;
 
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\DomainParsingService;
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
 
 /**
  * Expands the [ZONE], [NS1], [SERIAL] style placeholders of zone template records.

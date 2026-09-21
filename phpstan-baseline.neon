@@ -124,13 +124,13 @@ parameters:
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
-			path: lib/Domain/Service/BatchReverseRecordCreator.php
+			path: lib/Domain/Service/Dns/BatchReverseRecordCreator.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
-			path: lib/Domain/Service/BatchReverseRecordCreator.php
+			path: lib/Domain/Service/Dns/BatchReverseRecordCreator.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient matches Poweradmin\\Infrastructure\\Api\\\*\]$#'
@@ -202,25 +202,25 @@ parameters:
 			message: '#^Class Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
-			path: lib/Domain/Service/DynamicDnsUpdateService.php
+			path: lib/Domain/Service/Dns/DynamicDnsUpdateService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
-			path: lib/Domain/Service/DynamicDnsUpdateService.php
+			path: lib/Domain/Service/Dns/DynamicDnsUpdateService.php
 
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\RepositoryFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RepositoryFactory matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
-			path: lib/Domain/Service/ReverseRecordCreator.php
+			path: lib/Domain/Service/Dns/ReverseRecordCreator.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
-			path: lib/Domain/Service/ReverseRecordCreator.php
+			path: lib/Domain/Service/Dns/ReverseRecordCreator.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserAgreementRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserAgreementRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'

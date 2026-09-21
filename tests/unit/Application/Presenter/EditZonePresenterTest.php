@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Presenter\EditZonePresenter;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\Dns\RecordTypeService;
 
 /**
  * The zone editor's view model: pins the flags and lists the edit page derives

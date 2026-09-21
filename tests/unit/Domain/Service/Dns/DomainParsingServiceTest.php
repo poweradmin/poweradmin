@@ -1,9 +1,9 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DomainParsingService;
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
 
 class DomainParsingServiceTest extends TestCase
 {

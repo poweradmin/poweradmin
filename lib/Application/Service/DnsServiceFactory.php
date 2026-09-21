@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Service\DnsRecordValidationService;
-use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManager;

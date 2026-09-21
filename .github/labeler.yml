@@ -22,7 +22,7 @@ dns:
       - 'lib/**/Service/*Record*.php'
       - 'lib/**/Repository/*Record*.php'
       - 'lib/**/Repository/*Zone*.php'
-      - 'lib/Domain/Service/DnsRecordValidationService.php'
+      - 'lib/Domain/Service/Dns/DnsRecordValidationService.php'
       - 'tests/**/*Record*.php'
       - 'tests/**/*Zone*.php'
 
@@ -72,7 +72,7 @@ validation:
     - any-glob-to-any-file:
       - 'lib/**/Validation/**'
       - 'lib/**/Validator/**'
-      - 'lib/Domain/Service/DnsRecordValidationService.php'
+      - 'lib/Domain/Service/Dns/DnsRecordValidationService.php'
       - 'lib/Domain/Service/IpAddressValidator.php'
       - 'tests/**/*Validation*.php'
 

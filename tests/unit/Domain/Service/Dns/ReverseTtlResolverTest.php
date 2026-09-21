@@ -20,11 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class ReverseTtlResolverTest extends TestCase

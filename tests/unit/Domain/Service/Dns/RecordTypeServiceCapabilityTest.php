@@ -20,11 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\PdnsCapabilities;
-use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 class RecordTypeServiceCapabilityTest extends TestCase

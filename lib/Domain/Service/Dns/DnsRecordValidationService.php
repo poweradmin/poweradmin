@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;

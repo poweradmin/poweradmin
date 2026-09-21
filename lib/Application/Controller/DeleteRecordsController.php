@@ -29,7 +29,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\IpHelper;
 
 /**

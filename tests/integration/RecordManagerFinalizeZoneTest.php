@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;

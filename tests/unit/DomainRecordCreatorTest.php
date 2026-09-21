@@ -3,7 +3,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DomainRecordCreator;
+use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;

@@ -3,7 +3,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DynamicDnsHelper;
+use Poweradmin\Domain\Service\Dns\DynamicDnsHelper;
 
 class DynamicDnsHelperTest extends TestCase
 {

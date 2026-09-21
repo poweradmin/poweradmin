@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use Poweradmin\Application\Controller\AddRecordController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use ReflectionMethod;
