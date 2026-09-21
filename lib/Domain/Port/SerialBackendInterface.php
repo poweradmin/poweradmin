@@ -20,16 +20,28 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Port;
 
 /**
- * DNSSEC operations for one zone.
- *
- * Union of the DNSSEC provider roles; consumers should depend on the narrowest role they use.
+ * SOA serial handling: whether PowerDNS bumps the serial itself and the zone serial policy metadata.
  */
-interface DnssecProviderInterface extends
-    ZoneRectifierInterface,
-    ZoneSigningInterface,
-    ZoneKeyManagementInterface
+interface SerialBackendInterface
 {
+    /**
+     * Check whether the zone has soa_edit_api configured in PowerDNS.
+     * Returns false for SQL backends (not applicable).
+     */
+    public function hasSoaEditApi(int $domainId): bool;
+
+    /**
+     * Set the zone's SOA serial policy metadata.
+     *
+     * Keys are the zone-object property names from
+     * MetadataDefinitions::SERIAL_POLICY_PROPERTY_KINDS. An empty string clears the
+     * policy. API backend updates the zone object; SQL backend replaces the
+     * matching domainmetadata rows.
+     *
+     * @param array<string, string> $properties
+     */
+    public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool;
 }

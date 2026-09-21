@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
-use Poweradmin\Domain\Service\RecordCommentEditorInterface;
+use Poweradmin\Domain\Port\RecordCommentEditorInterface;
 
 /**
  * Reads and writes the comment attached to a record.

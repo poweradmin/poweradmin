@@ -28,6 +28,8 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\ChangeRequestNotifierInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;

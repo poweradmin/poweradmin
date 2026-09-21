@@ -20,12 +20,17 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Port;
 
 /**
- * Rectifies a zone after its records change so the DNSSEC ordering data stays valid.
+ * Orders reverse zone names in PHP by the configured sort type.
  */
-interface ZoneRectifierInterface
+interface ReverseZoneSorterInterface
 {
-    public function rectifyZone(string $zoneName): bool;
+    /**
+     * @param string[] $domains Reverse zone names
+     * @param string $sortType 'natural' or 'hierarchical'
+     * @return string[] The same names in sorted order
+     */
+    public function sortDomains(array $domains, string $sortType = 'natural'): array;
 }

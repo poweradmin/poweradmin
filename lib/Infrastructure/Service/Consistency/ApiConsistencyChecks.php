@@ -24,9 +24,9 @@ namespace Poweradmin\Infrastructure\Service\Consistency;
 
 use Exception;
 use PDO;
-use Poweradmin\Domain\Service\ApiStatusInterface;
+use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**

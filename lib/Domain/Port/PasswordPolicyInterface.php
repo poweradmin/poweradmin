@@ -20,17 +20,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Port;
 
 /**
- * Orders reverse zone names in PHP by the configured sort type.
+ * Checks a password against the configured policy rules; the Application layer owns the configuration.
  */
-interface ReverseZoneSorterInterface
+interface PasswordPolicyInterface
 {
     /**
-     * @param string[] $domains Reverse zone names
-     * @param string $sortType 'natural' or 'hierarchical'
-     * @return string[] The same names in sorted order
+     * @return list<string> One message per failed rule; empty when the password passes
      */
-    public function sortDomains(array $domains, string $sortType = 'natural'): array;
+    public function validatePassword(#[\SensitiveParameter] string $password): array;
 }

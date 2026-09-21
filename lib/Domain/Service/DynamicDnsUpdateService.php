@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Closure;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\ZoneType;

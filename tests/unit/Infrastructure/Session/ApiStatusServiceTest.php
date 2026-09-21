@@ -23,8 +23,8 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Session;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiStatusInterface;
-use Poweradmin\Domain\Service\ApiStatusRecorderInterface;
+use Poweradmin\Domain\Port\ApiStatusInterface;
+use Poweradmin\Domain\Port\ApiStatusRecorderInterface;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
 
 class ApiStatusServiceTest extends TestCase

@@ -24,8 +24,8 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordListingInterface;
-use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
-use Poweradmin\Domain\Service\RecordCommentSyncInterface;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\RecordCommentSyncInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DomainUtility;
 

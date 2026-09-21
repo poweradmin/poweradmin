@@ -26,6 +26,8 @@ use Closure;
 use Exception;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ReverseNetwork;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
+use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;

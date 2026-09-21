@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service;
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 
 /**
  * Tracks which zones are out of date against their template after the template changes.

@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\MfaVerificationMailerInterface;
+use Poweradmin\Domain\Port\MfaVerificationMailerInterface;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Service\MfaService;

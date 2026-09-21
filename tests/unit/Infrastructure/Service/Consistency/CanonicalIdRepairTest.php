@@ -26,7 +26,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;

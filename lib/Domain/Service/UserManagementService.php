@@ -23,6 +23,8 @@
 namespace Poweradmin\Domain\Service;
 
 use Exception;
+use Poweradmin\Domain\Port\PasswordHasherInterface;
+use Poweradmin\Domain\Port\PasswordPolicyInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Model\Pagination;

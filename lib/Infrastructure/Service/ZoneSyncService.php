@@ -24,7 +24,7 @@ namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
-use Poweradmin\Domain\Service\ZoneReadBackendInterface;
+use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 

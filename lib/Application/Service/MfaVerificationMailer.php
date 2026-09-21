@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Service\MfaVerificationMailerInterface;
+use Poweradmin\Domain\Port\MfaVerificationMailerInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**

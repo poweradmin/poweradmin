@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
-use Poweradmin\Domain\Service\DnssecProviderInterface;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
 
 /**
  * Null Object implementation of DnssecProviderInterface

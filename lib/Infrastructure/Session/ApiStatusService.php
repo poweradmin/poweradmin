@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Session;
 
-use Poweradmin\Domain\Service\ApiStatusRecorderInterface;
+use Poweradmin\Domain\Port\ApiStatusRecorderInterface;
 
 /**
  * Tracks the most recent PowerDNS API error so the UI can surface it.

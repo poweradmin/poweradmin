@@ -20,20 +20,16 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Port;
 
 /**
- * PowerDNS data access (domains, records, supermasters) over direct SQL or the PowerDNS API; Poweradmin-native tables stay on SQL.
+ * DNSSEC operations for one zone.
+ *
+ * Union of the DNSSEC provider roles; consumers should depend on the narrowest role they use.
  */
-interface DnsBackendProviderInterface extends
-    ZoneWriteBackendInterface,
-    ZoneReadBackendInterface,
-    RecordWriteBackendInterface,
-    RecordReadBackendInterface,
-    SerialBackendInterface,
-    SupermasterBackendInterface,
-    CatalogBackendInterface,
-    SearchBackendInterface,
-    BackendCapabilitiesInterface
+interface DnssecProviderInterface extends
+    ZoneRectifierInterface,
+    ZoneSigningInterface,
+    ZoneKeyManagementInterface
 {
 }

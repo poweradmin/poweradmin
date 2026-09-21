@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Port;
 
 /**
  * Zone create, delete, kind, primary, account and AXFR-retrieve writes against the DNS backend.

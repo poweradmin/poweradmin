@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 use Poweradmin\Application\Controller\Api\V2\ZoneDnssecController;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnssecProviderInterface;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;

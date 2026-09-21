@@ -20,24 +20,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Port;
 
 /**
- * Wildcard search over zones and records in the DNS backend.
+ * Signing state of a zone: securing, unsecuring and reading whether it is signed.
  */
-interface SearchBackendInterface
+interface ZoneSigningInterface
 {
+    public function secureZone(string $zoneName): bool;
+    public function unsecureZone(string $zoneName): bool;
+    public function isZoneSecured(string $zoneName, $config): bool;
+
     /**
-     * Search for zones and records matching a query.
-     *
-     * Returns separate arrays for zone matches and record matches.
-     * Results contain only DNS data - callers must enrich with
-     * Poweradmin metadata (ownership, permissions).
-     *
-     * @param string $query Search query (supports wildcards)
-     * @param string $objectType Filter: 'all', 'zone', 'record'
-     * @param int $max Maximum results
-     * @return array{zones: array, records: array}
+     * Whether the zone carries the PRESIGNED metadata, meaning it was signed
+     * at the primary server and DNSSEC cannot be managed locally.
      */
-    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array;
+    public function isZonePresigned(string $zoneName): bool;
+    public function isDnssecEnabled(): bool;
+
+    /**
+     * Serial as served by PowerDNS with SOA-EDIT applied (the "signed" serial),
+     * or null when the server does not expose it or the zone cannot be read.
+     */
+    public function getEditedSerial(string $zoneName): ?int;
 }

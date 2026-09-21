@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Service;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
-use Poweradmin\Domain\Service\DnssecProviderInterface;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Psr\Log\LoggerInterface;

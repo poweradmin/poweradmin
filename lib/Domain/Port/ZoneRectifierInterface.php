@@ -20,15 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Port;
 
 /**
- * Checks a password against the configured policy rules; the Application layer owns the configuration.
+ * Rectifies a zone after its records change so the DNSSEC ordering data stays valid.
  */
-interface PasswordPolicyInterface
+interface ZoneRectifierInterface
 {
-    /**
-     * @return list<string> One message per failed rule; empty when the password passes
-     */
-    public function validatePassword(#[\SensitiveParameter] string $password): array;
+    public function rectifyZone(string $zoneName): bool;
 }

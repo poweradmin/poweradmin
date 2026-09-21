@@ -20,18 +20,20 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Port;
 
 /**
- * Delivers MFA email verification codes; the Application layer owns the template and transport.
+ * PowerDNS data access (domains, records, supermasters) over direct SQL or the PowerDNS API; Poweradmin-native tables stay on SQL.
  */
-interface MfaVerificationMailerInterface
+interface DnsBackendProviderInterface extends
+    ZoneWriteBackendInterface,
+    ZoneReadBackendInterface,
+    RecordWriteBackendInterface,
+    RecordReadBackendInterface,
+    SerialBackendInterface,
+    SupermasterBackendInterface,
+    CatalogBackendInterface,
+    SearchBackendInterface,
+    BackendCapabilitiesInterface
 {
-    public function isMailConfigurationValid(): bool;
-
-    /**
-     * @param int $expiresAt Unix timestamp the code stops being accepted
-     * @param string|null $timezone Timezone the expiry is shown in, or the server default
-     */
-    public function sendVerificationCode(string $email, string $code, int $expiresAt, ?string $timezone): void;
 }

@@ -19,15 +19,22 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+namespace Poweradmin\Domain\Port;
 
-namespace Poweradmin\Domain\Service;
+use Poweradmin\Domain\Model\ZoneChangeRequest;
 
 /**
- * Records or clears the most recent PowerDNS API error; the API client and backend provider write through this.
+ * Told about change request events so people can be notified. Implementations
+ * must not throw; a failed notification never undoes the event.
  */
-interface ApiStatusRecorderInterface extends ApiStatusInterface
+interface ChangeRequestNotifierInterface
 {
-    public function recordError(string $message, array $context = []): void;
+    public function requestFiled(ZoneChangeRequest $request): void;
 
-    public function clearError(): void;
+    /**
+     * The request was approved (applied or failed to apply) or rejected.
+     */
+    public function requestDecided(ZoneChangeRequest $request): void;
+
+    public function requestCancelled(ZoneChangeRequest $request): void;
 }

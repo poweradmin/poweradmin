@@ -24,7 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
-use Poweradmin\Domain\Service\ZoneReadBackendInterface;
+use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 /**

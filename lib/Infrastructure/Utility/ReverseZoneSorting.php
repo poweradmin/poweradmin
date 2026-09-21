@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Utility;
 
 use Poweradmin\Domain\Enum\SortDirection;
-use Poweradmin\Domain\Service\ReverseZoneSorterInterface;
+use Poweradmin\Domain\Port\ReverseZoneSorterInterface;
 
 /**
  * Picks natural or hierarchical reverse zone sorting per the configured sort type, in SQL or in PHP.

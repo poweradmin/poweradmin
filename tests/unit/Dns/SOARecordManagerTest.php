@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use PDO;
 use TestHelpers\FakeConfiguration;

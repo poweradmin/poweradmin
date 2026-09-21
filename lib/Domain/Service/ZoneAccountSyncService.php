@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service;
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Port\ZoneWriteBackendInterface;
 
 /**
  * Mirrors zone ownership into the PowerDNS account field.

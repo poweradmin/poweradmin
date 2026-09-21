@@ -23,6 +23,8 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Port\LoginThrottleInterface;
+use Poweradmin\Domain\Port\PasswordHasherInterface;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 

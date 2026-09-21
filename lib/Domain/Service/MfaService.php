@@ -30,6 +30,7 @@ use Exception;
 use PDOException;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserMfa;
+use Poweradmin\Domain\Port\MfaVerificationMailerInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;

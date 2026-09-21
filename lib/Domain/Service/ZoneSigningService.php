@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Port\AuditLoggerInterface;
+use Poweradmin\Domain\Port\ZoneRectifierInterface;
+use Poweradmin\Domain\Port\ZoneSigningInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;

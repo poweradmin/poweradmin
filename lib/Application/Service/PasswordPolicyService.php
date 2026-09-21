@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Service\PasswordPolicyInterface;
+use Poweradmin\Domain\Port\PasswordPolicyInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**

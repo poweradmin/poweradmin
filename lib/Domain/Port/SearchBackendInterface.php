@@ -20,15 +20,24 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Port;
 
 /**
- * Exposes the most recent PowerDNS API error so domain checks can tell an outage from an empty backend.
+ * Wildcard search over zones and records in the DNS backend.
  */
-interface ApiStatusInterface
+interface SearchBackendInterface
 {
     /**
-     * @return array{message: string, context: array, timestamp: int}|null
+     * Search for zones and records matching a query.
+     *
+     * Returns separate arrays for zone matches and record matches.
+     * Results contain only DNS data - callers must enrich with
+     * Poweradmin metadata (ownership, permissions).
+     *
+     * @param string $query Search query (supports wildcards)
+     * @param string $objectType Filter: 'all', 'zone', 'record'
+     * @param int $max Maximum results
+     * @return array{zones: array, records: array}
      */
-    public function getLastError(): ?array;
+    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array;
 }

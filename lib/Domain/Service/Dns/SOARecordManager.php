@@ -22,11 +22,11 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
-use Poweradmin\Domain\Service\RecordReadBackendInterface;
-use Poweradmin\Domain\Service\RecordWriteBackendInterface;
-use Poweradmin\Domain\Service\SerialBackendInterface;
-use Poweradmin\Domain\Service\ZoneReadBackendInterface;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\RecordReadBackendInterface;
+use Poweradmin\Domain\Port\RecordWriteBackendInterface;
+use Poweradmin\Domain\Port\SerialBackendInterface;
+use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 
 /**
  * Reads and rewrites SOA records and bumps their serial.

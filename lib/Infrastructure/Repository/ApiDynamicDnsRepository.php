@@ -27,9 +27,9 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\RecordReadBackendInterface;
-use Poweradmin\Domain\Service\RecordWriteBackendInterface;
-use Poweradmin\Domain\Service\ZoneReadBackendInterface;
+use Poweradmin\Domain\Port\RecordReadBackendInterface;
+use Poweradmin\Domain\Port\RecordWriteBackendInterface;
+use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 

@@ -7,7 +7,7 @@ use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Psr\Log\LoggerInterface;
 
 #[CoversClass(ZoneSyncService::class)]

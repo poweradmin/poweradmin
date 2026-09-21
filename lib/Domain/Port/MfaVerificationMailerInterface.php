@@ -20,22 +20,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
-
-use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+namespace Poweradmin\Domain\Port;
 
 /**
- * Carries an edited record's comment over to its A/AAAA or PTR counterpart.
+ * Delivers MFA email verification codes; the Application layer owns the template and transport.
  */
-interface RecordCommentSyncInterface
+interface MfaVerificationMailerInterface
 {
+    public function isMailConfigurationValid(): bool;
+
     /**
-     * @param array<string, mixed> $newRecordInfo Record row after the edit (type, name, content)
+     * @param int $expiresAt Unix timestamp the code stops being accepted
+     * @param string|null $timezone Timezone the expiry is shown in, or the server default
      */
-    public function updateRelatedRecordComments(
-        DomainRepositoryInterface $domainRepository,
-        array $newRecordInfo,
-        string $comment,
-        string $userLogin
-    ): void;
+    public function sendVerificationCode(string $email, string $code, int $expiresAt, ?string $timezone): void;
 }

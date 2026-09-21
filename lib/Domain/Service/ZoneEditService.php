@@ -24,6 +24,9 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
+use Poweradmin\Domain\Port\RecordCommentEditorInterface;
+use Poweradmin\Domain\Port\RecordCommentSyncInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;

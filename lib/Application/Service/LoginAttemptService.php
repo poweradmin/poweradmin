@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Enum\LoginAttemptStage;
-use Poweradmin\Domain\Service\LoginThrottleInterface;
+use Poweradmin\Domain\Port\LoginThrottleInterface;
 
 /**
  * Records attempts in login_attempts and enforces the password- and MFA-stage lockouts per user and IP.

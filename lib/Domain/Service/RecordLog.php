@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 
 /**

@@ -19,22 +19,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Model\ZoneChangeRequest;
+namespace Poweradmin\Domain\Port;
 
 /**
- * Told about change request events so people can be notified. Implementations
- * must not throw; a failed notification never undoes the event.
+ * Exposes the most recent PowerDNS API error so domain checks can tell an outage from an empty backend.
  */
-interface ChangeRequestNotifierInterface
+interface ApiStatusInterface
 {
-    public function requestFiled(ZoneChangeRequest $request): void;
-
     /**
-     * The request was approved (applied or failed to apply) or rejected.
+     * @return array{message: string, context: array, timestamp: int}|null
      */
-    public function requestDecided(ZoneChangeRequest $request): void;
-
-    public function requestCancelled(ZoneChangeRequest $request): void;
+    public function getLastError(): ?array;
 }

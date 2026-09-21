@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\DnssecProviderInterface;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
 
 /**
  * Base for the pages that add, edit, toggle, delete, import and export DNSSEC keys: one shared gate.

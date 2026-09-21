@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 
 /**
  * Record reads for the API backend mode, served from PowerDNS RRsets.

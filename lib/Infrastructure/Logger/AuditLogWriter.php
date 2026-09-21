@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use PDO;
 use Psr\Log\LoggerInterface;
 
