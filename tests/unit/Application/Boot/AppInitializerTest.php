@@ -1,9 +1,9 @@
 <?php
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Application\Boot;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\AppInitializer;
+use Poweradmin\Application\Boot\AppInitializer;
 use Poweradmin\Infrastructure\Service\MessageService;
 use ReflectionClass;
 

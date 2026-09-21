@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Web;
 
 use Closure;
-use Poweradmin\AppManager;
+use Poweradmin\Application\Boot\AppManager;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Application\Service\AvatarService;
 use Poweradmin\Application\Service\CsrfTokenService;

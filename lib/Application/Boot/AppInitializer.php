@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin;
+namespace Poweradmin\Application\Boot;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DatabaseService;

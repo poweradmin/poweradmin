@@ -17,7 +17,7 @@ namespace Poweradmin\Tests\Unit\Application\Web;
 use Closure;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\AppManager;
+use Poweradmin\Application\Boot\AppManager;
 use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\UserContextService;

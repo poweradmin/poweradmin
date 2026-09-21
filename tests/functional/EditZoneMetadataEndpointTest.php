@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\AppInitializer;
+use Poweradmin\Application\Boot\AppInitializer;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;

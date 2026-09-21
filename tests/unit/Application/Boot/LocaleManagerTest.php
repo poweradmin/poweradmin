@@ -1,9 +1,9 @@
 <?php
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Application\Boot;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\LocaleManager;
+use Poweradmin\Application\Boot\LocaleManager;
 
 class LocaleManagerTest extends TestCase
 {

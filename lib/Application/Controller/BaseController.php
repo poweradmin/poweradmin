@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
-use Poweradmin\AppInitializer;
+use Poweradmin\Application\Boot\AppInitializer;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
@@ -37,7 +37,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\ZoneCreateService;
-use Poweradmin\AppManager;
+use Poweradmin\Application\Boot\AppManager;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Zone\ZoneSortingService;
