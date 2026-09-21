@@ -51,7 +51,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Application\Service\DnsServiceFactory;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 use Psr\Log\LoggerInterface;
 

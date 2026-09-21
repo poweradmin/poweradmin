@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**

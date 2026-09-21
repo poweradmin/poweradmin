@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Service;
+namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
@@ -35,9 +35,6 @@ use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;

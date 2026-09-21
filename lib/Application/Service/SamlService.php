@@ -28,7 +28,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;

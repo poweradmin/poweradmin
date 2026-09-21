@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Service;
+namespace Poweradmin\Application\Service\Auth;
 
 use PDO;
 use Poweradmin\Application\Service\LoginAttemptService;

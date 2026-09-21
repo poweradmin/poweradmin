@@ -27,7 +27,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\OidcCallbackController;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 
 /**
  * Pins the collaborator wiring of the OIDC callback endpoint: when OIDC is

@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Service;
+namespace Poweradmin\Application\Service\Auth;
 
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 
 /**
@@ -37,11 +37,11 @@ class AuthenticationService
     private RedirectService $redirectService;
     private ConfigurationInterface $config;
 
-    public function __construct(SessionService $sessionService, RedirectService $redirectService, ?ConfigurationInterface $config = null)
+    public function __construct(SessionService $sessionService, RedirectService $redirectService, ConfigurationInterface $config)
     {
         $this->sessionService = $sessionService;
         $this->redirectService = $redirectService;
-        $this->config = $config ?? ConfigurationManager::getInstance();
+        $this->config = $config;
     }
 
     public function logout(SessionEntity $sessionEntity): void

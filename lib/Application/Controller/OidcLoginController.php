@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 
 /**
  * Starts the OIDC login flow by redirecting to the chosen or first configured provider.

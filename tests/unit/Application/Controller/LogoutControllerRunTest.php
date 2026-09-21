@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\LogoutController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 
 /**
  * Pins the collaborator wiring of a plain (non-SSO) logout: the audit line is

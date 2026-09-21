@@ -32,7 +32,7 @@ use PDO;
 use Poweradmin\Infrastructure\Database\DebugPDO;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Infrastructure\Service\SessionAuthenticator;
+use Poweradmin\Application\Service\Auth\SessionAuthenticator;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
 
 /**

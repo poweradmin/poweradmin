@@ -27,7 +27,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\SamlLoginController;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 
 /**
  * Pins the collaborator wiring of the SAML login endpoint: when SAML is

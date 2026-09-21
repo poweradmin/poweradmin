@@ -29,7 +29,7 @@ use Poweradmin\Application\Controller\ChangePasswordController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\PasswordChangeService;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 
 /**
  * Pins the collaborator wiring of the change-password form: a successful

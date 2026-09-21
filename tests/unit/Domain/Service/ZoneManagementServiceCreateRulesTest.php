@@ -35,7 +35,7 @@ use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Application\Service\DnsServiceFactory;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 

@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Service;
+namespace Poweradmin\Application\Service\Auth;
 
 use PDO;
 use Poweradmin\Application\Service\CsrfTokenService;
@@ -41,6 +41,7 @@ use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
+use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\AuditService;
 

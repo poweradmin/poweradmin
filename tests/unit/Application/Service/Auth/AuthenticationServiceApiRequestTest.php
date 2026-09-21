@@ -12,10 +12,11 @@
  *  (at your option) any later version.
  */
 
-namespace Poweradmin\Tests\Unit\Infrastructure\Service;
+namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use ReflectionMethod;
@@ -31,7 +32,8 @@ class AuthenticationServiceApiRequestTest extends TestCase
     {
         $service = new AuthenticationService(
             $this->createMock(SessionService::class),
-            $this->createMock(RedirectService::class)
+            $this->createMock(RedirectService::class),
+            $this->createMock(ConfigurationInterface::class)
         );
         $_SERVER['REQUEST_URI'] = $requestUri;
         $method = new ReflectionMethod(AuthenticationService::class, 'isApiRequest');

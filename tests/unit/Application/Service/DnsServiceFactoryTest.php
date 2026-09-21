@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Infrastructure\Service;
+namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Application\Service\DnsServiceFactory;
 
 /**
  * Confirms the factory wires each DNS service to its interface for the SQL backend.

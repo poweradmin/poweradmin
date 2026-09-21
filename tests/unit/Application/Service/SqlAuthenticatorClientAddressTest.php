@@ -36,7 +36,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Psr\Log\NullLogger;
 
 /**

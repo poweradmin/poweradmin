@@ -137,6 +137,7 @@ parameters:
         - lib/AppManager.php
         - lib/BaseController.php
         - lib/Application/Bootstrap.php
+        - lib/Application/Service/Auth/*
         - lib/Application/Service/CsrfTokenService.php
         - lib/Application/Service/OidcService.php
         - lib/Application/Service/SamlService.php

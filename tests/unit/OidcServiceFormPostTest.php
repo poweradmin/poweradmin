@@ -33,7 +33,7 @@ use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionMethod;
 
 class OidcServiceFormPostTest extends TestCase

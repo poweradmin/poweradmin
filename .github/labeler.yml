@@ -4,6 +4,7 @@
 auth:
   - changed-files:
     - any-glob-to-any-file:
+      - 'lib/Application/Service/Auth/**'
       - 'lib/**/Service/*Authentication*.php'
       - 'lib/**/Service/*Authenticator*.php'
       - 'lib/**/Middleware/*Authentication*.php'
@@ -37,7 +38,7 @@ api:
   - changed-files:
     - any-glob-to-any-file:
       - 'lib/Application/Controller/Api/**'
-      - 'lib/Infrastructure/Service/ApiKeyAuthenticationMiddleware.php'
+      - 'lib/Application/Service/Auth/ApiKeyAuthenticationMiddleware.php'
       - 'tests/**/Api/**'
       - 'docs/API*.md'
 

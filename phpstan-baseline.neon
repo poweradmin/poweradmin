@@ -538,7 +538,7 @@ parameters:
 			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
 			identifier: disallowed.variable
 			count: 20
-			path: lib/Infrastructure/Service/SessionAuthenticator.php
+			path: lib/Application/Service/Auth/SessionAuthenticator.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'

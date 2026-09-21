@@ -54,7 +54,7 @@ use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Application\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Psr\Log\LoggerInterface;
 

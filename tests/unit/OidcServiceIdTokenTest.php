@@ -30,7 +30,7 @@ use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionMethod;
 
 class OidcServiceIdTokenTest extends TestCase

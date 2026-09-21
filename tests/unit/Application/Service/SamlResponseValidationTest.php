@@ -12,7 +12,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Service\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionClass;
 use ReflectionMethod;
 

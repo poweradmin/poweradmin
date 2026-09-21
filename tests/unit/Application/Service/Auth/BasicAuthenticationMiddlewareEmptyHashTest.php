@@ -12,12 +12,12 @@
  *  (at your option) any later version.
  */
 
-namespace Poweradmin\Tests\Unit\Infrastructure\Service;
+namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
+use Poweradmin\Application\Service\Auth\BasicAuthenticationMiddleware;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
