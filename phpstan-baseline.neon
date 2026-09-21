@@ -317,21 +317,3 @@ parameters:
 			identifier: disallowed.variable
 			count: 2
 			path: lib/Module/DnsWizard/Controller/DnsWizardFormController.php
-
-		-
-			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
-			identifier: disallowed.variable
-			count: 5
-			path: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php
-
-		-
-			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
-			identifier: disallowed.variable
-			count: 13
-			path: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 4
-			path: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php

@@ -1659,6 +1659,7 @@ return array(
     'Poweradmin\\Module\\Whois\\WhoisModule' => $baseDir . '/lib/Module/Whois/WhoisModule.php',
     'Poweradmin\\Module\\ZoneImportExport\\Controller\\ZoneFileExportController' => $baseDir . '/lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php',
     'Poweradmin\\Module\\ZoneImportExport\\Controller\\ZoneFileImportController' => $baseDir . '/lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php',
+    'Poweradmin\\Module\\ZoneImportExport\\ImportSessionKeys' => $baseDir . '/lib/Module/ZoneImportExport/ImportSessionKeys.php',
     'Poweradmin\\Module\\ZoneImportExport\\Service\\BindZoneFileParser' => $baseDir . '/lib/Module/ZoneImportExport/Service/BindZoneFileParser.php',
     'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedRecord' => $baseDir . '/lib/Module/ZoneImportExport/Service/ParsedRecord.php',
     'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedZoneFile' => $baseDir . '/lib/Module/ZoneImportExport/Service/ParsedZoneFile.php',
