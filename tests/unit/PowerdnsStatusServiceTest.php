@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 class PowerdnsStatusServiceTest extends TestCase
 {
@@ -14,8 +15,23 @@ class PowerdnsStatusServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->service = new PowerdnsStatusService();
+        $this->service = new PowerdnsStatusService(new FakeConfiguration());
         $this->reflection = new ReflectionClass($this->service);
+    }
+
+    public function testApiSettingsAreReadFromTheInjectedConfiguration(): void
+    {
+        $service = new PowerdnsStatusService(new FakeConfiguration(['pdns_api' => [
+            'url' => 'http://127.0.0.1:8081/api',
+            'key' => 'secret',
+            'display_name' => '  Edge  ',
+        ]]));
+
+        $this->assertTrue($service->isApiEnabled());
+        $displayName = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('displayName');
+        $this->assertSame('Edge', $displayName->getValue($service));
+        $this->assertSame('http://127.0.0.1:8081/api/metrics', $this->invokePrivate($service, 'buildMetricsUrl'));
+        $this->assertFalse((new PowerdnsStatusService(new FakeConfiguration()))->isApiEnabled());
     }
 
     #[DataProvider('displayNameProvider')]
@@ -138,7 +154,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     public function testFastAutoprimaryProbesAllRunWithinBudget(): void
     {
-        $service = new class extends PowerdnsStatusService {
+        $service = new class (new FakeConfiguration()) extends PowerdnsStatusService {
             public int $probes = 0;
 
             protected function probeHost(string $host): ?string
@@ -158,7 +174,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     public function testSlowAutoprimaryProbesStopAtTheBudgetAndRestAreSkipped(): void
     {
-        $service = new class extends PowerdnsStatusService {
+        $service = new class (new FakeConfiguration()) extends PowerdnsStatusService {
             public int $probes = 0;
 
             protected function probeHost(string $host): string

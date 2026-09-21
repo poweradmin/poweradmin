@@ -98,7 +98,7 @@ class RecordServices
      */
     public function recordChangeLog(): RecordChangeLogger
     {
-        return $this->recordChangeLogger ??= new RecordChangeLogger($this->db);
+        return $this->recordChangeLogger ??= new RecordChangeLogger($this->db, $this->config);
     }
 
     public function rrsetReplaceService(): RRSetReplaceService
@@ -162,7 +162,7 @@ class RecordServices
             $this->db,
             $this->config,
             $this->services->repositoryFactory()->createRecordCommentRepository(),
-            RecordChangeLogger::withChangeset(...),
+            $this->recordChangeLog()->withChangeset(...),
             $this->services->permissionService(),
             $this->changeRequestNotificationService(),
             $this->zoneFileSnapshot(...),

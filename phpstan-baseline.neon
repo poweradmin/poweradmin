@@ -55,30 +55,6 @@ parameters:
 			path: lib/Application/Service/LdapAuthenticator.php
 
 		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Service/LoginAttemptService.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Service/PasswordGenerationService.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Service/PasswordPolicyService.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Service/PowerdnsStatusService.php
-
-		-
 			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
 			identifier: disallowed.variable
 			count: 7

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Http;
 
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
 
@@ -45,13 +46,16 @@ final class ClientContext
     ) {
     }
 
-    /** @param array<string, mixed> $server The request's $_SERVER array */
-    public static function fromServer(array $server): self
+    /**
+     * @param array<string, mixed> $server The request's $_SERVER array
+     * @param ConfigurationInterface $config Source of the trusted proxy list
+     */
+    public static function fromServer(array $server, ConfigurationInterface $config): self
     {
         $agent = new UserAgentService($server);
 
         return new self(
-            (new IpAddressRetriever($server))->getClientIp(),
+            IpAddressRetriever::fromConfig($server, $config)->getClientIp(),
             $agent->getUserAgent(),
             $agent->getBrowserInfo(),
             $agent->isBot()

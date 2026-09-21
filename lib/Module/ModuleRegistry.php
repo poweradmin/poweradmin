@@ -67,7 +67,9 @@ class ModuleRegistry
                 continue;
             }
 
-            $module = new $className();
+            // Modules that read settings declare a constructor taking the configuration;
+            // the rest have none and PHP ignores the argument.
+            $module = new $className($this->config);
 
             if (!$module instanceof ModuleInterface) {
                 continue;

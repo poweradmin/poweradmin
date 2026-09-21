@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Exception;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 use Psr\Log\LoggerInterface;
@@ -50,10 +50,9 @@ class PowerdnsStatusService
     private string $webserverPassword;
     private LoggerInterface $logger;
 
-    public function __construct(?LoggerInterface $logger = null)
+    public function __construct(ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->logger = $logger ?? new NullLogger();
-        $config = ConfigurationManager::getInstance();
         $this->apiUrl = $config->get('pdns_api', 'url', '');
         $this->displayName = $this->sanitizeDisplayName($config->get('pdns_api', 'display_name', 'PowerDNS'));
         $this->serverName = $config->get('pdns_api', 'server_name', 'localhost');

@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DynamicDnsRequestFactory;
 use Symfony\Component\HttpFoundation\Request;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(DynamicDnsRequestFactory::class)]
 class DynamicDnsRequestFactoryTest extends TestCase
@@ -33,7 +34,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'dualstack_update' => '1'
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('testuser', $dynamicDnsRequest->getUsername());
         $this->assertEquals('testpass', $dynamicDnsRequest->getPassword());
@@ -56,7 +57,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'ip6' => '::1',
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('queryuser', $dynamicDnsRequest->getUsername());
         $this->assertEquals('querypass', $dynamicDnsRequest->getPassword());
@@ -78,7 +79,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'myip' => '2001:db8::1',
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('', $dynamicDnsRequest->getIpv4());
         $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
@@ -97,7 +98,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'myip6' => '2001:db8::2',
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('2001:db8::2', $dynamicDnsRequest->getIpv6());
     }
@@ -114,7 +115,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'myip' => '203.0.113.5,2001:db8::1',
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('203.0.113.5', $dynamicDnsRequest->getIpv4());
         $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
@@ -133,7 +134,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'dualstack_update' => '1',
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('203.0.113.5', $dynamicDnsRequest->getIpv4());
         $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
@@ -151,7 +152,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'myip' => '203.0.113.5,203.0.113.6',
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('203.0.113.5,203.0.113.6', $dynamicDnsRequest->getIpv4());
         $this->assertEquals('', $dynamicDnsRequest->getIpv6());
@@ -168,7 +169,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'myip' => ' 203.0.113.5 , 2001:db8::1 ',
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('203.0.113.5', $dynamicDnsRequest->getIpv4());
         $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
@@ -188,7 +189,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'myip6' => '2001:db8::2',
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('203.0.113.5', $dynamicDnsRequest->getIpv4());
         $this->assertEquals('2001:db8::2', $dynamicDnsRequest->getIpv6());
@@ -207,7 +208,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'myip6' => 'whatismyip'
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('203.0.113.1', $dynamicDnsRequest->getIpv4());
         $this->assertEquals('', $dynamicDnsRequest->getIpv6()); // IPv6 should be empty when IPv4 is provided
@@ -226,7 +227,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'myip6' => 'whatismyip'
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         $this->assertEquals('', $dynamicDnsRequest->getIpv4()); // IPv4 should be empty when IPv6 is provided
         $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
@@ -245,7 +246,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
             'myip' => 'whatismyip'
         ]);
 
-        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request);
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
 
         // The leftmost value (198.51.100.1) is claimed by the untrusted hop
         // 203.0.113.1 and is therefore spoofable. With no trusted proxies

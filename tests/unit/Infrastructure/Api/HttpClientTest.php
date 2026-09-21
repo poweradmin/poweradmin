@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Api;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use ReflectionClass;
 use ReflectionMethod;
@@ -186,6 +187,27 @@ class HttpClientTest extends TestCase
         // Unknown code-0 errors should NOT retry - could be anything.
         $ex = new \Poweradmin\Domain\Error\ApiErrorException('wrapped', 0, null, ['error' => 'some unrelated error']);
         $this->assertFalse($method->invoke($this->httpClient, $ex));
+    }
+
+    public function testDisplayErrorsFlagDecidesHowMuchOfTheFailureIsReported(): void
+    {
+        // A URL without a scheme is opened as a file path and fails without touching the network.
+        $verbose = new HttpClient('nowhere/pdns-api-test', 'key', null, 10, true);
+        $quiet = new HttpClient('nowhere/pdns-api-test', 'key', null, 10, false);
+
+        try {
+            $verbose->makeRequest('POST', '/servers');
+            $this->fail('Expected the request to fail.');
+        } catch (ApiErrorException $e) {
+            $this->assertStringContainsString('nowhere/pdns-api-test', $e->getMessage());
+        }
+
+        try {
+            $quiet->makeRequest('POST', '/servers');
+            $this->fail('Expected the request to fail.');
+        } catch (ApiErrorException $e) {
+            $this->assertStringNotContainsString('nowhere/pdns-api-test', $e->getMessage());
+        }
     }
 
     /**

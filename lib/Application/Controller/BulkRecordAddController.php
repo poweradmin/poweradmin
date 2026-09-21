@@ -35,7 +35,6 @@ use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -104,7 +103,7 @@ class BulkRecordAddController extends BaseController
         $zone_id = (int)$this->getSafeRequestValue('id');
 
         $change_comment = (string)($this->httpRequest->getPostParam('change_comment') ?? '');
-        if (trim($change_comment) === '' && RecordChangeLogger::changeCommentRequired()) {
+        if (trim($change_comment) === '' && $this->services()->recordChangeLog()->changeCommentRequired()) {
             $this->setMessage('bulk_record_add', 'error', _('Describe why you are making this change.'));
             $this->showBulkRecordAdditionForm();
             return;
@@ -118,7 +117,7 @@ class BulkRecordAddController extends BaseController
 
         // One submission, one changeset: every record added below is grouped under a
         // single entry in the change log carrying the reason the user gave.
-        [$success_count, $failed_records] = RecordChangeLogger::withChangeset($zone_id, $change_comment, function () use ($lines, $zone_id, $parser, $reverseTtlResolver): array {
+        [$success_count, $failed_records] = $this->services()->recordChangeLog()->withChangeset($zone_id, $change_comment, function () use ($lines, $zone_id, $parser, $reverseTtlResolver): array {
             $success_count = 0;
             $failed_records = [];
             foreach ($lines as $line) {

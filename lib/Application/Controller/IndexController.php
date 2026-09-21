@@ -94,7 +94,7 @@ class IndexController extends BaseController
         $showPdnsStatus = $this->config->get('interface', 'show_pdns_status', false);
 
         if ($pdnsApiEnabled && $showPdnsStatus && $permissions[Permission::PERM_USER_IS_UEBERUSER]) {
-            $statusService = new PowerdnsStatusService();
+            $statusService = new PowerdnsStatusService($this->config);
             $serverStatus = $statusService->getServerStatus();
             $pdnsServerStatus = [
                 'display' => $serverStatus['display_name'] ?? 'PowerDNS',

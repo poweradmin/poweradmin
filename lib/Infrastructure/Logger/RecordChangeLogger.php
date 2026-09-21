@@ -26,7 +26,6 @@ use InvalidArgumentException;
 use PDO;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
@@ -57,7 +56,7 @@ class RecordChangeLogger implements RecordChangeWriterInterface
 
     private PDO $db;
     private UserContextService $userContext;
-    private ?ConfigurationInterface $config;
+    private ConfigurationInterface $config;
 
     // Changeset scope, shared across every instance for the life of the request.
     // Write paths build their own logger (RecordManager, the v2 controllers), so an
@@ -72,12 +71,12 @@ class RecordChangeLogger implements RecordChangeWriterInterface
 
     public function __construct(
         PDO $db,
-        ?UserContextService $userContext = null,
-        ?ConfigurationInterface $config = null
+        ConfigurationInterface $config,
+        ?UserContextService $userContext = null
     ) {
         $this->db = $db;
-        $this->userContext = $userContext ?? new UserContextService();
         $this->config = $config;
+        $this->userContext = $userContext ?? new UserContextService();
     }
 
     /**
@@ -89,9 +88,9 @@ class RecordChangeLogger implements RecordChangeWriterInterface
      * @throws InvalidArgumentException when the installation requires a reason and none was given
      * @throws \Throwable Whatever $work throws
      */
-    public static function withChangeset(?int $zoneId, ?string $comment, callable $work): mixed
+    public function withChangeset(?int $zoneId, ?string $comment, callable $work): mixed
     {
-        self::beginChangeset($zoneId, $comment);
+        $this->beginChangeset($zoneId, $comment);
         try {
             return $work();
         } finally {
@@ -106,13 +105,13 @@ class RecordChangeLogger implements RecordChangeWriterInterface
      *
      * @throws InvalidArgumentException when the installation requires a reason and none was given
      */
-    private static function beginChangeset(?int $zoneId, ?string $comment): void
+    private function beginChangeset(?int $zoneId, ?string $comment): void
     {
         $comment = ($comment !== null && trim($comment) !== '') ? trim($comment) : null;
 
         // Enforced here rather than per controller so every write path that opens a
         // scope is covered, and a path that forgets to open one is a visible omission.
-        if ($comment === null && self::$changesetDepth === 0 && self::changeCommentRequired()) {
+        if ($comment === null && self::$changesetDepth === 0 && $this->changeCommentRequired()) {
             throw new InvalidArgumentException('A reason is required for this change.');
         }
 
@@ -137,9 +136,9 @@ class RecordChangeLogger implements RecordChangeWriterInterface
         }
     }
 
-    public static function changeCommentRequired(): bool
+    public function changeCommentRequired(): bool
     {
-        return (bool) ConfigurationManager::getInstance()->get('logging', 'require_change_comment', false);
+        return (bool) $this->config->get('logging', 'require_change_comment', false);
     }
 
     /**
@@ -328,8 +327,7 @@ class RecordChangeLogger implements RecordChangeWriterInterface
 
     private function isDatabaseLoggingEnabled(): bool
     {
-        $config = $this->config ?? ConfigurationManager::getInstance();
-        return (bool) $config->get('logging', 'database_enabled', false);
+        return (bool) $this->config->get('logging', 'database_enabled', false);
     }
 
     private function encodeRecordSnapshot(array $record): ?string

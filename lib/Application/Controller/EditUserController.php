@@ -48,7 +48,7 @@ class EditUserController extends BaseController
         array $request
     ) {
         parent::__construct($request);
-        $this->policyService = new PasswordPolicyService();
+        $this->policyService = new PasswordPolicyService($this->config);
         $this->userContextService = new UserContextService();
         $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
         $this->auditService = $this->services()->auditService();

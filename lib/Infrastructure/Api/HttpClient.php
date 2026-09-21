@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 namespace Poweradmin\Infrastructure\Api;
 
 use Poweradmin\Domain\Error\ApiErrorException;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -39,13 +38,18 @@ class HttpClient
     private string $apiKey;
     private int $timeout;
     private LoggerInterface $logger;
+    private bool $displayErrors;
 
-    public function __construct(string $baseEndpoint, string $apiKey, ?LoggerInterface $logger = null, int $timeout = 10)
+    /**
+     * @param bool $displayErrors Whether error messages carry the upstream detail (misc.display_errors)
+     */
+    public function __construct(string $baseEndpoint, string $apiKey, ?LoggerInterface $logger = null, int $timeout = 10, bool $displayErrors = false)
     {
         $this->apiUrl = rtrim($baseEndpoint, '/');
         $this->apiKey = $apiKey;
         $this->timeout = $timeout > 0 ? $timeout : 10;
         $this->logger = $logger ?? new NullLogger();
+        $this->displayErrors = $displayErrors;
     }
 
     public function makeRequest(string $method, string $endpoint, array $data = []): array
@@ -112,8 +116,6 @@ class HttpClient
 
             if ($response === false) {
                 $error = error_get_last();
-                $displayErrors = $this->shouldDisplayErrors();
-
                 $errorDetails = [
                     'url' => $url,
                     'method' => $method,
@@ -122,7 +124,7 @@ class HttpClient
                 ];
 
                 // Detect common misconfigurations and provide helpful error messages
-                $errorMessage = $this->getHelpfulErrorMessage($errorDetails['error'], $url, $displayErrors);
+                $errorMessage = $this->getHelpfulErrorMessage($errorDetails['error'], $url, $this->displayErrors);
 
                 $this->logApiError($errorMessage, $errorDetails);
                 throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
@@ -140,8 +142,6 @@ class HttpClient
                 // Handle HTTP error responses (4xx, 5xx) before strict JSON validation
                 // PowerDNS may return plain text errors (e.g., "Not Found" for 404)
                 if ($responseCode >= 400) {
-                    $displayErrors = $this->shouldDisplayErrors();
-
                     // For error responses, use parsed JSON if available, otherwise use raw response
                     $errorResponse = ($jsonError === JSON_ERROR_NONE && $responseData !== null)
                         ? $responseData
@@ -160,7 +160,7 @@ class HttpClient
                     ]);
 
                     // Provide user-friendly messages for common HTTP errors
-                    $errorMessage = $this->getHttpErrorMessage($responseCode, $errorResponse, $displayErrors);
+                    $errorMessage = $this->getHttpErrorMessage($responseCode, $errorResponse, $this->displayErrors);
 
                     // Don't log 404 errors as they are often expected (e.g., checking if zone exists)
                     if ($responseCode !== 404) {
@@ -203,7 +203,7 @@ class HttpClient
                 'line' => $e->getLine()
             ];
 
-            $errorMessage = $this->shouldDisplayErrors()
+            $errorMessage = $this->displayErrors
                 ? sprintf('API request error: %s', $e->getMessage())
                 : 'An unexpected error occurred when connecting to the API';
 
@@ -232,12 +232,6 @@ class HttpClient
         }
 
         return null;
-    }
-
-    private function shouldDisplayErrors(): bool
-    {
-        $configManager = ConfigurationManager::getInstance();
-        return (bool)$configManager->get('misc', 'display_errors');
     }
 
     /**

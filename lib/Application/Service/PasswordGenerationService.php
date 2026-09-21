@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Random\Engine\Secure;
 use Random\Randomizer;
@@ -44,9 +43,9 @@ class PasswordGenerationService
         'special_characters' => '!@#$%^&*()-_=+[]{}|;:,.<>?'
     ];
 
-    public function __construct(?ConfigurationInterface $configManager = null)
+    public function __construct(ConfigurationInterface $configManager)
     {
-        $this->configManager = $configManager ?? ConfigurationManager::getInstance();
+        $this->configManager = $configManager;
     }
 
     /**

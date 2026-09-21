@@ -27,6 +27,7 @@ namespace Poweradmin\Tests\Unit\Application\Http;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\ClientContext;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The value object resolves the client once from the server array the way the
@@ -41,7 +42,7 @@ class ClientContextTest extends TestCase
         $client = ClientContext::fromServer([
             'REMOTE_ADDR' => '203.0.113.9',
             'HTTP_USER_AGENT' => 'Mozilla/5.0 Chrome/120.0.0.0 Safari/537.36',
-        ]);
+        ], new FakeConfiguration());
 
         $this->assertSame('203.0.113.9', $client->ip);
         $this->assertSame('Mozilla/5.0 Chrome/120.0.0.0 Safari/537.36', $client->userAgent);
@@ -51,8 +52,8 @@ class ClientContextTest extends TestCase
 
     public function testHonoursForwardedHeadersOnlyBehindAPrivatePeer(): void
     {
-        $viaProxy = ClientContext::fromServer(['REMOTE_ADDR' => '10.0.0.2', 'HTTP_X_FORWARDED_FOR' => '198.51.100.4']);
-        $direct = ClientContext::fromServer(['REMOTE_ADDR' => '203.0.113.9', 'HTTP_X_FORWARDED_FOR' => '198.51.100.4']);
+        $viaProxy = ClientContext::fromServer(['REMOTE_ADDR' => '10.0.0.2', 'HTTP_X_FORWARDED_FOR' => '198.51.100.4'], new FakeConfiguration());
+        $direct = ClientContext::fromServer(['REMOTE_ADDR' => '203.0.113.9', 'HTTP_X_FORWARDED_FOR' => '198.51.100.4'], new FakeConfiguration());
 
         $this->assertSame('198.51.100.4', $viaProxy->ip);
         $this->assertSame('203.0.113.9', $direct->ip);
@@ -60,7 +61,7 @@ class ClientContextTest extends TestCase
 
     public function testFallsBackToEmptyAddressAndUnknownAgentWhenNothingIsPresent(): void
     {
-        $client = ClientContext::fromServer([]);
+        $client = ClientContext::fromServer([], new FakeConfiguration());
 
         $this->assertSame('', $client->ip);
         $this->assertSame('unknown', $client->userAgent);
@@ -69,8 +70,16 @@ class ClientContextTest extends TestCase
 
     public function testFlagsCrawlersAsBots(): void
     {
-        $client = ClientContext::fromServer(['HTTP_USER_AGENT' => 'Googlebot/2.1 (+http://www.google.com/bot.html)']);
+        $client = ClientContext::fromServer(['HTTP_USER_AGENT' => 'Googlebot/2.1 (+http://www.google.com/bot.html)'], new FakeConfiguration());
 
         $this->assertTrue($client->isBot);
+    }
+    public function testTrustsTheProxiesNamedInTheConfiguration(): void
+    {
+        $server = ['REMOTE_ADDR' => '203.0.113.9', 'HTTP_X_FORWARDED_FOR' => '198.51.100.4'];
+        $config = new FakeConfiguration(['security' => ['trusted_proxies' => ['203.0.113.9']]]);
+
+        $this->assertSame('198.51.100.4', ClientContext::fromServer($server, $config)->ip);
+        $this->assertSame('203.0.113.9', ClientContext::fromServer($server, new FakeConfiguration())->ip);
     }
 }

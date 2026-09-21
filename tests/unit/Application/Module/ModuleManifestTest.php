@@ -25,6 +25,8 @@ namespace Poweradmin\Tests\Unit\Application\Module;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Module\ModuleManifest;
 use Poweradmin\Domain\Module\ModuleInterface;
+use Poweradmin\Module\ModuleRegistry;
+use TestHelpers\FakeConfiguration;
 
 class ModuleManifestTest extends TestCase
 {
@@ -38,11 +40,17 @@ class ModuleManifestTest extends TestCase
 
     public function testEveryEntryIsAModuleReportingItsOwnKey(): void
     {
-        foreach (ModuleManifest::MODULES as $name => $className) {
-            $module = new $className();
+        $enabled = [];
+        foreach (array_keys(ModuleManifest::MODULES) as $name) {
+            $enabled["$name.enabled"] = true;
+        }
+        $registry = new ModuleRegistry(new FakeConfiguration(['modules' => $enabled]));
+        $registry->loadModules();
 
-            $this->assertInstanceOf(ModuleInterface::class, $module, $className);
-            $this->assertSame($name, $module->getName(), $className);
+        $this->assertSame(array_keys(ModuleManifest::MODULES), array_keys($registry->getEnabledModules()));
+        foreach ($registry->getEnabledModules() as $name => $module) {
+            $this->assertInstanceOf(ModuleInterface::class, $module, $name);
+            $this->assertSame($name, $module->getName(), $name);
         }
     }
 }

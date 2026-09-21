@@ -255,6 +255,6 @@ class ZoneServices
 
     public function zoneLogger(): DbZoneLogger
     {
-        return new DbZoneLogger($this->db, $this->services->dnsBackendProvider());
+        return new DbZoneLogger($this->db, $this->config, $this->services->dnsBackendProvider());
     }
 }

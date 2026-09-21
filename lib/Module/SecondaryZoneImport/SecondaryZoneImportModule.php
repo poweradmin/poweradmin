@@ -24,7 +24,7 @@ namespace Poweradmin\Module\SecondaryZoneImport;
 
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
@@ -36,7 +36,9 @@ use Poweradmin\Domain\Module\ModuleInterface;
  */
 class SecondaryZoneImportModule implements ModuleInterface
 {
-    private ?bool $apiBackendMode = null;
+    public function __construct(private readonly ConfigurationInterface $config)
+    {
+    }
 
     public function getName(): string
     {
@@ -100,9 +102,6 @@ class SecondaryZoneImportModule implements ModuleInterface
 
     private function isApiBackendMode(): bool
     {
-        if ($this->apiBackendMode === null) {
-            $this->apiBackendMode = DnsBackendProviderFactory::isApiBackend(ConfigurationManager::getInstance());
-        }
-        return $this->apiBackendMode;
+        return DnsBackendProviderFactory::isApiBackend($this->config);
     }
 }

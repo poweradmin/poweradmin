@@ -109,7 +109,7 @@ $config->initialize();
 $db = (new DatabaseService(new PDODatabaseConnection()))
     ->connect(DatabaseCredentialMapper::mapCredentials($config));
 
-$logger = new RecordChangeLogger($db);
+$logger = new RecordChangeLogger($db, $config);
 $filters = ['date_from' => $since, 'date_to' => $until];
 
 // Cap the body length so very busy windows don't produce multi-MB emails;

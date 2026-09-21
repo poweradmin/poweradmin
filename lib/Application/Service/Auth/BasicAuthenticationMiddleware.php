@@ -126,7 +126,7 @@ class BasicAuthenticationMiddleware
         // Refuse brute-force guesses once account_lockout thresholds trip. Without
         // this, Basic Auth bypasses the throttling that the browser login already
         // enforces via SqlAuthenticator.
-        $ipAddress = (new IpAddressRetriever($_SERVER))->getClientIp() ?: '0.0.0.0';
+        $ipAddress = IpAddressRetriever::fromConfig($_SERVER, $this->config)->getClientIp() ?: '0.0.0.0';
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             return 0;
         }

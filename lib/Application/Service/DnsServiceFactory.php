@@ -115,7 +115,7 @@ class DnsServiceFactory
             fn() => DnssecProviderFactory::create($db, $config, DnsBackendProviderFactory::apiClientFrom($backendProvider)),
             $backendProvider,
             $permissions ?? self::createPermissionService($db, $config),
-            new RecordChangeLogger($db)
+            new RecordChangeLogger($db, $config)
         );
     }
 
@@ -135,7 +135,7 @@ class DnsServiceFactory
         $userRepository = new DbUserRepository($db, $config);
         $soaRecordManager = self::createSOARecordManager($db, $config, $backendProvider);
         $domainRepository = $repositoryFactory->createDomainRepository();
-        $changeLogger = new RecordChangeLogger($db);
+        $changeLogger = new RecordChangeLogger($db, $config);
         $zoneTemplateRepository = new DbZoneTemplateRepository($db, $config, $backendProvider);
         $templateApplier = new ZoneTemplateApplier(
             $db,

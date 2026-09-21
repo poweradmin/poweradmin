@@ -57,7 +57,7 @@ class RecordChangeLoggerTest extends TestCase
             return $default;
         });
 
-        $this->logger = new RecordChangeLogger($this->db, $userContext, $config);
+        $this->logger = new RecordChangeLogger($this->db, $config, $userContext);
     }
 
     private function fetchAll(): array
@@ -309,7 +309,7 @@ class RecordChangeLoggerTest extends TestCase
             return $default;
         });
 
-        $logger = new RecordChangeLogger($this->db, $userContext, $config);
+        $logger = new RecordChangeLogger($this->db, $config, $userContext);
         $logger->logRecordCreate(
             ['id' => 99, 'name' => 'www.example.com', 'type' => 'A', 'content' => '1.2.3.4', 'ttl' => 3600, 'prio' => 0],
             5

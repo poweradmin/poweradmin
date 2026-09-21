@@ -66,7 +66,13 @@ class DnsBackendProviderFactory
             }
 
             $timeout = (int) $config->get('pdns_api', 'timeout', 10);
-            $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger, $timeout);
+            $httpClient = new HttpClient(
+                $pdnsApiUrl,
+                $pdnsApiKey,
+                $logger,
+                $timeout,
+                (bool) $config->get('misc', 'display_errors', false)
+            );
             $serverNameFromConfig = $config->get('pdns_api', 'server_name');
             $serverName = $serverNameFromConfig ?: 'localhost';
             $apiClient = new PowerdnsApiClient($httpClient, $serverName, $logger);
@@ -105,7 +111,13 @@ class DnsBackendProviderFactory
         // Overridable so a caller on a latency budget, such as the health check, is not
         // held for the interactive pdns_api.timeout.
         $timeout = $timeout ?? (int) $config->get('pdns_api', 'timeout', 10);
-        $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger, $timeout);
+        $httpClient = new HttpClient(
+            $pdnsApiUrl,
+            $pdnsApiKey,
+            $logger,
+            $timeout,
+            (bool) $config->get('misc', 'display_errors', false)
+        );
         $serverName = $config->get('pdns_api', 'server_name') ?: 'localhost';
 
         return new PowerdnsApiClient($httpClient, $serverName, $logger);

@@ -56,7 +56,13 @@ class DnssecProviderFactory
             return '';
         }
 
-        $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey);
+        $httpClient = new HttpClient(
+            $pdnsApiUrl,
+            $pdnsApiKey,
+            null,
+            10,
+            (bool) $config->get('misc', 'display_errors', false)
+        );
         $serverNameFromConfig = $config->get('pdns_api', 'server_name');
         $serverName = $serverNameFromConfig ?: 'localhost';
 
@@ -101,7 +107,13 @@ class DnssecProviderFactory
         }
 
         if ($apiClient === null) {
-            $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey);
+            $httpClient = new HttpClient(
+                $pdnsApiUrl,
+                $pdnsApiKey,
+                null,
+                10,
+                (bool) $config->get('misc', 'display_errors', false)
+            );
 
             // Get the server name, with a default if not found
             $serverNameFromConfig = $config->get('pdns_api', 'server_name');
@@ -120,7 +132,7 @@ class DnssecProviderFactory
             $apiClient,
             $logger,
             $transformer,
-            ClientContext::fromServer($_SERVER)->ip ?: 'unknown',
+            ClientContext::fromServer($_SERVER, $config)->ip ?: 'unknown',
             $userContextService->getLoggedInUsername() ?? 'api_user_' . ($userContextService->getLoggedInUserId() ?? 'unknown')
         );
     }

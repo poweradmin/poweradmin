@@ -3,7 +3,7 @@
 namespace Poweradmin\Infrastructure\Utility;
 
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -34,11 +34,24 @@ class IpAddressRetriever
     private IPAddressValidator $ipValidator;
     private array $trustedProxies;
 
-    public function __construct(array $server, ?IPAddressValidator $ipValidator = null, ?array $trustedProxies = null)
+    /**
+     * @param array<int, string> $trustedProxies Public peers whose forwarded headers are honoured (security.trusted_proxies)
+     */
+    public function __construct(array $server, ?IPAddressValidator $ipValidator = null, array $trustedProxies = [])
     {
         $this->server = $server;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
-        $this->trustedProxies = $trustedProxies ?? $this->loadTrustedProxiesFromConfig();
+        $this->trustedProxies = $trustedProxies;
+    }
+
+    /**
+     * Build with the trusted proxy list from security.trusted_proxies.
+     */
+    public static function fromConfig(array $server, ConfigurationInterface $config, ?IPAddressValidator $ipValidator = null): self
+    {
+        $configured = $config->get('security', 'trusted_proxies', []);
+
+        return new self($server, $ipValidator, is_array($configured) ? $configured : []);
     }
 
     /**
@@ -225,11 +238,5 @@ class IpAddressRetriever
 
         $mask = chr((0xFF << (8 - $remBits)) & 0xFF);
         return (ord($ipBin[$fullBytes]) & ord($mask)) === (ord($netBin[$fullBytes]) & ord($mask));
-    }
-
-    private function loadTrustedProxiesFromConfig(): array
-    {
-        $configured = ConfigurationManager::getInstance()->get('security', 'trusted_proxies', []);
-        return is_array($configured) ? $configured : [];
     }
 }

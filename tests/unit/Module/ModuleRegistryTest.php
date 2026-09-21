@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Module\ModuleManifest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Module\ModuleRegistry;
+use Poweradmin\Module\SecondaryZoneImport\SecondaryZoneImportModule;
 
 class ModuleRegistryTest extends TestCase
 {
@@ -217,5 +218,23 @@ class ModuleRegistryTest extends TestCase
 
         $this->assertSame(['stub'], array_keys($registry->getEnabledModules()));
         $this->assertSame([['label' => 'Stub', 'url' => '/stub']], $registry->getNavItems());
+    }
+
+    public function testModulesReadTheRegistryConfiguration(): void
+    {
+        $modules = ['secondary_zone_import' => SecondaryZoneImportModule::class];
+        $sql = new ModuleRegistry($this->createConfigMock([
+            'modules' => ['secondary_zone_import.enabled' => true],
+            'dns' => ['backend' => 'sql'],
+        ]), $modules);
+        $api = new ModuleRegistry($this->createConfigMock([
+            'modules' => ['secondary_zone_import.enabled' => true],
+            'dns' => ['backend' => 'api'],
+        ]), $modules);
+        $sql->loadModules();
+        $api->loadModules();
+
+        $this->assertSame([], $sql->getRoutes());
+        $this->assertSame(['module_secondary_zone_import', 'module_secondary_zone_import_status'], array_column($api->getRoutes(), 'name'));
     }
 }

@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\PasswordPolicyInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
@@ -33,9 +32,9 @@ class PasswordPolicyService implements PasswordPolicyInterface
 {
     private ConfigurationInterface $configManager;
 
-    public function __construct(?ConfigurationInterface $configManager = null)
+    public function __construct(ConfigurationInterface $configManager)
     {
-        $this->configManager = $configManager ?? ConfigurationManager::getInstance();
+        $this->configManager = $configManager;
     }
 
     public function validatePassword(#[\SensitiveParameter] string $password): array

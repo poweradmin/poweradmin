@@ -56,7 +56,7 @@ class DynamicDnsRequestFactory
         PermissionService $permissions,
         ?AuditService $auditService = null
     ): DynamicDnsUpdateService {
-        $client = ClientContext::fromServer($_SERVER);
+        $client = ClientContext::fromServer($_SERVER, $config);
 
         return new DynamicDnsUpdateService(
             new DynamicDnsValidationService($config),
@@ -66,7 +66,7 @@ class DynamicDnsRequestFactory
                 new LoginAttemptService($db, $config)
             ),
             $repository,
-            $auditService ?? new AuditService(new AuditLogWriter($db), $client, new UserContextService()),
+            $auditService ?? new AuditService(new AuditLogWriter($db, $config), $client, new UserContextService()),
             $client->ip,
             self::requiresApproval($config, $permissions)
         );
@@ -86,7 +86,7 @@ class DynamicDnsRequestFactory
         ) === ChangeApprovalPolicy::MODE_REQUEST;
     }
 
-    public static function fromHttpRequest(Request $request): DynamicDnsRequest
+    public static function fromHttpRequest(Request $request, ConfigurationInterface $config): DynamicDnsRequest
     {
         $username = $_SERVER['PHP_AUTH_USER'] ?? $request->query->get('username', '');
         $password = $_SERVER['PHP_AUTH_PW'] ?? $request->query->get('password', '');
@@ -99,7 +99,7 @@ class DynamicDnsRequestFactory
         [$ipv4, $ipv6] = self::routeAddressFamilies($ipv4, $ipv6);
 
         if ($ipv4 === 'whatismyip' || $ipv6 === 'whatismyip') {
-            $clientIp = ClientContext::fromServer($_SERVER)->ip;
+            $clientIp = ClientContext::fromServer($_SERVER, $config)->ip;
             $ipValidator = new IPAddressValidator();
 
             if ($ipv4 === 'whatismyip') {

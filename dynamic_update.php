@@ -38,5 +38,5 @@ $repository = (new RepositoryFactory($db, $config, $backendProvider))->createDyn
 $permissions = new PermissionService(new DbUserRepository($db, $config));
 $updateService = DynamicDnsRequestFactory::createUpdateService($db, $config, $repository, $permissions);
 
-$result = $updateService->processUpdate(DynamicDnsRequestFactory::fromHttpRequest($request));
+$result = $updateService->processUpdate(DynamicDnsRequestFactory::fromHttpRequest($request, $config));
 echo DynamicDnsHelper::statusMessage($result, $request->query->has('verbose'));

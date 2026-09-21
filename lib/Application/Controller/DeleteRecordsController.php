@@ -31,7 +31,6 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 
 /**
  * Handles bulk record deletion from search results: shows the selected records and deletes them on confirmation.
@@ -65,7 +64,7 @@ class DeleteRecordsController extends BaseController
 
         if ($this->httpRequest->getPostParam('confirm') !== null) {
             $comment = (string)($this->httpRequest->getPostParam('change_comment') ?? '');
-            if (trim($comment) === '' && RecordChangeLogger::changeCommentRequired()) {
+            if (trim($comment) === '' && $this->services()->recordChangeLog()->changeCommentRequired()) {
                 $this->setMessage('delete_records', 'error', _('Describe why you are making this change.'));
             } else {
                 $this->deleteRecords($record_ids);
@@ -119,7 +118,7 @@ class DeleteRecordsController extends BaseController
         // action in the change log rather than N unrelated deletions. The selection can
         // span zones, so the changeset carries no zone of its own.
         $comment = (string)($this->httpRequest->getPostParam('change_comment') ?? '');
-        [$deleted_count, $affected_zones] = RecordChangeLogger::withChangeset(null, $comment, function () use ($record_ids, $recordRepository, $recordManager, $audit): array {
+        [$deleted_count, $affected_zones] = $this->services()->recordChangeLog()->withChangeset(null, $comment, function () use ($record_ids, $recordRepository, $recordManager, $audit): array {
             $deleted_count = 0;
             $affected_zones = [];
             foreach ($record_ids as $record_id) {
@@ -283,7 +282,7 @@ class DeleteRecordsController extends BaseController
             'has_ip_records' => $has_ip_records,
             'zone_id' => $this->httpRequest->getPostParam('zone_id'),
             'change_comment' => (string)($this->httpRequest->getPostParam('change_comment') ?? ''),
-            'require_change_comment' => RecordChangeLogger::changeCommentRequired(),
+            'require_change_comment' => $this->services()->recordChangeLog()->changeCommentRequired(),
         ]);
     }
 

@@ -125,7 +125,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             $this->db,
             new RepositoryFactory($this->db, $config, $backend),
             new PermissionService(new DbUserRepository($this->db, $config)),
-            new RecordChangeLogger($this->db),
+            new RecordChangeLogger($this->db, $config),
             fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
             new ZoneTemplateService(
                 new DbZoneTemplateRepository($this->db, $config, $backend),

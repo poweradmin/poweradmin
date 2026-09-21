@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use PDO;
@@ -39,11 +38,10 @@ class AuditLogWriter
     private ?DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $syslog;
 
-    public function __construct(PDO $db, ?DnsBackendProviderInterface $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
-        $this->config = ConfigurationManager::getInstance();
-        $this->config->initialize();
+        $this->config = $config;
         $this->backendProvider = $backendProvider;
         $this->syslog = SyslogLogger::fromConfig($this->config);
     }
@@ -64,7 +62,7 @@ class AuditLogWriter
     private function doLog(string $message, int $priority, ?int $zone_id = null): void
     {
         $this->write($message, $priority, fn() => $zone_id !== null
-            ? (new DbZoneLogger($this->db, $this->backendProvider))->doLog($message, $zone_id, $priority)
+            ? (new DbZoneLogger($this->db, $this->config, $this->backendProvider))->doLog($message, $zone_id, $priority)
             : (new DbUserLogger($this->db))->doLog($message, $priority));
     }
 

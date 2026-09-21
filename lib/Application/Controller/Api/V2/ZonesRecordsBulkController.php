@@ -36,7 +36,6 @@ use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -235,7 +234,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
             // One request, one changeset, carrying the optional reason the caller gave.
             $changeComment = (string)($input['comment'] ?? '');
-            if (trim($changeComment) === '' && RecordChangeLogger::changeCommentRequired()) {
+            if (trim($changeComment) === '' && $this->services()->recordChangeLog()->changeCommentRequired()) {
                 return $this->returnApiError("Field 'comment' is required: this installation requires a reason for every change", 400);
             }
 
@@ -255,7 +254,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
             // A full closure: an arrow function would copy $results and the outer catch
             // would report empty errors.
-            return RecordChangeLogger::withChangeset($zoneId, $changeComment, function () use ($zoneId, $input, $zoneType, $zone, $useTransaction, &$results): JsonResponse {
+            return $this->services()->recordChangeLog()->withChangeset($zoneId, $changeComment, function () use ($zoneId, $input, $zoneType, $zone, $useTransaction, &$results): JsonResponse {
                 return $this->applyOperations($zoneId, $input['operations'], $zoneType, $zone['name'] ?? null, $useTransaction, $results);
             });
         } catch (ApiErrorException $e) {

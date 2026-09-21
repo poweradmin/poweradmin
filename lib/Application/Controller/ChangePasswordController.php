@@ -48,7 +48,7 @@ class ChangePasswordController extends BaseController
     {
         parent::__construct($request, true, $environment);
         $this->authService = $this->services()->authenticationService();
-        $this->policyService = new PasswordPolicyService();
+        $this->policyService = new PasswordPolicyService($this->config);
 
         $userAuthService = UserAuthenticationService::fromConfig($this->config);
         $userRepository = $this->services()->userRepository();

@@ -99,7 +99,7 @@ class AuthServices
      */
     public function clientContext(): ClientContext
     {
-        return $this->clientContext ??= ClientContext::fromServer($_SERVER);
+        return $this->clientContext ??= ClientContext::fromServer($_SERVER, $this->config);
     }
 
     public function userMfaRepository(): UserMfaRepositoryInterface
@@ -150,7 +150,7 @@ class AuthServices
 
     public function auditLogWriter(): AuditLogWriter
     {
-        return new AuditLogWriter($this->db);
+        return new AuditLogWriter($this->db, $this->config);
     }
 
     public function apiLogger(): DbApiLogger

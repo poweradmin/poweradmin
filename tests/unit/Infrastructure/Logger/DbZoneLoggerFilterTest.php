@@ -7,9 +7,8 @@ use PDOStatement;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
-use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Verifies that DbZoneLogger correctly applies the optional zone-id filter used
@@ -19,34 +18,23 @@ class DbZoneLoggerFilterTest extends TestCase
 {
     private MockObject&PDO $db;
 
+    private FakeConfiguration $config;
+
     protected function setUp(): void
     {
-        $this->resetConfigurationManager([
+        $this->config = new FakeConfiguration([
             'database' => ['type' => 'mysql'],
             'logging' => ['database_enabled' => true],
-            'interface' => [],
-            'security' => [],
-            'dns' => [],
-            'mail' => [],
-            'dnssec' => [],
-            'pdns_api' => [],
-            'ldap' => [],
-            'misc' => [],
         ]);
 
         $this->db = $this->createMock(PDO::class);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->resetConfigurationManager(null);
     }
 
     public function testCountFilteredLogsWithEmptyZoneIdsReturnsZeroWithoutQuerying(): void
     {
         $this->db->expects($this->never())->method('prepare');
 
-        $logger = new DbZoneLogger($this->db);
+        $logger = new DbZoneLogger($this->db, $this->config);
 
         $this->assertSame(0, $logger->countFilteredLogs([], []));
     }
@@ -55,7 +43,7 @@ class DbZoneLoggerFilterTest extends TestCase
     {
         $this->db->expects($this->never())->method('prepare');
 
-        $logger = new DbZoneLogger($this->db);
+        $logger = new DbZoneLogger($this->db, $this->config);
 
         $this->assertSame([], $logger->getFilteredLogs([], 50, 0, []));
     }
@@ -74,7 +62,7 @@ class DbZoneLoggerFilterTest extends TestCase
                 return $stmt;
             });
 
-        $logger = new DbZoneLogger($this->db);
+        $logger = new DbZoneLogger($this->db, $this->config);
         $logger->countFilteredLogs([], null);
 
         $this->assertNotNull($capturedSql);
@@ -102,7 +90,7 @@ class DbZoneLoggerFilterTest extends TestCase
                 return $stmt;
             });
 
-        $logger = new DbZoneLogger($this->db);
+        $logger = new DbZoneLogger($this->db, $this->config);
         $count = $logger->countFilteredLogs([], [10, 20, 30]);
 
         $this->assertSame(7, $count);
@@ -142,7 +130,7 @@ class DbZoneLoggerFilterTest extends TestCase
                 return $stmt;
             });
 
-        $logger = new DbZoneLogger($this->db);
+        $logger = new DbZoneLogger($this->db, $this->config);
         $logger->getFilteredLogs([], 25, 50, [11, 22]);
 
         $this->assertStringContainsString(
@@ -173,7 +161,7 @@ class DbZoneLoggerFilterTest extends TestCase
                 return $stmt;
             });
 
-        $logger = new DbZoneLogger($this->db);
+        $logger = new DbZoneLogger($this->db, $this->config);
         $logger->countFilteredLogs(
             ['name' => 'example.com', 'date_from' => '2026-01-01'],
             [42]
@@ -200,7 +188,7 @@ class DbZoneLoggerFilterTest extends TestCase
         $backend = $this->createMock(BackendCapabilitiesInterface::class);
         $backend->method('allocatesZoneIdsLocally')->willReturn(true);
 
-        $logger = new DbZoneLogger($this->db, $backend);
+        $logger = new DbZoneLogger($this->db, $this->config, $backend);
         $logger->countFilteredLogs(['name' => 'example.com'], null);
 
         $this->assertStringContainsString('INNER JOIN zones ON COALESCE(NULLIF(zones.domain_id, 0), zones.id) = log_zones.zone_id', $capturedSql);
@@ -210,17 +198,9 @@ class DbZoneLoggerFilterTest extends TestCase
 
     public function testNameFilterJoinsThePrefixedDomainsTableOnTheSqlBackend(): void
     {
-        $this->resetConfigurationManager([
+        $this->config = new FakeConfiguration([
             'database' => ['type' => 'mysql', 'pdns_db_name' => 'pdns'],
             'logging' => ['database_enabled' => true],
-            'interface' => [],
-            'security' => [],
-            'dns' => [],
-            'mail' => [],
-            'dnssec' => [],
-            'pdns_api' => [],
-            'ldap' => [],
-            'misc' => [],
         ]);
         $capturedSql = null;
         $stmt = $this->createMock(PDOStatement::class);
@@ -231,7 +211,7 @@ class DbZoneLoggerFilterTest extends TestCase
             return $stmt;
         });
 
-        $logger = new DbZoneLogger($this->db);
+        $logger = new DbZoneLogger($this->db, $this->config);
         $logger->countFilteredLogs(['name' => 'example.com'], null);
 
         $this->assertStringContainsString('INNER JOIN pdns.domains ON pdns.domains.id = log_zones.zone_id', $capturedSql);
@@ -242,7 +222,7 @@ class DbZoneLoggerFilterTest extends TestCase
     {
         $this->db->expects($this->never())->method('prepare');
 
-        $logger = new DbZoneLogger($this->db);
+        $logger = new DbZoneLogger($this->db, $this->config);
 
         $this->assertSame([], $logger->getDistinctUsersForZones([]));
     }
@@ -267,7 +247,7 @@ class DbZoneLoggerFilterTest extends TestCase
                 return $stmt;
             });
 
-        $logger = new DbZoneLogger($this->db);
+        $logger = new DbZoneLogger($this->db, $this->config);
         $users = $logger->getDistinctUsersForZones([5, 9]);
 
         $this->assertSame(['alice', 'bob'], $users);
@@ -282,31 +262,5 @@ class DbZoneLoggerFilterTest extends TestCase
         $this->assertSame(5, $idBinds[0]['value']);
         $this->assertSame(PDO::PARAM_INT, $idBinds[0]['type']);
         $this->assertSame(9, $idBinds[1]['value']);
-    }
-
-    /**
-     * @param array<string, array<string, mixed>>|null $settings
-     */
-    private function resetConfigurationManager(?array $settings): void
-    {
-        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
-
-        $instanceProperty = $reflectionClass->getProperty('instance');
-        $instanceProperty->setAccessible(true);
-        $instanceProperty->setValue(null, null);
-
-        if ($settings === null) {
-            return;
-        }
-
-        $configManager = ConfigurationManager::getInstance();
-
-        $settingsProperty = $reflectionClass->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $settingsProperty->setValue($configManager, $settings);
-
-        $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-        $initializedProperty->setValue($configManager, true);
     }
 }

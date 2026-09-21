@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Enum\LoginAttemptStage;
@@ -46,10 +45,10 @@ class LoginAttemptService implements LoginThrottleInterface
     // 4.5.0 SQL update (when `attempt_type` does not exist yet).
     private ?bool $attemptTypeColumnExists = null;
 
-    public function __construct(PDO $connection, ?ConfigurationInterface $configManager = null)
+    public function __construct(PDO $connection, ConfigurationInterface $configManager)
     {
         $this->connection = $connection;
-        $this->configManager = $configManager ?? ConfigurationManager::getInstance();
+        $this->configManager = $configManager;
     }
 
     /**
