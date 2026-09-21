@@ -418,6 +418,7 @@ parameters:
       allowIn:
         - tests/*
         - addons/*
+        - bin/*
         - config/*
         - install/*
         - index.php

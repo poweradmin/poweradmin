@@ -366,6 +366,7 @@ return [
     // your application should be included in this list.
     'directory_list' => [
         'addons',
+        'bin',
         'config',
         'install',
         'lib',

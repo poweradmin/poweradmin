@@ -50,6 +50,7 @@ CREATE INDEX idx_log_record_changes_changeset_id ON log_record_changes(changeset
 
 CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL, descr VARCHAR(1024) NOT NULL);
 
+-- BEGIN generated seed: perm_items (composer sql:seed)
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (41,	'zone_master_add',	'User is allowed to add new master zones.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (42,	'zone_slave_add',	'User is allowed to add new slave zones.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (43,	'zone_content_view_own',	'User is allowed to see the content of zones he owns.');
@@ -92,9 +93,11 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (80,	'zone_change_reques
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (81,	'zone_change_request_others',	'User is allowed to request changes to any zone');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (82,	'zone_change_approve_own',	'User is allowed to review change requests for zones they own');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (83,	'zone_change_approve_others',	'User is allowed to review change requests for any zone');
+-- END generated seed: perm_items
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 
+-- BEGIN generated seed: perm_templ (composer sql:seed)
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (1,	'Administrator',	'Administrator template with full rights.',	'user');
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user');
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (3,	'Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user');
@@ -105,12 +108,14 @@ INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (7,	'Zo
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (8,	'Editors',	'Edit zone records (no SOA/NS) for group members.',	'group');
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (9,	'Viewers',	'Read-only zone access for group members.',	'group');
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (10,	'Guests',	'Temporary group with no permissions. Suitable for users awaiting approval.',	'group');
+-- END generated seed: perm_templ
 
 CREATE TABLE perm_templ_items (id integer PRIMARY KEY, templ_id integer NOT NULL, perm_id integer NOT NULL);
 
 CREATE INDEX idx_perm_templ_items_templ_id ON perm_templ_items(templ_id);
 CREATE INDEX idx_perm_templ_items_perm_id ON perm_templ_items(perm_id);
 
+-- BEGIN generated seed: perm_templ_items (composer sql:seed)
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (1,	1,	53);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (2,	2,	41);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (3,	2,	42);
@@ -167,6 +172,7 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (53,	4,	78);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (54,	7,	78);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (55,	8,	78);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (56,	9,	78);
+-- END generated seed: perm_templ_items
 
 CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 
@@ -399,12 +405,14 @@ BEGIN
     UPDATE user_groups SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 
+-- BEGIN generated seed: user_groups (composer sql:seed)
 INSERT INTO user_groups (id, name, description, perm_templ, created_by) VALUES
     (1, 'Administrators', 'Full administrative access to all system functions.', 6, NULL),
     (2, 'Zone Managers', 'Full zone management including creation, editing, and deletion.', 7, NULL),
     (3, 'Editors', 'Edit zone records but cannot modify SOA and NS records.', 8, NULL),
     (4, 'Viewers', 'Read-only access to zones with search capability.', 9, NULL),
     (5, 'Guests', 'Temporary group with no permissions. Suitable for users awaiting approval.', 10, NULL);
+-- END generated seed: user_groups
 
 CREATE TABLE user_group_members (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service\Database;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
-use PDOStatement;
 use RuntimeException;
 
 /**
@@ -263,19 +262,6 @@ class DatabaseSchemaService
             } catch (PDOException $e) {
                 // Constraint may already exist on reinstall; a duplicate is not fatal.
             }
-        }
-    }
-
-    /**
-     * Execute multiple prepared statement operations with different parameter sets
-     *
-     * @param PDOStatement $stmt Prepared statement
-     * @param array $params Array of parameter arrays
-     */
-    public function executeMultiple(PDOStatement $stmt, array $params): void
-    {
-        foreach ($params as $values) {
-            $stmt->execute($values);
         }
     }
 

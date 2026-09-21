@@ -24,14 +24,15 @@ namespace PoweradminInstall;
 
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Database\DatabaseSchemaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\SeedRepository;
 
 class DatabaseHelper
 {
     private PDO $db;
     private DatabaseSchemaService $schemaService;
+    private SeedRepository $seedRepository;
     private array $databaseCredentials;
     private const REQUIRED_PDNS_TABLES = ['domains', 'records', 'supermasters', 'domainmetadata', 'comments'];
 
@@ -39,6 +40,7 @@ class DatabaseHelper
     {
         $this->db = $db;
         $this->schemaService = new DatabaseSchemaService($db);
+        $this->seedRepository = new SeedRepository($db, (string)($databaseCredentials['db_type'] ?? ''));
         $this->databaseCredentials = $databaseCredentials;
     }
 
@@ -146,14 +148,7 @@ class DatabaseHelper
             }
         }
 
-        $fill_perm_items = $this->db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
-        $def_permissions = PermissionHelper::getPermissionMappings();
-        $this->schemaService->executeMultiple($fill_perm_items, $def_permissions);
-
-        // Sync PostgreSQL sequence after inserting with explicit IDs (fixes #942)
-        if ($dbType === 'pgsql') {
-            $this->db->exec("SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items))");
-        }
+        $this->seedRepository->seedPermissions();
     }
 
     /**
@@ -205,135 +200,12 @@ class DatabaseHelper
 
     public function createAdministratorUser(#[\SensitiveParameter] $pa_pass): void
     {
-        // Create permission templates
-        $templates = [
-            ['name' => 'Administrator', 'descr' => 'Administrator template with full rights.'],
-            ['name' => 'Zone Manager', 'descr' => 'Full management of own zones including creation, editing, deletion, and templates.'],
-            ['name' => 'Editor', 'descr' => 'Edit own zone records but cannot modify SOA and NS records.'],
-            ['name' => 'Viewer', 'descr' => 'Read-only access to own zones with search capability.'],
-            ['name' => 'Guest', 'descr' => 'Temporary access with no permissions. Suitable for users awaiting approval or limited access.']
-        ];
+        $templateIds = $this->seedRepository->seedDefaultTemplates();
 
-        $templateIds = [];
-        $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr) VALUES (:name, :descr)");
-        foreach ($templates as $template) {
-            $stmt->execute([':name' => $template['name'], ':descr' => $template['descr']]);
-            $templateIds[$template['name']] = $this->db->lastInsertId();
-        }
-
-        // Get permission IDs for template assignments
-        $permissionNames = [
-            Permission::PERM_USER_IS_UEBERUSER, Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD, Permission::PERM_ZONE_CONTENT_VIEW_OWN,
-            Permission::PERM_ZONE_CONTENT_EDIT_OWN, Permission::PERM_ZONE_META_EDIT_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN,
-            Permission::PERM_ZONE_TEMPL_ADD, Permission::PERM_ZONE_TEMPL_EDIT, Permission::PERM_API_MANAGE_KEYS, Permission::PERM_ZONE_DELETE_OWN,
-            Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN, Permission::PERM_ZONE_LOGS_VIEW_OWN,
-            Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN
-        ];
-
-        $permissionIds = [];
-        $stmt = $this->db->prepare("SELECT id, name FROM perm_items WHERE name IN (" . implode(',', array_fill(0, count($permissionNames), '?')) . ")");
-        $stmt->execute($permissionNames);
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $permissionIds[$row['name']] = $row['id'];
-        }
-
-        // Assign permissions to templates
-        $templatePermissions = [
-            'Administrator' => [Permission::PERM_USER_IS_UEBERUSER],
-            'Zone Manager' => [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD, Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN,
-                               Permission::PERM_ZONE_META_EDIT_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN, Permission::PERM_ZONE_TEMPL_ADD, Permission::PERM_ZONE_TEMPL_EDIT,
-                               Permission::PERM_API_MANAGE_KEYS, Permission::PERM_ZONE_DELETE_OWN, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN, Permission::PERM_ZONE_LOGS_VIEW_OWN,
-                               Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
-            'Editor' => [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, Permission::PERM_ZONE_LOGS_VIEW_OWN,
-                         Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
-            'Viewer' => [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_SEARCH, Permission::PERM_ZONE_LOGS_VIEW_OWN, Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
-            'Guest' => []
-        ];
-
-        $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
-        foreach ($templatePermissions as $templateName => $permissions) {
-            foreach ($permissions as $permName) {
-                if (isset($permissionIds[$permName])) {
-                    $stmt->execute([
-                        ':templ_id' => $templateIds[$templateName],
-                        ':perm_id' => $permissionIds[$permName]
-                    ]);
-                }
-            }
-        }
-
-        // Create admin user with Administrator template
         $config = ConfigurationManager::getInstance();
         $config->initialize();
         $userAuthService = UserAuthenticationService::fromConfig($config);
-        $user_query = $this->db->prepare(
-            "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) " .
-            "VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0, 'sql')"
-        );
-        $user_query->execute(array($userAuthService->hashPassword($pa_pass), $templateIds['Administrator']));
-
-        // Create group-type permission templates for default groups
-        $groupTemplates = [
-            ['name' => 'Administrators', 'descr' => 'Full administrative access for group members.', 'template_type' => 'group'],
-            ['name' => 'Zone Managers', 'descr' => 'Full zone management for group members.', 'template_type' => 'group'],
-            ['name' => 'Editors', 'descr' => 'Edit zone records (no SOA/NS) for group members.', 'template_type' => 'group'],
-            ['name' => 'Viewers', 'descr' => 'Read-only zone access for group members.', 'template_type' => 'group'],
-            ['name' => 'Guests', 'descr' => 'Temporary group with no permissions. Suitable for users awaiting approval.', 'template_type' => 'group'],
-        ];
-
-        $groupTemplateIds = [];
-        $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr, template_type) VALUES (:name, :descr, :template_type)");
-        foreach ($groupTemplates as $template) {
-            $stmt->execute([':name' => $template['name'], ':descr' => $template['descr'], ':template_type' => $template['template_type']]);
-            $groupTemplateIds[$template['name']] = $this->db->lastInsertId();
-        }
-
-        // Assign permissions to group templates (same as corresponding user templates)
-        $groupTemplatePermissions = [
-            'Administrators' => [Permission::PERM_USER_IS_UEBERUSER],
-            'Zone Managers' => [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD, Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN,
-                               Permission::PERM_ZONE_META_EDIT_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN, Permission::PERM_ZONE_TEMPL_ADD, Permission::PERM_ZONE_TEMPL_EDIT,
-                               Permission::PERM_API_MANAGE_KEYS, Permission::PERM_ZONE_DELETE_OWN, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN, Permission::PERM_ZONE_LOGS_VIEW_OWN,
-                               Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
-            'Editors' => [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, Permission::PERM_ZONE_LOGS_VIEW_OWN,
-                          Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
-            'Viewers' => [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_SEARCH, Permission::PERM_ZONE_LOGS_VIEW_OWN, Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
-            'Guests' => [],
-        ];
-
-        $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
-        foreach ($groupTemplatePermissions as $templateName => $permissions) {
-            foreach ($permissions as $permName) {
-                // lastInsertId() returns false on a failed template insert, and
-                // isset() would happily pass that through as a template id
-                if (isset($permissionIds[$permName]) && $groupTemplateIds[$templateName] !== false) {
-                    $stmt->execute([
-                        ':templ_id' => $groupTemplateIds[$templateName],
-                        ':perm_id' => $permissionIds[$permName]
-                    ]);
-                }
-            }
-        }
-
-        // Create default user groups using group-type templates
-        $defaultGroups = [
-            ['name' => 'Administrators', 'description' => 'Full administrative access to all system functions.'],
-            ['name' => 'Zone Managers', 'description' => 'Full zone management including creation, editing, and deletion.'],
-            ['name' => 'Editors', 'description' => 'Edit zone records but cannot modify SOA and NS records.'],
-            ['name' => 'Viewers', 'description' => 'Read-only access to zones with search capability.'],
-            ['name' => 'Guests', 'description' => 'Temporary group with no permissions. Suitable for users awaiting approval.'],
-        ];
-
-        $stmt = $this->db->prepare("INSERT INTO user_groups (name, description, perm_templ, created_by) VALUES (:name, :description, :perm_templ, NULL)");
-        foreach ($defaultGroups as $group) {
-            if ($groupTemplateIds[$group['name']] !== false) {
-                $stmt->execute([
-                    ':name' => $group['name'],
-                    ':description' => $group['description'],
-                    ':perm_templ' => $groupTemplateIds[$group['name']]
-                ]);
-            }
-        }
+        $this->seedRepository->createAdminUser($userAuthService->hashPassword($pa_pass), (int)$templateIds['Administrator']);
     }
 
     public function generateDatabaseUserInstructions(?string $pdns_db_name = null): array
