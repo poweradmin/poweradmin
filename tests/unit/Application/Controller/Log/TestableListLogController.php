@@ -20,9 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Log;
 
-use Poweradmin\Application\Controller\AbstractListLogController;
+use Poweradmin\Application\Controller\Log\AbstractListLogController;
 
 /**
  * Minimal concrete log listing controller exposing the shared filter and

@@ -198,7 +198,7 @@ batch_ptr:
 
 zones_logs:
   path: /zones/logs
-  controller: Poweradmin\Application\Controller\ListLogZonesController::run
+  controller: Poweradmin\Application\Controller\Log\ListLogZonesController::run
 
 record_changes:
   path: /zones/changes
@@ -367,17 +367,17 @@ quick_remove_group_zone:
 # User Logs
 users_logs:
   path: /users/logs
-  controller: Poweradmin\Application\Controller\ListLogUsersController::run
+  controller: Poweradmin\Application\Controller\Log\ListLogUsersController::run
 
 # API Logs
 api_logs:
   path: /settings/api/logs
-  controller: Poweradmin\Application\Controller\ListLogApiController::run
+  controller: Poweradmin\Application\Controller\Log\ListLogApiController::run
 
 # Group Logs
 groups_logs:
   path: /groups/logs
-  controller: Poweradmin\Application\Controller\ListLogGroupsController::run
+  controller: Poweradmin\Application\Controller\Log\ListLogGroupsController::run
 
 # DNSSEC Management
 dnssec:

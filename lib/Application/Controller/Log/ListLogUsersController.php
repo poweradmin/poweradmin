@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\Log;
 
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;

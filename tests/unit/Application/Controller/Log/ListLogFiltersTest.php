@@ -20,13 +20,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Log;
 
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Controller\AbstractListLogController;
+use Poweradmin\Application\Controller\Log\AbstractListLogController;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Service\Auth\UserContextService;

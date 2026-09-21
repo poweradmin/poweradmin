@@ -20,82 +20,72 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\Log;
 
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Infrastructure\Logger\DbGroupLogger;
+use Poweradmin\Infrastructure\Logger\DbApiLogger;
 
 /**
- * Renders the group log page with filters and CSV/JSON export.
+ * Renders the API request log page for admins with filters and CSV/JSON export.
  */
-class ListLogGroupsController extends AbstractListLogController
+class ListLogApiController extends AbstractListLogController
 {
-    private DbGroupLogger $dbGroupLogger;
+    private DbApiLogger $dbApiLogger;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
-        $this->dbGroupLogger = $this->services()->groupLogger();
+        $this->dbApiLogger = $this->services()->apiLogger();
     }
 
     protected function authorize(): bool
     {
-        if (!$this->config->get('permissions', 'show_group_access_templates', true)) {
-            $this->showError(_('Group management is not enabled.'));
-            return false;
-        }
-
-        if (
-            !$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)
-            && !$this->hasPermission(Permission::PERM_GROUP_LOGS_VIEW)
-        ) {
-            $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have the permission to see any logs');
-            return false;
-        }
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have the permission to see any logs');
         return true;
     }
 
     protected function getPageName(): string
     {
-        return 'list_log_groups';
+        return 'list_log_api';
     }
 
     protected function getPageTitleText(): string
     {
-        return _('Group logs');
+        return _('API Logs');
     }
 
     protected function getTemplateName(): string
     {
-        return 'list_log_groups.html';
+        return 'list_log_api.html';
     }
 
     protected function getPaginationRoute(): string
     {
-        return '/groups/logs?start={PageNumber}';
+        return '/settings/api/logs?start={PageNumber}';
     }
 
     protected function getExportFilenamePrefix(): string
     {
-        return 'group-logs';
+        return 'api-logs';
     }
 
     protected function countLogs(array $filters): int
     {
-        return $this->dbGroupLogger->countFilteredLogs($filters);
+        return $this->dbApiLogger->countFilteredLogs($filters);
     }
 
     protected function fetchLogs(array $filters, int $limit, int $offset): array
     {
-        return $this->dbGroupLogger->getFilteredLogs($filters, $limit, $offset);
+        return $this->dbApiLogger->getFilteredLogs($filters, $limit, $offset);
     }
 
     protected function getAdditionalRenderParams(): array
     {
         return [
             'event_type' => $this->httpRequest->getQueryParam('event_type', ''),
-            'event_types' => $this->dbGroupLogger->getDistinctEventTypes(),
+            'event_types' => $this->dbApiLogger->getDistinctEventTypes(),
+            'users' => $this->dbApiLogger->getDistinctUsers(),
         ];
     }
 }
