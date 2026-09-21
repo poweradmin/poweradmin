@@ -25,7 +25,7 @@ namespace Poweradmin\Module\SecondaryZoneImport;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
  * Imports a zone from a live primary server by creating a secondary zone,

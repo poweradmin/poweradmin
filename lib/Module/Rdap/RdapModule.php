@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\Rdap;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
  * Module registration for the RDAP lookup page and its zone-page action.

@@ -1,9 +1,9 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Module\ZoneImportExport\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
+use Poweradmin\Domain\Service\Dns\BindZoneFileGenerator;
 
 class BindZoneFileGeneratorTest extends TestCase
 {

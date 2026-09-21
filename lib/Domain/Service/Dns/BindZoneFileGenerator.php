@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Module\ZoneImportExport\Service;
+namespace Poweradmin\Domain\Service\Dns;
 
 /**
  * Generates standard BIND zone files from DNS records.

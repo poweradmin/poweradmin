@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\DnsWizard;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
  * Module registration for the DMARC, SPF, DKIM, CAA, TLSA and SRV record wizards under /zones/{id}/wizard.

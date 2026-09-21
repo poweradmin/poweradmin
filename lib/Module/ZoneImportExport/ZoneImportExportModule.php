@@ -23,7 +23,7 @@
 namespace Poweradmin\Module\ZoneImportExport;
 
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
  * Module registration for the zone file import page and the per-zone BIND export route.

@@ -22,46 +22,34 @@
 
 namespace Poweradmin\Module;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Module\CsvExport\CsvExportModule;
-use Poweradmin\Module\DnsWizard\DnsWizardModule;
-use Poweradmin\Module\EmailPreviews\EmailPreviewsModule;
-use Poweradmin\Module\Rdap\RdapModule;
-use Poweradmin\Module\SecondaryZoneImport\SecondaryZoneImportModule;
-use Poweradmin\Module\Whois\WhoisModule;
-use Poweradmin\Module\ZoneImportExport\ZoneImportExportModule;
+use Poweradmin\Application\Module\ModuleManifest;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
- * Loads the bundled modules and answers which are enabled for the current user.
+ * Loads the modules listed in the manifest and answers which are enabled for the current user.
  *
- * Central registry for all available modules. Manages module lifecycle,
- * availability, and provides aggregated routes, navigation, and capabilities.
+ * Provides aggregated routes, navigation, and capabilities of the enabled modules.
  */
 class ModuleRegistry
 {
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    /** @var array<string, ModuleInterface> */
+    /** @var array<string, class-string<ModuleInterface>> */
+    private array $moduleClasses;
 
     /** @var array<string, ModuleInterface> */
     private array $enabledModules = [];
 
     private bool $loaded = false;
 
-    /** @var array<string, class-string<ModuleInterface>> */
-    private array $moduleClasses = [
-        'csv_export' => CsvExportModule::class,
-        'zone_import_export' => ZoneImportExportModule::class,
-        'whois' => WhoisModule::class,
-        'rdap' => RdapModule::class,
-        'dns_wizards' => DnsWizardModule::class,
-        'email_previews' => EmailPreviewsModule::class,
-        'secondary_zone_import' => SecondaryZoneImportModule::class,
-    ];
-
-    public function __construct(ConfigurationManager $config)
+    /**
+     * @param array<string, class-string<ModuleInterface>> $moduleClasses Module classes by config name; the manifest by default
+     */
+    public function __construct(ConfigurationInterface $config, array $moduleClasses = ModuleManifest::MODULES)
     {
         $this->config = $config;
+        $this->moduleClasses = $moduleClasses;
     }
 
     /**

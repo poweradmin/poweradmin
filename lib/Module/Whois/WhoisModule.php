@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\Whois;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
  * Module registration for the WHOIS lookup page and its zone-page action.

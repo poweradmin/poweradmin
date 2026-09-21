@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Module;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Module\ModuleManifest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Module\ModuleRegistry;
 
@@ -183,5 +184,38 @@ class ModuleRegistryTest extends TestCase
 
         $enabled = $registry->getEnabledModules();
         $this->assertArrayHasKey('email_previews', $enabled);
+    }
+
+    public function testLoadsEveryManifestModuleWhenAllAreEnabled(): void
+    {
+        $modules = [];
+        foreach (array_keys(ModuleManifest::MODULES) as $name) {
+            $modules["$name.enabled"] = true;
+        }
+        $config = $this->createConfigMock(['modules' => $modules]);
+
+        $registry = new ModuleRegistry($config);
+        $registry->loadModules();
+
+        $this->assertSame(array_keys(ModuleManifest::MODULES), array_keys($registry->getEnabledModules()));
+        foreach ($registry->getEnabledModules() as $name => $module) {
+            $this->assertInstanceOf(ModuleManifest::MODULES[$name], $module);
+        }
+    }
+
+    public function testLoadsFromTheGivenModuleListInsteadOfTheManifest(): void
+    {
+        $config = $this->createConfigMock([
+            'modules' => [
+                'csv_export.enabled' => true,
+                'stub.enabled' => true,
+            ],
+        ]);
+
+        $registry = new ModuleRegistry($config, ['stub' => StubModule::class]);
+        $registry->loadModules();
+
+        $this->assertSame(['stub'], array_keys($registry->getEnabledModules()));
+        $this->assertSame([['label' => 'Stub', 'url' => '/stub']], $registry->getNavItems());
     }
 }

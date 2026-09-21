@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\CsvExport;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
  * Module registration for the CSV zone export route and its zone-page action button.

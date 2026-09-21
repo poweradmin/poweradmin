@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Module;
+namespace Poweradmin\Domain\Module;
 
 /**
  * A feature module: its routes, navigation items, capabilities and templates, enabled through configuration.

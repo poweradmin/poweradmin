@@ -20,44 +20,28 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Module\EmailPreviews;
+namespace Poweradmin\Tests\Unit\Module;
 
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
- * Module registration for the /tools/email-previews page and its tools menu entry.
+ * A module that is not in the manifest, for registry tests that supply their own list.
  */
-class EmailPreviewsModule implements ModuleInterface
+final class StubModule implements ModuleInterface
 {
     public function getName(): string
     {
-        return 'email_previews';
+        return 'stub';
     }
 
     public function getRoutes(): array
     {
-        return [
-            [
-                'name' => 'module_email_previews',
-                'path' => '/tools/email-previews',
-                'controller' => 'Poweradmin\Module\EmailPreviews\Controller\EmailPreviewsController::run',
-                'methods' => ['GET'],
-            ],
-        ];
+        return [];
     }
 
     public function getNavItems(): array
     {
-        return [
-            [
-                'label' => 'Email Template Previews',
-                'url' => '/tools/email-previews',
-                'icon' => 'envelope-fill',
-                'page_id' => 'module_email_previews',
-                'permission' => Permission::PERM_USER_IS_UEBERUSER,
-            ],
-        ];
+        return [['label' => 'Stub', 'url' => '/stub']];
     }
 
     public function getCapabilities(): array
@@ -72,6 +56,6 @@ class EmailPreviewsModule implements ModuleInterface
 
     public function getTemplatePath(): string
     {
-        return '';
+        return __DIR__;
     }
 }
