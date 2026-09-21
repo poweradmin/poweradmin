@@ -23,7 +23,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use ReflectionClass;
 
 /**

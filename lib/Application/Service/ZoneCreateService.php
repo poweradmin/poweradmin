@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Domain\Utility\DnsHelper;

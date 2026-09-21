@@ -38,7 +38,7 @@ use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneManagementService;

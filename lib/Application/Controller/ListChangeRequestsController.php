@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\ChangeRequestPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 
 /**
  * Lists change requests: reviewers see the zones their approve level covers,

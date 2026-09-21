@@ -22,8 +22,6 @@
 
 namespace Poweradmin\Domain\Utility;
 
-use Poweradmin\Domain\Service\DnsIdnService;
-
 /**
  * Splits the bulk-registration textarea into lowercase punycode domain names, one per line.
  */

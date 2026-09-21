@@ -23,7 +23,7 @@
 namespace Poweradmin\Module\Rdap\Service;
 
 use Exception;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 
 /**

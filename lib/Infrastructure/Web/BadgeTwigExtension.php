@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Web;
 
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 

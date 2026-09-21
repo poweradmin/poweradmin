@@ -32,8 +32,8 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsFormatter;
-use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 

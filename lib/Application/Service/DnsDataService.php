@@ -28,7 +28,7 @@ use Poweradmin\Infrastructure\Repository\ZoneSearch;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneCountService;

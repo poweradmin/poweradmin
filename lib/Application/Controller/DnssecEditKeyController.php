@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Model\DnssecAlgorithm;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 

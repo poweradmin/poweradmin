@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 

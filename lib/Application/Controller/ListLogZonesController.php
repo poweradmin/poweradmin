@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;

@@ -72,7 +72,7 @@ use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\MfaService;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\ReverseRecordCreator;

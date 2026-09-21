@@ -25,7 +25,7 @@ namespace Poweradmin\Module\Rdap\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Module\Rdap\Service\RdapService;
 
 /**

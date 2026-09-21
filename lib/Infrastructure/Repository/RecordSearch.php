@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Domain\Database\TableNameService;

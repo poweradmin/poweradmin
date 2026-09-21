@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use Exception;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;

@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DomainUtility;

@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Model;
 
 /**
  * Maps a PowerDNS Authoritative Server version string to feature capability flags

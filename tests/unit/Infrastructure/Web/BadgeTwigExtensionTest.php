@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Web;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 
 class BadgeTwigExtensionTest extends TestCase

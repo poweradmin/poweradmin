@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Repository;
 
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 
 /**
  * Where a zone's metadata rows live: the domainmetadata table on the SQL

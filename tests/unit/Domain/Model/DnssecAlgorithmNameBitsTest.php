@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 
 class DnssecAlgorithmNameBitsTest extends TestCase
 {

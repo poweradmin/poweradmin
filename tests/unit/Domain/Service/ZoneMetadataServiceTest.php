@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\ZoneMetadataOutcome;
 use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
