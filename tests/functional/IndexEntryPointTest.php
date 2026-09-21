@@ -140,7 +140,7 @@ class IndexEntryPointTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/';
 
         // Test router instantiation
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(ConfigurationManager::getInstance());
         $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
     }
 
@@ -206,7 +206,7 @@ class IndexEntryPointTest extends TestCase
         $this->assertFalse($expectsJson, 'Home page request should not expect JSON');
 
         // Test router setup
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(ConfigurationManager::getInstance());
 
         // Verify router is properly configured
         $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
@@ -233,7 +233,7 @@ class IndexEntryPointTest extends TestCase
 
         // Simulate key initialization steps
         ConfigurationManager::getInstance();
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(ConfigurationManager::getInstance());
         RequestContext::expectsJson();
 
         $memoryAfter = memory_get_usage();
@@ -295,7 +295,7 @@ class IndexEntryPointTest extends TestCase
         foreach ($testRequests as $request) {
             // SymfonyRouter doesn't take request in constructor, uses $_SERVER
             $_SERVER['REQUEST_URI'] = $request['page'] ?? '/';
-            $router = new SymfonyRouter();
+            $router = new SymfonyRouter(ConfigurationManager::getInstance());
             $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
         }
 

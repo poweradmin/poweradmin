@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Routing;
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Module\ModuleRegistry;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,17 +50,17 @@ class SymfonyRouter
     private bool $routeFound = true;
     private bool $webEnabled = true;
 
-    public function __construct()
+    public function __construct(ConfigurationInterface $config)
     {
         $this->request = Request::createFromGlobals();
-        $this->initializeRouter();
+        $this->initializeRouter($config);
     }
 
     /**
      * Initialize the router with YAML routes and module routes.
      * Handles base_url_prefix for subfolder deployments.
      */
-    private function initializeRouter(): void
+    private function initializeRouter(ConfigurationInterface $config): void
     {
         $configDir = __DIR__ . '/../Config';
         $fileLocator = new FileLocator([$configDir]);
@@ -70,7 +70,6 @@ class SymfonyRouter
         $routes = $loader->load('routes.yaml');
 
         // Load module routes from enabled modules
-        $config = ConfigurationManager::getInstance();
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 

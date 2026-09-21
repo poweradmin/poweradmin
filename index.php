@@ -58,7 +58,7 @@ try {
 
     // Constructing the router parses routes.yaml and loads the module registry, so
     // it belongs inside the guarded region rather than ahead of it.
-    $router = new SymfonyRouter();
+    $router = new SymfonyRouter($configManager);
     $router->process();
 } catch (Throwable $e) {
     // Throwable, not Exception: a TypeError from mistyped-but-valid JSON (e.g. an

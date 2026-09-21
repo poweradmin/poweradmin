@@ -185,11 +185,9 @@ parameters:
         - lib/AppInitializer.php
         - lib/AppManager.php
         - lib/BaseController.php
-        - lib/Application/Routing/SymfonyRouter.php
         - lib/Application/Controller/Api/AbstractApiController.php
         - lib/Application/Controller/Api/HealthController.php
         - lib/Application/Controller/PingController.php
-        - lib/Module/SecondaryZoneImport/SecondaryZoneImportModule.php
   # lib/Domain has no HTTP or template dependency. Same allowIn list for each
   # namespace; the extension takes one namespace per entry.
   disallowedNamespaces:

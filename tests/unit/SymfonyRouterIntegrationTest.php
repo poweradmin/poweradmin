@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Routing\SymfonyRouter;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Comprehensive integration test for SymfonyRouter to ensure it handles
@@ -24,7 +25,7 @@ class SymfonyRouterIntegrationTest extends TestCase
 
     private function createRouter(): SymfonyRouter
     {
-        return new SymfonyRouter();
+        return new SymfonyRouter(new FakeConfiguration());
     }
 
     public function testHomePageRouting(): void
@@ -354,7 +355,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $startTime = microtime(true);
 
         for ($i = 0; $i < $iterations; $i++) {
-            $router = new SymfonyRouter();
+            $router = new SymfonyRouter(new FakeConfiguration());
             $router->match();
         }
 
