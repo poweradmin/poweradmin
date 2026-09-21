@@ -22,264 +22,213 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
-use PDO;
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * Tests for group ownership support in DbZoneRepository (Issue #1042)
+ * Group ownership in the zone list queries (Issue #1042): a zone owned only
+ * through zones_groups is visible to the group's members and hidden from
+ * everyone else, for the letter filter, the reverse zone list and its counts.
  *
- * Verifies that zone queries include group membership checks via zones_groups,
- * so zones with only group ownership (no direct user owner) are visible to
- * group members.
+ * Fixture: alice directly owns one forward and one reverse zone, the ops group
+ * owns one of each (no direct owner), and one of each belongs to nobody.
  */
 #[CoversClass(DbZoneRepository::class)]
-class DbZoneRepositoryGroupOwnershipTest extends TestCase
+class DbZoneRepositoryGroupOwnershipTest extends SqliteIntegrationTestCase
 {
-    private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
+    private const ALICE = 10;
+    private const MEMBER = 20;
+    private const STRANGER = 30;
+    private const ZED = 40;
+
+    private const OPS_GROUP = 5;
+    private const DEV_GROUP = 6;
+
+    private const ALICE_FORWARD = 1;
+    private const GROUP_FORWARD = 2;
+    private const ORPHAN_FORWARD = 3;
+    private const ALICE_REVERSE = 4;
+    private const GROUP_REVERSE = 5;
+    private const ZED_REVERSE = 6;
+
+    private DbZoneRepository $repository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->db = $this->createMock(PDO::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
-    }
+        $this->createZoneTables();
+        $this->db->exec("ALTER TABLE zones ADD COLUMN comment TEXT");
+        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL)");
+        $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
+        $this->db->exec("CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER, active INTEGER)");
+        $this->db->exec("CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER, kind TEXT, content TEXT)");
 
-    private function setupConfig(): void
-    {
-        $this->config->method('get')
-            ->willReturnCallback(function ($group, $key, $default = null) {
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return null;
-                }
-                if ($group === 'database' && $key === 'type') {
-                    return 'mysql';
-                }
-                return $default;
-            });
-    }
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES
+            (" . self::ALICE . ", 'alice', 1), (" . self::MEMBER . ", 'mia', 1),
+            (" . self::STRANGER . ", 'sam', 1), (" . self::ZED . ", 'zed', 1)");
+        $this->db->exec("INSERT INTO user_groups (id, name, perm_templ) VALUES
+            (" . self::OPS_GROUP . ", 'ops', 1), (" . self::DEV_GROUP . ", 'dev', 1)");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (" . self::MEMBER . ", " . self::OPS_GROUP . ")");
 
-    #[Test]
-    public function getDistinctStartingLettersIncludesGroupOwnershipCheck(): void
-    {
-        $this->setupConfig();
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES
+            (" . self::ALICE_FORWARD . ", 'alpha.example.com', 'MASTER'),
+            (" . self::GROUP_FORWARD . ", 'beta.example.com', 'MASTER'),
+            (" . self::ORPHAN_FORWARD . ", 'gamma.example.com', 'MASTER'),
+            (" . self::ALICE_REVERSE . ", '1.168.192.in-addr.arpa', 'MASTER'),
+            (" . self::GROUP_REVERSE . ", '2.168.192.in-addr.arpa', 'MASTER'),
+            (" . self::ZED_REVERSE . ", '8.b.d.0.1.0.0.2.ip6.arpa', 'MASTER')");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES
+            (" . self::ALICE_FORWARD . ", " . self::ALICE . "),
+            (" . self::GROUP_FORWARD . ", 0),
+            (" . self::ORPHAN_FORWARD . ", 0),
+            (" . self::ALICE_REVERSE . ", " . self::ALICE . "),
+            (" . self::GROUP_REVERSE . ", 0),
+            (" . self::ZED_REVERSE . ", " . self::ZED . ")");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES
+            (" . self::GROUP_FORWARD . ", " . self::OPS_GROUP . "),
+            (" . self::GROUP_REVERSE . ", " . self::OPS_GROUP . ")");
 
-        $capturedQuery = '';
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn(['a', 'b', 'c']);
-        $stmt->method('bindValue')->willReturn(true);
-
-        $this->db->method('prepare')
-            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
-                $capturedQuery = $query;
-                return $stmt;
-            });
-
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $repository->getDistinctStartingLetters(5, false);
-
-        $this->assertStringContainsString('zones_groups', $capturedQuery, 'Query must check zones_groups for group ownership');
-        $this->assertStringContainsString('user_group_members', $capturedQuery, 'Query must check user_group_members for group membership');
+        $this->repository = new DbZoneRepository($this->db, $this->config);
     }
 
     #[Test]
-    public function getDistinctStartingLettersSkipsGroupCheckForViewOthers(): void
+    public function startingLettersIncludeGroupOwnedZonesForMembersOnly(): void
     {
-        $this->setupConfig();
-
-        $capturedQuery = '';
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn(['a', 'b', 'c']);
-
-        $this->db->method('query')
-            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
-                $capturedQuery = $query;
-                return $stmt;
-            });
-
-        $this->db->method('prepare')
-            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
-                $capturedQuery = $query;
-                return $stmt;
-            });
-
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $repository->getDistinctStartingLetters(5, true);
-
-        $this->assertStringNotContainsString('zones_groups', $capturedQuery, 'Query should not check groups when viewOthers is true');
+        $this->assertSame(['b'], $this->repository->getDistinctStartingLetters(self::MEMBER, false));
+        $this->assertSame(['a'], $this->repository->getDistinctStartingLetters(self::ALICE, false));
+        $this->assertSame([], $this->repository->getDistinctStartingLetters(self::STRANGER, false));
     }
 
     #[Test]
-    public function getReverseZonesIncludesGroupOwnershipCheck(): void
+    public function startingLettersIgnoreOwnershipWhenViewingOthers(): void
     {
-        $this->setupConfig();
-
-        $capturedQuery = '';
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn([]);
-        $stmt->method('bindValue')->willReturn(true);
-
-        $this->db->method('prepare')
-            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
-                $capturedQuery = $query;
-                return $stmt;
-            });
-
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $repository->getReverseZones('own', 5);
-
-        $this->assertStringContainsString('zones_groups', $capturedQuery, 'Query must check zones_groups for group ownership');
-        $this->assertStringContainsString('user_group_members', $capturedQuery, 'Query must check user_group_members for group membership');
+        $this->assertSame(['a', 'b', 'g'], $this->repository->getDistinctStartingLetters(self::STRANGER, true));
     }
 
     #[Test]
-    public function getReverseZonesSkipsGroupCheckForAllPermType(): void
+    public function ownReverseZonesIncludeGroupOwnedZonesForMembersOnly(): void
     {
-        $this->setupConfig();
-
-        $capturedQuery = '';
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn([]);
-        $stmt->method('bindValue')->willReturn(true);
-
-        $this->db->method('prepare')
-            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
-                $capturedQuery = $query;
-                return $stmt;
-            });
-
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $repository->getReverseZones('all', 5);
-
-        $this->assertStringNotContainsString('zones_groups', $capturedQuery, 'Query should not check groups for "all" permType');
+        $this->assertSame(['2.168.192.in-addr.arpa'], array_keys($this->repository->getReverseZones('own', self::MEMBER)));
+        $this->assertSame(['1.168.192.in-addr.arpa'], array_keys($this->repository->getReverseZones('own', self::ALICE)));
+        $this->assertSame([], $this->repository->getReverseZones('own', self::STRANGER));
     }
 
     #[Test]
-    public function getReverseZoneCountOnlyIncludesGroupOwnershipCheck(): void
+    public function allReverseZonesIgnoreOwnership(): void
     {
-        $this->setupConfig();
+        $zones = $this->repository->getReverseZones('all', self::STRANGER);
 
-        $capturedQuery = '';
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(3);
-        $stmt->method('bindValue')->willReturn(true);
-
-        $this->db->method('prepare')
-            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
-                $capturedQuery = $query;
-                return $stmt;
-            });
-
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $repository->getReverseZones('own', 5, 'all', 0, 25, 'name', 'ASC', true);
-
-        $this->assertStringContainsString('zones_groups', $capturedQuery, 'Count query must check zones_groups for group ownership');
-        $this->assertStringContainsString('user_group_members', $capturedQuery, 'Count query must check user_group_members for group membership');
+        $this->assertSame(
+            ['1.168.192.in-addr.arpa', '2.168.192.in-addr.arpa', '8.b.d.0.1.0.0.2.ip6.arpa'],
+            array_keys($zones)
+        );
+        $this->assertSame(['alice'], $zones['1.168.192.in-addr.arpa']['owners']);
+        $this->assertSame([], $zones['2.168.192.in-addr.arpa']['owners']);
     }
 
     #[Test]
-    public function getReverseZoneCountsIncludesGroupOwnershipCheck(): void
+    public function ownReverseZoneCountIncludesGroupOwnedZonesForMembersOnly(): void
     {
-        $this->setupConfig();
-
-        $capturedQuery = '';
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn(['count_all' => 2, 'count_ipv4' => 1, 'count_ipv6' => 1]);
-        $stmt->method('bindValue')->willReturn(true);
-
-        $this->db->method('prepare')
-            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
-                $capturedQuery = $query;
-                return $stmt;
-            });
-
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $repository->getReverseZoneCounts('own', 5);
-
-        $this->assertStringContainsString('zones_groups', $capturedQuery, 'Count query must check zones_groups for group ownership');
-        $this->assertStringContainsString('user_group_members', $capturedQuery, 'Count query must check user_group_members for group membership');
+        $this->assertSame(1, $this->repository->getReverseZones('own', self::MEMBER, 'all', 0, 25, 'name', 'ASC', true));
+        $this->assertSame(0, $this->repository->getReverseZones('own', self::STRANGER, 'all', 0, 25, 'name', 'ASC', true));
+        $this->assertSame(3, $this->repository->getReverseZones('all', self::STRANGER, 'all', 0, 25, 'name', 'ASC', true));
     }
 
     #[Test]
-    public function getReverseZonesSortByGroupJoinsUserGroupsAndOrdersByName(): void
+    public function reverseZoneCountsIncludeGroupOwnedZonesForMembersOnly(): void
     {
-        $this->setupConfig();
-
-        $capturedQuery = '';
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn([]);
-        $stmt->method('bindValue')->willReturn(true);
-
-        $this->db->method('prepare')
-            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
-                $capturedQuery = $query;
-                return $stmt;
-            });
-
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $repository->getReverseZones('all', 5, 'all', 0, 25, 'group', 'ASC');
-
-        $this->assertStringContainsString('LEFT JOIN zones_groups', $capturedQuery, 'Group-sort query must join zones_groups');
-        $this->assertStringContainsString('LEFT JOIN user_groups', $capturedQuery, 'Group-sort query must join user_groups');
-        $this->assertStringContainsString('ORDER BY MIN(user_groups.name) ASC', $capturedQuery, 'Query must aggregate group name in ORDER BY');
-        $this->assertStringNotContainsString('LEFT JOIN records', $capturedQuery, 'Group join must not be multiplied by a records join');
-        $this->assertStringContainsString('(SELECT COUNT(*) FROM records r WHERE r.domain_id = domains.id AND r.type IS NOT NULL) AS count_records', $capturedQuery, 'Record count must be a correlated subquery so the group join cannot inflate it');
+        $this->assertSame(
+            ['count_all' => 1, 'count_ipv4' => 1, 'count_ipv6' => 0],
+            $this->repository->getReverseZoneCounts('own', self::MEMBER)
+        );
+        $this->assertSame(
+            ['count_all' => 0, 'count_ipv4' => 0, 'count_ipv6' => 0],
+            $this->repository->getReverseZoneCounts('own', self::STRANGER)
+        );
+        $this->assertSame(
+            ['count_all' => 3, 'count_ipv4' => 2, 'count_ipv6' => 1],
+            $this->repository->getReverseZoneCounts('all', self::STRANGER)
+        );
     }
 
     #[Test]
-    public function getReverseZonesSortByOwnerDoesNotJoinUserGroups(): void
+    public function sortByGroupOrdersByGroupNameWithoutInflatingRecordCount(): void
     {
-        $this->setupConfig();
+        // The group-owned zone joins two groups, so a records join would double its count
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES
+            (" . self::GROUP_REVERSE . ", " . self::DEV_GROUP . "),
+            (" . self::ZED_REVERSE . ", " . self::OPS_GROUP . ")");
+        $this->db->exec("INSERT INTO records (domain_id, name, type, content) VALUES
+            (" . self::GROUP_REVERSE . ", '2.168.192.in-addr.arpa', 'SOA', 'ns1 hostmaster 1 1 1 1 1'),
+            (" . self::GROUP_REVERSE . ", '2.168.192.in-addr.arpa', 'NS', 'ns1.example.com'),
+            (" . self::GROUP_REVERSE . ", '7.2.168.192.in-addr.arpa', 'PTR', 'host.example.com'),
+            (" . self::GROUP_REVERSE . ", '2.168.192.in-addr.arpa', NULL, '')");
 
-        $capturedQuery = '';
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn([]);
-        $stmt->method('bindValue')->willReturn(true);
+        $ascending = $this->repository->getReverseZones('all', self::STRANGER, 'all', 0, 25, 'group', 'ASC');
+        $descending = $this->repository->getReverseZones('all', self::STRANGER, 'all', 0, 25, 'group', 'DESC');
 
-        $this->db->method('prepare')
-            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
-                $capturedQuery = $query;
-                return $stmt;
-            });
-
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $repository->getReverseZones('all', 5, 'all', 0, 25, 'owner', 'ASC');
-
-        $this->assertStringNotContainsString('LEFT JOIN user_groups', $capturedQuery, 'Non-group sort must not join user_groups');
-        $this->assertStringContainsString('ORDER BY users.username', $capturedQuery, 'Owner sort must order by users.username');
+        $this->assertCount(3, $ascending);
+        $this->assertSame(3, $ascending['2.168.192.in-addr.arpa']['count_records']);
+        $this->assertSame(
+            ['2.168.192.in-addr.arpa', '8.b.d.0.1.0.0.2.ip6.arpa'],
+            $this->groupedZoneNames($ascending)
+        );
+        $this->assertSame(
+            ['8.b.d.0.1.0.0.2.ip6.arpa', '2.168.192.in-addr.arpa'],
+            $this->groupedZoneNames($descending)
+        );
     }
 
     #[Test]
-    public function getReverseZonesFallsBackWhenSortingByAHiddenRecordCountColumn(): void
+    public function sortByOwnerOrdersByUsername(): void
+    {
+        $ascending = $this->repository->getReverseZones('all', self::STRANGER, 'all', 0, 25, 'owner', 'ASC');
+        $descending = $this->repository->getReverseZones('all', self::STRANGER, 'all', 0, 25, 'owner', 'DESC');
+
+        $this->assertCount(3, $ascending);
+        $this->assertSame(
+            ['1.168.192.in-addr.arpa', '8.b.d.0.1.0.0.2.ip6.arpa'],
+            $this->directlyOwnedZoneNames($ascending)
+        );
+        $this->assertSame(
+            ['8.b.d.0.1.0.0.2.ip6.arpa', '1.168.192.in-addr.arpa'],
+            $this->directlyOwnedZoneNames($descending)
+        );
+    }
+
+    #[Test]
+    public function hiddenRecordCountSortFallsBackToNameOrder(): void
     {
         // Turning the Records column off drops count_records from the allowed
         // sort keys, but a session set while it was visible still asks for it
-        $this->setupConfig();
+        $zones = $this->repository->getReverseZones('all', self::STRANGER, 'all', 0, 25, 'count_records', 'ASC', false, false, false, true, false);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn([]);
-        $stmt->method('bindValue')->willReturn(true);
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->assertSame(
+            ['1.168.192.in-addr.arpa', '2.168.192.in-addr.arpa', '8.b.d.0.1.0.0.2.ip6.arpa'],
+            array_keys($zones)
+        );
+        $this->assertSame(0, $zones['1.168.192.in-addr.arpa']['count_records']);
+    }
 
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $result = $repository->getReverseZones('all', 5, 'all', 0, 25, 'count_records', 'ASC', false, false, false, true, false);
+    /**
+     * Zone names in list order, skipping ungrouped zones whose NULL sort key lands
+     * at a database-specific end of the list.
+     *
+     * @return list<string>
+     */
+    private function groupedZoneNames(array $zones): array
+    {
+        return array_values(array_diff(array_keys($zones), ['1.168.192.in-addr.arpa']));
+    }
 
-        $this->assertSame([], $result);
+    /**
+     * @return list<string>
+     */
+    private function directlyOwnedZoneNames(array $zones): array
+    {
+        return array_values(array_keys(array_filter($zones, fn(array $zone) => $zone['owners'] !== [])));
     }
 }
