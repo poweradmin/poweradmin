@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 
 /**
  * A refused validation reaches the caller with the field the validator named,
@@ -112,7 +113,8 @@ class RecordManagerValidationFieldTest extends SqliteIntegrationTestCase
             fn() => $this->createMock(DnssecProviderInterface::class),
             $backend,
             $this->permissionService($config),
-            $this->createMock(RecordChangeLogger::class)
+            $this->createMock(RecordChangeLogger::class),
+            new DbTemplateRecordLinkRepository($this->db, $config, $backend)
         );
     }
 }

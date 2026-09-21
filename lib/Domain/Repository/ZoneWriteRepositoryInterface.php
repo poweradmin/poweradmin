@@ -28,6 +28,26 @@ namespace Poweradmin\Domain\Repository;
 interface ZoneWriteRepositoryInterface
 {
     /**
+     * Write the native zones row of a zone the backend has just created.
+     *
+     * @param int $domainId The zone id the backend returned
+     * @param int|null $owner Owning user, null for a zone owned by groups only
+     * @param int $templateId Zone template the zone was seeded from, 0 for none
+     * @return int|string The zones.id the template sync rows key on
+     */
+    public function createZoneShell(int $domainId, ?int $owner, int $templateId): int|string;
+
+    /**
+     * Drop the native zones row of a zone, when the zone is deleted.
+     */
+    public function deleteZoneShell(int $domainId): void;
+
+    /**
+     * Set the zone comment, creating the zones row for a zone that has none.
+     */
+    public function saveZoneComment(int $zoneId, string $comment): void;
+
+    /**
      * Update zone comment
      *
      * @param int $zoneId The zone ID

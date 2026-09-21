@@ -80,6 +80,9 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             if ($group === 'dns' && $key === 'third_level_check') {
                 return $this->thirdLevelCheck;
             }
+            if ($group === 'database' && $key === 'type') {
+                return 'sqlite';
+            }
             return $default;
         });
 
@@ -161,7 +164,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             return PdnsCapabilities::fromVersion('4.7.0');
         };
         $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(fn(string $group, string $key, $default = null) => $default);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, $default = null) => $group === 'database' && $key === 'type' ? 'sqlite' : $default);
         $backend = DnsBackendProviderFactory::create($this->db, $config);
         $service = new ZoneManagementService(
             $this->createMock(ZoneRepositoryInterface::class),

@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
+use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
@@ -218,13 +219,20 @@ class ZoneServices
             $this->zoneTemplateApplier(),
             $this->zoneTemplateRepository(),
             new ZoneTemplatePlaceholders($this->config),
-            $this->zoneTemplateSync()
+            $this->zoneTemplateSync(),
+            $this->templateRecordLinkRepository(),
+            $this->zoneGroupRepository()
         );
     }
 
     public function zoneTemplateSync(): ZoneTemplateSyncRepositoryInterface
     {
         return $this->zoneTemplateSync ??= new DbZoneTemplateSyncRepository($this->db, $this->config);
+    }
+
+    public function templateRecordLinkRepository(): TemplateRecordLinkRepositoryInterface
+    {
+        return new DbTemplateRecordLinkRepository($this->db, $this->config, $this->services->dnsBackendProvider());
     }
 
     public function zoneTemplateApplier(): ZoneTemplateApplier
@@ -235,7 +243,7 @@ class ZoneServices
             $this->services->soaRecordManager(),
             $this->services->domainRepository(),
             $this->zoneTemplateRepository(),
-            new DbTemplateRecordLinkRepository($this->db, $this->config, $this->services->dnsBackendProvider()),
+            $this->templateRecordLinkRepository(),
             $this->zoneTemplateSync(),
             new ZoneTemplatePlaceholders($this->config),
             $this->services->recordChangeLogger(),

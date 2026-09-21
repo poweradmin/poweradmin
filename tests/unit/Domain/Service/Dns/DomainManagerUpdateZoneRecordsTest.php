@@ -42,6 +42,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
 /**
  * updateZoneRecords() re-applies a template to an existing zone: the records the
@@ -437,6 +438,8 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             $templates,
             new ZoneTemplatePlaceholders($this->config),
             new DbZoneTemplateSyncRepository($this->db, $this->config),
+            new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
+            new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
             new NullLogger(),
             $userContext
         );

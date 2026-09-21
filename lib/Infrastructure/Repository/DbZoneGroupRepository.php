@@ -141,6 +141,11 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         return $stmt->rowCount() > 0;
     }
 
+    public function removeAllForDomain(int $domainId): void
+    {
+        $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :did")->execute([':did' => $domainId]);
+    }
+
     public function exists(int $domainId, int $groupId): bool
     {
         $query = "SELECT COUNT(*) FROM zones_groups WHERE domain_id = :domain_id AND group_id = :group_id";

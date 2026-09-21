@@ -24,6 +24,8 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\Permission;
@@ -64,11 +66,13 @@ class DomainManager implements DomainManagerInterface
     private RepositoryFactoryInterface $repositoryFactory;
     private ZoneTemplateApplier $templateApplier;
     private ZoneTemplateSyncRepositoryInterface $templateSync;
+    private TemplateRecordLinkRepositoryInterface $templateLinks;
+    private ZoneGroupRepositoryInterface $zoneGroups;
 
     /**
      * Constructor
      *
-     * @param PDO $db Database connection
+     * @param PDO $db Database connection, for the transaction around the native zone rows
      * @param ConfigurationInterface $config Configuration manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param RepositoryFactoryInterface $repositoryFactory Builds the zone repository
@@ -80,6 +84,8 @@ class DomainManager implements DomainManagerInterface
      * @param ZoneTemplateRepositoryInterface $zoneTemplateRepository Reads the template records seeded into a new zone
      * @param ZoneTemplatePlaceholders $placeholders Expands the placeholders in those records
      * @param ZoneTemplateSyncRepositoryInterface $templateSync Records which template a new zone was seeded from
+     * @param TemplateRecordLinkRepositoryInterface $templateLinks Links the seeded records back to their template
+     * @param ZoneGroupRepositoryInterface $zoneGroups Group ownership of the new zone
      */
     public function __construct(
         PDO $db,
@@ -94,9 +100,13 @@ class DomainManager implements DomainManagerInterface
         ZoneTemplateRepositoryInterface $zoneTemplateRepository,
         ZoneTemplatePlaceholders $placeholders,
         ZoneTemplateSyncRepositoryInterface $templateSync,
+        TemplateRecordLinkRepositoryInterface $templateLinks,
+        ZoneGroupRepositoryInterface $zoneGroups,
         ?LoggerInterface $logger = null,
         ?UserContextService $userContext = null
     ) {
+        $this->templateLinks = $templateLinks;
+        $this->zoneGroups = $zoneGroups;
         $this->templateApplier = $templateApplier;
         $this->zoneTemplateRepository = $zoneTemplateRepository;
         $this->placeholders = $placeholders;
@@ -236,8 +246,8 @@ class DomainManager implements DomainManagerInterface
 
         $this->db->beginTransaction();
         try {
-            $zone_id = $this->createZoneShell($this->db, $domain_id, $owner, $zone_template);
-            $this->assignInitialOwnership($this->db, $domain_id, $zone_id, $owner, $zone_template, $groupIds);
+            $zone_id = $this->createZoneShell($domain_id, $owner, $zone_template);
+            $this->assignInitialOwnership($domain_id, $zone_id, $owner, $zone_template, $groupIds);
 
             $zoneLog = ['id' => $domain_id, 'name' => $domain, 'type' => $type];
             if ($replicates) {
@@ -246,7 +256,7 @@ class DomainManager implements DomainManagerInterface
                 $this->db->commit();
                 $zoneLog['master'] = $slave_master;
             } else {
-                $zoneLog += $this->seedZoneRecords($this->db, $domain_id, $domain, $zone_template);
+                $zoneLog += $this->seedZoneRecords($domain_id, $domain, $zone_template);
             }
             $zoneLog['owner'] = $owner;
 
@@ -255,11 +265,11 @@ class DomainManager implements DomainManagerInterface
             });
             return ZoneWriteResult::ok((int)$domain_id);
         } catch (ZoneCreationFailedException $e) {
-            $this->cleanupFailedCreation($this->db, $domain_id, $domain);
+            $this->cleanupFailedCreation($domain_id, $domain);
             return ZoneWriteResult::backendFailure($e->getMessage());
         } catch (\Exception $e) {
             $this->logger->error('Zone creation for {domain} failed: {error}', ['domain' => $domain, 'error' => $e->getMessage()]);
-            $this->cleanupFailedCreation($this->db, $domain_id, $domain);
+            $this->cleanupFailedCreation($domain_id, $domain);
             return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
         }
     }
@@ -269,30 +279,11 @@ class DomainManager implements DomainManagerInterface
      *
      * @return int|string The zones.id the template sync rows key on
      */
-    private function createZoneShell(PDO $db, int $domain_id, ?int $owner, int|string $zone_template): int|string
+    private function createZoneShell(int $domain_id, ?int $owner, int|string $zone_template): int|string
     {
-        $templateId = ($zone_template == "none") ? 0 : $zone_template;
+        $templateId = ($zone_template == "none") ? 0 : (int)$zone_template;
 
-        if ($this->backendProvider->allocatesZoneIdsLocally()) {
-            // createZone() already inserted the row; fill in owner and template
-            // instead of duplicating it.
-            $stmt = $db->prepare("UPDATE zones SET owner = :owner, zone_templ_id = :zone_template WHERE domain_id = :domain_id");
-            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-            $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
-            $stmt->bindValue(':zone_template', $templateId, PDO::PARAM_INT);
-            $stmt->execute();
-
-            return $domain_id;
-        }
-
-        $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
-        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-        $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
-        $stmt->bindValue(':zone_template', $templateId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
-        return $db->lastInsertId('zones_id_seq');
+        return $this->repositoryFactory->createZoneRepository()->createZoneShell($domain_id, $owner, $templateId);
     }
 
     /**
@@ -300,11 +291,11 @@ class DomainManager implements DomainManagerInterface
      *
      * @param int[] $groupIds
      */
-    private function assignInitialOwnership(PDO $db, int $domain_id, int|string $zone_id, ?int $owner, int|string $zone_template, array $groupIds): void
+    private function assignInitialOwnership(int $domain_id, int|string $zone_id, ?int $owner, int|string $zone_template, array $groupIds): void
     {
         // Ownerless zones keep their default empty account; no push needed on create
         if ($owner !== null) {
-            $accountSync = new ZoneAccountSyncService($db, $this->config, $this->backendProvider);
+            $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
             $accountSync->syncZoneAccount($domain_id);
         }
 
@@ -315,10 +306,7 @@ class DomainManager implements DomainManagerInterface
         }
 
         foreach (array_unique($groupIds) as $groupId) {
-            $stmt = $db->prepare("INSERT INTO zones_groups (domain_id, group_id, created_at) VALUES (:domain_id, :group_id, CURRENT_TIMESTAMP)");
-            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-            $stmt->bindValue(':group_id', $groupId, PDO::PARAM_INT);
-            $stmt->execute();
+            $this->zoneGroups->add($domain_id, (int)$groupId);
         }
     }
 
@@ -328,7 +316,7 @@ class DomainManager implements DomainManagerInterface
      * @return array<string, mixed> Extra fields for the zone-create log entry
      * @throws ZoneCreationFailedException when a record cannot be written
      */
-    private function seedZoneRecords(PDO $db, int $domain_id, string $domain, int|string $zone_template): array
+    private function seedZoneRecords(int $domain_id, string $domain, int|string $zone_template): array
     {
         $seedsDefaults = $zone_template == "none" && $domain_id;
         if (!$seedsDefaults && !($domain_id && is_numeric($zone_template))) {
@@ -339,19 +327,19 @@ class DomainManager implements DomainManagerInterface
         // first; on SQLite the open lock would otherwise block PowerDNS.
         $localTransaction = $this->backendProvider->supportsLocalWriteTransaction();
         if (!$localTransaction) {
-            $db->commit();
+            $this->db->commit();
         }
 
         if ($seedsDefaults) {
             $this->seedDefaultSoa($domain_id, $domain);
             $logFields = [];
         } else {
-            $this->materialiseTemplate($db, $domain_id, $domain, (int)$zone_template);
+            $this->materialiseTemplate($domain_id, $domain, (int)$zone_template);
             $logFields = ['template_id' => (int)$zone_template];
         }
 
         if ($localTransaction) {
-            $db->commit();
+            $this->db->commit();
         }
 
         return $logFields;
@@ -386,14 +374,13 @@ class DomainManager implements DomainManagerInterface
      *
      * @throws ZoneCreationFailedException
      */
-    private function materialiseTemplate(PDO $db, int $domain_id, string $domain, int $zone_template): void
+    private function materialiseTemplate(int $domain_id, string $domain, int $zone_template): void
     {
         $templ_records = $this->zoneTemplateRepository->getZoneTemplateRecords($zone_template);
         if (empty($templ_records)) {
             return;
         }
 
-        $numericIds = $this->backendProvider->recordIdsAreNumeric();
         $dns_ttl = $this->config->get('dns', 'ttl');
 
         foreach ($templ_records as $r) {
@@ -412,31 +399,9 @@ class DomainManager implements DomainManagerInterface
                 throw new ZoneCreationFailedException(sprintf(_('Failed to create %s record for zone.'), $recordType));
             }
 
-            $this->linkTemplateRecord($db, $domain_id, $record_id, (int)$r['zone_templ_id'], $numericIds);
+            // Linked so a later template edit can remove exactly these records.
+            $this->templateLinks->linkRecord($domain_id, $record_id, (int)$r['zone_templ_id']);
         }
-    }
-
-    /**
-     * Link a materialised record to its template so later template edits can
-     * remove it precisely; encoded (API) ids need the string-keyed table.
-     */
-    private function linkTemplateRecord(PDO $db, int $domain_id, int|string $record_id, int $zone_templ_id, bool $numericIds): void
-    {
-        if ($numericIds) {
-            $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
-            $stmt->execute([
-                ':domain_id' => $domain_id,
-                ':record_id' => $record_id,
-                ':zone_templ_id' => $zone_templ_id
-            ]);
-            return;
-        }
-
-        $stmt = $db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
-        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-        $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
-        $stmt->bindValue(':zone_templ_id', $zone_templ_id, PDO::PARAM_INT);
-        $stmt->execute();
     }
 
     /**
@@ -444,10 +409,10 @@ class DomainManager implements DomainManagerInterface
      * whatever is still open, delete the backend zone, then remove any
      * metadata that was already committed (a no-op after a rollback).
      */
-    private function cleanupFailedCreation(PDO $db, int $domain_id, string $domain): void
+    private function cleanupFailedCreation(int $domain_id, string $domain): void
     {
-        if ($db->inTransaction()) {
-            $db->rollBack();
+        if ($this->db->inTransaction()) {
+            $this->db->rollBack();
         }
         $this->cleanupZoneOnFailure($domain_id, $domain);
         $this->cleanupZoneMetadata($domain_id);
@@ -525,13 +490,9 @@ class DomainManager implements DomainManagerInterface
     private function cleanupZoneMetadata(int $domainId): void
     {
         try {
-            $db = $this->db;
-            $db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :did")->execute([':did' => $domainId]);
-            $db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :did")->execute([':did' => $domainId]);
-            $db->prepare("DELETE FROM zones_groups WHERE domain_id = :did")->execute([':did' => $domainId]);
-            $zonesDeleteStmt = $db->prepare("DELETE FROM zones WHERE domain_id = :did");
-            $zonesDeleteStmt->bindValue(':did', $domainId, PDO::PARAM_INT);
-            $zonesDeleteStmt->execute();
+            $this->templateLinks->unlinkZone($domainId);
+            $this->zoneGroups->removeAllForDomain($domainId);
+            $this->repositoryFactory->createZoneRepository()->deleteZoneShell($domainId);
         } catch (\Exception $e) {
             $this->logger->error('Failed to clean up zone metadata for domain_id {domainId}: {error}', ['domainId' => $domainId, 'error' => $e->getMessage()]);
         }

@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
+use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -61,13 +62,14 @@ class RecordManager implements RecordManagerInterface
     private PermissionService $permissionService;
     private UserContextService $userContext;
     private RepositoryFactoryInterface $repositoryFactory;
+    private TemplateRecordLinkRepositoryInterface $templateLinks;
     private Closure $dnssecProvider;
     private ?ZoneRectifierInterface $builtDnssecProvider = null;
 
     /**
      * Constructor
      *
-     * @param PDO $db Database connection
+     * @param PDO $db Database connection, for the transaction around a record write and its serial bump
      * @param ConfigurationInterface $config Configuration manager
      * @param DnsRecordValidationServiceInterface $validationService DNS record validation service
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
@@ -77,6 +79,7 @@ class RecordManager implements RecordManagerInterface
      * @param RecordWriteBackendInterface&BackendCapabilitiesInterface $backendProvider Writes records and says whether a local transaction wraps them
      * @param PermissionService $permissionService Edit levels and zone ownership of the acting user
      * @param RecordChangeWriterInterface $changeLogger Receives the before/after record snapshots
+     * @param TemplateRecordLinkRepositoryInterface $templateLinks Drops the template link of a deleted record
      */
     public function __construct(
         PDO $db,
@@ -89,10 +92,12 @@ class RecordManager implements RecordManagerInterface
         RecordWriteBackendInterface&BackendCapabilitiesInterface $backendProvider,
         PermissionService $permissionService,
         RecordChangeWriterInterface $changeLogger,
+        TemplateRecordLinkRepositoryInterface $templateLinks,
         ?LoggerInterface $logger = null,
         ?UserContextService $userContext = null
     ) {
         $this->db = $db;
+        $this->templateLinks = $templateLinks;
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
         $this->validationService = $validationService;
@@ -511,7 +516,7 @@ class RecordManager implements RecordManagerInterface
         // Nothing points at the row any more: the template link, the record's own
         // comment, and the RRset comment once no sibling record is left to carry it.
         $zoneId = (int)$record['zid'];
-        self::deleteRecordZoneTempl($this->db, $rid);
+        $this->templateLinks->unlinkRecord($rid);
         $comments = $this->repositoryFactory->createRecordCommentRepository();
         $this->repositoryFactory->createRecordLinkedCommentRepository()?->deleteByRecordId($rid);
         if (!$recordRepository->hasSimilarRecords($zoneId, (string)$record['name'], (string)$record['type'], $rid)) {
@@ -556,31 +561,6 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
-     * Delete record reference to zone template
-     *
-     * @param PDO $db Database connection
-     * @param int|string $rid Record ID
-     *
-     * @return boolean true on success
-     */
-    public static function deleteRecordZoneTempl($db, int|string $rid): bool
-    {
-        // SQL record IDs live in records_zone_templ; API record IDs (encoded
-        // RecordIdentifier strings) live in records_zone_templ_api. PostgreSQL
-        // rejects encoded strings against the integer record_id column, so
-        // dispatch by ID type instead of probing both tables.
-        if (is_int($rid) || ctype_digit($rid)) {
-            $stmt = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
-            $stmt->execute([(int)$rid]);
-        } else {
-            $stmt = $db->prepare("DELETE FROM records_zone_templ_api WHERE record_id = ?");
-            $stmt->execute([$rid]);
-        }
-
-        return true;
-    }
-
-    /**
      * Edit the zone comment
      *
      * This function validates it if correct it inserts it into the database.
@@ -601,22 +581,7 @@ class RecordManager implements RecordManagerInterface
             return RecordWriteResult::forbidden(_("You do not have the permission to edit this comment."));
         }
 
-        $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $count = $stmt->fetchColumn();
-
-        if ($count > 0) {
-            $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
-        } else {
-            $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
-        }
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-        $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
-        $stmt->execute();
+        $this->repositoryFactory->createZoneRepository()->saveZoneComment($zone_id, $comment);
 
         return RecordWriteResult::ok();
     }

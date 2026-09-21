@@ -65,6 +65,25 @@ class DbTemplateRecordLinkRepository implements TemplateRecordLinkRepositoryInte
         $stmt->execute();
     }
 
+    public function unlinkRecord(int|string $recordId): void
+    {
+        // Dispatch by id type rather than probing both tables: PostgreSQL rejects an
+        // encoded API id against the integer records_zone_templ.record_id column.
+        if (is_int($recordId) || ctype_digit($recordId)) {
+            $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
+            $stmt->execute([(int)$recordId]);
+        } else {
+            $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE record_id = ?");
+            $stmt->execute([$recordId]);
+        }
+    }
+
+    public function unlinkZone(int $zoneId): void
+    {
+        $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :did")->execute([':did' => $zoneId]);
+        $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :did")->execute([':did' => $zoneId]);
+    }
+
     public function removeLinkedRecords(int $zoneId, int $templateId): array
     {
         $stmt = $this->db->prepare(

@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -115,7 +116,8 @@ class DnsServiceFactory
             fn() => DnssecProviderFactory::create($db, $config, DnsBackendProviderFactory::apiClientFrom($backendProvider)),
             $backendProvider,
             $permissions ?? self::createPermissionService($db, $config),
-            new RecordChangeLogger($db, $config)
+            new RecordChangeLogger($db, $config),
+            new DbTemplateRecordLinkRepository($db, $config, $backendProvider)
         );
     }
 
@@ -138,13 +140,14 @@ class DnsServiceFactory
         $changeLogger = new RecordChangeLogger($db, $config);
         $zoneTemplateRepository = new DbZoneTemplateRepository($db, $config, $backendProvider);
         $templateSync = new DbZoneTemplateSyncRepository($db, $config);
+        $templateLinks = new DbTemplateRecordLinkRepository($db, $config, $backendProvider);
         $templateApplier = new ZoneTemplateApplier(
             $db,
             $backendProvider,
             $soaRecordManager,
             $domainRepository,
             $zoneTemplateRepository,
-            new DbTemplateRecordLinkRepository($db, $config, $backendProvider),
+            $templateLinks,
             $templateSync,
             new ZoneTemplatePlaceholders($config),
             $changeLogger,
@@ -162,7 +165,9 @@ class DnsServiceFactory
             $templateApplier,
             $zoneTemplateRepository,
             new ZoneTemplatePlaceholders($config),
-            $templateSync
+            $templateSync,
+            $templateLinks,
+            new DbZoneGroupRepository($db, $config, $backendProvider->isApiBackend())
         );
     }
 

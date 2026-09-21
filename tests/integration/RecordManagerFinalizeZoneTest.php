@@ -33,6 +33,7 @@ use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 
 /**
  * Every single write ends by bumping the serial; a batch caller (bulk operations,
@@ -169,7 +170,8 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
             fn() => $this->createMock(DnssecProviderInterface::class),
             $backend,
             $this->permissionService($config),
-            $changeLogger
+            $changeLogger,
+            new DbTemplateRecordLinkRepository($this->db, $config, $backend)
         );
     }
 }

@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
@@ -40,6 +40,8 @@ use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
+use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
 /**
  * addDomain() drives zone creation end to end: refusal before any write,
@@ -290,6 +292,64 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         );
     }
 
+    public function testTemplateWithGroupOwnersWritesExactLinkAndGroupRows(): void
+    {
+        $this->seedTemplateRecords([
+            ['[ZONE]', 'NS', '[NS1]', 86400, 0],
+            ['www.[ZONE]', 'A', '192.0.2.10', 300, 0],
+        ]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('createZone')->willReturn(self::DOMAIN_ID);
+        $this->backend->method('addRecordGetId')->willReturnOnConsecutiveCalls(501, 502);
+
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID, [4, 6, 4]);
+
+        $this->assertTrue($result->success);
+        $this->assertSame(
+            [
+                ['domain_id' => self::DOMAIN_ID, 'record_id' => 501, 'zone_templ_id' => self::TEMPLATE_ID],
+                ['domain_id' => self::DOMAIN_ID, 'record_id' => 502, 'zone_templ_id' => self::TEMPLATE_ID],
+            ],
+            $this->rows('SELECT domain_id, record_id, zone_templ_id FROM records_zone_templ ORDER BY record_id')
+        );
+        $this->assertSame(
+            [
+                ['domain_id' => self::DOMAIN_ID, 'group_id' => 4],
+                ['domain_id' => self::DOMAIN_ID, 'group_id' => 6],
+            ],
+            $this->rows('SELECT domain_id, group_id FROM zones_groups ORDER BY group_id')
+        );
+        $this->assertSame([], $this->rows('SELECT id FROM records_zone_templ_api'));
+        $this->assertFalse($this->db->inTransaction());
+    }
+
+    public function testNativeRowsAreWrittenInsideTheManagerTransaction(): void
+    {
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('createZone')->willReturn(self::DOMAIN_ID);
+        // The SOA write runs while the transaction is open: the zones and zones_groups
+        // rows must already be visible on this connection, and uncommitted.
+        $this->backend->method('addRecord')->willReturnCallback(function (): bool {
+            $this->assertTrue($this->db->inTransaction());
+            $this->assertSame([['domain_id' => self::DOMAIN_ID]], $this->rows('SELECT domain_id FROM zones'));
+            $this->assertSame([['group_id' => 4]], $this->rows('SELECT group_id FROM zones_groups'));
+            return false;
+        });
+        // deleteZone() runs after the rollback and before any compensating DELETE,
+        // so empty tables here prove the rows rode on the manager's transaction.
+        $this->backend->expects($this->once())->method('deleteZone')->willReturnCallback(function (): bool {
+            $this->assertFalse($this->db->inTransaction());
+            $this->assertSame([], $this->rows('SELECT id FROM zones'));
+            $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
+            return true;
+        });
+
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
+
+        $this->assertFalse($result->success);
+        $this->assertSame('Failed to create SOA record for zone.', $result->message);
+    }
+
     public function testEmptyTemplateStillRegistersTheZoneForSync(): void
     {
         $this->backend = $this->sqlBackend();
@@ -372,6 +432,39 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
         $this->assertSame([], $this->loggedZones);
+        $this->assertFalse($this->db->inTransaction());
+    }
+
+    public function testApiBackendTemplateFailureEmptiesAllFourMetadataTables(): void
+    {
+        $this->seedTemplateRecords([
+            ['[ZONE]', 'NS', '[NS1]', 86400, 0],
+            ['www.[ZONE]', 'A', 'not-an-address', 300, 0],
+        ]);
+        $this->backend = $this->apiBackend();
+        $this->backend->method('createZone')->willReturnCallback(function (): int {
+            $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id) VALUES (" . self::DOMAIN_ID . ", " . self::DOMAIN_ID . ", NULL, 0)");
+            return self::DOMAIN_ID;
+        });
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (" . self::DOMAIN_ID . ", 77, 1)");
+        $this->backend->method('addRecordGetId')->willReturnCallback(function (int $domainId, string $name, string $type): ?string {
+            // The first link is committed before the second write fails.
+            if ($type === 'NS') {
+                return 'new.example./NS/new.example.';
+            }
+            $this->assertSame([['record_id' => 'new.example./NS/new.example.']], $this->rows('SELECT record_id FROM records_zone_templ_api'));
+            return null;
+        });
+        $this->backend->expects($this->once())->method('deleteZone')->with(self::DOMAIN_ID, 'new.example')->willReturn(true);
+
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
+
+        $this->assertFalse($result->success);
+        $this->assertSame('Failed to create A record for zone.', $result->message);
+        $this->assertSame([], $this->rows('SELECT id FROM zones'));
+        $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
+        $this->assertSame([], $this->rows('SELECT id FROM records_zone_templ'));
+        $this->assertSame([], $this->rows('SELECT id FROM records_zone_templ_api'));
         $this->assertFalse($this->db->inTransaction());
     }
 
@@ -479,7 +572,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             $this->db,
             $this->config,
             $this->createMock(DomainRepositoryInterface::class),
-            $this->createMock(RepositoryFactoryInterface::class),
+            new RepositoryFactory($this->db, $this->config, $this->backend),
             $this->backend,
             $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => $callerPermissions]),
             $this->createMock(UserRepositoryInterface::class),
@@ -488,6 +581,8 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             new DbZoneTemplateRepository($this->db, $this->config, $this->backend),
             new ZoneTemplatePlaceholders($this->config),
             new DbZoneTemplateSyncRepository($this->db, $this->config),
+            new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
+            new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
             new NullLogger(),
             $userContext
         );

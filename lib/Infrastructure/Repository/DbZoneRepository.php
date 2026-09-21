@@ -731,6 +731,45 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $result ?: null;
     }
 
+    public function createZoneShell(int $domainId, ?int $owner, int $templateId): int|string
+    {
+        $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
+        $stmt->bindValue(':zone_template', $templateId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+        return $this->db->lastInsertId('zones_id_seq');
+    }
+
+    public function deleteZoneShell(int $domainId): void
+    {
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :did");
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function saveZoneComment(int $zoneId, string $comment): void
+    {
+        $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $count = $stmt->fetchColumn();
+
+        if ($count > 0) {
+            $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
+        } else {
+            $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
+        }
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
     /**
      * Update zone comment
      *

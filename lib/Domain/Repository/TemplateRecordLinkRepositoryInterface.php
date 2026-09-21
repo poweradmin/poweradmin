@@ -39,6 +39,18 @@ interface TemplateRecordLinkRepositoryInterface
     public function linkRecord(int $zoneId, int|string $recordId, int $templateId): void;
 
     /**
+     * Drop the link of one record, when the record itself is deleted.
+     *
+     * @param int|string $recordId Numeric id on SQL backends, encoded id on the API backend
+     */
+    public function unlinkRecord(int|string $recordId): void;
+
+    /**
+     * Drop every link of a zone, on both id spaces, when the zone is deleted.
+     */
+    public function unlinkZone(int $zoneId): void;
+
+    /**
      * Delete the records a template application wrote to a zone, and their links.
      * SQL backends only: the records are removed from the PowerDNS table directly.
      *

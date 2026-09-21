@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 
 /**
  * Deleting a record takes its template link and comments with it and, unless a
@@ -112,7 +113,8 @@ class RecordManagerDeleteRecordCleanupTest extends SqliteIntegrationTestCase
             fn() => $this->createMock(DnssecProviderInterface::class),
             $backend,
             $this->permissionService($config),
-            $this->createMock(RecordChangeLogger::class)
+            $this->createMock(RecordChangeLogger::class),
+            new DbTemplateRecordLinkRepository($this->db, $config, $backend)
         );
     }
 

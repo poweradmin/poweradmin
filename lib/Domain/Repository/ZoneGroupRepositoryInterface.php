@@ -72,6 +72,11 @@ interface ZoneGroupRepositoryInterface
     public function remove(int $domainId, int $groupId): bool;
 
     /**
+     * Drop every group owner of a zone, when the zone is deleted.
+     */
+    public function removeAllForDomain(int $domainId): void;
+
+    /**
      * Check if a group owns a zone
      *
      * @param int $domainId
