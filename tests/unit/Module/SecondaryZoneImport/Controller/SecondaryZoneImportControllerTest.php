@@ -30,7 +30,7 @@ use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Module\SecondaryZoneImport\Controller\SecondaryZoneImportController;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
-use Poweradmin\Tests\Unit\Application\Controller\ZoneCreateControllerTestCase;
+use Poweradmin\Tests\Unit\Application\Controller\Zone\ZoneCreateControllerTestCase;
 
 /**
  * Characterizes the secondary zone import: its gates, the secondary it

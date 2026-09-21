@@ -124,45 +124,45 @@ forgot_username:
 # Zone Management
 zones_forward:
   path: /zones/forward
-  controller: Poweradmin\Application\Controller\ListForwardZonesController::run
+  controller: Poweradmin\Application\Controller\Zone\ListForwardZonesController::run
 
 zones_reverse:
   path: /zones/reverse
-  controller: Poweradmin\Application\Controller\ListReverseZonesController::run
+  controller: Poweradmin\Application\Controller\Zone\ListReverseZonesController::run
 
 zone_add_master:
   path: /zones/add/master
-  controller: Poweradmin\Application\Controller\AddZoneMasterController::run
+  controller: Poweradmin\Application\Controller\Zone\AddZoneMasterController::run
   methods: [GET, POST]
 
 zone_add_slave:
   path: /zones/add/slave
-  controller: Poweradmin\Application\Controller\AddZoneSlaveController::run
+  controller: Poweradmin\Application\Controller\Zone\AddZoneSlaveController::run
   methods: [GET, POST]
 
 zone_edit:
   path: /zones/{id}/edit
-  controller: Poweradmin\Application\Controller\EditController::run
+  controller: Poweradmin\Application\Controller\Zone\EditController::run
   requirements:
     id: '\d+'
 
 zone_metadata:
   path: /zones/{id}/metadata
-  controller: Poweradmin\Application\Controller\EditZoneMetadataController::run
+  controller: Poweradmin\Application\Controller\Zone\EditZoneMetadataController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 zone_ownership:
   path: /zones/{id}/ownership
-  controller: Poweradmin\Application\Controller\ZoneOwnershipController::run
+  controller: Poweradmin\Application\Controller\Zone\ZoneOwnershipController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 zone_catalog:
   path: /zones/{id}/catalog
-  controller: Poweradmin\Application\Controller\ZoneCatalogController::run
+  controller: Poweradmin\Application\Controller\Zone\ZoneCatalogController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
@@ -176,19 +176,19 @@ zone_save_template:
 
 zone_delete:
   path: /zones/{id}/delete
-  controller: Poweradmin\Application\Controller\DeleteDomainController::run
+  controller: Poweradmin\Application\Controller\Zone\DeleteDomainController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 bulk_registration:
   path: /zones/bulk-registration
-  controller: Poweradmin\Application\Controller\BulkRegistrationController::run
+  controller: Poweradmin\Application\Controller\Zone\BulkRegistrationController::run
   methods: [GET, POST]
 
 delete_domains:
   path: /zones/delete
-  controller: Poweradmin\Application\Controller\DeleteDomainsController::run
+  controller: Poweradmin\Application\Controller\Zone\DeleteDomainsController::run
   methods: [GET, POST]
 
 batch_ptr:
@@ -206,11 +206,11 @@ record_changes:
 
 change_requests:
   path: /zones/requests
-  controller: Poweradmin\Application\Controller\ListChangeRequestsController::run
+  controller: Poweradmin\Application\Controller\Zone\ListChangeRequestsController::run
 
 change_request:
   path: /zones/requests/{id}
-  controller: Poweradmin\Application\Controller\ChangeRequestController::run
+  controller: Poweradmin\Application\Controller\Zone\ChangeRequestController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
@@ -433,18 +433,18 @@ dnssec_key_export:
 # PowerDNS 5.0 Views/Networks management
 list_views:
   path: /views
-  controller: Poweradmin\Application\Controller\ListViewsController::run
+  controller: Poweradmin\Application\Controller\Zone\ListViewsController::run
   methods: [GET, POST]
 
 list_networks:
   path: /networks
-  controller: Poweradmin\Application\Controller\ListNetworksController::run
+  controller: Poweradmin\Application\Controller\Zone\ListNetworksController::run
   methods: [GET, POST]
 
 # Search
 search:
   path: /search
-  controller: Poweradmin\Application\Controller\SearchController::run
+  controller: Poweradmin\Application\Controller\Zone\SearchController::run
   methods: [GET, POST]
 
 # API Keys Management

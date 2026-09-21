@@ -103,35 +103,35 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/zones/forward';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\ListForwardZonesController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Zone\ListForwardZonesController', $routeInfo['controller']);
         $this->assertEquals('zones_forward', $routeInfo['route']);
 
         // Reverse zones
         $_SERVER['REQUEST_URI'] = '/zones/reverse';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\ListReverseZonesController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Zone\ListReverseZonesController', $routeInfo['controller']);
         $this->assertEquals('zones_reverse', $routeInfo['route']);
 
         // Add master zone
         $_SERVER['REQUEST_URI'] = '/zones/add/master';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\AddZoneMasterController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Zone\AddZoneMasterController', $routeInfo['controller']);
         $this->assertEquals('zone_add_master', $routeInfo['route']);
 
         // Add slave zone
         $_SERVER['REQUEST_URI'] = '/zones/add/slave';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\AddZoneSlaveController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Zone\AddZoneSlaveController', $routeInfo['controller']);
         $this->assertEquals('zone_add_slave', $routeInfo['route']);
 
         // Edit zone with ID
         $_SERVER['REQUEST_URI'] = '/zones/789/edit';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\EditController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Zone\EditController', $routeInfo['controller']);
         $this->assertEquals('zone_edit', $routeInfo['route']);
         $this->assertEquals(['id' => '789'], $routeInfo['parameters']);
     }
@@ -311,7 +311,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/zones/321/metadata';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\EditZoneMetadataController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Zone\EditZoneMetadataController', $routeInfo['controller']);
         $this->assertEquals('zone_metadata', $routeInfo['route']);
         $this->assertEquals(['id' => '321'], $routeInfo['parameters']);
     }

@@ -39,10 +39,10 @@ parameters:
     #   EditController      - isZoneSecured() after secureZone()/unsecureZone()
     -
       identifier: if.alwaysFalse
-      path: lib/Application/Controller/EditController.php
+      path: lib/Application/Controller/Zone/EditController.php
     -
       identifier: booleanNot.alwaysFalse
-      path: lib/Application/Controller/EditController.php
+      path: lib/Application/Controller/Zone/EditController.php
     #   DnssecDeleteKeyController - keyExists() after removeZoneKey()
     -
       identifier: booleanAnd.rightAlwaysTrue
