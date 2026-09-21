@@ -205,7 +205,7 @@ class UsersController extends BaseController
             'perm_is_godlike' => $permissions[Permission::PERM_USER_IS_UEBERUSER],
             'perm_user_logs_view' => $this->hasPermission(Permission::PERM_USER_LOGS_VIEW),
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
-            'pagination' => $this->presentPagination($totalUsers, $rowsPerPage, '/users?start={PageNumber}', ['search' => $searchTerm]),
+            ...$this->paginationVariables($totalUsers, $rowsPerPage, '/users?start={PageNumber}', ['search' => $searchTerm]),
             'total_users' => $totalUsers,
             'search_term' => $searchTerm,
             'rows_per_page' => $rowsPerPage,

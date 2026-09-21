@@ -299,7 +299,7 @@
             </div>
 
             <div class="py-3">
-                {{ pagination | raw }}
+                {% include '_partials/pagination.html' with {items: pagination_items} only %}
             </div>
         </form>
     </div>

@@ -100,7 +100,7 @@ class ListChangeRequestsController extends BaseController
             'zone_name' => $zoneName,
             'own_only' => $ownOnly,
             'session_userid' => $userId,
-            'pagination' => $this->presentPagination($total, $rowsPerPage, '/zones/requests?start={PageNumber}', [
+            ...$this->paginationVariables($total, $rowsPerPage, '/zones/requests?start={PageNumber}', [
                 'status' => $status,
                 'zone_id' => $zoneId,
             ]),

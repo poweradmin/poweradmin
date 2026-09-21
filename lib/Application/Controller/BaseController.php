@@ -411,6 +411,24 @@ abstract class BaseController
      */
     protected function presentPagination(int $totalItems, int $itemsPerPage, string $path, array $queryParams = []): string
     {
+        return $this->createPaginationPresenter($totalItems, $itemsPerPage, $path, $queryParams)->present();
+    }
+
+    /**
+     * The `pagination` (pre-rendered string, kept for theme forks) and `pagination_items`
+     * (for _partials/pagination.html) template variables for a paginated listing.
+     *
+     * @return array{pagination: string, pagination_items: list<array<string, mixed>>}
+     */
+    protected function paginationVariables(int $totalItems, int $itemsPerPage, string $path, array $queryParams = []): array
+    {
+        $presenter = $this->createPaginationPresenter($totalItems, $itemsPerPage, $path, $queryParams);
+
+        return ['pagination' => $presenter->present(), 'pagination_items' => $presenter->items()];
+    }
+
+    private function createPaginationPresenter(int $totalItems, int $itemsPerPage, string $path, array $queryParams): PaginationPresenter
+    {
         $currentPage = $this->httpRequest->getPage();
 
         $pagination = $this->services()->paginationService()->createPagination($totalItems, $itemsPerPage, $currentPage);
@@ -426,9 +444,7 @@ abstract class BaseController
             $url .= '&' . urlencode((string) $key) . '=' . urlencode((string) $value);
         }
 
-        $presenter = new PaginationPresenter($pagination, $url, $this->httpRequest->getRowsPerPage());
-
-        return $presenter->present();
+        return new PaginationPresenter($pagination, $url, $this->httpRequest->getRowsPerPage());
     }
 
     protected function createZoneSortingService(): ZoneSortingService

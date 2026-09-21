@@ -122,7 +122,7 @@ class ListLogZonesController extends AbstractListLogController
                 $this->ownedZoneIds = [$this->requestedZoneId];
             }
             // DbZoneLogger ignores unknown filter keys; including zone_id here only
-            // affects pagination URL generation via presentPagination().
+            // affects pagination URL generation via paginationVariables().
             $filters['zone_id'] = (string) $this->requestedZoneId;
         }
 

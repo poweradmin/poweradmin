@@ -131,7 +131,7 @@ class EditZoneTemplController extends BaseController
 
         $this->render('edit_zone_templ.html', [
             'templ_details' => $templ_details,
-            'pagination' => $this->presentPagination($record_count, $iface_rowamount, '/zones/templates/' . $zone_templ_id . '/edit?start={PageNumber}', ['id' => $zone_templ_id]),
+            ...$this->paginationVariables($record_count, $iface_rowamount, '/zones/templates/' . $zone_templ_id . '/edit?start={PageNumber}', ['id' => $zone_templ_id]),
             'records' => $templates->getZoneTemplateRecords($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
             'zones_linked_count' => $zones_linked_count,

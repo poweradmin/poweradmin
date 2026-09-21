@@ -25,7 +25,10 @@ namespace Poweradmin\Application\Presenter;
 use Poweradmin\Domain\Model\Pagination;
 
 /**
- * Renders the Bootstrap page-number list for a Pagination object, with ellipses around the current page.
+ * Describes the page-number list for a Pagination object, with ellipses around the current page.
+ *
+ * items() feeds templates/default/_partials/pagination.html; present() is the pre-rendered
+ * string still exposed as the `pagination` template variable for theme forks.
  */
 class PaginationPresenter
 {
@@ -43,56 +46,87 @@ class PaginationPresenter
         $this->rowsPerPage = $rowsPerPage;
     }
 
+    /**
+     * Previous, first page, leading ellipsis, the window around the current page,
+     * trailing ellipsis, last page and next, in display order. Empty for a single page.
+     *
+     * @return list<array{page: ?int, label: string, url: ?string, active: bool, ellipsis: bool}>
+     */
+    public function items(): array
+    {
+        $numberOfPages = $this->pagination->getNumberOfPages();
+        if ($numberOfPages <= 1) {
+            return [];
+        }
+
+        $items = [];
+
+        if ($this->pagination->hasPreviousPage()) {
+            $items[] = $this->pageItem($this->pagination->getPreviousPage(), _('Previous'), false);
+        }
+
+        $currentPage = $this->pagination->getCurrentPage();
+        $startPage = max($currentPage - (int)($this->numDisplayPages / 2), 1);
+        $endPage = min($startPage + $this->numDisplayPages - 1, $numberOfPages);
+
+        if ($startPage > 1) {
+            $items[] = $this->pageItem(1, '1', false);
+            if ($startPage > 2) {
+                $items[] = $this->ellipsisItem();
+            }
+        }
+
+        for ($i = $startPage; $i <= $endPage; $i++) {
+            $items[] = $this->pageItem($i, (string)$i, $i === $currentPage);
+        }
+
+        if ($endPage < $numberOfPages) {
+            if ($endPage < $numberOfPages - 1) {
+                $items[] = $this->ellipsisItem();
+            }
+            $items[] = $this->pageItem($numberOfPages, (string)$numberOfPages, false);
+        }
+
+        if ($this->pagination->hasNextPage()) {
+            $items[] = $this->pageItem($this->pagination->getNextPage(), _('Next'), false);
+        }
+
+        return $items;
+    }
+
     public function present(): string
     {
-        if ($this->pagination->getNumberOfPages() <= 1) {
+        $items = $this->items();
+        if ($items === []) {
             return '';
         }
 
         $html = '<nav><ul class="pagination pagination-sm d-flex flex-wrap">';
 
-        if ($this->pagination->hasPreviousPage()) {
-            $html .= $this->pageItem($this->pagination->getPreviousPage(), _('Previous'), false);
-        }
-
-        $currentPage = $this->pagination->getCurrentPage();
-        $startPage = max($currentPage - (int)($this->numDisplayPages / 2), 1);
-        $endPage = min($startPage + $this->numDisplayPages - 1, $this->pagination->getNumberOfPages());
-
-        if ($startPage > 1) {
-            $html .= $this->pageItem(1, '1', false);
-            if ($startPage > 2) {
-                $html .= $this->ellipsisItem();
+        foreach ($items as $item) {
+            if ($item['ellipsis']) {
+                $html .= '<li class="page-item disabled"><span class="page-link">' . $item['label'] . '</span></li>';
+                continue;
             }
+            $activeClass = $item['active'] ? ' active' : '';
+            $html .= "<li class=\"page-item$activeClass\"><a class=\"page-link\" href=\"{$item['url']}\">{$item['label']}</a></li>";
         }
 
-        for ($i = $startPage; $i <= $endPage; $i++) {
-            $isActive = $i === $currentPage;
-            $html .= $this->pageItem($i, (string)$i, $isActive);
-        }
-
-        if ($endPage < $this->pagination->getNumberOfPages()) {
-            if ($endPage < $this->pagination->getNumberOfPages() - 1) {
-                $html .= $this->ellipsisItem();
-            }
-            $html .= $this->pageItem($this->pagination->getNumberOfPages(), (string)$this->pagination->getNumberOfPages(), false);
-        }
-
-        if ($this->pagination->hasNextPage()) {
-            $html .= $this->pageItem($this->pagination->getNextPage(), _('Next'), false);
-        }
-
-        $html .= '</ul></nav>';
-
-        return $html;
+        return $html . '</ul></nav>';
     }
 
-    private function pageItem(int $pageNumber, string $text, bool $isActive): string
+    /**
+     * @return array{page: int, label: string, url: string, active: bool, ellipsis: false}
+     */
+    private function pageItem(int $pageNumber, string $label, bool $isActive): array
     {
-        $url = $this->createPageUrl($pageNumber);
-        $activeClass = $isActive ? ' active' : '';
-
-        return "<li class=\"page-item$activeClass\"><a class=\"page-link\" href=\"$url\">$text</a></li>";
+        return [
+            'page' => $pageNumber,
+            'label' => $label,
+            'url' => $this->createPageUrl($pageNumber),
+            'active' => $isActive,
+            'ellipsis' => false,
+        ];
     }
 
     private function createPageUrl(int $pageNumber): string
@@ -106,8 +140,11 @@ class PaginationPresenter
         return $url;
     }
 
-    private function ellipsisItem(): string
+    /**
+     * @return array{page: null, label: string, url: null, active: false, ellipsis: true}
+     */
+    private function ellipsisItem(): array
     {
-        return '<li class="page-item disabled"><span class="page-link">..</span></li>';
+        return ['page' => null, 'label' => '..', 'url' => null, 'active' => false, 'ellipsis' => true];
     }
 }

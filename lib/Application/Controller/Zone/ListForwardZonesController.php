@@ -254,8 +254,8 @@ class ListForwardZonesController extends BaseController
             'is_owner_sort_supported' => $isOwnerSortSupported,
             'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
-            'letters' => $this->getAvailableStartingLetters($letter_start, (int)$this->getCurrentUserId(), $dnsDataService),
-            'pagination' => $this->presentPagination($count_zones_all_letterstart, $iface_rowamount, '/zones/forward?start={PageNumber}'),
+            ...$this->getAvailableStartingLetters($letter_start, (int)$this->getCurrentUserId(), $dnsDataService),
+            ...$this->paginationVariables($count_zones_all_letterstart, $iface_rowamount, '/zones/forward?start={PageNumber}'),
             'session_userlogin' => $this->getUserContextService()->getLoggedInUsername(),
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
@@ -267,7 +267,10 @@ class ListForwardZonesController extends BaseController
         ]);
     }
 
-    private function getAvailableStartingLetters(string $letterStart, int $userId, DnsDataService $dnsDataService): string
+    /**
+     * @return array{letters: string, letters_items: list<array<string, mixed>>}
+     */
+    private function getAvailableStartingLetters(string $letterStart, int $userId, DnsDataService $dnsDataService): array
     {
         $allow_view_others = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
         $availableChars = $dnsDataService->getDistinctStartingLetters($userId, $allow_view_others);
@@ -276,6 +279,11 @@ class ListForwardZonesController extends BaseController
 
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $presenter = new ZoneStartingLettersPresenter();
-        return $presenter->present($availableChars, $digitsAvailable, $letterStart, $baseUrlPrefix, $this->httpRequest->getRowsPerPage());
+        $rowsPerPage = $this->httpRequest->getRowsPerPage();
+
+        return [
+            'letters' => $presenter->present($availableChars, $digitsAvailable, $letterStart, $baseUrlPrefix, $rowsPerPage),
+            'letters_items' => $presenter->items($availableChars, $digitsAvailable, $letterStart, $baseUrlPrefix, $rowsPerPage),
+        ];
     }
 }

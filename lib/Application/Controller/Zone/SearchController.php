@@ -23,10 +23,12 @@
 namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Presenter\SearchResultPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\SearchCriteria;
 use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
@@ -234,6 +236,8 @@ class SearchController extends BaseController
             'records_page' => $records_page,
             'zones_pager' => PaginationService::pagerWindow($totalZones, $zone_rowamount, $zones_page),
             'records_pager' => PaginationService::pagerWindow($totalRecords, $record_rowamount, $records_page),
+            'zones_pagination_items' => $this->searchPaginationItems($totalZones, $zone_rowamount, $zones_page),
+            'records_pagination_items' => $this->searchPaginationItems($totalRecords, $record_rowamount, $records_page),
             'zone_rowamount' => $zone_rowamount,
             'record_rowamount' => $record_rowamount,
             'iface_zone_comments' => $iface_zone_comments,
@@ -291,6 +295,17 @@ class SearchController extends BaseController
         unset($record);
 
         return [$zones, $records];
+    }
+
+    /**
+     * Page items for the search result lists, which page through the form via JS
+     * (`js_handler` on _partials/pagination.html) rather than through page URLs.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function searchPaginationItems(int $total, int $rowAmount, int $currentPage): array
+    {
+        return (new PaginationPresenter(new Pagination($total, max(1, $rowAmount), $currentPage), ''))->items();
     }
 
     /**

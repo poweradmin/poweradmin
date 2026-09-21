@@ -276,6 +276,12 @@ class EditController extends BaseController
             ? ChangeRequestPresenter::summaries($this->services()->zoneChangeRequestRepository()->listPendingForZone($zone_id))
             : [];
 
+        $paginationVariables = $this->paginationVariables($total_filtered_count, $iface_rowamount, '/zones/' . $zone_id . '/edit?start={PageNumber}', [
+            'search' => $this->httpRequest->getQueryParam('search'),
+            'record_type' => $this->httpRequest->getQueryParam('record_type'),
+            'content' => $this->httpRequest->getQueryParam('content'),
+        ]);
+
         $presenter = new EditZonePresenter(
             zoneId: $zone_id,
             zoneName: $zone_name,
@@ -346,11 +352,7 @@ class EditController extends BaseController
             rowAmount: $iface_rowamount,
             recordSortBy: $record_sort_by,
             sortDirection: $sort_direction,
-            pagination: $this->presentPagination($total_filtered_count, $iface_rowamount, '/zones/' . $zone_id . '/edit?start={PageNumber}', [
-                'search' => $this->httpRequest->getQueryParam('search'),
-                'record_type' => $this->httpRequest->getQueryParam('record_type'),
-                'content' => $this->httpRequest->getQueryParam('content'),
-            ]),
+            pagination: $paginationVariables['pagination'],
             searchTerm: $searchTerm,
             recordTypeFilter: $recordTypeFilter,
             contentFilter: $contentFilter,
@@ -363,7 +365,7 @@ class EditController extends BaseController
             importEnabled: $this->moduleProvides('zone_import'),
         );
 
-        $this->render('edit.html', $presenter->toTemplateVariables());
+        $this->render('edit.html', $presenter->toTemplateVariables() + ['pagination_items' => $paginationVariables['pagination_items']]);
     }
 
     /**

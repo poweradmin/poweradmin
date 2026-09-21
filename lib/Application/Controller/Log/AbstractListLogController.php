@@ -176,7 +176,7 @@ abstract class AbstractListLogController extends BaseController
             'data' => $logs,
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
-            'pagination' => $this->presentPagination($number_of_logs, $logs_per_page, $this->getPaginationRoute(), $filters),
+            ...$this->paginationVariables($number_of_logs, $logs_per_page, $this->getPaginationRoute(), $filters),
             'iface_edit_show_id' => $this->config->get('interface', 'show_record_id', false),
         ], $this->getAdditionalRenderParams()));
     }

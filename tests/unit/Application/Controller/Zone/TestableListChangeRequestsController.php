@@ -44,8 +44,8 @@ class TestableListChangeRequestsController extends ListChangeRequestsController
         throw new RuntimeException($error);
     }
 
-    protected function presentPagination(int $totalItems, int $itemsPerPage, string $path, array $queryParams = []): string
+    protected function paginationVariables(int $totalItems, int $itemsPerPage, string $path, array $queryParams = []): array
     {
-        return '';
+        return ['pagination' => '', 'pagination_items' => []];
     }
 }

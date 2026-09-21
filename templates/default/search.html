@@ -257,43 +257,7 @@
 
             {% if total_zones > zone_rowamount %}
             <div class="card-footer py-2">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm justify-content-center mb-0">
-                        {% if zones_page > 1 %}
-                        <li class="page-item">
-                            <a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page - 1 }})" aria-label="Previous">
-                                <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% if zones_pager.show_leading_break %}
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page(1)">1</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
-                        {% endif %}
-
-                        {% for i in zones_pager.start_page..zones_pager.end_page %}
-                        {% if i == zones_page %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                        {% else %}
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ i }})">{{ i }}</a></li>
-                        {% endif %}
-                        {% endfor %}
-
-                        {% if zones_pager.show_trailing_break %}
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ zones_pager.total_pages }})">{{ zones_pager.total_pages }}</a></li>
-                        {% endif %}
-
-                        {% if zones_page < zones_pager.total_pages %}
-                        <li class="page-item">
-                            <a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page + 1 }})" aria-label="Next">
-                                <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+                {% include '_partials/pagination.html' with {items: zones_pagination_items, js_handler: 'do_search_with_zones_page'} only %}
             </div>
             {% endif %}
 
@@ -433,43 +397,7 @@
 
             {% if total_records > record_rowamount %}
             <div class="card-footer py-2">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm justify-content-center mb-0">
-                        {% if records_page > 1 %}
-                        <li class="page-item">
-                            <a class="page-link" href="javascript:do_search_with_records_page({{ records_page - 1 }})" aria-label="Previous">
-                                <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% if records_pager.show_leading_break %}
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page(1)">1</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
-                        {% endif %}
-
-                        {% for i in records_pager.start_page..records_pager.end_page %}
-                        {% if i == records_page %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                        {% else %}
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ i }})">{{ i }}</a></li>
-                        {% endif %}
-                        {% endfor %}
-
-                        {% if records_pager.show_trailing_break %}
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ records_pager.total_pages }})">{{ records_pager.total_pages }}</a></li>
-                        {% endif %}
-
-                        {% if records_page < records_pager.total_pages %}
-                        <li class="page-item">
-                            <a class="page-link" href="javascript:do_search_with_records_page({{ records_page + 1 }})" aria-label="Next">
-                                <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+                {% include '_partials/pagination.html' with {items: records_pagination_items, js_handler: 'do_search_with_records_page'} only %}
             </div>
             {% endif %}
 

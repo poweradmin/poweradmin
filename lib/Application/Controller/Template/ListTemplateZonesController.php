@@ -80,7 +80,7 @@ class ListTemplateZonesController extends BaseController
             'template' => $template_details,
             'zones' => $paginatedZones,
             'user_name' => $this->services()->userRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
-            'pagination' => $this->presentPagination($totalZones, $itemsPerPage, '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}'),
+            ...$this->paginationVariables($totalZones, $itemsPerPage, '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}'),
             'total_zones' => $totalZones,
             'iface_rowamount' => $itemsPerPage
         ]);

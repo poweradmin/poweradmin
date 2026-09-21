@@ -49,7 +49,7 @@
         </form>
 
         {% if requests %}
-        <div class="mb-3">{{ pagination | raw }}</div>
+        <div class="mb-3">{% include '_partials/pagination.html' with {items: pagination_items} only %}</div>
 
         <div class="table-responsive">
             <table class="table table-sm table-hover align-middle" data-testid="change-requests-table">
@@ -94,7 +94,7 @@
             </table>
         </div>
 
-        <div class="mt-3">{{ pagination | raw }}</div>
+        <div class="mt-3">{% include '_partials/pagination.html' with {items: pagination_items} only %}</div>
         {% else %}
         <div class="alert alert-info py-2 small mb-0">
             <i class="bi bi-info-circle me-2"></i>{% trans %}No change requests match your filter criteria.{% endtrans %}

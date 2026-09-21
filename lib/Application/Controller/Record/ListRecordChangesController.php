@@ -181,7 +181,7 @@ class ListRecordChangesController extends BaseController
             'comment_filter' => (string) $this->httpRequest->getQueryParam('comment', ''),
             'selected_page' => $selectedPage,
             'logs_per_page' => $logsPerPage,
-            'pagination' => $this->presentPagination($totalLogs, $logsPerPage, '/zones/changes?start={PageNumber}', $urlFilters),
+            ...$this->paginationVariables($totalLogs, $logsPerPage, '/zones/changes?start={PageNumber}', $urlFilters),
             'iface_edit_show_id' => $this->config->get('interface', 'show_record_id', false),
         ]);
     }

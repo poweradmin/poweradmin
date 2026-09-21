@@ -239,7 +239,7 @@ class ListReverseZonesController extends BaseController
             'is_group_sort_supported' => $isGroupSortSupported,
             'is_api_backend' => $isApiBackend,
             'pdnssec_use' => $pdnssec_use,
-            'pagination' => $this->presentPagination($pagination_count, $iface_rowamount, '/zones/reverse?start={PageNumber}', [
+            ...$this->paginationVariables($pagination_count, $iface_rowamount, '/zones/reverse?start={PageNumber}', [
                 'reverse_type' => $this->httpRequest->getQueryParam('reverse_type'),
             ]),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
