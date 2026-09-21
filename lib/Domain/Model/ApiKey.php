@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -140,16 +140,6 @@ class ApiKey implements JsonSerializable
     }
 
     /**
-     * Sets the secret key of this API key
-     *
-     * @param string $secretKey The secret key to set
-     */
-    public function setSecretKey(string $secretKey): void
-    {
-        $this->secretKey = $secretKey;
-    }
-
-    /**
      * Gets the user ID who created this API key
      *
      * @return int|null The user ID
@@ -157,16 +147,6 @@ class ApiKey implements JsonSerializable
     public function getCreatedBy(): ?int
     {
         return $this->createdBy;
-    }
-
-    /**
-     * Sets the user ID who created this API key
-     *
-     * @param int|null $createdBy The user ID to set
-     */
-    public function setCreatedBy(?int $createdBy): void
-    {
-        $this->createdBy = $createdBy;
     }
 
     /**
@@ -180,16 +160,6 @@ class ApiKey implements JsonSerializable
     }
 
     /**
-     * Sets the creation date of this API key
-     *
-     * @param DateTime $createdAt The creation date to set
-     */
-    public function setCreatedAt(DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
      * Gets the date this API key was last used
      *
      * @return DateTime|null The last used date, or null if never used
@@ -197,16 +167,6 @@ class ApiKey implements JsonSerializable
     public function getLastUsedAt(): ?DateTime
     {
         return $this->lastUsedAt;
-    }
-
-    /**
-     * Sets the date this API key was last used
-     *
-     * @param DateTime|null $lastUsedAt The last used date to set
-     */
-    public function setLastUsedAt(?DateTime $lastUsedAt): void
-    {
-        $this->lastUsedAt = $lastUsedAt;
     }
 
     /**

@@ -110,4 +110,24 @@ class ApiRecordRepositorySortingTest extends TestCase
             $this->assertStringStartsWith('example.com/', $entry);
         }
     }
+
+    public function testCommentsAreCopiedFromTheApiFieldsWhenRequested(): void
+    {
+        $repo = new ApiRecordRepository($this->backendWithRecords('example.com', [
+            ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.10', 'api_comment' => 'web', 'api_comment_account' => 'ops', 'api_comment_modified_at' => 1700000000],
+            ['name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1.example.com hostmaster.example.com 1'],
+        ]));
+
+        $records = $repo->getRecordsFromDomainId('mysql', 1, 0, 100, 'name', 'ASC', true);
+        $byName = array_column($records, null, 'name');
+
+        $this->assertSame('web', $byName['www.example.com']['comment']);
+        $this->assertSame('ops', $byName['www.example.com']['comment_account']);
+        $this->assertSame(1700000000, $byName['www.example.com']['comment_modified_at']);
+        $this->assertArrayNotHasKey('api_comment', $byName['www.example.com']);
+        $this->assertNull($byName['example.com']['comment']);
+
+        $plain = $repo->getRecordsFromDomainId('mysql', 1, 0, 100, 'name', 'ASC');
+        $this->assertArrayNotHasKey('comment', array_column($plain, null, 'name')['www.example.com']);
+    }
 }

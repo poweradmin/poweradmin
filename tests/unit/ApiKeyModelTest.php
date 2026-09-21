@@ -155,19 +155,16 @@ class ApiKeyModelTest extends TestCase
     #[Test]
     public function settersWorkCorrectly(): void
     {
-        $key = new ApiKey('Original', 'pwa_original');
+        $key = new ApiKey('Original', 'pwa_original', 5);
 
         $key->setId(10);
         $key->setName('Updated');
-        $key->setSecretKey('pwa_updated');
-        $key->setCreatedBy(5);
         $key->setDisabled(true);
         $key->setCreatorUsername('admin');
         $key->setCreatorFullname('Admin User');
 
         $this->assertSame(10, $key->getId());
         $this->assertSame('Updated', $key->getName());
-        $this->assertSame('pwa_updated', $key->getSecretKey());
         $this->assertSame(5, $key->getCreatedBy());
         $this->assertTrue($key->isDisabled());
         $this->assertSame('admin', $key->getCreatorUsername());

@@ -232,6 +232,9 @@ class RejectedZoneEditPresenterTest extends TestCase
 
     private function restore(array &$records, array $rejected): array
     {
-        return RejectedZoneEditPresenter::restore($records, $rejected);
+        $result = RejectedZoneEditPresenter::restore($records, $rejected);
+        $records = $result['records'];
+
+        return $result['dropped'];
     }
 }

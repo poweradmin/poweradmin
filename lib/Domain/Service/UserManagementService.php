@@ -178,9 +178,10 @@ class UserManagementService
             ];
         }
 
-        if (($ldapError = $this->normalizeUseLdap($userData)) !== null) {
+        if (($ldapError = $this->useLdapError($userData)) !== null) {
             return $ldapError;
         }
+        $userData = self::normalizeUseLdap($userData);
         $useLdap = ($userData['use_ldap'] ?? 0) === 1;
 
         if (!$useLdap && !self::passwordGiven($userData)) {
@@ -300,9 +301,10 @@ class UserManagementService
             return $emptyError;
         }
 
-        if (($ldapError = $this->normalizeUseLdap($userData)) !== null) {
+        if (($ldapError = $this->useLdapError($userData)) !== null) {
             return $ldapError;
         }
+        $userData = self::normalizeUseLdap($userData);
 
         // Judge by the method the repository will persist, so switching an LDAP
         // account back to SQL in the same request may (and must) set a password.
@@ -686,10 +688,10 @@ class UserManagementService
     }
 
     /**
-     * Coerces use_ldap to 0/1 in place so the service and the repository agree on it.
-     * Missing on create means 0; missing on update leaves the stored value alone.
+     * The error for a use_ldap value that is not a boolean or asks for LDAP while
+     * it is disabled, or null when the flag is absent or acceptable.
      */
-    private function normalizeUseLdap(array &$userData): ?array
+    private function useLdapError(array $userData): ?array
     {
         if (!array_key_exists('use_ldap', $userData)) {
             return null;
@@ -714,9 +716,20 @@ class UserManagementService
             ];
         }
 
-        $userData['use_ldap'] = $useLdap ? 1 : 0;
-
         return null;
+    }
+
+    /**
+     * Coerces an accepted use_ldap to 0/1 so the service and the repository agree on it.
+     * Missing on create means 0; missing on update leaves the stored value alone.
+     */
+    private static function normalizeUseLdap(array $userData): array
+    {
+        if (array_key_exists('use_ldap', $userData)) {
+            $userData['use_ldap'] = filter_var($userData['use_ldap'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+        }
+
+        return $userData;
     }
 
     /** Only the empty string means "leave unchanged"; "0" is a password. */

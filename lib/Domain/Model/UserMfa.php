@@ -122,31 +122,9 @@ class UserMfa
         return json_decode($this->recoveryCodes, true) ?? [];
     }
 
-    public function setRecoveryCodes(array $recoveryCodes): void
+    private function setRecoveryCodes(array $recoveryCodes): void
     {
         $this->recoveryCodes = json_encode($recoveryCodes);
-        $this->updatedAt = new DateTime();
-    }
-
-    /**
-     * Store verification metadata for email-based MFA
-     *
-     * @param array $metadata The verification metadata
-     */
-    public function setVerificationMetadata(array $metadata): void
-    {
-        $this->recoveryCodes = json_encode($metadata);
-        $this->updatedAt = new DateTime();
-    }
-
-    /**
-     * Set raw JSON string for recovery codes (for backward compatibility)
-     *
-     * @param string $jsonString JSON string to set
-     */
-    public function setRecoveryCodesRaw(#[\SensitiveParameter] string $jsonString): void
-    {
-        $this->recoveryCodes = $jsonString;
         $this->updatedAt = new DateTime();
     }
 

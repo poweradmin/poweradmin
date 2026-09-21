@@ -32,14 +32,15 @@ class RejectedZoneEditPresenter
      * Put a rejected submission back into the rendered rows, so warning the operator
      * that their form was stale does not also cost them their edits.
      *
-     * @param array $displayRecords rows read back from the zone, edited in place
+     * @param array $displayRecords rows read back from the zone
      * @param array<int|string, mixed> $rejectedRecords the rows as they were posted
-     * @return array submitted rows the listing no longer holds, which cannot be restored
+     * @return array{records: array, dropped: string[]} the rows with the submission put
+     *   back, and the submitted rows the listing no longer holds
      */
-    public static function restore(array &$displayRecords, array $rejectedRecords): array
+    public static function restore(array $displayRecords, array $rejectedRecords): array
     {
         if ($rejectedRecords === []) {
-            return [];
+            return ['records' => $displayRecords, 'dropped' => []];
         }
 
         $positions = [];
@@ -97,7 +98,7 @@ class RejectedZoneEditPresenter
             $displayRecords[$index] = $row;
         }
 
-        return $dropped;
+        return ['records' => $displayRecords, 'dropped' => $dropped];
     }
 
     /**

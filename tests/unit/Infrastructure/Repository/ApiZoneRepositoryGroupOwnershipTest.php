@@ -165,6 +165,11 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->assertSame(4011, $zones[0]['id']);
         $this->assertSame(['admin', 'member'], $zones[0]['owners']);
         $this->assertSame([4011 => [1, 2]], $this->repository()->getOwnerIdsByZoneIds([4011]));
+
+        // listZones() keys by the row id, so only the primary owner lines up with it
+        $listed = array_values($this->repository()->listZones(1, true));
+        $this->assertSame('admin', $listed[0]['owners'][0]);
+        $this->assertSame($listed[0]['owners'], $listed[0]['users']);
     }
 
     #[Test]

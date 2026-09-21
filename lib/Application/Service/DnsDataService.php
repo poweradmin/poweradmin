@@ -479,13 +479,15 @@ class DnsDataService
      * Fill in record counts. Costs one API call per zone in API mode, so only
      * ever call this with the zones on the current page.
      */
-    private function enrichWithRecordCounts(array &$zones): void
+    private function enrichWithRecordCounts(array $zones): array
     {
         $recordCounts = $this->batchCountZoneRecords($zones);
         foreach ($zones as &$zone) {
             $zone['count_records'] = $recordCounts[$zone['id'] ?? 0] ?? 0;
         }
         unset($zone);
+
+        return $zones;
     }
 
     /**
@@ -691,7 +693,7 @@ class DnsDataService
         // After paging so the per-zone API calls scale with the page, not the
         // whole result set
         if ($includeRecordCount) {
-            $this->enrichWithRecordCounts($zones);
+            $zones = $this->enrichWithRecordCounts($zones);
         }
 
         // Format to match template shape
@@ -804,7 +806,7 @@ class DnsDataService
         }
 
         // Enrich with zone ownership data for template
-        $this->enrichRecordsWithZoneOwnership($records);
+        $records = $this->enrichRecordsWithZoneOwnership($records);
 
         // Group by name|content if requested (deduplicate)
         if ($groupRecords) {
@@ -846,7 +848,7 @@ class DnsDataService
         }
 
         if ($includeComments) {
-            $this->enrichSearchResultsWithComments($records, $result);
+            $result = $this->enrichSearchResultsWithComments($records, $result);
         }
 
         return $result;
@@ -855,7 +857,7 @@ class DnsDataService
     /**
      * Enrich search results with comments from API RRset data.
      */
-    private function enrichSearchResultsWithComments(array $sourceRecords, array &$formattedResult): void
+    private function enrichSearchResultsWithComments(array $sourceRecords, array $formattedResult): array
     {
         $apiComments = $this->loadApiRRsetComments($sourceRecords);
 
@@ -867,6 +869,8 @@ class DnsDataService
             $row['comment'] = $apiComments[$zoneName][$zoneKey] ?? '';
         }
         unset($row);
+
+        return $formattedResult;
     }
 
     private function loadApiRRsetComments(array $sourceRecords): array
@@ -893,16 +897,16 @@ class DnsDataService
     /**
      * Enrich records with zone ownership data for search results.
      */
-    private function enrichRecordsWithZoneOwnership(array &$records): void
+    private function enrichRecordsWithZoneOwnership(array $records): array
     {
         if (empty($records)) {
-            return;
+            return $records;
         }
 
         // Get unique domain IDs
         $domainIds = array_unique(array_filter(array_map(fn($r) => $r['domain_id'] ?? 0, $records)));
         if (empty($domainIds)) {
-            return;
+            return $records;
         }
 
         $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
@@ -938,6 +942,8 @@ class DnsDataService
             }
         }
         unset($record);
+
+        return $records;
     }
 
     /**

@@ -272,7 +272,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
         }
 
-        $this->enrichZonesWithOwnership($zones, true);
+        $zones = $this->enrichZonesWithOwnership($zones, true);
 
         return $zones;
     }
@@ -332,14 +332,14 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     /**
      * Fill in every assigned user as an owner for each zone, including
-     * additional users beyond the primary owner. Mutates $zones.
+     * additional users beyond the primary owner.
      *
      * @param bool $canonicalIds Whether $zones carry canonical ids rather than zones.id
      */
-    private function enrichZonesWithOwnership(array &$zones, bool $canonicalIds = false): void
+    private function enrichZonesWithOwnership(array $zones, bool $canonicalIds = false): array
     {
         if (empty($zones)) {
-            return;
+            return $zones;
         }
 
         $zoneIds = array_values(array_unique(array_map(fn($z) => (int)$z['id'], $zones)));
@@ -379,6 +379,8 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
         }
         unset($zone);
+
+        return $zones;
     }
 
     public function getReverseZoneCounts(string $permType, int $userId): array
@@ -479,7 +481,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
         }
 
-        $this->enrichZonesWithOwnership($zones);
+        $zones = $this->enrichZonesWithOwnership($zones);
 
         return array_values($zones);
     }

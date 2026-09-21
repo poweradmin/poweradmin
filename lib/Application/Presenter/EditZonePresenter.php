@@ -162,7 +162,7 @@ final class EditZonePresenter
             $this->permEditNsSubzone,
             $zoneIsReadOnly
         );
-        $staleFormDropped = RejectedZoneEditPresenter::restore($records, $this->rejectedRecords);
+        ['records' => $records, 'dropped' => $staleFormDropped] = RejectedZoneEditPresenter::restore($records, $this->rejectedRecords);
 
         $zoneComment = $this->storedZoneComment;
         $zoneCommentConflict = false;

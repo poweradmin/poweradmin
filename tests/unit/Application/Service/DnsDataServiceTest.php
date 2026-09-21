@@ -568,4 +568,61 @@ class DnsDataServiceTest extends TestCase
         $this->assertSame(1, $result['total']);
         $this->assertSame('mail.example.com', $result['records'][0]['name']);
     }
+
+    public function testSearchRecordsApiModeCarriesZoneOwnershipIntoTheResult(): void
+    {
+        $this->mockBackend->method('isApiBackend')->willReturn(true);
+        $this->mockBackend->method('searchDnsData')->willReturn([
+            'zones' => [],
+            'records' => [
+                ['id' => 10, 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '1.2.3.4', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0, 'zone_name' => 'example.com'],
+                ['id' => 11, 'domain_id' => 2, 'name' => 'www.other.com', 'type' => 'A', 'content' => '1.2.3.5', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0, 'zone_name' => 'other.com'],
+            ],
+        ]);
+
+        $ownerRows = [
+            ['domain_id' => 1, 'owner' => 7, 'user_id' => 7, 'username' => 'alice', 'fullname' => 'Alice A'],
+        ];
+        $mockStmt = $this->createMock(\PDOStatement::class);
+        $mockStmt->method('execute')->willReturn(true);
+        $mockStmt->method('bindValue')->willReturn(true);
+        $mockStmt->method('fetch')->willReturnCallback(function () use (&$ownerRows) {
+            return array_shift($ownerRows) ?? false;
+        });
+        // setUp's prepare() stub would win over a second one on the same mock
+        $this->mockDb = $this->createMock(PDO::class);
+        $this->mockDb->method('prepare')->willReturn($mockStmt);
+
+        $parameters = ['query' => 'www', 'zones' => false, 'records' => true, 'type_filter' => '', 'content_filter' => ''];
+        $result = $this->createService()->searchRecords($parameters, 'all', 'name', 'ASC', false, 10, false, 1);
+
+        $byId = array_column($result, null, 'id');
+        $this->assertSame(7, $byId[10]['user_id']);
+        $this->assertSame('Alice A', $byId[10]['fullname']);
+        $this->assertSame(0, $byId[11]['user_id']);
+        $this->assertSame('', $byId[11]['fullname']);
+    }
+
+    public function testSearchRecordsApiModeFillsCommentsFromTheZoneRrsets(): void
+    {
+        $this->mockBackend->method('isApiBackend')->willReturn(true);
+        $this->mockBackend->method('searchDnsData')->willReturn([
+            'zones' => [],
+            'records' => [
+                ['id' => 10, 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '1.2.3.4', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0, 'zone_name' => 'example.com'],
+                ['id' => 11, 'domain_id' => 1, 'name' => 'mail.example.com', 'type' => 'A', 'content' => '1.2.3.5', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0, 'zone_name' => 'example.com'],
+            ],
+        ]);
+        $this->mockBackend->expects($this->once())->method('getZoneRecords')->with(1, 'example.com')->willReturn([
+            ['name' => 'www.example.com', 'type' => 'A', 'api_comment' => 'web box'],
+            ['name' => 'mail.example.com', 'type' => 'A'],
+        ]);
+
+        $parameters = ['query' => 'example', 'zones' => false, 'records' => true, 'type_filter' => '', 'content_filter' => ''];
+        $result = $this->createService()->searchRecords($parameters, 'all', 'name', 'ASC', false, 10, true, 1);
+
+        $byId = array_column($result, null, 'id');
+        $this->assertSame('web box', $byId[10]['comment']);
+        $this->assertSame('', $byId[11]['comment']);
+    }
 }

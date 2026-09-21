@@ -43,7 +43,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
      * Enrich records with comments from API RRset data.
      * The API is the sole source of truth for comments in API mode.
      */
-    private function enrichRecordsWithComments(array &$records): void
+    private function enrichRecordsWithComments(array $records): array
     {
         foreach ($records as &$record) {
             $record['comment'] = $record['api_comment'] ?? null;
@@ -52,6 +52,8 @@ class ApiRecordRepository implements RecordRepositoryInterface
             unset($record['api_comment'], $record['api_comment_account'], $record['api_comment_modified_at']);
         }
         unset($record);
+
+        return $records;
     }
 
     public function getZoneIdFromRecordId(int|string $rid): int
@@ -112,7 +114,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
 
         // Enrich with comments if requested
         if ($fetchComments && !empty($records)) {
-            $this->enrichRecordsWithComments($records);
+            $records = $this->enrichRecordsWithComments($records);
         }
 
         return $records;
@@ -215,7 +217,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
 
         // Enrich with comments if requested
         if ($include_comments && !empty($records)) {
-            $this->enrichRecordsWithComments($records);
+            $records = $this->enrichRecordsWithComments($records);
         }
 
         return $records;
