@@ -54,11 +54,19 @@ class ZoneOwnershipFormResolver
 
     public function resolve(Request $request, int $callerUserId): ZoneOwnershipResolution
     {
-        // An empty, zero or malformed owner means "no user owner", as zones.owner=0 does elsewhere.
-        $ownerInput = filter_var($request->getPostParam('owner'), FILTER_VALIDATE_INT);
-        $owner = $this->mode->isUserOwnerAllowed() && $ownerInput !== false && $ownerInput > 0 ? $ownerInput : null;
+        return $this->resolveInputs($request->getPostParam('owner'), $request->getPostParam('groups'), $callerUserId);
+    }
 
-        $groupsInput = $request->getPostParam('groups');
+    /**
+     * @param mixed $ownerInput The posted owner field, if any
+     * @param mixed $groupsInput The posted groups field, if any
+     */
+    public function resolveInputs(mixed $ownerInput, mixed $groupsInput, int $callerUserId): ZoneOwnershipResolution
+    {
+        // An empty, zero or malformed owner means "no user owner", as zones.owner=0 does elsewhere.
+        $ownerId = is_scalar($ownerInput) ? filter_var($ownerInput, FILTER_VALIDATE_INT) : false;
+        $owner = $this->mode->isUserOwnerAllowed() && $ownerId !== false && $ownerId > 0 ? $ownerId : null;
+
         $groupIds = $this->mode->isGroupOwnerAllowed() && is_array($groupsInput) ? array_map('intval', $groupsInput) : [];
 
         return $this->resolver->resolveOwnership($owner, $groupIds, $callerUserId);

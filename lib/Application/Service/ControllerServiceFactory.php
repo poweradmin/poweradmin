@@ -280,6 +280,20 @@ class ControllerServiceFactory
         );
     }
 
+    /**
+     * The zone creation flow of the web forms, told what the connected server
+     * supports the same way zoneManagementService() is.
+     */
+    public function zoneCreateService(PdnsCapabilities|Closure|null $capabilities = null): ZoneCreateService
+    {
+        return new ZoneCreateService(
+            $this->zoneOwnershipFormResolver(),
+            $this->zoneManagementService($capabilities),
+            $this->apiPermissionService(),
+            $this->auditService()
+        );
+    }
+
     public function auditService(): AuditService
     {
         return $this->auditService ??= new AuditService($this->db);

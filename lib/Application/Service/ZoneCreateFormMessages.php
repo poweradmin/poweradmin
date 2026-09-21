@@ -32,6 +32,19 @@ use Poweradmin\Domain\Service\ZoneManagementService;
 class ZoneCreateFormMessages
 {
     /**
+     * The reverse-zone form got neither a network nor a reverse zone name.
+     */
+    public static function invalidReverseNetwork(): string
+    {
+        return _('Enter a network in CIDR notation (for example 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa.');
+    }
+
+    public static function dnssecForbidden(): string
+    {
+        return _('You do not have permission to manage DNSSEC for this zone.');
+    }
+
+    /**
      * @param array{message?: string, code?: string} $result
      */
     public static function errorMessage(array $result): string

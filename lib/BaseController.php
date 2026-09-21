@@ -41,6 +41,7 @@ use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -560,6 +561,14 @@ abstract class BaseController
     protected function createZoneManagementService(): ZoneManagementService
     {
         return $this->services()->zoneManagementService(fn(): PdnsCapabilities => $this->getPdnsCapabilities());
+    }
+
+    /**
+     * The zone creation flow of the add-zone forms, told what the connected server supports.
+     */
+    protected function createZoneCreateService(): ZoneCreateService
+    {
+        return $this->services()->zoneCreateService(fn(): PdnsCapabilities => $this->getPdnsCapabilities());
     }
 
     /**

@@ -22,17 +22,14 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\ZoneCreateFormMessages;
-use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
+use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -120,25 +117,6 @@ class AddZoneMasterController extends BaseController
             $this->showFirstValidationError($postData);
         }
 
-        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
-
-        $raw_domain = trim((string)$this->httpRequest->getPostParam('domain', ''));
-
-        // On the reverse-zone form, accept a network (e.g. 192.168.1.0/24,
-        // 2001:db8::/48) and create the matching in-addr.arpa/ip6.arpa zone
-        // instead of silently creating a forward zone with that literal name.
-        $is_reverse_context = $this->httpRequest->getPostParam('type') === 'reverse';
-        if ($is_reverse_context) {
-            $reverse_zone = DnsHelper::resolveReverseZoneName($raw_domain);
-            if ($reverse_zone === null) {
-                $this->setMessage('add_zone_master', 'error', _('Enter a network in CIDR notation (for example 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa.'));
-                $this->showForm();
-                return;
-            }
-            $raw_domain = $reverse_zone;
-        }
-
-        $zone_name = DnsIdnService::toPunycode($raw_domain);
         $dom_type = $this->httpRequest->getPostParam('dom_type', '');
 
         // The dropdown only populates the form; without this the submit path would
@@ -157,61 +135,36 @@ class AddZoneMasterController extends BaseController
             return;
         }
 
-        // A consumer takes its catalog by transfer, so it needs a primary and gets
-        // neither template records nor a serial policy.
-        $replicates = ZoneType::replicatesFromPrimary($dom_type);
-        $slave_master = $replicates ? trim((string)$this->httpRequest->getPostParam('slave_master', '')) : '';
-        if ($replicates) {
-            $zone_template = 'none';
-        }
-
         $soa_edit_api_input = $this->httpRequest->getPostParam('soa_edit_api');
         if (!$this->isOfferedSoaEditApiInput($soa_edit_api_input)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
             $this->showForm();
             return;
         }
-        $soa_edit_api = $this->sanitizeSoaEditApiInput($soa_edit_api_input);
 
-        $ownership = $this->resolveZoneOwnershipFromForm($this->httpRequest);
-        if ($ownership->hasError()) {
-            $this->setMessage('add_zone_master', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
+        // A consumer takes its catalog by transfer, so it needs a primary and gets
+        // neither template records, a serial policy nor a signature.
+        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
+        $replicates = ZoneType::replicatesFromPrimary($dom_type);
+        $created = $this->createZoneCreateService()->create(new ZoneCreateRequest(
+            name: (string)$this->httpRequest->getPostParam('domain', ''),
+            type: $dom_type,
+            ownerInput: $this->httpRequest->getPostParam('owner'),
+            groupsInput: $this->httpRequest->getPostParam('groups'),
+            callerUserId: (int)$this->getCurrentUserId(),
+            slaveMaster: $replicates ? trim((string)$this->httpRequest->getPostParam('slave_master', '')) : '',
+            template: $replicates ? 'none' : $zone_template,
+            signRequested: $pdnssec_use && !$replicates && $this->httpRequest->getPostParam('dnssec') !== null,
+            soaEditApi: $this->sanitizeSoaEditApiInput($soa_edit_api_input),
+            reverseNetwork: $this->httpRequest->getPostParam('type') === 'reverse'
+        ));
+        if (!$created->success) {
+            $this->setMessage('add_zone_master', 'error', (string)$created->message);
             $this->showForm();
             return;
         }
-        $owner = $ownership->owner;
-        $selected_groups = $ownership->groupIds;
 
-        // Signing a zone whose records arrive by transfer is meaningless.
-        $signRequested = $pdnssec_use && !$replicates && $this->httpRequest->getPostParam('dnssec') !== null;
-        $callerId = (int)$this->getCurrentUserId();
-        if ($signRequested && !$this->createApiPermissionService()->canManageDnssecForNewZone($callerId, $owner, $selected_groups)) {
-            $this->setMessage('add_zone_master', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
-            $this->showForm();
-            return;
-        }
-
-        $created = $this->createZoneManagementService()->createZone(
-            $zone_name,
-            $dom_type,
-            $owner,
-            $slave_master,
-            $zone_template,
-            $signRequested,
-            $selected_groups,
-            $callerId,
-            $soa_edit_api
-        );
-        if (!$created['success']) {
-            $this->setMessage('add_zone_master', 'error', ZoneCreateFormMessages::errorMessage($created));
-            $this->showForm();
-            return;
-        }
-        $zone_id = $created['zone_id'];
-
-        $this->createAuditService()->logZoneAdd($zone_id, $zone_name, $dom_type, $zone_template, $slave_master !== '' ? $slave_master : null);
-
-        $signed = $created['dnssec'];
+        $signed = $created->dnssec;
         $dnssecMessage = $signed === null ? null : match ($signed->outcome) {
             ZoneSigningOutcome::SIGNED => ['success', _('Zone has been created and signed with DNSSEC successfully.')],
             ZoneSigningOutcome::INVALID_ZONE => ['warning', _('Zone was created successfully, but DNSSEC signing was skipped due to validation errors:') . "\n\n" . $signed->detail],
@@ -221,10 +174,10 @@ class AddZoneMasterController extends BaseController
         };
         // Signing rectifies on its own; every other new primary is rectified here.
         if ($pdnssec_use && !$replicates && $signed?->outcome !== ZoneSigningOutcome::SIGNED) {
-            $this->createDnssecProvider()->rectifyZone($zone_name);
+            $this->createDnssecProvider()->rectifyZone($created->zoneName);
         }
 
-        $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
+        $messageKey = $created->isReverseZone() ? 'list_reverse_zones' : 'list_forward_zones';
         [$messageType, $message] = $dnssecMessage ?? ['success', _('Zone has been added successfully.')];
         $this->setMessage($messageKey, $messageType, $message);
         $this->redirect($messageKey === 'list_reverse_zones' ? '/zones/reverse' : '/zones/forward');

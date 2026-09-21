@@ -22,8 +22,7 @@
 
 namespace Poweradmin\Module\SecondaryZoneImport\Controller;
 
-use Poweradmin\Application\Service\ZoneCreateFormMessages;
-use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
+use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -137,34 +136,28 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
-        $zone = DnsIdnService::toPunycode($rawDomain);
-        $ownership = $this->resolveZoneOwnershipFromForm($this->httpRequest);
-        if ($ownership->hasError()) {
-            $this->setMessage('import', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
+        $created = $this->createZoneCreateService()->create(new ZoneCreateRequest(
+            name: $rawDomain,
+            type: 'SLAVE',
+            ownerInput: $this->httpRequest->getPostParam('owner'),
+            groupsInput: $this->httpRequest->getPostParam('groups'),
+            callerUserId: (int)$this->getCurrentUserId(),
+            slaveMaster: $master,
+            importedFromPrimary: true
+        ));
+        if (!$created->success) {
+            $this->setMessage('import', 'error', (string)$created->message);
             $this->showForm();
             return;
         }
-        $owner = $ownership->owner;
-        $groups = $ownership->groupIds;
-
-        $created = $this->createZoneManagementService()->createZone($zone, 'SLAVE', $owner, $master, 'none', false, $groups, $this->getCurrentUserId());
-        if (!$created['success']) {
-            $this->setMessage('import', 'error', ZoneCreateFormMessages::errorMessage($created));
-            $this->showForm();
-            return;
-        }
-
-        $zoneId = $created['zone_id'];
-        $domainManager = $this->createDomainManager();
-        $this->createAuditService()->logSecondaryZoneImport($zoneId, $zone, $master);
 
         // Ask PowerDNS to pull the zone now instead of waiting for the refresh.
-        $retrieved = $zoneId ? $domainManager->retrieveZone($zoneId) : false;
+        $retrieved = $this->createDomainManager()->retrieveZone((int)$created->zoneId);
 
         $this->showForm([
             'imported' => true,
-            'imported_zone_id' => $zoneId,
-            'imported_zone_name' => DnsIdnService::toUtf8($zone),
+            'imported_zone_id' => $created->zoneId,
+            'imported_zone_name' => DnsIdnService::toUtf8($created->zoneName),
             'transfer_requested' => $retrieved,
         ]);
     }

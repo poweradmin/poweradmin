@@ -22,13 +22,10 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\ZoneCreateFormMessages;
-use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
+use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -77,54 +74,24 @@ class AddZoneSlaveController extends BaseController
             $this->showFirstValidationError($postData);
         }
 
-        $type = "SLAVE";
-        $master = (string)$this->httpRequest->getPostParam('slave_master', '');
-
-        $raw_domain = trim((string)$this->httpRequest->getPostParam('domain', ''));
-
-        // On the reverse-zone form, accept a network (e.g. 192.168.1.0/24,
-        // 2001:db8::/48) and create the matching in-addr.arpa/ip6.arpa zone
-        // instead of silently creating a forward zone with that literal name.
-        $is_reverse_context = $this->httpRequest->getPostParam('type') === 'reverse';
-        if ($is_reverse_context) {
-            $reverse_zone = DnsHelper::resolveReverseZoneName($raw_domain);
-            if ($reverse_zone === null) {
-                $this->setMessage('add_zone_slave', 'error', _('Enter a network in CIDR notation (for example 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa.'));
-                $this->showForm();
-                return;
-            }
-            $raw_domain = $reverse_zone;
-        }
-
-        $zone = DnsIdnService::toPunycode($raw_domain);
-
-        $ownership = $this->resolveZoneOwnershipFromForm($this->httpRequest);
-        if ($ownership->hasError()) {
-            $this->setMessage('add_zone_slave', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
+        $created = $this->createZoneCreateService()->create(new ZoneCreateRequest(
+            name: (string)$this->httpRequest->getPostParam('domain', ''),
+            type: 'SLAVE',
+            ownerInput: $this->httpRequest->getPostParam('owner'),
+            groupsInput: $this->httpRequest->getPostParam('groups'),
+            callerUserId: (int)$this->getCurrentUserId(),
+            slaveMaster: (string)$this->httpRequest->getPostParam('slave_master', ''),
+            reverseNetwork: $this->httpRequest->getPostParam('type') === 'reverse'
+        ));
+        if (!$created->success) {
+            $this->setMessage('add_zone_slave', 'error', (string)$created->message);
             $this->showForm();
             return;
         }
-        $owner = $ownership->owner;
-        $selected_groups = $ownership->groupIds;
 
-        $created = $this->createZoneManagementService()->createZone($zone, $type, $owner, $master, 'none', false, $selected_groups, $this->getCurrentUserId());
-        if (!$created['success']) {
-            $this->setMessage('add_zone_slave', 'error', ZoneCreateFormMessages::errorMessage($created));
-            $this->showForm();
-            return;
-        }
-        $zone_id = $created['zone_id'];
-
-        $this->createAuditService()->logZoneAdd($zone_id, $zone, $type, null, $master);
-
-        // Check if the zone is a reverse zone and redirect accordingly
-        if (DnsHelper::isReverseZoneName($zone)) {
-            $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
-            $this->redirect('/zones/reverse');
-        } else {
-            $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
-            $this->redirect('/zones/forward');
-        }
+        $messageKey = $created->isReverseZone() ? 'list_reverse_zones' : 'list_forward_zones';
+        $this->setMessage($messageKey, 'success', _('Zone has been added successfully.'));
+        $this->redirect($messageKey === 'list_reverse_zones' ? '/zones/reverse' : '/zones/forward');
     }
 
     private function showForm(): void

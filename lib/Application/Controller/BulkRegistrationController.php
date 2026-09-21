@@ -22,8 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\ZoneCreateFormMessages;
-use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
+use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
@@ -100,36 +99,30 @@ class BulkRegistrationController extends BaseController
             return;
         }
 
-        $ownership = $this->resolveZoneOwnershipFromForm($this->httpRequest);
-        if ($ownership->hasError()) {
-            $this->setMessage('bulk_registration', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
+        $batch = $this->createZoneCreateService()->createMany(
+            new ZoneCreateRequest(
+                name: '',
+                type: $dom_type,
+                ownerInput: $this->httpRequest->getPostParam('owner'),
+                groupsInput: $this->httpRequest->getPostParam('groups'),
+                callerUserId: (int)$this->getCurrentUserId(),
+                template: (string)$zone_template
+            ),
+            $domains
+        );
+        if ($batch->message !== null) {
+            $this->setMessage('bulk_registration', 'error', $batch->message);
             $this->showBulkRegistrationForm();
             return;
         }
-        $owner = $ownership->owner;
-        $selected_groups = $ownership->groupIds;
 
-        $added_domains = [];
-        $failed_domains = [];
-        $zoneService = $this->createZoneManagementService();
-        $audit = $this->createAuditService();
-        $callerId = $this->getCurrentUserId();
-        foreach ($domains as $domain) {
-            $created = $zoneService->createZone($domain, $dom_type, $owner, '', $zone_template, false, $selected_groups, $callerId);
-            if (!$created['success']) {
-                $failed_domains[] = ['name' => $domain, 'reason' => ZoneCreateFormMessages::errorMessage($created)];
-                continue;
-            }
-            $added_domains[] = $domain;
-            $audit->logZoneAdd($created['zone_id'], $domain, $dom_type, $zone_template);
-        }
-
+        $failed_domains = $batch->failed();
         if (!$failed_domains) {
             $this->setMessage('list_forward_zones', 'success', _('Zones have been added successfully.'));
             $this->redirect('/zones/forward');
         } else {
             $this->setMessage('bulk_registration', 'warning', _('Some zone(s) could not be added.'));
-            $this->showBulkRegistrationForm($failed_domains, $added_domains);
+            $this->showBulkRegistrationForm($failed_domains, $batch->added());
         }
     }
 

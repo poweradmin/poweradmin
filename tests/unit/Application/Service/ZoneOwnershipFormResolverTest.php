@@ -71,6 +71,14 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
         $this->assertSame([], $result->groupIds);
     }
 
+    public function testAnArrayOwnerCountsAsNoOwner(): void
+    {
+        // A tampered owner[] field must not reach filter_var as an array
+        $result = $this->resolver('both')->resolveInputs(['9'], null, self::CALLER_ID);
+
+        $this->assertSame(ZoneOwnershipResolution::NO_OWNER, $result->code);
+    }
+
     public function testAMalformedOwnerCountsAsNoOwner(): void
     {
         $_POST = ['owner' => 'abc'];
