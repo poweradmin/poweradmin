@@ -52,6 +52,12 @@ interface UserPermissionReadInterface
     public function templateGrantsUberuser(int $permTemplId): bool;
 
     /**
+     * Id of the permission template with exactly this name, accent-exact so an
+     * IdP-asserted claim cannot map to a look-alike template.
+     */
+    public function findPermissionTemplateIdByName(string $name): ?int;
+
+    /**
      * Resolve every permission id carrying a given name
      *
      * perm_items.name has no unique constraint, so a name can map to several rows and

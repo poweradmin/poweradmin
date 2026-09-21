@@ -5,6 +5,10 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Domain\Repository\ExternalIdentityRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
+use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
@@ -260,13 +264,6 @@ class UserProvisioningServiceTest extends TestCase
 
     private function resolveMappedTemplate(bool $templateGrantsUberuser, bool $allowSuperuser): ?int
     {
-        $stmt = $this->createMock(\PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn(['id' => 1]);
-
-        $db = $this->createMock(\PDO::class);
-        $db->method('prepare')->willReturn($stmt);
-
         $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
         $configManager->method('get')
             ->willReturnMap([
@@ -274,10 +271,11 @@ class UserProvisioningServiceTest extends TestCase
                 ['oidc', 'allow_superuser_provisioning', false, $allowSuperuser],
             ]);
 
-        $userRepository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+        $userRepository = $this->createMock(UserRepositoryInterface::class);
         $userRepository->method('templateGrantsUberuser')->willReturn($templateGrantsUberuser);
+        $userRepository->method('findPermissionTemplateIdByName')->willReturn(1);
 
-        $service = $this->createServiceWithMocks($db, $configManager, $userRepository);
+        $service = $this->createServiceWithMocks($configManager, $userRepository);
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
         $method->setAccessible(true);
@@ -286,34 +284,22 @@ class UserProvisioningServiceTest extends TestCase
     }
 
     private function createServiceWithMocks(
-        ?\PDO $db = null,
         ?\Poweradmin\Infrastructure\Configuration\ConfigurationManager $configManager = null,
-        ?\Poweradmin\Infrastructure\Repository\DbUserRepository $userRepository = null
+        ?UserRepositoryInterface $userRepository = null
     ): UserProvisioningService {
-        $reflection = new ReflectionClass(UserProvisioningService::class);
-        $service = $reflection->newInstanceWithoutConstructor();
-
         if ($userRepository === null) {
-            $userRepository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+            $userRepository = $this->createMock(UserRepositoryInterface::class);
             $userRepository->method('templateGrantsUberuser')->willReturn(false);
         }
-        $userRepositoryProp = $reflection->getProperty('userRepository');
-        $userRepositoryProp->setAccessible(true);
-        $userRepositoryProp->setValue($service, $userRepository);
 
-        $dbProp = $reflection->getProperty('db');
-        $dbProp->setAccessible(true);
-        $dbProp->setValue($service, $db ?? $this->createMock(\PDO::class));
-
-        $configProp = $reflection->getProperty('configManager');
-        $configProp->setAccessible(true);
-        $configProp->setValue($service, $configManager ?? $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class));
-
-        $loggerProp = $reflection->getProperty('logger');
-        $loggerProp->setAccessible(true);
-        $loggerProp->setValue($service, $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class));
-
-        return $service;
+        return new UserProvisioningService(
+            $configManager ?? $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class),
+            $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class),
+            $userRepository,
+            $this->createMock(ExternalIdentityRepositoryInterface::class),
+            $this->createMock(UserGroupLookupInterface::class),
+            $this->createMock(UserGroupMemberRepositoryInterface::class)
+        );
     }
 
     /**
@@ -328,7 +314,7 @@ class UserProvisioningServiceTest extends TestCase
                 ['oidc', 'default_permission_template', '', 'Guest'],
             ]);
 
-        $service = $this->createServiceWithMocks(null, $configManager);
+        $service = $this->createServiceWithMocks($configManager);
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
         $method->setAccessible(true);
@@ -342,13 +328,6 @@ class UserProvisioningServiceTest extends TestCase
      */
     public function testDeterminePermissionTemplateWithFallbackUsesDefault(): void
     {
-        $stmt = $this->createMock(\PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn(['id' => 5]);
-
-        $db = $this->createMock(\PDO::class);
-        $db->method('prepare')->willReturn($stmt);
-
         $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
         $configManager->method('get')
             ->willReturnMap([
@@ -356,7 +335,7 @@ class UserProvisioningServiceTest extends TestCase
                 ['oidc', 'default_permission_template', '', 'Guest'],
             ]);
 
-        $service = $this->createServiceWithMocks($db, $configManager);
+        $service = $this->createServiceWithMocks($configManager, $this->templateRepository(['Guest' => 5]));
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
         $method->setAccessible(true);
@@ -370,20 +349,13 @@ class UserProvisioningServiceTest extends TestCase
      */
     public function testDeterminePermissionTemplateWithMatchingGroup(): void
     {
-        $stmt = $this->createMock(\PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn(['id' => 1]);
-
-        $db = $this->createMock(\PDO::class);
-        $db->method('prepare')->willReturn($stmt);
-
         $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
         $configManager->method('get')
             ->willReturnMap([
                 ['oidc', 'permission_template_mapping', [], ['admins' => 'Administrator']],
             ]);
 
-        $service = $this->createServiceWithMocks($db, $configManager);
+        $service = $this->createServiceWithMocks($configManager, $this->templateRepository(['Administrator' => 1]));
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
         $method->setAccessible(true);
@@ -580,13 +552,6 @@ class UserProvisioningServiceTest extends TestCase
      */
     public function testDeterminePermissionTemplateFailsClosedWhenDefaultIsMissing(): void
     {
-        $stmt = $this->createMock(\PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn(false);
-
-        $db = $this->createMock(\PDO::class);
-        $db->method('prepare')->willReturn($stmt);
-
         $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
         $configManager->method('get')
             ->willReturnMap([
@@ -594,7 +559,7 @@ class UserProvisioningServiceTest extends TestCase
                 ['oidc', 'default_permission_template', '', 'Guest'],
             ]);
 
-        $service = $this->createServiceWithMocks($db, $configManager);
+        $service = $this->createServiceWithMocks($configManager, $this->templateRepository([]));
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
         $method->setAccessible(true);
@@ -656,16 +621,11 @@ class UserProvisioningServiceTest extends TestCase
 
     public function testUserHoldsSuperuserPermissionFailsClosedOnDatabaseError(): void
     {
-        $service = $this->createServiceWithMocks();
-
-        $repository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+        $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('hasAdminPermission')->willThrowException(new \RuntimeException('connection lost'));
+        $service = $this->createServiceWithMocks(null, $repository);
 
         $reflection = new ReflectionClass(UserProvisioningService::class);
-        $repositoryProp = $reflection->getProperty('userRepository');
-        $repositoryProp->setAccessible(true);
-        $repositoryProp->setValue($service, $repository);
-
         $method = $reflection->getMethod('userHoldsSuperuserPermission');
         $method->setAccessible(true);
 
@@ -677,22 +637,31 @@ class UserProvisioningServiceTest extends TestCase
 
     public function testUserHoldsSuperuserPermissionDelegatesToRepository(): void
     {
-        $service = $this->createServiceWithMocks();
-
-        $repository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+        $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('hasAdminPermission')->willReturnCallback(
             static fn(int $userId): bool => $userId === 1
         );
+        $service = $this->createServiceWithMocks(null, $repository);
 
         $reflection = new ReflectionClass(UserProvisioningService::class);
-        $repositoryProp = $reflection->getProperty('userRepository');
-        $repositoryProp->setAccessible(true);
-        $repositoryProp->setValue($service, $repository);
-
         $method = $reflection->getMethod('userHoldsSuperuserPermission');
         $method->setAccessible(true);
 
         $this->assertTrue($method->invoke($service, 1));
         $this->assertFalse($method->invoke($service, 2));
+    }
+
+    /**
+     * @param array<string, int> $templates name => id known to the repository
+     */
+    private function templateRepository(array $templates): UserRepositoryInterface
+    {
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('templateGrantsUberuser')->willReturn(false);
+        $repository->method('findPermissionTemplateIdByName')->willReturnCallback(
+            static fn(string $name): ?int => $templates[$name] ?? null
+        );
+
+        return $repository;
     }
 }

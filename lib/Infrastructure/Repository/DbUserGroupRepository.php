@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 
@@ -121,6 +122,16 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row ? $this->mapRowToEntity($row) : null;
+    }
+
+    public function findIdByExactName(string $name): ?int
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'name');
+        $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE $match");
+        $stmt->execute([$name]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
     }
 
     /**

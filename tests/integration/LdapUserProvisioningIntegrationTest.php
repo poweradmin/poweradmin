@@ -27,6 +27,9 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbExternalIdentityRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Psr\Log\NullLogger;
 use ReflectionClass;
@@ -207,7 +210,14 @@ class LdapUserProvisioningIntegrationTest extends TestCase
     {
         $config = $this->configManager();
 
-        return new UserProvisioningService($this->db, $config, new NullLogger(), new DbUserRepository($this->db, $config));
+        return new UserProvisioningService(
+            $config,
+            new NullLogger(),
+            new DbUserRepository($this->db, $config),
+            new DbExternalIdentityRepository($this->db),
+            new DbUserGroupRepository($this->db),
+            new DbUserGroupMemberRepository($this->db)
+        );
     }
 
     private function configManager(): ConfigurationManager

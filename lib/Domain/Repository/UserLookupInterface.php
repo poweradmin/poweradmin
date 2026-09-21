@@ -70,6 +70,19 @@ interface UserLookupInterface
     public function countUsersByEmail(string $email): int;
 
     /**
+     * Id of the active user with exactly this email address, accent-exact so a
+     * look-alike address from an identity provider cannot resolve to another account.
+     */
+    public function findActiveUserIdByEmail(string $email): ?int;
+
+    /**
+     * The columns external provisioning compares before writing.
+     *
+     * @return array{fullname: ?string, email: ?string, auth_method: ?string, perm_templ: int|string, perm_templ_source: ?string}|array{} Empty when the user does not exist
+     */
+    public function getProvisioningProfile(int $userId): array;
+
+    /**
      * Get a user's full name by ID
      *
      * @param int $userId User ID to look up

@@ -119,6 +119,22 @@ interface UserAdminInterface
     public function updateUser(int $userId, UpdateUserCommand $changes): bool;
 
     /**
+     * Insert a user created from an external identity (LDAP, OIDC or SAML).
+     *
+     * @param array{username: string, fullname: string, email: string, description: string, perm_templ: int, perm_templ_source: string, use_ldap: int, auth_method: string} $userData
+     * @return int The new user id
+     * @throws \RuntimeException When the insert fails
+     */
+    public function createProvisionedUser(array $userData): int;
+
+    /**
+     * Update the identity and template columns that external provisioning owns.
+     *
+     * @param array<string, int|string> $fields Column => value, limited to fullname, email, auth_method, perm_templ and perm_templ_source
+     */
+    public function updateProvisionedUser(int $userId, array $fields): void;
+
+    /**
      * Assign permission template to a user
      *
      * @param int $userId User ID

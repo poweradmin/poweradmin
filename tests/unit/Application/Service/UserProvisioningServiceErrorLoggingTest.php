@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Unit\Application\Service;
 
-use PDO;
 use PDOException;
-use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Domain\Repository\ExternalIdentityRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
+use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 
 /**
@@ -75,16 +75,15 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
 
     private function provisionFailingWith(PDOException $failure, string $authMethod): void
     {
+        $service = new UserProvisioningService(
+            $this->configurationWithDefaultTemplate($authMethod),
+            $this->capturingLogger(),
+            $this->userRepositoryFailingOnInsert($failure),
+            $this->createMock(ExternalIdentityRepositoryInterface::class),
+            $this->createMock(UserGroupLookupInterface::class),
+            $this->createMock(UserGroupMemberRepositoryInterface::class)
+        );
         $reflection = new ReflectionClass(UserProvisioningService::class);
-        $service = $reflection->newInstanceWithoutConstructor();
-
-        $this->setProperty($reflection, $service, 'db', $this->databaseFailingOnInsert($failure));
-        $this->setProperty($reflection, $service, 'configManager', $this->configurationWithDefaultTemplate($authMethod));
-        $this->setProperty($reflection, $service, 'userRepository', $this->permissiveUserRepository());
-        $this->setProperty($reflection, $service, 'dbType', 'mysql');
-        $this->setProperty($reflection, $service, 'binaryCollation', '');
-
-        $this->setProperty($reflection, $service, 'logger', ClassContextLogger::for($this->capturingLogger(), UserProvisioningService::class));
 
         $userInfo = $this->createMock(UserInfoInterface::class);
         $userInfo->method('getUsername')->willReturn('jdoe');
@@ -104,28 +103,15 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
      * The permission template lookup and the username check both have to succeed, or
      * their own catch blocks swallow the failure before the insert is reached.
      */
-    private function databaseFailingOnInsert(PDOException $failure): PDO
+    private function userRepositoryFailingOnInsert(PDOException $failure): UserRepositoryInterface
     {
-        $template = $this->createMock(PDOStatement::class);
-        $template->method('execute')->willReturn(true);
-        $template->method('fetch')->willReturn(['id' => 1]);
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('templateGrantsUberuser')->willReturn(false);
+        $repository->method('findPermissionTemplateIdByName')->willReturn(1);
+        $repository->method('getUserByUsername')->willReturn(null);
+        $repository->method('createProvisionedUser')->willThrowException($failure);
 
-        $usernameLookup = $this->createMock(PDOStatement::class);
-        $usernameLookup->method('execute')->willReturn(true);
-        $usernameLookup->method('fetch')->willReturn(false);
-
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturnCallback(
-            function (string $sql) use ($template, $usernameLookup, $failure) {
-                if (str_contains($sql, 'INSERT INTO users')) {
-                    throw $failure;
-                }
-
-                return str_contains($sql, 'perm_templ') ? $template : $usernameLookup;
-            }
-        );
-
-        return $db;
+        return $repository;
     }
 
     private function configurationWithDefaultTemplate(string $authMethod): ConfigurationManager
@@ -142,14 +128,6 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
         return $config;
     }
 
-    private function permissiveUserRepository(): DbUserRepository
-    {
-        $repository = $this->createMock(DbUserRepository::class);
-        $repository->method('templateGrantsUberuser')->willReturn(false);
-
-        return $repository;
-    }
-
     private function capturingLogger(): Logger
     {
         $logger = $this->createMock(Logger::class);
@@ -162,12 +140,5 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
         );
 
         return $logger;
-    }
-
-    private function setProperty(ReflectionClass $reflection, object $target, string $name, mixed $value): void
-    {
-        $property = $reflection->getProperty($name);
-        $property->setAccessible(true);
-        $property->setValue($target, $value);
     }
 }

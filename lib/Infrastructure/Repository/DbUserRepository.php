@@ -768,6 +768,16 @@ class DbUserRepository implements UserRepositoryInterface
         return (bool)$stmt->fetchColumn();
     }
 
+    public function findPermissionTemplateIdByName(string $name): ?int
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'name');
+        $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE $match");
+        $stmt->execute([$name]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
+    }
+
     public function getPermissionIdsByName(string $name): array
     {
         // Every row with this name grants it, matching templateGrantsUberuser()
@@ -811,6 +821,54 @@ class DbUserRepository implements UserRepositoryInterface
         return null;
     }
 
+    public function createProvisionedUser(array $userData): int
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO users (username, password, fullname, email, description, active, perm_templ, perm_templ_source, use_ldap, auth_method)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        $success = $stmt->execute([
+            $userData['username'],
+            '', // No password for external auth users
+            $userData['fullname'],
+            $userData['email'],
+            $userData['description'],
+            1, // Active
+            $userData['perm_templ'],
+            $userData['perm_templ_source'],
+            $userData['use_ldap'],
+            $userData['auth_method']
+        ]);
+
+        if (!$success) {
+            throw new \RuntimeException('Failed to insert user. PDO Error: ' . implode(' - ', $stmt->errorInfo()));
+        }
+
+        return (int)$this->db->lastInsertId('users_id_seq');
+    }
+
+    public function updateProvisionedUser(int $userId, array $fields): void
+    {
+        $allowed = ['fullname', 'email', 'auth_method', 'perm_templ', 'perm_templ_source'];
+        $setFields = [];
+        $values = [];
+        foreach ($fields as $column => $value) {
+            if (!in_array($column, $allowed, true)) {
+                throw new \InvalidArgumentException("Column $column is not owned by provisioning");
+            }
+            $setFields[] = "$column = ?";
+            $values[] = $value;
+        }
+        if ($setFields === []) {
+            return;
+        }
+
+        $values[] = $userId;
+        $stmt = $this->db->prepare("UPDATE users SET " . implode(', ', $setFields) . " WHERE id = ?");
+        $stmt->execute($values);
+    }
+
     public function getUserByUsername(string $username): ?array
     {
         $query = "SELECT users.*, perm_templ.name AS perm_templ_name
@@ -838,6 +896,24 @@ class DbUserRepository implements UserRepositoryInterface
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result ?: null;
+    }
+
+    public function findActiveUserIdByEmail(string $email): ?int
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email');
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND active = 1");
+        $stmt->execute([$email]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
+    }
+
+    public function getProvisioningProfile(int $userId): array
+    {
+        $stmt = $this->db->prepare("SELECT fullname, email, auth_method, perm_templ, perm_templ_source FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
     public function countUsersByEmail(string $email): int

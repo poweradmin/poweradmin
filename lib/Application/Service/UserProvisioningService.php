@@ -22,11 +22,12 @@
 
 namespace Poweradmin\Application\Service;
 
-use PDO;
+use Poweradmin\Domain\Repository\ExternalIdentityRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
+use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -47,29 +48,27 @@ class UserProvisioningService
     private const LINKABLE_AUTH_METHODS = [self::AUTH_METHOD_OIDC, self::AUTH_METHOD_SAML];
 
     private LoggerInterface $logger;
-    private PDO $db;
     private ConfigurationInterface $configManager;
     private UserRepositoryInterface $userRepository;
-
-    /** Collation clause forcing byte-exact matches on OIDC/SAML subject lookups. */
-    private string $binaryCollation;
-
-    /** Database driver name, used to build identity-match predicates. */
-    private string $dbType = '';
+    private ExternalIdentityRepositoryInterface $identities;
+    private UserGroupLookupInterface $groups;
+    private UserGroupMemberRepositoryInterface $groupMembers;
 
     public function __construct(
-        PDO $connection,
         ConfigurationInterface $configManager,
         LoggerInterface $logger,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+        ExternalIdentityRepositoryInterface $identities,
+        UserGroupLookupInterface $groups,
+        UserGroupMemberRepositoryInterface $groupMembers
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
-        $this->db = $connection;
         $this->configManager = $configManager;
         $this->userRepository = $userRepository;
-        $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $this->binaryCollation = DbCompat::binaryCollation($this->dbType);
+        $this->identities = $identities;
+        $this->groups = $groups;
+        $this->groupMembers = $groupMembers;
     }
 
     /**
@@ -175,22 +174,11 @@ class UserProvisioningService
                 'provider' => $providerId
             ]);
 
-            $stmt = $this->db->prepare("
-                SELECT user_id FROM oidc_user_links
-                WHERE oidc_subject{$this->binaryCollation} = ? AND provider_id{$this->binaryCollation} = ?
-            ");
-            $stmt->execute([$subject, $providerId]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $userId = $this->identities->findUserIdByOidcSubject($subject, $providerId);
 
-            if ($result) {
-                $userId = (int)$result['user_id'];
-
+            if ($userId !== null) {
                 // Verify the user actually exists in the users table
-                $userCheckStmt = $this->db->prepare("SELECT id FROM users WHERE id = ?");
-                $userCheckStmt->execute([$userId]);
-                $userExists = $userCheckStmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($userExists) {
+                if ($this->userRepository->getUserById($userId) !== null) {
                     $this->logger->info('Found existing user by OIDC subject, user ID: {userId}', ['userId' => $userId]);
                     return $userId;
                 } else {
@@ -284,13 +272,7 @@ class UserProvisioningService
     private function findUserByEmail(string $email): ?int
     {
         try {
-            // Accent-exact match, so a look-alike email cannot link to another account.
-            $match = DbCompat::accentSensitiveEquals($this->dbType, 'email');
-            $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND active = 1");
-            $stmt->execute([$email]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $result ? (int)$result['id'] : null;
+            return $this->userRepository->findActiveUserIdByEmail($email);
         } catch (\Exception $e) {
             $this->logger->error('Error finding user by email: {error}', ['error' => $e->getMessage()]);
             return null;
@@ -340,32 +322,16 @@ class UserProvisioningService
             ];
             $this->logger->info('User data to be inserted: {userData}', ['userData' => $userData]);
 
-            // Create user
-            $stmt = $this->db->prepare("
-                INSERT INTO users (username, password, fullname, email, description, active, perm_templ, perm_templ_source, use_ldap, auth_method)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ");
-
-            $success = $stmt->execute([
-                $username,
-                '', // No password for external auth users
-                $userInfo->getDisplayName() ?: $userInfo->getFullName(),
-                $userInfo->getEmail(),
-                'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
-                1, // Active
-                $permissionTemplateId,
-                $authMethod, // Template ownership: only this provider may revoke it later
-                $authMethod === self::AUTH_METHOD_LDAP ? 1 : 0,
-                $authMethod  // auth_method (ldap, oidc, saml)
+            $userId = $this->userRepository->createProvisionedUser([
+                'username' => $username,
+                'fullname' => $userData['fullname'],
+                'email' => $userData['email'],
+                'description' => $userData['description'],
+                'perm_templ' => $permissionTemplateId,
+                'perm_templ_source' => $authMethod, // Template ownership: only this provider may revoke it later
+                'use_ldap' => $authMethod === self::AUTH_METHOD_LDAP ? 1 : 0,
+                'auth_method' => $authMethod,
             ]);
-
-            if (!$success) {
-                $errorInfo = implode(' - ', $stmt->errorInfo());
-                $this->logger->error('Database INSERT failed. PDO Error: {error}', ['error' => $errorInfo]);
-                throw new \RuntimeException('Failed to insert user. PDO Error: ' . $errorInfo);
-            }
-
-            $userId = (int)$this->db->lastInsertId('users_id_seq');
             $this->logger->info('User INSERT successful, new user ID: {userId}', ['userId' => $userId]);
 
             $this->linkIdentity($userId, $userInfo, $providerId, $authMethod);
@@ -392,34 +358,28 @@ class UserProvisioningService
     private function updateExistingUser(int $userId, UserInfoInterface $userInfo, string $authMethod = self::AUTH_METHOD_OIDC): void
     {
         try {
-            $updateFields = [];
-            $updateValues = [];
+            $updates = [];
 
-            $stmt = $this->db->prepare("SELECT fullname, email, auth_method, perm_templ, perm_templ_source FROM users WHERE id = ?");
-            $stmt->execute([$userId]);
-            $current = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+            $current = $this->userRepository->getProvisioningProfile($userId);
 
             // Update user information if configured to sync, skipping unchanged values
             $authConfig = $this->getAuthMethodConfig($authMethod);
             if ($authConfig['sync_user_info'] ?? true) {
                 $displayName = $userInfo->getDisplayName();
                 if (!empty($displayName) && $displayName !== ($current['fullname'] ?? null)) {
-                    $updateFields[] = 'fullname = ?';
-                    $updateValues[] = $displayName;
+                    $updates['fullname'] = $displayName;
                 }
 
                 $email = $userInfo->getEmail();
                 if (!empty($email) && $email !== ($current['email'] ?? null)) {
-                    $updateFields[] = 'email = ?';
-                    $updateValues[] = $email;
+                    $updates['email'] = $email;
                 }
             }
 
             // Only update auth_method if it's safe to do so (prevent overwriting LDAP/other methods)
             $currentAuthMethod = isset($current['auth_method']) ? (string)$current['auth_method'] : null;
             if ($currentAuthMethod !== $authMethod && $this->shouldUpdateAuthMethod($currentAuthMethod, $authMethod)) {
-                $updateFields[] = 'auth_method = ?';
-                $updateValues[] = $authMethod;
+                $updates['auth_method'] = $authMethod;
                 $this->logger->info('Updating auth_method from {old} to {new} for user {userId}', [
                     'old' => $currentAuthMethod,
                     'new' => $authMethod,
@@ -437,10 +397,8 @@ class UserProvisioningService
             $newPermissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups(), $authMethod, false);
             if ($newPermissionTemplateId) {
                 if ($newPermissionTemplateId !== (int)($current['perm_templ'] ?? 0) || ($current['perm_templ_source'] ?? '') !== $authMethod) {
-                    $updateFields[] = 'perm_templ = ?';
-                    $updateValues[] = $newPermissionTemplateId;
-                    $updateFields[] = 'perm_templ_source = ?';
-                    $updateValues[] = $authMethod;
+                    $updates['perm_templ'] = $newPermissionTemplateId;
+                    $updates['perm_templ_source'] = $authMethod;
                 }
             } else {
                 // Only the provider that assigned the template may revoke it
@@ -451,8 +409,7 @@ class UserProvisioningService
                     // Fall back to default permission template
                     $defaultTemplateId = $this->getDefaultPermissionTemplateId($authMethod);
                     if ($defaultTemplateId) {
-                        $updateFields[] = 'perm_templ = ?';
-                        $updateValues[] = $defaultTemplateId;
+                        $updates['perm_templ'] = $defaultTemplateId;
                         $this->logger->info('Revoked SSO group-mapped template for user {userId}, falling back to default template', [
                             'userId' => $userId
                         ]);
@@ -468,13 +425,8 @@ class UserProvisioningService
                 }
             }
 
-            if (!empty($updateFields)) {
-                $updateValues[] = $userId;
-                $stmt = $this->db->prepare("
-                    UPDATE users SET " . implode(', ', $updateFields) . "
-                    WHERE id = ?
-                ");
-                $stmt->execute($updateValues);
+            if (!empty($updates)) {
+                $this->userRepository->updateProvisionedUser($userId, $updates);
 
                 $this->logger->info('Updated user information and permissions for user ID: {id}', ['id' => $userId]);
             }
@@ -489,42 +441,7 @@ class UserProvisioningService
     private function linkOidcToExistingUser(int $userId, UserInfoInterface $userInfo, string $providerId): void
     {
         try {
-            // Check if link already exists
-            $stmt = $this->db->prepare("
-                SELECT id FROM oidc_user_links 
-                WHERE user_id = ? AND provider_id = ?
-            ");
-            $stmt->execute([$userId, $providerId]);
-
-            if ($stmt->fetch()) {
-                // Update existing link
-                $stmt = $this->db->prepare("
-                    UPDATE oidc_user_links 
-                    SET oidc_subject = ?, username = ?, email = ?, updated_at = CURRENT_TIMESTAMP
-                    WHERE user_id = ? AND provider_id = ?
-                ");
-                $stmt->execute([
-                    $userInfo->getSubject(),
-                    $userInfo->getUsername(),
-                    $userInfo->getEmail(),
-                    $userId,
-                    $providerId
-                ]);
-            } else {
-                // Create new link
-                $stmt = $this->db->prepare("
-                    INSERT INTO oidc_user_links 
-                    (user_id, provider_id, oidc_subject, username, email, created_at, updated_at)
-                    VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                ");
-                $stmt->execute([
-                    $userId,
-                    $providerId,
-                    $userInfo->getSubject(),
-                    $userInfo->getUsername(),
-                    $userInfo->getEmail()
-                ]);
-            }
+            $this->identities->linkOidc($userId, $providerId, $userInfo->getSubject(), $userInfo->getUsername(), $userInfo->getEmail());
 
             $this->logger->info('Linked external identity to user ID: {id}', ['id' => $userId]);
         } catch (\Exception $e) {
@@ -540,22 +457,11 @@ class UserProvisioningService
                 'provider' => $providerId
             ]);
 
-            $stmt = $this->db->prepare("
-                SELECT user_id FROM saml_user_links
-                WHERE saml_subject{$this->binaryCollation} = ? AND provider_id{$this->binaryCollation} = ?
-            ");
-            $stmt->execute([$subject, $providerId]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $userId = $this->identities->findUserIdBySamlSubject($subject, $providerId);
 
-            if ($result) {
-                $userId = (int)$result['user_id'];
-
+            if ($userId !== null) {
                 // Verify the user actually exists in the users table
-                $userCheckStmt = $this->db->prepare("SELECT id FROM users WHERE id = ?");
-                $userCheckStmt->execute([$userId]);
-                $userExists = $userCheckStmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($userExists) {
+                if ($this->userRepository->getUserById($userId) !== null) {
                     $this->logger->info('Found existing user by SAML subject, user ID: {userId}', ['userId' => $userId]);
                     return $userId;
                 } else {
@@ -576,42 +482,7 @@ class UserProvisioningService
     private function linkSamlToExistingUser(int $userId, UserInfoInterface $userInfo, string $providerId): void
     {
         try {
-            // Check if link already exists
-            $stmt = $this->db->prepare("
-                SELECT id FROM saml_user_links
-                WHERE user_id = ? AND provider_id = ?
-            ");
-            $stmt->execute([$userId, $providerId]);
-
-            if ($stmt->fetch()) {
-                // Update existing link
-                $stmt = $this->db->prepare("
-                    UPDATE saml_user_links
-                    SET saml_subject = ?, username = ?, email = ?, updated_at = CURRENT_TIMESTAMP
-                    WHERE user_id = ? AND provider_id = ?
-                ");
-                $stmt->execute([
-                    $userInfo->getSubject(),
-                    $userInfo->getUsername(),
-                    $userInfo->getEmail(),
-                    $userId,
-                    $providerId
-                ]);
-            } else {
-                // Create new link
-                $stmt = $this->db->prepare("
-                    INSERT INTO saml_user_links
-                    (user_id, provider_id, saml_subject, username, email, created_at, updated_at)
-                    VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                ");
-                $stmt->execute([
-                    $userId,
-                    $providerId,
-                    $userInfo->getSubject(),
-                    $userInfo->getUsername(),
-                    $userInfo->getEmail()
-                ]);
-            }
+            $this->identities->linkSaml($userId, $providerId, $userInfo->getSubject(), $userInfo->getUsername(), $userInfo->getEmail());
 
             $this->logger->info('Linked SAML identity to user ID: {id}', ['id' => $userId]);
         } catch (\Exception $e) {
@@ -702,11 +573,9 @@ class UserProvisioningService
     public function getDatabaseUsername(int $userId): ?string
     {
         try {
-            $stmt = $this->db->prepare("SELECT username FROM users WHERE id = ?");
-            $stmt->execute([$userId]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user = $this->userRepository->getUserById($userId);
 
-            return $result ? $result['username'] : null;
+            return $user !== null ? (string)$user['username'] : null;
         } catch (\Exception $e) {
             $this->logger->error('Error getting database username for user ID {userId}: {error}', [
                 'userId' => $userId,
@@ -719,17 +588,11 @@ class UserProvisioningService
     private function findPermissionTemplateByName(string $templateName, string $authMethod): ?int
     {
         try {
-            // Accent-exact match, so an IdP-asserted claim cannot map to a look-alike template.
-            $match = DbCompat::accentSensitiveEquals($this->dbType, 'name');
-            $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE $match");
-            $stmt->execute([$templateName]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$result) {
+            $templateId = $this->userRepository->findPermissionTemplateIdByName($templateName);
+            if ($templateId === null) {
                 return null;
             }
 
-            $templateId = (int)$result['id'];
             if (!$this->superuserProvisioningAllowed($authMethod) && $this->templateGrantsSuperuser($templateId)) {
                 $this->logger->warning(
                     'Refusing to provision superuser template {template} from {method}; '
@@ -771,12 +634,9 @@ class UserProvisioningService
     private function groupGrantsSuperuser(int $groupId): bool
     {
         try {
-            $stmt = $this->db->prepare("SELECT perm_templ FROM user_groups WHERE id = :id");
-            $stmt->bindValue(':id', $groupId, PDO::PARAM_INT);
-            $stmt->execute();
-            $permTemplId = $stmt->fetchColumn();
+            $group = $this->groups->findById($groupId);
 
-            return $permTemplId !== false && $this->templateGrantsSuperuser((int)$permTemplId);
+            return $group !== null && $this->templateGrantsSuperuser($group->getPermTemplId());
         } catch (\Exception $e) {
             $this->logger->error('Error checking group permissions: {error}', ['error' => $e->getMessage()]);
             return true;
@@ -805,9 +665,7 @@ class UserProvisioningService
     private function usernameExists(string $username): bool
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM users WHERE username = ?");
-            $stmt->execute([$username]);
-            return $stmt->fetch() !== false;
+            return $this->userRepository->getUserByUsername($username) !== null;
         } catch (\Exception $e) {
             $this->logger->error('Error checking username existence: {error}', ['error' => $e->getMessage()]);
             return true; // Assume it exists to be safe
@@ -878,15 +736,7 @@ class UserProvisioningService
         try {
             $cleanupCount = 0;
 
-            // Find orphaned OIDC links
-            $stmt = $this->db->prepare("
-                SELECT oul.id, oul.user_id, oul.provider_id, oul.username
-                FROM oidc_user_links oul
-                LEFT JOIN users u ON oul.user_id = u.id
-                WHERE u.id IS NULL
-            ");
-            $stmt->execute();
-            $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $orphanedLinks = $this->identities->findOrphanedOidcLinks();
 
             if (!empty($orphanedLinks)) {
                 $this->logger->info('Found {count} orphaned external auth links to clean up', ['count' => count($orphanedLinks)]);
@@ -899,13 +749,7 @@ class UserProvisioningService
                     ]);
                 }
 
-                // Delete all orphaned links
-                $stmt = $this->db->prepare("
-                    DELETE FROM oidc_user_links
-                    WHERE user_id NOT IN (SELECT id FROM users)
-                ");
-                $stmt->execute();
-                $cleanupCount = $stmt->rowCount();
+                $cleanupCount = $this->identities->deleteOrphanedOidcLinks();
 
                 $this->logger->info('Successfully cleaned up {count} orphaned external auth links', ['count' => $cleanupCount]);
             } else {
@@ -935,28 +779,17 @@ class UserProvisioningService
         try {
             $this->logger->info('Checking for orphaned SAML links for subject: {subject}', ['subject' => $subject]);
 
-            // Find orphaned links for this specific subject
-            $stmt = $this->db->prepare("
-                SELECT sul.id, sul.user_id
-                FROM saml_user_links sul
-                LEFT JOIN users u ON sul.user_id = u.id
-                WHERE sul.saml_subject{$this->binaryCollation} = ? AND sul.provider_id{$this->binaryCollation} = ? AND u.id IS NULL
-            ");
-            $stmt->execute([$subject, $providerId]);
-            $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $linkIds = $this->identities->findOrphanedSamlLinkIds($subject, $providerId);
 
-            if (!empty($orphanedLinks)) {
+            if (!empty($linkIds)) {
                 $this->logger->warning('Found {count} orphaned SAML links for subject {subject}, cleaning up...', [
-                    'count' => count($orphanedLinks),
+                    'count' => count($linkIds),
                     'subject' => $subject
                 ]);
 
-                $linkIds = array_column($orphanedLinks, 'id');
-                $placeholders = str_repeat('?,', count($linkIds) - 1) . '?';
-                $deleteStmt = $this->db->prepare("DELETE FROM saml_user_links WHERE id IN ($placeholders)");
-                $deleteStmt->execute($linkIds);
+                $this->identities->deleteSamlLinks($linkIds);
 
-                $this->logger->info('Successfully cleaned up {count} orphaned SAML links', ['count' => count($orphanedLinks)]);
+                $this->logger->info('Successfully cleaned up {count} orphaned SAML links', ['count' => count($linkIds)]);
             }
         } catch (\Exception $e) {
             $this->logger->error('Error cleaning up orphaned SAML links: {error}', ['error' => $e->getMessage()]);
@@ -971,28 +804,17 @@ class UserProvisioningService
         try {
             $this->logger->info('Checking for orphaned OIDC links for subject: {subject}', ['subject' => $subject]);
 
-            // Find orphaned links for this specific subject
-            $stmt = $this->db->prepare("
-                SELECT oul.id, oul.user_id
-                FROM oidc_user_links oul
-                LEFT JOIN users u ON oul.user_id = u.id
-                WHERE oul.oidc_subject{$this->binaryCollation} = ? AND oul.provider_id{$this->binaryCollation} = ? AND u.id IS NULL
-            ");
-            $stmt->execute([$subject, $providerId]);
-            $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $linkIds = $this->identities->findOrphanedOidcLinkIds($subject, $providerId);
 
-            if (!empty($orphanedLinks)) {
+            if (!empty($linkIds)) {
                 $this->logger->warning('Found {count} orphaned OIDC links for subject {subject}, cleaning up...', [
-                    'count' => count($orphanedLinks),
+                    'count' => count($linkIds),
                     'subject' => $subject
                 ]);
 
-                $linkIds = array_column($orphanedLinks, 'id');
-                $placeholders = str_repeat('?,', count($linkIds) - 1) . '?';
-                $deleteStmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE id IN ($placeholders)");
-                $deleteStmt->execute($linkIds);
+                $this->identities->deleteOidcLinks($linkIds);
 
-                $this->logger->info('Successfully cleaned up {count} orphaned OIDC links', ['count' => count($orphanedLinks)]);
+                $this->logger->info('Successfully cleaned up {count} orphaned OIDC links', ['count' => count($linkIds)]);
             }
         } catch (\Exception $e) {
             $this->logger->error('Error cleaning up orphaned OIDC links: {error}', ['error' => $e->getMessage()]);
@@ -1079,10 +901,11 @@ class UserProvisioningService
         $currentGroupIds = [];
         $allMappedIds = array_keys($idToName);
         if ($allMappedIds !== []) {
-            $placeholders = implode(',', array_fill(0, count($allMappedIds), '?'));
-            $stmt = $this->db->prepare("SELECT group_id FROM user_group_members WHERE user_id = ? AND group_id IN ($placeholders)");
-            $stmt->execute([$userId, ...$allMappedIds]);
-            $currentGroupIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+            foreach ($this->groupMembers->findByUserId($userId) as $membership) {
+                if (in_array($membership->getGroupId(), $allMappedIds, true)) {
+                    $currentGroupIds[] = $membership->getGroupId();
+                }
+            }
         }
 
         foreach (array_diff($currentGroupIds, $targetGroupIds) as $groupId) {
@@ -1166,13 +989,7 @@ class UserProvisioningService
     private function findGroupByName(string $groupName): ?int
     {
         try {
-            // Accent-exact match, so an IdP-asserted claim cannot map to a look-alike group.
-            $match = DbCompat::accentSensitiveEquals($this->dbType, 'name');
-            $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE $match");
-            $stmt->execute([$groupName]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $result ? (int)$result['id'] : null;
+            return $this->groups->findIdByExactName($groupName);
         } catch (\Exception $e) {
             $this->logger->error('Error finding group by name: {error}', ['error' => $e->getMessage()]);
             return null;
@@ -1189,17 +1006,8 @@ class UserProvisioningService
     private function addUserToGroup(int $userId, int $groupId): bool
     {
         try {
-            // Check if membership already exists
-            $stmt = $this->db->prepare("SELECT id FROM user_group_members WHERE group_id = ? AND user_id = ?");
-            $stmt->execute([$groupId, $userId]);
-
-            if ($stmt->fetch()) {
-                return true;
-            }
-
-            // Add user to group
-            $stmt = $this->db->prepare("INSERT INTO user_group_members (group_id, user_id, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)");
-            $stmt->execute([$groupId, $userId]);
+            // add() returns the existing membership when the user is already in the group
+            $this->groupMembers->add($groupId, $userId);
 
             return true;
         } catch (\Exception $e) {
@@ -1222,10 +1030,7 @@ class UserProvisioningService
     private function removeUserFromGroup(int $userId, int $groupId): bool
     {
         try {
-            $stmt = $this->db->prepare("DELETE FROM user_group_members WHERE group_id = ? AND user_id = ?");
-            $stmt->execute([$groupId, $userId]);
-
-            return $stmt->rowCount() > 0;
+            return $this->groupMembers->remove($groupId, $userId);
         } catch (\Exception $e) {
             $this->logger->error('Error removing user {userId} from group {groupId}: {error}', [
                 'userId' => $userId,

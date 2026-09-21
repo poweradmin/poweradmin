@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,6 +44,12 @@ interface UserGroupLookupInterface
      * @return UserGroup|null
      */
     public function findByName(string $name): ?UserGroup;
+
+    /**
+     * Id of the group with exactly this name, accent-exact so an IdP-asserted
+     * claim cannot map to a look-alike group.
+     */
+    public function findIdByExactName(string $name): ?int;
 
     /**
      * Find all groups

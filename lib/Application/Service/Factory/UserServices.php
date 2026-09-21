@@ -43,6 +43,7 @@ use Poweradmin\Domain\Service\User\UserTimezoneService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
+use Poweradmin\Infrastructure\Repository\DbExternalIdentityRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
@@ -159,7 +160,14 @@ class UserServices
 
     public function userProvisioningService(): UserProvisioningService
     {
-        return $this->userProvisioningService ??= new UserProvisioningService($this->db, $this->config, $this->logger, $this->userRepository());
+        return $this->userProvisioningService ??= new UserProvisioningService(
+            $this->config,
+            $this->logger,
+            $this->userRepository(),
+            new DbExternalIdentityRepository($this->db),
+            $this->userGroupRepository(),
+            $this->userGroupMemberRepository()
+        );
     }
 
     public function userAgreementRepository(): UserAgreementRepositoryInterface

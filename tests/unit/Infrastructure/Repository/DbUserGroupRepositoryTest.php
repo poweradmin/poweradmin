@@ -111,4 +111,37 @@ class DbUserGroupRepositoryTest extends TestCase
 
         $this->assertSame([], $this->repo->findExistingIds([1, 2]));
     }
+
+    #[Test]
+    public function findIdByExactNameUsesAnAccentSensitiveMatchOnMysql(): void
+    {
+        $this->db->method('getAttribute')->with(PDO::ATTR_DRIVER_NAME)->willReturn('mysql');
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())->method('execute')->with(['Editors'])->willReturn(true);
+        $stmt->method('fetch')->with(PDO::FETCH_ASSOC)->willReturn(['id' => '3']);
+
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->matchesRegularExpression('/SELECT id FROM user_groups WHERE LOWER\(CONVERT\(name USING utf8mb4\)\) COLLATE utf8mb4_bin = LOWER\(\?\)/'))
+            ->willReturn($stmt);
+
+        $this->assertSame(3, $this->repo->findIdByExactName('Editors'));
+    }
+
+    #[Test]
+    public function findIdByExactNameReturnsNullWhenNoGroupMatches(): void
+    {
+        $this->db->method('getAttribute')->willReturn('sqlite');
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(false);
+
+        $this->db->method('prepare')
+            ->with('SELECT id FROM user_groups WHERE name = ?')
+            ->willReturn($stmt);
+
+        $this->assertNull($this->repo->findIdByExactName('Nobody'));
+    }
 }
