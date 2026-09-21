@@ -255,6 +255,7 @@ class DomainManager implements DomainManagerInterface
             $this->cleanupFailedCreation($db, $domain_id, $domain);
             return ZoneWriteResult::backendFailure($e->getMessage());
         } catch (\Exception $e) {
+            $this->logger->error('Zone creation for {domain} failed: {error}', ['domain' => $domain, 'error' => $e->getMessage()]);
             $this->cleanupFailedCreation($db, $domain_id, $domain);
             return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
         }

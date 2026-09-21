@@ -207,4 +207,16 @@ class ZoneTemplatePlaceholdersParsingTest extends TestCase
         $result2 = $this->zoneTemplate->parseTemplateValue($template2, 'example.co.uk');
         $this->assertEquals('example.co.uk', $result2);
     }
+
+    public function testTxtContentIsQuotedForTheBackend(): void
+    {
+        $this->assertSame('"v=spf1 mx -all"', $this->zoneTemplate->parseTemplateValue('v=spf1 mx -all', 'example.com', 'TXT'));
+        $this->assertSame('"already quoted"', $this->zoneTemplate->parseTemplateValue('"already quoted"', 'example.com', 'TXT'));
+        $this->assertSame('"say \\"hi\\" to example.com"', $this->zoneTemplate->parseTemplateValue('say "hi" to [ZONE]', 'example.com', 'TXT'));
+        $this->assertSame('', $this->zoneTemplate->parseTemplateValue('', 'example.com', 'TXT'));
+        $this->assertSame('"C:\\\\path"', $this->zoneTemplate->parseTemplateValue('C:\\path', 'example.com', 'TXT'));
+        // Other types and the legacy two-argument call are untouched
+        $this->assertSame('v=spf1 mx -all', $this->zoneTemplate->parseTemplateValue('v=spf1 mx -all', 'example.com', 'SPF'));
+        $this->assertSame('v=spf1 mx -all', $this->zoneTemplate->parseTemplateValue('v=spf1 mx -all', 'example.com'));
+    }
 }

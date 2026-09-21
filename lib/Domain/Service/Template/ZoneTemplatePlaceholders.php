@@ -151,6 +151,25 @@ class ZoneTemplatePlaceholders
             }
         }
 
+        if ($recordType === RecordType::TXT) {
+            $val = self::quoteTxt($val);
+        }
+
         return $val;
+    }
+
+    /**
+     * Template TXT content is stored as typed, but PowerDNS only accepts the
+     * presentation form: an unquoted "v=spf1 mx -all" is three strings, and the
+     * API refuses it outright.
+     */
+    private static function quoteTxt(string $content): string
+    {
+        $content = trim($content);
+        if ($content === '' || (str_starts_with($content, '"') && str_ends_with($content, '"'))) {
+            return $content;
+        }
+
+        return '"' . str_replace(['\\', '"'], ['\\\\', '\\"'], $content) . '"';
     }
 }
