@@ -187,7 +187,6 @@ class EditZoneTemplController extends BaseController
         $domainManager = $this->createDomainManager();
         $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
 
-        $dbType = $this->config->get('database', 'type', 'mysql');
         $defaultTtl = $this->config->get('dns', 'ttl', 86400);
         $syncedZoneIds = [];
         $failures = [];
@@ -195,7 +194,7 @@ class EditZoneTemplController extends BaseController
             // PowerDNS record updates use domain_id; sync tracking uses Poweradmin zones.id.
             // Only mark a zone as synced once its records actually took, otherwise a
             // failed zone is recorded as up to date and never retried.
-            $updated = $domainManager->updateZoneRecords($dbType, $defaultTtl, $zone['domain_id'], $zone_templ_id);
+            $updated = $domainManager->updateZoneRecords($defaultTtl, $zone['domain_id'], $zone_templ_id);
             if ($updated->success) {
                 $syncedZoneIds[] = $zone['zone_id'];
             } else {

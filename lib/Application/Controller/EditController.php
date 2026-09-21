@@ -44,7 +44,6 @@ use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\ZoneEditSubmission;
 use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Session\FormStateService;
@@ -236,7 +235,7 @@ class EditController extends BaseController
         $catalog_producer = $catalog_name !== '' ? $catalog_service->getCatalogProducer($zone_id) : null;
         $catalog_producers = $catalog_selector_view && $meta_edit ? $catalog_service->getManageableProducers($userId) : [];
 
-        $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
+        $zone_template_id = $this->services()->zoneTemplateRepository()->getTemplateIdForZone($zone_id);
 
         // Get records via DnsDataService (supports both SQL and API backends)
         $recordResult = $this->createDnsDataService()->getZoneRecords(

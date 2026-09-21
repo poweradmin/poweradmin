@@ -29,7 +29,6 @@ use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Utility\DnsHelper;
 
@@ -104,7 +103,7 @@ class DnssecController extends BaseController
             'pdnssec_use' => $this->config->get('dnssec', 'enabled', false),
             'record_count' => $this->createRecordRepository()->countZoneRecords($zone_id),
             'zone_id' => $zone_id,
-            'zone_template_id' => DomainManager::getZoneTemplate($this->db, $zone_id),
+            'zone_template_id' => $this->services()->zoneTemplateRepository()->getTemplateIdForZone($zone_id),
             'zone_templates' => $zone_templates->getListZoneTempl((int)$this->getCurrentUserId()),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),

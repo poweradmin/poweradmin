@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -237,13 +237,13 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
         return new DomainManager(
             $this->db,
             $config,
-            $this->createMock(SOARecordManagerInterface::class),
             $domainRepository,
             new RepositoryFactory($this->db, $config, $backend),
             $backend,
             $this->permissionService($config),
             new DbUserRepository($this->db, $config),
-            $this->createMock(RecordChangeWriterInterface::class)
+            $this->createMock(RecordChangeWriterInterface::class),
+            $this->createMock(ZoneTemplateApplier::class)
         );
     }
 }

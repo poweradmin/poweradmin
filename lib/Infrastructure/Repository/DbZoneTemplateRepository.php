@@ -658,6 +658,38 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         return true;
     }
 
+    public function getTemplateIdForZone(int $zoneId): int
+    {
+        $stmt = $this->db->prepare("SELECT zone_templ_id FROM zones WHERE domain_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+
+        // NULL (PostgreSQL) or false (no row found)
+        if ($result === null || $result === false) {
+            return 0;
+        }
+
+        return (int) $result;
+    }
+
+    public function assignTemplateToZone(int $zoneId, int $templateId): void
+    {
+        $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = :zone_templ_id WHERE domain_id = :zone_id");
+        $stmt->bindValue(':zone_templ_id', $templateId, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function listZoneRowIds(int $zoneId): array
+    {
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN) ?: []);
+    }
+
     /**
      * Check if a zone template exists
      *

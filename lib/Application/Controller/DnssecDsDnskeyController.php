@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
@@ -62,7 +61,7 @@ class DnssecDsDnskeyController extends BaseController
         $domain_name = $domainRepository->getDomainNameById($zone_id);
         $domain_type = $domainRepository->getDomainType($zone_id);
         $record_count = $this->createRecordRepository()->countZoneRecords($zone_id);
-        $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
+        $zone_template_id = $this->services()->zoneTemplateRepository()->getTemplateIdForZone($zone_id);
 
         $dnssecProvider = $this->createDnssecProvider();
         $dnskey_records = $dnssecProvider->getDnsKeyRecords($domain_name);

@@ -20,23 +20,23 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
+namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\Dns\DomainManager;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 
 /**
- * Test for DomainManager::getZoneTemplate() method
+ * Test for DbZoneTemplateRepository::getTemplateIdForZone()
  *
  * Issue #935: PHP 8.4 TypeError when zone_templ_id is NULL or row not found
  * @see https://github.com/poweradmin/poweradmin/issues/935
  */
-class DomainManagerGetZoneTemplateTest extends TestCase
+class DbZoneTemplateRepositoryGetTemplateIdForZoneTest extends TestCase
 {
     /**
-     * Test that getZoneTemplate returns the template ID when it exists
+     * Test that getTemplateIdForZone returns the template ID when it exists
      */
     public function testGetZoneTemplateReturnsTemplateId(): void
     {
@@ -47,13 +47,13 @@ class DomainManagerGetZoneTemplateTest extends TestCase
         $db = $this->createMock(PDO::class);
         $db->method('prepare')->willReturn($stmt);
 
-        $result = DomainManager::getZoneTemplate($db, 1);
+        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
 
         $this->assertSame(5, $result);
     }
 
     /**
-     * Test that getZoneTemplate returns 0 when zone has no template (zone_templ_id = 0)
+     * Test that getTemplateIdForZone returns 0 when zone has no template (zone_templ_id = 0)
      */
     public function testGetZoneTemplateReturnsZeroForNoTemplate(): void
     {
@@ -64,13 +64,13 @@ class DomainManagerGetZoneTemplateTest extends TestCase
         $db = $this->createMock(PDO::class);
         $db->method('prepare')->willReturn($stmt);
 
-        $result = DomainManager::getZoneTemplate($db, 1);
+        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
 
         $this->assertSame(0, $result);
     }
 
     /**
-     * Test that getZoneTemplate handles NULL value from database (PostgreSQL)
+     * Test that getTemplateIdForZone handles NULL value from database (PostgreSQL)
      *
      * Issue #935: This test exposes the bug where fetchColumn() returns null
      * but the method signature requires int return type, causing TypeError in PHP 8.4
@@ -85,14 +85,14 @@ class DomainManagerGetZoneTemplateTest extends TestCase
         $db->method('prepare')->willReturn($stmt);
 
         // This should return 0 instead of throwing TypeError
-        $result = DomainManager::getZoneTemplate($db, 1);
+        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
 
         $this->assertIsInt($result);
         $this->assertSame(0, $result);
     }
 
     /**
-     * Test that getZoneTemplate handles no row found (fetchColumn returns false)
+     * Test that getTemplateIdForZone handles no row found (fetchColumn returns false)
      *
      * Issue #935: This test exposes the bug where fetchColumn() returns false
      * when no row is found, but the method signature requires int return type
@@ -107,14 +107,14 @@ class DomainManagerGetZoneTemplateTest extends TestCase
         $db->method('prepare')->willReturn($stmt);
 
         // This should return 0 instead of throwing TypeError
-        $result = DomainManager::getZoneTemplate($db, 99999);
+        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(99999);
 
         $this->assertIsInt($result);
         $this->assertSame(0, $result);
     }
 
     /**
-     * Test that getZoneTemplate returns string "0" cast to int
+     * Test that getTemplateIdForZone returns string "0" cast to int
      * Some database drivers may return string values
      */
     public function testGetZoneTemplateHandlesStringZero(): void
@@ -126,14 +126,14 @@ class DomainManagerGetZoneTemplateTest extends TestCase
         $db = $this->createMock(PDO::class);
         $db->method('prepare')->willReturn($stmt);
 
-        $result = DomainManager::getZoneTemplate($db, 1);
+        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
 
         $this->assertIsInt($result);
         $this->assertSame(0, $result);
     }
 
     /**
-     * Test that getZoneTemplate returns string template ID cast to int
+     * Test that getTemplateIdForZone returns string template ID cast to int
      * Some database drivers may return string values
      */
     public function testGetZoneTemplateHandlesStringTemplateId(): void
@@ -145,7 +145,7 @@ class DomainManagerGetZoneTemplateTest extends TestCase
         $db = $this->createMock(PDO::class);
         $db->method('prepare')->willReturn($stmt);
 
-        $result = DomainManager::getZoneTemplate($db, 1);
+        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
 
         $this->assertIsInt($result);
         $this->assertSame(42, $result);

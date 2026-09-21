@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
+use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Service\Dns\RecordDeletionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
@@ -54,6 +55,8 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
+use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
@@ -88,6 +91,7 @@ use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
@@ -742,14 +746,30 @@ class ControllerServiceFactory
         return $this->domainManager ??= new DomainManager(
             $this->db,
             $this->config,
-            $this->soaRecordManager(),
             $this->domainRepository(),
             $this->repositoryFactory(),
             $this->dnsBackendProvider(),
             $this->permissionService(),
             $this->userRepository(),
             $this->recordChangeLogger(),
+            $this->zoneTemplateApplier(),
             zoneTemplateRepository: $this->zoneTemplateRepository()
+        );
+    }
+
+    public function zoneTemplateApplier(): ZoneTemplateApplier
+    {
+        return new ZoneTemplateApplier(
+            $this->db,
+            $this->dnsBackendProvider(),
+            $this->soaRecordManager(),
+            $this->domainRepository(),
+            $this->zoneTemplateRepository(),
+            new DbTemplateRecordLinkRepository($this->db, $this->config, $this->dnsBackendProvider()),
+            new ZoneTemplateSyncService($this->db, $this->config, $this->dnsBackendProvider()),
+            new ZoneTemplatePlaceholders($this->config),
+            $this->recordChangeLogger(),
+            $this->logger
         );
     }
 

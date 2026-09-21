@@ -40,8 +40,6 @@ use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Error\ZoneCreationFailedException;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -53,7 +51,6 @@ class DomainManager implements DomainManagerInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
     private IPAddressValidator $ipAddressValidator;
     private DnsBackendProviderInterface $backendProvider;
@@ -64,39 +61,40 @@ class DomainManager implements DomainManagerInterface
     private UserContextService $userContext;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
     private RepositoryFactoryInterface $repositoryFactory;
+    private ZoneTemplateApplier $templateApplier;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration manager
-     * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param RepositoryFactoryInterface $repositoryFactory Builds the zone repository
      * @param DnsBackendProviderInterface $backendProvider DNS backend provider
      * @param PermissionService $permissionService Permissions and zone ownership of the acting user
      * @param UserLookupInterface $userRepository Resolves the users named as zone owners
      * @param RecordChangeWriterInterface $changeLogger Receives the zone and record snapshots
+     * @param ZoneTemplateApplier $templateApplier Applies a template to an existing zone
      */
     public function __construct(
         PDO $db,
         ConfigurationInterface $config,
-        SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
         RepositoryFactoryInterface $repositoryFactory,
         DnsBackendProviderInterface $backendProvider,
         PermissionService $permissionService,
         UserLookupInterface $userRepository,
         RecordChangeWriterInterface $changeLogger,
+        ZoneTemplateApplier $templateApplier,
         ?LoggerInterface $logger = null,
         ?UserContextService $userContext = null,
         ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
     ) {
+        $this->templateApplier = $templateApplier;
         $this->zoneTemplateRepository = $zoneTemplateRepository;
         $this->repositoryFactory = $repositoryFactory;
         $this->db = $db;
         $this->config = $config;
-        $this->soaRecordManager = $soaRecordManager;
         $this->domainRepository = $domainRepository;
         $this->ipAddressValidator = new IPAddressValidator();
         $this->backendProvider = $backendProvider;
@@ -392,7 +390,7 @@ class DomainManager implements DomainManagerInterface
         $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->permissionService, $this->logger, $this->zoneTemplateRepository);
 
         foreach ($templ_records as $r) {
-            if (!self::shouldApplyTemplateRecord($domain, $r["type"])) {
+            if (!ZoneTemplateApplier::shouldApplyTemplateRecord($domain, $r["type"])) {
                 continue;
             }
 
@@ -665,37 +663,13 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
-     * Get Zone Template ID for Zone ID
+     * Apply a zone template to a zone, or unlink it with template id 0.
      *
-     * @param object $db Database connection
-     * @param int $zone_id Zone ID
-     *
-     * @return int Zone Template ID (0 if no template or zone not found)
-     */
-    public static function getZoneTemplate($db, int $zone_id): int
-    {
-        $stmt = $db->prepare("SELECT zone_templ_id FROM zones WHERE domain_id = :zone_id");
-        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
-
-        // Handle NULL (PostgreSQL) or false (no row found)
-        if ($result === null || $result === false) {
-            return 0;
-        }
-
-        return (int) $result;
-    }
-
-    /**
-     * Update All Zone Records for Zone ID with Zone Template
-     *
-     * @param string $db_type Database type
      * @param int $dns_ttl Default TTL
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): ZoneWriteResult
+    public function updateZoneRecords(int $dns_ttl, int $zone_id, int $zone_template_id): ZoneWriteResult
     {
         // Secondary and Consumer zones replicate from a primary - applying a
         // template would write replicated records, so skip them entirely
@@ -709,286 +683,9 @@ class DomainManager implements DomainManagerInterface
             return ZoneWriteResult::forbidden(_('You do not have permission to edit this zone.'));
         }
 
-        $zone_master_add = $this->userHasPermission(Permission::PERM_ZONE_MASTER_ADD);
-        $zone_slave_add = $this->userHasPermission(Permission::PERM_ZONE_SLAVE_ADD);
+        $canAddZones = $this->userHasPermission(Permission::PERM_ZONE_MASTER_ADD)
+            || $this->userHasPermission(Permission::PERM_ZONE_SLAVE_ADD);
 
-        $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
-
-        $localTransaction = $this->backendProvider->supportsLocalWriteTransaction();
-        $numericIds = $this->backendProvider->recordIdsAreNumeric();
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $this->db->beginTransaction();
-        try {
-            if ($zone_template_id != 0) {
-                if (!$numericIds) {
-                    // Encoded record ids live in the string-keyed records_zone_templ_api
-                    // table, so only the records this template applied are removed.
-                    $this->deleteTemplateRecordsViaApi($zone_id, $zone_template_id, $dns_ttl);
-                } else {
-                    // Snapshot template-linked records before the bulk delete
-                    // so the audit log captures every removal.
-                    $selectStmt = $this->db->prepare(
-                        "SELECT r.id, r.name, r.type, r.content, r.ttl, r.prio, r.disabled
-                         FROM $records_table r
-                         INNER JOIN records_zone_templ rzt ON r.id = rzt.record_id
-                         WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id"
-                    );
-                    $selectStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
-                    $templateRecordsRemoved = $selectStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-
-                    // Delete the template-applied records. Only MySQL can drop the
-                    // record and its mapping in one statement; the other backends
-                    // delete records here and the mapping is cleared uniformly below.
-                    if ($db_type == 'pgsql') {
-                        $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
-                    } elseif ($db_type == 'sqlite') {
-                        $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
-                    } else {
-                        $query = "DELETE r FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
-                    }
-                    $stmt = $this->db->prepare($query);
-                    $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
-
-                    // Clear the template->record mapping for every backend. Otherwise
-                    // pgsql/sqlite leave orphaned rows behind, and on SQLite a reused
-                    // rowid could later resolve a stale mapping to an unrelated record.
-                    $mappingStmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id");
-                    $mappingStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
-
-                    if ($templateRecordsRemoved !== []) {
-                        $this->captureChange(function () use ($templateRecordsRemoved, $zone_id): void {
-                            foreach ($templateRecordsRemoved as $removed) {
-                                $this->changeLogger->logRecordDelete($removed, $zone_id);
-                            }
-                        });
-                    }
-                }
-
-
-                // Use the permissions we already checked earlier
-                if ($zone_master_add || $zone_slave_add) {
-                    $domain = $this->domainRepository->getDomainNameById($zone_id);
-
-                    // Get all records from the template
-                    $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
-                    $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->permissionService, $this->logger, $this->zoneTemplateRepository);
-
-                    // Writes outside this transaction would not see the rows above until it commits
-                    if (!$localTransaction) {
-                        $this->db->commit();
-                    }
-
-                    // Process each template record
-                    foreach ($templ_records as $r) {
-                        if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
-                            $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
-                            $recordType = $r["type"];
-
-                            if ($recordType == "SOA") {
-                                if ($this->backendProvider->managesSoaRecord()) {
-                                    continue;
-                                }
-                                // For SOA records, delete existing ones and use updated SOA record
-                                $soaSelect = $this->db->prepare("SELECT id, name, type, content, ttl, prio, disabled FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
-                                $soaSelect->execute([':zone_id' => $zone_id]);
-                                $existingSoaRecords = $soaSelect->fetchAll(PDO::FETCH_ASSOC) ?: [];
-
-                                $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
-                                $stmt->execute([':zone_id' => $zone_id]);
-
-                                if ($existingSoaRecords !== []) {
-                                    $this->captureChange(function () use ($existingSoaRecords, $zone_id): void {
-                                        foreach ($existingSoaRecords as $soaRecord) {
-                                            $this->changeLogger->logRecordDelete($soaRecord, $zone_id);
-                                        }
-                                    });
-                                }
-
-                                $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
-                                if ($content == "") {
-                                    $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
-                                }
-                            } else {
-                                $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
-                            }
-
-                            $ttl = $r["ttl"];
-                            $prio = intval($r["prio"]);
-
-                            if (!$ttl) {
-                                $ttl = $dns_ttl;
-                            }
-
-                            // Only insert if the record doesn't already exist
-                            if (!$this->backendProvider->recordExists($zone_id, $name, $recordType, $content)) {
-                                $record_id = $this->backendProvider->addRecordGetId($zone_id, $name, $recordType, $content, (int)$ttl, $prio);
-                                if ($record_id === null) {
-                                    continue;
-                                }
-
-                                // Link the record to the template so later template edits can
-                                // remove it precisely; encoded ids need the string-keyed table.
-                                if ($numericIds) {
-                                    $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
-                                    $stmt->execute([
-                                        ':zone_id' => $zone_id,
-                                        ':record_id' => $record_id,
-                                        ':zone_template_id' => $zone_template_id
-                                    ]);
-                                } else {
-                                    $stmt = $this->db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
-                                    $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-                                    $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
-                                    $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
-                                    $stmt->execute();
-                                }
-
-                                $this->captureChange(function () use ($record_id, $name, $recordType, $content, $ttl, $prio, $zone_id): void {
-                                    $this->changeLogger->logRecordCreate([
-                                        'id' => $record_id,
-                                        'name' => $name,
-                                        'type' => $recordType,
-                                        'content' => $content,
-                                        'ttl' => (int) $ttl,
-                                        'prio' => $prio,
-                                    ], $zone_id);
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Update the zone's template ID
-            $stmt = $this->db->prepare("UPDATE zones
-                    SET zone_templ_id = :zone_template_id
-                    WHERE domain_id = :zone_id");
-            $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
-            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            // Reconcile zone_template_sync so stale rows for a previous template don't
-            // keep showing the zone as out-of-sync after it has been reassigned. A zone
-            // shared by several owners has one row per owner, so handle every one.
-            $zonesIdStmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :domain_id");
-            $zonesIdStmt->bindValue(':domain_id', $zone_id, PDO::PARAM_INT);
-            $zonesIdStmt->execute();
-            $zonesIds = $zonesIdStmt->fetchAll(PDO::FETCH_COLUMN);
-            if ($zonesIds) {
-                $syncService = new ZoneTemplateSyncService($this->db, $this->config, $this->backendProvider);
-                foreach ($zonesIds as $zonesId) {
-                    $syncService->removeStaleSyncRecords((int)$zonesId, $zone_template_id);
-                    if ($zone_template_id !== 0) {
-                        $syncService->createSyncRecord((int)$zonesId, $zone_template_id);
-                        $syncService->markZoneAsSynced((int)$zonesId, $zone_template_id);
-                    }
-                }
-            }
-
-            if ($this->db->inTransaction()) {
-                $this->db->commit();
-            }
-
-            return ZoneWriteResult::ok($zone_id);
-        } catch (\Exception $e) {
-            if ($this->db->inTransaction()) {
-                $this->db->rollBack();
-            }
-            return ZoneWriteResult::backendFailure(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
-        }
-    }
-
-    /**
-     * Delete records that this template applied to a zone, via the API backend.
-     *
-     * Looks up the encoded RecordIdentifier values stored in records_zone_templ_api
-     * for the given (zone, template) pair and deletes only those records, leaving
-     * any user-authored entries that happen to share name/type/content untouched.
-     *
-     * Pre-existing API zones from before records_zone_templ_api was introduced
-     * have no mapping rows, so their template records are left in place rather
-     * than being matched fuzzily; the operator removes them by hand.
-     */
-    private function deleteTemplateRecordsViaApi(int $zone_id, int $zone_template_id, int $dns_ttl): void
-    {
-        $stmt = $this->db->prepare(
-            "SELECT id, record_id
-             FROM records_zone_templ_api
-             WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id"
-        );
-        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-        $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $mappingRows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-
-        if ($mappingRows === []) {
-            return;
-        }
-
-        // Index zone records by encoded ID so the audit log can capture full
-        // before-state for each delete. Records that no longer exist in the
-        // backend (e.g. removed out-of-band) are still removed from the mapping
-        // below, but skip the deleteRecord/log call for them.
-        $recordsByEncodedId = [];
-        foreach ($this->backendProvider->getRecordsByZoneId($zone_id) as $record) {
-            if (isset($record['id'])) {
-                $recordsByEncodedId[(string) $record['id']] = $record;
-            }
-        }
-
-        $deletedMappingIds = [];
-        foreach ($mappingRows as $mapping) {
-            $encodedId = (string) $mapping['record_id'];
-            $record = $recordsByEncodedId[$encodedId] ?? null;
-
-            if ($record !== null && $this->backendProvider->deleteRecord($encodedId)) {
-                $this->captureChange(function () use ($record, $zone_id): void {
-                    $this->changeLogger->logRecordDelete([
-                        'id' => $record['id'] ?? null,
-                        'name' => $record['name'] ?? null,
-                        'type' => $record['type'] ?? null,
-                        'content' => $record['content'] ?? null,
-                        'ttl' => isset($record['ttl']) ? (int) $record['ttl'] : null,
-                        'prio' => isset($record['prio']) ? (int) $record['prio'] : null,
-                        'disabled' => $record['disabled'] ?? null,
-                    ], $zone_id);
-                });
-            }
-            $deletedMappingIds[] = (int) $mapping['id'];
-        }
-
-        $placeholders = implode(',', array_fill(0, count($deletedMappingIds), '?'));
-        $cleanup = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE id IN ($placeholders)");
-        foreach ($deletedMappingIds as $i => $id) {
-            $cleanup->bindValue($i + 1, $id, PDO::PARAM_INT);
-        }
-        $cleanup->execute();
-    }
-
-    /**
-     * Decide whether a template record should be inserted into the target zone.
-     *
-     * Historically IPv4 reverse zones (in-addr.arpa) were limited to NS/SOA because
-     * early templates auto-populated A records for webip/mailip. The allowlist now
-     * also covers PTR, LUA, CNAME and TXT so legitimate reverse-zone records (e.g.
-     * LUA-driven dynamic PTR generation, RFC 2317 classless delegations) are no
-     * longer silently dropped. IPv6 reverse zones (ip6.arpa) carry no restriction.
-     */
-    private const IPV4_REVERSE_TEMPLATE_TYPES = ['NS', 'SOA', 'PTR', 'LUA', 'CNAME', 'TXT'];
-
-    private static function shouldApplyTemplateRecord(string $domain, string $type): bool
-    {
-        if (!self::isIpv4ReverseZone($domain)) {
-            return true;
-        }
-        return in_array($type, self::IPV4_REVERSE_TEMPLATE_TYPES, true);
-    }
-
-    private static function isIpv4ReverseZone(string $domain): bool
-    {
-        return stripos($domain, 'in-addr.arpa') !== false;
+        return $this->templateApplier->applyTemplate($zone_id, $zone_template_id, $dns_ttl, $canAddZones);
     }
 }

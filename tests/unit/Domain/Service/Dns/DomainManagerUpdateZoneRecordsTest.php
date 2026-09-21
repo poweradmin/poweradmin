@@ -31,9 +31,14 @@ use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
+use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
@@ -45,6 +50,7 @@ use TestHelpers\PermissionServiceTestCase;
  * the zones row is repointed and the sync state reconciled.
  */
 #[CoversClass(DomainManager::class)]
+#[CoversClass(ZoneTemplateApplier::class)]
 class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
 {
     private const CALLER_ID = 7;
@@ -112,7 +118,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend = $this->sqlBackend();
         $this->backend->expects($this->never())->method('addRecordGetId');
 
-        $result = $this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame([['zone_templ_id' => self::OLD_TEMPLATE_ID]], $this->rows('SELECT zone_templ_id FROM zones'));
@@ -143,7 +149,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             return 500 + count($written);
         });
 
-        $result = $this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame(self::ZONE_ID, $result->zoneId);
@@ -183,7 +189,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend->method('recordExists')->willReturn(false);
         $this->backend->method('addRecordGetId')->willReturn(501);
 
-        $result = $this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         // Only records linked to the template being applied are removed.
@@ -214,7 +220,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             ->with(self::ZONE_ID, 'old.example', 'SOA', 'ns1.example hostmaster.example 2024010102 1 2 3 4', self::TTL, 0)
             ->willReturn(501);
 
-        $this->assertTrue($this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
     }
 
     public function testRecordsAlreadyInTheZoneAreNotWrittenTwice(): void
@@ -225,7 +231,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend->method('recordExists')->with(self::ZONE_ID, 'www.old.example', 'A', '192.0.2.10')->willReturn(true);
         $this->backend->expects($this->never())->method('addRecordGetId');
 
-        $result = $this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame([], $this->rows('SELECT id FROM records_zone_templ'));
@@ -243,7 +249,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend->method('recordExists')->willReturn(false);
         $this->backend->method('addRecordGetId')->willReturnCallback(fn(int $domainId, string $name, string $type) => $type === 'A' ? null : 501);
 
-        $result = $this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame([['record_id' => 501]], $this->rows('SELECT record_id FROM records_zone_templ'));
@@ -266,7 +272,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             return 600 + count($types);
         });
 
-        $this->assertTrue($this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
         $this->assertSame(['NS'], $types);
     }
 
@@ -279,7 +285,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend->expects($this->never())->method('addRecordGetId');
 
         // Unlinking writes no records, so metadata-edit standing is enough.
-        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS])->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, 0);
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS])->updateZoneRecords(self::TTL, self::ZONE_ID, 0);
 
         $this->assertTrue($result->success);
         $this->assertSame([['id' => 101]], $this->rows('SELECT id FROM records'));
@@ -297,7 +303,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend = $this->sqlBackend();
         $this->backend->expects($this->never())->method('addRecordGetId');
 
-        $result = $this->manager([Permission::PERM_ZONE_CONTENT_EDIT_OTHERS])->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+        $result = $this->manager([Permission::PERM_ZONE_CONTENT_EDIT_OTHERS])->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame([], $this->rows('SELECT id FROM records'));
@@ -331,7 +337,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
                 return 'www.old.example./A/192.0.2.10';
             });
 
-        $result = $this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame(
@@ -356,7 +362,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend->expects($this->never())->method('getRecordsByZoneId');
         $this->backend->expects($this->never())->method('deleteRecord');
 
-        $this->assertTrue($this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
     }
 
     public function testBackendExceptionRollsBackAndReportsTheMessage(): void
@@ -368,7 +374,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend->method('recordExists')->willReturn(false);
         $this->backend->method('addRecordGetId')->willThrowException(new \RuntimeException('disk full'));
 
-        $result = $this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertFalse($result->success);
         $this->assertSame(500, $result->status);
@@ -386,7 +392,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->changeLogger->method('logRecordDelete')->willThrowException(new \RuntimeException('log table missing'));
         $this->backend = $this->sqlBackend();
 
-        $result = $this->manager()->updateZoneRecords('sqlite', self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame([], $this->rows('SELECT id FROM records'));
@@ -404,18 +410,33 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $domains->method('getDomainType')->with(self::ZONE_ID)->willReturn($this->zoneType);
         $domains->method('getDomainNameById')->with(self::ZONE_ID)->willReturn($this->zoneName);
 
+        $templates = new DbZoneTemplateRepository($this->db, $this->config, $this->backend);
+        $applier = new ZoneTemplateApplier(
+            $this->db,
+            $this->backend,
+            $this->soa,
+            $domains,
+            $templates,
+            new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
+            new ZoneTemplateSyncService($this->db, $this->config, $this->backend),
+            new ZoneTemplatePlaceholders($this->config),
+            $this->changeLogger,
+            new NullLogger()
+        );
+
         return new DomainManager(
             $this->db,
             $this->config,
-            $this->soa,
             $domains,
             $this->createMock(RepositoryFactoryInterface::class),
             $this->backend,
             $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => $callerPermissions]),
             $this->createMock(UserRepositoryInterface::class),
             $this->changeLogger,
+            $applier,
             new NullLogger(),
-            $userContext
+            $userContext,
+            $templates
         );
     }
 
@@ -435,6 +456,8 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $stub->method('isApiBackend')->willReturn($isApi);
         $stub->method('supportsLocalWriteTransaction')->willReturn(!$isApi);
         $stub->method('recordIdsAreNumeric')->willReturn(!$isApi);
+        $stub->method('managesSoaRecord')->willReturn($isApi);
+        $stub->method('allocatesZoneIdsLocally')->willReturn($isApi);
         return $stub;
     }
 

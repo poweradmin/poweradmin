@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
@@ -1050,60 +1051,6 @@ class ZoneTemplate
      */
     public function parseTemplateValue(string $val, string $domain, ?string $recordType = null): string
     {
-        $dns_ns1 = $this->config->get('dns', 'ns1');
-        $dns_ns2 = $this->config->get('dns', 'ns2');
-        $dns_ns3 = $this->config->get('dns', 'ns3');
-        $dns_ns4 = $this->config->get('dns', 'ns4');
-        $dns_hostmaster = $this->config->get('dns', 'hostmaster');
-
-        // Get SOA parameters for SOA records
-        $soa_refresh = $this->config->get('dns', 'soa_refresh');
-        $soa_retry = $this->config->get('dns', 'soa_retry');
-        $soa_expire = $this->config->get('dns', 'soa_expire');
-        $soa_minimum = $this->config->get('dns', 'soa_minimum');
-
-        $serial = date("Ymd");
-        $serial .= "00";
-
-        // Parse domain components
-        $domainComponents = DomainParsingService::parseDomain($domain);
-        $domainName = $domainComponents['domain'];
-        $tld = $domainComponents['tld'];
-
-        $val = str_replace('[ZONE]', $domain, $val);
-        $val = str_replace('[DOMAIN]', $domainName, $val);
-        $val = str_replace('[TLD]', $tld, $val);
-        $val = str_replace('[SERIAL]', $serial, $val);
-        // Alternative SOA serial formats: both stay below 1979999999, so
-        // getNextSerial() treats them as plain counters and bumps them by 1.
-        $val = str_replace('[UNIXTIME]', (string)time(), $val);
-        $val = str_replace('[COUNTER]', '1', $val);
-        $val = str_replace('[NS1]', $dns_ns1, $val);
-        $val = str_replace('[NS2]', $dns_ns2, $val);
-        $val = str_replace('[NS3]', $dns_ns3, $val);
-        $val = str_replace('[NS4]', $dns_ns4, $val);
-        $val = str_replace('[HOSTMASTER]', $dns_hostmaster, $val);
-
-        // Add SOA value placeholders
-        $val = str_replace('[SOA_REFRESH]', $soa_refresh, $val);
-        $val = str_replace('[SOA_RETRY]', $soa_retry, $val);
-        $val = str_replace('[SOA_EXPIRE]', $soa_expire, $val);
-        $val = str_replace('[SOA_MINIMUM]', $soa_minimum, $val);
-
-        // Only SOA content gets timer completion. With an explicit record type we
-        // decide precisely; without one (legacy 2-arg callers) we keep the old
-        // substring heuristic so behavior is unchanged for them.
-        $isSoaValue = $recordType !== null
-            ? $recordType === RecordType::SOA
-            : str_contains($val, 'SOA');
-        if ($isSoaValue) {
-            // A complete SOA rdata has at least 7 fields:
-            // primary hostmaster serial refresh retry expire minimum
-            if (count(explode(' ', $val)) < 7) {
-                $val .= " $soa_refresh $soa_retry $soa_expire $soa_minimum";
-            }
-        }
-
-        return $val;
+        return (new ZoneTemplatePlaceholders($this->config))->parseTemplateValue($val, $domain, $recordType);
     }
 }

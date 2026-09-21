@@ -75,7 +75,7 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
     public function testMetaEditAndCreateGrantsAloneAreRefused(): void
     {
         $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS, Permission::PERM_ZONE_MASTER_ADD], false)
-            ->updateZoneRecords('mysql', 86400, self::ZONE_ID, 3);
+            ->updateZoneRecords(86400, self::ZONE_ID, 3);
 
         $this->assertFalse($result->success);
         $this->assertSame(403, $result->status);
@@ -88,7 +88,7 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
         // Past the gate the call reaches the database the fixture does not have;
         // anything other than the 403 proves the gate let it through.
         try {
-            $result = $manager->updateZoneRecords('mysql', 86400, self::ZONE_ID, 0);
+            $result = $manager->updateZoneRecords(86400, self::ZONE_ID, 0);
             $this->assertNotSame(403, $result->status);
         } catch (\Throwable) {
             $this->addToAssertionCount(1);
@@ -98,7 +98,7 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
     public function testEditOwnWithoutOwnershipIsRefused(): void
     {
         $result = $this->manager([Permission::PERM_ZONE_CONTENT_EDIT_OWN], false)
-            ->updateZoneRecords('mysql', 86400, self::ZONE_ID, 3);
+            ->updateZoneRecords(86400, self::ZONE_ID, 3);
 
         $this->assertSame(403, $result->status);
     }

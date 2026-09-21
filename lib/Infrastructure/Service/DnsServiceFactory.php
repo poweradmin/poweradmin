@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
+use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
@@ -39,10 +40,15 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
+use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use PDO;
+use Psr\Log\NullLogger;
 
 /**
  * Builds the DNS manager services with their backend provider and repositories.
@@ -130,16 +136,33 @@ class DnsServiceFactory
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
         $userRepository = new DbUserRepository($db, $config);
+        $soaRecordManager = self::createSOARecordManager($db, $config, $backendProvider);
+        $domainRepository = $repositoryFactory->createDomainRepository();
+        $changeLogger = new RecordChangeLogger($db);
+        $zoneTemplateRepository = new DbZoneTemplateRepository($db, $config, $backendProvider);
+        $templateApplier = new ZoneTemplateApplier(
+            $db,
+            $backendProvider,
+            $soaRecordManager,
+            $domainRepository,
+            $zoneTemplateRepository,
+            new DbTemplateRecordLinkRepository($db, $config, $backendProvider),
+            new ZoneTemplateSyncService($db, $config, $backendProvider),
+            new ZoneTemplatePlaceholders($config),
+            $changeLogger,
+            new NullLogger()
+        );
         return new DomainManager(
             $db,
             $config,
-            self::createSOARecordManager($db, $config, $backendProvider),
-            $repositoryFactory->createDomainRepository(),
+            $domainRepository,
             $repositoryFactory,
             $backendProvider,
             $permissions ?? new PermissionService($userRepository),
             $userRepository,
-            new RecordChangeLogger($db)
+            $changeLogger,
+            $templateApplier,
+            zoneTemplateRepository: $zoneTemplateRepository
         );
     }
 

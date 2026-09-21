@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
@@ -475,13 +475,13 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         return new DomainManager(
             $this->db,
             $this->config,
-            $this->createMock(SOARecordManagerInterface::class),
             $this->createMock(DomainRepositoryInterface::class),
             $this->createMock(RepositoryFactoryInterface::class),
             $this->backend,
             $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => $callerPermissions]),
             $this->createMock(UserRepositoryInterface::class),
             $this->changeLogger,
+            $this->createMock(ZoneTemplateApplier::class),
             new NullLogger(),
             $userContext
         );

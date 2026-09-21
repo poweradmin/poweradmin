@@ -23,23 +23,20 @@
 namespace Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\Dns\DomainManager;
-use ReflectionMethod;
+use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 
 /**
- * Covers the template-record filter used by DomainManager when applying a
- * template to a newly created or re-synced zone.
+ * Covers the template-record filter used when applying a template to a newly
+ * created or re-synced zone.
  *
  * Issue #1248: LUA template records were silently dropped for IPv4 reverse
  * zones (in-addr.arpa) while being applied for IPv6 reverse zones (ip6.arpa).
  */
-class DomainManagerTemplateRecordFilterTest extends TestCase
+class ZoneTemplateApplierRecordFilterTest extends TestCase
 {
     private function shouldApply(string $domain, string $type): bool
     {
-        $method = new ReflectionMethod(DomainManager::class, 'shouldApplyTemplateRecord');
-        $method->setAccessible(true);
-        return $method->invoke(null, $domain, $type);
+        return ZoneTemplateApplier::shouldApplyTemplateRecord($domain, $type);
     }
 
     public function testForwardZoneAllowsAllTypes(): void

@@ -448,7 +448,6 @@ class ZoneManagementService
         $templateId = $resolvedId === 'none' ? 0 : (int)$resolvedId;
 
         $written = $this->domainManager()->updateZoneRecords(
-            (string)$this->config->get('database', 'type', 'mysql'),
             (int)$this->config->get('dns', 'ttl', 86400),
             $zoneId,
             $templateId

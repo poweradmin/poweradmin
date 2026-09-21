@@ -272,6 +272,31 @@ interface ZoneTemplateRepositoryInterface
     public function unlinkZoneFromTemplate(int $zoneId): bool;
 
     /**
+     * The template a zone is linked to.
+     *
+     * @param int $zoneId Zone ID (zones.domain_id)
+     * @return int Template ID, or 0 when the zone has no template or does not exist
+     */
+    public function getTemplateIdForZone(int $zoneId): int;
+
+    /**
+     * Point a zone at a template; 0 unlinks it.
+     *
+     * @param int $zoneId Zone ID (zones.domain_id)
+     * @param int $templateId Zone template ID
+     */
+    public function assignTemplateToZone(int $zoneId, int $templateId): void;
+
+    /**
+     * The zones.id rows of a zone. A zone shared by several owners has one row
+     * per owner, and the template sync state keys on that id.
+     *
+     * @param int $zoneId Zone ID (zones.domain_id)
+     * @return int[]
+     */
+    public function listZoneRowIds(int $zoneId): array;
+
+    /**
      * Zone IDs of the zones linked to a template. On SQL backends a link whose
      * PowerDNS domain no longer exists is left out.
      *

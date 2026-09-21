@@ -75,22 +75,11 @@ interface DomainManagerInterface
     public function addOwnerToZone(int $zone_id, int $user_id): ZoneWriteResult;
 
     /**
-     * Update All Zone Records for Zone ID with Zone Template
+     * Apply a zone template to a zone, or unlink it with template id 0.
      *
-     * @param string $db_type Database type
      * @param int $dns_ttl Default TTL
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): ZoneWriteResult;
-
-    /**
-     * Get Zone Template ID for Zone ID
-     *
-     * @param object $db Database connection
-     * @param int $zone_id Zone ID
-     *
-     * @return int Zone Template ID
-     */
-    public static function getZoneTemplate($db, int $zone_id): int;
+    public function updateZoneRecords(int $dns_ttl, int $zone_id, int $zone_template_id): ZoneWriteResult;
 }
