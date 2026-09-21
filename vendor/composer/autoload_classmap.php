@@ -1243,6 +1243,7 @@ return array(
     'Poweradmin\\Domain\\Enum\\ZoneSoaHealth' => $baseDir . '/lib/Domain/Enum/ZoneSoaHealth.php',
     'Poweradmin\\Domain\\Error\\ApiErrorException' => $baseDir . '/lib/Domain/Error/ApiErrorException.php',
     'Poweradmin\\Domain\\Error\\GroupNotFoundException' => $baseDir . '/lib/Domain/Error/GroupNotFoundException.php',
+    'Poweradmin\\Domain\\Error\\ZoneCreationFailedException' => $baseDir . '/lib/Domain/Error/ZoneCreationFailedException.php',
     'Poweradmin\\Domain\\Model\\ApiKey' => $baseDir . '/lib/Domain/Model/ApiKey.php',
     'Poweradmin\\Domain\\Model\\ApiKeyScope' => $baseDir . '/lib/Domain/Model/ApiKeyScope.php',
     'Poweradmin\\Domain\\Model\\Constants' => $baseDir . '/lib/Domain/Model/Constants.php',

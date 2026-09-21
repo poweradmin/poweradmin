@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Error\ZoneCreationFailedException;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
@@ -190,235 +191,261 @@ class DomainManager implements DomainManagerInterface
             return ZoneWriteResult::failure(_('Invalid or unexpected input given.'));
         }
 
-        $zone_master_add = $this->userHasPermission(Permission::PERM_ZONE_MASTER_ADD);
-        $zone_slave_add = $this->userHasPermission(Permission::PERM_ZONE_SLAVE_ADD);
+        // TODO: make sure only one is possible if only one is enabled
+        if (!$this->userHasPermission(Permission::PERM_ZONE_MASTER_ADD) && !$this->userHasPermission(Permission::PERM_ZONE_SLAVE_ADD)) {
+            return ZoneWriteResult::forbidden(_("You do not have the permission to add a master zone."));
+        }
+
         // Keeps the original string for MASTER/NATIVE zones, which pass '' here, and for
         // anything that fails validation - addDomain has never validated this argument.
         $slave_master = $this->normalizeMasterList($slave_master) ?? $slave_master;
+        $replicates = ZoneType::replicatesFromPrimary($type);
 
-        // TODO: make sure only one is possible if only one is enabled
-        if ($zone_master_add || $zone_slave_add) {
-            $dns_ns1 = $this->config->get('dns', 'ns1');
-            $dns_hostmaster = $this->config->get('dns', 'hostmaster');
-            $dns_ttl = $this->config->get('dns', 'ttl');
-
-            // A replicating kind is inert without a primary, so require one rather
-            // than letting the template slot alone satisfy the guard.
-            $hasRequiredArgs = ZoneType::replicatesFromPrimary($type)
-                ? (bool)($domain && $slave_master)
-                : (bool)($domain && $zone_template);
-
-            if ($hasRequiredArgs) {
-                // Create the zone before the outer transaction: in API mode
-                // createZone() commits its own placeholder row when no transaction is open.
-                try {
-                    $domain_id = $this->backendProvider->createZone($domain, $type, $slave_master);
-                } catch (\Exception $e) {
-                    return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
-                }
-                if ($domain_id === false) {
-                    // API call was rejected (duplicate zone, validation error, etc.)
-                    // Zone was NOT created - do not attempt cleanup as it could
-                    // delete an existing zone with the same name.
-                    return ZoneWriteResult::backendFailure(_('Failed to create zone in DNS backend.'));
-                }
-
-                if (!ZoneType::replicatesFromPrimary($type)) {
-                    $this->applySerialPolicy($domain_id, $domain, $soaEditApi);
-                }
-
-                $db->beginTransaction();
-                try {
-                    if ($this->backendProvider->isApiBackend()) {
-                        // Zone ids come from the zones table here, so createZone() already
-                        // inserted the row; fill in owner and template instead of duplicating it.
-                        $stmt = $db->prepare("UPDATE zones SET owner = :owner, zone_templ_id = :zone_template WHERE domain_id = :domain_id");
-                        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                        $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
-                        $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
-                        $stmt->execute();
-
-                        $zone_id = $domain_id;
-                    } else {
-                        $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
-                        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                        $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
-                        $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
-                        $stmt->execute();
-
-                        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
-                        $zone_id = $db->lastInsertId('zones_id_seq');
-                    }
-
-                    // Ownerless zones keep their default empty account; no push needed on create
-                    if ($owner !== null) {
-                        $accountSync = new ZoneAccountSyncService($db, $this->config, $this->backendProvider);
-                        $accountSync->syncZoneAccount($domain_id);
-                    }
-
-                    // Create sync tracking record if using a template
-                    if ($zone_template != "none" && is_numeric($zone_template)) {
-                        $syncService = new ZoneTemplateSyncService($db, $this->config, $this->backendProvider);
-                        $syncService->createSyncRecord($zone_id, (int)$zone_template);
-                        // Mark as synced since we're creating from template
-                        $syncService->markZoneAsSynced($zone_id, (int)$zone_template);
-                    }
-
-                    // Assign group ownership within the same transaction
-                    $uniqueGroupIds = array_unique($groupIds);
-                    foreach ($uniqueGroupIds as $groupId) {
-                        $stmt = $db->prepare("INSERT INTO zones_groups (domain_id, group_id, created_at) VALUES (:domain_id, :group_id, CURRENT_TIMESTAMP)");
-                        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                        $stmt->bindValue(':group_id', $groupId, PDO::PARAM_INT);
-                        $stmt->execute();
-                    }
-
-                    if (ZoneType::replicatesFromPrimary($type)) {
-                        // Records arrive by transfer, so skip the apex SOA and any template
-                        // records. Master IP is already set by backendProvider->createZone().
-                        $db->commit();
-                        $this->captureChange(function () use ($domain_id, $domain, $type, $slave_master, $owner): void {
-                            $this->changeLogger->logZoneCreate([
-                                'id' => $domain_id,
-                                'name' => $domain,
-                                'type' => $type,
-                                'master' => $slave_master,
-                                'owner' => $owner,
-                            ]);
-                        });
-                        return ZoneWriteResult::ok((int)$domain_id);
-                    } else {
-                        if ($zone_template == "none" && $domain_id) {
-                            $localTransaction = $this->backendProvider->supportsLocalWriteTransaction();
-                            if (!$localTransaction) {
-                                // The backend write cannot join this transaction, so land zones +
-                                // zones_groups first; on SQLite the open lock would block PowerDNS.
-                                $db->commit();
-                            }
-
-                            $ns1 = $dns_ns1;
-                            $hm = $dns_hostmaster;
-                            $ttl = $dns_ttl;
-
-                            // Get SOA parameters from config
-                            $soa_refresh = $this->config->get('dns', 'soa_refresh', 28800);
-                            $soa_retry = $this->config->get('dns', 'soa_retry', 7200);
-                            $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
-                            $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
-
-                            $serial = date("Ymd") . "00";
-
-                            // Construct complete SOA record with all parameters
-                            $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
-
-                            if (!$this->backendProvider->addRecord($domain_id, $domain, 'SOA', $soa_content, (int)$ttl, 0)) {
-                                if ($localTransaction) {
-                                    $db->rollBack();
-                                }
-                                $this->cleanupZoneOnFailure($domain_id, $domain);
-                                $this->cleanupZoneMetadata($domain_id);
-                                return ZoneWriteResult::backendFailure(_('Failed to create SOA record for zone.'));
-                            }
-                            if ($localTransaction) {
-                                $db->commit();
-                            }
-                            $this->captureChange(function () use ($domain_id, $domain, $type, $owner): void {
-                                $this->changeLogger->logZoneCreate([
-                                    'id' => $domain_id,
-                                    'name' => $domain,
-                                    'type' => $type,
-                                    'owner' => $owner,
-                                ]);
-                            });
-                            return ZoneWriteResult::ok((int)$domain_id);
-                        } elseif ($domain_id && is_numeric($zone_template)) {
-                            $localTransaction = $this->backendProvider->supportsLocalWriteTransaction();
-                            if (!$localTransaction) {
-                                // The template records are written outside this transaction, so
-                                // land zones + zones_groups before the first of them.
-                                $db->commit();
-                            }
-                            $numericIds = $this->backendProvider->recordIdsAreNumeric();
-
-                            $dns_ttl = $this->config->get('dns', 'ttl');
-
-                            $templ_records = ZoneTemplate::getZoneTemplRecords($db, (int)$zone_template);
-                            if (!empty($templ_records)) {
-                                $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->permissionService, $this->logger, $this->zoneTemplateRepository);
-                                foreach ($templ_records as $r) {
-                                    if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
-                                        $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
-                                        $recordType = $r["type"];
-                                        $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
-                                        $ttl = $r["ttl"];
-                                        $prio = intval($r["prio"]);
-
-                                        if (!$ttl) {
-                                            $ttl = $dns_ttl;
-                                        }
-
-                                        $record_id = $this->backendProvider->addRecordGetId($domain_id, $name, $recordType, $content, (int)$ttl, $prio);
-                                        if ($record_id === null) {
-                                            if ($localTransaction) {
-                                                $db->rollBack();
-                                            }
-                                            $this->cleanupZoneOnFailure($domain_id, $domain);
-                                            $this->cleanupZoneMetadata($domain_id);
-                                            return ZoneWriteResult::backendFailure(sprintf(_('Failed to create %s record for zone.'), $recordType));
-                                        }
-
-                                        // Link the record to the template so later template edits can
-                                        // remove it precisely; encoded ids need the string-keyed table.
-                                        if ($numericIds) {
-                                            $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
-                                            $stmt->execute([
-                                                ':domain_id' => $domain_id,
-                                                ':record_id' => $record_id,
-                                                ':zone_templ_id' => $r['zone_templ_id']
-                                            ]);
-                                        } else {
-                                            $stmt = $db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
-                                            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                                            $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
-                                            $stmt->bindValue(':zone_templ_id', (int) $r['zone_templ_id'], PDO::PARAM_INT);
-                                            $stmt->execute();
-                                        }
-                                    }
-                                }
-                            }
-                            if ($localTransaction) {
-                                $db->commit();
-                            }
-                            $this->captureChange(function () use ($domain_id, $domain, $type, $zone_template, $owner): void {
-                                $this->changeLogger->logZoneCreate([
-                                    'id' => $domain_id,
-                                    'name' => $domain,
-                                    'type' => $type,
-                                    'template_id' => (int) $zone_template,
-                                    'owner' => $owner,
-                                ]);
-                            });
-                            return ZoneWriteResult::ok((int)$domain_id);
-                        } else {
-                            $db->rollBack();
-                            return ZoneWriteResult::backendFailure(sprintf(_('Invalid argument(s) given to function %s %s'), "addDomain", "could not create zone"));
-                        }
-                    }
-                } catch (\Exception $e) {
-                    if ($db->inTransaction()) {
-                        $db->rollBack();
-                    }
-                    $this->cleanupZoneOnFailure($domain_id, $domain);
-                    // Removes whatever was committed before the failure; a no-op after a rollback.
-                    $this->cleanupZoneMetadata($domain_id);
-                    return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
-                }
-            } else {
-                return ZoneWriteResult::failure(sprintf(_('Invalid argument(s) given to function %s'), "addDomain"));
-            }
-        } else {
-            return ZoneWriteResult::forbidden(_("You do not have the permission to add a master zone."));
+        // A replicating kind is inert without a primary, so require one rather
+        // than letting the template slot alone satisfy the guard.
+        $hasRequiredArgs = $replicates
+            ? (bool)($domain && $slave_master)
+            : (bool)($domain && $zone_template);
+        if (!$hasRequiredArgs) {
+            return ZoneWriteResult::failure(sprintf(_('Invalid argument(s) given to function %s'), "addDomain"));
         }
+
+        // Create the zone before the outer transaction: in API mode
+        // createZone() commits its own placeholder row when no transaction is open.
+        try {
+            $domain_id = $this->backendProvider->createZone($domain, $type, $slave_master);
+        } catch (\Exception $e) {
+            return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
+        }
+        if ($domain_id === false) {
+            // API call was rejected (duplicate zone, validation error, etc.)
+            // Zone was NOT created - do not attempt cleanup as it could
+            // delete an existing zone with the same name.
+            return ZoneWriteResult::backendFailure(_('Failed to create zone in DNS backend.'));
+        }
+
+        if (!$replicates) {
+            $this->applySerialPolicy($domain_id, $domain, $soaEditApi);
+        }
+
+        $db->beginTransaction();
+        try {
+            $zone_id = $this->createZoneShell($db, $domain_id, $owner, $zone_template);
+            $this->assignInitialOwnership($db, $domain_id, $zone_id, $owner, $zone_template, $groupIds);
+
+            $zoneLog = ['id' => $domain_id, 'name' => $domain, 'type' => $type];
+            if ($replicates) {
+                // Records arrive by transfer, so skip the apex SOA and any template
+                // records. Master IP is already set by backendProvider->createZone().
+                $db->commit();
+                $zoneLog['master'] = $slave_master;
+            } else {
+                $zoneLog += $this->seedZoneRecords($db, $domain_id, $domain, $zone_template);
+            }
+            $zoneLog['owner'] = $owner;
+
+            $this->captureChange(function () use ($zoneLog): void {
+                $this->changeLogger->logZoneCreate($zoneLog);
+            });
+            return ZoneWriteResult::ok((int)$domain_id);
+        } catch (ZoneCreationFailedException $e) {
+            $this->cleanupFailedCreation($db, $domain_id, $domain);
+            return ZoneWriteResult::backendFailure($e->getMessage());
+        } catch (\Exception $e) {
+            $this->cleanupFailedCreation($db, $domain_id, $domain);
+            return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
+        }
+    }
+
+    /**
+     * Write the native zones row for a freshly created backend zone.
+     *
+     * @return int|string The zones.id the template sync rows key on
+     */
+    private function createZoneShell(PDO $db, int $domain_id, ?int $owner, int|string $zone_template): int|string
+    {
+        $templateId = ($zone_template == "none") ? 0 : $zone_template;
+
+        if ($this->backendProvider->isApiBackend()) {
+            // Zone ids come from the zones table here, so createZone() already
+            // inserted the row; fill in owner and template instead of duplicating it.
+            $stmt = $db->prepare("UPDATE zones SET owner = :owner, zone_templ_id = :zone_template WHERE domain_id = :domain_id");
+            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+            $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
+            $stmt->bindValue(':zone_template', $templateId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $domain_id;
+        }
+
+        $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
+        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
+        $stmt->bindValue(':zone_template', $templateId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+        return $db->lastInsertId('zones_id_seq');
+    }
+
+    /**
+     * Push the owner account, register the template sync state and add the group owners.
+     *
+     * @param int[] $groupIds
+     */
+    private function assignInitialOwnership(PDO $db, int $domain_id, int|string $zone_id, ?int $owner, int|string $zone_template, array $groupIds): void
+    {
+        // Ownerless zones keep their default empty account; no push needed on create
+        if ($owner !== null) {
+            $accountSync = new ZoneAccountSyncService($db, $this->config, $this->backendProvider);
+            $accountSync->syncZoneAccount($domain_id);
+        }
+
+        if ($zone_template != "none" && is_numeric($zone_template)) {
+            $syncService = new ZoneTemplateSyncService($db, $this->config, $this->backendProvider);
+            $syncService->createSyncRecord((int)$zone_id, (int)$zone_template);
+            // Mark as synced since we're creating from template
+            $syncService->markZoneAsSynced((int)$zone_id, (int)$zone_template);
+        }
+
+        foreach (array_unique($groupIds) as $groupId) {
+            $stmt = $db->prepare("INSERT INTO zones_groups (domain_id, group_id, created_at) VALUES (:domain_id, :group_id, CURRENT_TIMESTAMP)");
+            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+            $stmt->bindValue(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+    }
+
+    /**
+     * Seed the apex records of a primary zone: the default SOA, or the template's records.
+     *
+     * @return array<string, mixed> Extra fields for the zone-create log entry
+     * @throws ZoneCreationFailedException when a record cannot be written
+     */
+    private function seedZoneRecords(PDO $db, int $domain_id, string $domain, int|string $zone_template): array
+    {
+        $seedsDefaults = $zone_template == "none" && $domain_id;
+        if (!$seedsDefaults && !($domain_id && is_numeric($zone_template))) {
+            throw new ZoneCreationFailedException(sprintf(_('Invalid argument(s) given to function %s %s'), "addDomain", "could not create zone"));
+        }
+
+        // A backend write that cannot join this transaction lands zones + zones_groups
+        // first; on SQLite the open lock would otherwise block PowerDNS.
+        $localTransaction = $this->backendProvider->supportsLocalWriteTransaction();
+        if (!$localTransaction) {
+            $db->commit();
+        }
+
+        if ($seedsDefaults) {
+            $this->seedDefaultSoa($domain_id, $domain);
+            $logFields = [];
+        } else {
+            $this->materialiseTemplate($db, $domain_id, $domain, (int)$zone_template);
+            $logFields = ['template_id' => (int)$zone_template];
+        }
+
+        if ($localTransaction) {
+            $db->commit();
+        }
+
+        return $logFields;
+    }
+
+    /**
+     * Write the apex SOA built from the dns.* defaults.
+     *
+     * @throws ZoneCreationFailedException
+     */
+    private function seedDefaultSoa(int $domain_id, string $domain): void
+    {
+        $ns1 = $this->config->get('dns', 'ns1');
+        $hm = $this->config->get('dns', 'hostmaster');
+        $ttl = $this->config->get('dns', 'ttl');
+        $soa_refresh = $this->config->get('dns', 'soa_refresh', 28800);
+        $soa_retry = $this->config->get('dns', 'soa_retry', 7200);
+        $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
+        $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
+        $serial = date("Ymd") . "00";
+
+        $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
+
+        if (!$this->backendProvider->addRecord($domain_id, $domain, 'SOA', $soa_content, (int)$ttl, 0)) {
+            throw new ZoneCreationFailedException(_('Failed to create SOA record for zone.'));
+        }
+    }
+
+    /**
+     * Write the template's records with placeholders resolved and link each
+     * one back to the template.
+     *
+     * @throws ZoneCreationFailedException
+     */
+    private function materialiseTemplate(PDO $db, int $domain_id, string $domain, int $zone_template): void
+    {
+        $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
+        if (empty($templ_records)) {
+            return;
+        }
+
+        $numericIds = $this->backendProvider->recordIdsAreNumeric();
+        $dns_ttl = $this->config->get('dns', 'ttl');
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->permissionService, $this->logger, $this->zoneTemplateRepository);
+
+        foreach ($templ_records as $r) {
+            if (!self::shouldApplyTemplateRecord($domain, $r["type"])) {
+                continue;
+            }
+
+            $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
+            $recordType = $r["type"];
+            $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
+            $ttl = $r["ttl"] ?: $dns_ttl;
+            $prio = intval($r["prio"]);
+
+            $record_id = $this->backendProvider->addRecordGetId($domain_id, $name, $recordType, $content, (int)$ttl, $prio);
+            if ($record_id === null) {
+                throw new ZoneCreationFailedException(sprintf(_('Failed to create %s record for zone.'), $recordType));
+            }
+
+            $this->linkTemplateRecord($db, $domain_id, $record_id, (int)$r['zone_templ_id'], $numericIds);
+        }
+    }
+
+    /**
+     * Link a materialised record to its template so later template edits can
+     * remove it precisely; encoded (API) ids need the string-keyed table.
+     */
+    private function linkTemplateRecord(PDO $db, int $domain_id, int|string $record_id, int $zone_templ_id, bool $numericIds): void
+    {
+        if ($numericIds) {
+            $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
+            $stmt->execute([
+                ':domain_id' => $domain_id,
+                ':record_id' => $record_id,
+                ':zone_templ_id' => $zone_templ_id
+            ]);
+            return;
+        }
+
+        $stmt = $db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
+        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+        $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
+        $stmt->bindValue(':zone_templ_id', $zone_templ_id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    /**
+     * Undo a creation that failed after the backend zone existed: roll back
+     * whatever is still open, delete the backend zone, then remove any
+     * metadata that was already committed (a no-op after a rollback).
+     */
+    private function cleanupFailedCreation(PDO $db, int $domain_id, string $domain): void
+    {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        $this->cleanupZoneOnFailure($domain_id, $domain);
+        $this->cleanupZoneMetadata($domain_id);
     }
 
     /**
