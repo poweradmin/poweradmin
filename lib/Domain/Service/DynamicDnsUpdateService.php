@@ -31,7 +31,6 @@ use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
  * Runs a DDNS update: validates and authenticates it, picks the owning zone and syncs the A/AAAA records.
@@ -39,6 +38,7 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 readonly class DynamicDnsUpdateService
 {
     /**
+     * @param string $clientIp The caller's address, recorded with failed login attempts
      * @param Closure|null $requiresApproval fn(int $userId, int $zoneId): bool, true when the user's changes
      *        to the zone go through change requests; omitted, updates are never refused for review
      */
@@ -47,7 +47,7 @@ readonly class DynamicDnsUpdateService
         private DynamicDnsAuthenticationService $authService,
         private DynamicDnsRepositoryInterface $repository,
         private ?AuditLoggerInterface $auditService = null,
-        private ?IpAddressRetriever $ipRetriever = null,
+        private string $clientIp = '',
         private ?Closure $requiresApproval = null
     ) {
     }
@@ -59,8 +59,7 @@ readonly class DynamicDnsUpdateService
             return $this->determineErrorCode($validationResult->getErrors());
         }
 
-        $clientIp = $this->ipRetriever?->getClientIp() ?? '';
-        $user = $this->authService->authenticateUser($request, $clientIp);
+        $user = $this->authService->authenticateUser($request, $this->clientIp);
         if (!$user) {
             return 'badauth';
         }

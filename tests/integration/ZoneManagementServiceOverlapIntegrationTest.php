@@ -33,6 +33,7 @@ use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
 /**
  * Integration test for the API zone-creation path. Confirms that the
@@ -121,7 +122,8 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             new RepositoryFactory($this->db, $config, $backend),
             $backend,
             new PermissionService(new DbUserRepository($this->db, $config)),
-            new RecordChangeLogger($this->db)
+            new RecordChangeLogger($this->db),
+            fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend)
         );
     }
 

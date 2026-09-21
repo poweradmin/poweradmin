@@ -32,7 +32,6 @@ use Poweradmin\Infrastructure\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Infrastructure\Session\SessionService;
-use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -94,7 +93,7 @@ class SamlService
             $this->configManager,
             new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
             null,
-            UserTimezoneService::createDefault($this->db, $this->configManager)
+            (new ControllerServiceFactory($this->db, $this->configManager, $this->logger))->userTimezoneService()
         );
     }
 

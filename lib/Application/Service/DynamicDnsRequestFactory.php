@@ -63,7 +63,7 @@ class DynamicDnsRequestFactory
             ),
             $repository,
             $auditService ?? new AuditService($db),
-            new IpAddressRetriever($_SERVER),
+            (new IpAddressRetriever($_SERVER))->getClientIp(),
             self::requiresApproval($config, $permissions)
         );
     }

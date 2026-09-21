@@ -26,7 +26,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -112,7 +111,7 @@ class EditZoneTemplController extends BaseController
     {
         $iface_rowamount = $this->resolveRowsPerPage();
         $row_start = $this->getRowStart($iface_rowamount);
-        [$record_sort_by] = (new ZoneSortingService($this->userContext))->getZoneSortOrder(
+        [$record_sort_by] = $this->services()->zoneSortingService($this->userContext)->getZoneSortOrder(
             ['name', 'type', 'content', 'ttl', 'prio'],
             SessionKeys::ZONE_TEMPL_RECORD_SORT_BY,
             submittedSortBy: $this->httpRequest->getPostParam('record_sort_by') ?? $this->httpRequest->getQueryParam('record_sort_by'),

@@ -28,12 +28,10 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ReverseNetwork;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
-use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
 
@@ -56,21 +54,20 @@ class BatchReverseRecordCreator
      * @param Closure(): DnssecProviderInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
      */
     public function __construct(
-        PDO $db,
         ConfigurationInterface $config,
         AuditLoggerInterface $audit,
         DomainRepositoryInterface $domainRepository,
+        RecordRepositoryInterface $recordRepository,
         RecordManagerInterface $recordManager,
         Closure $dnssecProvider,
-        ?IPAddressValidator $ipValidator = null,
-        ?RecordRepositoryInterface $recordRepository = null
+        ?IPAddressValidator $ipValidator = null
     ) {
         $this->config = $config;
         $this->audit = $audit;
         $this->domainRepository = $domainRepository;
         $this->recordManager = $recordManager;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
-        $this->recordRepository = $recordRepository ?? new SqlRecordRepository($db, $config);
+        $this->recordRepository = $recordRepository;
         $this->recordMatchingService = new RecordMatchingService($domainRepository, $this->recordRepository);
         $this->dnssecProvider = $dnssecProvider;
     }

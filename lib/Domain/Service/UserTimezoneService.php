@@ -22,10 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
-use PDO;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 
 /**
  * Resolves the timezone to display for a user: their preference, then misc.timezone, then UTC.
@@ -78,17 +76,5 @@ class UserTimezoneService
     public function clearCache(): void
     {
         $this->cache = [];
-    }
-
-    /**
-     * Build a UserTimezoneService wired to the standard DB-backed
-     * preference repository. Shortcut for the many call sites that have
-     * a PDO connection and config available but no service container.
-     */
-    public static function createDefault(PDO $db, ConfigurationInterface $config): self
-    {
-        $repository = new DbUserPreferenceRepository($db);
-        $preferenceService = new UserPreferenceService($repository, $config);
-        return new self($preferenceService, $config);
     }
 }

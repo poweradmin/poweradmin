@@ -43,7 +43,7 @@ class SearchController extends BaseController
     public function __construct(array $request, bool $authenticate = true)
     {
         parent::__construct($request, $authenticate);
-        $this->zoneSortingService = new ZoneSortingService();
+        $this->zoneSortingService = $this->createZoneSortingService();
     }
 
     public function run(): void

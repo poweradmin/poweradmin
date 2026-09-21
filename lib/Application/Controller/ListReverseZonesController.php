@@ -52,7 +52,7 @@ class ListReverseZonesController extends BaseController
         $this->dnsDataService = $this->createDnsDataService();
         $this->forwardZoneAssociationService = new ForwardZoneAssociationService($zoneRepository);
         $this->userContextService = new UserContextService();
-        $this->zoneSortingService = new ZoneSortingService($this->userContextService);
+        $this->zoneSortingService = $this->createZoneSortingService();
     }
 
     public function run(): void

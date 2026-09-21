@@ -28,6 +28,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
+use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 
 #[CoversClass(ZoneSortingService::class)]
 class ZoneSortingServiceTest extends TestCase
@@ -43,7 +44,7 @@ class ZoneSortingServiceTest extends TestCase
         }
         $_SESSION = [];
 
-        $this->service = new ZoneSortingService(new UserContextService());
+        $this->service = new ZoneSortingService(new ReverseZoneSorting(), new UserContextService());
     }
 
     protected function tearDown(): void

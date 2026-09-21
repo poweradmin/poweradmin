@@ -161,7 +161,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
             $this->authService,
             $this->repository,
             null,
-            null,
+            '',
             fn(int $userId, int $zoneId): bool => $userId === 1 && $zoneId === 1
         );
 
@@ -545,5 +545,39 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $result = $this->service->processUpdate($request);
 
         $this->assertEquals('dnserr', $result);
+    }
+
+    public function testClientIpIsHandedToAuthenticationForTheLoginAttemptLog(): void
+    {
+        $request = new DynamicDnsRequest('user', 'pass', 'test.example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+
+        $this->authService->expects($this->once())
+            ->method('authenticateUser')
+            ->with($request, '203.0.113.9')
+            ->willReturn(null);
+
+        $service = new DynamicDnsUpdateService(
+            $this->validationService,
+            $this->authService,
+            $this->repository,
+            null,
+            '203.0.113.9'
+        );
+
+        $this->assertSame('badauth', $service->processUpdate($request));
+    }
+
+    public function testMissingClientIpAuthenticatesWithAnEmptyAddress(): void
+    {
+        $request = new DynamicDnsRequest('user', 'pass', 'test.example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+
+        $this->authService->expects($this->once())
+            ->method('authenticateUser')
+            ->with($request, '')
+            ->willReturn(null);
+
+        $this->assertSame('badauth', $this->service->processUpdate($request));
     }
 }

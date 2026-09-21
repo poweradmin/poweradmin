@@ -28,6 +28,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
+use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -54,7 +55,7 @@ class TestableListReverseZonesController extends ListReverseZonesController
         $this->plant('dnsDataService', $this->createDnsDataService());
         $this->plant('forwardZoneAssociationService', new ForwardZoneAssociationService($this->createZoneRepository()));
         $this->plant('userContextService', $userContext);
-        $this->plant('zoneSortingService', new ZoneSortingService($userContext));
+        $this->plant('zoneSortingService', new ZoneSortingService(new ReverseZoneSorting(), $userContext));
     }
 
     private function plant(string $property, object $value): void

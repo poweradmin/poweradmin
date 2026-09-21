@@ -23,7 +23,6 @@ class BatchReverseRecordCreatorTest extends TestCase
         ?RecordRepositoryInterface $recordRepository = null,
         ?Closure $dnssecProvider = null
     ): BatchReverseRecordCreator {
-        $db = $this->createMock(PDO::class);
         $audit = $this->createMock(AuditService::class);
 
         if ($config === null) {
@@ -51,7 +50,7 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $dnssecProvider ??= fn() => $this->createMock(DnssecProviderInterface::class);
 
-        return new BatchReverseRecordCreator($db, $config, $audit, $domainRepository, $recordManager, $dnssecProvider, $ipValidator, $recordRepository);
+        return new BatchReverseRecordCreator($config, $audit, $domainRepository, $recordRepository ?? $this->createMock(RecordRepositoryInterface::class), $recordManager, $dnssecProvider, $ipValidator);
     }
 
     private function dnssecConfig(bool $enabled): ConfigurationManager

@@ -46,6 +46,8 @@ use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
@@ -67,6 +69,7 @@ use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
@@ -259,6 +262,7 @@ class ControllerServiceFactory
             $this->dnsBackendProvider(),
             $this->permissionService(),
             $this->recordChangeLogger(),
+            fn(): DomainManagerInterface => $this->domainManager(),
             $this->logger,
             capabilities: $capabilities,
             signing: $this->zoneSigningService(),
@@ -275,6 +279,14 @@ class ControllerServiceFactory
     public function recordChangeLogger(): RecordChangeWriterInterface
     {
         return $this->recordChangeLogger ??= new RecordChangeLogger($this->db);
+    }
+
+    /**
+     * @param UserContextService|null $userContext The controller's session view, so tests can plant one
+     */
+    public function zoneSortingService(?UserContextService $userContext = null): ZoneSortingService
+    {
+        return new ZoneSortingService(new ReverseZoneSorting(), $userContext);
     }
 
     public function zoneMetadataService(): ZoneMetadataService
@@ -498,14 +510,12 @@ class ControllerServiceFactory
     public function batchReverseRecordCreator(): BatchReverseRecordCreator
     {
         return new BatchReverseRecordCreator(
-            $this->db,
             $this->config,
             $this->auditService(),
             $this->domainRepository(),
+            $this->recordRepository(),
             $this->recordManager(),
-            fn() => DnssecProviderFactory::create($this->db, $this->config),
-            null,
-            $this->recordRepository()
+            fn() => DnssecProviderFactory::create($this->db, $this->config)
         );
     }
 

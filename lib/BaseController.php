@@ -44,6 +44,7 @@ use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserManagementService;
@@ -493,6 +494,11 @@ abstract class BaseController
     protected function createApiPermissionService(): ApiPermissionService
     {
         return $this->services()->apiPermissionService();
+    }
+
+    protected function createZoneSortingService(): ZoneSortingService
+    {
+        return $this->services()->zoneSortingService($this->userContextService);
     }
 
     /**

@@ -36,7 +36,6 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use PDO;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -78,7 +77,7 @@ class ZoneManagementService
     private ?DomainRepositoryInterface $domainRepository;
     private PermissionService $permissions;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
-    private ?DomainManagerInterface $domainManager = null;
+    private DomainManagerInterface|Closure $domainManager;
     private ?ZoneOverlapService $overlapService = null;
     private ?HostnameValidator $hostnameValidator = null;
     /** @var array<string, array{id: string}|array{success: false, message: string, status: int, code: string}> */
@@ -89,6 +88,7 @@ class ZoneManagementService
      * @param DnsBackendProviderInterface $backendProvider Backend used by the zone template model and the domain manager
      * @param PermissionService $permissions Shares the request's permission cache
      * @param RecordChangeWriterInterface $changeLogger Receives the zone create and delete snapshots
+     * @param DomainManagerInterface|Closure $domainManager Writes the zone, or a closure returning the writer, resolved on first use
      * @param PdnsCapabilities|Closure|null $capabilities What the connected server supports, or a closure returning it; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
@@ -101,6 +101,7 @@ class ZoneManagementService
         DnsBackendProviderInterface $backendProvider,
         PermissionService $permissions,
         RecordChangeWriterInterface $changeLogger,
+        DomainManagerInterface|Closure $domainManager,
         ?LoggerInterface $logger = null,
         PdnsCapabilities|Closure|null $capabilities = null,
         ?ZoneSigningService $signing = null,
@@ -117,6 +118,7 @@ class ZoneManagementService
         $this->db = $db;
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger;
+        $this->domainManager = $domainManager;
         $this->capabilities = $capabilities;
         $this->signing = $signing;
     }
@@ -469,7 +471,11 @@ class ZoneManagementService
 
     private function domainManager(): DomainManagerInterface
     {
-        return $this->domainManager ??= DnsServiceFactory::createDomainManager($this->db, $this->config, $this->backendProvider);
+        if ($this->domainManager instanceof Closure) {
+            $this->domainManager = ($this->domainManager)();
+        }
+
+        return $this->domainManager;
     }
 
     private function domainRepository(): DomainRepositoryInterface

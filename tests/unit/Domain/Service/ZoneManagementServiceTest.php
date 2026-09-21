@@ -31,6 +31,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
@@ -68,6 +69,7 @@ class ZoneManagementServiceTest extends TestCase
             $this->createMock(DnsBackendProviderInterface::class),
             $this->createMock(PermissionService::class),
             $this->createMock(RecordChangeWriterInterface::class),
+            $this->createMock(DomainManagerInterface::class),
             domainRepository: $this->domainRepository
         );
     }

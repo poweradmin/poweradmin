@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
@@ -38,7 +39,6 @@ use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -355,7 +355,7 @@ class SessionAuthenticator
             $this->configManager,
             new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
             null,
-            UserTimezoneService::createDefault($this->db, $this->configManager)
+            (new ControllerServiceFactory($this->db, $this->configManager, $this->logger))->userTimezoneService()
         );
 
         // Check if MFA setup is required for this user

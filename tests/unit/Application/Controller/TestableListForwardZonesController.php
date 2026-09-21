@@ -26,6 +26,7 @@ use Poweradmin\Application\Controller\ListForwardZonesController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\ZoneSortingService;
+use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -48,7 +49,7 @@ class TestableListForwardZonesController extends ListForwardZonesController
     {
         (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
         (new ReflectionProperty(ListForwardZonesController::class, 'zoneSortingService'))
-            ->setValue($this, new ZoneSortingService());
+            ->setValue($this, new ZoneSortingService(new ReverseZoneSorting()));
     }
 
     public function render(string $template, array $params): void

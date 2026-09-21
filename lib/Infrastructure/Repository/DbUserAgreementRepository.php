@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Domain\Repository\UserAgreementRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
@@ -29,7 +30,7 @@ use PDO;
 /**
  * SQL persistence for accepted user agreement versions in the user_agreements table.
  */
-class DbUserAgreementRepository
+class DbUserAgreementRepository implements UserAgreementRepositoryInterface
 {
     private PDO $db;
     private ConfigurationManager $config;

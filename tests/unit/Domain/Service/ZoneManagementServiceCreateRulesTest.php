@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -86,6 +87,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             $backend,
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
+            fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
             null,
             $capabilities,
             null,
@@ -152,6 +154,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             $backend,
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
+            fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
             null,
             $lazy
         );

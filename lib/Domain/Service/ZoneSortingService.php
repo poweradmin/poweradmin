@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Domain\Enum\SortDirection;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 
@@ -31,12 +30,12 @@ use Poweradmin\Domain\Enum\ReverseZoneFilter;
  */
 class ZoneSortingService
 {
-    private ReverseZoneSorting $reverseZoneSorting;
+    private ReverseZoneSorterInterface $reverseZoneSorting;
     private UserContextService $userContextService;
 
-    public function __construct(?UserContextService $userContextService = null)
+    public function __construct(ReverseZoneSorterInterface $reverseZoneSorting, ?UserContextService $userContextService = null)
     {
-        $this->reverseZoneSorting = new ReverseZoneSorting();
+        $this->reverseZoneSorting = $reverseZoneSorting;
         $this->userContextService = $userContextService ?? new UserContextService();
     }
 

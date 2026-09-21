@@ -32,7 +32,6 @@ use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -95,7 +94,7 @@ class LdapAuthenticator
             $this->configManager,
             new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
             null,
-            UserTimezoneService::createDefault($this->db, $this->configManager)
+            (new ControllerServiceFactory($this->db, $this->configManager, $this->logger))->userTimezoneService()
         );
     }
 

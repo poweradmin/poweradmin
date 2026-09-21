@@ -44,7 +44,6 @@ use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\ZoneEditSubmission;
 use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -136,7 +135,7 @@ class EditController extends BaseController
             $row_start = max(0, ((int)$start - 1) * $iface_rowamount);
         }
 
-        [$record_sort_by, $sort_direction] = (new ZoneSortingService($this->userContextService))->getZoneSortOrder(
+        [$record_sort_by, $sort_direction] = $this->createZoneSortingService()->getZoneSortOrder(
             ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled'],
             SessionKeys::EDIT_RECORD_SORT_BY,
             submittedSortBy: $this->httpRequest->getPostParam('record_sort_by') ?? $this->httpRequest->getQueryParam('record_sort_by'),
