@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Infrastructure\Utility;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
-class ResultPaginatorTest extends TestCase
+class ResultPaginatorApexPinningTest extends TestCase
 {
     /**
      * Build a representative forward-zone record set for example.com where the

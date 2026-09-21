@@ -1,6 +1,6 @@
 <?php
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -11,7 +11,7 @@ use Poweradmin\Domain\Service\Zone\ZoneValidationService;
  *
  * Tests pre-flight zone validation checks before DNSSEC signing operations.
  */
-class ZoneValidationServiceTest extends TestCase
+class ZoneValidationServiceRecordChecksTest extends TestCase
 {
     private $recordRepoMock;
     private ZoneValidationService $validator;

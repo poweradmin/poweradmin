@@ -1,6 +1,6 @@
 <?php
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\DomainRecordCreator;

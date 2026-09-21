@@ -1,6 +1,6 @@
 <?php
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Domain\Database;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Database\PdnsTable;

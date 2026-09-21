@@ -1,11 +1,11 @@
 <?php
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 
-class PasswordEncryptionServiceTest extends TestCase
+class PasswordEncryptionServiceBasicsTest extends TestCase
 {
     private const SESSION_KEY = 'my-secret-key';
 

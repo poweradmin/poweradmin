@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Infrastructure\Database;
+namespace Poweradmin\Tests\Unit\Domain\Database;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
