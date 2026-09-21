@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Psr\Log\NullLogger;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * Zone templates are private to their owner unless global. Applying one by a posted
@@ -58,7 +59,7 @@ class ZoneTemplateServiceCanUseTest extends TestCase
         $config->method('get')->willReturn(null);
 
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $this->zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($db, $config, $backend), $config, $backend, $this->createMock(PermissionService::class), new UserContextService(), new NullLogger());
+        $this->zoneTemplate = ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($db, $config, $backend), $config, $backend, $this->createMock(PermissionService::class), new UserContextService(), new NullLogger());
     }
 
     public function testForeignTemplateIsRefused(): void

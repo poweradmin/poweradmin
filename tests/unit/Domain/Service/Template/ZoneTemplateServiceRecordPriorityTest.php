@@ -27,6 +27,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * Pins the priority range check on zone template records: only the types that
@@ -77,6 +78,6 @@ class ZoneTemplateServiceRecordPriorityTest extends SqliteIntegrationTestCase
     private function service(): ZoneTemplateService
     {
         $backend = $this->dnsBackendStub(false);
-        return new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
     }
 }

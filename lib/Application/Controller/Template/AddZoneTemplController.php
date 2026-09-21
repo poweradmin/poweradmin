@@ -75,7 +75,7 @@ class AddZoneTemplController extends BaseController
             $this->showFirstValidationError($postParams);
         }
 
-        $added = $this->services()->zoneTemplateService()->addZoneTempl($postParams, (int)$this->getCurrentUserId());
+        $added = $this->services()->zoneTemplateWriteService()->addZoneTempl($postParams, (int)$this->getCurrentUserId());
         if ($added->success) {
             $auditService = $this->services()->auditService();
             $auditService->logZoneTemplateAdd($postParams['templ_name'] ?? '');

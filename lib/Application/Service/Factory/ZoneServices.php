@@ -48,8 +48,11 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\ZoneSortingService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Domain\Service\Template\ZoneTemplateRecordService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateWriteService;
 use Poweradmin\Domain\Service\Zone\ZoneValidationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
@@ -79,6 +82,9 @@ class ZoneServices
     private ?ZoneTemplateSyncRepositoryInterface $zoneTemplateSync = null;
     private ?SupermasterManager $supermasterManager = null;
     private ?ZoneTemplateService $zoneTemplateService = null;
+    private ?ZoneTemplateAccessPolicy $zoneTemplateAccessPolicy = null;
+    private ?ZoneTemplateWriteService $zoneTemplateWriteService = null;
+    private ?ZoneTemplateRecordService $zoneTemplateRecordService = null;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
 
     public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ControllerServiceFactory $services)
@@ -251,15 +257,42 @@ class ZoneServices
         return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db, $this->config, $this->services->dnsBackendProvider());
     }
 
+    public function zoneTemplateAccessPolicy(): ZoneTemplateAccessPolicy
+    {
+        return $this->zoneTemplateAccessPolicy ??= new ZoneTemplateAccessPolicy(
+            $this->zoneTemplateRepository(),
+            $this->services->permissionService(),
+            new UserContextService()
+        );
+    }
+
+    public function zoneTemplateWriteService(): ZoneTemplateWriteService
+    {
+        return $this->zoneTemplateWriteService ??= new ZoneTemplateWriteService(
+            $this->zoneTemplateRepository(),
+            $this->zoneTemplateAccessPolicy(),
+            $this->config,
+            $this->logger
+        );
+    }
+
+    public function zoneTemplateRecordService(): ZoneTemplateRecordService
+    {
+        return $this->zoneTemplateRecordService ??= new ZoneTemplateRecordService(
+            $this->zoneTemplateRepository(),
+            $this->zoneTemplateAccessPolicy(),
+            $this->config,
+            $this->services->dnsBackendProvider()
+        );
+    }
+
     public function zoneTemplateService(): ZoneTemplateService
     {
         return $this->zoneTemplateService ??= new ZoneTemplateService(
             $this->zoneTemplateRepository(),
-            $this->config,
-            $this->services->dnsBackendProvider(),
-            $this->services->permissionService(),
-            new UserContextService(),
-            $this->logger
+            $this->zoneTemplateAccessPolicy(),
+            $this->zoneTemplateWriteService(),
+            $this->zoneTemplateRecordService()
         );
     }
 

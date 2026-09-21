@@ -97,7 +97,10 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\ZoneSortingService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
+use Poweradmin\Domain\Service\Template\ZoneTemplateRecordService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateWriteService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
@@ -458,6 +461,21 @@ class ControllerServiceFactory
     public function zoneTemplateService(): ZoneTemplateService
     {
         return $this->zones->zoneTemplateService();
+    }
+
+    public function zoneTemplateAccessPolicy(): ZoneTemplateAccessPolicy
+    {
+        return $this->zones->zoneTemplateAccessPolicy();
+    }
+
+    public function zoneTemplateWriteService(): ZoneTemplateWriteService
+    {
+        return $this->zones->zoneTemplateWriteService();
+    }
+
+    public function zoneTemplateRecordService(): ZoneTemplateRecordService
+    {
+        return $this->zones->zoneTemplateRecordService();
     }
 
     public function catalogZoneService(): CatalogZoneService

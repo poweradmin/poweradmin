@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * Coverage for the default-template resolver and writers.
@@ -47,7 +48,7 @@ class ZoneTemplateServiceDefaultTest extends TestCase
     private function service(PDO $db, ConfigurationInterface $config, LoggerInterface $logger): ZoneTemplateService
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        return new ZoneTemplateService(
+        return ZoneTemplateServiceBuilder::build(
             new DbZoneTemplateRepository($db, $config, $backend),
             $config,
             $backend,

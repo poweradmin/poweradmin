@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Application\Service\DnsServiceFactory;
 use Psr\Log\NullLogger;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * Integration test for the API zone-creation path. Confirms that the
@@ -126,7 +127,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             new PermissionService(new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally())),
             new RecordChangeLogger($this->db, $config),
             fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
-            new ZoneTemplateService(
+            ZoneTemplateServiceBuilder::build(
                 new DbZoneTemplateRepository($this->db, $config, $backend),
                 $config,
                 $backend,

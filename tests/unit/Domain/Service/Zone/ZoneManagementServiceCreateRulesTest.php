@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Application\Service\DnsServiceFactory;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * API zone creation must apply the same name and template rules as the web UI:
@@ -101,7 +102,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
 
     private function zoneTemplateService(ConfigurationManager $config, DnsBackendProviderInterface $backend): ZoneTemplateService
     {
-        return new ZoneTemplateService(
+        return ZoneTemplateServiceBuilder::build(
             new DbZoneTemplateRepository($this->db, $config, $backend),
             $config,
             $backend,

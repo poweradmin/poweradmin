@@ -92,8 +92,8 @@ class BulkRegistrationController extends BaseController
             return;
         }
 
-        $zoneTemplateModel = $this->services()->zoneTemplateService();
-        if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
+        $templateAccess = $this->services()->zoneTemplateAccessPolicy();
+        if (!$templateAccess->canCurrentUserUseTemplate($zone_template)) {
             $this->setMessage('bulk_registration', 'error', _('Invalid or unexpected input given.'));
             $this->showBulkRegistrationForm();
             return;

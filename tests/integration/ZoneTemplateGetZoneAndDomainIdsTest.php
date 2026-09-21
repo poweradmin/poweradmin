@@ -28,6 +28,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * Regression tests for ZoneTemplateService::getZoneAndDomainIdsByTemplate().
@@ -93,7 +94,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $zoneId = $this->linkZone($domainId, $templateId);
 
         $backend = $this->dnsBackendStub(false);
-        $zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
+        $zoneTemplate = ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -113,7 +114,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $orphanZoneId = $this->linkZone(99999, $templateId);
 
         $backend = $this->dnsBackendStub(false);
-        $zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
+        $zoneTemplate = ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -134,7 +135,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $apiZoneId = $this->linkZone(99999, $templateId);
 
         $backend = $this->dnsBackendStub(true);
-        $zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
+        $zoneTemplate = ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -156,7 +157,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $this->linkZone($otherDomainId, $otherTemplateId);
 
         $backend = $this->dnsBackendStub(false);
-        $zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
+        $zoneTemplate = ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($targetTemplateId, self::ADMIN_USER_ID);
 

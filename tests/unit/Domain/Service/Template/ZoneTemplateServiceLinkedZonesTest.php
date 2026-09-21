@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * Characterizes the four zone-listing queries on the zone template service: which
@@ -93,7 +94,7 @@ class ZoneTemplateServiceLinkedZonesTest extends SqliteIntegrationTestCase
 
     private function model(DnsBackendProviderInterface $backend): ZoneTemplateService
     {
-        return new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
     }
 
     private function actingAs(int $userId): void

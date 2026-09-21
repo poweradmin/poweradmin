@@ -128,8 +128,8 @@ class AddZoneMasterController extends BaseController
         }
 
         $zone_template = $this->httpRequest->getPostParam('zone_template', 'none');
-        $zoneTemplateModel = $this->services()->zoneTemplateService();
-        if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
+        $templateAccess = $this->services()->zoneTemplateAccessPolicy();
+        if (!$templateAccess->canCurrentUserUseTemplate($zone_template)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
             $this->showForm();
             return;

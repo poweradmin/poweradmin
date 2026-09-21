@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplateWriteResult;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * The template writes used to flash their reason into the session; now they
@@ -155,7 +156,7 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
     {
         $backend = $this->dnsBackendStub(false);
 
-        return new ZoneTemplateService(
+        return ZoneTemplateServiceBuilder::build(
             new DbZoneTemplateRepository($this->db, $this->config, $backend),
             $this->config,
             $backend,
