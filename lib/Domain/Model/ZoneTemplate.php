@@ -524,7 +524,7 @@ class ZoneTemplate
 
         // Check if priority is valid for this record type
         if ($prio < 0 || $prio > 65535) {
-            if ($type == 'MX' || $type == 'SRV') {
+            if (RecordType::hasPriority($type)) {
                 $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
                 return false;
             }
@@ -621,7 +621,7 @@ class ZoneTemplate
 
         // Check if priority is valid for this record type
         if (!is_numeric($record['prio']) || $record['prio'] < 0 || $record['prio'] > 65535) {
-            if ($record['type'] == 'MX' || $record['type'] == 'SRV') {
+            if (RecordType::hasPriority((string)$record['type'])) {
                 $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
                 return false;
             }

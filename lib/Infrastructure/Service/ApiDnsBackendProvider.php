@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
@@ -1116,8 +1117,8 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
                 $content = $record['content'] ?? '';
                 $prio = 0;
 
-                // Extract priority from content for MX/SRV
-                if ($type === 'MX' || $type === 'SRV') {
+                // Priority-bearing types carry the preference in front of the content
+                if (RecordType::hasPriority($type)) {
                     $parts = explode(' ', $content, 2);
                     if (count($parts) === 2) {
                         $prio = (int)$parts[0];
@@ -1190,7 +1191,7 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
                 $type = $result['type'] ?? '';
                 $prio = 0;
 
-                if ($type === 'MX' || $type === 'SRV') {
+                if (RecordType::hasPriority($type)) {
                     $parts = explode(' ', $content, 2);
                     if (count($parts) === 2) {
                         $prio = (int)$parts[0];
@@ -1399,7 +1400,7 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
     private function formatRecordContent(string $type, string $content, int $prio): string
     {
-        if ($type === 'MX' || $type === 'SRV') {
+        if (RecordType::hasPriority($type)) {
             return $prio . ' ' . self::ensureTrailingDot($content);
         }
 
@@ -1422,7 +1423,7 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
     private function stripTrailingDotFromContent(string $type, string $content): string
     {
-        $hostnameTypes = ['CNAME', 'NS', 'MX', 'PTR', 'SRV', 'AFSDB', 'DNAME', 'ALIAS'];
+        $hostnameTypes = ['CNAME', 'NS', 'MX', 'KX', 'PTR', 'SRV', 'AFSDB', 'DNAME', 'ALIAS'];
         if (in_array($type, $hostnameTypes, true)) {
             return rtrim($content, '.');
         }

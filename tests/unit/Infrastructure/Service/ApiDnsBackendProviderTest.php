@@ -776,6 +776,38 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testAddKxRecordWritesThePreferenceInFrontOfTheExchanger(): void
+    {
+        // KX stores its preference in the prio column like MX, so the API content
+        // has to carry it or PowerDNS refuses the record.
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => []]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', [
+                [
+                    'name' => 'example.com.',
+                    'type' => 'KX',
+                    'ttl' => 3600,
+                    'changetype' => 'REPLACE',
+                    'records' => [
+                        ['content' => '20 kx.example.com.', 'disabled' => false],
+                    ],
+                ],
+            ])
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->addRecord(1, 'example.com', 'KX', 'kx.example.com.', 3600, 20));
+    }
+
     public function testAddMxRecordWithZeroPriority(): void
     {
         $stmtZone = $this->createMock(PDOStatement::class);
@@ -1809,6 +1841,32 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertEquals(10, $records[0]['prio']);
         // MX content should have trailing dot stripped
         $this->assertEquals('mail.example.com', $records[0]['content']);
+    }
+
+    public function testGetZoneRecordsNormalisesKxLikeMx(): void
+    {
+        // The read side must produce the same content the write side encoded
+        // into the record id, or template-driven deletes cannot find the row.
+        $this->mockClient->method('getZone')
+            ->with('example.com.')
+            ->willReturn([
+                'rrsets' => [
+                    [
+                        'name' => 'example.com.',
+                        'type' => 'KX',
+                        'ttl' => 3600,
+                        'records' => [
+                            ['content' => '20 kx.example.com.', 'disabled' => false],
+                        ],
+                    ],
+                ],
+            ]);
+
+        $records = $this->provider->getZoneRecords(1, 'example.com');
+
+        $this->assertCount(1, $records);
+        $this->assertEquals(20, $records[0]['prio']);
+        $this->assertEquals('kx.example.com', $records[0]['content']);
     }
 
     // ---------------------------------------------------------------

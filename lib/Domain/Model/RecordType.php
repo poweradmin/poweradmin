@@ -187,6 +187,14 @@ class RecordType
         self::WALLET,
     ];
 
+    /**
+     * Whether $type keeps its preference in the separate prio column
+     */
+    public static function hasPriority(string $type): bool
+    {
+        return in_array($type, self::TYPES_WITH_PRIORITY, true);
+    }
+
     // Private constructor to prevent instantiation
     private function __construct()
     {
