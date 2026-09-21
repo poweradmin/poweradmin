@@ -403,7 +403,10 @@ class ControllerServiceFactory
 
     public function recordCommentService(): RecordCommentService
     {
-        return $this->recordCommentService ??= new RecordCommentService($this->repositoryFactory()->createRecordCommentRepository());
+        return $this->recordCommentService ??= new RecordCommentService(
+            $this->repositoryFactory()->createRecordCommentRepository(),
+            $this->repositoryFactory()->createRecordLinkedCommentRepository()
+        );
     }
 
     public function zoneEditService(): ZoneEditService
@@ -448,7 +451,8 @@ class ControllerServiceFactory
             RecordChangeLogger::withChangeset(...),
             $this->permissionService(),
             $this->changeRequestNotificationService(),
-            $this->zoneFileSnapshot(...)
+            $this->zoneFileSnapshot(...),
+            $this->repositoryFactory()->createRecordLinkedCommentRepository()
         );
     }
 

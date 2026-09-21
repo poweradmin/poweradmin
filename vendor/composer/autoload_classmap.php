@@ -1271,6 +1271,7 @@ return array(
     'Poweradmin\\Domain\\Repository\\DomainRepositoryInterface' => $baseDir . '/lib/Domain/Repository/DomainRepositoryInterface.php',
     'Poweradmin\\Domain\\Repository\\DynamicDnsRepositoryInterface' => $baseDir . '/lib/Domain/Repository/DynamicDnsRepositoryInterface.php',
     'Poweradmin\\Domain\\Repository\\RecordCommentRepositoryInterface' => $baseDir . '/lib/Domain/Repository/RecordCommentRepositoryInterface.php',
+    'Poweradmin\\Domain\\Repository\\RecordLinkedCommentRepositoryInterface' => $baseDir . '/lib/Domain/Repository/RecordLinkedCommentRepositoryInterface.php',
     'Poweradmin\\Domain\\Repository\\RecordRepositoryInterface' => $baseDir . '/lib/Domain/Repository/RecordRepositoryInterface.php',
     'Poweradmin\\Domain\\Repository\\RecordTypeDefaultRepositoryInterface' => $baseDir . '/lib/Domain/Repository/RecordTypeDefaultRepositoryInterface.php',
     'Poweradmin\\Domain\\Repository\\RepositoryFactoryInterface' => $baseDir . '/lib/Domain/Repository/RepositoryFactoryInterface.php',

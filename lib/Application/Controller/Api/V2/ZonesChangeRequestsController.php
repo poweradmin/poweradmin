@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
@@ -53,6 +54,7 @@ class ZonesChangeRequestsController extends PublicApiController
     private ZoneReadRepositoryInterface $zoneRepository;
     private RecordRepositoryInterface $recordRepository;
     private RecordCommentRepositoryInterface $recordComments;
+    private ?RecordLinkedCommentRepositoryInterface $linkedComments;
     private ZoneChangeRequestRepositoryInterface $requests;
     private ZoneChangeRequestService $changeRequests;
     private ApiPermissionService $apiPermissionService;
@@ -65,6 +67,7 @@ class ZonesChangeRequestsController extends PublicApiController
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $this->createRecordRepository();
         $this->recordComments = $this->getRepositoryFactory()->createRecordCommentRepository();
+        $this->linkedComments = $this->getRepositoryFactory()->createRecordLinkedCommentRepository();
         $this->requests = $this->createZoneChangeRequestRepository();
         $this->changeRequests = $this->createZoneChangeRequestService();
         $this->apiPermissionService = $this->createApiPermissionService();
@@ -362,7 +365,7 @@ class ZonesChangeRequestsController extends PublicApiController
         if (!$this->config->get('interface', 'show_record_comments', false)) {
             return '';
         }
-        $comment = $this->recordComments->findByRecordId($recordId) ?? $this->recordComments->find($zoneId, $name, $type);
+        $comment = $this->linkedComments?->findByRecordId($recordId) ?? $this->recordComments->find($zoneId, $name, $type);
 
         return $comment?->getComment() ?? '';
     }

@@ -34,5 +34,10 @@ interface RepositoryFactoryInterface
 
     public function createRecordCommentRepository(): RecordCommentRepositoryInterface;
 
+    /**
+     * Per-record comment links, or null on a backend that keeps comments per RRset only.
+     */
+    public function createRecordLinkedCommentRepository(): ?RecordLinkedCommentRepositoryInterface;
+
     public function createDomainRepository(): DomainRepositoryInterface;
 }

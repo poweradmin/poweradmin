@@ -24,23 +24,32 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
 use Poweradmin\Domain\Service\RecordCommentEditorInterface;
 
 /**
  * Reads and writes the comment attached to a record.
  *
- * Comments are stored per-record using a linking table (record_comment_links)
- * that associates individual record IDs with comment IDs in the PowerDNS comments table.
- * This allows different records with the same name and type to have different comments.
+ * On the SQL backend comments are stored per record through a linking table
+ * (record_comment_links), so records sharing a name and type can carry
+ * different comments. The API backend has no such table: it keeps one comment
+ * per RRset and the per-record operations report that they are unsupported.
  */
 class RecordCommentService implements RecordCommentEditorInterface
 {
-    private RecordCommentRepositoryInterface $recordCommentRepository;
-
+    /**
+     * @param RecordLinkedCommentRepositoryInterface|null $linkedComments Null on a backend without per-record links
+     */
     public function __construct(
-        RecordCommentRepositoryInterface $recordCommentRepository
+        private readonly RecordCommentRepositoryInterface $recordCommentRepository,
+        private readonly ?RecordLinkedCommentRepositoryInterface $linkedComments = null
     ) {
-        $this->recordCommentRepository = $recordCommentRepository;
+    }
+
+    /** Whether this backend can attach a comment to one record rather than its whole RRset */
+    public function supportsPerRecordComments(): bool
+    {
+        return $this->linkedComments !== null;
     }
 
     /**
@@ -64,7 +73,7 @@ class RecordCommentService implements RecordCommentEditorInterface
         ?string $account = null
     ): ?RecordComment {
         // Ensure legacy RRset comments are copied to other records before mutating this RRset
-        $migrated = $this->recordCommentRepository->migrateLegacyComments($domainId, $name, $type, $recordId);
+        $migrated = $this->migrateLegacyComments($domainId, $name, $type, $recordId);
 
         if ($comment === '') {
             // Delete per-record comment (linked via record_comment_links)
@@ -150,11 +159,19 @@ class RecordCommentService implements RecordCommentEditorInterface
      * Removes the link and the associated comment.
      *
      * @param int|string $recordId Record ID
-     * @return bool
+     * @return bool False when the backend has no per-record comments
      */
     public function deleteCommentByRecordId(int|string $recordId): bool
     {
-        return $this->recordCommentRepository->deleteByRecordId($recordId);
+        return $this->linkedComments?->deleteByRecordId($recordId) ?? false;
+    }
+
+    /**
+     * @return bool True if siblings were migrated; false when nothing was, or the backend cannot
+     */
+    private function migrateLegacyComments(int $domainId, string $name, string $type, int|string $recordId): bool
+    {
+        return $this->linkedComments?->migrateLegacyComments($domainId, $name, $type, $recordId) ?? false;
     }
 
     /**
@@ -189,7 +206,7 @@ class RecordCommentService implements RecordCommentEditorInterface
     ): ?RecordComment {
         if ($comment === '') {
             // Migrate legacy comments to other records before deleting
-            $migrated = $this->recordCommentRepository->migrateLegacyComments($domainId, $name, $type, $recordId);
+            $migrated = $this->migrateLegacyComments($domainId, $name, $type, $recordId);
             // Delete per-record comment (linked via record_comment_links)
             $this->deleteCommentByRecordId($recordId);
             // Delete legacy RRset comments only when siblings were actually migrated
@@ -260,10 +277,10 @@ class RecordCommentService implements RecordCommentEditorInterface
      * Find a comment for a specific record.
      *
      * @param int|string $recordId Record ID
-     * @return RecordComment|null
+     * @return RecordComment|null Null when none is linked, or the backend has no per-record comments
      */
     public function findCommentByRecordId(int|string $recordId): ?RecordComment
     {
-        return $this->recordCommentRepository->findByRecordId($recordId);
+        return $this->linkedComments?->findByRecordId($recordId);
     }
 }

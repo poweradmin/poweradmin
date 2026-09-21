@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -66,6 +67,8 @@ class ZoneChangeRequestService
      * @param ChangeRequestNotifierInterface|null $notifier Told about filed and decided requests; omitted, nobody is
      * @param Closure|null $zoneSnapshot fn(int $zoneId, string $zoneName): ?string rendering the zone as a zone
      *        file, kept with the request before an approved deletion; omitted, nothing is kept
+     * @param RecordLinkedCommentRepositoryInterface|null $linkedComments Per-record comment links; null on a
+     *        backend without them, where a delete request carries no stored comment
      */
     public function __construct(
         private readonly ZoneChangeRequestRepositoryInterface $requests,
@@ -84,7 +87,8 @@ class ZoneChangeRequestService
         private readonly ?Closure $changeset = null,
         private readonly ?PermissionService $permissions = null,
         private readonly ?ChangeRequestNotifierInterface $notifier = null,
-        private readonly ?Closure $zoneSnapshot = null
+        private readonly ?Closure $zoneSnapshot = null,
+        private readonly ?RecordLinkedCommentRepositoryInterface $linkedComments = null
     ) {
         $this->formatter = new DnsFormatter($config);
     }
@@ -195,7 +199,7 @@ class ZoneChangeRequestService
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_RECORD_NOT_FOUND, 'Record not found.', 404);
         }
         $zoneName = $this->domains->getDomainNameById($zoneId) ?? '';
-        $stored['comment'] = $this->recordComments?->findByRecordId($recordId)?->getComment();
+        $stored['comment'] = $this->linkedComments?->findByRecordId($recordId)?->getComment();
 
         $actions = [[
             'op' => ZoneChangeRequest::OP_DELETE,

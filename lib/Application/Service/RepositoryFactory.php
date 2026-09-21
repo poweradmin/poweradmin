@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -98,6 +99,14 @@ class RepositoryFactory implements RepositoryFactoryInterface
             if ($apiClient !== null) {
                 return new ApiRecordCommentRepository($apiClient, $this->backendProvider);
             }
+        }
+        return new DbRecordCommentRepository($this->db, $this->config, $this->backendProvider);
+    }
+
+    public function createRecordLinkedCommentRepository(): ?RecordLinkedCommentRepositoryInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return null;
         }
         return new DbRecordCommentRepository($this->db, $this->config, $this->backendProvider);
     }

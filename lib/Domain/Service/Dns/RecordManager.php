@@ -523,7 +523,7 @@ class RecordManager implements RecordManagerInterface
         $zoneId = (int)$record['zid'];
         self::deleteRecordZoneTempl($this->db, $rid);
         $comments = $this->repositoryFactory->createRecordCommentRepository();
-        $comments->deleteByRecordId($rid);
+        $this->repositoryFactory->createRecordLinkedCommentRepository()?->deleteByRecordId($rid);
         if (!$recordRepository->hasSimilarRecords($zoneId, (string)$record['name'], (string)$record['type'], $rid)) {
             $comments->delete($zoneId, (string)$record['name'], (string)$record['type']);
         }

@@ -25,7 +25,8 @@ namespace Poweradmin\Domain\Repository;
 use Poweradmin\Domain\Model\RecordComment;
 
 /**
- * Persistence for record comments and their record links.
+ * Persistence for RRset-level record comments; both backends implement it.
+ * Per-record links are RecordLinkedCommentRepositoryInterface (SQL only).
  */
 interface RecordCommentRepositoryInterface
 {
@@ -87,39 +88,6 @@ interface RecordCommentRepositoryInterface
     public function update(int $domainId, string $oldName, string $oldType, RecordComment $comment): ?RecordComment;
 
     /**
-     * Find a comment linked to a specific record ID.
-     *
-     * @param int|string $recordId The record ID
-     * @return RecordComment|null
-     */
-    public function findByRecordId(int|string $recordId): ?RecordComment;
-
-    /**
-     * Delete the comment linked to a specific record ID.
-     *
-     * @param int|string $recordId The record ID
-     * @return bool
-     */
-    public function deleteByRecordId(int|string $recordId): bool;
-
-    /**
-     * Link a record to a comment.
-     *
-     * @param int|string $recordId The record ID
-     * @param int $commentId The comment ID
-     * @return bool
-     */
-    public function linkRecordToComment(int|string $recordId, int $commentId): bool;
-
-    /**
-     * Unlink a record from its comment.
-     *
-     * @param int|string $recordId The record ID
-     * @return bool
-     */
-    public function unlinkRecord(int|string $recordId): bool;
-
-    /**
      * Add a comment for a specific record.
      * Creates the comment and links it to the record.
      *
@@ -128,16 +96,4 @@ interface RecordCommentRepositoryInterface
      * @return RecordComment|null The added comment with ID, or null on failure
      */
     public function addForRecord(int|string $recordId, RecordComment $comment): ?RecordComment;
-
-    /**
-     * Migrate legacy RRset comments to per-record links for all records
-     * in the RRset that don't have linked comments yet.
-     *
-     * @param int $domainId Domain ID
-     * @param string $name Record name
-     * @param string $type Record type
-     * @param int|string $excludeRecordId Record ID to exclude (int for SQL, encoded string for API)
-     * @return bool True if siblings were actually migrated, false if skipped
-     */
-    public function migrateLegacyComments(int $domainId, string $name, string $type, int|string $excludeRecordId): bool;
 }

@@ -1677,6 +1677,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Repository\\DomainRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/DomainRepositoryInterface.php',
         'Poweradmin\\Domain\\Repository\\DynamicDnsRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/DynamicDnsRepositoryInterface.php',
         'Poweradmin\\Domain\\Repository\\RecordCommentRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/RecordCommentRepositoryInterface.php',
+        'Poweradmin\\Domain\\Repository\\RecordLinkedCommentRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/RecordLinkedCommentRepositoryInterface.php',
         'Poweradmin\\Domain\\Repository\\RecordRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/RecordRepositoryInterface.php',
         'Poweradmin\\Domain\\Repository\\RecordTypeDefaultRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/RecordTypeDefaultRepositoryInterface.php',
         'Poweradmin\\Domain\\Repository\\RepositoryFactoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/RepositoryFactoryInterface.php',

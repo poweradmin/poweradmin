@@ -137,32 +137,6 @@ class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
         return $result;
     }
 
-    public function findByRecordId(int|string $recordId): ?RecordComment
-    {
-        // Per-record comments are not supported in API mode.
-        // Comments are shared across all records in an RRset.
-        return null;
-    }
-
-    public function deleteByRecordId(int|string $recordId): bool
-    {
-        // Per-record deletes are a no-op in API mode to avoid
-        // clearing the shared RRset comment.
-        return true;
-    }
-
-    public function linkRecordToComment(int|string $recordId, int $commentId): bool
-    {
-        // Per-record linking is not supported in API mode.
-        return true;
-    }
-
-    public function unlinkRecord(int|string $recordId): bool
-    {
-        // Per-record unlinking is not supported in API mode.
-        return true;
-    }
-
     public function addForRecord(int|string $recordId, RecordComment $comment): ?RecordComment
     {
         // Per-record isolation is not possible in API mode since comments
@@ -176,12 +150,6 @@ class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
         }
 
         return $this->writeRRsetComment($comment);
-    }
-
-    public function migrateLegacyComments(int $domainId, string $name, string $type, int|string $excludeRecordId): bool
-    {
-        // Not applicable for API mode
-        return false;
     }
 
     /**

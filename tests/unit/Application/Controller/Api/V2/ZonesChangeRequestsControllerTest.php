@@ -150,6 +150,7 @@ class ZonesChangeRequestsControllerTest extends TestCase
         $this->inject($controller, 'zoneRepository', $this->zoneRepository());
         $this->inject($controller, 'recordRepository', $this->createMock(RecordRepositoryInterface::class));
         $this->inject($controller, 'recordComments', $this->createMock(RecordCommentRepositoryInterface::class));
+        $this->inject($controller, 'linkedComments', null);
         $this->inject($controller, 'requests', $this->requests);
         $this->inject($controller, 'changeRequests', $this->service);
         $this->inject($controller, 'apiPermissionService', $this->permissions);
