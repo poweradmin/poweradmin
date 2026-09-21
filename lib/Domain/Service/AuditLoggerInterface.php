@@ -35,6 +35,8 @@ interface AuditLoggerInterface
      */
     public function logRecordEdit(?int $zoneId, array $before, array $after): void;
 
+    public function logRecordDelete(int $zoneId, string $type, string $name, string $content, int|string $ttl, int|string|null $prio): void;
+
     public function logBatchPtrRecordAdd(int $zoneId, string $name, string $content, int|string $ttl, int|string $prio): void;
 
     /**

@@ -24,12 +24,11 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\Dns\RecordDeletionOutcome;
 use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -42,14 +41,12 @@ use Poweradmin\Domain\Utility\IpHelper;
 class DeleteRecordController extends BaseController
 {
 
-    private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->reverseRecordCreator = $this->createReverseRecordCreator();
         $this->userContextService = new UserContextService();
         $this->permissionService = $this->createPermissionService();
     }
@@ -66,7 +63,6 @@ class DeleteRecordController extends BaseController
         }
 
         $recordRepository = $this->createRecordRepository();
-        $recordManager = $this->createRecordManager();
         $domainRepository = $this->createDomainRepository();
 
         // Get zone ID from record first
@@ -94,79 +90,21 @@ class DeleteRecordController extends BaseController
         if ($this->isPost() && $edit_mode === ChangeApprovalPolicy::MODE_REQUEST) {
             $this->requestRecordDelete($zid, $record_id);
         } elseif ($this->isPost()) {
-            $record_info = $recordRepository->getRecordFromId($record_id);
-            if ($record_info === null) {
-                $this->showError(_('Record not found.'));
+            $outcome = $this->createRecordDeletionService()->deleteWithReverse(
+                $zid,
+                $record_id,
+                $this->httpRequest->getPostParam('delete_ptr') === '1',
+                $this->httpRequest->getPostParam('delete_forward') === '1'
+            );
+            if ($outcome->notFound) {
+                $this->showError((string)$outcome->message);
                 return;
             }
-
-            // Check if this is an A or AAAA record that might have a corresponding PTR record
-            $hasPtrRecord = false;
-            $deletedPtrRecord = false;
-            if (
-                ($record_info['type'] === RecordType::A || $record_info['type'] === RecordType::AAAA) &&
-                $this->config->get('interface', 'add_reverse_record', false)
-            ) {
-                $hasPtrRecord = true;
-            }
-
-            // Check if this is a PTR record that might have a corresponding A/AAAA record
-            $hasForwardRecord = false;
-            $deletedForwardRecord = false;
-            if (
-                $record_info['type'] === RecordType::PTR &&
-                $this->config->get('interface', 'add_reverse_record', false)
-            ) {
-                $hasForwardRecord = true;
-            }
-
-            $deleted = $recordManager->deleteRecord($record_id);
-            if ($deleted->success) {
-                $this->createAuditService()->logRecordDelete(
-                    $zid,
-                    (string)$record_info['type'],
-                    (string)$record_info['name'],
-                    (string)$record_info['content'],
-                    $record_info['ttl'],
-                    $record_info['prio'] ?? null
-                );
-
-                // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
-                $delete_ptr = $this->httpRequest->getPostParam('delete_ptr') === '1';
-                if ($hasPtrRecord && $delete_ptr) {
-                    $deletedPtrRecord = $this->reverseRecordCreator->deleteReverseRecord(
-                        $record_info['type'],
-                        $record_info['content'],
-                        $record_info['name']
-                    );
-                }
-
-                // Delete corresponding A/AAAA record if this was a PTR record and deletion is requested
-                $delete_forward = $this->httpRequest->getPostParam('delete_forward') === '1';
-                if ($hasForwardRecord && $delete_forward) {
-                    $deletedForwardRecord = $this->reverseRecordCreator->deleteForwardRecord(
-                        $record_info['name'],
-                        $record_info['content']
-                    );
-                }
-
-                if ($deletedPtrRecord && $deletedForwardRecord) {
-                    $this->setMessage('edit', 'success', _('The record and its corresponding PTR and A/AAAA records have been deleted successfully.'));
-                } elseif ($deletedPtrRecord) {
-                    $this->setMessage('edit', 'success', _('The record and its corresponding PTR record have been deleted successfully.'));
-                } elseif ($deletedForwardRecord) {
-                    $this->setMessage('edit', 'success', _('The record and its corresponding A/AAAA record have been deleted successfully.'));
-                } elseif ($hasPtrRecord) {
-                    $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching PTR record was found.'));
-                } elseif ($hasForwardRecord) {
-                    $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching A/AAAA record was found.'));
-                } else {
-                    $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
-                }
-
+            if ($outcome->recordDeleted) {
+                $this->setMessage('edit', 'success', self::successMessage($outcome));
                 $this->redirect('/zones/' . $zid . '/edit');
             } else {
-                $this->addSystemMessage('error', (string)$deleted->message);
+                $this->addSystemMessage('error', (string)$outcome->message);
             }
         }
 
@@ -180,6 +118,18 @@ class DeleteRecordController extends BaseController
         // Permission already validated with zone-aware check at top of method
 
         $this->showQuestion((string)$record_id, $zid, $domain_id, $edit_mode);
+    }
+
+    private static function successMessage(RecordDeletionOutcome $outcome): string
+    {
+        return match (true) {
+            $outcome->ptrDeleted && $outcome->forwardDeleted => _('The record and its corresponding PTR and A/AAAA records have been deleted successfully.'),
+            $outcome->ptrDeleted => _('The record and its corresponding PTR record have been deleted successfully.'),
+            $outcome->forwardDeleted => _('The record and its corresponding A/AAAA record have been deleted successfully.'),
+            $outcome->ptrCandidate => _('The record has been deleted successfully. No matching PTR record was found.'),
+            $outcome->forwardCandidate => _('The record has been deleted successfully. No matching A/AAAA record was found.'),
+            default => _('The record has been deleted successfully.'),
+        };
     }
 
     /**

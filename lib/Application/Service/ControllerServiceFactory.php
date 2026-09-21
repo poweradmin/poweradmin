@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
+use Poweradmin\Domain\Service\Dns\RecordDeletionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -504,6 +505,17 @@ class ControllerServiceFactory
             $this->domainRepository(),
             $this->recordManager(),
             $this->dnsBackendProvider()
+        );
+    }
+
+    public function recordDeletionService(): RecordDeletionService
+    {
+        return new RecordDeletionService(
+            $this->recordRepository(),
+            $this->recordManager(),
+            $this->reverseRecordCreator(),
+            $this->auditService(),
+            $this->config
         );
     }
 

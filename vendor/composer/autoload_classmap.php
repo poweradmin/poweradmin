@@ -1380,6 +1380,8 @@ return array(
     'Poweradmin\\Domain\\Service\\Dns\\DomainManager' => $baseDir . '/lib/Domain/Service/Dns/DomainManager.php',
     'Poweradmin\\Domain\\Service\\Dns\\DomainManagerInterface' => $baseDir . '/lib/Domain/Service/Dns/DomainManagerInterface.php',
     'Poweradmin\\Domain\\Service\\Dns\\RRSetReplaceService' => $baseDir . '/lib/Domain/Service/Dns/RRSetReplaceService.php',
+    'Poweradmin\\Domain\\Service\\Dns\\RecordDeletionOutcome' => $baseDir . '/lib/Domain/Service/Dns/RecordDeletionOutcome.php',
+    'Poweradmin\\Domain\\Service\\Dns\\RecordDeletionService' => $baseDir . '/lib/Domain/Service/Dns/RecordDeletionService.php',
     'Poweradmin\\Domain\\Service\\Dns\\RecordManager' => $baseDir . '/lib/Domain/Service/Dns/RecordManager.php',
     'Poweradmin\\Domain\\Service\\Dns\\RecordManagerInterface' => $baseDir . '/lib/Domain/Service/Dns/RecordManagerInterface.php',
     'Poweradmin\\Domain\\Service\\Dns\\RecordWriteResult' => $baseDir . '/lib/Domain/Service/Dns/RecordWriteResult.php',

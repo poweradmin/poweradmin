@@ -73,6 +73,7 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
+use Poweradmin\Domain\Service\Dns\RecordDeletionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
@@ -781,6 +782,11 @@ abstract class BaseController
     protected function createReverseRecordCreator(): ReverseRecordCreator
     {
         return $this->services()->reverseRecordCreator();
+    }
+
+    protected function createRecordDeletionService(): RecordDeletionService
+    {
+        return $this->services()->recordDeletionService();
     }
 
     protected function createDomainManager(): DomainManagerInterface
