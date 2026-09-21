@@ -25,3 +25,19 @@ release/4.2.x::fix(docker): remove dead api.log_requests config from entrypoint
 # so there is nothing to escape.
 release/4.3.x::fix(docker): escape the favicon and logo paths when generating config
 release/4.2.x::fix(docker): escape the favicon and logo paths when generating config
+
+# 4.5.x keeps its Docker image as released; this hardening ships with 4.6.0 (none is a
+# security or data-loss fix: settings.php escaping, DB wait, healthcheck, CORS scope,
+# php.ini-production, Caddy deny rules, file modes).
+master::fix(docker): split trusted proxies on whitespace too and detect PEM secrets with leading headers
+master::fix(docker): own /app and the template cache directory so non-root containers can cache templates
+master::fix(docker): escape group and template mappings like every other setting and honour yes/1 for PA_CREATE_ADMIN in the summary
+master::fix(docker): accept the CA certificate from a secret file and escape the proxy list for sed
+master::fix(docker): probe /ping in the healthcheck when the liveness endpoint is enabled
+master::fix(docker): answer CORS preflight only under /api with a configurable origin and tier the cache lifetimes
+master::fix(docker): keep group 0 on the volumes the entrypoint re-owns
+master::fix(docker): wait for the database before schema init and honour DB_PORT when creating the admin user
+master::fix(docker): escape every string and validate every number written to settings.php
+master::fix(docker): keep the generated settings.php readable by www-data only
+master::fix(docker): deny dotfiles, shell scripts and translation sources in the Caddy configs
+master::fix(docker): run PHP on php.ini-production with tuned limits and opcache
