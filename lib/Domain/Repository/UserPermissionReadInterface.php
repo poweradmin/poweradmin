@@ -89,6 +89,13 @@ interface UserPermissionReadInterface
     public function isLastUberuser(int $userId): bool;
 
     /**
+     * Ids of every user holding the ueberuser permission directly or through a group.
+     *
+     * @return list<int>
+     */
+    public function getAdminUserIds(): array;
+
+    /**
      * Check if a user owns a zone directly or via group membership
      *
      * @param int $userId User ID to check

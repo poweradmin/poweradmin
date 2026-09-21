@@ -196,6 +196,17 @@ class UsersController extends BaseController
             $searchTerm
         );
 
+        // Row flags follow the rule updateUserRow() applies, so a delegated admin
+        // sees a ueberuser row read-only instead of a refusal on save
+        $callerId = (int)$this->getCurrentUserId();
+        $apiPermissions = $this->services()->apiPermissionService();
+        $this->services()->permissionService()->primeAdminFlags(array_map(static fn(array $user): int => (int)$user['uid'], $users));
+        foreach ($users as &$user) {
+            $user['can_edit'] = $apiPermissions->canEditUser($callerId, (int)$user['uid']);
+            $user['can_change_template'] = $user['can_edit'] && $permissions[Permission::PERM_USER_EDIT_TEMPL_PERM];
+        }
+        unset($user);
+
         $this->render('users.html', [
             'permissions' => $permissions,
             'perm_templates' => $this->services()->permissionTemplateRepository()->listPermissionTemplates('user'),

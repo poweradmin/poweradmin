@@ -137,7 +137,13 @@ class IndexController extends BaseController
         $enableConsistencyChecks = $this->config->get('interface', 'enable_consistency_checks', false);
         $moduleNavItems = $this->getModuleNavItemsForDashboard();
 
-        $hasDnsManagement = ($permissions[Permission::PERM_USER_IS_UEBERUSER] && $pdnsApiEnabled && $showPdnsStatus)
+        // Card decisions the template used to combine from the raw permission map
+        $isUeberuser = $permissions[Permission::PERM_USER_IS_UEBERUSER];
+        $isApiBackend = $this->isApiBackend();
+        $showPdnsStatusCard = $isUeberuser && $pdnsApiEnabled && $showPdnsStatus;
+        $showApiKeysCard = ($isUeberuser || $permissions[Permission::PERM_API_MANAGE_KEYS]) && $apiEnabled;
+
+        $hasDnsManagement = $showPdnsStatusCard
             || $permissions[Permission::PERM_SEARCH]
             || $permissions[Permission::PERM_ZONE_CONTENT_VIEW_OWN] || $permissions[Permission::PERM_ZONE_CONTENT_VIEW_OTHERS]
             || $permissions[Permission::PERM_ZONE_TEMPL_ADD] || $permissions[Permission::PERM_ZONE_TEMPL_EDIT]
@@ -152,11 +158,17 @@ class IndexController extends BaseController
             || ($dblogUse && ($permissions[Permission::PERM_ZONE_LOGS_VIEW_OWN] || $permissions[Permission::PERM_ZONE_LOGS_VIEW_OTHERS]
                 || $permissions[Permission::PERM_USER_LOGS_VIEW]
                 || ($permissions[Permission::PERM_GROUP_LOGS_VIEW] && $showGroupAccessTemplates)));
-        $hasTools = ($permissions[Permission::PERM_USER_IS_UEBERUSER] && $enableConsistencyChecks)
-            || (($permissions[Permission::PERM_USER_IS_UEBERUSER] || $permissions[Permission::PERM_API_MANAGE_KEYS]) && $apiEnabled)
+        $hasTools = ($isUeberuser && $enableConsistencyChecks)
+            || $showApiKeysCard
             || count($moduleNavItems) > 0;
 
         $this->render("index.html", [
+            'show_pdns_status_card' => $showPdnsStatusCard,
+            'show_pdns_version_fallback' => $isUeberuser && $isApiBackend,
+            'show_views_card' => $isUeberuser && $isApiBackend && $this->getPdnsCapabilities()->supportsViews(),
+            'show_groups_card' => $isUeberuser && $showGroupAccessTemplates,
+            'show_api_keys_card' => $showApiKeysCard,
+            'show_edit_profile_card' => $isLimitedUser,
             'dashboard_stats' => $dashboardStats,
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
@@ -166,7 +178,7 @@ class IndexController extends BaseController
             'iface_add_reverse_record' => $ifaceAddReverseRecord,
             'api_enabled' => $apiEnabled,
             'pdns_api_enabled' => $pdnsApiEnabled,
-            'is_api_backend' => $this->isApiBackend(),
+            'is_api_backend' => $isApiBackend,
             'show_pdns_status' => $showPdnsStatus,
             'pdns_server_status' => $pdnsServerStatus,
             'is_limited_user' => $isLimitedUser,

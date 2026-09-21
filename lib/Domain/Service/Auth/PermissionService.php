@@ -137,6 +137,20 @@ class PermissionService
     }
 
     /**
+     * Answers isAdmin() for many users with one query, so a listing page does
+     * not check every row separately.
+     *
+     * @param list<int> $userIds
+     */
+    public function primeAdminFlags(array $userIds): void
+    {
+        $admins = array_flip($this->userRepository->getAdminUserIds());
+        foreach ($userIds as $userId) {
+            $this->adminCache[$userId] = isset($admins[$userId]);
+        }
+    }
+
+    /**
      * Check if a user owns a zone directly or via group membership
      *
      * @param int $userId User ID to check

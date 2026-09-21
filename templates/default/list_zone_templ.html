@@ -84,7 +84,7 @@
                         <span class="badge bg-warning text-dark">{% trans %}global{% endtrans %}</span>
                         {% endif %}
                     </td>
-                    <td><span class="badge {% if template['zones_linked'] == '0' %}bg-warning{% else %}bg-secondary{% endif %}">{{ template['zones_linked'] }}</span></td>
+                    <td><span class="badge {% if template['has_zones'] %}bg-secondary{% else %}bg-warning{% endif %}">{{ template['zones_linked'] }}</span></td>
                     <td>
                         {% set template_sync = sync_status[template['id']] ?? null %}
                         {% if template_sync and template_sync.total_zones > 0 %}
@@ -101,10 +101,10 @@
                             <span class="badge bg-light text-secondary">-</span>
                         {% endif %}
                     </td>
-                    {% if (perm_zone_templ_edit and template['owner'] != 0) or perm_is_godlike %}
+                    {% if template['can_edit'] %}
                     <td class="text-end">
                         <div class="d-flex gap-1 justify-content-end flex-nowrap">
-                            {% if perm_is_godlike and (template['owner'] == 0 or template['is_default']) %}
+                            {% if template['can_set_default'] %}
                             <form method="post" action="{{ base_url_prefix }}/zones/templates/set-default" class="d-inline">
                                 {{ macros.csrf_field() }}
                                 {% if template['is_default'] %}
@@ -120,10 +120,10 @@
                                 {% endif %}
                             </form>
                             {% endif %}
-                            <a class="btn btn-sm btn-outline-secondary {% if template['zones_linked'] == '0' %}disabled{% endif %}"
-                               href="{% if template['zones_linked'] != '0' %}{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/zones{% else %}#{% endif %}"
-                               title="{% if template['zones_linked'] == '0' %}{% trans %}No zones are using this template{% endtrans %}{% else %}{% trans %}View zones using this template{% endtrans %}{% endif %}"
-                               {% if template['zones_linked'] == '0' %}tabindex="-1" aria-disabled="true"{% endif %}>
+                            <a class="btn btn-sm btn-outline-secondary {% if not template['has_zones'] %}disabled{% endif %}"
+                               href="{% if template['has_zones'] %}{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/zones{% else %}#{% endif %}"
+                               title="{% if not template['has_zones'] %}{% trans %}No zones are using this template{% endtrans %}{% else %}{% trans %}View zones using this template{% endtrans %}{% endif %}"
+                               {% if not template['has_zones'] %}tabindex="-1" aria-disabled="true"{% endif %}>
                                 <i class="bi bi-list text-secondary"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-primary"

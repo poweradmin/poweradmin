@@ -69,13 +69,19 @@ class ListZoneTemplController extends BaseController
         $syncStatus = $syncService->getTemplateSyncStatus($userId);
 
         $effectiveDefaultId = $zone_templates->getDefaultTemplateId();
+        $isGodlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+        $access = $this->services()->zoneTemplateAccessPolicy();
         $hasDbDefault = false;
-        foreach ($templatesList as $row) {
-            if ($row['is_default'] === true) {
-                $hasDbDefault = true;
-                break;
-            }
+        foreach ($templatesList as &$row) {
+            $owner = (int)$row['owner'];
+            $isDefault = $row['is_default'] === true;
+            $hasDbDefault = $hasDbDefault || $isDefault;
+            // Row flags follow the edit/delete and set-default pages' rules
+            $row['can_edit'] = $access->canCurrentUserEditTemplate($owner);
+            $row['can_set_default'] = $isGodlike && ($owner === 0 || $isDefault);
+            $row['has_zones'] = (int)($row['zones_linked'] ?? 0) > 0;
         }
+        unset($row);
 
         $this->render('list_zone_templ.html', [
             'perm_zone_templ_add' => $perm_zone_templ_add,
@@ -83,7 +89,7 @@ class ListZoneTemplController extends BaseController
             'user_name' => $this->services()->userRepository()->getFullNameById($userId) ?: $userName,
             'zone_templates' => $templatesList,
             'sync_status' => $syncStatus,
-            'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
+            'perm_is_godlike' => $isGodlike,
             'effective_default_id' => $effectiveDefaultId,
             'has_db_default' => $hasDbDefault,
         ]);

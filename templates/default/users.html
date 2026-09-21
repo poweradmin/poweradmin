@@ -90,14 +90,14 @@
 
                     {% set user_uid = user['uid'] %}
 
-                    {% if (user_uid == session_userid and permissions['user_edit_own']) or (user_uid != session_userid and permissions['user_edit_others']) or (permissions['user_is_ueberuser']) %}
+                    {% if user['can_edit'] %}
                     <tr>
                         <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"{% if user_uid == session_userid and not permissions['user_edit_others'] %} readonly{% endif %}></td>
                         <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
                         <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
                         {% if show_user_access_templates %}
                         <td>
-                            {% if permissions['user_edit_templ_perm'] %}
+                            {% if user['can_change_template'] %}
                             <select class="form-select form-select-sm" name="user[{{ user['uid'] }}][templ_id]">
                                 {% for template in perm_templates %}
                                 {% if template['id'] == user['tpl_id'] %}

@@ -763,6 +763,32 @@ class DbUserRepository implements UserRepositoryInterface
         return (bool)$stmt->fetchColumn();
     }
 
+    public function getAdminUserIds(): array
+    {
+        $query = "
+            SELECT users.id AS user_id
+            FROM users
+            INNER JOIN perm_templ ON perm_templ.id = users.perm_templ
+            INNER JOIN perm_templ_items ON perm_templ_items.templ_id = perm_templ.id
+            INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+            WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
+
+            UNION
+
+            SELECT ugm.user_id AS user_id
+            FROM user_group_members ugm
+            INNER JOIN user_groups ug ON ugm.group_id = ug.id
+            INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
+            INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE pi.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
+        ";
+
+        $stmt = $this->db->query($query);
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     public function templateGrantsUberuser(int $permTemplId): bool
     {
         $query = "SELECT COUNT(*)

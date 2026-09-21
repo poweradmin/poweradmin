@@ -153,4 +153,21 @@ class ZoneTemplateAccessPolicy
     {
         return $this->repository->isOwner($zone_templ_id, $userid);
     }
+
+    /**
+     * Whether the logged-in user may edit or delete a template with this owner
+     * column: a ueberuser, or the owner holding zone_templ_edit. Global
+     * templates (owner 0) are only editable by ueberusers.
+     */
+    public function canCurrentUserEditTemplate(int $owner): bool
+    {
+        if ($this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
+            return true;
+        }
+
+        $userId = $this->userContext->getLoggedInUserId();
+
+        return $userId !== null && $owner === $userId
+            && $this->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
+    }
 }
