@@ -35,7 +35,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $router = $this->createRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\IndexController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\System\IndexController', $routeInfo['controller']);
         $this->assertEquals('home', $routeInfo['route']);
         $this->assertTrue($router->isRouteFound());
     }
@@ -196,7 +196,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $router = $this->createRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('\Poweradmin\Application\Controller\NotFoundController', $routeInfo['controller']);
+        $this->assertEquals('\Poweradmin\Application\Controller\System\NotFoundController', $routeInfo['controller']);
         $this->assertFalse($router->isRouteFound());
     }
 

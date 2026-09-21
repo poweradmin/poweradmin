@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025  Poweradmin Development Team
+ *  Copyright 2010-2026  Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\System;
 
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Http\RequestContext;
 
 /**

@@ -20,9 +20,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\System;
 
-use Poweradmin\Application\Controller\DatabaseConsistencyController;
+use Poweradmin\Application\Controller\System\DatabaseConsistencyController;
+use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 
 /**
  * Builds the database consistency controller through the ControllerEnvironment

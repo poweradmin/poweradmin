@@ -23,7 +23,7 @@
 namespace Poweradmin\Application;
 
 use Closure;
-use Poweradmin\Application\Controller\NotFoundController;
+use Poweradmin\Application\Controller\System\NotFoundController;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 

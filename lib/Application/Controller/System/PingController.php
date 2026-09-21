@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\System;
 
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;

@@ -49,7 +49,7 @@ class CsrfOptOutInventoryTest extends TestCase
         'Poweradmin\Application\Controller\Auth\ResetPasswordController',
         'Poweradmin\Application\Controller\Auth\OidcCallbackController',
         'Poweradmin\Application\Controller\Auth\SamlCallbackController',
-        'Poweradmin\Application\Controller\NotFoundController',
+        'Poweradmin\Application\Controller\System\NotFoundController',
         // API controllers authenticate per request (API key / Basic / X-CSRF-Token header)
         'Poweradmin\Application\Controller\Api\AbstractApiController',
         'Poweradmin\Application\Controller\Api\DocsController',

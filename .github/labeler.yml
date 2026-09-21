@@ -102,6 +102,7 @@ core:
     - any-glob-to-any-file:
       - 'lib/Domain/**'
       - 'lib/Application/Controller/*.php'
+      - 'lib/Application/Controller/System/**'
       - 'lib/Application/Controller/Log/**'
       - 'lib/Application/Controller/Template/**'
       - 'lib/Application/Controller/User/**'

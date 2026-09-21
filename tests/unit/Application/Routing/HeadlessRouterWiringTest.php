@@ -52,7 +52,7 @@ class HeadlessRouterWiringTest extends TestCase
     public function testWebInterfaceKeepsTheHtmlNotFoundPage(): void
     {
         $this->assertSame(
-            '\Poweradmin\Application\Controller\NotFoundController',
+            '\Poweradmin\Application\Controller\System\NotFoundController',
             $this->controllerFor('/no-such-page', true)
         );
     }

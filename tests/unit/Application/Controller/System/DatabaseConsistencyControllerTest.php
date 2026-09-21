@@ -20,14 +20,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\System;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
-use Poweradmin\Application\Controller\DatabaseConsistencyController;
+use Poweradmin\Application\Controller\System\DatabaseConsistencyController;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
+use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use RuntimeException;
 
 /**

@@ -3,7 +3,7 @@
 # Home and Authentication
 home:
   path: /
-  controller: Poweradmin\Application\Controller\IndexController::run
+  controller: Poweradmin\Application\Controller\System\IndexController::run
 
 login:
   path: /login
@@ -488,7 +488,7 @@ api_keys_toggle:
 
 database_consistency:
   path: /tools/database-consistency
-  controller: Poweradmin\Application\Controller\DatabaseConsistencyController::run
+  controller: Poweradmin\Application\Controller\System\DatabaseConsistencyController::run
 
 record_type_defaults:
   path: /tools/record-type-defaults
@@ -497,27 +497,27 @@ record_type_defaults:
 
 pdns_status:
   path: /tools/pdns-status
-  controller: Poweradmin\Application\Controller\PdnsStatusController::run
+  controller: Poweradmin\Application\Controller\System\PdnsStatusController::run
   methods: [GET, POST]
 
 # Supermaster Management
 list_supermasters:
   path: /supermasters
-  controller: Poweradmin\Application\Controller\ListSupermastersController::run
+  controller: Poweradmin\Application\Controller\System\ListSupermastersController::run
 
 add_supermaster:
   path: /supermasters/add
-  controller: Poweradmin\Application\Controller\AddSupermasterController::run
+  controller: Poweradmin\Application\Controller\System\AddSupermasterController::run
   methods: [GET, POST]
 
 edit_supermaster:
   path: /supermasters/edit
-  controller: Poweradmin\Application\Controller\EditSupermasterController::run
+  controller: Poweradmin\Application\Controller\System\EditSupermasterController::run
   methods: [GET, POST]
 
 delete_supermaster:
   path: /supermasters/delete
-  controller: Poweradmin\Application\Controller\DeleteSupermasterController::run
+  controller: Poweradmin\Application\Controller\System\DeleteSupermasterController::run
   methods: [GET, POST]
 
 # API v1 was removed in 4.5.0 - answer 410 with a pointer to v2
@@ -860,12 +860,12 @@ api_health:
 
 ping:
   path: /ping
-  controller: Poweradmin\Application\Controller\PingController::run
+  controller: Poweradmin\Application\Controller\System\PingController::run
   methods: [GET]
 
 # Static Assets
 static_assets:
   path: /{path}
-  controller: Poweradmin\Application\Controller\StaticAssetController::run
+  controller: Poweradmin\Application\Controller\System\StaticAssetController::run
   requirements:
     path: '.+\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$'

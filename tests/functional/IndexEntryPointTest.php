@@ -177,7 +177,7 @@ class IndexEntryPointTest extends TestCase
             'Poweradmin\Application\Routing\SymfonyRouter',
             'Poweradmin\Infrastructure\Configuration\ConfigurationManager',
             'Poweradmin\Application\Controller\BaseController',
-            'Poweradmin\Application\Controller\NotFoundController',
+            'Poweradmin\Application\Controller\System\NotFoundController',
         ];
 
         foreach ($requiredClasses as $className) {

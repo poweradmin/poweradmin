@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\System;
 
-use Poweradmin\Application\Controller\PingController;
+use Poweradmin\Application\Controller\System\PingController;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**

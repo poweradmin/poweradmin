@@ -144,7 +144,7 @@ class SymfonyRouter
             // A headless install has no interface to render a 404 page with, and
             // misses are most of its traffic, so answer without touching the database.
             $notFound = $this->webEnabled
-                ? '\Poweradmin\Application\Controller\NotFoundController'
+                ? '\Poweradmin\Application\Controller\System\NotFoundController'
                 : '\Poweradmin\Application\Controller\Api\HeadlessNotFoundController';
 
             return [

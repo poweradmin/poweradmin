@@ -20,8 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\System;
 
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\PowerdnsStatusService;

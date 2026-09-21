@@ -244,7 +244,7 @@ class RoutingConfigurationTest extends TestCase
         // Test that routes map to expected controllers
         $homeRoute = $this->routes->get('home');
         $this->assertEquals(
-            'Poweradmin\Application\Controller\IndexController::run',
+            'Poweradmin\Application\Controller\System\IndexController::run',
             $homeRoute->getDefault('_controller')
         );
 
