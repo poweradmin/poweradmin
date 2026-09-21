@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZoneMetadataController;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneMetadataOutcome;
 use Poweradmin\Domain\Service\ZoneMetadataResult;
 use Poweradmin\Domain\Service\ZoneMetadataService;

@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
  * Resolves the user-owner and group-owner assignment for a new zone, applying

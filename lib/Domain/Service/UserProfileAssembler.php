@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
  * Shapes raw user rows into the read format the API exposes

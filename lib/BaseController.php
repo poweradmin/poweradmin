@@ -40,7 +40,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use PDO;

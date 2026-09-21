@@ -30,7 +30,7 @@ use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\UserGroupMember;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use ReflectionMethod;
 use ReflectionProperty;
 

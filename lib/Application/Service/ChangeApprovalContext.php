@@ -27,7 +27,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
  * Answers what the change-approval feature means for one user: whether it is on,

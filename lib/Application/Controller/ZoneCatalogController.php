@@ -27,8 +27,8 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Utility\DnsIdnService;
-use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**

@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;

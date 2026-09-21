@@ -23,7 +23,7 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Application\Http\ZoneEditIntent;
 use Poweradmin\Application\Presenter\EditZonePresenter;
 use Poweradmin\Application\Presenter\ChangeRequestPresenter;
@@ -39,7 +39,7 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\ZoneEditSubmission;
 use Poweradmin\Domain\Service\ZoneManagementService;
@@ -48,12 +48,12 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Service\RecordDisplayService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

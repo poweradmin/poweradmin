@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller\Api\Internal;
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**

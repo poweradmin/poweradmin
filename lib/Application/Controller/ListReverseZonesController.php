@@ -29,7 +29,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;

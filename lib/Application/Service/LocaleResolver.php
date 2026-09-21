@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**

@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Poweradmin\Application\Controller\ListForwardZonesController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\ZoneOwnershipIndex;
 
 /**

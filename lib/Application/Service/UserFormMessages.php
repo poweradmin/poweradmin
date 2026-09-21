@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
 
 /**

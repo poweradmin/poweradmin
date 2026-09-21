@@ -28,7 +28,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
  * The change-approval questions the pages ask, answered without a session: with

@@ -100,25 +100,25 @@ parameters:
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
-			path: lib/Domain/Service/ApiKeyService.php
+			path: lib/Domain/Service/Auth/ApiKeyService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
-			path: lib/Domain/Service/ApiKeyService.php
+			path: lib/Domain/Service/Auth/ApiKeyService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
-			path: lib/Domain/Service/ApiPermissionService.php
+			path: lib/Domain/Service/Auth/ApiPermissionService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
-			path: lib/Domain/Service/ApiPermissionService.php
+			path: lib/Domain/Service/Auth/ApiPermissionService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
@@ -238,7 +238,7 @@ parameters:
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 14
-			path: lib/Domain/Service/UserContextService.php
+			path: lib/Domain/Service/Auth/UserContextService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'

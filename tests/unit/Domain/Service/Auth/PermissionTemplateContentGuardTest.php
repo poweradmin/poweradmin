@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
+use Poweradmin\Domain\Service\Auth\PermissionTemplateContentGuard;
 
 /**
  * A template's permission list is itself an authority grant: ticking user_is_ueberuser

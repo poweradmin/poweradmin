@@ -29,8 +29,8 @@ use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Handles the password reset form reached from the emailed token link and sets the new password.

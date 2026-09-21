@@ -29,7 +29,7 @@ use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 
 /**
  * The zone editor's view model: maps the facts the controller has already

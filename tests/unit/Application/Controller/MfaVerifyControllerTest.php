@@ -28,8 +28,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\MfaVerifyController;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\LoginAttemptService;
-use Poweradmin\Domain\Service\MfaService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\MfaService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Pins the collaborator wiring of the MFA verification page: the form is

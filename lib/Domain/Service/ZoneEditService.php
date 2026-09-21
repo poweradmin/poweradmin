@@ -30,6 +30,8 @@ use Poweradmin\Domain\Port\RecordCommentSyncInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;

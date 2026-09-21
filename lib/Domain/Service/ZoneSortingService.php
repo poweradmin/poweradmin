@@ -25,6 +25,8 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Enum\SortDirection;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Port\ReverseZoneSorterInterface;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Resolves the zone list's sort column, direction and reverse-zone filter from submitted values and the session.

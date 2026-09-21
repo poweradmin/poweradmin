@@ -29,11 +29,11 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BulkRecordParser;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 

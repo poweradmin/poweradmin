@@ -20,13 +20,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ZoneListPermissionService;
+use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
 
 class ZoneListPermissionServiceTest extends TestCase
 {

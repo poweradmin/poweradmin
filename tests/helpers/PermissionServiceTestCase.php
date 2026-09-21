@@ -25,7 +25,7 @@ namespace TestHelpers;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
  * Builds a real PermissionService over a scripted UserRepositoryInterface, so tests state

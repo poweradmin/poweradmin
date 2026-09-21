@@ -33,7 +33,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\FakeConfiguration;
 

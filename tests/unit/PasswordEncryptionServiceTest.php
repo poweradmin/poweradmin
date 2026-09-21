@@ -3,7 +3,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\PasswordEncryptionService;
+use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 
 class PasswordEncryptionServiceTest extends TestCase
 {

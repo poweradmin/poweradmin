@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Session;
 
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Stores the login message in the session and clears auth and MFA keys on logout.

@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;

@@ -26,9 +26,9 @@ use Exception;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
-use Poweradmin\Domain\Service\MfaService;
-use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\MfaService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use RuntimeException;
 
 /**

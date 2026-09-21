@@ -26,7 +26,7 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\ZoneOverlapService;
 use TestHelpers\FakeConfiguration;
 

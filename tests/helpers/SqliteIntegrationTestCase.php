@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;

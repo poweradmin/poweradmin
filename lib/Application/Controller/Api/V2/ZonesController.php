@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;

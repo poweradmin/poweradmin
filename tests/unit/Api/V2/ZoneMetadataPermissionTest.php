@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesController;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use ReflectionClass;

@@ -25,7 +25,7 @@ namespace Poweradmin;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\LocaleResolver;
 use Poweradmin\Application\Service\StatsDisplayService;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\TemplateCacheResolver;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;

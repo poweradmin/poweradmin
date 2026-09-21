@@ -26,8 +26,8 @@ use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\BaseController;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\PermissionTemplateContentGuard;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 

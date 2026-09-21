@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 use Exception;
 use Poweradmin\Application\Controller\Api\V2\ZoneTemplatesController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

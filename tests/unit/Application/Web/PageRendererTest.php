@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\AppManager;
 use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Module\ModuleRegistry;
 use ReflectionClass;

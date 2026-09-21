@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 
 #[CoversClass(ChangeApprovalPolicy::class)]
 class ChangeApprovalPolicyTest extends TestCase

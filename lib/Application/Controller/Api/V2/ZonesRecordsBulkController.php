@@ -26,7 +26,7 @@ use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\ApiKeyScope;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Database\DbCompat;

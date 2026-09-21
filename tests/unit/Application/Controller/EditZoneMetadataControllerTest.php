@@ -13,7 +13,7 @@ use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Domain\Service\ZoneMetadataService;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Application\Service\AuditService;
 use ReflectionClass;

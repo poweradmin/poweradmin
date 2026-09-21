@@ -28,7 +28,7 @@ use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Port\ChangeRequestNotifierInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;

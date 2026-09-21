@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use Poweradmin\Application\Controller\AddZoneMasterController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use ReflectionMethod;
 use ReflectionProperty;
 

@@ -29,7 +29,7 @@ use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
-use Poweradmin\Domain\Service\ApiKeyService;
+use Poweradmin\Domain\Service\Auth\ApiKeyService;
 
 /**
  * Renders the API key list page and links to the add, edit, delete and regenerate actions.

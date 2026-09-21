@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Repository\UserPermissionReadInterface;
-use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
+use Poweradmin\Domain\Service\Auth\PermissionTemplateContentGuard;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 
 /**

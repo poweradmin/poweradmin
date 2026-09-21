@@ -29,7 +29,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
 

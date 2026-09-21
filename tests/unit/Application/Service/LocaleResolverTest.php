@@ -17,7 +17,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\LocaleResolver;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**

@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 use TestHelpers\PermissionServiceTestCase;

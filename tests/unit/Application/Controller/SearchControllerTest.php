@@ -29,9 +29,9 @@ use Poweradmin\Application\Controller\SearchController;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\UserPreferenceService;
-use Poweradmin\Domain\Service\ZoneListPermissionService;
+use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipIndex;
 
 /**

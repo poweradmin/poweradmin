@@ -31,7 +31,7 @@ use Poweradmin\Application\Service\ZoneCreateOutcome;
 use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;

@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
@@ -34,7 +34,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;

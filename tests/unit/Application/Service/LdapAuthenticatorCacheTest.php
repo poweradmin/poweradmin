@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\LdapAuthenticator;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use ReflectionClass;
 use ReflectionMethod;
 

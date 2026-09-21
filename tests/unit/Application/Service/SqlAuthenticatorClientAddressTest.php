@@ -34,7 +34,7 @@ use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Psr\Log\NullLogger;

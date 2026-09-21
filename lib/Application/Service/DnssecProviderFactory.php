@@ -34,7 +34,7 @@ use PDO;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\NullDnssecProvider;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Builds the DNSSEC provider for the configured PowerDNS API, or a null provider when the API is not set up.

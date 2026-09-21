@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -29,9 +29,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
-use Poweradmin\Domain\Service\ApiKeyService;
-use Poweradmin\Domain\Service\ApiKeyWriteResult;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\ApiKeyService;
+use Poweradmin\Domain\Service\Auth\ApiKeyWriteResult;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\PermissionServiceTestCase;
 

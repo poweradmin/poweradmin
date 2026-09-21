@@ -29,7 +29,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 
 #[CoversClass(CatalogZoneService::class)]
 class CatalogZoneServiceTest extends TestCase

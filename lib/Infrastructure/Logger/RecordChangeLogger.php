@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Logger;
 use InvalidArgumentException;
 use PDO;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**

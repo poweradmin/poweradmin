@@ -25,8 +25,8 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
-use Poweradmin\Domain\Service\SelfEditFieldGuard;
+use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
+use Poweradmin\Domain\Service\Auth\SelfEditFieldGuard;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

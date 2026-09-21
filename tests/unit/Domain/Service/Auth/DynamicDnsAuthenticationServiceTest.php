@@ -1,12 +1,12 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
-use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
+use Poweradmin\Domain\Service\Auth\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\Model\User;
 

@@ -26,6 +26,7 @@ use Exception;
 use Poweradmin\Domain\Port\PasswordHasherInterface;
 use Poweradmin\Domain\Port\PasswordPolicyInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Enum\AuthMethod;

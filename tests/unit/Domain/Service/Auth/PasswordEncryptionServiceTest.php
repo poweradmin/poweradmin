@@ -22,10 +22,10 @@
 
 declare(strict_types=1);
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\PasswordEncryptionService;
+use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 
 class PasswordEncryptionServiceTest extends TestCase
 {

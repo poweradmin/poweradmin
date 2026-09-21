@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Session;
 
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Keeps submitted form data in the session so a failed request can refill the form.

@@ -28,6 +28,7 @@ use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 

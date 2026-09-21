@@ -23,8 +23,8 @@
 namespace Poweradmin\Application\Service\Auth;
 
 use Poweradmin\Domain\Model\ApiKeyScope;
-use Poweradmin\Domain\Service\ApiKeyService;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\ApiKeyService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;

@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\AbstractListLogController;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 

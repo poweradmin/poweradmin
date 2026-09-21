@@ -29,8 +29,8 @@ use Poweradmin\BaseController;
 use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Handles the forgot-password form: takes an email address and sends the password reset link.

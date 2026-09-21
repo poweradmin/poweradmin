@@ -26,7 +26,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\MfaSetupController;
-use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\Auth\MfaService;
 
 /**
  * Pins the collaborator wiring of the MFA setup page: the app setup POST

@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Service\Auth;
 
 /**
  * AES-256-CBC encryption for the password held in the session, keyed from the configured session_key.

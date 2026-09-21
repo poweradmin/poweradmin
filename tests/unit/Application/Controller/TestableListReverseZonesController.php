@@ -26,7 +26,7 @@ use Poweradmin\Application\Controller\ListReverseZonesController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use ReflectionMethod;

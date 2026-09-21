@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 
 #[CoversClass(ZoneAccessPolicy::class)]
 class ZoneAccessPolicyTest extends TestCase

@@ -32,7 +32,7 @@ use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Renders the forward zone list with pagination, letter filter and sorting; also handles the API sync action.

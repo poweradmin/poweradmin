@@ -28,8 +28,8 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Handles the forgot-username form: sends the username to the submitted email address if it is on file.

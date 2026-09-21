@@ -28,11 +28,11 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
-use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Domain\Service\SessionPromotionService;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionPromotionService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use RuntimeException;
 
 /**

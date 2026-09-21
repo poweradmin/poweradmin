@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 

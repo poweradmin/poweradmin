@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
+
 /**
  * Who owns which of a page of zones, resolved once so per-row controls do not
  * query per zone. Ownership is direct (zones.owner) or through any group the

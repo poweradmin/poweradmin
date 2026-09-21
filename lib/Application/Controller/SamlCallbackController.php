@@ -29,7 +29,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Handles the SAML assertion (/saml/acs) and single logout (/saml/sls) endpoints.

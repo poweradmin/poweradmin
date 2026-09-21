@@ -16,7 +16,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
 use ReflectionClass;
 use ReflectionMethod;

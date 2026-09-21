@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Session;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\FormStateService;
 
 #[CoversClass(FormStateService::class)]

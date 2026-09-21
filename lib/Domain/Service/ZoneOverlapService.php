@@ -28,6 +28,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
  * Blocks creating a zone that overlaps an existing zone owned by another user.

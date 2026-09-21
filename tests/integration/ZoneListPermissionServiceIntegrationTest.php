@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Tests\Integration;
 
-use Poweradmin\Domain\Service\ZoneListPermissionService;
+use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;

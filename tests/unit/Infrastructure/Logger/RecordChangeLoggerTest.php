@@ -4,7 +4,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 

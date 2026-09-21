@@ -29,7 +29,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Handles the OIDC provider callback at /oidc/callback: completes the login or reports the provider error.

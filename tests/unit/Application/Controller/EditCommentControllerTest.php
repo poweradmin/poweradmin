@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
  * Characterizes the zone comment form: who may save, and what a save that the

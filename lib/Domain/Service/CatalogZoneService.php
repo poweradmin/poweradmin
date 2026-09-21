@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\CatalogBackendInterface;
 use Poweradmin\Domain\Port\ZoneReadBackendInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**

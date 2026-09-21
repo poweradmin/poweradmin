@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 
 /**
  * Renders the wizard picker at /zones/{id}/wizard.

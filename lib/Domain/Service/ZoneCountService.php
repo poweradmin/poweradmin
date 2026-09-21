@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Counts the zones a user may see; the backend-specific query lives in the zone repository.

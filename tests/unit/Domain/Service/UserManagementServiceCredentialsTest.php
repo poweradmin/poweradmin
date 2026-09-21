@@ -32,7 +32,7 @@ use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\ZoneManagementService;

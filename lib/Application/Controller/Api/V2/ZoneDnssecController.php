@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Port\ZoneSigningInterface;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\ZoneSigningService;

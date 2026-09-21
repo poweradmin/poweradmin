@@ -9,7 +9,7 @@ use Poweradmin\Application\Service\DynamicDnsRequestFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\DynamicDnsHelper;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;

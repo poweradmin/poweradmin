@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\UserAgreementService;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Handles the user agreement page: shows the text and records the user's acceptance.

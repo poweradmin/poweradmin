@@ -34,7 +34,7 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 

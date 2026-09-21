@@ -28,7 +28,7 @@ use Poweradmin\Application\Service\DynamicDnsRequestFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Symfony\Component\HttpFoundation\JsonResponse;

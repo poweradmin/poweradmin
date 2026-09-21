@@ -9,7 +9,7 @@ use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Application\Service\Auth\AuthenticationService;

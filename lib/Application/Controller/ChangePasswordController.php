@@ -29,8 +29,8 @@ use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\AuthMethod;
 

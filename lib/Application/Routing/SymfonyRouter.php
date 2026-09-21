@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Routing;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Module\ModuleRegistry;
 use Symfony\Component\Config\FileLocator;

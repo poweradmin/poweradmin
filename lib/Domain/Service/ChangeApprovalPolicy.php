@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
+
 /**
  * Pure rules for the opt-in change approval workflow: whether a user's zone
  * changes are written directly, filed as a change request, or refused, and who

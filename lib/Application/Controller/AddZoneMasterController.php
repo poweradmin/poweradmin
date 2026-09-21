@@ -28,7 +28,7 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Symfony\Component\Validator\Constraints as Assert;
 

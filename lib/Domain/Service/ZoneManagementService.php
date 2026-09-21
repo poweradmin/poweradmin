@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;

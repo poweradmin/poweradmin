@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\UsersController;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
 use ReflectionMethod;
 

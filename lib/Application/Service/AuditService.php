@@ -27,7 +27,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Writes the "client_ip:.. user:.. operation:.." audit lines. Every line

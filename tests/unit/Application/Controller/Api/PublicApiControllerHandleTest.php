@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use RuntimeException;
 
 /**

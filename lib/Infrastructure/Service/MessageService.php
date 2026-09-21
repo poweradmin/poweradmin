@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
-use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Queues per-page flash messages in the session and renders the bare-HTML fatal error page.

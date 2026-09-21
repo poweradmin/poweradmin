@@ -30,7 +30,7 @@ use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Logs the user out, clearing the session and redirecting to the OIDC or SAML provider's logout when used.

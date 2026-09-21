@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;

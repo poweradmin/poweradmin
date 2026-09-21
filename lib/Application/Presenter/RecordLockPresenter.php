@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Presenter;
 
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 
 /**
  * Decorates the zone editor's record rows with the display fields the template

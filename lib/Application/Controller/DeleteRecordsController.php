@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;

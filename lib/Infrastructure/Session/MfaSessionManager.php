@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Session;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Poweradmin\Domain\Enum\MfaSessionState;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Static helpers that set, read and reset the MFA pending/verified state in the session.

@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 use PoweradminInstall\InstallSecurityService;
 use Symfony\Component\HttpFoundation\Request;
 

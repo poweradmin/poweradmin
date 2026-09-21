@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Repository\UserCredentialWriterInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Changes the logged-in user's own password after verifying the current one; LDAP users are refused.

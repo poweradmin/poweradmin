@@ -20,13 +20,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Domain\Service\Auth;
 
 use PDO;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 
 /**
  * Permission gate for the public API. A facade over PermissionService so the API

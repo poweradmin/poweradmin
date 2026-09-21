@@ -26,7 +26,7 @@ namespace Poweradmin\Tests\Unit\Domain\Enum;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\Enum\AuthMethod;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 class AuthMethodTest extends TestCase
 {

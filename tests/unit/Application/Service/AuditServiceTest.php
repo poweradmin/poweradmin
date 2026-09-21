@@ -28,7 +28,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 
 /**
