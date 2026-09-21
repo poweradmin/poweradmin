@@ -22,112 +22,13 @@
 
 namespace Poweradmin\Domain\Repository;
 
-use Poweradmin\Domain\Model\UserGroup;
-
 /**
  * Persistence for user groups.
+ *
+ * Union of the UserGroupRepositoryInterface roles; consumers should depend on the narrowest role they use.
  */
-interface UserGroupRepositoryInterface
+interface UserGroupRepositoryInterface extends
+    UserGroupLookupInterface,
+    UserGroupWriterInterface
 {
-    /**
-     * Find all groups
-     *
-     * @return UserGroup[]
-     */
-    public function findAll(): array;
-
-    /**
-     * Return the subset of supplied IDs that actually exist in user_groups.
-     *
-     * @param array<int> $ids
-     * @return array<int, int>
-     */
-    public function findExistingIds(array $ids): array;
-
-    /**
-     * Find groups by user ID (groups the user belongs to)
-     *
-     * @param int $userId
-     * @return UserGroup[]
-     */
-    public function findByUserId(int $userId): array;
-
-    /**
-     * Find the groups each of the supplied users belongs to
-     *
-     * @param array<int> $userIds
-     * @return array<int, UserGroup[]> Keyed by user ID; users with no groups are absent
-     */
-    public function findByUserIds(array $userIds): array;
-
-    /**
-     * Get the IDs of the groups the user belongs to
-     *
-     * @param int $userId
-     * @return array<int, int>
-     */
-    public function getGroupIdsForUser(int $userId): array;
-
-    /**
-     * Find a group by ID
-     *
-     * @param int $id
-     * @return UserGroup|null
-     */
-    public function findById(int $id): ?UserGroup;
-
-    /**
-     * Find a group by name
-     *
-     * @param string $name
-     * @return UserGroup|null
-     */
-    public function findByName(string $name): ?UserGroup;
-
-    /**
-     * Save (create or update) a group
-     *
-     * @param UserGroup $group
-     * @return UserGroup
-     */
-    public function save(UserGroup $group): UserGroup;
-
-    /**
-     * Delete a group by ID
-     *
-     * @param int $id
-     * @return bool
-     */
-    public function delete(int $id): bool;
-
-    /**
-     * Count all groups
-     *
-     * @return int
-     */
-    public function countAll(): int;
-
-    /**
-     * Get member counts for multiple groups in a single query
-     *
-     * @param int[] $groupIds
-     * @return array<int, int> Map of group_id => member_count
-     */
-    public function getMemberCountsByGroupIds(array $groupIds): array;
-
-    /**
-     * Count members in a group
-     *
-     * @param int $groupId
-     * @return int
-     */
-    public function countMembers(int $groupId): int;
-
-    /**
-     * Count zones owned by a group
-     *
-     * @param int $groupId
-     * @return int
-     */
-    public function countZones(int $groupId): int;
 }

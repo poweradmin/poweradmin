@@ -32,7 +32,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -44,7 +44,7 @@ class AddUserController extends BaseController
     private PasswordGenerationService $passwordGenerationService;
     private MailService $mailService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
-    private UserGroupRepositoryInterface $groupRepository;
+    private UserGroupLookupInterface $groupRepository;
     private UserGroupMemberRepositoryInterface $memberRepository;
 
 

@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\UserGroup;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 
 /**
  * Shapes raw user rows into the read format the API exposes
@@ -34,11 +34,11 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 class UserProfileAssembler
 {
     private PermissionService $permissionService;
-    private UserGroupRepositoryInterface $groupRepository;
+    private UserGroupLookupInterface $groupRepository;
 
     public function __construct(
         PermissionService $permissionService,
-        UserGroupRepositoryInterface $groupRepository
+        UserGroupLookupInterface $groupRepository
     ) {
         $this->permissionService = $permissionService;
         $this->groupRepository = $groupRepository;

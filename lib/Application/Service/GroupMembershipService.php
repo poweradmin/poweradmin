@@ -26,7 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Domain\Model\UserGroupMember;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 
 /**
  * Adds and removes users from groups and lists a group's members.
@@ -36,11 +36,11 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 class GroupMembershipService
 {
     private UserGroupMemberRepositoryInterface $memberRepository;
-    private UserGroupRepositoryInterface $groupRepository;
+    private UserGroupLookupInterface $groupRepository;
 
     public function __construct(
         UserGroupMemberRepositoryInterface $memberRepository,
-        UserGroupRepositoryInterface $groupRepository
+        UserGroupLookupInterface $groupRepository
     ) {
         $this->memberRepository = $memberRepository;
         $this->groupRepository = $groupRepository;

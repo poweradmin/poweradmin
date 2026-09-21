@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\UserGroup;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 
 /**
  * Turns a submitted list of group references into distinct group entities
@@ -33,9 +33,9 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
  */
 class GroupReferenceResolver
 {
-    private UserGroupRepositoryInterface $groupRepository;
+    private UserGroupLookupInterface $groupRepository;
 
-    public function __construct(UserGroupRepositoryInterface $groupRepository)
+    public function __construct(UserGroupLookupInterface $groupRepository)
     {
         $this->groupRepository = $groupRepository;
     }

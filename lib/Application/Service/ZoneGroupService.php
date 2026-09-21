@@ -26,7 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 
 /**
  * Assigns zones to groups and removes them; the group-based half of zone ownership.
@@ -36,11 +36,11 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 class ZoneGroupService
 {
     private ZoneGroupRepositoryInterface $zoneGroupRepository;
-    private UserGroupRepositoryInterface $groupRepository;
+    private UserGroupLookupInterface $groupRepository;
 
     public function __construct(
         ZoneGroupRepositoryInterface $zoneGroupRepository,
-        UserGroupRepositoryInterface $groupRepository
+        UserGroupLookupInterface $groupRepository
     ) {
         $this->zoneGroupRepository = $zoneGroupRepository;
         $this->groupRepository = $groupRepository;

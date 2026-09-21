@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
 
 /**
@@ -35,13 +35,13 @@ class ZoneCreateOwnershipResolver
 {
     private ZoneOwnershipModeService $mode;
     private PermissionService $permissions;
-    private UserGroupRepositoryInterface $groups;
+    private UserGroupLookupInterface $groups;
     private UserLookupInterface $users;
 
     public function __construct(
         ZoneOwnershipModeService $mode,
         PermissionService $permissions,
-        UserGroupRepositoryInterface $groups,
+        UserGroupLookupInterface $groups,
         UserLookupInterface $users
     ) {
         $this->mode = $mode;
