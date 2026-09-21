@@ -34,6 +34,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Utility\DnsIdnService;
@@ -201,7 +202,7 @@ class ZoneManagementService
         // Stored names are punycode, as the web form writes them.
         $domain = DnsIdnService::toPunycode(trim($domain));
 
-        $this->hostnameValidator ??= new HostnameValidator($this->config);
+        $this->hostnameValidator ??= new HostnameValidator(HostnamePolicy::fromConfig($this->config));
         if (!$this->hostnameValidator->isValid($domain)) {
             return ['success' => false, 'message' => 'Invalid domain name', 'status' => 400, 'code' => self::ERR_INVALID_NAME];
         }

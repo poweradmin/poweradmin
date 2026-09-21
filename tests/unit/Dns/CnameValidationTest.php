@@ -22,10 +22,10 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use TestHelpers\BaseDnsTest;
 use ReflectionClass;
 
@@ -39,11 +39,10 @@ class CnameValidationTest extends BaseDnsTest
     public function testValidateCnameName()
     {
         // Create CNAMERecordValidator instance
-        /** @var MockObject&ConfigurationManager $configMock */
-        $configMock = $this->createMock(ConfigurationManager::class);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
         // Only the second name is the target of an NS record
-        $validator = new CNAMERecordValidator($configMock, $this->sqliteBackendProvider([
+        $validator = new CNAMERecordValidator($hostnameValidator, $this->sqliteBackendProvider([
             [10, 1, 'example.com', 'NS', 'invalid.cname.target'],
         ]));
         $reflection = new ReflectionClass($validator);
@@ -65,11 +64,10 @@ class CnameValidationTest extends BaseDnsTest
     public function testValidateCnameExistence()
     {
         // Create CNAMERecordValidator instance
-        /** @var MockObject&ConfigurationManager $configMock */
-        $configMock = $this->createMock(ConfigurationManager::class);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
         // Only the existing.cname name already carries a CNAME
-        $validator = new CNAMERecordValidator($configMock, $this->sqliteBackendProvider([
+        $validator = new CNAMERecordValidator($hostnameValidator, $this->sqliteBackendProvider([
             [10, 1, 'existing.cname.example.com', 'CNAME', 'target.example.com'],
         ]));
         $reflection = new ReflectionClass($validator);
@@ -99,11 +97,10 @@ class CnameValidationTest extends BaseDnsTest
     public function testValidateCnameUnique()
     {
         // Create CNAMERecordValidator instance
-        /** @var MockObject&ConfigurationManager $configMock */
-        $configMock = $this->createMock(ConfigurationManager::class);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
         // No records share the name, so both a new record and an edit pass
-        $validator = new CNAMERecordValidator($configMock, $this->sqliteBackendProvider([
+        $validator = new CNAMERecordValidator($hostnameValidator, $this->sqliteBackendProvider([
             [10, 1, 'other.example.com', 'A', '192.0.2.1'],
         ]));
         $reflection = new ReflectionClass($validator);
@@ -145,10 +142,9 @@ class CnameValidationTest extends BaseDnsTest
     public function testValidateNotEmptyCnameRR()
     {
         // Create CNAMERecordValidator instance
-        /** @var MockObject&ConfigurationManager $configMock */
-        $configMock = $this->createMock(ConfigurationManager::class);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
-        $validator = new CNAMERecordValidator($configMock, $this->sqliteBackendProvider());
+        $validator = new CNAMERecordValidator($hostnameValidator, $this->sqliteBackendProvider());
         $reflection = new ReflectionClass($validator);
         $method = $reflection->getMethod('validateNotEmptyCnameRR');
         $method->setAccessible(true);

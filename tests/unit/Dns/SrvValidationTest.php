@@ -4,7 +4,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 /**
  * Tests for SRV record validation
@@ -12,12 +13,12 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class SrvValidationTest extends TestCase
 {
     private SRVRecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->validator = new SRVRecordValidator($this->configMock);
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy());
+        $this->validator = new SRVRecordValidator($this->hostnameValidator);
     }
 
     /**

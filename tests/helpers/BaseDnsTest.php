@@ -17,6 +17,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\MINFORecordValidator;
@@ -125,58 +126,59 @@ class BaseDnsTest extends SqliteDnsBackendTestCase
 
         // Create a mock for DnsValidatorRegistry
         $registryMock = $this->createMock(DnsValidatorRegistry::class);
+        $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($configMock));
 
         // Configure getValidator to return appropriate validator mocks
         $registryMock->method('getValidator')
-            ->willReturnCallback(function ($type) use ($configMock) {
+            ->willReturnCallback(function ($type) use ($configMock, $hostnameValidator) {
                 // Create validator mock for each record type
                 $validator = null;
 
                 switch ($type) {
                     case RecordType::A:
-                        $validator = new ARecordValidator($configMock);
+                        $validator = new ARecordValidator($hostnameValidator);
                         break;
                     case RecordType::AAAA:
-                        $validator = new AAAARecordValidator($configMock);
+                        $validator = new AAAARecordValidator($hostnameValidator);
                         break;
                     case RecordType::CNAME:
-                        $validator = new CNAMERecordValidator($configMock, $this->backendProvider);
+                        $validator = new CNAMERecordValidator($hostnameValidator, $this->backendProvider);
                         break;
                     case RecordType::MX:
-                        $validator = new MXRecordValidator($configMock);
+                        $validator = new MXRecordValidator($hostnameValidator);
                         break;
                     case RecordType::NS:
-                        $validator = new NSRecordValidator($configMock);
+                        $validator = new NSRecordValidator($hostnameValidator);
                         break;
                     case RecordType::PTR:
-                        $validator = new PTRRecordValidator($configMock);
+                        $validator = new PTRRecordValidator($hostnameValidator);
                         break;
                     case RecordType::SOA:
-                        $validator = new SOARecordValidator($configMock);
+                        $validator = new SOARecordValidator($hostnameValidator, $configMock);
                         break;
                     case RecordType::TXT:
-                        $validator = new TXTRecordValidator($configMock);
+                        $validator = new TXTRecordValidator($hostnameValidator);
                         break;
                     case RecordType::SRV:
-                        $validator = new SRVRecordValidator($configMock);
+                        $validator = new SRVRecordValidator($hostnameValidator);
                         break;
                     case RecordType::SPF:
-                        $validator = new SPFRecordValidator($configMock);
+                        $validator = new SPFRecordValidator($hostnameValidator);
                         break;
                     case RecordType::HINFO:
-                        $validator = new HINFORecordValidator($configMock);
+                        $validator = new HINFORecordValidator($hostnameValidator);
                         break;
                     case RecordType::LOC:
-                        $validator = new LOCRecordValidator($configMock);
+                        $validator = new LOCRecordValidator($hostnameValidator);
                         break;
                     case RecordType::MINFO:
-                        $validator = new MINFORecordValidator($configMock);
+                        $validator = new MINFORecordValidator($hostnameValidator);
                         break;
                     case RecordType::DS:
-                        $validator = new DSRecordValidator($configMock);
+                        $validator = new DSRecordValidator($hostnameValidator);
                         break;
                     case RecordType::CSYNC:
-                        $validator = new CSYNCRecordValidator($configMock);
+                        $validator = new CSYNCRecordValidator($hostnameValidator);
                         break;
                 }
 

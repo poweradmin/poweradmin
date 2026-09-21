@@ -4,7 +4,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\TLSARecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 /**
  * Tests for the TLSARecordValidator
@@ -12,15 +13,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class TLSARecordValidatorTest extends TestCase
 {
     private TLSARecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
-        $this->validator = new TLSARecordValidator($this->configMock);
+        $this->validator = new TLSARecordValidator($this->hostnameValidator);
     }
 
     public function testValidateWithValidData()

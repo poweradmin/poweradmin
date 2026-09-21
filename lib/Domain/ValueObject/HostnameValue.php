@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\ValueObject;
 
 use InvalidArgumentException;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
@@ -40,7 +41,7 @@ readonly class HostnameValue
         }
 
         if ($config !== null) {
-            $validator = new HostnameValidator($config);
+            $validator = new HostnameValidator(HostnamePolicy::fromConfig($config));
             $result = $validator->validate($hostname);
 
             if (!$result->isValid()) {

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
@@ -46,7 +47,7 @@ class Validator
     public function isValidEmail(string $address): bool
     {
         $fields = explode("@", $address, 2);
-        $hostnameValidator = new HostnameValidator($this->config);
+        $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->config));
         if (
             (!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) ||
             (!isset($fields[1]) || $fields[1] == '' || !$hostnameValidator->isValid($fields[1]))

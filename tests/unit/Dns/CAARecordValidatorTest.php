@@ -24,7 +24,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\CAARecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 /**
  * Tests for the CAARecordValidator
@@ -32,15 +33,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class CAARecordValidatorTest extends TestCase
 {
     private CAARecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
-        $this->validator = new CAARecordValidator($this->configMock);
+        $this->validator = new CAARecordValidator($this->hostnameValidator);
     }
 
     public function testValidateWithValidData()

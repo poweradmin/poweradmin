@@ -22,11 +22,11 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Validation\RecordField;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\SqliteDnsBackendTestCase;
 
 /**
@@ -39,28 +39,13 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 {
 
     private CNAMERecordValidator $validator;
-    private MockObject&ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                // Mock DNS validation settings to their default values
-                if ($section === 'dns') {
-                    switch ($key) {
-                        case 'top_level_tld_check':
-                            return false;
-                        case 'strict_tld_check':
-                            return false;
-                        default:
-                            return 'example.com';
-                    }
-                }
-                return 'example.com';
-            });
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
-        $this->validator = new CNAMERecordValidator($this->configMock, $this->sqliteBackendProvider());
+        $this->validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider());
     }
 
     public function testValidateWithValidData()
@@ -86,7 +71,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
     public function testValidateWithConflictingRecord()
     {
         // An A record already owns the name, so a CNAME cannot be added beside it
-        $this->validator = new CNAMERecordValidator($this->configMock, $this->sqliteBackendProvider([
+        $this->validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider([
             [10, 1, 'alias.example.com', 'A', '192.0.2.1'],
         ]));
 
@@ -234,7 +219,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
         $method->setAccessible(true);
 
         // Only a CNAME of the same name exists: unique as far as other types go
-        $this->validator = new CNAMERecordValidator($this->configMock, $this->sqliteBackendProvider([
+        $this->validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider([
             [10, 1, 'unique.example.com', 'CNAME', 'target.example.com'],
             [11, 1, 'conflict.example.com', 'A', '192.0.2.1'],
         ]));
@@ -255,7 +240,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
         $method->setAccessible(true);
 
         // A TXT pointing at the name is harmless; an MX target cannot become a CNAME
-        $this->validator = new CNAMERecordValidator($this->configMock, $this->sqliteBackendProvider([
+        $this->validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider([
             [10, 1, 'note.example.com', 'TXT', 'valid.example.com'],
             [11, 1, 'example.com', 'MX', 'invalid.example.com'],
         ]));
@@ -295,25 +280,9 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
     public function testValidateRejectsSingleLabelTargetWhenTopLevelTldCheckIsOn()
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key, $default = null) {
-                if ($section === 'dns') {
-                    switch ($key) {
-                        case 'top_level_tld_check':
-                            return true;
-                        case 'strict_tld_check':
-                            return false;
-                        case 'custom_tlds':
-                            return [];
-                        default:
-                            return 'example.com';
-                    }
-                }
-                return $default ?? 'example.com';
-            });
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy(true));
 
-        $validator = new CNAMERecordValidator($configMock, $this->sqliteBackendProvider());
+        $validator = new CNAMERecordValidator($hostnameValidator, $this->sqliteBackendProvider());
 
         $result = $validator->validate('www', 'alias.example.com', 0, 3600, 86400);
 
@@ -385,25 +354,9 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
     public function testValidateWithCustomTldWhitelisted()
     {
-        // Create a new config mock that returns custom_tlds
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key, $default = null) {
-                if ($section === 'dns') {
-                    switch ($key) {
-                        case 'custom_tlds':
-                            return ['dn42', 'home', 'internal'];
-                        case 'top_level_tld_check':
-                        case 'strict_tld_check':
-                            return false;
-                        default:
-                            return 'example.com';
-                    }
-                }
-                return $default ?? 'example.com';
-            });
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy(false, false, ['dn42', 'home', 'internal']));
 
-        $validator = new CNAMERecordValidator($configMock, $this->sqliteBackendProvider());
+        $validator = new CNAMERecordValidator($hostnameValidator, $this->sqliteBackendProvider());
 
         $content = 'ns1.example.dn42'; // Custom TLD in whitelist
         $name = 'alias.example.com';
@@ -420,25 +373,9 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
     public function testValidateWithCustomTldCaseInsensitive()
     {
-        // Create a config mock with lowercase custom_tlds
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key, $default = null) {
-                if ($section === 'dns') {
-                    switch ($key) {
-                        case 'custom_tlds':
-                            return ['dn42']; // lowercase in config
-                        case 'top_level_tld_check':
-                        case 'strict_tld_check':
-                            return false;
-                        default:
-                            return 'example.com';
-                    }
-                }
-                return $default ?? 'example.com';
-            });
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy(false, false, ['dn42']));
 
-        $validator = new CNAMERecordValidator($configMock, $this->sqliteBackendProvider());
+        $validator = new CNAMERecordValidator($hostnameValidator, $this->sqliteBackendProvider());
 
         // Test with uppercase TLD in target
         $content = 'ns1.example.DN42'; // uppercase TLD
@@ -454,25 +391,9 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
     public function testValidateStandardTldWithCustomWhitelistConfigured()
     {
-        // Create a config mock with custom_tlds
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key, $default = null) {
-                if ($section === 'dns') {
-                    switch ($key) {
-                        case 'custom_tlds':
-                            return ['dn42', 'home'];
-                        case 'top_level_tld_check':
-                        case 'strict_tld_check':
-                            return false;
-                        default:
-                            return 'example.com';
-                    }
-                }
-                return $default ?? 'example.com';
-            });
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy(false, false, ['dn42', 'home']));
 
-        $validator = new CNAMERecordValidator($configMock, $this->sqliteBackendProvider());
+        $validator = new CNAMERecordValidator($hostnameValidator, $this->sqliteBackendProvider());
 
         // Standard TLD should still work
         $content = 'www.example.com';
@@ -490,25 +411,9 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
     public function testValidateWithEmptyCustomTldWhitelist()
     {
-        // Create a config mock that explicitly returns empty array
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key, $default = null) {
-                if ($section === 'dns') {
-                    switch ($key) {
-                        case 'custom_tlds':
-                            return []; // Explicitly empty
-                        case 'top_level_tld_check':
-                        case 'strict_tld_check':
-                            return false;
-                        default:
-                            return 'example.com';
-                    }
-                }
-                return $default ?? 'example.com';
-            });
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
-        $validator = new CNAMERecordValidator($configMock, $this->sqliteBackendProvider());
+        $validator = new CNAMERecordValidator($hostnameValidator, $this->sqliteBackendProvider());
 
         // Custom TLD should be rejected when whitelist is empty
         $content = 'ns1.example.dn42';
@@ -531,7 +436,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
     public function testValidateCnameExistenceWithStringRidAppliesIdFilter()
     {
         // The only CNAME with this name is the row being edited
-        $validator = new CNAMERecordValidator($this->configMock, $this->sqliteBackendProvider([
+        $validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider([
             [123, 1, 'alias.example.com', 'CNAME', 'target.example.com'],
         ]));
 
@@ -548,7 +453,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
     public function testValidateCnameUniqueWithStringRidAppliesIdFilter()
     {
-        $validator = new CNAMERecordValidator($this->configMock, $this->sqliteBackendProvider([
+        $validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider([
             [123, 1, 'alias.example.com', 'A', '192.0.2.1'],
         ]));
 
@@ -565,7 +470,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
     public function testValidateCnameExistenceWithNewRecordSentinelSkipsIdFilter()
     {
-        $validator = new CNAMERecordValidator($this->configMock, $this->sqliteBackendProvider([
+        $validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider([
             [123, 1, 'alias.example.com', 'CNAME', 'target.example.com'],
         ]));
 

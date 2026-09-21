@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,10 +24,10 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 
 /**
@@ -36,15 +36,13 @@ use ReflectionClass;
 class AAAARecordValidatorTest extends TestCase
 {
     private AAAARecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
-        $this->validator = new AAAARecordValidator($this->configMock);
+        $this->validator = new AAAARecordValidator($this->hostnameValidator);
     }
 
     public function testValidateWithValidData()
@@ -74,11 +72,8 @@ class AAAARecordValidatorTest extends TestCase
     public function testDebugHostnameValidation()
     {
         // Debug the hostname validator to understand what's happening
-        $mockConfig = $this->createMock(ConfigurationManager::class);
-        $mockConfig->method('get')->willReturn(false);
-
         // Direct validation with HostnameValidator
-        $hostnameValidator = new HostnameValidator($mockConfig);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
         $result = $hostnameValidator->validate('host.example.com.');
 
         $this->assertTrue($result->isValid());
@@ -201,7 +196,7 @@ class AAAARecordValidatorTest extends TestCase
             ->willReturn(ValidationResult::success(['hostname' => 'host.example.com']));
 
         // Set up the validator with mocks
-        $validator = new AAAARecordValidator($this->configMock);
+        $validator = new AAAARecordValidator($this->hostnameValidator);
 
         // Use reflection to replace the dependencies
         $reflectionClass = new ReflectionClass($validator);

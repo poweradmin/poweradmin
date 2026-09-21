@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,23 +23,23 @@
 namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\NSEC3RecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 
 class NSEC3RecordValidatorTest extends TestCase
 {
     private NSEC3RecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidatorMock;
     private HostnameValidator $hostnameValidatorMock;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
         // Create mocks for TTLValidator and HostnameValidator
         $this->ttlValidatorMock = $this->createMock(TTLValidator::class);
@@ -53,7 +53,7 @@ class NSEC3RecordValidatorTest extends TestCase
             ->willReturn(ValidationResult::success(3600));
 
         // Create validator with config
-        $this->validator = new NSEC3RecordValidator($this->configMock);
+        $this->validator = new NSEC3RecordValidator($this->hostnameValidator);
 
         // Inject mock dependencies using reflection
         $reflection = new ReflectionClass($this->validator);

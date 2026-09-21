@@ -31,6 +31,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\ZoneRectifierInterface;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -164,7 +165,7 @@ class RecordManager implements RecordManagerInterface
     private function normalizeNameAndAssertAddAllowed(int $zone_id, string $name, string $type, string $perm_edit): array
     {
         $zone = $this->domainRepository->getDomainNameById($zone_id);
-        $hostnameValidator = new HostnameValidator($this->config);
+        $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->config));
         $name = $hostnameValidator->normalizeRecordName($name, $zone);
 
         $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
@@ -361,7 +362,7 @@ class RecordManager implements RecordManagerInterface
 
         // Normalize the posted name first so the apex comparison below sees the FQDN
         $zone = $this->domainRepository->getDomainNameById($record['zid']);
-        $hostnameValidator = new HostnameValidator($this->config);
+        $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->config));
         $record['name'] = $hostnameValidator->normalizeRecordName($record['name'], $zone);
 
         // Both the stored record and the posted state must pass: a client-level

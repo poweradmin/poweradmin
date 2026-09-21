@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Port\SupermasterBackendInterface;
@@ -51,7 +52,7 @@ class SupermasterManager
     {
         $this->db = $db;
         $this->config = $config;
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
         $this->ipAddressValidator = new IPAddressValidator();
         $this->backendProvider = $backendProvider;
     }

@@ -23,6 +23,8 @@
 namespace Poweradmin\Tests\Unit\Dns;
 
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +54,7 @@ class SOARecordValidatorTest extends TestCase
                 return "'$value'";
             });
 
-        $this->validator = new SOARecordValidator($this->configMock);
+        $this->validator = new SOARecordValidator(new HostnameValidator(new HostnamePolicy()), $this->configMock);
     }
 
     public function testValidateWithValidData()

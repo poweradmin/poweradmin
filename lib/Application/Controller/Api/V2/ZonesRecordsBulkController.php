@@ -28,6 +28,7 @@ use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Utility\RecordIdHelper;
@@ -381,7 +382,7 @@ class ZonesRecordsBulkController extends PublicApiController
         $fqdn = $this->normalizeV2RecordName($name, $zoneName);
 
         // Normalized so the record-type permission check sees the FQDN
-        $hostnameValidator = new HostnameValidator($this->getConfig());
+        $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig()));
         $normalizedName = strtolower($hostnameValidator->normalizeRecordName($fqdn, $zoneName));
 
         // Block SOA/NS edits for users limited to zone_content_edit_own_as_client;
@@ -427,7 +428,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
         $userId = $this->getAuthenticatedUserId();
-        $hostnameValidator = new HostnameValidator($this->getConfig());
+        $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig()));
         if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType, (string)$existingRecord['name'], $zoneName)) {
             throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }

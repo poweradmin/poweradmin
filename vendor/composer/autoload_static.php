@@ -1809,6 +1809,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\DnsValidation\\HHITRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/HHITRecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\HINFORecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/HINFORecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\HTTPSRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php',
+        'Poweradmin\\Domain\\Service\\DnsValidation\\HostnamePolicy' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/HostnamePolicy.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\HostnameValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/HostnameValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\IPAddressValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/IPAddressValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\IPSECKEYRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php',

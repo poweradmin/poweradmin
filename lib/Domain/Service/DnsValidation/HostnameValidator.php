@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,18 +26,22 @@ use Poweradmin\Domain\Utility\TopLevelDomain;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Hostname validation service
  */
 class HostnameValidator
 {
-    private ConfigurationInterface $config;
+    private HostnamePolicy $policy;
 
-    public function __construct(ConfigurationInterface $config)
+    public function __construct(HostnamePolicy $policy)
     {
-        $this->config = $config;
+        $this->policy = $policy;
+    }
+
+    public function policy(): HostnamePolicy
+    {
+        return $this->policy;
     }
 
     /**
@@ -50,8 +54,8 @@ class HostnameValidator
      */
     public function validate(mixed $hostname, bool $allowWildcard = false): ValidationResult
     {
-        $dns_top_level_tld_check = $this->config->get('dns', 'top_level_tld_check');
-        $dns_strict_tld_check = $this->config->get('dns', 'strict_tld_check');
+        $dns_top_level_tld_check = $this->policy->topLevelTldCheck;
+        $dns_strict_tld_check = $this->policy->strictTldCheck;
 
         $normalizedHostname = $hostname;
 
@@ -215,9 +219,7 @@ class HostnameValidator
         }
 
         if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($hostname)) {
-            $customTlds = $this->config->get('dns', 'custom_tlds', []);
-            $tld = strtolower($hostname_labels[$label_count - 1]);
-            if (!is_array($customTlds) || !in_array($tld, array_map('strtolower', $customTlds), true)) {
+            if (!$this->policy->allowsCustomTld($hostname_labels[$label_count - 1])) {
                 return ValidationResult::failure(_('You are using an invalid top level domain.'));
             }
         }

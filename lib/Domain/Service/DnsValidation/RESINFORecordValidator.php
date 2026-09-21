@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * RESINFO (Resolver Information) record validator
@@ -42,9 +41,9 @@ class RESINFORecordValidator implements DnsRecordValidatorInterface
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
-    public function __construct(ConfigurationInterface $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
     }
 

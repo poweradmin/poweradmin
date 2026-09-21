@@ -24,7 +24,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\SVCBRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 /**
  * Tests for the SVCBRecordValidator
@@ -39,11 +40,9 @@ class SVCBRecordValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturn('example.com');
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
-        $this->validator = new SVCBRecordValidator($configMock);
+        $this->validator = new SVCBRecordValidator($hostnameValidator);
     }
 
     // ========================================================================

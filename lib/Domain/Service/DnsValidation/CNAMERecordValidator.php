@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use Poweradmin\Domain\Port\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Validator for CNAME DNS records
@@ -43,20 +42,18 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private ConfigurationInterface $config;
     private RecordReadBackendInterface $backendProvider;
 
     /**
      * Constructor
      *
-     * @param ConfigurationInterface $config
+     * @param HostnameValidator $hostnameValidator
      * @param RecordReadBackendInterface $backendProvider DNS backend the conflict lookups read from
      */
-    public function __construct(ConfigurationInterface $config, RecordReadBackendInterface $backendProvider)
+    public function __construct(HostnameValidator $hostnameValidator, RecordReadBackendInterface $backendProvider)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
-        $this->config = $config;
         $this->backendProvider = $backendProvider;
     }
 
@@ -306,8 +303,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $tld = end($labels);
 
         // Check custom TLD whitelist first
-        $customTlds = $this->config->get('dns', 'custom_tlds', []);
-        if (is_array($customTlds) && in_array(strtolower($tld), array_map('strtolower', $customTlds), true)) {
+        if ($this->hostnameValidator->policy()->allowsCustomTld($tld)) {
             return ValidationResult::success(true);
         }
 

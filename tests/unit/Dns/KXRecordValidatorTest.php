@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\DnsValidation\KXRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use ReflectionMethod;
 
 class KXRecordValidatorTest extends BaseDnsTest
@@ -34,20 +35,8 @@ class KXRecordValidatorTest extends BaseDnsTest
     protected function setUp(): void
     {
         parent::setUp();
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns') {
-                    if ($key === 'top_level_tld_check') {
-                        return false;
-                    }
-                    if ($key === 'strict_tld_check') {
-                        return false;
-                    }
-                }
-                return null;
-            });
-        $this->validator = new KXRecordValidator($configMock);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
+        $this->validator = new KXRecordValidator($hostnameValidator);
     }
 
     public function testValidKXRecord()

@@ -24,7 +24,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\BRIDRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 class BRIDRecordValidatorTest extends TestCase
 {
@@ -32,9 +33,7 @@ class BRIDRecordValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturn('example.com');
-        $this->validator = new BRIDRecordValidator($config);
+        $this->validator = new BRIDRecordValidator(new HostnameValidator(new HostnamePolicy(true, true)));
     }
 
     public function testValidBase64Content(): void

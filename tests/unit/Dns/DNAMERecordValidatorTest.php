@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\DNAMERecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 /**
  * Tests for the DNAMERecordValidator with ValidationResult pattern
@@ -32,15 +33,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class DNAMERecordValidatorTest extends TestCase
 {
     private DNAMERecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
-        $this->validator = new DNAMERecordValidator($this->configMock);
+        $this->validator = new DNAMERecordValidator($this->hostnameValidator);
     }
 
     public function testValidateWithValidData()

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,10 +24,10 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\RPRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionProperty;
 
 /**
@@ -36,15 +36,13 @@ use ReflectionProperty;
 class RPRecordValidatorTest extends TestCase
 {
     private RPRecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
     private HostnameValidator $hostnameValidatorMock;
     private TTLValidator $ttlValidatorMock;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
         // Create mock validators
         $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
@@ -69,7 +67,7 @@ class RPRecordValidatorTest extends TestCase
             });
 
         // Create the validator and inject mocks
-        $this->validator = new RPRecordValidator($this->configMock);
+        $this->validator = new RPRecordValidator($this->hostnameValidator);
 
         // Inject the mock hostname validator
         $reflectionProperty = new ReflectionProperty(RPRecordValidator::class, 'hostnameValidator');

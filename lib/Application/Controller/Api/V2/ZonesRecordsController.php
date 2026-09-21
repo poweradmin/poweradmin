@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
@@ -467,7 +468,7 @@ class ZonesRecordsController extends PublicApiController
             $name = $this->normalizeV2RecordName($name, $zoneName);
 
             // Normalize the hostname so the record-type permission check sees the FQDN
-            $hostnameValidator = new HostnameValidator($this->getConfig());
+            $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig()));
             $normalizedName = strtolower($hostnameValidator->normalizeRecordName($name, $zoneName));
 
             // Block SOA/NS edits for users limited to zone_content_edit_own_as_client;
@@ -690,7 +691,7 @@ class ZonesRecordsController extends PublicApiController
 
             // Block changing the record into one the user may not manage, e.g.
             // retyping to SOA/NS or renaming a subzone NS onto the zone apex
-            $hostnameValidator = new HostnameValidator($this->getConfig());
+            $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig()));
             $newType = strtoupper(trim($type));
             $newName = $hostnameValidator->normalizeRecordName(trim($name), (string)$zone['name']);
             if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, $newType, $zone['type'] ?? null, $newName, $zone['name'] ?? null)) {

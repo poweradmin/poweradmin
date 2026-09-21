@@ -44,10 +44,10 @@ class SOARecordValidator implements DnsRecordValidatorInterface
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
-    public function __construct(ConfigurationInterface $config)
+    public function __construct(HostnameValidator $hostnameValidator, ConfigurationInterface $config)
     {
         $this->config = $config;
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
     }
 

@@ -60,11 +60,12 @@ class APLRecordValidator implements DnsRecordValidatorInterface
     /**
      * Constructor
      *
-     * @param ConfigurationInterface $config
+     * @param HostnameValidator $hostnameValidator
+     * @param ConfigurationInterface $config Read for dns.domain only
      */
-    public function __construct(ConfigurationInterface $config)
+    public function __construct(HostnameValidator $hostnameValidator, ConfigurationInterface $config)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
         $this->ipValidator = new IPAddressValidator();
         $this->config = $config;

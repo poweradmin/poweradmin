@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 
 /**
  * Tests for the HostnameValidator service
@@ -35,21 +35,9 @@ class HostnameValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns') {
-                    if ($key === 'top_level_tld_check') {
-                        return false;
-                    }
-                    if ($key === 'strict_tld_check') {
-                        return false;
-                    }
-                }
-                return null;
-            });
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
-        $this->validator = new HostnameValidator($configMock);
+        $this->validator = $hostnameValidator;
     }
 
     /**
@@ -249,24 +237,9 @@ class HostnameValidatorTest extends TestCase
      */
     public function testStrictTldCheckHonorsCustomTlds(): void
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key, $default = null) {
-                if ($section === 'dns') {
-                    if ($key === 'strict_tld_check') {
-                        return true;
-                    }
-                    if ($key === 'top_level_tld_check') {
-                        return false;
-                    }
-                    if ($key === 'custom_tlds') {
-                        return ['lan', 'corp'];
-                    }
-                }
-                return $default;
-            });
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy(false, true, ['lan', 'corp']));
 
-        $validator = new HostnameValidator($configMock);
+        $validator = $hostnameValidator;
 
         $this->assertTrue($validator->isValid('intranet.lan'));
         $this->assertTrue($validator->isValid('host.corp'));

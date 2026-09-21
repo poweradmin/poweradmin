@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -54,7 +55,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
         $this->backendProvider = $backendProvider;
     }
 

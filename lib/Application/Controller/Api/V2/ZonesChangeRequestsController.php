@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
@@ -280,7 +281,7 @@ class ZonesChangeRequestsController extends PublicApiController
             }
             $type = strtoupper(trim((string)$record['type']));
             $name = $this->normalizeV2RecordName((string)$record['name'], $zoneName);
-            $name = strtolower((new HostnameValidator($this->getConfig()))->normalizeRecordName($name, $zoneName));
+            $name = strtolower((new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig())))->normalizeRecordName($name, $zoneName));
             $ttl = $this->inputInt($record, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, DnsHelper::isReverseZoneName($zoneName)));
             $priority = $this->inputInt($record, 'priority', 0);
             $disabled = $this->inputIntFromBool($record, 'disabled', 0);
@@ -336,7 +337,7 @@ class ZonesChangeRequestsController extends PublicApiController
             return $this->returnApiError($label . ': TTL must not be negative', 400);
         }
         $name = $this->normalizeV2RecordName($name, $zoneName);
-        $fqdn = (new HostnameValidator($this->getConfig()))->normalizeRecordName($name, $zoneName);
+        $fqdn = (new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig())))->normalizeRecordName($name, $zoneName);
         if (!$this->apiPermissionService->canRequestZoneRecord($userId, $zoneId, $type, $fqdn, $zoneName)) {
             return $this->returnApiError('You do not have permission to edit this record type', 403);
         }

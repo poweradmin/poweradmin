@@ -4,7 +4,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use ReflectionClass;
 
 /**
@@ -13,15 +14,13 @@ use ReflectionClass;
 class SPFRecordValidatorTest extends TestCase
 {
     private SPFRecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
-        $this->validator = new SPFRecordValidator($this->configMock);
+        $this->validator = new SPFRecordValidator($this->hostnameValidator);
     }
 
     public function testValidateWithValidData()

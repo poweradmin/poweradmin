@@ -6,7 +6,8 @@ use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 /**
  * Tests for the validate_input method
@@ -18,22 +19,9 @@ class ValidateInputTest extends BaseDnsTest
      */
     public function testARecordValidatorWithValidationResult()
     {
-        // Create mock for config
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns') {
-                    if ($key === 'top_level_tld_check') {
-                        return false;
-                    }
-                    if ($key === 'strict_tld_check') {
-                        return false;
-                    }
-                }
-                return null;
-            });
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
-        $validator = new ARecordValidator($configMock);
+        $validator = new ARecordValidator($hostnameValidator);
 
         // Test with valid data
         $result = $validator->validate(

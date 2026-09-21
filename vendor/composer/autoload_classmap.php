@@ -1403,6 +1403,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\HHITRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/HHITRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\HINFORecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/HINFORecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\HTTPSRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\HostnamePolicy' => $baseDir . '/lib/Domain/Service/DnsValidation/HostnamePolicy.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\HostnameValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/HostnameValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\IPAddressValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/IPAddressValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\IPSECKEYRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php',

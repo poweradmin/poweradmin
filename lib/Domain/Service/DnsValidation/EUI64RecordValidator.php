@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * EUI64 record validator
@@ -49,9 +48,9 @@ class EUI64RecordValidator implements DnsRecordValidatorInterface
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
-    public function __construct(ConfigurationInterface $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
     }
 

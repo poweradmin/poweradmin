@@ -27,6 +27,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Throwable;
 
@@ -47,7 +48,7 @@ class RRSetReplaceService
         private readonly SOARecordManagerInterface $soaRecordManager,
         private readonly AuditLoggerInterface $audit
     ) {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
     }
 
     /**

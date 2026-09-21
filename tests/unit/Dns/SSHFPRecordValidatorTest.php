@@ -4,10 +4,10 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\SSHFPRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionProperty;
 
 /**
@@ -16,15 +16,13 @@ use ReflectionProperty;
 class SSHFPRecordValidatorTest extends TestCase
 {
     private SSHFPRecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
     private HostnameValidator $hostnameValidatorMock;
     private TTLValidator $ttlValidatorMock;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
         // Create mock validators
         $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
@@ -49,7 +47,7 @@ class SSHFPRecordValidatorTest extends TestCase
             });
 
         // Create the validator and inject mocks
-        $this->validator = new SSHFPRecordValidator($this->configMock);
+        $this->validator = new SSHFPRecordValidator($this->hostnameValidator);
 
         // Inject the mock hostname validator
         $reflectionProperty = new ReflectionProperty(SSHFPRecordValidator::class, 'hostnameValidator');

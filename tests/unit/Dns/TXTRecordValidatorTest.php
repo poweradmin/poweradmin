@@ -25,7 +25,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 /**
  * Tests for the TXTRecordValidator
@@ -39,16 +40,14 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class TXTRecordValidatorTest extends TestCase
 {
     private TXTRecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
         // Default validator with no length limit (for normal zone records)
-        $this->validator = new TXTRecordValidator($this->configMock);
+        $this->validator = new TXTRecordValidator($this->hostnameValidator);
     }
 
     /**
@@ -57,7 +56,7 @@ class TXTRecordValidatorTest extends TestCase
     private function createStrictValidator(): TXTRecordValidator
     {
         $validator = $this->getMockBuilder(TXTRecordValidator::class)
-            ->setConstructorArgs([$this->configMock])
+            ->setConstructorArgs([$this->hostnameValidator])
             ->onlyMethods(['validate'])
             ->getMock();
 
@@ -504,7 +503,7 @@ class TXTRecordValidatorTest extends TestCase
     public function testValidateWithZoneTemplateLimitExceeded()
     {
         // Create validator with zone template limit
-        $templateValidator = new TXTRecordValidator($this->configMock, 2048);
+        $templateValidator = new TXTRecordValidator($this->hostnameValidator, 2048);
 
         // Creating content that exceeds 2048 bytes INCLUDING quotes
         // Content: 2047 bytes + 2 quotes = 2049 bytes total
@@ -527,7 +526,7 @@ class TXTRecordValidatorTest extends TestCase
     public function testValidateWithZoneTemplateMaximumAllowedLength()
     {
         // Create validator with zone template limit
-        $templateValidator = new TXTRecordValidator($this->configMock, 2048);
+        $templateValidator = new TXTRecordValidator($this->hostnameValidator, 2048);
 
         // Creating content exactly at 2048 bytes INCLUDING quotes
         // This matches the zone_templ_records.content VARCHAR(2048) database constraint
@@ -554,7 +553,7 @@ class TXTRecordValidatorTest extends TestCase
     public function testValidateMultiStringWithZoneTemplateLimit()
     {
         // Create validator with zone template limit
-        $templateValidator = new TXTRecordValidator($this->configMock, 2048);
+        $templateValidator = new TXTRecordValidator($this->hostnameValidator, 2048);
 
         // Create multi-string content that would exceed 2048 bytes with quotes and spaces
         // Each string: 255 chars + 2 quotes = 257 bytes

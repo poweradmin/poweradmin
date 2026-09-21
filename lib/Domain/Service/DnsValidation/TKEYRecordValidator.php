@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * TKEY (Transaction KEY) record validator
@@ -69,9 +68,9 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
-    public function __construct(ConfigurationInterface $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
     }
 
