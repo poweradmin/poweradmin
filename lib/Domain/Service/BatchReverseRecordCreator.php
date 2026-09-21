@@ -32,7 +32,6 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
 
@@ -49,10 +48,10 @@ class BatchReverseRecordCreator
     private RecordLookupInterface&RecordListingInterface $recordRepository;
     private RecordMatchingService $recordMatchingService;
     private Closure $dnssecProvider;
-    private ?DnssecProviderInterface $builtDnssecProvider = null;
+    private ?ZoneRectifierInterface $builtDnssecProvider = null;
 
     /**
-     * @param Closure(): DnssecProviderInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
+     * @param Closure(): ZoneRectifierInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
      */
     public function __construct(
         ConfigurationInterface $config,

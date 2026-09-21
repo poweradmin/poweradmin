@@ -23,13 +23,24 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * DNSSEC operations for one zone.
- *
- * Union of the DNSSEC provider roles; consumers should depend on the narrowest role they use.
+ * Signing state of a zone: securing, unsecuring and reading whether it is signed.
  */
-interface DnssecProviderInterface extends
-    ZoneRectifierInterface,
-    ZoneSigningInterface,
-    ZoneKeyManagementInterface
+interface ZoneSigningInterface
 {
+    public function secureZone(string $zoneName): bool;
+    public function unsecureZone(string $zoneName): bool;
+    public function isZoneSecured(string $zoneName, $config): bool;
+
+    /**
+     * Whether the zone carries the PRESIGNED metadata, meaning it was signed
+     * at the primary server and DNSSEC cannot be managed locally.
+     */
+    public function isZonePresigned(string $zoneName): bool;
+    public function isDnssecEnabled(): bool;
+
+    /**
+     * Serial as served by PowerDNS with SOA-EDIT applied (the "signed" serial),
+     * or null when the server does not expose it or the zone cannot be read.
+     */
+    public function getEditedSerial(string $zoneName): ?int;
 }

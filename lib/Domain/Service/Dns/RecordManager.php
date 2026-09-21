@@ -31,7 +31,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\DnsFormatter;
-use Poweradmin\Domain\Service\DnssecProviderInterface;
+use Poweradmin\Domain\Service\ZoneRectifierInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\PermissionService;
@@ -65,7 +65,7 @@ class RecordManager implements RecordManagerInterface
     private UserContextService $userContext;
     private RepositoryFactoryInterface $repositoryFactory;
     private Closure $dnssecProvider;
-    private ?DnssecProviderInterface $builtDnssecProvider = null;
+    private ?ZoneRectifierInterface $builtDnssecProvider = null;
 
     /**
      * Constructor
@@ -76,7 +76,7 @@ class RecordManager implements RecordManagerInterface
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param RepositoryFactoryInterface $repositoryFactory Builds the record and comment repositories
-     * @param Closure(): DnssecProviderInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
+     * @param Closure(): ZoneRectifierInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
      * @param RecordWriteBackendInterface&BackendCapabilitiesInterface $backendProvider Writes records and says whether a local transaction wraps them
      * @param PermissionService $permissionService Edit levels and zone ownership of the acting user
      * @param RecordChangeWriterInterface $changeLogger Receives the before/after record snapshots

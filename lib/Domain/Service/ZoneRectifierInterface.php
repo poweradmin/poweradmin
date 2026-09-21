@@ -23,13 +23,9 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * DNSSEC operations for one zone.
- *
- * Union of the DNSSEC provider roles; consumers should depend on the narrowest role they use.
+ * Rectifies a zone after its records change so the DNSSEC ordering data stays valid.
  */
-interface DnssecProviderInterface extends
-    ZoneRectifierInterface,
-    ZoneSigningInterface,
-    ZoneKeyManagementInterface
+interface ZoneRectifierInterface
 {
+    public function rectifyZone(string $zoneName): bool;
 }
