@@ -80,7 +80,7 @@ class DatabaseConsistencyControllerTest extends SeamControllerTestCase
         $this->post($fields);
 
         $controller = new TestableDatabaseConsistencyController(
-            $_POST,
+            $fields,
             true,
             $this->environment($this->configure(['interface' => ['enable_consistency_checks' => true]]))
         );
