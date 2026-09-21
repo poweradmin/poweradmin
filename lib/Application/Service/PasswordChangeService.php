@@ -22,7 +22,8 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\UserCredentialWriterInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\UserContextService;
 
 /**
@@ -38,7 +39,7 @@ readonly class PasswordChangeService
     ];
 
     public function __construct(
-        private UserRepositoryInterface $userRepository,
+        private UserLookupInterface&UserCredentialWriterInterface $userRepository,
         private UserAuthenticationService $authService,
         private UserContextService $userContextService,
     ) {

@@ -30,7 +30,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\PermissionService;
@@ -60,7 +60,7 @@ class DomainManager implements DomainManagerInterface
     private LoggerInterface $logger;
     private RecordChangeWriterInterface $changeLogger;
     private PermissionService $permissionService;
-    private UserRepositoryInterface $userRepository;
+    private UserLookupInterface $userRepository;
     private UserContextService $userContext;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
     private RepositoryFactoryInterface $repositoryFactory;
@@ -75,7 +75,7 @@ class DomainManager implements DomainManagerInterface
      * @param RepositoryFactoryInterface $repositoryFactory Builds the zone repository
      * @param DnsBackendProviderInterface $backendProvider DNS backend provider
      * @param PermissionService $permissionService Permissions and zone ownership of the acting user
-     * @param UserRepositoryInterface $userRepository Resolves the users named as zone owners
+     * @param UserLookupInterface $userRepository Resolves the users named as zone owners
      * @param RecordChangeWriterInterface $changeLogger Receives the zone and record snapshots
      */
     public function __construct(
@@ -86,7 +86,7 @@ class DomainManager implements DomainManagerInterface
         RepositoryFactoryInterface $repositoryFactory,
         DnsBackendProviderInterface $backendProvider,
         PermissionService $permissionService,
-        UserRepositoryInterface $userRepository,
+        UserLookupInterface $userRepository,
         RecordChangeWriterInterface $changeLogger,
         ?LoggerInterface $logger = null,
         ?UserContextService $userContext = null,

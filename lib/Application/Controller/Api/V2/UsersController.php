@@ -33,7 +33,7 @@ use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\SelfEditFieldGuard;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -47,7 +47,7 @@ class UsersController extends PublicApiController
 
     private UserManagementService $userManagementService;
     private ApiPermissionService $apiPermissionService;
-    private UserRepositoryInterface $userRepository;
+    private UserLookupInterface $userRepository;
     private UserGroupRepositoryInterface $groupRepository;
     private GroupMembershipService $membershipService;
 

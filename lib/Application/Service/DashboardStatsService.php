@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\UserAdminInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneReadBackendInterface;
 use Psr\Log\LoggerInterface;
@@ -37,7 +37,7 @@ class DashboardStatsService
 {
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly UserRepositoryInterface $users,
+        private readonly UserAdminInterface $users,
         private readonly UserGroupRepositoryInterface $groups,
         private readonly ZoneReadRepositoryInterface $zones,
         private readonly ZoneReadBackendInterface $backend

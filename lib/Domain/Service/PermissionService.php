@@ -25,7 +25,8 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
+use Poweradmin\Domain\Repository\UserPermissionReadInterface;
 
 /**
  * Answers permission questions for a user from their template and group grants, cached per request.
@@ -61,7 +62,7 @@ class PermissionService
         'delete' => [[Permission::PERM_ZONE_DELETE_OTHERS], [Permission::PERM_ZONE_DELETE_OWN]],
     ];
 
-    private UserRepositoryInterface $userRepository;
+    private UserLookupInterface&UserPermissionReadInterface $userRepository;
 
     /** @var array<int, array<string>> */
     private array $permissionsCache = [];
@@ -72,7 +73,7 @@ class PermissionService
     /** @var array<string, bool> */
     private array $ownershipCache = [];
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserLookupInterface&UserPermissionReadInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }

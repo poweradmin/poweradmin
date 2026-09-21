@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -40,7 +40,7 @@ class ZoneOwnersController extends PublicApiController
 {
     private ZoneOwnershipRepositoryInterface $zoneRepository;
     private DomainRepositoryInterface $domainRepository;
-    private UserRepositoryInterface $userRepository;
+    private UserLookupInterface $userRepository;
     private ApiPermissionService $apiPermissionService;
     private AuditService $auditService;
 

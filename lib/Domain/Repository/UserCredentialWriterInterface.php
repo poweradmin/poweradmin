@@ -23,14 +23,16 @@
 namespace Poweradmin\Domain\Repository;
 
 /**
- * Persistence for user accounts and the zones they own.
- *
- * Union of the UserRepositoryInterface roles; consumers should depend on the narrowest role they use.
+ * Write access to a user's stored password.
  */
-interface UserRepositoryInterface extends
-    UserLookupInterface,
-    UserPermissionReadInterface,
-    UserCredentialWriterInterface,
-    UserAdminInterface
+interface UserCredentialWriterInterface
 {
+    /**
+     * Update a user's password
+     *
+     * @param int $userId User ID to update
+     * @param string $hashedPassword Hashed password to set
+     * @return bool True if the password was updated successfully
+     */
+    public function updatePassword(int $userId, string $hashedPassword): bool;
 }

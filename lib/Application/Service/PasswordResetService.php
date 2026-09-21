@@ -24,7 +24,8 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\UserCredentialWriterInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -35,7 +36,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 class PasswordResetService
 {
     private DbPasswordResetTokenRepository $tokenRepository;
-    private UserRepositoryInterface $userRepository;
+    private UserLookupInterface&UserCredentialWriterInterface $userRepository;
     private MailService $mailService;
     private ConfigurationInterface $config;
     private UserAuthenticationService $authService;
@@ -45,7 +46,7 @@ class PasswordResetService
 
     public function __construct(
         DbPasswordResetTokenRepository $tokenRepository,
-        UserRepositoryInterface $userRepository,
+        UserLookupInterface&UserCredentialWriterInterface $userRepository,
         MailService $mailService,
         ConfigurationInterface $config,
         UserAuthenticationService $authService,

@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\UserPermissionReadInterface;
 
 /**
  * Gates what a permission template may contain.
@@ -52,7 +52,7 @@ class PermissionTemplateContentGuard
      * @return ?string Error to surface, or null when the write is allowed
      */
     public static function apply(
-        UserRepositoryInterface $userRepository,
+        UserPermissionReadInterface $userRepository,
         int $callerId,
         ?int $templateId,
         ?array $permIds

@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 
 /**
  * Resolves the user-owner and group-owner assignment for a new zone, applying
@@ -36,13 +36,13 @@ class ZoneCreateOwnershipResolver
     private ZoneOwnershipModeService $mode;
     private PermissionService $permissions;
     private UserGroupRepositoryInterface $groups;
-    private UserRepositoryInterface $users;
+    private UserLookupInterface $users;
 
     public function __construct(
         ZoneOwnershipModeService $mode,
         PermissionService $permissions,
         UserGroupRepositoryInterface $groups,
-        UserRepositoryInterface $users
+        UserLookupInterface $users
     ) {
         $this->mode = $mode;
         $this->permissions = $permissions;
