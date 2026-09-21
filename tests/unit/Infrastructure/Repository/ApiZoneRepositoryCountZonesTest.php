@@ -35,6 +35,7 @@ class ApiZoneRepositoryCountZonesTest extends TestCase
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('allocatesZoneIdsLocally')->willReturn(true);
         $backend->method('getZones')->with(false)->willReturn([
             ['id' => 1, 'name' => 'alpha.example.'],
             ['id' => 2, 'name' => 'beta.example'],

@@ -47,7 +47,7 @@ class ZoneAccountSyncCanonicalZoneTest extends TestCase
     /**
      * @param list<array{0: int, 1: string}> $pushed collects the domainId and account pairs
      */
-    private function serviceExpecting(array &$pushed): ZoneAccountSyncService
+    private function serviceExpecting(array &$pushed, bool $isApiBackend = true): ZoneAccountSyncService
     {
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
@@ -55,7 +55,8 @@ class ZoneAccountSyncCanonicalZoneTest extends TestCase
         );
 
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('isApiBackend')->willReturn($isApiBackend);
+        $backend->method('allocatesZoneIdsLocally')->willReturn($isApiBackend);
         $backend->method('updateZoneAccount')->willReturnCallback(
             function (int $domainId, string $account) use (&$pushed): bool {
                 $pushed[] = [$domainId, $account];
@@ -94,6 +95,19 @@ class ZoneAccountSyncCanonicalZoneTest extends TestCase
         $this->serviceExpecting($pushed)->syncZoneAccount(201);
 
         $this->assertSame([[201, 'alice']], $pushed);
+    }
+
+    public function testSqlModeResolvesTheOwnerByDomainIdOnly(): void
+    {
+        // Row 55 (alice) has no domain_id; row 9 (bob) carries domain_id 55. In SQL mode
+        // id 55 is bob's zone, and alice's stranded row must not answer for it.
+        $this->db->exec("INSERT INTO users (id, username) VALUES (2, 'bob')");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (55, 0, 1, 'stranded.example.com'), (9, 55, 2, 'example.com')");
+
+        $pushed = [];
+        $this->serviceExpecting($pushed, false)->syncZoneAccount(55);
+
+        $this->assertSame([[55, 'bob']], $pushed);
     }
 
     public function testAZoneWithNoOwnerStillClearsTheAccount(): void

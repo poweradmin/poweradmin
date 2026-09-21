@@ -69,6 +69,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn($zones);
         $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('allocatesZoneIdsLocally')->willReturn(true);
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 

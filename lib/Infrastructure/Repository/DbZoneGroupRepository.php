@@ -89,9 +89,9 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         } else {
             $query = "SELECT zg.*, z.zone_name, z.zone_type
                       FROM zones_groups zg
-                      LEFT JOIN zones z ON zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . "
+                      LEFT JOIN zones z ON zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z', $this->isApiBackend) . "
                         AND z.zone_name IS NOT NULL
-                        AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE " . CanonicalZoneSql::canonicalIdColumn('z2') . " = zg.domain_id AND z2.zone_name IS NOT NULL)
+                        AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE " . CanonicalZoneSql::canonicalIdColumn('z2', $this->isApiBackend) . " = zg.domain_id AND z2.zone_name IS NOT NULL)
                       WHERE zg.group_id = :group_id
                       ORDER BY zg.created_at DESC";
         }

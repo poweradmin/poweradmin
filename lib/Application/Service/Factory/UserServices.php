@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service\Factory;
 
 use PDO;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
@@ -79,7 +80,16 @@ class UserServices
 
     public function userRepository(): UserRepositoryInterface
     {
-        return new DbUserRepository($this->db, $this->config);
+        return new DbUserRepository($this->db, $this->config, $this->isApiBackend());
+    }
+
+    /**
+     * Read from the configuration rather than the provider, so the DB-free auth paths
+     * that only need a user lookup never build a backend client.
+     */
+    private function isApiBackend(): bool
+    {
+        return DnsBackendProviderFactory::isApiBackend($this->config);
     }
 
     /**

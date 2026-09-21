@@ -132,7 +132,7 @@ class DnsServiceFactory
     ): DomainManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
-        $userRepository = new DbUserRepository($db, $config);
+        $userRepository = new DbUserRepository($db, $config, $backendProvider->allocatesZoneIdsLocally());
         $soaRecordManager = self::createSOARecordManager($db, $config, $backendProvider);
         $domainRepository = $repositoryFactory->createDomainRepository();
         $changeLogger = new RecordChangeLogger($db, $config);
@@ -168,7 +168,7 @@ class DnsServiceFactory
 
     private static function createPermissionService(PDO $db, ConfigurationInterface $config): PermissionService
     {
-        return new PermissionService(new DbUserRepository($db, $config));
+        return new PermissionService(new DbUserRepository($db, $config, DnsBackendProviderFactory::isApiBackend($config)));
     }
 
     /**

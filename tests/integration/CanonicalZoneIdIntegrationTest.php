@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
- * CanonicalZoneSql::canonicalIdColumn() leans on NULLIF to fold a stranded domain_id of 0
+ * CanonicalZoneSql::canonicalIdColumn('', true) leans on NULLIF to fold a stranded domain_id of 0
  * into the fallback. NULLIF and COALESCE are SQL-92, but whether the fragment parses in
  * every clause and returns the same integer on each engine is the cross-engine class of
  * bug unit tests cannot catch.
@@ -116,7 +116,7 @@ class CanonicalZoneIdIntegrationTest extends TestCase
 
     public function testEveryEngineResolvesTheSameCanonicalIds(): void
     {
-        $expression = CanonicalZoneSql::canonicalIdColumn();
+        $expression = CanonicalZoneSql::canonicalIdColumn('', true);
         $expected = [1 => 1, 2 => 2, 3 => 99, 4 => 4];
 
         foreach ($this->engines() as $name => $db) {
@@ -136,7 +136,7 @@ class CanonicalZoneIdIntegrationTest extends TestCase
         foreach ($this->engines() as $name => $db) {
             $bare = (int)$db->query('SELECT COALESCE(domain_id, id) FROM test_canonical_zones WHERE id = 2')->fetchColumn();
             $helper = (int)$db->query(
-                'SELECT ' . CanonicalZoneSql::canonicalIdColumn() . ' FROM test_canonical_zones WHERE id = 2'
+                'SELECT ' . CanonicalZoneSql::canonicalIdColumn('', true) . ' FROM test_canonical_zones WHERE id = 2'
             )->fetchColumn();
 
             $this->assertSame(0, $bare, "bare COALESCE unexpectedly resolved on $name");
@@ -146,8 +146,8 @@ class CanonicalZoneIdIntegrationTest extends TestCase
 
     public function testTheFragmentParsesInEveryClauseOnEveryEngine(): void
     {
-        $aliased = CanonicalZoneSql::canonicalIdColumn('z');
-        $qualified = CanonicalZoneSql::canonicalIdColumn('test_canonical_zones');
+        $aliased = CanonicalZoneSql::canonicalIdColumn('z', true);
+        $qualified = CanonicalZoneSql::canonicalIdColumn('test_canonical_zones', true);
 
         foreach ($this->engines() as $name => $db) {
             $where = $db->query("SELECT zone_name FROM test_canonical_zones z WHERE $aliased = 2")->fetchColumn();

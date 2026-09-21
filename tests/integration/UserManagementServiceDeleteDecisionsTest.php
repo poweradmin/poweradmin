@@ -200,7 +200,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         // Refusal tests never reach the zone service; a bare mock fails loudly if they do
         $this->zoneService ??= $this->createMock(ZoneManagementService::class);
         $config = $this->primeConfigurationManager();
-        $userRepository = new DbUserRepository($this->db, $config);
+        $userRepository = new DbUserRepository($this->db, $config, false);
         $permissions = new PermissionService($userRepository);
 
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
@@ -213,8 +213,8 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
             $domainRepository,
             new RepositoryFactory($this->db, $config, $backend),
             $backend,
-            $this->permissionService($config),
-            new DbUserRepository($this->db, $config),
+            $this->permissionService($config, $backend->allocatesZoneIdsLocally()),
+            new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally()),
             $this->createMock(RecordChangeWriterInterface::class),
             $this->createMock(ZoneTemplateApplier::class),
             new DbZoneTemplateRepository($this->db, $config, $backend),

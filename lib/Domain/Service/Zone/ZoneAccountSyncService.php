@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service\Zone;
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\ZoneWriteBackendInterface;
 
 /**
@@ -34,9 +35,9 @@ class ZoneAccountSyncService
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private ?ZoneWriteBackendInterface $backendProvider;
+    private (ZoneWriteBackendInterface&BackendCapabilitiesInterface)|null $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?ZoneWriteBackendInterface $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, (ZoneWriteBackendInterface&BackendCapabilitiesInterface)|null $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
@@ -64,7 +65,7 @@ class ZoneAccountSyncService
 
         // A miss here does not merely skip the sync, it pushes an empty account and wipes
         // whatever PowerDNS held, so the lookup has to resolve the canonical id.
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('z');
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally());
         $stmt = $this->db->prepare("
             SELECT u.username
             FROM users u

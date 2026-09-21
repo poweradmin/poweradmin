@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Auth;
 
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -51,7 +52,7 @@ class ApiKeyAuthenticationMiddleware
     {
         $this->config = $config;
         $apiKeyRepository = new DbApiKeyRepository($db, $config);
-        $users = new DbUserRepository($db, $config);
+        $users = new DbUserRepository($db, $config, DnsBackendProviderFactory::isApiBackend($config));
         $this->apiKeyService = new ApiKeyService($apiKeyRepository, $users, $config, new PermissionService($users));
     }
 

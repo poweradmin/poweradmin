@@ -11,7 +11,6 @@ use Poweradmin\Domain\Service\Database\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\Dns\DynamicDnsHelper;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Application\Service\DnsServiceFactory;
@@ -21,8 +20,6 @@ $request = Request::createFromGlobals();
 
 $config = ConfigurationManager::getInstance();
 $config->initialize();
-CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($config));
-
 Bootstrap::initializeTimezone($config);
 
 // Use the shared credential mapper so DDNS honors the same db_ssl* settings as the
@@ -35,7 +32,7 @@ $backendProvider = DnsBackendProviderFactory::create($db, $config);
 $soaRecordManager = DnsServiceFactory::createSOARecordManager($db, $config, $backendProvider);
 $repository = (new RepositoryFactory($db, $config, $backendProvider))->createDynamicDnsRepository($soaRecordManager);
 
-$permissions = new PermissionService(new DbUserRepository($db, $config));
+$permissions = new PermissionService(new DbUserRepository($db, $config, $backendProvider->allocatesZoneIdsLocally()));
 $updateService = DynamicDnsRequestFactory::createUpdateService($db, $config, $repository, $permissions);
 
 $result = $updateService->processUpdate(DynamicDnsRequestFactory::fromHttpRequest($request, $config));

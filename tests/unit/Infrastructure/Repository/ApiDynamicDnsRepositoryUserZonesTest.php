@@ -70,6 +70,7 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
     private function providerReturningNames(array $namesById): DnsBackendProviderInterface
     {
         $provider = $this->createMock(DnsBackendProviderInterface::class);
+        $provider->method('allocatesZoneIdsLocally')->willReturn(true);
         $provider->method('getZoneNameById')
             ->willReturnCallback(static fn(int $id): ?string => $namesById[$id] ?? null);
         return $provider;

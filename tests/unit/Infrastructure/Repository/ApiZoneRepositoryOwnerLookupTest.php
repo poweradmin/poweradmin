@@ -50,9 +50,11 @@ class ApiZoneRepositoryOwnerLookupTest extends TestCase
             (55, 0, 'stranded.example.com', 20),
             (56, NULL, 'nulled.example.com', 30)");
 
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->method('allocatesZoneIdsLocally')->willReturn(true);
         $this->repository = new ApiZoneRepository(
             $this->db,
-            $this->createMock(DnsBackendProviderInterface::class),
+            $backend,
             'sqlite',
             $this->createMock(ConfigurationManager::class)
         );

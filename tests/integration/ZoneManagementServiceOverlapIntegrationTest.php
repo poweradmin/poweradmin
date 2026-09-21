@@ -123,14 +123,14 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             $this->createMock(ZoneRepositoryInterface::class),
             $config,
             new RepositoryFactory($this->db, $config, $backend),
-            new PermissionService(new DbUserRepository($this->db, $config)),
+            new PermissionService(new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally())),
             new RecordChangeLogger($this->db, $config),
             fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
             new ZoneTemplateService(
                 new DbZoneTemplateRepository($this->db, $config, $backend),
                 $config,
                 $backend,
-                new PermissionService(new DbUserRepository($this->db, $config)),
+                new PermissionService(new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally())),
                 new UserContextService(),
                 new NullLogger()
             )

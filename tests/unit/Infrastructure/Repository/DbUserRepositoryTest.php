@@ -49,7 +49,7 @@ class DbUserRepositoryTest extends TestCase
         $this->db = $this->createMock(PDO::class);
         $this->db->method('getAttribute')->willReturn('mysql');
         $this->config = $this->createMock(ConfigurationManager::class);
-        $this->repository = new DbUserRepository($this->db, $this->config);
+        $this->repository = new DbUserRepository($this->db, $this->config, false);
     }
 
     private function createUserDbRow(array $overrides = []): array
@@ -231,7 +231,7 @@ class DbUserRepositoryTest extends TestCase
             ->with($this->stringContains('WHERE LOWER(users.email) = LOWER(:email) LIMIT 1'))
             ->willReturn($stmt);
 
-        $this->assertNull((new DbUserRepository($db, $this->config))->getUserByEmail('User@example.com'));
+        $this->assertNull((new DbUserRepository($db, $this->config, false))->getUserByEmail('User@example.com'));
     }
 
     // ========== countUsersByEmail tests ==========

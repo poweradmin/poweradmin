@@ -665,7 +665,7 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
             return null;
         }
 
-        $stmt = $this->db->prepare("SELECT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE zone_name = :name");
+        $stmt = $this->db->prepare("SELECT " . CanonicalZoneSql::canonicalIdColumn('', $this->allocatesZoneIdsLocally()) . " FROM zones WHERE zone_name = :name");
         $stmt->execute([':name' => $zoneName]);
         $id = $stmt->fetchColumn();
 

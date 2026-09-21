@@ -77,7 +77,7 @@ class DbUserRepositoryDeleteUserTest extends TestCase
         $config->method('get')->willReturnCallback(
             fn($group, $key, $default = null) => $group === 'database' && $key === 'type' ? 'sqlite' : $default
         );
-        $this->repository = new DbUserRepository($this->db, $config);
+        $this->repository = new DbUserRepository($this->db, $config, false);
     }
 
     public function testDeleteUserRemovesEveryRowKeyedOnTheUser(): void

@@ -44,8 +44,15 @@ class DbUserRepositoryCanonicalZoneOwnershipTest extends TestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, zone_name TEXT, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, fullname TEXT)");
+        $this->db->exec("INSERT INTO users (id, fullname) VALUES (1, 'Alice'), (2, 'Bob')");
 
-        $this->repository = new DbUserRepository($this->db, ConfigurationManager::getInstance());
+        $this->repository = $this->repository(true);
+    }
+
+    private function repository(bool $isApiBackend): DbUserRepository
+    {
+        return new DbUserRepository($this->db, ConfigurationManager::getInstance(), $isApiBackend);
     }
 
     private function seedZone(int $id, ?int $domainId, int $owner, ?string $name = 'example.com'): void
@@ -104,6 +111,28 @@ class DbUserRepositoryCanonicalZoneOwnershipTest extends TestCase
         $this->assertTrue($this->repository->userOwnsZone(1, 60));
     }
 
+    public function testOwnerFullNamesResolveAStrandedZone(): void
+    {
+        $this->seedZone(55, 0, 1);
+        $this->seedZone(7, 201, 2);
+
+        $this->assertSame('Alice', $this->repository->getZoneOwnerFullNames(55));
+        $this->assertSame('Bob', $this->repository->getZoneOwnerFullNames(201));
+    }
+
+    public function testSqlModeMatchesDomainIdOnly(): void
+    {
+        // Row 55 has no domain_id and row 9 carries domain_id 55: in SQL mode the id
+        // spaces overlap, so id 55 is Bob's zone and never Alice's stranded row.
+        $this->seedZone(55, 0, 1);
+        $this->seedZone(9, 55, 2);
+        $repository = $this->repository(false);
+
+        $this->assertFalse($repository->userOwnsZone(1, 55));
+        $this->assertTrue($repository->userOwnsZone(2, 55));
+        $this->assertSame('Bob', $repository->getZoneOwnerFullNames(55));
+    }
+
     /**
      * SQL backend mode never stores a NULL or 0 domain_id, so the canonical fallback must
      * never fire there. This pins the whole ownership matrix of a SQL-mode fixture, since
@@ -111,6 +140,7 @@ class DbUserRepositoryCanonicalZoneOwnershipTest extends TestCase
      */
     public function testSqlModeOwnershipMatrixIsUnchanged(): void
     {
+        $this->repository = $this->repository(false);
         // zones.id and zones.domain_id occupy overlapping spaces on a migrated install:
         // zone id 3 shares its primary key with zone 1's domain_id.
         $this->seedZone(1, 3, 10, null);

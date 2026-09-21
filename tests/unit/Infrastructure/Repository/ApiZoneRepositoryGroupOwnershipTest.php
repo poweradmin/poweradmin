@@ -60,6 +60,7 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES (1, 'admin', 'Administrator'), (2, 'member', 'Group Member')");
 
         $this->backend = $this->createMock(DnsBackendProviderInterface::class);
+        $this->backend->method('allocatesZoneIdsLocally')->willReturn(true);
         $this->backend->method('getZoneStats')->willReturn([]);
         $this->backend->method('countZoneRecords')->willReturn(0);
         $this->backend->method('getZoneSoaHealth')->willReturn(['is_disabled' => false, 'is_missing_soa' => false]);

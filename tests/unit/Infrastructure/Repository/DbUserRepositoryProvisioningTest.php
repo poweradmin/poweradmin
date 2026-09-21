@@ -55,7 +55,7 @@ class DbUserRepositoryProvisioningTest extends TestCase
         ) {
             $this->db->exec($sql);
         }
-        $this->repository = new DbUserRepository($this->db, $this->createMock(ConfigurationManager::class));
+        $this->repository = new DbUserRepository($this->db, $this->createMock(ConfigurationManager::class), false);
     }
 
     public function testCreateProvisionedUserWritesEveryProvisioningColumn(): void

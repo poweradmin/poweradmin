@@ -100,10 +100,12 @@ abstract class SqliteIntegrationTestCase extends TestCase
 
     /**
      * A permission service reading this test's database.
+     *
+     * @param bool $isApiBackend Pass true for API-mode fixtures, where a zones row may have no domain_id
      */
-    protected function permissionService(?ConfigurationInterface $config = null): PermissionService
+    protected function permissionService(?ConfigurationInterface $config = null, bool $isApiBackend = false): PermissionService
     {
-        return new PermissionService(new DbUserRepository($this->db, $config ?? $this->config));
+        return new PermissionService(new DbUserRepository($this->db, $config ?? $this->config, $isApiBackend));
     }
 
     /**

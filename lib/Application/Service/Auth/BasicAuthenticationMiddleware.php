@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service\Auth;
 
 use PDO;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
@@ -119,7 +120,7 @@ class BasicAuthenticationMiddleware
      */
     private function authenticateAndGetUserId(string $username, #[\SensitiveParameter] string $password): int
     {
-        if ((new DbUserRepository($this->db, $this->config))->findByUsername($username) === null) {
+        if ((new DbUserRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config)))->findByUsername($username) === null) {
             return 0;
         }
 

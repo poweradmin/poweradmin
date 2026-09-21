@@ -77,7 +77,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
         $this->seedSqlModeFixture();
 
         $config = new FakeConfiguration();
-        $this->userRepository = new DbUserRepository($this->db, $config);
+        $this->userRepository = new DbUserRepository($this->db, $config, false);
         $this->permissions = new PermissionService($this->userRepository);
         $this->apiPermissions = new ApiPermissionService($this->userRepository, $this->permissions, $config);
     }

@@ -226,7 +226,7 @@ class ApiConsistencyChecks extends AbstractConsistencyChecks
      */
     private function hasOwnerOrGroup(string $zoneName): bool
     {
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('c');
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('c', $this->backend->allocatesZoneIdsLocally());
         $stmt = $this->db->prepare(
             "SELECT
                 (SELECT COUNT(*) FROM zones z

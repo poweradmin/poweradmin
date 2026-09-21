@@ -438,7 +438,7 @@ class DnsDataService
 
         // Query Poweradmin's zones table for ownership and comments
         $stmt = $this->db->query(
-            "SELECT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id, z.owner, z.comment, u.username, u.fullname
+            "SELECT " . CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally()) . " AS domain_id, z.owner, z.comment, u.username, u.fullname
              FROM zones z
              LEFT JOIN users u ON z.owner = u.id"
         );
@@ -914,10 +914,10 @@ class DnsDataService
 
         $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
         $stmt = $this->db->prepare(
-            "SELECT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id, z.owner, u.id as user_id, u.username, u.fullname
+            "SELECT " . CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally()) . " AS domain_id, z.owner, u.id as user_id, u.username, u.fullname
              FROM zones z
              LEFT JOIN users u ON z.owner = u.id
-             WHERE " . CanonicalZoneSql::canonicalIdColumn('z') . " IN ($placeholders)"
+             WHERE " . CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally()) . " IN ($placeholders)"
         );
         foreach (array_values($domainIds) as $i => $domainId) {
             $stmt->bindValue($i + 1, (int)$domainId, PDO::PARAM_INT);

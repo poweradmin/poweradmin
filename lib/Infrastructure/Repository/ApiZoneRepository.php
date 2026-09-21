@@ -57,6 +57,11 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $this->tableNameService = new TableNameService($config);
     }
 
+    private function canonicalId(string $alias = ''): string
+    {
+        return CanonicalZoneSql::canonicalIdColumn($alias, $this->backendProvider->allocatesZoneIdsLocally());
+    }
+
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
         if (!$viewOthers) {
@@ -65,7 +70,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
+                    WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :userId_group
                 ))
             AND z.zone_name NOT LIKE '%.in-addr.arpa'
             AND z.zone_name NOT LIKE '%.ip6.arpa'
@@ -149,7 +154,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                     OR EXISTS (
                         SELECT 1 FROM zones_groups zg
                         INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                        WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
+                        WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :userId_group
                     ))";
                 $params[':userId'] = $userId;
                 $params[':userId_own'] = $userId;
@@ -171,7 +176,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         // appears in the list, not just the primary owner.
         // Listed under the canonical id, the identifier the rest of the application
         // (links, ownership, zones_groups) uses; the row id only serves the template lookup
-        $query = "SELECT z.id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS canonical_id,
+        $query = "SELECT z.id, " . $this->canonicalId('z') . " AS canonical_id,
                          z.zone_name as name, z.zone_type as type, z.comment
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
@@ -184,7 +189,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
+                    WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :userId_group
                 ))";
             $params[':userId'] = $userId;
             $params[':userId_own'] = $userId;
@@ -427,7 +432,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     private function ownedCanonicalIds(int $userId): array
     {
         $stmt = $this->db->prepare(
-            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :uid
+            "SELECT DISTINCT " . $this->canonicalId() . " FROM zones WHERE owner = :uid
              UNION
              SELECT DISTINCT zg.domain_id FROM zones_groups zg
              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
@@ -448,7 +453,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                     COUNT(DISTINCT CASE WHEN z.zone_name LIKE '%.ip6.arpa' THEN z.id END) AS count_ipv6
                   FROM zones z";
         if ($permType === 'own') {
-            $query .= " LEFT JOIN zones_groups zg ON zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . "";
+            $query .= " LEFT JOIN zones_groups zg ON zg.domain_id = " . $this->canonicalId('z') . "";
         }
         $query .= " WHERE z.zone_name IS NOT NULL AND (z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.ip6.arpa')";
         if ($permType === 'own') {
@@ -457,7 +462,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg2
                     INNER JOIN user_group_members ugm ON zg2.group_id = ugm.group_id
-                    WHERE zg2.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :user_id_group
+                    WHERE zg2.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :user_id_group
                 ))";
         }
         $stmt = $this->db->prepare($query);
@@ -479,7 +484,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     {
         // Owners are filled in by enrichZonesWithOwnership() so every assigned user
         // appears in the list, not just the primary owner.
-        $query = "SELECT z.id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS canonical_id,
+        $query = "SELECT z.id, " . $this->canonicalId('z') . " AS canonical_id,
                          z.zone_name as name, z.zone_type as type, z.comment
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
@@ -491,7 +496,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
+                    WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :userId_group
                 ))";
             $params[':userId'] = $userId;
             $params[':userId_own'] = $userId;
@@ -660,7 +665,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             return [];
         }
 
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
+        $canonicalId = $this->canonicalId();
         $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
         $stmt = $this->db->prepare(
             "SELECT $canonicalId AS domain_id, owner FROM zones WHERE $canonicalId IN ($placeholders)"
@@ -685,7 +690,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         // API-mode zones with no domain_id are keyed by zones.id, which the canonical
         // expression resolves; zones_groups already stores that same value
         $stmt = $this->db->prepare(
-            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS zone_id FROM zones z WHERE z.owner = :uid
+            "SELECT DISTINCT " . $this->canonicalId('z') . " AS zone_id FROM zones z WHERE z.owner = :uid
              UNION
              SELECT DISTINCT zg.domain_id AS zone_id
              FROM zones_groups zg
@@ -931,7 +936,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :user_id_group
+                    WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :user_id_group
                 ))";
             $params[':user_id'] = $userId;
             $params[':user_id_own'] = $userId;
@@ -967,7 +972,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
         // canonical_id is what every other endpoint keys on; id stays the row id for
         // one release so API clients can move over before the two are made equal.
-        $query = "SELECT z.id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS canonical_id,
+        $query = "SELECT z.id, " . $this->canonicalId('z') . " AS canonical_id,
                          z.zone_name as name, z.zone_type as type, z.zone_master as master,
                          COALESCE(z.owner, 0) as owner
                   FROM zones z

@@ -24,9 +24,7 @@ use Poweradmin\Application\Bootstrap;
 use Poweradmin\Application\Http\BootstrapErrorResponder;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -36,8 +34,6 @@ $configManager = ConfigurationManager::getInstance();
 
 try {
     $configManager->initialize();
-    CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($configManager));
-
     Bootstrap::initializeTimezone($configManager);
 
     // Neither a headless install nor the monitoring probes have any use for a session,

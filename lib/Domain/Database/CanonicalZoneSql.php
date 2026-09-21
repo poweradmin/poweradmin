@@ -39,18 +39,6 @@ use PDOStatement;
  */
 final class CanonicalZoneSql
 {
-    private static bool $rowIdFallback = true;
-
-    /**
-     * Enable the zones.id fallback only for the API backend. In SQL mode domain_id is always
-     * populated and zones.id is an unrelated id space, so the fallback must never fire there.
-     * Set once at bootstrap from the configured backend.
-     */
-    public static function setRowIdFallback(bool $enabled): void
-    {
-        self::$rowIdFallback = $enabled;
-    }
-
     /**
      * SQL expression for a zones row's canonical id, the value API mode hands to callers.
      *
@@ -59,22 +47,24 @@ final class CanonicalZoneSql
      * 0 rather than to its own id. NULLIF folds that 0 into NULL first, which is what keeps
      * this expression in step with the PHP rule.
      *
-     * Note the fallback to id assumes API mode, where zones is the source of truth. In SQL
-     * mode domain_id is a foreign key into domains and is always populated, so the fallback
-     * never fires; it must never be used to repair a SQL-mode row, because the two id spaces
-     * overlap and id would point at an unrelated zone.
+     * The fallback to id belongs to the API backend, where zones is the source of truth
+     * (BackendCapabilitiesInterface::allocatesZoneIdsLocally()). In SQL mode domain_id is a
+     * foreign key into domains and always populated, and zones.id is an unrelated id space,
+     * so callers there pass false and get the bare column; the fallback would point at
+     * another zone.
      *
      * Bind ids compared against this with PDO::PARAM_INT. An expression carries none of
      * the column's type affinity, so SQLite compares a string-bound id as text and matches
      * nothing, where the bare column would have coerced it.
      *
-     * @param string $alias Table alias or name without the dot, e.g. 'z' or 'zones'
+     * @param string $alias Table alias or name without the dot, e.g. 'z' or 'zones'; '' for none
+     * @param bool $rowIdFallback Whether zones.id may stand in for a missing domain_id (API backend)
      */
-    public static function canonicalIdColumn(string $alias = ''): string
+    public static function canonicalIdColumn(string $alias, bool $rowIdFallback): string
     {
         $prefix = $alias === '' ? '' : rtrim($alias, '.') . '.';
 
-        if (!self::$rowIdFallback) {
+        if (!$rowIdFallback) {
             return "{$prefix}domain_id";
         }
 
@@ -97,7 +87,7 @@ final class CanonicalZoneSql
     {
         if ($zonesTableIsCanonical) {
             return [
-                'join' => 'INNER JOIN zones ON ' . self::canonicalIdColumn('zones') . " = $zoneIdColumn",
+                'join' => 'INNER JOIN zones ON ' . self::canonicalIdColumn('zones', true) . " = $zoneIdColumn",
                 'name' => 'zones.zone_name',
             ];
         }

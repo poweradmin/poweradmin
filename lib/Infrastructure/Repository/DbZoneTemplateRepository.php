@@ -109,10 +109,10 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         if ($this->linkedZonesSource !== null) {
             return $this->linkedZonesSource;
         }
-        if ($this->backendProvider !== null && $this->backendProvider->allocatesZoneIdsLocally()) {
+        if ($this->zonesTableIsCanonical()) {
             return $this->linkedZonesSource = [
                 'from' => 'zones',
-                'idColumn' => CanonicalZoneSql::canonicalIdColumn('zones'),
+                'idColumn' => CanonicalZoneSql::canonicalIdColumn('zones', true),
                 'detailColumns' => null,
                 'detailJoin' => '',
                 'orderBy' => '1',
@@ -142,7 +142,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         $params = [':zone_templ_id' => $templateId];
         $filter = '';
         if ($ownerId !== null) {
-            $filter = self::ownedZoneFilter();
+            $filter = $this->ownedZoneFilter();
             $params += self::ownedZoneParams($ownerId);
         }
         $query = "SELECT $columns FROM {$source['from']}$joins WHERE zones.zone_templ_id = :zone_templ_id" . $filter
@@ -155,13 +155,22 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      * Ownership is dual: the zones.owner column or membership of an owning group, the
      * same rule PermissionService::userOwnsZone() applies.
      */
-    private static function ownedZoneFilter(): string
+    private function ownedZoneFilter(): string
     {
         // zones_groups is keyed by the canonical id, which API mode may take from zones.id
         return " AND (zones.owner = :userid OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('zones') . " AND ugm.user_id = :userid_group))";
+                WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('zones', $this->zonesTableIsCanonical()) . " AND ugm.user_id = :userid_group))";
+    }
+
+    /**
+     * Whether zone ids come from the zones table (API backend), so zones.id may stand in
+     * for a missing domain_id. Without a backend the repository serves SQL mode.
+     */
+    private function zonesTableIsCanonical(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->allocatesZoneIdsLocally();
     }
 
     /** @return array<string, int> */
@@ -229,7 +238,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      */
     public function getTemplateNameForZone(int|string $zoneId): string
     {
-        $stmt = $this->db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE " . CanonicalZoneSql::canonicalIdColumn('z') . " = :zone_id");
+        $stmt = $this->db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE " . CanonicalZoneSql::canonicalIdColumn('z', $this->zonesTableIsCanonical()) . " = :zone_id");
         $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch();

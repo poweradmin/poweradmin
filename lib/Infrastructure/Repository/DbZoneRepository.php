@@ -67,7 +67,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     private function zoneTemplateRepository(): ZoneTemplateRepositoryInterface
     {
-        return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db);
+        return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db, null, $this->backendProvider);
     }
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array

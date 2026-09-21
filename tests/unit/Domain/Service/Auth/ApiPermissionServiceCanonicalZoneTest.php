@@ -52,9 +52,15 @@ class ApiPermissionServiceCanonicalZoneTest extends TestCase
         $this->db->exec("CREATE TABLE perm_items (id INTEGER PRIMARY KEY, name TEXT)");
         $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT, perm_templ INTEGER)");
 
+        $this->service = $this->service(true);
+    }
+
+    private function service(bool $isApiBackend): ApiPermissionService
+    {
         $config = new FakeConfiguration();
-        $users = new DbUserRepository($this->db, $config);
-        $this->service = new ApiPermissionService($users, new PermissionService($users), $config);
+        $users = new DbUserRepository($this->db, $config, $isApiBackend);
+
+        return new ApiPermissionService($users, new PermissionService($users), $config);
     }
 
     private function seedZone(int $id, ?int $domainId, int $owner): void
@@ -125,6 +131,20 @@ class ApiPermissionServiceCanonicalZoneTest extends TestCase
 
         $this->assertSame([55, 56, 201], $ids);
         $this->assertSame($ids, array_filter($ids, 'is_int'), 'a NULL domain_id used to leak through as null');
+    }
+
+    public function testSqlModeOwnedZoneIdsComeFromDomainIdOnly(): void
+    {
+        // In SQL mode zones.id is an unrelated id space, so the stranded row must not
+        // surface as zone 55; the zone whose domain_id is 55 belongs to user 2.
+        $this->seedZone(55, 0, 1);
+        $this->seedZone(9, 55, 2);
+        $this->seedZone(7, 201, 1);
+        $service = $this->service(false);
+
+        $this->assertNotContains(55, $service->getUserOwnedZoneIds(1));
+        $this->assertContains(201, $service->getUserOwnedZoneIds(1));
+        $this->assertSame([55], $service->getUserOwnedZoneIds(2));
     }
 
     public function testNoViewPermissionYieldsNoZones(): void

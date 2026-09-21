@@ -69,11 +69,10 @@ class DomainRepositoryOverlapLookupsTest extends TestCase
             (18, NULL, 'other.com'),
             (19, NULL, 'xa.com')");
 
-        return new ApiDomainRepository(
-            $db,
-            $this->createMock(ConfigurationManager::class),
-            $this->createMock(DnsBackendProviderInterface::class)
-        );
+        $provider = $this->createMock(DnsBackendProviderInterface::class);
+        $provider->method('allocatesZoneIdsLocally')->willReturn(true);
+
+        return new ApiDomainRepository($db, $this->createMock(ConfigurationManager::class), $provider);
     }
 
     /** @return iterable<string, array{0: callable(self): DomainRepositoryInterface}> */

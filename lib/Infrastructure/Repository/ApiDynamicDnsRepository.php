@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\RecordReadBackendInterface;
 use Poweradmin\Domain\Port\RecordWriteBackendInterface;
 use Poweradmin\Domain\Port\ZoneReadBackendInterface;
@@ -41,7 +42,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
     public function __construct(
         private PDO $db,
         private SOARecordManagerInterface $soaRecordManager,
-        private RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface $backendProvider
+        private RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&BackendCapabilitiesInterface $backendProvider
     ) {
     }
 
@@ -94,7 +95,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
         // only returned when the owner's template (the user's for direct ownership, or the
         // owning group's) grants zone_content_edit_*.
         $query = $this->db->prepare("
-            SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id
+            SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally()) . " AS domain_id
             FROM zones z
             INNER JOIN users u ON u.id = z.owner
             WHERE z.owner = :user_id

@@ -71,7 +71,7 @@ class CanonicalZoneJoinsTest extends TestCase
     public function testGroupOwnershipJoinReachesAStrandedZone(): void
     {
         // The shape ApiZoneRepository builds for group-owned zones.
-        $canonical = CanonicalZoneSql::canonicalIdColumn('z');
+        $canonical = CanonicalZoneSql::canonicalIdColumn('z', true);
         $sql = "SELECT z.zone_name FROM zones z WHERE EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
@@ -100,7 +100,7 @@ class CanonicalZoneJoinsTest extends TestCase
     public function testZoneLogJoinReachesAStrandedZone(): void
     {
         // The shape DbZoneLogger builds.
-        $canonical = CanonicalZoneSql::canonicalIdColumn('zones');
+        $canonical = CanonicalZoneSql::canonicalIdColumn('zones', true);
         $sql = "SELECT zones.zone_name FROM log_zones
                 INNER JOIN zones ON $canonical = log_zones.zone_id
                 WHERE zones.zone_name IS NOT NULL";
@@ -114,7 +114,7 @@ class CanonicalZoneJoinsTest extends TestCase
     public function testCanonicalIdIsEmittedForEveryShape(): void
     {
         $rows = $this->db->query(
-            "SELECT id, " . CanonicalZoneSql::canonicalIdColumn() . " AS cid FROM zones ORDER BY id"
+            "SELECT id, " . CanonicalZoneSql::canonicalIdColumn('', true) . " AS cid FROM zones ORDER BY id"
         )->fetchAll(PDO::FETCH_ASSOC);
 
         $actual = [];

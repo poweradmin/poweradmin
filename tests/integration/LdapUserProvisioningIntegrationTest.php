@@ -213,7 +213,7 @@ class LdapUserProvisioningIntegrationTest extends TestCase
         return new UserProvisioningService(
             $config,
             new NullLogger(),
-            new DbUserRepository($this->db, $config),
+            new DbUserRepository($this->db, $config, false),
             new DbExternalIdentityRepository($this->db),
             new DbUserGroupRepository($this->db),
             new DbUserGroupMemberRepository($this->db)

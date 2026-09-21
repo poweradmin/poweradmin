@@ -28,6 +28,7 @@ use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -46,9 +47,9 @@ class ApiDomainRepository implements DomainRepositoryInterface
     private PDO $db;
     private ConfigurationInterface $config;
     private HostnameValidator $hostnameValidator;
-    private ZoneReadBackendInterface $backendProvider;
+    private ZoneReadBackendInterface&BackendCapabilitiesInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ZoneReadBackendInterface $backendProvider)
+    public function __construct(PDO $db, ConfigurationInterface $config, ZoneReadBackendInterface&BackendCapabilitiesInterface $backendProvider)
     {
         $this->db = $db;
         $this->config = $config;
@@ -365,7 +366,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
 
         // The map is keyed by canonical id because that is how the zone list is keyed;
         // reading the raw column collapsed every unresolved row onto key 0.
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('z');
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally());
         $stmt = $this->db->query(
             "SELECT $canonicalId AS canonical_id, z.owner, z.comment, u.username, u.fullname
              FROM zones z
@@ -413,7 +414,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
     private function getOwnedDomainIds(int $userId): array
     {
         $stmt = $this->db->prepare(
-            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :uid
+            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('', $this->backendProvider->allocatesZoneIdsLocally()) . " FROM zones WHERE owner = :uid
              UNION
              SELECT DISTINCT zg.domain_id FROM zones_groups zg
              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
@@ -435,7 +436,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
         if ($names === []) {
             return [];
         }
-        $idCol = CanonicalZoneSql::canonicalIdColumn();
+        $idCol = CanonicalZoneSql::canonicalIdColumn('', $this->backendProvider->allocatesZoneIdsLocally());
         $placeholders = implode(',', array_fill(0, count($names), '?'));
 
         // LOWER(zone_name) so the match is case-insensitive on every backend; the
@@ -453,7 +454,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
 
     public function findZonesUnder(string $suffix): array
     {
-        $idCol = CanonicalZoneSql::canonicalIdColumn();
+        $idCol = CanonicalZoneSql::canonicalIdColumn('', $this->backendProvider->allocatesZoneIdsLocally());
 
         // Escape LIKE wildcards with '=' (not backslash, which MySQL mangles in
         // string literals) so an underscore matches literally; escape '=' first.

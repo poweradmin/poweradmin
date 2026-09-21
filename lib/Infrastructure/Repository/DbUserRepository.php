@@ -41,11 +41,19 @@ class DbUserRepository implements UserRepositoryInterface
 {
     private object $db;
     private ConfigurationInterface $config;
+    private bool $isApiBackend;
 
-    public function __construct($db, ConfigurationInterface $config)
+    /**
+     * @param object $db Database connection
+     * @param ConfigurationInterface $config Application configuration
+     * @param bool $isApiBackend Whether zone ids are allocated from the zones table, so a
+     *                           row without a domain_id is keyed by zones.id instead
+     */
+    public function __construct($db, ConfigurationInterface $config, bool $isApiBackend)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->isApiBackend = $isApiBackend;
     }
 
     public function findByUsername(string $username): ?User
@@ -103,7 +111,7 @@ class DbUserRepository implements UserRepositoryInterface
     public function getZoneOwnerFullNames(int $domainId): string
     {
         // PARAM_INT: the canonical expression has no column affinity, so SQLite would compare as text
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones', $this->isApiBackend);
         $stmt = $this->db->prepare("SELECT users.fullname FROM users, zones WHERE $canonicalId = :id AND zones.owner = users.id ORDER BY fullname");
         $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
         $stmt->execute();
@@ -124,7 +132,7 @@ class DbUserRepository implements UserRepositoryInterface
      */
     public function userOwnsZone(int $userId, int $domainId): bool
     {
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones', $this->isApiBackend);
         $stmt = $this->db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND $canonicalId = :zoneid");
         $stmt->bindValue(':userid', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zoneid', $domainId, PDO::PARAM_INT);
@@ -165,7 +173,7 @@ class DbUserRepository implements UserRepositoryInterface
      */
     public function getUserOwnedZoneIds(int $userId): array
     {
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', $this->isApiBackend);
         $stmt = $this->db->prepare("
             SELECT $canonicalId FROM zones WHERE owner = :user_id
             UNION

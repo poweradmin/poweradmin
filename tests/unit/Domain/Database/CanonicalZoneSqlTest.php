@@ -62,17 +62,11 @@ class CanonicalZoneSqlTest extends TestCase
         return is_array($row) ? $row : null;
     }
 
-    protected function tearDown(): void
-    {
-        CanonicalZoneSql::setRowIdFallback(true);
-    }
-
     public function testSqlModeReadsThePlainDomainIdColumn(): void
     {
-        CanonicalZoneSql::setRowIdFallback(false);
-
-        $this->assertSame('z.domain_id', CanonicalZoneSql::canonicalIdColumn('z'));
-        $this->assertSame('domain_id', CanonicalZoneSql::canonicalIdColumn());
+        $this->assertSame('z.domain_id', CanonicalZoneSql::canonicalIdColumn('z', false));
+        $this->assertSame('domain_id', CanonicalZoneSql::canonicalIdColumn('', false));
+        $this->assertSame('zones.domain_id', CanonicalZoneSql::canonicalIdColumn('zones.', false));
     }
 
     public function testZoneNameJoinFollowsWhereZoneIdsAreAllocated(): void
@@ -90,7 +84,7 @@ class CanonicalZoneSqlTest extends TestCase
 
     public function testApiModeFallsBackToTheRowId(): void
     {
-        $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z'));
+        $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z', true));
     }
 
     public function testResolvesAZoneThisApplicationCreated(): void
@@ -157,10 +151,10 @@ class CanonicalZoneSqlTest extends TestCase
 
     public function testCanonicalIdColumnRendersEachAliasForm(): void
     {
-        $this->assertSame('COALESCE(NULLIF(domain_id, 0), id)', CanonicalZoneSql::canonicalIdColumn());
-        $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z'));
-        $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z.'));
-        $this->assertSame('COALESCE(NULLIF(zones.domain_id, 0), zones.id)', CanonicalZoneSql::canonicalIdColumn('zones'));
+        $this->assertSame('COALESCE(NULLIF(domain_id, 0), id)', CanonicalZoneSql::canonicalIdColumn('', true));
+        $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z', true));
+        $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z.', true));
+        $this->assertSame('COALESCE(NULLIF(zones.domain_id, 0), zones.id)', CanonicalZoneSql::canonicalIdColumn('zones', true));
     }
 
     /**
@@ -182,7 +176,7 @@ class CanonicalZoneSqlTest extends TestCase
         $this->seed(4, 4, 'self.example.com');
 
         $expected = [1 => 1, 2 => 2, 3 => 99, 4 => 4];
-        $this->assertSame($expected, $this->canonicalIds(CanonicalZoneSql::canonicalIdColumn()));
+        $this->assertSame($expected, $this->canonicalIds(CanonicalZoneSql::canonicalIdColumn('', true)));
     }
 
     public function testBareCoalesceLeavesAZeroRowUnresolved(): void
@@ -192,7 +186,7 @@ class CanonicalZoneSqlTest extends TestCase
         $this->seed(2, 0, 'zero.example.com');
 
         $this->assertSame([2 => 0], $this->canonicalIds('COALESCE(domain_id, id)'));
-        $this->assertSame([2 => 2], $this->canonicalIds(CanonicalZoneSql::canonicalIdColumn()));
+        $this->assertSame([2 => 2], $this->canonicalIds(CanonicalZoneSql::canonicalIdColumn('', true)));
     }
 
     public function testComparisonNeedsAnIntegerBoundId(): void
@@ -200,7 +194,7 @@ class CanonicalZoneSqlTest extends TestCase
         // An expression has no column affinity, so SQLite will not coerce a string-bound
         // id. Callers that compare against this must bind PDO::PARAM_INT.
         $this->seed(55, 0, 'zero.example.com');
-        $sql = "SELECT id FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?";
+        $sql = "SELECT id FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn('', true) . " = ?";
 
         $asText = $this->db->prepare($sql);
         $asText->execute(['55']);
@@ -218,7 +212,7 @@ class CanonicalZoneSqlTest extends TestCase
         $this->seed(2, 0, 'zero.example.com');
         $this->seed(3, 99, 'migrated.example.com');
 
-        $aliased = CanonicalZoneSql::canonicalIdColumn('z');
+        $aliased = CanonicalZoneSql::canonicalIdColumn('z', true);
 
         $where = $this->db->query("SELECT zone_name FROM zones z WHERE $aliased = 2")->fetchColumn();
         $this->assertSame('zero.example.com', $where);
