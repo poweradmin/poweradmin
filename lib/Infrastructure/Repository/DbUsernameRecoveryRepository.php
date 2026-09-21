@@ -25,11 +25,12 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
 
 /**
  * SQL persistence for username recovery attempts and their rate-limit counters in username_recovery_requests.
  */
-class DbUsernameRecoveryRepository
+class DbUsernameRecoveryRepository implements UsernameRecoveryRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

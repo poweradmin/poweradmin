@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Repository\UserAgreementRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
@@ -123,7 +124,7 @@ class UserServices
         return new DbUserGroupMemberRepository($this->db);
     }
 
-    public function permissionTemplateRepository(): DbPermissionTemplateRepository
+    public function permissionTemplateRepository(): PermissionTemplateRepositoryInterface
     {
         return new DbPermissionTemplateRepository($this->db, $this->config);
     }

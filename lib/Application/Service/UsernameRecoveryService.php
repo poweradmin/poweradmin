@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
+use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
 use Psr\Log\LoggerInterface;
 use PDO;
 
@@ -33,7 +33,7 @@ use PDO;
  */
 class UsernameRecoveryService
 {
-    private DbUsernameRecoveryRepository $recoveryRepository;
+    private UsernameRecoveryRepositoryInterface $recoveryRepository;
     private MailService $mailService;
     private ConfigurationInterface $config;
     private ClientContext $client;
@@ -43,7 +43,7 @@ class UsernameRecoveryService
     private UrlService $urlService;
 
     public function __construct(
-        DbUsernameRecoveryRepository $recoveryRepository,
+        UsernameRecoveryRepositoryInterface $recoveryRepository,
         MailService $mailService,
         ConfigurationInterface $config,
         ClientContext $client,

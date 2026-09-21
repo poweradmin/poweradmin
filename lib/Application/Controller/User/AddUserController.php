@@ -31,7 +31,7 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -44,7 +44,7 @@ class AddUserController extends BaseController
     private PasswordPolicyService $passwordPolicyService;
     private PasswordGenerationService $passwordGenerationService;
     private MailService $mailService;
-    private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
     private UserGroupLookupInterface $groupRepository;
     private UserGroupMemberRepositoryInterface $memberRepository;
 

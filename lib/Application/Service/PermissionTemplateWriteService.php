@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Repository\UserPermissionReadInterface;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateContentGuard;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 
 /**
  * The single guarded entry point for permission template writes.
@@ -35,7 +35,7 @@ use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 readonly class PermissionTemplateWriteService
 {
     public function __construct(
-        private DbPermissionTemplateRepository $templateRepository,
+        private PermissionTemplateRepositoryInterface $templateRepository,
         private UserPermissionReadInterface $userRepository
     ) {
     }

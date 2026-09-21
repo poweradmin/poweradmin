@@ -29,7 +29,7 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use ReflectionClass;
 use RuntimeException;
@@ -114,7 +114,7 @@ class EditPermTemplControllerTargetTest extends TestCase
     {
         $captured = [];
 
-        $repository = $this->createMock(DbPermissionTemplateRepository::class);
+        $repository = $this->createMock(PermissionTemplateRepositoryInterface::class);
         $repository->expects($this->once())
             ->method('updatePermissionTemplateDetails')
             ->with($this->callback(function (array $details) use (&$captured): bool {

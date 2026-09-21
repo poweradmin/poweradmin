@@ -26,14 +26,14 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\PermissionTemplateMessages;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 
 /**
  * Handles the delete-permission-template confirmation page and deletes the template on confirmed POST.
  */
 class DeletePermTemplController extends BaseController
 {
-    private DbPermissionTemplateRepository $permissionTemplate;
+    private PermissionTemplateRepositoryInterface $permissionTemplate;
 
     public function __construct(array $request)
     {

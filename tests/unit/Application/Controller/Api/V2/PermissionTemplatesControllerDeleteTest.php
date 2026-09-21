@@ -30,7 +30,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -43,15 +43,15 @@ class PermissionTemplatesControllerDeleteTest extends V2ControllerTestCase
     private const TEMPLATE_ID = 7;
     private const USER_ID = 5;
 
-    /** @var DbPermissionTemplateRepository&MockObject */
-    private DbPermissionTemplateRepository $templates;
+    /** @var PermissionTemplateRepositoryInterface&MockObject */
+    private PermissionTemplateRepositoryInterface $templates;
 
     /** @var AuditService&MockObject */
     private AuditService $audit;
 
     protected function setUp(): void
     {
-        $this->templates = $this->createMock(DbPermissionTemplateRepository::class);
+        $this->templates = $this->createMock(PermissionTemplateRepositoryInterface::class);
         $this->templates->method('getPermissionTemplateDetails')->willReturn(['id' => self::TEMPLATE_ID, 'name' => 'Spare']);
         $this->audit = $this->createMock(AuditService::class);
     }

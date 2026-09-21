@@ -26,7 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -35,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AddGroupController extends BaseController
 {
     private GroupService $groupService;
-    private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
 
     public function __construct(array $request)
     {

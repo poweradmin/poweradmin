@@ -29,7 +29,7 @@ use Poweradmin\Application\Controller\User\DeletePermTemplController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -42,8 +42,8 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
 {
     private const TEMPLATE_ID = 7;
 
-    /** @var DbPermissionTemplateRepository&MockObject */
-    private DbPermissionTemplateRepository $templates;
+    /** @var PermissionTemplateRepositoryInterface&MockObject */
+    private PermissionTemplateRepositoryInterface $templates;
 
     /** @var AuditService&MockObject */
     private AuditService $audit;
@@ -55,7 +55,7 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('hasPermission')->willReturn(true);
 
-        $this->templates = $this->createMock(DbPermissionTemplateRepository::class);
+        $this->templates = $this->createMock(PermissionTemplateRepositoryInterface::class);
         $this->templates->method('getPermissionTemplateDetails')->willReturn(['id' => self::TEMPLATE_ID, 'name' => 'Spare']);
 
         $this->audit = $this->createMock(AuditService::class);

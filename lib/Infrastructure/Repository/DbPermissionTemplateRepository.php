@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 use Throwable;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
@@ -31,7 +32,7 @@ use Poweradmin\Domain\Enum\PermissionTemplateType;
 /**
  * SQL persistence for permission templates in perm_templ and their perm_items links in perm_templ_items.
  */
-class DbPermissionTemplateRepository
+class DbPermissionTemplateRepository implements PermissionTemplateRepositoryInterface
 {
     private object $db;
 

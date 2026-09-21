@@ -24,12 +24,13 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
 use PDO;
 
 /**
  * SQL persistence for password reset tokens and their rate-limit counters in password_reset_tokens.
  */
-class DbPasswordResetTokenRepository
+class DbPasswordResetTokenRepository implements PasswordResetTokenRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

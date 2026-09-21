@@ -31,7 +31,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\AuthMethod;
 
@@ -41,7 +41,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 class EditUserController extends BaseController
 {
     private PasswordPolicyService $policyService;
-    private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
     private readonly UserContextService $userContextService;
     private AuditService $auditService;
 

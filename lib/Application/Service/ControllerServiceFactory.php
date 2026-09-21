@@ -48,12 +48,15 @@ use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
 use Poweradmin\Domain\Repository\UserAgreementRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
+use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
@@ -102,9 +105,6 @@ use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
 use Poweradmin\Application\Service\Auth\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Application\Service\Auth\BasicAuthenticationMiddleware;
@@ -244,7 +244,7 @@ class ControllerServiceFactory
         return $this->users->userGroupMemberRepository();
     }
 
-    public function permissionTemplateRepository(): DbPermissionTemplateRepository
+    public function permissionTemplateRepository(): PermissionTemplateRepositoryInterface
     {
         return $this->users->permissionTemplateRepository();
     }
@@ -339,12 +339,12 @@ class ControllerServiceFactory
         return $this->auth->basicAuthenticationMiddleware();
     }
 
-    public function passwordResetTokenRepository(): DbPasswordResetTokenRepository
+    public function passwordResetTokenRepository(): PasswordResetTokenRepositoryInterface
     {
         return $this->auth->passwordResetTokenRepository();
     }
 
-    public function usernameRecoveryRepository(): DbUsernameRecoveryRepository
+    public function usernameRecoveryRepository(): UsernameRecoveryRepositoryInterface
     {
         return $this->auth->usernameRecoveryRepository();
     }

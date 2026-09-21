@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 /**
@@ -36,7 +36,7 @@ use Poweradmin\Domain\Enum\PermissionTemplateType;
  */
 class EditPermTemplController extends BaseController
 {
-    private DbPermissionTemplateRepository $permissionTemplate;
+    private PermissionTemplateRepositoryInterface $permissionTemplate;
     private PermissionTemplateWriteService $permissionTemplateWriteService;
     private UserContextService $userContextService;
 

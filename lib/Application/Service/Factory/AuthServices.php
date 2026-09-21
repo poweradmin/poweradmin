@@ -30,7 +30,9 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\MfaVerificationMailer;
 use Poweradmin\Application\Service\UrlService;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
+use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
+use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -145,12 +147,12 @@ class AuthServices
         return new BasicAuthenticationMiddleware($this->db, $this->config);
     }
 
-    public function passwordResetTokenRepository(): DbPasswordResetTokenRepository
+    public function passwordResetTokenRepository(): PasswordResetTokenRepositoryInterface
     {
         return new DbPasswordResetTokenRepository($this->db, $this->config);
     }
 
-    public function usernameRecoveryRepository(): DbUsernameRecoveryRepository
+    public function usernameRecoveryRepository(): UsernameRecoveryRepositoryInterface
     {
         return new DbUsernameRecoveryRepository($this->db, $this->config);
     }
