@@ -16,6 +16,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\Auth\ApiKeyActor;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\LoginAttemptService;
@@ -31,6 +32,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Psr\Log\NullLogger;
+use ReflectionProperty;
 
 /**
  * The factory must hand out per-request shared instances where state matters
@@ -48,8 +50,22 @@ class ControllerServiceFactoryTest extends TestCase
         return new ControllerServiceFactory(
             $this->createMock(PDO::class),
             $config,
-            new NullLogger()
+            new NullLogger(),
+            new ApiKeyActor(0, null)
         );
+    }
+
+    public function testServicesBuiltBeforeBindActorSeeTheReboundActor(): void
+    {
+        $factory = $this->makeFactory();
+        $logger = $factory->recordChangeLog();
+        $this->assertNull($factory->actor()->userId());
+
+        $factory->bindActor(new ApiKeyActor(42, 'apikey-owner'));
+
+        $this->assertSame(42, $factory->actor()->userId());
+        $this->assertSame('apikey-owner', $factory->actor()->username());
+        $this->assertSame($factory->actor(), (new ReflectionProperty($logger, 'actor'))->getValue($logger));
     }
 
     public function testDnsBackendProviderIsMemoized(): void

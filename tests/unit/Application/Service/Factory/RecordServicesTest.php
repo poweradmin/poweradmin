@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\Factory;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\Auth\ApiKeyActor;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
@@ -45,7 +46,8 @@ class RecordServicesTest extends TestCase
         return new ControllerServiceFactory(
             $this->createMock(PDO::class),
             new FakeConfiguration(['database' => ['type' => 'mysql'], 'dns' => ['backend' => 'sql']]),
-            new \Psr\Log\NullLogger()
+            new \Psr\Log\NullLogger(),
+            new ApiKeyActor(7, 'alice')
         );
     }
 

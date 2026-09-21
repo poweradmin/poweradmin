@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
 
 /**
  * Deleting a record takes its template link and comments with it and, unless a
@@ -114,7 +115,8 @@ class RecordManagerDeleteRecordCleanupTest extends SqliteIntegrationTestCase
             $backend,
             $this->permissionService($config),
             $this->createMock(RecordChangeLogger::class),
-            new DbTemplateRecordLinkRepository($this->db, $config, $backend)
+            new DbTemplateRecordLinkRepository($this->db, $config, $backend),
+            new SessionActor()
         );
     }
 

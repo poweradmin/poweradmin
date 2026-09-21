@@ -36,10 +36,10 @@ class ZoneSortingService
     private ReverseZoneSorterInterface $reverseZoneSorting;
     private UserContextService $userContextService;
 
-    public function __construct(ReverseZoneSorterInterface $reverseZoneSorting, ?UserContextService $userContextService = null)
+    public function __construct(ReverseZoneSorterInterface $reverseZoneSorting, UserContextService $userContextService)
     {
         $this->reverseZoneSorting = $reverseZoneSorting;
-        $this->userContextService = $userContextService ?? new UserContextService();
+        $this->userContextService = $userContextService;
     }
 
     /**

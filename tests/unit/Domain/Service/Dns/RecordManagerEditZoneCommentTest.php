@@ -30,13 +30,13 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
+use TestHelpers\StubActor;
 
 /**
  * editZoneComment() updates the zones row of the zone, and creates one for a
@@ -98,8 +98,6 @@ class RecordManagerEditZoneCommentTest extends PermissionServiceTestCase
 
     private function manager(string $zoneType = 'MASTER'): RecordManager
     {
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(self::CALLER_ID);
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $domainRepository->method('getDomainType')->willReturn($zoneType);
         $backend = $this->createMock(DnsBackendProviderInterface::class);
@@ -117,8 +115,7 @@ class RecordManagerEditZoneCommentTest extends PermissionServiceTestCase
             $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS]]),
             $this->createMock(RecordChangeWriterInterface::class),
             new DbTemplateRecordLinkRepository($this->db, $this->config, $backend),
-            null,
-            $userContext
+            new StubActor(self::CALLER_ID)
         );
     }
 

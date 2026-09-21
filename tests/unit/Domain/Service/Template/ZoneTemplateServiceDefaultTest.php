@@ -29,9 +29,9 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use TestHelpers\ZoneTemplateServiceBuilder;
@@ -53,7 +53,7 @@ class ZoneTemplateServiceDefaultTest extends TestCase
             $config,
             $backend,
             $this->createMock(PermissionService::class),
-            new UserContextService(),
+            new SessionActor(),
             $logger
         );
     }

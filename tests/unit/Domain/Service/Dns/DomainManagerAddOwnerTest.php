@@ -26,10 +26,10 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Dns\DomainManager;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 use TestHelpers\PermissionServiceTestCase;
+use TestHelpers\StubActor;
 
 /**
  * addOwnerToZone() is the guarded write behind the change-owner page: it
@@ -46,16 +46,13 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $reflection = new ReflectionClass(DomainManager::class);
         $manager = $reflection->newInstanceWithoutConstructor();
 
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(self::CALLER_ID);
-
         $users = $this->createMock(DbUserRepository::class);
         $users->method('getUserById')
             ->willReturnCallback(fn(int $id): ?array => in_array($id, $existingUsers, true) ? ['id' => $id] : null);
 
         foreach (
             [
-            'userContext' => $userContext,
+            'actor' => new StubActor(self::CALLER_ID),
             'userRepository' => $users,
             'permissionService' => $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => $callerPermissions]),
             ] as $name => $value

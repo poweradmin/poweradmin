@@ -23,9 +23,9 @@
 namespace Poweradmin\Domain\Service\Template;
 
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * What the acting user may do with zone templates: which template a zone may
@@ -36,16 +36,16 @@ class ZoneTemplateAccessPolicy
 {
     private ZoneTemplateRepositoryInterface $repository;
     private PermissionService $permissionService;
-    private UserContextService $userContext;
+    private ActorInterface $actor;
 
     public function __construct(
         ZoneTemplateRepositoryInterface $repository,
         PermissionService $permissionService,
-        UserContextService $userContext
+        ActorInterface $actor
     ) {
         $this->repository = $repository;
         $this->permissionService = $permissionService;
-        $this->userContext = $userContext;
+        $this->actor = $actor;
     }
 
     /**
@@ -53,7 +53,7 @@ class ZoneTemplateAccessPolicy
      */
     public function currentUserHasPermission(string $permission): bool
     {
-        $userId = $this->userContext->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return false;
         }
@@ -65,7 +65,7 @@ class ZoneTemplateAccessPolicy
      */
     public function currentUserEditPermissionLevel(): string
     {
-        $userId = $this->userContext->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return 'none';
         }
@@ -141,7 +141,7 @@ class ZoneTemplateAccessPolicy
      */
     public function canCurrentUserUseTemplate(mixed $zone_templ_id): bool
     {
-        $userId = (int)($this->userContext->getLoggedInUserId() ?? 0);
+        $userId = (int)($this->actor->userId() ?? 0);
 
         return $this->canUseTemplate($zone_templ_id, $userId, $this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER));
     }
@@ -165,7 +165,7 @@ class ZoneTemplateAccessPolicy
             return true;
         }
 
-        $userId = $this->userContext->getLoggedInUserId();
+        $userId = $this->actor->userId();
 
         return $userId !== null && $owner === $userId
             && $this->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_EDIT);

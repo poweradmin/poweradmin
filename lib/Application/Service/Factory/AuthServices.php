@@ -37,6 +37,7 @@ use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -175,9 +176,21 @@ class AuthServices
         return $this->apiKeyRepository ??= new DbApiKeyRepository($this->db, $this->config);
     }
 
+    public function apiKeyService(): ApiKeyService
+    {
+        return new ApiKeyService(
+            $this->apiKeyRepository(),
+            $this->services->userRepository(),
+            $this->config,
+            $this->services->permissionService(),
+            $this->services->actor(),
+            new UserContextService()
+        );
+    }
+
     public function apiKeyAuthenticationMiddleware(): ApiKeyAuthenticationMiddleware
     {
-        return new ApiKeyAuthenticationMiddleware($this->db, $this->config);
+        return new ApiKeyAuthenticationMiddleware($this->apiKeyService(), $this->config);
     }
 
     public function basicAuthenticationMiddleware(): BasicAuthenticationMiddleware
@@ -197,7 +210,7 @@ class AuthServices
 
     public function auditService(): AuditService
     {
-        return $this->auditService ??= new AuditService($this->auditLogWriter(), $this->clientContext(), new UserContextService());
+        return $this->auditService ??= new AuditService($this->auditLogWriter(), $this->clientContext(), $this->services->actor());
     }
 
     public function auditLogWriter(): AuditLogWriter

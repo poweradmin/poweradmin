@@ -52,6 +52,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Psr\Log\LoggerInterface;
@@ -385,7 +386,7 @@ abstract class BaseController
      */
     protected function services(): ControllerServiceFactory
     {
-        return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger);
+        return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger, new SessionActor());
     }
 
     /**

@@ -28,8 +28,8 @@ use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\SessionActor;
 
 /**
  * Pins the exact search result rows DnsDataService hands the search page in each
@@ -86,7 +86,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
     {
         $config = new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]);
 
-        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend), $backend, $this->db, new UserContextService());
+        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend), $backend, $this->db, new SessionActor());
     }
 
     private function sqlService(): DnsDataService

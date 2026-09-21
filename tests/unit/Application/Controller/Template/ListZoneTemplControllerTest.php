@@ -29,7 +29,7 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
@@ -76,7 +76,7 @@ class ListZoneTemplControllerTest extends SeamControllerTestCase
         $this->factory->method('permissionService')->willReturn($permissions);
         $this->factory->method('zoneTemplateService')->willReturn($templates);
         $this->factory->method('zoneTemplateAccessPolicy')->willReturn(
-            new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new UserContextService())
+            new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new SessionActor())
         );
         $this->factory->method('zoneTemplateSync')->willReturn($sync);
         $this->factory->method('userRepository')->willReturn($users);

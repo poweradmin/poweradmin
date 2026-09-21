@@ -50,7 +50,7 @@ class TestableListForwardZonesController extends ListForwardZonesController
     {
         (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
         (new ReflectionProperty(ListForwardZonesController::class, 'zoneSortingService'))
-            ->setValue($this, new ZoneSortingService(new ReverseZoneSorting()));
+            ->setValue($this, new ZoneSortingService(new ReverseZoneSorting(), $this->getUserContextService()));
     }
 
     public function render(string $template, array $params): void

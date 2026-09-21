@@ -34,7 +34,6 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
@@ -43,6 +42,7 @@ use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use TestHelpers\StubActor;
 
 /**
  * updateZoneRecords() re-applies a template to an existing zone: the records the
@@ -404,9 +404,6 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
      */
     private function manager(array $callerPermissions = [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS, Permission::PERM_ZONE_MASTER_ADD]): DomainManager
     {
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(self::CALLER_ID);
-
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->method('getDomainType')->with(self::ZONE_ID)->willReturn($this->zoneType);
         $domains->method('getDomainNameById')->with(self::ZONE_ID)->willReturn($this->zoneName);
@@ -440,8 +437,8 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             new DbZoneTemplateSyncRepository($this->db, $this->config),
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
             new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
-            new NullLogger(),
-            $userContext
+            new StubActor(self::CALLER_ID),
+            new NullLogger()
         );
     }
 

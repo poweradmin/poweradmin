@@ -10,6 +10,7 @@ use Poweradmin\Domain\Service\Database\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\Dns\DynamicDnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -27,7 +28,7 @@ $db = (new DatabaseService(new PDODatabaseConnection()))->connect($credentials);
 
 // The same per-request service graph the web controllers use, so the backend
 // provider, repositories and permission cache are built once
-$services = new ControllerServiceFactory($db, $config, new NullLogger());
+$services = new ControllerServiceFactory($db, $config, new NullLogger(), new SessionActor());
 $repository = $services->repositoryFactory()->createDynamicDnsRepository($services->soaRecordManager());
 $updateService = DynamicDnsRequestFactory::createUpdateService($db, $config, $repository, $services->permissionService());
 

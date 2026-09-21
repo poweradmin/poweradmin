@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
 
 /**
  * Every single write ends by bumping the serial; a batch caller (bulk operations,
@@ -171,7 +172,8 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
             $backend,
             $this->permissionService($config),
             $changeLogger,
-            new DbTemplateRecordLinkRepository($this->db, $config, $backend)
+            new DbTemplateRecordLinkRepository($this->db, $config, $backend),
+            new SessionActor()
         );
     }
 }

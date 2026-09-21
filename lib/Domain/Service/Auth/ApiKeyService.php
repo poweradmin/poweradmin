@@ -27,6 +27,7 @@ use Exception;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -42,7 +43,8 @@ class ApiKeyService
     private UserLookupInterface $users;
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
-    private UserContextService $userContextService;
+    private ActorInterface $actor;
+    private UserContextService $session;
     private PermissionService $permissionService;
 
     /**
@@ -52,29 +54,33 @@ class ApiKeyService
      * @param UserLookupInterface $users Resolves key creators and owners
      * @param ConfigurationInterface $config The configuration manager
      * @param PermissionService $permissionService Decides who may see and manage other users' keys
+     * @param ActorInterface $actor The user the owner checks are about
+     * @param UserContextService $session Where a successful key authentication records the user
      */
     public function __construct(
         ApiKeyRepositoryInterface $apiKeyRepository,
         UserLookupInterface $users,
         ConfigurationInterface $config,
         PermissionService $permissionService,
-        ?LoggerInterface $logger = null,
-        ?UserContextService $userContextService = null
+        ActorInterface $actor,
+        UserContextService $session,
+        ?LoggerInterface $logger = null
     ) {
         $this->apiKeyRepository = $apiKeyRepository;
         $this->users = $users;
         $this->config = $config;
         $this->permissionService = $permissionService;
         $this->logger = $logger ?? new NullLogger();
-        $this->userContextService = $userContextService ?? new UserContextService();
+        $this->actor = $actor;
+        $this->session = $session;
     }
 
     /**
-     * Check if the logged-in user has the given permission (admins always pass)
+     * Check if the acting user has the given permission (admins always pass)
      */
     private function currentUserHasPermission(string $permission): bool
     {
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return false;
         }
@@ -88,7 +94,7 @@ class ApiKeyService
      */
     public function getAllApiKeys(): array
     {
-        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+        $userId = $this->actor->userId() ?? 0;
 
         // Admin users can see all API keys, regular users only see their own
         if ($this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
@@ -119,7 +125,7 @@ class ApiKeyService
         }
 
         // Check if the current user has access to this API key
-        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+        $userId = $this->actor->userId() ?? 0;
         if ($this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER) || $apiKey->getCreatedBy() === $userId) {
             $this->attachCreator($apiKey);
             $apiKey->setZoneIds($this->apiKeyRepository->getZoneIds($apiKey->getId()));
@@ -141,7 +147,7 @@ class ApiKeyService
      */
     public function createApiKey(string $name, ?DateTime $expiresAt = null, bool $isReadonly = false, ?array $allowedOperations = null, array $zoneIds = []): ApiKeyWriteResult
     {
-        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+        $userId = $this->actor->userId() ?? 0;
 
         if (!$this->config->get('api', 'enabled', false)) {
             return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_API_DISABLED, _('API functionality is disabled.'), 403);
@@ -303,8 +309,8 @@ class ApiKeyService
         }
 
         $this->apiKeyRepository->updateLastUsed($apiKey->getId());
-        $this->userContextService->setSessionData(SessionKeys::USERID, $apiKey->getCreatedBy());
-        $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'api_key');
+        $this->session->setSessionData(SessionKeys::USERID, $apiKey->getCreatedBy());
+        $this->session->setSessionData(SessionKeys::AUTH_USED, 'api_key');
 
         return true;
     }

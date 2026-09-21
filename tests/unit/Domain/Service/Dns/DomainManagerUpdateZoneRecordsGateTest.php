@@ -27,10 +27,10 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 use TestHelpers\PermissionServiceTestCase;
+use TestHelpers\StubActor;
 
 /**
  * Applying a template writes records straight to the backend, so it takes the
@@ -49,9 +49,6 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
         $reflection = new ReflectionClass(DomainManager::class);
         $manager = $reflection->newInstanceWithoutConstructor();
 
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(self::CALLER_ID);
-
         $users = $this->createMock(DbUserRepository::class);
         $users->method('userOwnsZone')->with(self::CALLER_ID, self::ZONE_ID)->willReturn($ownsZone);
 
@@ -60,7 +57,7 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
 
         foreach (
             [
-            'userContext' => $userContext,
+            'actor' => new StubActor(self::CALLER_ID),
             'userRepository' => $users,
             'domainRepository' => $domains,
             'permissionService' => $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => $callerPermissions]),

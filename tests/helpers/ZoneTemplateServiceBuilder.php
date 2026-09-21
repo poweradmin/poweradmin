@@ -23,10 +23,10 @@
 namespace TestHelpers;
 
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplateRecordService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
@@ -44,10 +44,10 @@ final class ZoneTemplateServiceBuilder
         ConfigurationInterface $config,
         DnsBackendProviderInterface $backend,
         PermissionService $permissionService,
-        UserContextService $userContext,
+        ActorInterface $actor,
         LoggerInterface $logger
     ): ZoneTemplateService {
-        $access = new ZoneTemplateAccessPolicy($repository, $permissionService, $userContext);
+        $access = new ZoneTemplateAccessPolicy($repository, $permissionService, $actor);
 
         return new ZoneTemplateService(
             $repository,

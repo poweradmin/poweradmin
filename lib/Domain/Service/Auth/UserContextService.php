@@ -25,7 +25,8 @@ namespace Poweradmin\Domain\Service\Auth;
 use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
- * Session-backed identity of the current user (id, username, auth method), with a fallback for API requests.
+ * Session-backed identity of the current user (id, username, auth method) and the
+ * session storage controllers use. Domain rules read the actor through ActorInterface instead.
  */
 class UserContextService
 {
@@ -38,43 +39,14 @@ class UserContextService
         AuthMethod::SAML->value,
     ];
 
-    // Request-scoped fallback for stateless API requests. Web UI requests use
-    // session-backed values directly; API requests authenticate via API key /
-    // Basic auth and have no $_SESSION user, so PublicApiController seeds these
-    // after authentication succeeds. Both fields are cleared when the request
-    // process ends; tests should reset them in tearDown.
-    private static ?int $apiUserId = null;
-    private static ?string $apiUsername = null;
-
-    public static function setApiUserContext(int $userId, ?string $username): void
-    {
-        self::$apiUserId = $userId > 0 ? $userId : null;
-        self::$apiUsername = ($username !== null && $username !== '') ? $username : null;
-    }
-
-    public static function clearApiUserContext(): void
-    {
-        self::$apiUserId = null;
-        self::$apiUsername = null;
-    }
-
     public function getLoggedInUsername(): ?string
     {
-        return $_SESSION[SessionKeys::USERLOGIN] ?? self::$apiUsername;
+        return $_SESSION[SessionKeys::USERLOGIN] ?? null;
     }
 
     public function getLoggedInUserId(): ?int
     {
-        return $_SESSION[SessionKeys::USERID] ?? self::$apiUserId;
-    }
-
-    /**
-     * The name to record as the actor of this request. An API request that also
-     * carries a browser session is attributed to the API principal, not the session.
-     */
-    public function getActingUsername(): ?string
-    {
-        return self::$apiUsername ?? ($_SESSION[SessionKeys::USERLOGIN] ?? null);
+        return $_SESSION[SessionKeys::USERID] ?? null;
     }
 
     public function getDisplayName(): ?string

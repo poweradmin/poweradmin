@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\DashboardStatsService;
 use Poweradmin\Application\Service\DnsDataService;
+use Poweradmin\Application\Service\Auth\RequestActor;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\Factory\AuthServices;
 use Poweradmin\Application\Service\Factory\BackendServices;
@@ -95,6 +96,8 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
+use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
@@ -136,19 +139,42 @@ use Psr\Log\LoggerInterface;
  */
 class ControllerServiceFactory implements ModuleServices
 {
+    private RequestActor $actor;
     private BackendServices $backend;
     private UserServices $users;
     private AuthServices $auth;
     private ZoneServices $zones;
     private RecordServices $records;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger)
+    /**
+     * @param ActorInterface $actor Who the request acts as; an API controller rebinds it via bindActor()
+     */
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ActorInterface $actor)
     {
-        $this->backend = new BackendServices($db, $config, $logger);
+        $this->actor = new RequestActor($actor);
+        $this->backend = new BackendServices($db, $config, $logger, $this->actor);
         $this->users = new UserServices($db, $config, $logger, $this);
         $this->auth = new AuthServices($db, $config, $logger, $this);
         $this->zones = new ZoneServices($db, $config, $logger, $this);
         $this->records = new RecordServices($db, $config, $logger, $this);
+    }
+
+    /**
+     * The request's actor, shared by every service built here. It follows a
+     * later bindActor() call, so build order does not matter.
+     */
+    public function actor(): ActorInterface
+    {
+        return $this->actor;
+    }
+
+    /**
+     * Rebinds the request's actor once authentication has named it (the API
+     * key owner); services already built see the new actor too.
+     */
+    public function bindActor(ActorInterface $actor): void
+    {
+        $this->actor->bind($actor);
     }
 
     public function backend(): BackendServices
@@ -366,6 +392,11 @@ class ControllerServiceFactory implements ModuleServices
         return $this->auth->apiKeyRepository();
     }
 
+    public function apiKeyService(): ApiKeyService
+    {
+        return $this->auth->apiKeyService();
+    }
+
     public function apiKeyAuthenticationMiddleware(): ApiKeyAuthenticationMiddleware
     {
         return $this->auth->apiKeyAuthenticationMiddleware();
@@ -476,7 +507,7 @@ class ControllerServiceFactory implements ModuleServices
         return $this->zones->zoneGroupRepository();
     }
 
-    public function zoneSortingService(?UserContextService $userContext = null): ZoneSortingService
+    public function zoneSortingService(UserContextService $userContext): ZoneSortingService
     {
         return $this->zones->zoneSortingService($userContext);
     }

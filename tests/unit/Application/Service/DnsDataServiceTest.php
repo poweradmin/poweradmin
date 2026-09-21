@@ -8,8 +8,8 @@ use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use PDO;
+use Poweradmin\Infrastructure\Session\SessionActor;
 
 #[CoversClass(DnsDataService::class)]
 class DnsDataServiceTest extends TestCase
@@ -46,7 +46,7 @@ class DnsDataServiceTest extends TestCase
 
     private function createService(): DnsDataService
     {
-        return new DnsDataService(new RepositoryFactory($this->mockDb, $this->mockConfig, $this->mockBackend), $this->mockBackend, $this->mockDb, new UserContextService());
+        return new DnsDataService(new RepositoryFactory($this->mockDb, $this->mockConfig, $this->mockBackend), $this->mockBackend, $this->mockDb, new SessionActor());
     }
 
     // ---------------------------------------------------------------

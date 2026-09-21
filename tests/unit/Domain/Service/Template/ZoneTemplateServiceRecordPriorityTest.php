@@ -22,9 +22,9 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Template;
 
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
@@ -78,6 +78,6 @@ class ZoneTemplateServiceRecordPriorityTest extends SqliteIntegrationTestCase
     private function service(): ZoneTemplateService
     {
         $backend = $this->dnsBackendStub(false);
-        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor(), new NullLogger());
     }
 }

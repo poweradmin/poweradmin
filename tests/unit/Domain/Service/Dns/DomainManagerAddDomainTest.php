@@ -33,7 +33,6 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
@@ -42,6 +41,7 @@ use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use TestHelpers\StubActor;
 
 /**
  * addDomain() drives zone creation end to end: refusal before any write,
@@ -565,9 +565,6 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
      */
     private function manager(array $callerPermissions = [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD]): DomainManager
     {
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(self::CALLER_ID);
-
         return new DomainManager(
             $this->db,
             $this->config,
@@ -583,8 +580,8 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             new DbZoneTemplateSyncRepository($this->db, $this->config),
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
             new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
-            new NullLogger(),
-            $userContext
+            new StubActor(self::CALLER_ID),
+            new NullLogger()
         );
     }
 

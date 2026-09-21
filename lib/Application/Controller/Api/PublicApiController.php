@@ -23,14 +23,13 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
+use Poweradmin\Application\Service\Auth\ApiKeyActor;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Utility\DnsIdnService;
@@ -94,24 +93,6 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
-     * Builds and runs an API controller inside one request scope. The principal is
-     * cleared before construction and again afterwards, so an exit() inside a
-     * handler (which skips finally) cannot leave one request's user for the next.
-     *
-     * @param callable(): object $factory builds the controller, may throw or exit
-     */
-    final public static function handle(callable $factory, string $method): void
-    {
-        UserContextService::clearApiUserContext();
-        try {
-            $controller = $factory();
-            $controller->$method();
-        } finally {
-            UserContextService::clearApiUserContext();
-        }
-    }
-
-    /**
      * Authenticate the API request using API key or HTTP Basic auth
      *
      * @return void
@@ -167,14 +148,10 @@ abstract class PublicApiController extends AbstractApiController
             exit;
         }
 
-        // Make the authenticated identity visible to UserContextService so the
-        // change log records the actor (instead of falling back to "system")
-        // for record/zone mutations performed via the API.
+        // The request's services act as the key owner from here on, so the change
+        // log and audit lines name the API principal instead of "system".
         if ($this->authenticatedUserId > 0) {
-            UserContextService::setApiUserContext(
-                $this->authenticatedUserId,
-                $this->getAuthenticatedUsername()
-            );
+            $this->services()->bindActor(new ApiKeyActor($this->authenticatedUserId, $this->getAuthenticatedUsername()));
         }
     }
 
@@ -193,26 +170,6 @@ abstract class PublicApiController extends AbstractApiController
 
         // Try to get API key from X-API-Key header
         return $this->request->headers->get('X-API-Key');
-    }
-
-    /**
-     * Validate the API key
-     *
-     * @param string|null $apiKey The API key to validate
-     * @return bool True if the API key is valid, false otherwise
-     */
-    protected function validateApiKey(?string $apiKey): bool
-    {
-        if ($apiKey === null) {
-            return false;
-        }
-
-        // Create API key service to validate the key against the database
-        $config = $this->getConfig();
-        $apiKeyService = new ApiKeyService($this->services()->apiKeyRepository(), $this->services()->userRepository(), $config, $this->services()->permissionService());
-
-        // Authenticate using the API key service
-        return $apiKeyService->authenticate($apiKey);
     }
 
     /**

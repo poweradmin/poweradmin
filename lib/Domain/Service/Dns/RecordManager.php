@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -38,7 +39,6 @@ use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\RecordWriteBackendInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -60,7 +60,7 @@ class RecordManager implements RecordManagerInterface
     private LoggerInterface $logger;
     private RecordChangeWriterInterface $changeLogger;
     private PermissionService $permissionService;
-    private UserContextService $userContext;
+    private ActorInterface $actor;
     private RepositoryFactoryInterface $repositoryFactory;
     private TemplateRecordLinkRepositoryInterface $templateLinks;
     private Closure $dnssecProvider;
@@ -80,6 +80,7 @@ class RecordManager implements RecordManagerInterface
      * @param PermissionService $permissionService Edit levels and zone ownership of the acting user
      * @param RecordChangeWriterInterface $changeLogger Receives the before/after record snapshots
      * @param TemplateRecordLinkRepositoryInterface $templateLinks Drops the template link of a deleted record
+     * @param ActorInterface $actor The user the edit gates are about
      */
     public function __construct(
         PDO $db,
@@ -93,8 +94,8 @@ class RecordManager implements RecordManagerInterface
         PermissionService $permissionService,
         RecordChangeWriterInterface $changeLogger,
         TemplateRecordLinkRepositoryInterface $templateLinks,
-        ?LoggerInterface $logger = null,
-        ?UserContextService $userContext = null
+        ActorInterface $actor,
+        ?LoggerInterface $logger = null
     ) {
         $this->db = $db;
         $this->templateLinks = $templateLinks;
@@ -107,7 +108,7 @@ class RecordManager implements RecordManagerInterface
         $this->permissionService = $permissionService;
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger;
-        $this->userContext = $userContext ?? new UserContextService();
+        $this->actor = $actor;
         $this->repositoryFactory = $repositoryFactory;
         $this->dnssecProvider = $dnssecProvider;
     }
@@ -122,11 +123,11 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
-     * Check if the logged-in user owns the zone directly or via group membership
+     * Check if the acting user owns the zone directly or via group membership
      */
     private function userIsZoneOwner(int $zoneId): bool
     {
-        $userId = $this->userContext->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return false;
         }
@@ -134,11 +135,11 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
-     * Check if the logged-in user has the given permission (admins always pass).
+     * Check if the acting user has the given permission (admins always pass).
      */
     private function userHasPermission(string $permission): bool
     {
-        $userId = $this->userContext->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return false;
         }
@@ -146,11 +147,11 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
-     * The logged-in user's edit level: "all", "own", "own_as_client" or "none".
+     * The acting user's edit level: "all", "own", "own_as_client" or "none".
      */
     private function editPermissionLevel(): string
     {
-        $userId = $this->userContext->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return 'none';
         }

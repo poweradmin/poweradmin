@@ -24,8 +24,8 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneCountService;
 use Poweradmin\Domain\Port\RecordSearchInterface;
 use Poweradmin\Domain\Port\ZoneSearchInterface;
@@ -41,7 +41,7 @@ use Poweradmin\Domain\Port\ZoneSearchInterface;
 class DnsDataService
 {
     private DnsBackendProviderInterface $backendProvider;
-    private UserContextService $userContext;
+    private ActorInterface $actor;
     private ?ZoneSyncService $zoneSyncService = null;
     private RepositoryFactory $repositoryFactory;
     private ?ZoneSearchInterface $zoneSearch = null;
@@ -51,11 +51,11 @@ class DnsDataService
         RepositoryFactory $repositoryFactory,
         DnsBackendProviderInterface $backendProvider,
         PDO $db,
-        UserContextService $userContext
+        ActorInterface $actor
     ) {
         $this->repositoryFactory = $repositoryFactory;
         $this->backendProvider = $backendProvider;
-        $this->userContext = $userContext;
+        $this->actor = $actor;
 
         if ($backendProvider->isApiBackend()) {
             $this->zoneSyncService = new ZoneSyncService($db, $backendProvider);
@@ -186,7 +186,7 @@ class DnsDataService
      */
     public function countZones(string $perm, string $letterStart = 'all', string $zoneType = 'forward'): int
     {
-        $zoneCountService = new ZoneCountService($this->repositoryFactory->createZoneRepository(), $this->userContext);
+        $zoneCountService = new ZoneCountService($this->repositoryFactory->createZoneRepository(), $this->actor);
         return $zoneCountService->countZones($perm, $letterStart, $zoneType);
     }
 
@@ -295,7 +295,7 @@ class DnsDataService
         return $this->zoneSearch()->searchZones(
             $parameters,
             $permissionView,
-            $this->userContext->getLoggedInUserId(),
+            $this->actor->userId(),
             $sortBy,
             $sortDirection,
             $rowAmount,
@@ -309,7 +309,7 @@ class DnsDataService
      */
     public function searchZonesTotalCount(array $parameters, string $permissionView): int
     {
-        return $this->zoneSearch()->getTotalZones($parameters, $permissionView, $this->userContext->getLoggedInUserId());
+        return $this->zoneSearch()->getTotalZones($parameters, $permissionView, $this->actor->userId());
     }
 
     /**
@@ -329,7 +329,7 @@ class DnsDataService
         return $this->recordSearch()->searchRecords(
             $parameters,
             $permissionView,
-            $this->userContext->getLoggedInUserId(),
+            $this->actor->userId(),
             $sortBy,
             $sortDirection,
             $groupRecords,
@@ -344,7 +344,7 @@ class DnsDataService
      */
     public function searchRecordsTotalCount(array $parameters, string $permissionView, bool $groupRecords): int
     {
-        return $this->recordSearch()->getTotalRecords($parameters, $permissionView, $this->userContext->getLoggedInUserId(), $groupRecords);
+        return $this->recordSearch()->getTotalRecords($parameters, $permissionView, $this->actor->userId(), $groupRecords);
     }
 
     private function zoneSearch(): ZoneSearchInterface

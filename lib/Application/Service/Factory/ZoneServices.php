@@ -174,9 +174,9 @@ class ZoneServices
     }
 
     /**
-     * @param UserContextService|null $userContext The controller's session view, so tests can plant one
+     * @param UserContextService $userContext The controller's session view, where the sort state lives
      */
-    public function zoneSortingService(?UserContextService $userContext = null): ZoneSortingService
+    public function zoneSortingService(UserContextService $userContext): ZoneSortingService
     {
         return new ZoneSortingService(new ReverseZoneSorting(), $userContext);
     }
@@ -220,7 +220,8 @@ class ZoneServices
             new ZoneTemplatePlaceholders($this->config),
             $this->zoneTemplateSync(),
             $this->templateRecordLinkRepository(),
-            $this->zoneGroupRepository()
+            $this->zoneGroupRepository(),
+            $this->services->actor()
         );
     }
 
@@ -269,7 +270,7 @@ class ZoneServices
         return $this->zoneTemplateAccessPolicy ??= new ZoneTemplateAccessPolicy(
             $this->zoneTemplateRepository(),
             $this->services->permissionService(),
-            new UserContextService()
+            $this->services->actor()
         );
     }
 

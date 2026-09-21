@@ -34,7 +34,7 @@ use PDO;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\NullDnssecProvider;
-use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Port\ActorInterface;
 
 /**
  * Builds the DNSSEC provider for the configured PowerDNS API, or a null provider when the API is not set up.
@@ -92,12 +92,13 @@ class DnssecProviderFactory
      *
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration object
+     * @param ActorInterface $actor Named in the syslog audit line of every DNSSEC operation
      * @param PowerdnsApiClient|null $apiClient Reuse a caller's client and its
      *        per-request caches; one is built from config when omitted
      * @return DnssecProviderInterface DNSSEC provider instance
      * @throws Exception When PowerDNS API is not configured
      */
-    public static function create(PDO $db, ConfigurationInterface $config, ?PowerdnsApiClient $apiClient = null): DnssecProviderInterface
+    public static function create(PDO $db, ConfigurationInterface $config, ActorInterface $actor, ?PowerdnsApiClient $apiClient = null): DnssecProviderInterface
     {
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');
@@ -126,14 +127,13 @@ class DnssecProviderFactory
         $logger = SyslogLogger::fromConfig($config);
 
         $transformer = new DnssecDataTransformer();
-        $userContextService = new UserContextService();
 
         return new DnsSecApiProvider(
             $apiClient,
             $logger,
             $transformer,
             ClientContext::fromServer($_SERVER, $config)->ip ?: 'unknown',
-            $userContextService->getLoggedInUsername() ?? 'api_user_' . ($userContextService->getLoggedInUserId() ?? 'unknown')
+            $actor->username() ?? 'api_user_' . ($actor->userId() ?? 'unknown')
         );
     }
 }

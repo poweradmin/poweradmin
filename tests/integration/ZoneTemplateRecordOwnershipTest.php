@@ -23,9 +23,9 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
@@ -101,7 +101,7 @@ class ZoneTemplateRecordOwnershipTest extends SqliteIntegrationTestCase
     private function zoneTemplate(): ZoneTemplateService
     {
         $backend = $this->dnsBackendStub(false);
-        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor(), new NullLogger());
     }
 
     private function forgedEditPayload(): array

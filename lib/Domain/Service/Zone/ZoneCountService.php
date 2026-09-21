@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\Zone;
 
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Counts the zones a user may see; the backend-specific query lives in the zone repository.
@@ -31,18 +31,18 @@ use Poweradmin\Domain\Service\Auth\UserContextService;
 class ZoneCountService
 {
     private ZoneReadRepositoryInterface $zoneRepository;
-    private UserContextService $userContext;
+    private ActorInterface $actor;
 
-    public function __construct(ZoneReadRepositoryInterface $zoneRepository, UserContextService $userContext)
+    public function __construct(ZoneReadRepositoryInterface $zoneRepository, ActorInterface $actor)
     {
         $this->zoneRepository = $zoneRepository;
-        $this->userContext = $userContext;
+        $this->actor = $actor;
     }
 
     /**
      * Count zones with filtering options
      *
-     * @param string $perm 'all', 'own' uses session 'userid'
+     * @param string $perm 'all', or 'own' for the acting user's zones
      * @param string $letterstart Starting letters to match (single letter or '1' for numbers) [default='all' for no filtering]
      * @param string $zone_type Type of zones to count ['all', 'forward', 'reverse'] [default='forward']
      *
@@ -50,7 +50,7 @@ class ZoneCountService
      */
     public function countZones(string $perm, string $letterstart = 'all', string $zone_type = 'forward'): int
     {
-        $userId = $perm === 'own' ? $this->userContext->getLoggedInUserId() : null;
+        $userId = $perm === 'own' ? $this->actor->userId() : null;
 
         return $this->zoneRepository->countZones($perm, $userId, $letterstart, $zone_type);
     }

@@ -36,6 +36,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
 
 /**
  * DomainManager write methods report refusals through the result (status and
@@ -174,7 +175,8 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
             new ZoneTemplatePlaceholders($config),
             new DbZoneTemplateSyncRepository($this->db, $config),
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
-            new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend())
+            new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),
+            new SessionActor()
         );
     }
 }

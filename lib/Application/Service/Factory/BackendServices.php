@@ -33,8 +33,8 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -60,6 +60,7 @@ class BackendServices
     private PDO $db;
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
+    private ActorInterface $actor;
 
     private ?DnsBackendProviderInterface $dnsBackendProvider = null;
     private ?RepositoryFactory $repositoryFactory = null;
@@ -74,11 +75,12 @@ class BackendServices
     private ?PowerdnsStatusService $powerdnsStatusService = null;
     private ?ZoneSyncService $zoneSyncService = null;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger)
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ActorInterface $actor)
     {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger;
+        $this->actor = $actor;
     }
 
     /**
@@ -137,12 +139,12 @@ class BackendServices
 
     public function dnssecProvider(): DnssecProviderInterface
     {
-        return $this->dnssecProvider ??= DnssecProviderFactory::create($this->db, $this->config, $this->apiClient());
+        return $this->dnssecProvider ??= DnssecProviderFactory::create($this->db, $this->config, $this->actor, $this->apiClient());
     }
 
     public function dnsDataService(): DnsDataService
     {
-        return $this->dnsDataService ??= new DnsDataService($this->repositoryFactory(), $this->dnsBackendProvider(), $this->db, new UserContextService());
+        return $this->dnsDataService ??= new DnsDataService($this->repositoryFactory(), $this->dnsBackendProvider(), $this->db, $this->actor);
     }
 
     public function zoneMetadataStore(): ZoneMetadataStoreInterface

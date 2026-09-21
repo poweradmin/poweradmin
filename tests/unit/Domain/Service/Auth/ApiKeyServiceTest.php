@@ -32,8 +32,10 @@ use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\ApiKeyWriteResult;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\PermissionServiceTestCase;
+use TestHelpers\StubActor;
 
 #[CoversClass(ApiKeyService::class)]
 class ApiKeyServiceTest extends PermissionServiceTestCase
@@ -55,7 +57,9 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
             $this->apiKeyRepository,
             $this->users,
             $this->config,
-            $this->createMock(PermissionService::class)
+            $this->createMock(PermissionService::class),
+            StubActor::nobody(),
+            new UserContextService()
         );
 
         // Initialize session
@@ -382,7 +386,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     }
 
     /**
-     * Rebuild the service so user 7 holds exactly the given permissions; the
+     * Rebuild the service acting as user 7 with exactly the given permissions; the
      * creator lookup (username/fullname) answers with $creatorRow.
      *
      * @param string[] $permissions Permission names the logged-in user holds.
@@ -397,10 +401,10 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
             $this->apiKeyRepository,
             $this->users,
             $this->config,
-            $this->buildPermissionService(permissionsByUser: [7 => $permissions], adminUserIds: $isAdmin ? [7] : [])
+            $this->buildPermissionService(permissionsByUser: [7 => $permissions], adminUserIds: $isAdmin ? [7] : []),
+            new StubActor(7),
+            new UserContextService()
         );
-
-        $_SESSION['userid'] = 7;
     }
 
     #[Test]

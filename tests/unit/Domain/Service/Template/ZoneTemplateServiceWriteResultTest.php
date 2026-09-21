@@ -24,10 +24,10 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Template;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateWriteResult;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
@@ -161,7 +161,7 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
             $this->config,
             $backend,
             $this->permissionService(),
-            new UserContextService(),
+            new SessionActor(),
             new NullLogger()
         );
     }

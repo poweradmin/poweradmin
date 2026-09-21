@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 
 /**
@@ -62,7 +62,7 @@ class ZoneTemplateAccessPolicyEditTest extends TestCase
         $permissions->method('hasPermission')
             ->willReturnCallback(fn(int $userId, string $permission): bool => in_array($permission, $this->granted, true));
 
-        return new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new UserContextService());
+        return new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new SessionActor());
     }
 
     public function testUeberuserMayEditAnyTemplate(): void

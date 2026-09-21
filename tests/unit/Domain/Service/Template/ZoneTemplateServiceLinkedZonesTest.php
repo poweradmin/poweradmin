@@ -25,9 +25,9 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Template;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
@@ -94,7 +94,7 @@ class ZoneTemplateServiceLinkedZonesTest extends SqliteIntegrationTestCase
 
     private function model(DnsBackendProviderInterface $backend): ZoneTemplateService
     {
-        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor(), new NullLogger());
     }
 
     private function actingAs(int $userId): void

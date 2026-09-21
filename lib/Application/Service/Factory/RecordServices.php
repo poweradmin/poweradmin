@@ -102,7 +102,8 @@ class RecordServices
             $this->services->dnsBackendProvider(),
             $this->services->permissionService(),
             $this->recordChangeLog(),
-            $this->services->templateRecordLinkRepository()
+            $this->services->templateRecordLinkRepository(),
+            $this->services->actor()
         );
     }
 
@@ -140,7 +141,7 @@ class RecordServices
      */
     public function recordChangeLog(): RecordChangeLogger
     {
-        return $this->recordChangeLogger ??= new RecordChangeLogger($this->db, $this->config);
+        return $this->recordChangeLogger ??= new RecordChangeLogger($this->db, $this->config, $this->services->actor());
     }
 
     public function rrsetReplaceService(): RRSetReplaceService

@@ -33,11 +33,11 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -60,7 +60,7 @@ class DomainManager implements DomainManagerInterface
     private RecordChangeWriterInterface $changeLogger;
     private PermissionService $permissionService;
     private UserLookupInterface $userRepository;
-    private UserContextService $userContext;
+    private ActorInterface $actor;
     private ZoneTemplateRepositoryInterface $zoneTemplateRepository;
     private ZoneTemplatePlaceholders $placeholders;
     private RepositoryFactoryInterface $repositoryFactory;
@@ -86,6 +86,7 @@ class DomainManager implements DomainManagerInterface
      * @param ZoneTemplateSyncRepositoryInterface $templateSync Records which template a new zone was seeded from
      * @param TemplateRecordLinkRepositoryInterface $templateLinks Links the seeded records back to their template
      * @param ZoneGroupRepositoryInterface $zoneGroups Group ownership of the new zone
+     * @param ActorInterface $actor The user the ownership and permission checks are about
      */
     public function __construct(
         PDO $db,
@@ -102,8 +103,8 @@ class DomainManager implements DomainManagerInterface
         ZoneTemplateSyncRepositoryInterface $templateSync,
         TemplateRecordLinkRepositoryInterface $templateLinks,
         ZoneGroupRepositoryInterface $zoneGroups,
-        ?LoggerInterface $logger = null,
-        ?UserContextService $userContext = null
+        ActorInterface $actor,
+        ?LoggerInterface $logger = null
     ) {
         $this->templateLinks = $templateLinks;
         $this->zoneGroups = $zoneGroups;
@@ -121,7 +122,7 @@ class DomainManager implements DomainManagerInterface
         $this->userRepository = $userRepository;
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger;
-        $this->userContext = $userContext ?? new UserContextService();
+        $this->actor = $actor;
     }
 
     private function captureChange(callable $callback): void
@@ -134,11 +135,11 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
-     * Check if the logged-in user owns the zone directly or via group membership.
+     * Check if the acting user owns the zone directly or via group membership.
      */
     private function currentUserOwnsZone(int $zoneId): bool
     {
-        $userId = $this->userContext->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return false;
         }
@@ -146,11 +147,11 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
-     * Check if the logged-in user has the given permission (admins always pass)
+     * Check if the acting user has the given permission (admins always pass)
      */
     private function userHasPermission(string $permission): bool
     {
-        $userId = $this->userContext->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return false;
         }

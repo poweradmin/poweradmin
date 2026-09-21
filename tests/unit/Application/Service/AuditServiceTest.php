@@ -28,8 +28,8 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
+use TestHelpers\StubActor;
 
 /**
  * The audit line shape is what the log views and grep filters read, so each
@@ -50,11 +50,7 @@ class AuditServiceTest extends TestCase
         }
 
         $ip = new ClientContext('192.0.2.10', 'phpunit', 'Unknown', false);
-        $user = $this->createMock(UserContextService::class);
-        $user->method('getActingUsername')->willReturn('alice');
-        $user->method('getLoggedInUsername')->willReturn($loginUsername);
-
-        return new AuditService($logger, $ip, $user);
+        return new AuditService($logger, $ip, new StubActor(7, $loginUsername));
     }
 
     public function testZoneAddCarriesOnlyTheGivenFields(): void
@@ -200,10 +196,7 @@ class AuditServiceTest extends TestCase
         $logger->expects($this->once())->method('logWarn')
             ->with('client_ip:192.0.2.10 user:unknown operation:access_denied permission:zone_master_add uri:/zones/add/master', null);
         $ip = new ClientContext('192.0.2.10', 'phpunit', 'Unknown', false);
-        $user = $this->createMock(UserContextService::class);
-        $user->method('getActingUsername')->willReturn(null);
-
-        (new AuditService($logger, $ip, $user))
+        (new AuditService($logger, $ip, StubActor::nobody()))
             ->logAccessDenied(Permission::PERM_ZONE_MASTER_ADD, '/zones/add/master');
     }
 

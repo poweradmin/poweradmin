@@ -35,6 +35,7 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
 
 /**
  * IDOR guard for RecordManager::editRecord(). The record's zone must be derived
@@ -181,7 +182,8 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
             $backend,
             $this->permissionService($config),
             $changeLogger,
-            new DbTemplateRecordLinkRepository($this->db, $config, $backend)
+            new DbTemplateRecordLinkRepository($this->db, $config, $backend),
+            new SessionActor()
         );
     }
 }

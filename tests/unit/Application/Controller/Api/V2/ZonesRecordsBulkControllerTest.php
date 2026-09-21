@@ -42,6 +42,7 @@ use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use TestHelpers\FakeConfiguration;
+use TestHelpers\StubActor;
 
 /**
  * Characterization of POST /api/v2/zones/{id}/records/bulk: the per-action API
@@ -414,7 +415,7 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('auditService')->willReturn($this->audit);
         $factory->method('soaRecordManager')->willReturn($soaManager ?? $this->createMock(SOARecordManagerInterface::class));
-        $factory->method('recordChangeLog')->willReturn(new RecordChangeLogger($this->createMock(PDO::class), new FakeConfiguration()));
+        $factory->method('recordChangeLog')->willReturn(new RecordChangeLogger($this->createMock(PDO::class), new FakeConfiguration(), StubActor::nobody()));
 
         $backend = $this->createMock(BackendCapabilitiesInterface::class);
         $backend->method('supportsLocalWriteTransaction')->willReturn($this->localTransactions);

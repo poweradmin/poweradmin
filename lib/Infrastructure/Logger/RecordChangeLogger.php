@@ -24,8 +24,8 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use InvalidArgumentException;
 use PDO;
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
@@ -55,7 +55,7 @@ class RecordChangeLogger implements RecordChangeWriterInterface
     private const MAX_COMMENT_LENGTH = 1000;
 
     private PDO $db;
-    private UserContextService $userContext;
+    private ActorInterface $actor;
     private ConfigurationInterface $config;
 
     // Changeset scope, shared across every instance for the life of the request.
@@ -72,11 +72,11 @@ class RecordChangeLogger implements RecordChangeWriterInterface
     public function __construct(
         PDO $db,
         ConfigurationInterface $config,
-        ?UserContextService $userContext = null
+        ActorInterface $actor
     ) {
         $this->db = $db;
         $this->config = $config;
-        $this->userContext = $userContext ?? new UserContextService();
+        $this->actor = $actor;
     }
 
     /**
@@ -250,8 +250,8 @@ class RecordChangeLogger implements RecordChangeWriterInterface
             return;
         }
 
-        $userId = $this->userContext->getLoggedInUserId();
-        $username = $this->userContext->getLoggedInUsername() ?? 'system';
+        $userId = $this->actor->userId();
+        $username = $this->actor->username() ?? 'system';
 
         $changesetId = $this->materializeChangeset($zoneId, $userId, $username);
 

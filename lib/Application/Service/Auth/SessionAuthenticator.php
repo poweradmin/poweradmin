@@ -35,6 +35,7 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
+use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\User\UserAgreementService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
@@ -72,7 +73,7 @@ class SessionAuthenticator
         $this->db = $connection;
         $this->configManager = $configManager;
 
-        $this->services = new ControllerServiceFactory($connection, $configManager, $this->logger);
+        $this->services = new ControllerServiceFactory($connection, $configManager, $this->logger, new SessionActor());
         $this->redirectService = $this->services->redirectService();
         $this->authService = $this->services->authenticationService();
         $this->csrfTokenService = new CsrfTokenService();

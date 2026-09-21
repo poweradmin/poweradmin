@@ -26,8 +26,8 @@ use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
+use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Writes the "client_ip:.. user:.. operation:.." audit lines. Every line
@@ -38,20 +38,18 @@ class AuditService implements AuditLoggerInterface
 {
     private AuditLogWriter $logger;
     private ClientContext $client;
-    private UserContextService $userContext;
+    private ActorInterface $actor;
 
-    public function __construct(AuditLogWriter $logger, ClientContext $client, UserContextService $userContext)
+    public function __construct(AuditLogWriter $logger, ClientContext $client, ActorInterface $actor)
     {
         $this->logger = $logger;
         $this->client = $client;
-        $this->userContext = $userContext;
+        $this->actor = $actor;
     }
 
     private function getContext(): string
     {
-        // API requests are stateless, so the actor comes through UserContextService,
-        // which names the API principal even when a browser session rides along
-        return $this->contextFor($this->userContext->getActingUsername());
+        return $this->contextFor($this->actor->username());
     }
 
     private function contextFor(?string $username): string
@@ -180,7 +178,7 @@ class AuditService implements AuditLoggerInterface
      */
     private function loginLine(string $operation, AuthMethod $authMethod, ?LoginFailureReason $reason = null): string
     {
-        return $this->lineAs($this->userContext->getLoggedInUsername() ?? '', $operation, [
+        return $this->lineAs($this->actor->username() ?? '', $operation, [
             'auth_method' => $authMethod->value,
             'reason' => $reason?->value,
         ]);

@@ -4,9 +4,9 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use TestHelpers\StubActor;
 
 class RecordChangeLoggerTest extends TestCase
 {
@@ -45,9 +45,7 @@ class RecordChangeLoggerTest extends TestCase
             )'
         );
 
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(7);
-        $userContext->method('getLoggedInUsername')->willReturn('alice');
+        $userContext = new StubActor(7, 'alice');
 
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
@@ -297,9 +295,7 @@ class RecordChangeLoggerTest extends TestCase
 
     public function testInsertSkippedWhenDatabaseLoggingIsDisabled(): void
     {
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(7);
-        $userContext->method('getLoggedInUsername')->willReturn('alice');
+        $userContext = new StubActor(7, 'alice');
 
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {

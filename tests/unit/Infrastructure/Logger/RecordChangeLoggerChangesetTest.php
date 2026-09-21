@@ -25,10 +25,10 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\FakeConfiguration;
+use TestHelpers\StubActor;
 
 /**
  * A changeset groups the record changes made by one submission so the change log can
@@ -64,9 +64,7 @@ class RecordChangeLoggerChangesetTest extends TestCase
                 return $default;
             });
 
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(7);
-        $userContext->method('getLoggedInUsername')->willReturn('alice');
+        $userContext = new StubActor(7, 'alice');
 
         RecordChangeLogger::resetChangesetScope();
         $this->logger = new RecordChangeLogger($this->db, $config, $userContext);
@@ -203,9 +201,7 @@ class RecordChangeLoggerChangesetTest extends TestCase
         $config->method('get')->willReturnCallback(
             fn($group, $key, $default = null) => ($group === 'logging' && $key === 'database_enabled') ? true : $default
         );
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(7);
-        $userContext->method('getLoggedInUsername')->willReturn('alice');
+        $userContext = new StubActor(7, 'alice');
         $other = new RecordChangeLogger($this->db, $config, $userContext);
 
         $this->logger->withChangeset(10, 'one submission', function () use ($other) {
@@ -334,9 +330,7 @@ class RecordChangeLoggerChangesetTest extends TestCase
     {
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(fn($group, $key, $default = null) => $default);
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(7);
-        $userContext->method('getLoggedInUsername')->willReturn('alice');
+        $userContext = new StubActor(7, 'alice');
         $logger = new RecordChangeLogger($this->db, $config, $userContext);
 
         $this->logger->withChangeset(10, 'should not be written', function () use ($logger) {
@@ -349,7 +343,7 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testCommentRequirementIsReadFromTheInjectedConfiguration(): void
     {
-        $userContext = $this->createMock(UserContextService::class);
+        $userContext = StubActor::nobody();
         $strict = new RecordChangeLogger($this->db, new FakeConfiguration(['logging' => [
             'database_enabled' => true,
             'require_change_comment' => true,
