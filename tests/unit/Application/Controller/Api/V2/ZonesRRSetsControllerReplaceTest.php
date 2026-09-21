@@ -34,14 +34,15 @@ use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
+use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * Characterization of ZonesRRSetsController::replaceRRSet - the gate order and
- * every input-validation refusal it can answer with before it touches the DNS
- * validation service. The rules here are pinned as the code behaves today.
+ * Characterization of ZonesRRSetsController::replaceRRSet - the gate order,
+ * every input-validation refusal it answers with before the replace service is
+ * involved, and how it words the service's outcomes. Pinned as the code behaves today.
  */
 class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
 {
@@ -54,6 +55,7 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
     private ZoneReadRepositoryInterface&MockObject $zones;
     private RecordRepositoryInterface&MockObject $records;
     private DomainRepositoryInterface&MockObject $domains;
+    private RRSetReplaceService&MockObject $replacer;
 
     /** @var array<string, mixed>|null */
     private ?array $zoneRow = ['id' => self::ZONE_ID, 'name' => self::ZONE_NAME, 'type' => 'MASTER'];
@@ -67,6 +69,7 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
         $this->zones = $this->createMock(ZoneReadRepositoryInterface::class);
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->domains = $this->createMock(DomainRepositoryInterface::class);
+        $this->replacer = $this->createMock(RRSetReplaceService::class);
         $this->scope = ApiKeyScope::unrestricted();
 
         // The permissive defaults: every gate open, so each test only overrides
@@ -376,6 +379,143 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
         $this->assertNull($body['data']);
     }
 
+    public function testRecordsAreParsedFormattedAndHandedToTheServiceWithoutContentlessEntries(): void
+    {
+        $this->replacer->expects($this->once())
+            ->method('replace')
+            ->with(self::ZONE_ID, self::ZONE_NAME, 'txt.example.com', 'TXT', 60, [
+                ['content' => '"hello"', 'priority' => 5, 'disabled' => 1],
+                ['content' => '"world"', 'priority' => 0, 'disabled' => 0],
+            ])
+            ->willReturn(['success' => true, 'message' => 'RRSet replaced successfully', 'status' => 200, 'name' => 'txt.example.com', 'records' => []]);
+        $this->records->method('getRRSetRecords')->willReturn([
+            ['name' => 'txt.example.com', 'type' => 'TXT', 'ttl' => 60, 'content' => '"hello"', 'prio' => 5, 'disabled' => 1],
+            ['name' => 'txt.example.com', 'type' => 'TXT', 'ttl' => 60, 'content' => '"world"', 'prio' => 0, 'disabled' => 0],
+        ]);
+
+        $response = $this->replace(['name' => 'txt', 'type' => 'txt', 'ttl' => 60, 'records' => [
+            ['content' => ' hello ', 'priority' => '5', 'disabled' => true],
+            ['priority' => 9],
+            ['content' => 'world'],
+        ]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame([
+            'success' => true,
+            'data' => ['rrset' => [
+                'name' => 'txt',
+                'type' => 'TXT',
+                'ttl' => 60,
+                'records' => [
+                    ['content' => 'hello', 'priority' => 5, 'disabled' => true],
+                    ['content' => 'world', 'priority' => 0, 'disabled' => false],
+                ],
+            ]],
+            'message' => 'RRSet replaced successfully',
+        ], $this->decode($response));
+    }
+
+    /**
+     * @return array<string, array{array<string, mixed>}>
+     */
+    public static function uncoercibleRecordFieldProvider(): array
+    {
+        return [
+            'disabled string' => [['content' => '192.0.2.1', 'disabled' => 'maybe']],
+            'priority float' => [['content' => '192.0.2.1', 'priority' => 1.5]],
+            'priority array' => [['content' => '192.0.2.1', 'priority' => [1]]],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $record
+     */
+    #[DataProvider('uncoercibleRecordFieldProvider')]
+    public function testAnUncoercibleDisabledOrPriorityIsRefusedBeforeTheServiceRuns(array $record): void
+    {
+        $this->replacer->expects($this->never())->method('replace');
+
+        $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 60, 'records' => [$record]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame("Invalid 'disabled' or 'priority' value in record", $this->messageOf($response));
+    }
+
+    /**
+     * @return array<string, array{array<string, mixed>, int, string}>
+     */
+    public static function serviceRefusalProvider(): array
+    {
+        return [
+            'validator' => [['success' => false, 'message' => 'Invalid IPv4 address', 'status' => 400], 400, 'Invalid IPv4 address'],
+            'nothing usable' => [['success' => false, 'message' => 'No valid records to create', 'status' => 400], 400, 'No valid records to create'],
+            'repeated content' => [['success' => false, 'message' => 'A record with this hostname, type, and content already exists', 'status' => 409], 409, 'A record with this hostname, type, and content already exists'],
+            'delete failed' => [['success' => false, 'message' => 'Failed to delete existing record with ID 5', 'status' => 500], 500, 'Failed to delete existing record with ID 5'],
+            'insert duplicate' => [
+                ['success' => false, 'message' => 'dup', 'status' => 409, 'write' => RecordWriteResult::failure('dup', 409), 'content' => '192.0.2.1'],
+                409,
+                'A record with this hostname, type, and content already exists',
+            ],
+            'insert backend fault' => [
+                ['success' => false, 'message' => 'db down', 'status' => 500, 'write' => RecordWriteResult::backendFailure('db down'), 'content' => '192.0.2.1'],
+                500,
+                'Failed to insert record: 192.0.2.1',
+            ],
+            'insert refused' => [
+                ['success' => false, 'message' => 'Content too long', 'status' => 422, 'write' => RecordWriteResult::failure('Content too long', 422), 'content' => '192.0.2.1'],
+                422,
+                'Content too long',
+            ],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $outcome
+     */
+    #[DataProvider('serviceRefusalProvider')]
+    public function testAServiceRefusalIsRelayedWithItsStatusAndApiWording(array $outcome, int $status, string $message): void
+    {
+        $this->replacer->method('replace')->willReturn($outcome);
+        $this->records->expects($this->never())->method('getRRSetRecords');
+
+        $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 60, 'records' => [['content' => '192.0.2.1']]]);
+
+        $this->assertSame($status, $response->getStatusCode());
+        $this->assertSame($message, $this->messageOf($response));
+    }
+
+    public function testAFailedReadbackAnswersFromTheValidatedRecords(): void
+    {
+        $this->replacer->method('replace')->willReturn([
+            'success' => true,
+            'message' => 'RRSet replaced successfully',
+            'status' => 200,
+            'name' => 'txt.example.com',
+            'records' => [['content' => '"hello"', 'ttl' => 60, 'priority' => 3, 'disabled' => 1]],
+        ]);
+        $this->records->method('getRRSetRecords')->willThrowException(new \RuntimeException('read failed'));
+
+        $response = $this->replace(['name' => 'txt', 'type' => 'TXT', 'ttl' => 60, 'records' => [['content' => 'hello']]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(['rrset' => [
+            'name' => 'txt',
+            'type' => 'TXT',
+            'ttl' => 60,
+            'records' => [['content' => 'hello', 'priority' => 3, 'disabled' => true]],
+        ]], $this->decode($response)['data']);
+    }
+
+    public function testAnExceptionFromTheServiceIs500WithItsMessage(): void
+    {
+        $this->replacer->method('replace')->willThrowException(new \RuntimeException('connection lost'));
+
+        $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 60, 'records' => [['content' => '192.0.2.1']]]);
+
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('Failed to replace RRSet: connection lost', $this->messageOf($response));
+    }
+
     /**
      * @param array<string, mixed> $body
      */
@@ -415,7 +555,7 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
         $this->inject($controller, 'recordRepository', $this->records);
         $this->inject($controller, 'recordManager', $this->createMock(RecordManagerInterface::class));
         $this->inject($controller, 'apiPermissionService', $this->permissions);
-        $this->inject($controller, 'backendProvider', $this->createMock(DnsBackendProviderInterface::class));
+        $this->inject($controller, 'rrsetReplaceService', $this->replacer);
         $this->inject($controller, 'reverseTtlResolver', $ttlResolver);
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
         $this->inject($controller, 'apiKeyScope', $this->scope);

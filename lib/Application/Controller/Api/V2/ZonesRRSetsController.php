@@ -26,13 +26,11 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -46,20 +44,20 @@ class ZonesRRSetsController extends PublicApiController
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $apiPermissionService;
-    private DnsBackendProviderInterface $backendProvider;
     private ReverseTtlResolver $reverseTtlResolver;
+    private RRSetReplaceService $rrsetReplaceService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->backendProvider = $this->createDnsBackendProvider();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $this->createRecordRepository();
         $this->apiPermissionService = $this->createApiPermissionService();
 
         $this->recordManager = $this->createRecordManager();
+        $this->rrsetReplaceService = $this->services()->rrsetReplaceService();
     }
 
     /**
@@ -483,128 +481,36 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
-            $useTransaction = $this->backendProvider->supportsLocalWriteTransaction();
-            if ($useTransaction) {
-                $this->db->beginTransaction();
+            // Parsed up front: on the API backend there is no transaction, so a bad
+            // 'disabled' or 'priority' must be refused before the old set is gone (audit H5).
+            $records = [];
+            foreach ($input['records'] as $recordData) {
+                if (!isset($recordData['content'])) {
+                    continue;
+                }
+
+                $disabled = $this->inputIntFromBool($recordData, 'disabled', 0);
+                $priority = $this->inputInt($recordData, 'priority', 0);
+                if ($disabled === null || $priority === null) {
+                    return $this->returnApiError("Invalid 'disabled' or 'priority' value in record", 400);
+                }
+
+                $records[] = [
+                    'content' => $this->formatV2RecordContent($type, trim($recordData['content'])),
+                    'priority' => $priority,
+                    'disabled' => $disabled,
+                ];
             }
 
-            try {
-                // Validate all records BEFORE any destructive operations.
-                // This prevents data loss when validation fails after records have been deleted.
-                $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-                $hostnameValidator = new HostnameValidator($this->getConfig());
-                $normalizedName = $hostnameValidator->normalizeRecordName($fqdn, $zoneName);
-                $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
-                $dns_ttl = $this->getConfig()->get('dns', 'ttl');
-
-                $validatedRecords = [];
-                foreach ($input['records'] as $recordData) {
-                    if (!isset($recordData['content'])) {
-                        continue;
-                    }
-
-                    $content = trim($recordData['content']);
-                    $disabled = $this->inputIntFromBool($recordData, 'disabled', 0);
-                    $priority = $this->inputInt($recordData, 'priority', 0);
-
-                    // Reject non-coercible disabled/priority here, before the RRSet is
-                    // deleted: on the API backend there is no transaction, so a later
-                    // typed-insert failure would leave the RRSet gone (audit H5).
-                    if ($disabled === null || $priority === null) {
-                        if ($useTransaction) {
-                            $this->db->rollBack();
-                        }
-                        return $this->returnApiError("Invalid 'disabled' or 'priority' value in record", 400);
-                    }
-
-                    $content = $this->formatV2RecordContent($type, $content);
-
-                    $validationResult = $validationService->validateRecord(
-                        -1,
-                        $zoneId,
-                        $type,
-                        $content,
-                        $normalizedName,
-                        $priority,
-                        $ttl,
-                        $dns_hostmaster,
-                        (int)$dns_ttl
-                    );
-
-                    if (!$validationResult->isValid()) {
-                        if ($useTransaction) {
-                            $this->db->rollBack();
-                        }
-                        return $this->returnApiError($validationResult->getFirstError(), 400);
-                    }
-
-                    $validatedData = $validationResult->getData();
-                    $validatedRecords[] = [
-                        'content' => $validatedData['content'] ?? $content,
-                        'ttl' => $validatedData['ttl'] ?? $ttl,
-                        'priority' => $validatedData['prio'] ?? $priority,
-                        'disabled' => $disabled,
-                    ];
-                }
-
-                if (empty($validatedRecords)) {
-                    if ($useTransaction) {
-                        $this->db->rollBack();
-                    }
-                    return $this->returnApiError('No valid records to create', 400);
-                }
-
-                // The manager refuses a duplicate on insert; on the API backend that would
-                // land after the old set is gone, so refuse a repeated content up front.
-                $contents = array_column($validatedRecords, 'content');
-                if (count($contents) !== count(array_unique($contents))) {
-                    if ($useTransaction) {
-                        $this->db->rollBack();
-                    }
-                    return $this->returnApiError('A record with this hostname, type, and content already exists', 409);
-                }
-
-                // All validation passed - now safe to delete existing records
-                $existingRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
-                foreach ($existingRecords as $record) {
-                    if (!$this->recordManager->deleteRecord($record['id'], false)->success) {
-                        if ($useTransaction) {
-                            $this->db->rollBack();
-                        }
-                        return $this->returnApiError('Failed to delete existing record with ID ' . $record['id'], 500);
-                    }
-                }
-
-                // Insert the validated records; the manager writes the change log and the
-                // RRSet bumps the serial and rectifies once below.
-                $recordsCreated = 0;
-                foreach ($validatedRecords as $vr) {
-                    $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $vr['content'], $vr['ttl'], $vr['priority'], $vr['disabled'], false);
-                    if (!$created->success) {
-                        if ($useTransaction) {
-                            $this->db->rollBack();
-                        }
-                        return $this->returnApiError($this->recordWriteErrorMessage($created, 'Failed to insert record: ' . $vr['content']), $created->status);
-                    }
-                    $recordsCreated++;
-                }
-
-                // The serial moves inside the transaction; the rectify waits for the commit
-                if ($type !== 'SOA') {
-                    $this->createSOARecordManager()->updateSOASerial($zoneId);
-                }
-                if ($useTransaction) {
-                    $this->db->commit();
-                }
-                $this->recordManager->finalizeZone($zoneId, false);
-
-                $this->createAuditService()->logApiRrsetReplace($zoneId, $normalizedName, $type, $recordsCreated);
-            } catch (\Throwable $e) {
-                if ($useTransaction) {
-                    $this->db->rollBack();
-                }
-                throw $e;
+            $result = $this->rrsetReplaceService->replace($zoneId, $zoneName, $fqdn, $type, $ttl, $records);
+            if (!$result['success']) {
+                $message = isset($result['write'])
+                    ? $this->recordWriteErrorMessage($result['write'], 'Failed to insert record: ' . $result['content'])
+                    : $result['message'];
+                return $this->returnApiError($message, $result['status']);
             }
+            $normalizedName = $result['name'];
+            $validatedRecords = $result['records'];
 
             // Fetch and return the full RRSet (outside transaction block so readback
             // failures don't trigger rollback or mask the successful write)

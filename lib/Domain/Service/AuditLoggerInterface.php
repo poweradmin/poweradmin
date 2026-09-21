@@ -60,4 +60,9 @@ interface AuditLoggerInterface
     public function logDnssecSignZone(int $zoneId, string $zoneName): void;
 
     public function logDnssecUnsignZone(int $zoneId, string $zoneName): void;
+
+    /**
+     * @param int $records Number of records the new set holds
+     */
+    public function logApiRrsetReplace(int $zoneId, string $name, string $type, int $records): void;
 }

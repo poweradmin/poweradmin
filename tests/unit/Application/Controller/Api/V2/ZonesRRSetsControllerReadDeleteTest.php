@@ -36,7 +36,6 @@ use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -292,7 +291,6 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $this->inject($controller, 'recordRepository', $this->records);
         $this->inject($controller, 'recordManager', $this->recordManager);
         $this->inject($controller, 'apiPermissionService', $this->permissions);
-        $this->inject($controller, 'backendProvider', $this->createMock(DnsBackendProviderInterface::class));
         $this->inject($controller, 'reverseTtlResolver', $ttlResolver);
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
         $this->inject($controller, 'apiKeyScope', $this->scope);

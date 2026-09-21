@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
@@ -352,6 +353,20 @@ class ControllerServiceFactory
     public function recordManager(): RecordManagerInterface
     {
         return $this->recordManager ??= DnsServiceFactory::createRecordManager($this->db, $this->config, $this->dnsBackendProvider());
+    }
+
+    public function rrsetReplaceService(): RRSetReplaceService
+    {
+        return new RRSetReplaceService(
+            $this->db,
+            $this->config,
+            $this->dnsBackendProvider(),
+            DnsServiceFactory::createDnsRecordValidationService($this->db, $this->config, $this->dnsBackendProvider()),
+            $this->recordRepository(),
+            $this->recordManager(),
+            $this->soaRecordManager(),
+            $this->auditService()
+        );
     }
 
     public function recordCommentService(): RecordCommentService

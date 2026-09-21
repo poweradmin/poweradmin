@@ -1784,6 +1784,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\DnsValidation\\ZONEMDRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php',
         'Poweradmin\\Domain\\Service\\Dns\\DomainManager' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/DomainManager.php',
         'Poweradmin\\Domain\\Service\\Dns\\DomainManagerInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/DomainManagerInterface.php',
+        'Poweradmin\\Domain\\Service\\Dns\\RRSetReplaceService' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/RRSetReplaceService.php',
         'Poweradmin\\Domain\\Service\\Dns\\RecordManager' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/RecordManager.php',
         'Poweradmin\\Domain\\Service\\Dns\\RecordManagerInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/RecordManagerInterface.php',
         'Poweradmin\\Domain\\Service\\Dns\\RecordWriteResult' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/RecordWriteResult.php',
