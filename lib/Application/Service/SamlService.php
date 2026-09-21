@@ -229,203 +229,197 @@ class SamlService
             return;
         }
 
-        // Captured outside the try so the catch block can always restore them
-        $originalHttps = $_SERVER['HTTPS'] ?? null;
-        $originalPort = $_SERVER['SERVER_PORT'] ?? null;
-
         try {
-            // Detect if we're behind a reverse proxy (like ngrok) and need HTTPS detection help
-            if ($this->isReverseProxyEnvironment()) {
-                $_SERVER['HTTPS'] = 'on';
-                $_SERVER['SERVER_PORT'] = '443';
-            }
-
-            $auth = $this->createAuth($providerId);
-            if (!$auth) {
-                // Restore original values before throwing
-                if ($originalHttps !== null) {
-                    $_SERVER['HTTPS'] = $originalHttps;
-                } else {
-                    unset($_SERVER['HTTPS']);
-                }
-                if ($originalPort !== null) {
-                    $_SERVER['SERVER_PORT'] = $originalPort;
-                } else {
-                    unset($_SERVER['SERVER_PORT']);
-                }
-                throw new \RuntimeException("Provider {$providerId} not found");
-            }
-
-            // Debug SAML response
-            $this->logger->info('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($this->request->getPostParams())]);
-            $this->logger->info('SAML Response length: {length}', ['length' => strlen((string) $this->request->getPostParam('SAMLResponse', ''))]);
-
-            // Process the SAML response
-            $auth->processResponse();
-
-            $errors = $auth->getErrors();
-            if (!empty($errors)) {
-                $errorMsg = implode(', ', $errors);
-                $this->logger->error('SAML assertion processing errors: {errors}', ['errors' => $errorMsg]);
-                $this->logger->error('Last error reason: {reason}', ['reason' => $auth->getLastErrorReason()]);
-
-                // Get more detailed error information
-                $lastErrorException = $auth->getLastErrorException();
-                if ($lastErrorException) {
-                    $this->logger->error('SAML error exception: {exception}', ['exception' => $lastErrorException->getMessage()]);
-                }
-
-                $sessionEntity = new SessionEntity(_('Authentication failed: ') . $errorMsg, 'danger');
-                $this->authenticationService->auth($sessionEntity);
-                return;
-            }
-
-            if (!$auth->isAuthenticated()) {
-                $this->logger->warning('SAML authentication failed - not authenticated');
-                $sessionEntity = new SessionEntity(_('Authentication failed: Invalid SAML response'), 'danger');
-                $this->authenticationService->auth($sessionEntity);
-                return;
-            }
-
-            // Get user information from SAML attributes
-            $userInfo = $this->getUserInfoFromAssertion($auth, $providerId);
-
-            // Log user info details
-            $this->logger->info('SAML User Info received: {userinfo}', [
-                'userinfo' => [
-                    'username' => $userInfo->getUsername(),
-                    'email' => $userInfo->getEmail(),
-                    'display_name' => $userInfo->getDisplayName(),
-                    'name_id' => $userInfo->getNameId(),
-                    'groups' => $userInfo->getGroups(),
-                    'provider' => $userInfo->getProviderId(),
-                    'is_valid' => $userInfo->isValid()
-                ]
-            ]);
-
-            // Provision or update user (reuse OIDC provisioning service)
-            $userId = $this->userProvisioningService->provisionUser($userInfo, $providerId);
-
-            if ($userId) {
-                $this->logger->info('Successfully authenticated SAML user: {username}', ['username' => $userInfo->getUsername()]);
-
-                // Get the actual database username
-                $databaseUsername = $this->userProvisioningService->getDatabaseUsername($userId);
-                if (!$databaseUsername) {
-                    $this->logger->error('Could not get database username for user ID: {userId}', ['userId' => $userId]);
-                    $databaseUsername = $userInfo->getUsername();
-                }
-
-                $this->logger->info('Using database username for session: {username}', ['username' => $databaseUsername]);
-
-                // Set userlogin for MFA verification page
-                $this->setSessionValue('userlogin', $databaseUsername);
-
-                // Log successful authentication to database
-                $this->auditService->logLoginSuccess(AuthMethod::SAML);
-
-                // Rotate session id before binding the user - matches SqlAuthenticator.
-                session_regenerate_id(true);
-                $this->logger->info('Session ID regenerated for SAML user {username}', ['username' => $databaseUsername]);
-
-                // Ensure a CSRF token exists for subsequent requests
-                $this->csrfTokenService->ensureTokenExists();
-                $this->logger->info('CSRF token ensured for SAML session.');
-
-                // Check if MFA is globally enabled
-                $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
-
-                // Check if MFA is enabled for this user
-                $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($userId);
-
-                if ($mfaRequired) {
-                    $this->logger->info('MFA is required for SAML user {username}', ['username' => $databaseUsername]);
-
-                    // Store user details temporarily for MFA verification - DO NOT set userid yet!
-                    // This prevents API requests from bypassing MFA by checking isAuthenticated()
-                    $this->setSessionValue('pending_userid', $userId);
-                    $this->setSessionValue('pending_name', $userInfo->getDisplayName());
-                    $this->setSessionValue('pending_email', $userInfo->getEmail());
-                    $this->setSessionValue('pending_auth_used', UserProvisioningService::AUTH_METHOD_SAML);
-                    $this->setSessionValue('pending_auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
-
-                    // Store SAML-specific data as pending
-                    $this->setSessionValue('pending_saml_provider', $providerId);
-                    $this->setSessionValue('pending_saml_name_id', $userInfo->getNameId());
-                    $this->setSessionValue('pending_saml_session_index', $userInfo->getSessionIndex());
-
-                    // Use our centralized MFA session manager to set MFA required
-                    MfaSessionManager::setMfaRequired($userId);
-
-                    // Redirect to MFA verification
-                    $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
-                    $redirectUrl = $baseUrlPrefix . '/mfa/verify';
-                    header("Location: $redirectUrl", true, 302);
-                    exit;
-                } else {
-                    // No MFA required, proceed with full authentication
-                    // NOW it's safe to set userid since MFA is not required
-                    $this->setSessionValue('userid', $userId);
-                    $this->setSessionValue('name', $userInfo->getDisplayName());
-                    $this->setSessionValue('userfullname', $userInfo->getDisplayName());
-                    $this->setSessionValue('email', $userInfo->getEmail());
-                    $this->setSessionValue('useremail', $userInfo->getEmail());
-                    $this->setSessionValue('auth_used', UserProvisioningService::AUTH_METHOD_SAML);
-                    $this->setSessionValue('auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
-                    $this->setSessionValue('authenticated', true);
-                    // Clears any stale pending state from an abandoned MFA login,
-                    // which would otherwise bounce this session back to /mfa/verify.
-                    MfaSessionManager::setMfaNotRequired();
-
-                    // Set SAML-specific session variables for logout detection
-                    $this->setSessionValue('saml_authenticated', true);
-                    $this->setSessionValue('saml_provider', $providerId);
-                    $this->setSessionValue('saml_name_id', $userInfo->getNameId());
-                    $this->setSessionValue('saml_session_index', $userInfo->getSessionIndex());
-
-                    $this->authenticationService->redirectToIndex();
-                }
-            } else {
-                $this->logger->warning('Failed to provision SAML user: {username}', ['username' => $userInfo->getUsername()]);
-                $this->setSessionValue('userlogin', $userInfo->getUsername());
-                $this->auditService->logLoginFailed(AuthMethod::SAML);
-                $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
-                $this->authenticationService->auth($sessionEntity);
-
-                // Clean up session data on provisioning failure
-                $this->unsetSessionValue('saml_provider');
-            }
-
-            // Restore original $_SERVER values after successful processing
-            if ($originalHttps !== null) {
-                $_SERVER['HTTPS'] = $originalHttps;
-            } else {
-                unset($_SERVER['HTTPS']);
-            }
-            if ($originalPort !== null) {
-                $_SERVER['SERVER_PORT'] = $originalPort;
-            } else {
-                unset($_SERVER['SERVER_PORT']);
-            }
+            $this->withProxyServerVars(fn() => $this->processAssertion($providerId));
         } catch (\Exception $e) {
-            // Restore original $_SERVER values before handling error
-            if ($originalHttps !== null) {
-                $_SERVER['HTTPS'] = $originalHttps;
-            } else {
-                unset($_SERVER['HTTPS']);
-            }
-            if ($originalPort !== null) {
-                $_SERVER['SERVER_PORT'] = $originalPort;
-            } else {
-                unset($_SERVER['SERVER_PORT']);
-            }
-
             $this->logger->error('SAML authentication error: {error}', ['error' => $e->getMessage()]);
             $sessionEntity = new SessionEntity(_('Authentication failed: ') . $e->getMessage(), 'danger');
             $this->authenticationService->auth($sessionEntity);
 
             // Clean up session data on exception
             $this->unsetSessionValue('saml_provider');
+        }
+    }
+
+    /**
+     * Processes the posted SAML response for $providerId: validates it, provisions the
+     * user and finishes the login. Runs with the proxy server variables in place.
+     */
+    private function processAssertion(string $providerId): void
+    {
+        $auth = $this->createAuth($providerId);
+        if (!$auth) {
+            throw new \RuntimeException("Provider {$providerId} not found");
+        }
+
+        // Debug SAML response
+        $this->logger->info('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($this->request->getPostParams())]);
+        $this->logger->info('SAML Response length: {length}', ['length' => strlen((string) $this->request->getPostParam('SAMLResponse', ''))]);
+
+        // Process the SAML response
+        $auth->processResponse();
+
+        $errors = $auth->getErrors();
+        if (!empty($errors)) {
+            $errorMsg = implode(', ', $errors);
+            $this->logger->error('SAML assertion processing errors: {errors}', ['errors' => $errorMsg]);
+            $this->logger->error('Last error reason: {reason}', ['reason' => $auth->getLastErrorReason()]);
+
+            // Get more detailed error information
+            $lastErrorException = $auth->getLastErrorException();
+            if ($lastErrorException) {
+                $this->logger->error('SAML error exception: {exception}', ['exception' => $lastErrorException->getMessage()]);
+            }
+
+            $sessionEntity = new SessionEntity(_('Authentication failed: ') . $errorMsg, 'danger');
+            $this->authenticationService->auth($sessionEntity);
+            return;
+        }
+
+        if (!$auth->isAuthenticated()) {
+            $this->logger->warning('SAML authentication failed - not authenticated');
+            $sessionEntity = new SessionEntity(_('Authentication failed: Invalid SAML response'), 'danger');
+            $this->authenticationService->auth($sessionEntity);
+            return;
+        }
+
+        // Get user information from SAML attributes
+        $userInfo = $this->getUserInfoFromAssertion($auth, $providerId);
+
+        // Log user info details
+        $this->logger->info('SAML User Info received: {userinfo}', [
+            'userinfo' => [
+                'username' => $userInfo->getUsername(),
+                'email' => $userInfo->getEmail(),
+                'display_name' => $userInfo->getDisplayName(),
+                'name_id' => $userInfo->getNameId(),
+                'groups' => $userInfo->getGroups(),
+                'provider' => $userInfo->getProviderId(),
+                'is_valid' => $userInfo->isValid()
+            ]
+        ]);
+
+        // Provision or update user (reuse OIDC provisioning service)
+        $userId = $this->userProvisioningService->provisionUser($userInfo, $providerId);
+
+        if ($userId) {
+            $this->logger->info('Successfully authenticated SAML user: {username}', ['username' => $userInfo->getUsername()]);
+
+            // Get the actual database username
+            $databaseUsername = $this->userProvisioningService->getDatabaseUsername($userId);
+            if (!$databaseUsername) {
+                $this->logger->error('Could not get database username for user ID: {userId}', ['userId' => $userId]);
+                $databaseUsername = $userInfo->getUsername();
+            }
+
+            $this->logger->info('Using database username for session: {username}', ['username' => $databaseUsername]);
+
+            // Set userlogin for MFA verification page
+            $this->setSessionValue('userlogin', $databaseUsername);
+
+            // Log successful authentication to database
+            $this->auditService->logLoginSuccess(AuthMethod::SAML);
+
+            // Rotate session id before binding the user - matches SqlAuthenticator.
+            session_regenerate_id(true);
+            $this->logger->info('Session ID regenerated for SAML user {username}', ['username' => $databaseUsername]);
+
+            // Ensure a CSRF token exists for subsequent requests
+            $this->csrfTokenService->ensureTokenExists();
+            $this->logger->info('CSRF token ensured for SAML session.');
+
+            // Check if MFA is globally enabled
+            $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
+
+            // Check if MFA is enabled for this user
+            $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($userId);
+
+            if ($mfaRequired) {
+                $this->logger->info('MFA is required for SAML user {username}', ['username' => $databaseUsername]);
+
+                // Store user details temporarily for MFA verification - DO NOT set userid yet!
+                // This prevents API requests from bypassing MFA by checking isAuthenticated()
+                $this->setSessionValue('pending_userid', $userId);
+                $this->setSessionValue('pending_name', $userInfo->getDisplayName());
+                $this->setSessionValue('pending_email', $userInfo->getEmail());
+                $this->setSessionValue('pending_auth_used', UserProvisioningService::AUTH_METHOD_SAML);
+                $this->setSessionValue('pending_auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
+
+                // Store SAML-specific data as pending
+                $this->setSessionValue('pending_saml_provider', $providerId);
+                $this->setSessionValue('pending_saml_name_id', $userInfo->getNameId());
+                $this->setSessionValue('pending_saml_session_index', $userInfo->getSessionIndex());
+
+                // Use our centralized MFA session manager to set MFA required
+                MfaSessionManager::setMfaRequired($userId);
+
+                // Redirect to MFA verification
+                $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
+                $redirectUrl = $baseUrlPrefix . '/mfa/verify';
+                header("Location: $redirectUrl", true, 302);
+                exit;
+            } else {
+                // No MFA required, proceed with full authentication
+                // NOW it's safe to set userid since MFA is not required
+                $this->setSessionValue('userid', $userId);
+                $this->setSessionValue('name', $userInfo->getDisplayName());
+                $this->setSessionValue('userfullname', $userInfo->getDisplayName());
+                $this->setSessionValue('email', $userInfo->getEmail());
+                $this->setSessionValue('useremail', $userInfo->getEmail());
+                $this->setSessionValue('auth_used', UserProvisioningService::AUTH_METHOD_SAML);
+                $this->setSessionValue('auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
+                $this->setSessionValue('authenticated', true);
+                // Clears any stale pending state from an abandoned MFA login,
+                // which would otherwise bounce this session back to /mfa/verify.
+                MfaSessionManager::setMfaNotRequired();
+
+                // Set SAML-specific session variables for logout detection
+                $this->setSessionValue('saml_authenticated', true);
+                $this->setSessionValue('saml_provider', $providerId);
+                $this->setSessionValue('saml_name_id', $userInfo->getNameId());
+                $this->setSessionValue('saml_session_index', $userInfo->getSessionIndex());
+
+                $this->authenticationService->redirectToIndex();
+            }
+        } else {
+            $this->logger->warning('Failed to provision SAML user: {username}', ['username' => $userInfo->getUsername()]);
+            $this->setSessionValue('userlogin', $userInfo->getUsername());
+            $this->auditService->logLoginFailed(AuthMethod::SAML);
+            $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
+            $this->authenticationService->auth($sessionEntity);
+
+            // Clean up session data on provisioning failure
+            $this->unsetSessionValue('saml_provider');
+        }
+    }
+
+    /**
+     * Runs $fn with HTTPS and SERVER_PORT forced to what OneLogin expects behind a
+     * reverse proxy, and restores both however $fn ends.
+     */
+    private function withProxyServerVars(callable $fn): mixed
+    {
+        $originalHttps = $_SERVER['HTTPS'] ?? null;
+        $originalPort = $_SERVER['SERVER_PORT'] ?? null;
+
+        if ($this->isReverseProxyEnvironment()) {
+            $_SERVER['HTTPS'] = 'on';
+            $_SERVER['SERVER_PORT'] = '443';
+        }
+
+        try {
+            return $fn();
+        } finally {
+            if ($originalHttps !== null) {
+                $_SERVER['HTTPS'] = $originalHttps;
+            } else {
+                unset($_SERVER['HTTPS']);
+            }
+            if ($originalPort !== null) {
+                $_SERVER['SERVER_PORT'] = $originalPort;
+            } else {
+                unset($_SERVER['SERVER_PORT']);
+            }
         }
     }
 

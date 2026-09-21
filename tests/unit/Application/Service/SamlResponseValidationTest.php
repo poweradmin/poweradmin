@@ -123,6 +123,57 @@ class SamlResponseValidationTest extends TestCase
     /**
      * Helper method to get private method via reflection
      */
+    public function testProxyServerVarsAreForcedForTheCallAndRestoredAfterIt(): void
+    {
+        $method = $this->getPrivateMethod('withProxyServerVars');
+        $_SERVER = ['HTTP_X_FORWARDED_PROTO' => 'https', 'HTTPS' => 'off', 'SERVER_PORT' => '8080'];
+
+        $seen = null;
+        $result = $method->invoke($this->service, function () use (&$seen) {
+            $seen = [$_SERVER['HTTPS'], $_SERVER['SERVER_PORT']];
+            return 'done';
+        });
+
+        $this->assertSame('done', $result);
+        $this->assertSame(['on', '443'], $seen);
+        $this->assertSame('off', $_SERVER['HTTPS']);
+        $this->assertSame('8080', $_SERVER['SERVER_PORT']);
+    }
+
+    public function testProxyServerVarsAreRestoredWhenTheCallThrows(): void
+    {
+        $method = $this->getPrivateMethod('withProxyServerVars');
+        $_SERVER = ['HTTP_X_FORWARDED_PROTO' => 'https'];
+
+        try {
+            $method->invoke($this->service, function () {
+                throw new \RuntimeException('boom');
+            });
+            $this->fail('Expected the exception to propagate.');
+        } catch (\RuntimeException) {
+            // expected
+        }
+
+        // Absent before the call, so they must be absent again rather than left forced.
+        $this->assertArrayNotHasKey('HTTPS', $_SERVER);
+        $this->assertArrayNotHasKey('SERVER_PORT', $_SERVER);
+    }
+
+    public function testProxyServerVarsAreLeftAloneOutsideAReverseProxy(): void
+    {
+        $method = $this->getPrivateMethod('withProxyServerVars');
+        $this->mockConfig->method('get')->willReturn([]);
+        $_SERVER = ['SERVER_PORT' => '80'];
+
+        $seen = null;
+        $method->invoke($this->service, function () use (&$seen) {
+            $seen = $_SERVER;
+        });
+
+        $this->assertSame(['SERVER_PORT' => '80'], $seen);
+        $this->assertSame(['SERVER_PORT' => '80'], $_SERVER);
+    }
+
     private function getPrivateMethod(string $methodName): ReflectionMethod
     {
         $reflection = new ReflectionClass($this->service);
