@@ -169,7 +169,7 @@ zone_catalog:
 
 zone_save_template:
   path: /zones/{id}/save-template
-  controller: Poweradmin\Application\Controller\SaveZoneAsTemplateController::run
+  controller: Poweradmin\Application\Controller\Template\SaveZoneAsTemplateController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
@@ -217,42 +217,42 @@ change_request:
 
 zones_templates:
   path: /zones/templates
-  controller: Poweradmin\Application\Controller\ListZoneTemplController::run
+  controller: Poweradmin\Application\Controller\Template\ListZoneTemplController::run
 
 zone_template_add:
   path: /zones/templates/add
-  controller: Poweradmin\Application\Controller\AddZoneTemplController::run
+  controller: Poweradmin\Application\Controller\Template\AddZoneTemplController::run
   methods: [GET, POST]
 
 zone_template_edit:
   path: /zones/templates/{id}/edit
-  controller: Poweradmin\Application\Controller\EditZoneTemplController::run
+  controller: Poweradmin\Application\Controller\Template\EditZoneTemplController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 zone_template_delete:
   path: /zones/templates/{id}/delete
-  controller: Poweradmin\Application\Controller\DeleteZoneTemplController::run
+  controller: Poweradmin\Application\Controller\Template\DeleteZoneTemplController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 zone_template_set_default:
   path: /zones/templates/set-default
-  controller: Poweradmin\Application\Controller\SetDefaultZoneTemplController::run
+  controller: Poweradmin\Application\Controller\Template\SetDefaultZoneTemplController::run
   methods: [POST]
 
 zone_template_record_add:
   path: /zones/templates/{id}/records/add
-  controller: Poweradmin\Application\Controller\AddZoneTemplRecordController::run
+  controller: Poweradmin\Application\Controller\Template\AddZoneTemplRecordController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 zone_template_record_edit:
   path: /zones/templates/{template_id}/records/{id}/edit
-  controller: Poweradmin\Application\Controller\EditZoneTemplRecordController::run
+  controller: Poweradmin\Application\Controller\Template\EditZoneTemplRecordController::run
   requirements:
     template_id: '\d+'
     id: '\d+'
@@ -260,7 +260,7 @@ zone_template_record_edit:
 
 zone_template_record_delete:
   path: /zones/templates/{template_id}/records/{id}/delete
-  controller: Poweradmin\Application\Controller\DeleteZoneTemplRecordController::run
+  controller: Poweradmin\Application\Controller\Template\DeleteZoneTemplRecordController::run
   requirements:
     template_id: '\d+'
     id: '\d+'
@@ -832,13 +832,13 @@ delete_records:
 # Zone Template Routes
 list_template_zones:
   path: /zones/templates/{id}/zones
-  controller: Poweradmin\Application\Controller\ListTemplateZonesController::run
+  controller: Poweradmin\Application\Controller\Template\ListTemplateZonesController::run
   requirements:
     id: '\d+'
 
 unlink_zones_templ:
   path: /zones/templates/unlink
-  controller: Poweradmin\Application\Controller\UnlinkZonesTemplController::run
+  controller: Poweradmin\Application\Controller\Template\UnlinkZonesTemplController::run
   methods: [GET, POST]
 
 # DNSSEC Key Management
