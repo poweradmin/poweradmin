@@ -70,21 +70,21 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/users';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\UsersController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\User\UsersController', $routeInfo['controller']);
         $this->assertEquals('users', $routeInfo['route']);
 
         // Add user
         $_SERVER['REQUEST_URI'] = '/users/add';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\AddUserController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\User\AddUserController', $routeInfo['controller']);
         $this->assertEquals('user_add', $routeInfo['route']);
 
         // Edit user with ID parameter
         $_SERVER['REQUEST_URI'] = '/users/123/edit';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\EditUserController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\User\EditUserController', $routeInfo['controller']);
         $this->assertEquals('user_edit', $routeInfo['route']);
         $this->assertEquals(['id' => '123'], $routeInfo['parameters']);
 
@@ -92,7 +92,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/users/456/delete';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\DeleteUserController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\User\DeleteUserController', $routeInfo['controller']);
         $this->assertEquals('user_delete', $routeInfo['route']);
         $this->assertEquals(['id' => '456'], $routeInfo['parameters']);
     }

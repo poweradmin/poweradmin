@@ -66,23 +66,23 @@ user_agreement:
 # User Management
 users:
   path: /users
-  controller: Poweradmin\Application\Controller\UsersController::run
+  controller: Poweradmin\Application\Controller\User\UsersController::run
 
 user_add:
   path: /users/add
-  controller: Poweradmin\Application\Controller\AddUserController::run
+  controller: Poweradmin\Application\Controller\User\AddUserController::run
   methods: [GET, POST]
 
 user_edit:
   path: /users/{id}/edit
-  controller: Poweradmin\Application\Controller\EditUserController::run
+  controller: Poweradmin\Application\Controller\User\EditUserController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 user_delete:
   path: /users/{id}/delete
-  controller: Poweradmin\Application\Controller\DeleteUserController::run
+  controller: Poweradmin\Application\Controller\User\DeleteUserController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
@@ -90,13 +90,13 @@ user_delete:
 # Remove user from group
 user_remove_group:
   path: /users/groups/remove
-  controller: Poweradmin\Application\Controller\RemoveUserGroupController::run
+  controller: Poweradmin\Application\Controller\User\RemoveUserGroupController::run
   methods: [POST]
 
 # User Preferences
 user_preferences:
   path: /user/preferences
-  controller: Poweradmin\Application\Controller\UserPreferencesController::run
+  controller: Poweradmin\Application\Controller\User\UserPreferencesController::run
   methods: [GET, POST]
 
 # Password Management
@@ -293,23 +293,23 @@ record_delete:
 # Permission Templates
 list_perm_templ:
   path: /permissions/templates
-  controller: Poweradmin\Application\Controller\ListPermTemplController::run
+  controller: Poweradmin\Application\Controller\User\ListPermTemplController::run
 
 add_perm_templ:
   path: /permissions/templates/add
-  controller: Poweradmin\Application\Controller\AddPermTemplController::run
+  controller: Poweradmin\Application\Controller\User\AddPermTemplController::run
   methods: [GET, POST]
 
 edit_perm_templ:
   path: /permissions/templates/{id}/edit
-  controller: Poweradmin\Application\Controller\EditPermTemplController::run
+  controller: Poweradmin\Application\Controller\User\EditPermTemplController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 delete_perm_templ:
   path: /permissions/templates/{id}/delete
-  controller: Poweradmin\Application\Controller\DeletePermTemplController::run
+  controller: Poweradmin\Application\Controller\User\DeletePermTemplController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
@@ -317,37 +317,37 @@ delete_perm_templ:
 # User Groups
 list_groups:
   path: /groups
-  controller: Poweradmin\Application\Controller\ListGroupsController::run
+  controller: Poweradmin\Application\Controller\User\ListGroupsController::run
 
 add_group:
   path: /groups/add
-  controller: Poweradmin\Application\Controller\AddGroupController::run
+  controller: Poweradmin\Application\Controller\User\AddGroupController::run
   methods: [GET, POST]
 
 edit_group:
   path: /groups/{id}/edit
-  controller: Poweradmin\Application\Controller\EditGroupController::run
+  controller: Poweradmin\Application\Controller\User\EditGroupController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 delete_group:
   path: /groups/{id}/delete
-  controller: Poweradmin\Application\Controller\DeleteGroupController::run
+  controller: Poweradmin\Application\Controller\User\DeleteGroupController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 manage_group_members:
   path: /groups/{id}/members
-  controller: Poweradmin\Application\Controller\ManageGroupMembersController::run
+  controller: Poweradmin\Application\Controller\User\ManageGroupMembersController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 manage_group_zones:
   path: /groups/{id}/zones
-  controller: Poweradmin\Application\Controller\ManageGroupZonesController::run
+  controller: Poweradmin\Application\Controller\User\ManageGroupZonesController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
@@ -355,13 +355,13 @@ manage_group_zones:
 # Quick remove member from group (from edit page)
 quick_remove_group_member:
   path: /groups/quick-remove-member
-  controller: Poweradmin\Application\Controller\QuickRemoveGroupMemberController::run
+  controller: Poweradmin\Application\Controller\User\QuickRemoveGroupMemberController::run
   methods: [POST]
 
 # Quick remove zone from group (from edit page)
 quick_remove_group_zone:
   path: /groups/quick-remove-zone
-  controller: Poweradmin\Application\Controller\QuickRemoveGroupZoneController::run
+  controller: Poweradmin\Application\Controller\User\QuickRemoveGroupZoneController::run
   methods: [POST]
 
 # User Logs
@@ -450,38 +450,38 @@ search:
 # API Keys Management
 api_keys_list:
   path: /settings/api-keys
-  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  controller: Poweradmin\Application\Controller\User\ApiKeysController::run
   methods: [GET]
 
 api_keys_add:
   path: /settings/api-keys/add
-  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  controller: Poweradmin\Application\Controller\User\ApiKeysController::run
   methods: [GET, POST]
 
 api_keys_edit:
   path: /settings/api-keys/{id}/edit
-  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  controller: Poweradmin\Application\Controller\User\ApiKeysController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 api_keys_delete:
   path: /settings/api-keys/{id}/delete
-  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  controller: Poweradmin\Application\Controller\User\ApiKeysController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 api_keys_regenerate:
   path: /settings/api-keys/{id}/regenerate
-  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  controller: Poweradmin\Application\Controller\User\ApiKeysController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 api_keys_toggle:
   path: /settings/api-keys/{id}/toggle
-  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  controller: Poweradmin\Application\Controller\User\ApiKeysController::run
   requirements:
     id: '\d+'
   methods: [POST]

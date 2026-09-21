@@ -20,10 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\User;
 
 use InvalidArgumentException;
 use Exception;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Model\UserPreference;

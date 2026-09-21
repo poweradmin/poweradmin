@@ -55,7 +55,7 @@ class SymfonyRouterTest extends TestCase
         $router = new SymfonyRouter(new FakeConfiguration());
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\EditUserController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\User\EditUserController', $routeInfo['controller']);
         $this->assertEquals('run', $routeInfo['method']);
         $this->assertEquals(['id' => '123'], $routeInfo['parameters']);
         $this->assertEquals('user_edit', $routeInfo['route']);

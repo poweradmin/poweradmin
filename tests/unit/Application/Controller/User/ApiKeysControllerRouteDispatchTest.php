@@ -12,10 +12,10 @@
  *  (at your option) any later version.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\User;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Controller\ApiKeysController;
+use Poweradmin\Application\Controller\User\ApiKeysController;
 use ReflectionClass;
 
 /**

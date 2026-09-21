@@ -20,8 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\User;
 
+use Poweradmin\Application\Controller\BaseController;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;

@@ -20,10 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\User;
 
 use DateTime;
 use Exception;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;

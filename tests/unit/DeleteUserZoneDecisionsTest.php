@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Controller\DeleteUserController;
+use Poweradmin\Application\Controller\User\DeleteUserController;
 
 #[CoversClass(DeleteUserController::class)]
 class DeleteUserZoneDecisionsTest extends TestCase

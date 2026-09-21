@@ -20,8 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\User;
 
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PasswordGenerationService;

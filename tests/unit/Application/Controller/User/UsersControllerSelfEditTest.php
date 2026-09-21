@@ -20,10 +20,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\User;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Controller\UsersController;
+use Poweradmin\Application\Controller\User\UsersController;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;

@@ -20,10 +20,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\User;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Controller\EditPermTemplController;
+use Poweradmin\Application\Controller\User\EditPermTemplController;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
