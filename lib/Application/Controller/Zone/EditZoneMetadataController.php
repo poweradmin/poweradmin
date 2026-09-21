@@ -26,6 +26,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ZoneMetadataFormMessages;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneDetail;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
@@ -105,7 +106,7 @@ class EditZoneMetadataController extends BaseController
         if ($this->isPost()) {
             $submittedMetadata = $this->normalizeSubmittedMetadata($this->httpRequest->getPostParam('metadata', []));
 
-            $result = $this->metadataService->replaceAll($zoneId, $zone['name'], $submittedMetadata, (int)$this->getCurrentUserId());
+            $result = $this->metadataService->replaceAll($zoneId, $zone->name, $submittedMetadata, (int)$this->getCurrentUserId());
             if (!$result->isOk()) {
                 $this->setMessage('edit_zone_metadata', 'error', ZoneMetadataFormMessages::errorMessage($result));
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
@@ -117,18 +118,17 @@ class EditZoneMetadataController extends BaseController
             return;
         }
 
-        $this->renderPage($zoneId, $zone, $this->metadataService->load($zoneId, $zone['name']), $canEditMetadata);
+        $this->renderPage($zoneId, $zone, $this->metadataService->load($zoneId, $zone->name), $canEditMetadata);
     }
 
     /**
      * Prepare and render the metadata editor page.
      *
-     * @param array<string, mixed> $zone
      * @param array<int, array<string, string>> $metadataRows
      */
-    private function renderPage(int $zoneId, array $zone, array $metadataRows, bool $canEdit = true): void
+    private function renderPage(int $zoneId, ZoneDetail $zone, array $metadataRows, bool $canEdit = true): void
     {
-        $idnZoneName = str_starts_with($zone['name'], 'xn--') ? DnsIdnService::toUtf8($zone['name']) : '';
+        $idnZoneName = str_starts_with($zone->name, 'xn--') ? DnsIdnService::toUtf8($zone->name) : '';
         if (empty($metadataRows)) {
             $metadataRows = [['kind' => '', 'content' => '']];
         }
@@ -142,10 +142,10 @@ class EditZoneMetadataController extends BaseController
             'zone_id' => $zoneId,
             'zone' => $zone,
             'idn_zone_name' => $idnZoneName,
-            'zone_display_name' => DnsIdnService::toDisplay($zone['name']),
+            'zone_display_name' => DnsIdnService::toDisplay($zone->name),
             'metadata_rows' => $this->prepareRowsForTemplate($metadataRows, array_column($definitions, 'kind')),
             'metadata_definitions' => $definitions,
-            'is_reverse_zone' => DnsHelper::isReverseZoneName($zone['name']),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($zone->name),
             'can_edit_metadata' => $canEdit,
             // Rows rendered through the custom-kind path have their badges
             // rebuilt client-side, so the list has to reach the template's JS.

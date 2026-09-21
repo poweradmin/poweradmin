@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Repository;
 
+use Poweradmin\Domain\Model\ZoneDetail;
+
 /**
  * Zone lookups, lists and counts; one of the three roles ZoneRepositoryInterface combines.
  */
@@ -46,13 +48,13 @@ interface ZoneReadRepositoryInterface
     /**
      * Get a zone by ID with full details
      *
-     * A superset of getZoneById(): its keys plus count_records (alias of record_count),
-     * username, fullname, secured, comment, utf8_name, owners[], full_names[], users[].
+     * The getZoneById() core plus comment, secured and the owner list; ZoneDetail::toArray()
+     * gives the legacy column-keyed shape.
      *
      * @param int $zoneId The zone ID
-     * @return array|null The zone data or null if not found
+     * @return ZoneDetail|null The zone or null if not found
      */
-    public function getZone(int $zoneId): ?array;
+    public function getZone(int $zoneId): ?ZoneDetail;
 
     /**
      * List zones with optional user/permission filtering

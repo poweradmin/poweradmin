@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Domain\Model\ZoneDetail;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
@@ -585,26 +586,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return array_values($zones);
     }
 
-    public function getZone(int $zoneId): ?array
+    public function getZone(int $zoneId): ?ZoneDetail
     {
         $zone = $this->getZoneById($zoneId);
         if ($zone === null) {
             return null;
         }
 
-        $owners = $this->getZoneOwners($zoneId);
-        $usernames = array_column($owners, 'username');
-
-        $zone['count_records'] = $zone['record_count'];
-        $zone['username'] = $usernames[0] ?? null;
-        $zone['fullname'] = $owners[0]['fullname'] ?? null;
-        $zone['secured'] = (bool)$zone['secured'];
-        $zone['utf8_name'] = DnsIdnService::toUtf8($zone['name']);
-        $zone['owners'] = $usernames;
-        $zone['full_names'] = array_map(fn(array $owner) => $owner['fullname'] ?: '', $owners);
-        $zone['users'] = $usernames;
-
-        return $zone;
+        return ZoneDetail::fromRow($zone, $this->getZoneOwners($zoneId));
     }
 
     /**

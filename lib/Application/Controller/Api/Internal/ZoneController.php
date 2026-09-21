@@ -104,8 +104,8 @@ class ZoneController extends InternalApiController
     /**
      * Get a specific zone by ID
      *
-     * Serialises the repository row unchanged, so ZoneReadRepositoryInterface::getZone()
-     * documents the response keys (master, account, owner, record_count added in 4.6.0).
+     * Serialises ZoneDetail::toArray() unchanged, so that method documents the response
+     * keys (master, account, owner, record_count added in 4.6.0).
      */
     private function getZone(): JsonResponse
     {
@@ -137,7 +137,7 @@ class ZoneController extends InternalApiController
             'success' => true,
             'message' => 'Zone retrieved successfully',
             'data' => [
-                'zone' => $zone
+                'zone' => $zone->toArray()
             ],
             'meta' => [
                 'timestamp' => date('Y-m-d H:i:s')

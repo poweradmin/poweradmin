@@ -75,7 +75,7 @@ class ApiZoneRepositoryGetZoneTest extends TestCase
 
     public function testGetZoneReturnsTheGetZoneByIdCorePlusTheWebExtras(): void
     {
-        $zone = $this->repository->getZone(7);
+        $zone = $this->repository->getZone(7)?->toArray();
 
         $this->assertNotNull($zone);
         $expectedKeys = [
@@ -102,7 +102,7 @@ class ApiZoneRepositoryGetZoneTest extends TestCase
 
     public function testGetZoneOnAnUnownedZone(): void
     {
-        $zone = $this->repository->getZone(9);
+        $zone = $this->repository->getZone(9)?->toArray();
 
         $this->assertNotNull($zone);
         $this->assertSame(0, $zone['owner']);
@@ -116,5 +116,47 @@ class ApiZoneRepositoryGetZoneTest extends TestCase
     public function testGetZoneReturnsNullForAMissingZone(): void
     {
         $this->assertNull($this->repository->getZone(999));
+    }
+
+    /**
+     * The exact array the internal API serialises, keys in the SQL backend's order
+     * (the API backend used to emit the same keys in its own order) and values typed.
+     */
+    public function testGetZoneSnapshot(): void
+    {
+        $zone = $this->repository->getZone(7);
+
+        $this->assertNotNull($zone);
+        $this->assertSame(self::signedZoneSnapshot(), $zone->toArray());
+        $this->assertSame(7, $zone->id);
+        $this->assertSame('signed.example', $zone->name);
+        $this->assertSame(['alice', 'bob'], $zone->owners);
+        $this->assertSame(['Alice A', null], $zone->fullNames);
+        $this->assertTrue($zone->secured);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function signedZoneSnapshot(): array
+    {
+        return [
+            'id' => 7,
+            'name' => 'signed.example',
+            'type' => 'MASTER',
+            'master' => null,
+            'account' => '',
+            'owner' => 5,
+            'comment' => 'signed zone',
+            'record_count' => 4,
+            'secured' => true,
+            'count_records' => 4,
+            'username' => 'alice',
+            'fullname' => 'Alice A',
+            'utf8_name' => 'signed.example',
+            'owners' => ['alice', 'bob'],
+            'full_names' => ['Alice A', ''],
+            'users' => ['alice', 'bob'],
+        ];
     }
 }

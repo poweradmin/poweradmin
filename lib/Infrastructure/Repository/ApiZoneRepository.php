@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
+use Poweradmin\Domain\Model\ZoneDetail;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
@@ -542,28 +543,21 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return array_values($zones);
     }
 
-    public function getZone(int $zoneId): ?array
+    public function getZone(int $zoneId): ?ZoneDetail
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
         if ($canonical === null) {
             return null;
         }
-        $owners = $this->ownersOfCanonical((int)$canonical['id'], self::canonicalIdOf($canonical));
-        $usernames = array_column($owners, 'username');
-        $zone = $this->coreRow($canonical, $zoneId);
         $zoneInfo = $this->backendProvider->getZoneById($zoneId);
 
-        return $zone + [
-            'count_records' => $zone['record_count'],
-            'username' => $usernames[0] ?? null,
-            'fullname' => $owners[0]['fullname'] ?? null,
-            'secured' => $zoneInfo['dnssec'] ?? false,
-            'comment' => $canonical['comment'] ?? '',
-            'utf8_name' => DnsIdnService::toUtf8($canonical['zone_name']),
-            'owners' => $usernames,
-            'full_names' => array_map(fn(array $owner) => $owner['fullname'] ?: '', $owners),
-            'users' => $usernames,
-        ];
+        return ZoneDetail::fromRow(
+            $this->coreRow($canonical, $zoneId) + [
+                'comment' => $canonical['comment'] ?? '',
+                'secured' => $zoneInfo['dnssec'] ?? false,
+            ],
+            $this->ownersOfCanonical((int)$canonical['id'], self::canonicalIdOf($canonical))
+        );
     }
 
     public function findForwardZonesByPtrRecords(array $reverseZoneIds): array

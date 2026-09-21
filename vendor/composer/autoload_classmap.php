@@ -1288,6 +1288,7 @@ return array(
     'Poweradmin\\Domain\\Model\\UserPreference' => $baseDir . '/lib/Domain/Model/UserPreference.php',
     'Poweradmin\\Domain\\Model\\Zone' => $baseDir . '/lib/Domain/Model/Zone.php',
     'Poweradmin\\Domain\\Model\\ZoneChangeRequest' => $baseDir . '/lib/Domain/Model/ZoneChangeRequest.php',
+    'Poweradmin\\Domain\\Model\\ZoneDetail' => $baseDir . '/lib/Domain/Model/ZoneDetail.php',
     'Poweradmin\\Domain\\Model\\ZoneGroup' => $baseDir . '/lib/Domain/Model/ZoneGroup.php',
     'Poweradmin\\Domain\\Model\\ZoneType' => $baseDir . '/lib/Domain/Model/ZoneType.php',
     'Poweradmin\\Domain\\Module\\ModuleInterface' => $baseDir . '/lib/Domain/Module/ModuleInterface.php',

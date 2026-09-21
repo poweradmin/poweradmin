@@ -79,7 +79,7 @@ class DbZoneRepositoryGetZoneTest extends TestCase
 
     public function testGetZoneReportsTheTrueRecordCountOnASignedZone(): void
     {
-        $zone = $this->repository->getZone(1);
+        $zone = $this->repository->getZone(1)?->toArray();
 
         // Empty non-terminals (NULL type) are PowerDNS bookkeeping, counted nowhere
         $this->assertNotNull($zone);
@@ -90,7 +90,7 @@ class DbZoneRepositoryGetZoneTest extends TestCase
 
     public function testGetZoneReturnsTheGetZoneByIdCorePlusTheWebExtras(): void
     {
-        $zone = $this->repository->getZone(1);
+        $zone = $this->repository->getZone(1)?->toArray();
 
         $this->assertNotNull($zone);
         $expectedKeys = [
@@ -114,7 +114,7 @@ class DbZoneRepositoryGetZoneTest extends TestCase
 
     public function testGetZoneOnAnUnsignedUnownedZone(): void
     {
-        $zone = $this->repository->getZone(2);
+        $zone = $this->repository->getZone(2)?->toArray();
 
         $this->assertNotNull($zone);
         $this->assertSame(1, (int)$zone['record_count']);
@@ -130,6 +130,48 @@ class DbZoneRepositoryGetZoneTest extends TestCase
     public function testGetZoneReturnsNullForAMissingZone(): void
     {
         $this->assertNull($this->repository->getZone(999));
+    }
+
+    /**
+     * The exact array the internal API serialises and the metadata editor renders,
+     * keys in order and values typed as the sqlite driver returns them.
+     */
+    public function testGetZoneSnapshot(): void
+    {
+        $zone = $this->repository->getZone(1);
+
+        $this->assertNotNull($zone);
+        $this->assertSame(self::signedZoneSnapshot(), $zone->toArray());
+        $this->assertSame(1, $zone->id);
+        $this->assertSame('signed.example', $zone->name);
+        $this->assertSame(['alice', 'bob'], $zone->owners);
+        $this->assertSame(['Alice A', null], $zone->fullNames);
+        $this->assertTrue($zone->secured);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function signedZoneSnapshot(): array
+    {
+        return [
+            'id' => 1,
+            'name' => 'signed.example',
+            'type' => 'MASTER',
+            'master' => null,
+            'account' => 'ops',
+            'owner' => 5,
+            'comment' => 'signed zone',
+            'record_count' => 3,
+            'secured' => true,
+            'count_records' => 3,
+            'username' => 'alice',
+            'fullname' => 'Alice A',
+            'utf8_name' => 'signed.example',
+            'owners' => ['alice', 'bob'],
+            'full_names' => ['Alice A', ''],
+            'users' => ['alice', 'bob'],
+        ];
     }
 
     public function testListZonesReportsTheTrueRecordCountOnASignedZone(): void
