@@ -89,6 +89,24 @@ class DnsIdnServiceTest extends TestCase
         $this->assertEquals('münchen.de', $result);
     }
 
+    public function testToUtf8RoundTripsAPunycodeName(): void
+    {
+        $punycode = DnsIdnService::toPunycode('münchen.de');
+
+        $this->assertSame('xn--mnchen-3ya.de', $punycode);
+        $this->assertSame('münchen.de', DnsIdnService::toUtf8($punycode));
+        $this->assertSame('xn--mnchen-3ya.de', DnsIdnService::toPunycode(DnsIdnService::toUtf8($punycode)));
+    }
+
+    /**
+     * Escaping is the template's job: a name that is not valid punycode comes
+     * back as given, never with HTML entities in it.
+     */
+    public function testToUtf8DoesNotHtmlEscapeTheName(): void
+    {
+        $this->assertSame('a&b.example.com', DnsIdnService::toUtf8('a&b.example.com'));
+    }
+
     /**
      * Malformed punycode makes idn_to_utf8 return false; toUtf8 must fall back to
      * the original name (a string) instead of letting the bool escape and 500.

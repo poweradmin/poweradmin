@@ -137,8 +137,29 @@ class RecordServices
             $this->services->soaRecordManager(),
             $comments,
             new RecordCommentSyncService($comments, $this->services->recordRepository(), $this->services->dnsBackendProvider()),
-            $this->services->auditService()
+            $this->services->auditService(),
+            $this->recordCommentsEnabled(),
+            $this->zoneCommentsEnabled()
         );
+    }
+
+    /**
+     * The interface.* switches double as persistence policy: a hidden comment
+     * column is not written, and PTR handling follows the add-reverse-record toggle.
+     */
+    private function recordCommentsEnabled(): bool
+    {
+        return (bool)$this->config->get('interface', 'show_record_comments', false);
+    }
+
+    private function zoneCommentsEnabled(): bool
+    {
+        return (bool)$this->config->get('interface', 'show_zone_comments', true);
+    }
+
+    private function reverseHandling(): bool
+    {
+        return (bool)$this->config->get('interface', 'add_reverse_record', false);
     }
 
     public function zoneChangeRequestRepository(): ZoneChangeRequestRepositoryInterface
@@ -161,6 +182,8 @@ class RecordServices
             $this->services->dnsBackendProvider(),
             $this->db,
             $this->config,
+            $this->recordCommentsEnabled(),
+            $this->zoneCommentsEnabled(),
             $this->services->repositoryFactory()->createRecordCommentRepository(),
             $this->recordChangeLog()->withChangeset(...),
             $this->services->permissionService(),
@@ -244,7 +267,7 @@ class RecordServices
     public function reverseRecordCreator(): ReverseRecordCreator
     {
         return new ReverseRecordCreator(
-            $this->config,
+            $this->reverseHandling(),
             $this->services->auditService(),
             $this->services->domainRepository(),
             $this->recordManager(),
@@ -259,7 +282,7 @@ class RecordServices
             $this->recordManager(),
             $this->reverseRecordCreator(),
             $this->services->auditService(),
-            $this->config
+            $this->reverseHandling()
         );
     }
 
@@ -271,7 +294,8 @@ class RecordServices
             $this->services->domainRepository(),
             $this->services->recordRepository(),
             $this->recordManager(),
-            fn() => DnssecProviderFactory::create($this->db, $this->config)
+            fn() => DnssecProviderFactory::create($this->db, $this->config),
+            $this->reverseHandling()
         );
     }
 

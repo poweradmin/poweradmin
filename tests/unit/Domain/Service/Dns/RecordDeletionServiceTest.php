@@ -25,7 +25,6 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Service\Dns\RecordDeletionOutcome;
@@ -68,10 +67,7 @@ class RecordDeletionServiceTest extends TestCase
     {
         $records = $this->createMock(RecordRepositoryInterface::class);
         $records->method('getRecordFromId')->willReturnCallback(fn(): ?array => $this->record);
-        $config = $this->createMock(ConfigurationInterface::class);
-        $config->method('get')->willReturnCallback(fn(): bool => $this->reverseHandling);
-
-        return new RecordDeletionService($records, $this->recordManager, $this->reverse, $this->audit, $config);
+        return new RecordDeletionService($records, $this->recordManager, $this->reverse, $this->audit, $this->reverseHandling);
     }
 
     public function testAMissingRecordIsReportedWithoutTouchingTheBackend(): void

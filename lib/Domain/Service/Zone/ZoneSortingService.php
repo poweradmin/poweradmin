@@ -80,9 +80,8 @@ class ZoneSortingService
     private function resolveSortBy(mixed $submittedValue, string $sessionKey): ?string
     {
         if (is_string($submittedValue) && preg_match("/^[a-z_]+$/", $submittedValue)) {
-            $value = htmlspecialchars($submittedValue);
-            $this->userContextService->setSessionData($sessionKey, $value);
-            return $value;
+            $this->userContextService->setSessionData($sessionKey, $submittedValue);
+            return $submittedValue;
         }
         return null;
     }

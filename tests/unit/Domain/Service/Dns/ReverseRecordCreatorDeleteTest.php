@@ -8,7 +8,6 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Port\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\AuditService;
 
 /**
@@ -18,22 +17,10 @@ use Poweradmin\Application\Service\AuditService;
  */
 class ReverseRecordCreatorDeleteTest extends TestCase
 {
-    private function createConfig(): ConfigurationManager
-    {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'interface' && $key === 'add_reverse_record') {
-                return true;
-            }
-            return $default;
-        });
-        return $config;
-    }
-
     private function createService(?DomainRepositoryInterface $domainRepository, ?RecordManagerInterface $recordManager, ?RecordReadBackendInterface $backend = null): ReverseRecordCreator
     {
         return new ReverseRecordCreator(
-            $this->createConfig(),
+            true,
             $this->createMock(AuditService::class),
             $domainRepository ?? $this->createMock(DomainRepositoryInterface::class),
             $recordManager ?? $this->createMock(RecordManagerInterface::class),

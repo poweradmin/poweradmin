@@ -311,7 +311,9 @@ class ZoneEditServiceTest extends TestCase
             $this->soa,
             $this->comments,
             $this->commentSync,
-            $this->createMock(AuditService::class)
+            $this->createMock(AuditService::class),
+            (bool)$config->get('interface', 'show_record_comments'),
+            (bool)$config->get('interface', 'show_zone_comments')
         );
     }
 

@@ -48,6 +48,10 @@ use Poweradmin\Domain\Utility\RecordIdHelper;
  */
 class ZoneEditService
 {
+    /**
+     * @param bool $recordCommentsEnabled Whether record comments are edited and stored with a save
+     * @param bool $zoneCommentsEnabled Whether the zone comment is stored with a save
+     */
     public function __construct(
         private readonly ConfigurationInterface $config,
         private readonly PermissionService $permissions,
@@ -58,7 +62,9 @@ class ZoneEditService
         private readonly SOARecordManagerInterface $soaRecords,
         private readonly RecordCommentEditorInterface $comments,
         private readonly RecordCommentSyncInterface $commentSync,
-        private readonly AuditLoggerInterface $audit
+        private readonly AuditLoggerInterface $audit,
+        private readonly bool $recordCommentsEnabled,
+        private readonly bool $zoneCommentsEnabled
     ) {
     }
 
@@ -100,7 +106,7 @@ class ZoneEditService
 
         // A rejected form is rejected whole: writing the comment would persist half of a
         // submission the operator is being told to send again
-        if (!$truncated && !$staleFormRejected && $this->config->get('interface', 'show_zone_comments', true)) {
+        if (!$truncated && !$staleFormRejected && $this->zoneCommentsEnabled) {
             $changed = $this->saveZoneComment($submission) || $changed;
         }
 
@@ -206,9 +212,8 @@ class ZoneEditService
             $record['comment'] = $row->comment;
         }
 
-        $showComments = (bool)$this->config->get('interface', 'show_record_comments', false);
         $comment = '';
-        if ($showComments) {
+        if ($this->recordCommentsEnabled) {
             $stored = $this->comments->findCommentByRecordId(RecordIdHelper::normalizeId($record['rid']))
                 ?? $this->comments->findComment($submission->zoneId, $record['name'], $record['type']);
             $comment = $stored !== null ? $stored->getComment() : '';
@@ -231,10 +236,9 @@ class ZoneEditService
     {
         $record = $change->record;
         $log = $change->log;
-        $showComments = (bool)$this->config->get('interface', 'show_record_comments', false);
 
         $newComment = (string)($record['comment'] ?? '');
-        $edited = $this->recordManager->editRecord($record, false, $showComments ? [
+        $edited = $this->recordManager->editRecord($record, false, $this->recordCommentsEnabled ? [
             'content' => $newComment,
             'account' => $submission->username,
         ] : null);
@@ -245,7 +249,7 @@ class ZoneEditService
         $log->logAfter($record['rid'], $record);
         $log->write();
 
-        if ($showComments) {
+        if ($this->recordCommentsEnabled) {
             $this->comments->updateCommentForRecord(
                 $submission->zoneId,
                 $record['name'],

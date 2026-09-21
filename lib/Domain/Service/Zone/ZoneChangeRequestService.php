@@ -66,6 +66,8 @@ class ZoneChangeRequestService
     private readonly DnsFormatter $formatter;
 
     /**
+     * @param bool $recordCommentsEnabled Whether the comment of an approved addition is stored
+     * @param bool $zoneCommentsEnabled Whether a changed zone comment is filed
      * @param RecordCommentRepositoryInterface|null $recordComments Omit to leave comments of approved additions unstored
      * @param Closure|null $changeset fn(?int $zoneId, ?string $comment, callable $work): mixed grouping the
      *        applied writes in the change log; omitted, the work runs ungrouped
@@ -89,6 +91,8 @@ class ZoneChangeRequestService
         private readonly BackendCapabilitiesInterface $backend,
         private readonly PDO $db,
         private readonly ConfigurationInterface $config,
+        private readonly bool $recordCommentsEnabled,
+        private readonly bool $zoneCommentsEnabled,
         private readonly ?RecordCommentRepositoryInterface $recordComments = null,
         private readonly ?Closure $changeset = null,
         private readonly ?PermissionService $permissions = null,
@@ -530,7 +534,7 @@ class ZoneChangeRequestService
             && $result->recordId !== null
             && $comment !== ''
             && $this->recordComments !== null
-            && $this->config->get('interface', 'show_record_comments', false)
+            && $this->recordCommentsEnabled
         ) {
             $this->recordComments->addForRecord($result->recordId, RecordComment::create($zoneId, strtolower($name), $type, $comment, $reviewerName));
         }
@@ -645,7 +649,7 @@ class ZoneChangeRequestService
 
     private function changedZoneComment(int $zoneId, ?string $posted): ?string
     {
-        if ($posted === null || !$this->config->get('interface', 'show_zone_comments', true)) {
+        if ($posted === null || !$this->zoneCommentsEnabled) {
             return null;
         }
 

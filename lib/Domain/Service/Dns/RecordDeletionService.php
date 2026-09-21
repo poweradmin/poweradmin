@@ -22,23 +22,25 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 
 /**
- * Deletes a record and, when asked and when interface.add_reverse_record is on,
- * the PTR of an A/AAAA record or the A/AAAA of a PTR record.
+ * Deletes a record and, when asked and when reverse handling is on, the PTR
+ * of an A/AAAA record or the A/AAAA of a PTR record.
  */
 class RecordDeletionService
 {
+    /**
+     * @param bool $reverseHandling Whether the counterpart record is considered at all
+     */
     public function __construct(
         private readonly RecordLookupInterface $recordRepository,
         private readonly RecordManagerInterface $recordManager,
         private readonly ReverseRecordCreator $reverseRecordCreator,
         private readonly AuditLoggerInterface $audit,
-        private readonly ConfigurationInterface $config
+        private readonly bool $reverseHandling
     ) {
     }
 
@@ -54,10 +56,9 @@ class RecordDeletionService
             return RecordDeletionOutcome::notFound(_('Record not found.'));
         }
 
-        $reverseHandling = (bool)$this->config->get('interface', 'add_reverse_record', false);
         $type = $record['type'];
-        $ptrCandidate = $reverseHandling && ($type === RecordType::A || $type === RecordType::AAAA);
-        $forwardCandidate = $reverseHandling && $type === RecordType::PTR;
+        $ptrCandidate = $this->reverseHandling && ($type === RecordType::A || $type === RecordType::AAAA);
+        $forwardCandidate = $this->reverseHandling && $type === RecordType::PTR;
 
         $deleted = $this->recordManager->deleteRecord($recordId);
         if (!$deleted->success) {

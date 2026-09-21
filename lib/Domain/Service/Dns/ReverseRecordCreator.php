@@ -27,7 +27,6 @@ use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\RecordReadBackendInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 
 /**
@@ -35,20 +34,23 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
  */
 class ReverseRecordCreator
 {
-    private ConfigurationInterface $config;
+    private bool $reverseHandling;
     private AuditLoggerInterface $audit;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
     private RecordReadBackendInterface $recordBackend;
 
+    /**
+     * @param bool $reverseHandling Whether PTR records may be created alongside A/AAAA records
+     */
     public function __construct(
-        ConfigurationInterface $config,
+        bool $reverseHandling,
         AuditLoggerInterface $audit,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
         RecordReadBackendInterface $recordBackend
     ) {
-        $this->config = $config;
+        $this->reverseHandling = $reverseHandling;
         $this->audit = $audit;
         $this->domainRepository = $domainRepository;
         $this->recordManager = $recordManager;
@@ -57,9 +59,7 @@ class ReverseRecordCreator
 
     public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
     {
-        $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
-
-        if (!$name || !$isReverseRecordAllowed) {
+        if (!$name || !$this->reverseHandling) {
             return $this->createErrorResponse('The name is missing or reverse record creation is not allowed.');
         }
 

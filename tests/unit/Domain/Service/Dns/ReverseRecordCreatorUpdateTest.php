@@ -7,7 +7,6 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Port\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\AuditService;
 
 class ReverseRecordCreatorUpdateTest extends TestCase
@@ -27,18 +26,10 @@ class ReverseRecordCreatorUpdateTest extends TestCase
         }
 
         $audit = $this->createMock(AuditService::class);
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'interface' && $key === 'add_reverse_record') {
-                return true;
-            }
-            return $default;
-        });
-
         $domainRepository ??= $this->createMock(DomainRepositoryInterface::class);
         $recordManager ??= $this->createMock(RecordManagerInterface::class);
 
-        return new ReverseRecordCreator($config, $audit, $domainRepository, $recordManager, $backend);
+        return new ReverseRecordCreator(true, $audit, $domainRepository, $recordManager, $backend);
     }
 
     public function testUpdateReverseRecordSkipsWhenBothTypesAreNonAddress(): void

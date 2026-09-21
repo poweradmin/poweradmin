@@ -9,7 +9,6 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Port\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Pins the duplicate check and the "PTR already exists" warning, which both
@@ -17,17 +16,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class ReverseRecordCreatorCreateTest extends TestCase
 {
-    private function createConfig(bool $allowed = true): ConfigurationManager
-    {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) use ($allowed) {
-            if ($group === 'interface' && $key === 'add_reverse_record') {
-                return $allowed;
-            }
-            return $default;
-        });
-        return $config;
-    }
 
     private function createDomainRepository(): DomainRepositoryInterface
     {
@@ -45,7 +33,7 @@ class ReverseRecordCreatorCreateTest extends TestCase
         $recordManager->expects($this->never())->method('addRecordGetId');
 
         $service = new ReverseRecordCreator(
-            $this->createConfig(false),
+            false,
             $this->createMock(AuditLoggerInterface::class),
             $this->createMock(DomainRepositoryInterface::class),
             $recordManager,
@@ -67,7 +55,7 @@ class ReverseRecordCreatorCreateTest extends TestCase
         $recordManager->expects($this->never())->method('addRecordGetId');
 
         $service = new ReverseRecordCreator(
-            $this->createConfig(),
+            true,
             $this->createMock(AuditLoggerInterface::class),
             $this->createDomainRepository(),
             $recordManager,
@@ -99,7 +87,7 @@ class ReverseRecordCreatorCreateTest extends TestCase
         $audit->expects($this->once())->method('logRecordAdd');
 
         $service = new ReverseRecordCreator(
-            $this->createConfig(),
+            true,
             $audit,
             $this->createDomainRepository(),
             $recordManager,
@@ -123,7 +111,7 @@ class ReverseRecordCreatorCreateTest extends TestCase
         $recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(7));
 
         $service = new ReverseRecordCreator(
-            $this->createConfig(),
+            true,
             $this->createMock(AuditLoggerInterface::class),
             $this->createDomainRepository(),
             $recordManager,
@@ -149,7 +137,7 @@ class ReverseRecordCreatorCreateTest extends TestCase
         $audit = $this->createMock(AuditLoggerInterface::class);
         $audit->expects($this->never())->method('logRecordAdd');
 
-        $service = new ReverseRecordCreator($this->createConfig(true), $audit, $domains, $recordManager, $backend);
+        $service = new ReverseRecordCreator(true, $audit, $domains, $recordManager, $backend);
         $result = $service->createReverseRecord('host', 'A', '192.0.2.10', 1, 3600, 0);
 
         $this->assertFalse($result['success']);

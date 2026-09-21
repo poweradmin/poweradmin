@@ -63,7 +63,7 @@ class DnsIdnService
         // Convert punycode (xn--) to UTF-8. idn_to_utf8 returns false for inputs
         // it cannot decode (e.g. malformed punycode like "xn--a.com"); fall back
         // to the original name so display code never gets a bool.
-        $result = idn_to_utf8(htmlspecialchars($domainName), IDNA_NONTRANSITIONAL_TO_ASCII);
+        $result = idn_to_utf8($domainName, IDNA_NONTRANSITIONAL_TO_ASCII);
         return $result !== false ? $result : $domainName;
     }
 

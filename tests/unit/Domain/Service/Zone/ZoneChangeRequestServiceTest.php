@@ -769,7 +769,9 @@ class ZoneChangeRequestServiceTest extends TestCase
             $this->soa,
             $this->createMock(RecordCommentService::class),
             $this->createMock(RecordCommentSyncService::class),
-            $this->createMock(AuditService::class)
+            $this->createMock(AuditService::class),
+            $showComments,
+            true
         );
 
         return new ZoneChangeRequestService(
@@ -785,6 +787,8 @@ class ZoneChangeRequestServiceTest extends TestCase
             $this->backend,
             $this->db,
             $config,
+            $showComments,
+            true,
             $recordComments,
             $changeset,
             $reviewerPermissions,

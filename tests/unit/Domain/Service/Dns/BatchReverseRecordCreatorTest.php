@@ -22,16 +22,14 @@ class BatchReverseRecordCreatorTest extends TestCase
         ?RecordManagerInterface $recordManager = null,
         ?ConfigurationManager $config = null,
         ?RecordRepositoryInterface $recordRepository = null,
-        ?Closure $dnssecProvider = null
+        ?Closure $dnssecProvider = null,
+        bool $reverseHandling = true
     ): BatchReverseRecordCreator {
         $audit = $this->createMock(AuditService::class);
 
         if ($config === null) {
             $config = $this->createMock(ConfigurationManager::class);
             $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-                if ($group === 'interface' && $key === 'add_reverse_record') {
-                    return RecordWriteResult::ok(1);
-                }
                 if ($group === 'dns' && $key === 'prevent_duplicate_ptr') {
                     return RecordWriteResult::ok(1);
                 }
@@ -51,7 +49,7 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $dnssecProvider ??= fn() => $this->createMock(DnssecProviderInterface::class);
 
-        return new BatchReverseRecordCreator($config, $audit, $domainRepository, $recordRepository ?? $this->createMock(RecordRepositoryInterface::class), $recordManager, $dnssecProvider, $ipValidator);
+        return new BatchReverseRecordCreator($config, $audit, $domainRepository, $recordRepository ?? $this->createMock(RecordRepositoryInterface::class), $recordManager, $dnssecProvider, $reverseHandling, $ipValidator);
     }
 
     private function dnssecConfig(bool $enabled): ConfigurationManager
@@ -60,9 +58,6 @@ class BatchReverseRecordCreatorTest extends TestCase
         $config->method('get')->willReturnCallback(function ($group, $key, $default = null) use ($enabled) {
             if ($group === 'dnssec' && $key === 'enabled') {
                 return $enabled;
-            }
-            if ($group === 'interface' && $key === 'add_reverse_record') {
-                return RecordWriteResult::ok(1);
             }
             return $default;
         });
@@ -498,10 +493,7 @@ class BatchReverseRecordCreatorTest extends TestCase
 
     public function testCreateIPv4NetworkRejectsWhenReverseRecordsDisabled(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturn(false);
-
-        $result = $this->createService(null, null, $config)->createIPv4Network('192.168.1.0/24', 'host', 'example.com', '1', 3600);
+        $result = $this->createService(reverseHandling: false)->createIPv4Network('192.168.1.0/24', 'host', 'example.com', '1', 3600);
 
         $this->assertSame(['success' => false, 'type' => 'error', 'message' => 'Reverse record creation is not allowed.'], $result);
     }
@@ -609,9 +601,6 @@ class BatchReverseRecordCreatorTest extends TestCase
     {
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'interface' && $key === 'add_reverse_record') {
-                return RecordWriteResult::ok(1);
-            }
             if ($group === 'dns' && $key === 'prevent_duplicate_ptr') {
                 return false;
             }

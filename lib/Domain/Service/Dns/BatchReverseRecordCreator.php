@@ -53,6 +53,7 @@ class BatchReverseRecordCreator
 
     /**
      * @param Closure(): ZoneRectifierInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
+     * @param bool $reverseHandling Whether PTR records may be created at all
      */
     public function __construct(
         ConfigurationInterface $config,
@@ -61,6 +62,7 @@ class BatchReverseRecordCreator
         RecordLookupInterface&RecordListingInterface $recordRepository,
         RecordManagerInterface $recordManager,
         Closure $dnssecProvider,
+        private readonly bool $reverseHandling,
         ?IPAddressValidator $ipValidator = null
     ) {
         $this->config = $config;
@@ -105,7 +107,7 @@ class BatchReverseRecordCreator
         ?int $forwardTtl = null,
         ?int $matchingPtrTtl = null
     ): array {
-        if (!$this->config->get('interface', 'add_reverse_record')) {
+        if (!$this->reverseHandling) {
             return $this->createErrorResponse('Reverse record creation is not allowed.');
         }
 
@@ -200,7 +202,7 @@ class BatchReverseRecordCreator
         bool $onlyMatchingRecords = false,
         ?int $matchingPtrTtl = null
     ): array {
-        if (!$this->config->get('interface', 'add_reverse_record')) {
+        if (!$this->reverseHandling) {
             return $this->createErrorResponse('Reverse record creation is not allowed.');
         }
 

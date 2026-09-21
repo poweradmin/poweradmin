@@ -135,7 +135,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
             $this->recordManager,
             $this->reverseCreator,
             $this->audit,
-            ConfigurationManager::getInstance()
+            (bool)ConfigurationManager::getInstance()->get('interface', 'add_reverse_record', false)
         ));
     }
 
