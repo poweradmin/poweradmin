@@ -22,42 +22,37 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
-use Poweradmin\Application\Controller\Record\EditRecordController;
+use Poweradmin\Application\Controller\Record\DeleteRecordsController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 use ReflectionMethod;
 use ReflectionProperty;
 
 /**
- * Builds the edit-record controller through the ControllerEnvironment seam.
+ * Builds the multi-record delete controller through the ControllerEnvironment
+ * seam, wiring its private collaborators off the seam's service factory.
  *
- * Its constructor reaches past the service factory into the repository factory
- * to build the comment service, so that one is handed in ready-made; the rest
- * is wired exactly as the real constructor wires it.
+ * redirect() and showError() end the request in production, so each throws a
+ * ControllerHalt to stop the run at the same statement.
  */
-class TestableEditRecordController extends EditRecordController
+class TestableDeleteRecordsController extends DeleteRecordsController
 {
     /** @var list<array{0: string, 1: array<string, mixed>}> */
     public array $rendered = [];
-    public ?string $redirectedTo = null;
 
-    public function __construct(array $request, ControllerEnvironment $environment, RecordCommentService $recordCommentService)
+    public function __construct(array $request, ControllerEnvironment $environment)
     {
         (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
 
-        $this->plant('recordCommentService', $recordCommentService);
-        $this->plant('recordTypeService', new RecordTypeService($this->getConfig()));
         $this->plant('userContextService', new UserContextService());
         $this->plant('permissionService', $this->services()->permissionService());
     }
 
     private function plant(string $property, object $value): void
     {
-        (new ReflectionProperty(EditRecordController::class, $property))->setValue($this, $value);
+        (new ReflectionProperty(DeleteRecordsController::class, $property))->setValue($this, $value);
     }
 
     public function render(string $template, array $params): void
@@ -65,15 +60,8 @@ class TestableEditRecordController extends EditRecordController
         $this->rendered[] = [$template, $params];
     }
 
-    /** @return array<string, mixed> */
-    public function renderedParams(): array
-    {
-        return $this->rendered[0][1] ?? [];
-    }
-
     public function redirect(string $url, array $args = []): void
     {
-        $this->redirectedTo = $url;
         throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
     }
 

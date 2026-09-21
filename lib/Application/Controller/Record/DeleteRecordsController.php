@@ -26,10 +26,9 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Service\ChangeRequestMessages;
-use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
+use Poweradmin\Domain\Service\Dns\RecordBatchDeletionOutcome;
 use Poweradmin\Domain\Utility\IpHelper;
 
 /**
@@ -37,14 +36,12 @@ use Poweradmin\Domain\Utility\IpHelper;
  */
 class DeleteRecordsController extends BaseController
 {
-    private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->reverseRecordCreator = $this->services()->reverseRecordCreator();
         $this->userContextService = new UserContextService();
         $this->permissionService = $this->services()->permissionService();
     }
@@ -109,72 +106,22 @@ class DeleteRecordsController extends BaseController
      */
     public function deleteRecords(array $record_ids): void
     {
-        $recordRepository = $this->services()->recordRepository();
-        $recordManager = $this->services()->recordManager();
         $domainRepository = $this->services()->domainRepository();
-        $audit = $this->services()->auditService();
 
         // One submission, one changeset, so a multi-record delete reads as a single
         // action in the change log rather than N unrelated deletions. The selection can
         // span zones, so the changeset carries no zone of its own.
         $comment = (string)($this->httpRequest->getPostParam('change_comment') ?? '');
-        [$deleted_count, $affected_zones] = $this->services()->recordChangeLog()->withChangeset(null, $comment, function () use ($record_ids, $recordRepository, $recordManager, $audit): array {
-            $deleted_count = 0;
-            $affected_zones = [];
-            foreach ($record_ids as $record_id) {
-                $record_info = $recordRepository->getRecordFromId($record_id);
-                if ($record_info === null) {
-                    continue;
-                }
-
-                $zid = $recordRepository->getZoneIdFromRecordId($record_id);
-
-                // 0 means the record no longer exists
-                if ($zid > 0) {
-                    // Check if this is an A or AAAA record that might have a corresponding PTR record
-                    $hasPtrRecord = false;
-                    if (
-                        ($record_info['type'] === RecordType::A || $record_info['type'] === RecordType::AAAA) &&
-                        $this->config->get('interface', 'add_reverse_record', false)
-                    ) {
-                        $hasPtrRecord = true;
-                    }
-
-                    $deleted = $recordManager->deleteRecord($record_id, false);
-                    if ($deleted->success) {
-                        $deleted_count++;
-                        $affected_zones[$zid] = true;
-
-                        $audit->logRecordDelete(
-                            $zid,
-                            (string)$record_info['type'],
-                            (string)$record_info['name'],
-                            (string)$record_info['content'],
-                            $record_info['ttl'],
-                            $record_info['prio'] ?? null
-                        );
-
-                        // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
-                        $delete_ptr = $this->httpRequest->getPostParam('delete_ptr') === '1';
-                        if ($hasPtrRecord && $delete_ptr) {
-                            $this->reverseRecordCreator->deleteReverseRecord(
-                                $record_info['type'],
-                                $record_info['content'],
-                                $record_info['name']
-                            );
-                        }
-                    } else {
-                        $this->addSystemMessage('error', (string)$deleted->message);
-                    }
-                }
-            }
-
-            return [$deleted_count, $affected_zones];
-        });
-
-        foreach (array_keys($affected_zones) as $zone_id) {
-            $recordManager->finalizeZone($zone_id);
+        $delete_ptr = $this->httpRequest->getPostParam('delete_ptr') === '1';
+        $outcome = $this->services()->recordChangeLog()->withChangeset(
+            null,
+            $comment,
+            fn(): RecordBatchDeletionOutcome => $this->services()->recordDeletionService()->deleteMany($record_ids, $delete_ptr)
+        );
+        foreach ($outcome->errors as $error) {
+            $this->addSystemMessage('error', $error);
         }
+        $deleted_count = $outcome->deletedCount;
 
         $redirectPage = 'search';
         $messageKey = 'search';

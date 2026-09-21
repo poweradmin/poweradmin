@@ -28,7 +28,12 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Application\Service\RecordCommentService;
+use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Application\Service\RecordEditService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
@@ -36,7 +41,10 @@ use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
+use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -57,6 +65,9 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
     private ZoneReadRepositoryInterface&MockObject $zones;
     private RecordRepositoryInterface&MockObject $records;
     private RecordManagerInterface&MockObject $recordManager;
+    private ReverseRecordCreator&MockObject $reverseCreator;
+    private RecordCommentService&MockObject $comments;
+    private RecordCommentSyncService&MockObject $commentSync;
 
     /** @var array<string, mixed> */
     private array $zoneRow = ['id' => self::ZONE_ID, 'name' => self::ZONE_NAME, 'type' => 'MASTER'];
@@ -69,6 +80,9 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->zones = $this->createMock(ZoneReadRepositoryInterface::class);
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->recordManager = $this->createMock(RecordManagerInterface::class);
+        $this->reverseCreator = $this->createMock(ReverseRecordCreator::class);
+        $this->comments = $this->createMock(RecordCommentService::class);
+        $this->commentSync = $this->createMock(RecordCommentSyncService::class);
         $this->scope = ApiKeyScope::unrestricted();
 
         $this->permissions->method('canEditZoneContent')->willReturn(true);
@@ -335,10 +349,8 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
 
     public function testASuccessfulUpdateReturnsTheRereadRow(): void
     {
-        $this->records->method('getRecordById')->willReturn(
-            $this->existingRecord(),
-            $this->existingRecord(['content' => '192.0.2.9', 'ttl' => 60])
-        );
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9', 'ttl' => 60]));
         $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
 
         $response = $this->update(['content' => '192.0.2.9']);
@@ -352,11 +364,125 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertFalse($record['ptr_updated']);
     }
 
+    public function testTheUpdateResponseBodyIsTheDocumentedEnvelope(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9', 'ttl' => 60, 'disabled' => '1', 'auth' => 1]));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+
+        $response = $this->update(['content' => '192.0.2.9', 'ttl' => 60, 'disabled' => true]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'record' => [
+                    'id' => self::RECORD_ID,
+                    'zone_id' => self::ZONE_ID,
+                    'name' => 'www',
+                    'type' => 'A',
+                    'content' => '192.0.2.9',
+                    'ttl' => 60,
+                    'priority' => 0,
+                    'disabled' => true,
+                    'auth' => true,
+                    'ptr_updated' => false,
+                ],
+            ],
+            'message' => 'Record updated successfully',
+        ], $this->decode($response));
+    }
+
+    public function testTheFallbackResponseBodyMatchesTheRereadOne(): void
+    {
+        // The API backend re-keys a record on content change; the body is then built
+        // from the submitted values and must carry the same keys in the same order
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn(null);
+        $this->records->method('getNewRecordId')->willReturn(4242);
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+
+        $response = $this->update(['content' => '192.0.2.9', 'ttl' => 60, 'priority' => 5, 'disabled' => true]);
+
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'record' => [
+                    'id' => 4242,
+                    'zone_id' => self::ZONE_ID,
+                    'name' => 'www',
+                    'type' => 'A',
+                    'content' => '192.0.2.9',
+                    'ttl' => 60,
+                    'priority' => 5,
+                    'disabled' => true,
+                    'auth' => true,
+                    'ptr_updated' => false,
+                ],
+            ],
+            'message' => 'Record updated successfully',
+        ], $this->decode($response));
+    }
+
+    public function testUpdatePtrSyncsTheReverseRecordWithTheRereadValuesAndReportsIt(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9', 'ttl' => 60]));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->reverseCreator->expects($this->once())->method('updateReverseRecord')
+            ->with('A', '192.0.2.1', 'www.example.com', 'A', '192.0.2.9', 'www.example.com', self::ZONE_ID, 60, 0)
+            ->willReturn(['success' => true, 'message' => 'PTR record updated']);
+
+        $response = $this->update(['content' => '192.0.2.9', 'update_ptr' => true]);
+        $body = $this->decode($response);
+
+        $this->assertSame('Record updated successfully PTR record updated', $body['message']);
+        $this->assertTrue($body['data']['record']['ptr_updated']);
+    }
+
+    public function testAFailedPtrSyncKeepsTheUpdateAndReportsTheFailureInTheMessage(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->reverseCreator->method('updateReverseRecord')->willReturn(['success' => false, 'message' => 'no reverse zone']);
+
+        $response = $this->update(['content' => '192.0.2.9', 'update_ptr' => true]);
+        $body = $this->decode($response);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('Record updated successfully PTR record update failed: no reverse zone', $body['message']);
+        $this->assertFalse($body['data']['record']['ptr_updated']);
+    }
+
+    public function testAThrowingPtrSyncIsReportedTheSameWay(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->reverseCreator->method('updateReverseRecord')->willThrowException(new \RuntimeException('backend down'));
+
+        $response = $this->update(['content' => '192.0.2.9', 'update_ptr' => true]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('Record updated successfully PTR record update failed: backend down', $this->messageOf($response));
+    }
+
+    public function testUpdatePtrOnANonAddressRecordNeverTouchesTheReverseCreator(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord(['type' => 'TXT', 'content' => '"x"']));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->reverseCreator->expects($this->never())->method('updateReverseRecord');
+
+        $response = $this->update(['content' => 'y', 'update_ptr' => true]);
+
+        $this->assertSame('Record updated successfully', $this->messageOf($response));
+    }
+
     public function testWhenTheOldIdNoLongerResolvesTheNewOneIsLookedUp(): void
     {
         // The API backend re-keys a record when its content changes; returning the
         // stale id would hand the caller an identifier that 404s next request.
-        $this->records->method('getRecordById')->willReturn($this->existingRecord(), null);
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn(null);
         $this->records->expects($this->once())
             ->method('getNewRecordId')
             ->with(self::ZONE_ID, 'www.example.com', 'A', '192.0.2.9')
@@ -371,7 +497,8 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
 
     public function testTheSubmittedRecordIdSurvivesWhenNoNewIdIsFound(): void
     {
-        $this->records->method('getRecordById')->willReturn($this->existingRecord(), null);
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn(null);
         $this->records->method('getNewRecordId')->willReturn(null);
         $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
 
@@ -382,10 +509,8 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
 
     public function testATxtUpdateReQuotesOnTheWayInAndUnquotesOnTheWayOut(): void
     {
-        $this->records->method('getRecordById')->willReturn(
-            $this->existingRecord(['type' => 'TXT', 'content' => '"old"']),
-            $this->existingRecord(['type' => 'TXT', 'content' => '"new value"'])
-        );
+        $this->records->method('getRecordById')->willReturn($this->existingRecord(['type' => 'TXT', 'content' => '"old"']));
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['type' => 'TXT', 'content' => '"new value"']));
         $this->recordManager->expects($this->once())
             ->method('editRecord')
             ->with($this->callback(static fn(array $data): bool => $data['content'] === '"new value"'))
@@ -394,6 +519,60 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $record = $this->decode($this->update(['content' => 'new value']))['data']['record'];
 
         $this->assertSame('new value', $record['content']);
+    }
+
+    public function testACommentInTheBodyIsStoredWithTheWriteAndAgainstTheRecord(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9']));
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->with($this->anything(), true, ['content' => 'Web server', 'account' => 'apiuser'])
+            ->willReturn(RecordWriteResult::ok());
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', 'Web server', self::RECORD_ID, 'apiuser');
+
+        $response = $this->update(['content' => '192.0.2.9', 'comment' => 'Web server']);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testWithoutACommentInTheBodyTheWriteCarriesNoneAndTheRecordCommentIsLeftAlone(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9']));
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->with($this->anything(), true, null)
+            ->willReturn(RecordWriteResult::ok());
+        $this->comments->expects($this->never())->method('updateCommentForRecord');
+        $this->comments->expects($this->never())->method('updateComment');
+
+        $this->update(['content' => '192.0.2.9']);
+    }
+
+    public function testARenameWithoutACommentCarriesTheExistingCommentAlong(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['name' => 'web.example.com']));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->comments->method('findComment')->with(self::ZONE_ID, 'www.example.com', 'A')
+            ->willReturn(RecordComment::create(self::ZONE_ID, 'www.example.com', 'A', 'keep me', 'someone'));
+        $this->comments->expects($this->once())->method('updateComment')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', 'web.example.com', 'A', 'keep me', 'apiuser');
+
+        $response = $this->update(['name' => 'web']);
+
+        $this->assertSame('web', $this->decode($response)['data']['record']['name']);
+    }
+
+    public function testANonStringCommentIs400WithTheSharedMessage(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->expects($this->never())->method('editRecord');
+
+        $response = $this->update(['comment' => 7]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Invalid field types in request body', $this->messageOf($response));
     }
 
     public function testDeletingARecordFromAnotherZoneIs404(): void
@@ -511,6 +690,21 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('domainRepository')->willReturn($domains);
         $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
+        $factory->method('reverseRecordCreator')->willReturn($this->reverseCreator);
+        $factory->method('userRepository')->willReturn($this->stubUsers());
+        // The real edit flow over the same doubles, so the PUT is characterized end to end
+        $factory->method('recordEditService')->willReturn(new RecordEditService(
+            $this->recordManager,
+            $this->records,
+            $domains,
+            $this->createMock(SOARecordManagerInterface::class),
+            $this->reverseCreator,
+            $this->comments,
+            $this->commentSync,
+            $this->createMock(AuditService::class),
+            $this->createMock(ConfigurationInterface::class),
+            new NullLogger()
+        ));
 
         $ttlResolver = $this->createMock(ReverseTtlResolver::class);
         $ttlResolver->method('resolveTtlForType')->willReturn(3600);

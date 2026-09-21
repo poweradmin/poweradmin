@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
@@ -46,11 +47,13 @@ class ZonesRRSetsController extends PublicApiController
     private ApiPermissionService $apiPermissionService;
     private ReverseTtlResolver $reverseTtlResolver;
     private RRSetReplaceService $rrsetReplaceService;
+    private BackendCapabilitiesInterface $backendProvider;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
+        $this->backendProvider = $this->services()->dnsBackendProvider();
         $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
         $this->zoneRepository = $this->services()->zoneRepository();
         $this->recordRepository = $this->services()->recordRepository();
@@ -638,8 +641,12 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiError('RRSet not found', 404);
             }
 
-            // Start transaction
-            $this->db->beginTransaction();
+            // On the API backend the deletes are already sent by the time a local
+            // transaction could roll back, so it is only opened where it can undo them
+            $useTransaction = $this->backendProvider->supportsLocalWriteTransaction();
+            if ($useTransaction) {
+                $this->db->beginTransaction();
+            }
 
             try {
                 $recordsDeleted = 0;
@@ -647,7 +654,9 @@ class ZonesRRSetsController extends PublicApiController
 
                 foreach ($records as $record) {
                     if (!$this->recordManager->deleteRecord($record['id'], false)->success) {
-                        $this->db->rollBack();
+                        if ($useTransaction) {
+                            $this->db->rollBack();
+                        }
                         return $this->returnApiError(
                             'Failed to delete record with ID ' . $record['id'] . ' (name: ' . $record['name'] . ', type: ' . $type . ')',
                             500
@@ -658,7 +667,9 @@ class ZonesRRSetsController extends PublicApiController
 
                 // Verify all records were deleted
                 if ($recordsDeleted !== $totalRecords) {
-                    $this->db->rollBack();
+                    if ($useTransaction) {
+                        $this->db->rollBack();
+                    }
                     return $this->returnApiError(
                         'RRSet deletion incomplete: deleted ' . $recordsDeleted . ' of ' . $totalRecords . ' records',
                         500
@@ -668,7 +679,9 @@ class ZonesRRSetsController extends PublicApiController
                 if ($type !== 'SOA') {
                     $this->services()->soaRecordManager()->updateSOASerial($zoneId);
                 }
-                $this->db->commit();
+                if ($useTransaction) {
+                    $this->db->commit();
+                }
                 $this->recordManager->finalizeZone($zoneId, false);
 
                 $this->services()->auditService()->logApiRrsetDelete($zoneId, $fqdn, $type, $recordsDeleted);
@@ -680,7 +693,9 @@ class ZonesRRSetsController extends PublicApiController
                     204
                 );
             } catch (\Throwable $e) {
-                $this->db->rollBack();
+                if ($useTransaction) {
+                    $this->db->rollBack();
+                }
                 throw $e;
             }
         } catch (\Throwable $e) {

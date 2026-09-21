@@ -22,9 +22,9 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
-use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\RecordAddResult;
+use Poweradmin\Application\Service\RecordEditRequest;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -586,7 +586,8 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                 new OA\Property(property: 'priority', type: 'integer', example: 10),
                 new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
-                new OA\Property(property: 'update_ptr', type: 'boolean', example: false, description: 'Sync PTR record with new value (A/AAAA only). Default: false')
+                new OA\Property(property: 'update_ptr', type: 'boolean', example: false, description: 'Sync PTR record with new value (A/AAAA only). Default: false'),
+                new OA\Property(property: 'comment', type: 'string', example: 'Web server', description: 'Record comment to store; an empty string clears it. Omit to leave the comment unchanged')
             ]
         )
     )]
@@ -685,7 +686,13 @@ class ZonesRecordsController extends PublicApiController
             $prio = $this->inputInt($input, 'priority', (int)($existingRecord['prio'] ?? 0));
             $disabled = $this->inputIntFromBool($input, 'disabled', DbCompat::boolFromDb($existingRecord['disabled'] ?? 0));
             $updatePtr = $this->inputBool($input, 'update_ptr', false);
-            if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
+            // A comment in the body is stored the way the edit form stores one;
+            // without it the record's comment is left alone (a rename carries it along)
+            $comment = $this->inputString($input, 'comment');
+            if (
+                $name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null
+                || ($comment === null && array_key_exists('comment', $input))
+            ) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
 
@@ -699,119 +706,66 @@ class ZonesRecordsController extends PublicApiController
             }
             $name = $this->normalizeV2RecordName($name, (string)$zone['name']);
 
-            $oldType = strtoupper((string)$existingRecord['type']);
-            $oldContent = (string)$existingRecord['content'];
-            $oldName = (string)$existingRecord['name'];
-
             // Format content the same way create does so TXT records round-trip
             // (GET strips the quotes V2 adds; a PUT echoing GET output must re-quote).
             $content = $this->formatV2RecordContent($type, $content);
 
-            $recordData = [
-                'rid' => $recordId,
-                'zid' => $zoneId,
-                'name' => $name,
-                'type' => strtoupper($type),
-                'content' => $content,
-                'ttl' => $ttl,
-                'prio' => $prio,
-                'disabled' => $disabled
-            ];
-
             // Validate TTL
             // 0 is RFC-valid ("do not cache") and TTLValidator accepts it
-            if ($recordData['ttl'] < 0) {
+            if ($ttl < 0) {
                 return $this->returnApiError('TTL must not be negative', 400);
             }
 
             // Validate disabled field
-            if ($recordData['disabled'] !== 0 && $recordData['disabled'] !== 1) {
+            if ($disabled !== 0 && $disabled !== 1) {
                 return $this->returnApiError('Disabled field must be 0 or 1', 400);
             }
 
-            $result = $this->recordManager->editRecord($recordData);
-            if (!$result->success) {
-                return $this->returnApiError($this->recordWriteErrorMessage($result, 'Failed to update record'), $result->status);
+            // The same edit flow as the edit-record page: the write, the PTR sync,
+            // the audit line and the record comment follow the shared rules
+            $edited = $this->services()->recordEditService()->edit(new RecordEditRequest(
+                $zoneId,
+                (string)$zone['name'],
+                $recordId,
+                $existingRecord,
+                $name,
+                $newType,
+                $content,
+                $ttl,
+                $prio,
+                $disabled,
+                $comment,
+                $updatePtr,
+                false,
+                $this->getAuthenticatedUsername()
+            ));
+            if (!$edited->isOk()) {
+                return $this->returnApiError($this->recordWriteErrorMessage($edited->write, 'Failed to update record'), $edited->write->status);
             }
 
-            // Get the updated record to return.
-            // In API mode the record ID may change when name/type/content/prio change,
-            // so fall back to the submitted data if the old ID no longer resolves.
-            $updatedRecord = $this->recordRepository->getRecordById($recordId);
+            $ptrMessage = '';
+            if ($edited->ptrUpdated === true) {
+                $ptrMessage = ' ' . $edited->ptrMessage;
+            } elseif ($edited->ptrFailed()) {
+                $ptrMessage = ' PTR record update failed: ' . $edited->ptrMessage;
+            }
 
             // Get zone name for stripping suffix
             $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
-            $ptrUpdated = false;
-            $ptrMessage = '';
-            if ($updatePtr && ($oldType === 'A' || $oldType === 'AAAA' || $recordData['type'] === 'A' || $recordData['type'] === 'AAAA')) {
-                try {
-                    $newName = $updatedRecord['name'] ?? $recordData['name'];
-                    $newContent = $updatedRecord['content'] ?? $recordData['content'];
-
-                    $reverseRecordCreator = $this->services()->reverseRecordCreator();
-
-                    $ptrResult = $reverseRecordCreator->updateReverseRecord(
-                        $oldType,
-                        $oldContent,
-                        $oldName,
-                        $recordData['type'],
-                        (string)$newContent,
-                        $newName,
-                        $zoneId,
-                        (int)($updatedRecord['ttl'] ?? $recordData['ttl']),
-                        (int)($updatedRecord['prio'] ?? $recordData['prio'])
-                    );
-
-                    if ($ptrResult['success']) {
-                        $ptrUpdated = true;
-                        $ptrMessage = ' ' . $ptrResult['message'];
-                    } else {
-                        $ptrMessage = ' PTR record update failed: ' . $ptrResult['message'];
-                    }
-                } catch (Exception $e) {
-                    $ptrMessage = ' PTR record update failed: ' . $e->getMessage();
-                    $this->logger->error('PTR record update failed: {error}', ['error' => $e->getMessage()]);
-                }
-            }
-
-            if ($updatedRecord !== null) {
-                $formattedRecord = [
-                    'id' => $this->formatRecordId($updatedRecord['id']),
-                    'zone_id' => $zoneId,
-                    'name' => DnsHelper::stripZoneSuffix($updatedRecord['name'], $zoneName),
-                    'type' => $updatedRecord['type'],
-                    'content' => $this->stripTxtQuotes($updatedRecord['content'], $updatedRecord['type']),
-                    'ttl' => (int)$updatedRecord['ttl'],
-                    'priority' => isset($updatedRecord['prio']) ? (int)$updatedRecord['prio'] : 0,
-                    'disabled' => isset($updatedRecord['disabled']) ? (bool)DbCompat::boolFromDb($updatedRecord['disabled']) : false,
-                    'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true,
-                    'ptr_updated' => $ptrUpdated
-                ];
-            } else {
-                // The old id is dead once name/type/content/prio change, so look up
-                // the one the record now has. Returning the old one would hand the
-                // caller an identifier that 404s on its next request.
-                $newRecordId = $this->recordRepository->getNewRecordId(
-                    $zoneId,
-                    $recordData['name'],
-                    $recordData['type'],
-                    $recordData['content']
-                ) ?? $recordId;
-
-                $formattedRecord = [
-                    'id' => $this->formatRecordId($newRecordId),
-                    'zone_id' => $zoneId,
-                    'name' => DnsHelper::stripZoneSuffix($recordData['name'], $zoneName),
-                    'type' => $recordData['type'],
-                    'content' => $this->stripTxtQuotes($recordData['content'], $recordData['type']),
-                    'ttl' => $recordData['ttl'],
-                    'priority' => $recordData['prio'],
-                    'disabled' => (bool)$recordData['disabled'],
-                    'auth' => true,
-                    'ptr_updated' => $ptrUpdated
-                ];
-            }
+            $updatedRecord = $edited->record;
+            $formattedRecord = [
+                'id' => $this->formatRecordId($edited->recordId ?? $recordId),
+                'zone_id' => $zoneId,
+                'name' => DnsHelper::stripZoneSuffix($updatedRecord['name'], $zoneName),
+                'type' => $updatedRecord['type'],
+                'content' => $this->stripTxtQuotes($updatedRecord['content'], $updatedRecord['type']),
+                'ttl' => (int)$updatedRecord['ttl'],
+                'priority' => isset($updatedRecord['prio']) ? (int)$updatedRecord['prio'] : 0,
+                'disabled' => isset($updatedRecord['disabled']) ? (bool)DbCompat::boolFromDb($updatedRecord['disabled']) : false,
+                'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true,
+                'ptr_updated' => $edited->ptrUpdated === true
+            ];
 
             $this->services()->auditService()->logApiRecordEdit($zoneId, $formattedRecord['name'], $formattedRecord['type'], $formattedRecord['content']);
 

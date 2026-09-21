@@ -23,11 +23,14 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 
 use PHPUnit\Framework\MockObject\MockObject;
+use PDO;
+use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesRRSetsController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
@@ -58,6 +61,8 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
     /** @var array<string, mixed>|null */
     private ?array $zoneRow = ['id' => self::ZONE_ID, 'name' => self::ZONE_NAME, 'type' => 'MASTER'];
     private ApiKeyScope $scope;
+    private bool $localTransactions = true;
+    private ?PDO $db = null;
 
     protected function setUp(): void
     {
@@ -266,6 +271,69 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
     }
 
     /**
+     * A PDO that answers the request logging but pins whether a transaction opens.
+     */
+    private function transactionSpy(bool $expected): PDO
+    {
+        $statement = $this->createMock(PDOStatement::class);
+        $statement->method('fetchColumn')->willReturn('apiuser');
+        $db = $this->createMock(PDO::class);
+        $db->method('prepare')->willReturn($statement);
+        $db->expects($expected ? $this->once() : $this->never())->method('beginTransaction')->willReturn(true);
+        $db->expects($expected ? $this->once() : $this->never())->method('commit')->willReturn(true);
+        $db->expects($this->never())->method('rollBack');
+
+        return $db;
+    }
+
+    public function testASqlBackendDeleteRunsInsideALocalTransaction(): void
+    {
+        $this->records->method('getRRSetRecords')->willReturn([
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 60],
+        ]);
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->db = $this->transactionSpy(true);
+
+        $response = $this->invokeHandler('deleteRRSet', ['name' => 'www', 'type' => 'A']);
+
+        $this->assertSame(204, $response->getStatusCode());
+    }
+
+    public function testAnApiBackendDeleteOpensNoTransactionItCouldNotRollBack(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRRSetRecords')->willReturn([
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 60],
+        ]);
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, false);
+        $this->db = $this->transactionSpy(false);
+
+        $response = $this->invokeHandler('deleteRRSet', ['name' => 'www', 'type' => 'A']);
+
+        $this->assertSame(204, $response->getStatusCode());
+    }
+
+    public function testAFailedRowOnTheApiBackendReports500WithoutARollBack(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRRSetRecords')->willReturn([
+            ['id' => 9, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 60],
+        ]);
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::backendFailure('nope'));
+        $statement = $this->createMock(PDOStatement::class);
+        $statement->method('fetchColumn')->willReturn('apiuser');
+        $this->db = $this->createMock(PDO::class);
+        $this->db->method('prepare')->willReturn($statement);
+        $this->db->expects($this->never())->method('rollBack');
+
+        $response = $this->invokeHandler('deleteRRSet', ['name' => 'www', 'type' => 'A']);
+
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertStringContainsString('Failed to delete record with ID 9', $this->messageOf($response));
+    }
+
+    /**
      * @param array<string, mixed> $extraPathParameters
      */
     private function invokeHandler(string $handler, array $extraPathParameters = []): JsonResponse
@@ -286,7 +354,14 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $ttlResolver = $this->createMock(ReverseTtlResolver::class);
         $ttlResolver->method('resolveTtlForType')->willReturn(3600);
 
+        $backend = $this->createMock(BackendCapabilitiesInterface::class);
+        $backend->method('supportsLocalWriteTransaction')->willReturnCallback(fn(): bool => $this->localTransactions);
+
+        if ($this->db !== null) {
+            $this->inject($controller, 'db', $this->db);
+        }
         $this->inject($controller, 'serviceFactory', $factory);
+        $this->inject($controller, 'backendProvider', $backend);
         $this->inject($controller, 'zoneRepository', $this->zones);
         $this->inject($controller, 'recordRepository', $this->records);
         $this->inject($controller, 'recordManager', $this->recordManager);

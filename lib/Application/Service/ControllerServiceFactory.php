@@ -38,6 +38,7 @@ use Poweradmin\Application\Service\Factory\ZoneServices;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\RecordAddService;
+use Poweradmin\Application\Service\RecordEditService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\RepositoryFactory;
@@ -516,6 +517,11 @@ class ControllerServiceFactory
     public function recordAddService(): RecordAddService
     {
         return $this->records->recordAddService();
+    }
+
+    public function recordEditService(): RecordEditService
+    {
+        return $this->records->recordEditService();
     }
 
     public function changeApprovalContext(): ChangeApprovalContext

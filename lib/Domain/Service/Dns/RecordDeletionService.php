@@ -28,7 +28,8 @@ use Poweradmin\Domain\Port\AuditLoggerInterface;
 
 /**
  * Deletes a record and, when asked and when reverse handling is on, the PTR
- * of an A/AAAA record or the A/AAAA of a PTR record.
+ * of an A/AAAA record or the A/AAAA of a PTR record. A selection of records
+ * is deleted the same way, with each affected zone finalized once.
  */
 class RecordDeletionService
 {
@@ -80,5 +81,49 @@ class RecordDeletionService
             && $this->reverseRecordCreator->deleteForwardRecord($record['name'], $record['content']);
 
         return RecordDeletionOutcome::deleted($ptrCandidate, $ptrDeleted, $forwardCandidate, $forwardDeleted);
+    }
+
+    /**
+     * Deletes a selection that may span zones, then bumps and rectifies each
+     * affected zone once. A refused row is reported and the rest still go.
+     *
+     * @param list<int|string> $recordIds
+     * @param bool $deletePtr Also remove the PTR of each deleted A/AAAA record
+     */
+    public function deleteMany(array $recordIds, bool $deletePtr): RecordBatchDeletionOutcome
+    {
+        $deleted = 0;
+        $errors = [];
+        $affectedZones = [];
+
+        foreach ($recordIds as $recordId) {
+            $record = $this->recordRepository->getRecordFromId($recordId);
+            $zoneId = $record === null ? 0 : $this->recordRepository->getZoneIdFromRecordId($recordId);
+            // 0 means the record no longer exists
+            if ($record === null || $zoneId <= 0) {
+                continue;
+            }
+
+            $result = $this->recordManager->deleteRecord($recordId, false);
+            if (!$result->success) {
+                $errors[] = (string)$result->message;
+                continue;
+            }
+
+            $deleted++;
+            $affectedZones[$zoneId] = true;
+            $type = (string)$record['type'];
+            $this->audit->logRecordDelete($zoneId, $type, (string)$record['name'], (string)$record['content'], $record['ttl'], $record['prio'] ?? null);
+
+            if ($deletePtr && $this->reverseHandling && ($type === RecordType::A || $type === RecordType::AAAA)) {
+                $this->reverseRecordCreator->deleteReverseRecord($type, $record['content'], $record['name']);
+            }
+        }
+
+        foreach (array_keys($affectedZones) as $zoneId) {
+            $this->recordManager->finalizeZone($zoneId);
+        }
+
+        return new RecordBatchDeletionOutcome($deleted, $errors);
     }
 }

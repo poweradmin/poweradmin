@@ -29,6 +29,8 @@ use Poweradmin\Application\Controller\Record\EditRecordController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Application\Service\RecordEditService;
+use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
@@ -41,6 +43,8 @@ use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Psr\Log\NullLogger;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -79,6 +83,12 @@ class EditRecordControllerTest extends SeamControllerTestCase
     /** @var array<string, mixed>|null The row handed to RecordManager::editRecord() */
     private ?array $editedRecord = null;
 
+    /** @var array{content: string, account: string}|null The RRset comment handed to editRecord() */
+    private ?array $editedComment = null;
+
+    /** @var array<string, mixed>|null The stored row after a successful write, as a reread returns it */
+    private ?array $savedRecord = null;
+
     private ZoneChangeRequestResult $fileResult;
 
     /** @var array{success: bool, message?: string} */
@@ -105,6 +115,9 @@ class EditRecordControllerTest extends SeamControllerTestCase
     /** @var RecordCommentSyncService&MockObject */
     private RecordCommentSyncService $commentSync;
 
+    /** @var AuditService&MockObject */
+    private AuditService $audit;
+
     /** @var ZoneChangeRequestService&MockObject */
     private ZoneChangeRequestService $changeRequests;
 
@@ -125,18 +138,27 @@ class EditRecordControllerTest extends SeamControllerTestCase
 
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->records->method('getZoneIdFromRecordId')->willReturnCallback(fn(): int => $this->zoneIdOfRecord);
-        $this->records->method('getRecordFromId')->willReturnCallback(fn(): ?array => $this->storedRecord);
+        // Before the write the stored row; after it the row the write left behind
+        $this->records->method('getRecordFromId')->willReturnCallback(fn(): ?array => $this->savedRecord ?? $this->storedRecord);
 
         $this->domains = $this->createMock(DomainRepositoryInterface::class);
         $this->domains->method('getDomainType')->willReturnCallback(fn(): string => $this->zoneType);
         $this->domains->method('getDomainNameById')->willReturnCallback(fn(): ?string => $this->zoneName);
 
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('editRecord')->willReturnCallback(function (array $record): RecordWriteResult {
+        $recordManager->method('editRecord')->willReturnCallback(function (array $record, bool $finalize = true, ?array $comment = null): RecordWriteResult {
             $this->editedRecord = $record;
+            $this->editedComment = $comment;
+            if ($this->editResult->success && $this->storedRecord !== null) {
+                $this->savedRecord = array_merge(
+                    $this->storedRecord,
+                    array_intersect_key($record, array_flip(['name', 'type', 'content', 'ttl', 'prio', 'disabled']))
+                );
+            }
             return $this->editResult;
         });
 
+        $this->audit = $this->createMock(AuditService::class);
         $this->soa = $this->createMock(SOARecordManagerInterface::class);
         $this->reverseCreator = $this->createMock(ReverseRecordCreator::class);
         $this->reverseCreator->method('updateReverseRecord')->willReturnCallback(fn(): array => $this->reverseResult);
@@ -156,9 +178,22 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->factory->method('recordManager')->willReturn($recordManager);
         $this->factory->method('soaRecordManager')->willReturn($this->soa);
         $this->factory->method('reverseRecordCreator')->willReturn($this->reverseCreator);
-        $this->factory->method('auditService')->willReturn($this->createMock(AuditService::class));
+        $this->factory->method('auditService')->willReturn($this->audit);
         $this->factory->method('userPreferenceService')->willReturn($preferences);
         $this->factory->method('zoneChangeRequestService')->willReturn($this->changeRequests);
+        // The real edit flow over the same doubles, so the page is characterized end to end
+        $this->factory->method('recordEditService')->willReturnCallback(fn(): RecordEditService => new RecordEditService(
+            $recordManager,
+            $this->records,
+            $this->domains,
+            $this->soa,
+            $this->reverseCreator,
+            $this->comments,
+            $this->commentSync,
+            $this->audit,
+            ConfigurationManager::getInstance(),
+            new NullLogger()
+        ));
     }
 
     /** @param array<string, array<string, mixed>> $config */
@@ -167,8 +202,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
         return new TestableEditRecordController(
             ['id' => $recordId ?? (string)self::RECORD_ID] + array_merge($_GET, $_POST),
             $this->environment($this->configure($config)),
-            $this->comments,
-            $this->commentSync
+            $this->comments
         );
     }
 
@@ -400,6 +434,50 @@ class EditRecordControllerTest extends SeamControllerTestCase
         );
     }
 
+    public function testAnUnchangedSoaSaveIsNotBumpedWhenTheInstallOptedOut(): void
+    {
+        $content = 'ns1.example.com hostmaster.example.com 2026010101 10800 3600 604800 3600';
+        $this->storedRecord = ['id' => self::RECORD_ID, 'name' => 'example.com', 'type' => 'SOA', 'content' => $content, 'ttl' => 3600, 'prio' => 0];
+        $this->soa->expects($this->never())->method('updateSOASerial');
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'example.com', 'type' => 'SOA', 'content' => $content, 'ttl' => '3600', 'prio' => '0']);
+
+        $this->haltOf($this->makeController(['dns' => ['bump_serial_on_unchanged_save' => false]]));
+    }
+
+    public function testAChangedSoaSaveIsStillBumpedWhenTheInstallOptedOut(): void
+    {
+        $content = 'ns1.example.com hostmaster.example.com 2026010101 10800 3600 604800 3600';
+        $this->storedRecord = ['id' => self::RECORD_ID, 'name' => 'example.com', 'type' => 'SOA', 'content' => $content, 'ttl' => 3600, 'prio' => 0];
+        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID);
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'example.com', 'type' => 'SOA', 'content' => str_replace('10800', '7200', $content), 'ttl' => '3600', 'prio' => '0']);
+
+        $this->haltOf($this->makeController(['dns' => ['bump_serial_on_unchanged_save' => false]]));
+    }
+
+    public function testTheEditIsAuditedWithTheRowBeforeAndAfter(): void
+    {
+        $this->audit->expects($this->once())->method('logRecordEdit')
+            ->with(
+                self::ZONE_ID,
+                $this->callback(static fn(array $before): bool => $before['content'] === '192.0.2.1'),
+                $this->callback(static fn(array $after): bool => $after['content'] === '192.0.2.9' && $after['name'] === 'www.example.com')
+            );
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9']);
+
+        $this->haltOf($this->makeController());
+    }
+
+    public function testARefusedWriteIsNeitherAuditedNorSynced(): void
+    {
+        $this->editResult = RecordWriteResult::failure('Invalid IPv4 address.');
+        $this->audit->expects($this->never())->method('logRecordEdit');
+        $this->reverseCreator->expects($this->never())->method('updateReverseRecord');
+        $this->comments->expects($this->never())->method('updateCommentForRecord');
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => 'nope', 'update_ptr' => '1', 'comment' => 'x']);
+
+        $this->makeController(['interface' => ['show_record_comments' => true]])->run();
+    }
+
     public function testANonSoaEditNeverBumpsTheSerialItself(): void
     {
         $this->soa->expects($this->never())->method('updateSOASerial');
@@ -460,6 +538,26 @@ class EditRecordControllerTest extends SeamControllerTestCase
         ], $this->messagesFor('edit'));
     }
 
+    public function testTickingUpdatePtrHandsTheOldAndTheSavedValuesToTheReverseCreator(): void
+    {
+        $this->reverseCreator->expects($this->once())->method('updateReverseRecord')
+            ->with('A', '192.0.2.1', 'www.example.com', 'A', '192.0.2.9', 'www.example.com', self::ZONE_ID, 300, 0)
+            ->willReturn(['success' => true, 'message' => 'PTR record updated']);
+        $this->post([
+            'rid' => (string)self::RECORD_ID,
+            'name' => 'www',
+            'type' => 'A',
+            'content' => '192.0.2.9',
+            'ttl' => '300',
+            'update_ptr' => '1',
+        ]);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame('/zones/12/edit', $halt->target);
+        $this->assertSame([['success', 'The record has been updated successfully.']], $this->messagesFor('edit'));
+    }
+
     public function testATypeChangeAwayFromAnAddressStillSyncsThePtr(): void
     {
         $this->reverseCreator->expects($this->once())->method('updateReverseRecord')
@@ -487,18 +585,6 @@ class EditRecordControllerTest extends SeamControllerTestCase
             'ttl' => 3600,
             'prio' => 0,
         ];
-        // getRecordFromId() answers the pre-edit row first and the saved row after
-        $rows = [$this->storedRecord, ['name' => 'new.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0]];
-        $this->records = $this->createMock(RecordRepositoryInterface::class);
-        $this->records->method('getZoneIdFromRecordId')->willReturn(self::ZONE_ID);
-        $this->records->method('getRecordFromId')->willReturnCallback(
-            function () use (&$rows): array {
-                return count($rows) > 1 ? array_shift($rows) : $rows[0];
-            }
-        );
-        $this->factory = $this->createMock(\Poweradmin\Application\Service\ControllerServiceFactory::class);
-        $this->rewireFactory();
-
         $this->comments->expects($this->once())->method('findComment')
             ->with(self::ZONE_ID, 'old.example.com', 'A')
             ->willReturn(null);
@@ -507,6 +593,85 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'new', 'type' => 'A', 'content' => '192.0.2.1']);
 
         $this->haltOf($this->makeController());
+    }
+
+    public function testWithCommentsHiddenAFoundCommentFollowsTheRecordToItsNewName(): void
+    {
+        $this->storedRecord = [
+            'id' => self::RECORD_ID,
+            'name' => 'old.example.com',
+            'type' => 'A',
+            'content' => '192.0.2.1',
+            'ttl' => 3600,
+            'prio' => 0,
+        ];
+        $this->comments->method('findComment')->willReturn(RecordComment::create(self::ZONE_ID, 'old.example.com', 'A', 'keep me', 'someone'));
+        $this->comments->expects($this->once())->method('updateComment')
+            ->with(self::ZONE_ID, 'old.example.com', 'A', 'new.example.com', 'A', 'keep me', self::USERNAME);
+
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'new', 'type' => 'A', 'content' => '192.0.2.1']);
+
+        $this->haltOf($this->makeController());
+    }
+
+    public function testWithCommentsHiddenAnUnrenamedEditLeavesCommentsAlone(): void
+    {
+        $this->comments->expects($this->never())->method('findComment');
+        $this->comments->expects($this->never())->method('updateComment');
+        $this->comments->expects($this->never())->method('updateCommentForRecord');
+
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9']);
+
+        $this->haltOf($this->makeController());
+    }
+
+    public function testWithCommentsVisibleARenameWritesTheCommentUnderTheNewName(): void
+    {
+        $this->storedRecord = [
+            'id' => self::RECORD_ID,
+            'name' => 'old.example.com',
+            'type' => 'A',
+            'content' => '192.0.2.1',
+            'ttl' => 3600,
+            'prio' => 0,
+        ];
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'new.example.com', 'A', 'a note', self::RECORD_ID, self::USERNAME);
+        $this->comments->expects($this->never())->method('updateComment');
+        $this->commentSync->expects($this->never())->method('updateRelatedRecordComments');
+
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'new', 'type' => 'A', 'content' => '192.0.2.1', 'comment' => 'a note']);
+
+        $this->haltOf($this->makeController(['interface' => ['show_record_comments' => true]]));
+
+        $this->assertSame(['content' => 'a note', 'account' => self::USERNAME], $this->editedComment, 'the write itself carries the RRset comment');
+    }
+
+    public function testWithCommentsVisibleRelatedRecordsAreSyncedWhenTheInstallAsksForIt(): void
+    {
+        $this->commentSync->expects($this->once())->method('updateRelatedRecordComments')
+            ->with(
+                $this->domains,
+                $this->callback(static fn(array $row): bool => $row['name'] === 'www.example.com' && $row['content'] === '192.0.2.9'),
+                'a note',
+                self::USERNAME
+            );
+
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9', 'comment' => 'a note']);
+
+        $this->haltOf($this->makeController([
+            'interface' => ['show_record_comments' => true],
+            'misc' => ['record_comments_sync' => true],
+        ]));
+    }
+
+    public function testWithCommentsHiddenTheWriteCarriesNoRrsetComment(): void
+    {
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9', 'comment' => 'ignored']);
+
+        $this->haltOf($this->makeController());
+
+        $this->assertNull($this->editedComment);
     }
 
     public function testWithCommentsVisibleTheCommentIsWrittenPerRecord(): void
@@ -631,26 +796,5 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9']);
 
         $this->haltOf($this->makeController(['approval' => ['enabled' => true]]));
-    }
-
-    private function rewireFactory(): void
-    {
-        $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('editRecord')->willReturnCallback(function (array $record): RecordWriteResult {
-            $this->editedRecord = $record;
-            return $this->editResult;
-        });
-        $preferences = $this->createMock(UserPreferenceService::class);
-        $preferences->method('getDisplayHostnameOnly')->willReturn(false);
-
-        $this->factory->method('permissionService')->willReturn($this->permissions);
-        $this->factory->method('recordRepository')->willReturn($this->records);
-        $this->factory->method('domainRepository')->willReturn($this->domains);
-        $this->factory->method('recordManager')->willReturn($recordManager);
-        $this->factory->method('soaRecordManager')->willReturn($this->soa);
-        $this->factory->method('reverseRecordCreator')->willReturn($this->reverseCreator);
-        $this->factory->method('auditService')->willReturn($this->createMock(AuditService::class));
-        $this->factory->method('userPreferenceService')->willReturn($preferences);
-        $this->factory->method('zoneChangeRequestService')->willReturn($this->changeRequests);
     }
 }

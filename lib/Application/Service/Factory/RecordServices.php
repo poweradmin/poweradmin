@@ -32,6 +32,7 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Application\Service\RecordEditService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
@@ -247,6 +248,24 @@ class RecordServices
             $this->services->permissionService(),
             $this->services->domainRepository(),
             $this->changeApprovalContext()
+        );
+    }
+
+    public function recordEditService(): RecordEditService
+    {
+        $comments = $this->recordCommentService();
+
+        return new RecordEditService(
+            $this->recordManager(),
+            $this->services->recordRepository(),
+            $this->services->domainRepository(),
+            $this->services->soaRecordManager(),
+            $this->reverseRecordCreator(),
+            $comments,
+            new RecordCommentSyncService($comments, $this->services->recordRepository(), $this->services->dnsBackendProvider()),
+            $this->services->auditService(),
+            $this->config,
+            $this->logger
         );
     }
 
