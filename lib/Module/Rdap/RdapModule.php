@@ -68,12 +68,12 @@ class RdapModule implements ModuleInterface
 
     public function getCapabilities(): array
     {
-        return ['rdap_lookup'];
+        return [self::CAP_RDAP_LOOKUP];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'rdap_lookup') {
+        if ($capability === self::CAP_RDAP_LOOKUP) {
             return [
                 [
                     'label' => 'RDAP',

@@ -27,6 +27,21 @@ namespace Poweradmin\Domain\Module;
  */
 interface ModuleInterface
 {
+    /** Export formats offered on the zone edit page; the data carries a url_pattern with an {id} placeholder. */
+    public const CAP_ZONE_EXPORT = 'zone_export';
+
+    /** Import of zone data; the edit page shows the import entry when any enabled module provides it. */
+    public const CAP_ZONE_IMPORT = 'zone_import';
+
+    /** WHOIS lookup actions on the zone edit and search pages. */
+    public const CAP_WHOIS_LOOKUP = 'whois_lookup';
+
+    /** RDAP lookup actions on the zone edit and search pages. */
+    public const CAP_RDAP_LOOKUP = 'rdap_lookup';
+
+    /** DNS wizard actions on the zone edit page. */
+    public const CAP_DNS_WIZARD = 'dns_wizard';
+
     /**
      * Get unique module identifier (e.g., 'csv_export', 'zone_import_export')
      */
@@ -61,11 +76,7 @@ interface ModuleInterface
     public function getNavItems(): array;
 
     /**
-     * Get list of capabilities this module provides.
-     *
-     * Known capabilities:
-     * - 'zone_export': Module provides zone export formats
-     * - 'zone_import': Module provides zone import functionality
+     * Get list of capabilities this module provides, from the CAP_* constants above.
      *
      * @return string[]
      */
@@ -74,7 +85,7 @@ interface ModuleInterface
     /**
      * Get data for a specific capability.
      *
-     * For 'zone_export', returns an array of export format definitions:
+     * For CAP_ZONE_EXPORT, returns an array of export format definitions:
      * - 'label' (string): Display text (e.g., 'CSV', 'Zone File')
      * - 'url_pattern' (string): URL with {id} placeholder (e.g., '/zones/{id}/export/csv')
      * - 'icon' (string): Bootstrap Icons class name (without 'bi-' prefix)

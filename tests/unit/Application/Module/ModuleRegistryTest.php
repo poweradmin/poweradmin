@@ -1,12 +1,13 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Module;
+namespace Poweradmin\Tests\Unit\Application\Module;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Module\ModuleManifest;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Module\SecondaryZoneImport\SecondaryZoneImportModule;
+use Poweradmin\Tests\Unit\Module\StubModule;
 
 class ModuleRegistryTest extends TestCase
 {

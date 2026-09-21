@@ -67,12 +67,12 @@ class DnsWizardModule implements ModuleInterface
 
     public function getCapabilities(): array
     {
-        return ['dns_wizard'];
+        return [self::CAP_DNS_WIZARD];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'dns_wizard') {
+        if ($capability === self::CAP_DNS_WIZARD) {
             return [
                 [
                     'label' => _('Record Wizard'),

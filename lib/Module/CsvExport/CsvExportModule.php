@@ -54,12 +54,12 @@ class CsvExportModule implements ModuleInterface
 
     public function getCapabilities(): array
     {
-        return ['zone_export'];
+        return [self::CAP_ZONE_EXPORT];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'zone_export') {
+        if ($capability === self::CAP_ZONE_EXPORT) {
             return [
                 [
                     'label' => 'CSV',

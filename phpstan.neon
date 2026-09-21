@@ -73,7 +73,7 @@ parameters:
     #   type is only as good as the registry declaration; this is a real guard.
     -
       identifier: instanceof.alwaysTrue
-      path: lib/Module/ModuleRegistry.php
+      path: lib/Application/Module/ModuleRegistry.php
     #   DynamicDnsUpdateService - `$flag = $flag || ...` accumulators, whose left
     #   side is literally false on first use. Rewriting would only obscure it.
     -

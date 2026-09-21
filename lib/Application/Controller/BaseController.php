@@ -51,7 +51,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Application\Web\PageRenderer;
-use Poweradmin\Module\ModuleRegistry;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Psr\Log\LoggerInterface;
 
 /**

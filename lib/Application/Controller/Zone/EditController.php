@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\ZoneSaveMessages;
 use Poweradmin\Application\Service\ZoneSigningMessages;
 use Poweradmin\Application\Web\ZoneEditFormParser;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Module\ModuleInterface;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Zone\CatalogZoneService;
@@ -358,11 +359,11 @@ class EditController extends BaseController
             contentFilter: $contentFilter,
             formToken: $formToken,
             formData: $formData,
-            whoisActions: $this->moduleCapabilityData('whois_lookup', ['zone_id' => $zone_id]),
-            rdapActions: $this->moduleCapabilityData('rdap_lookup', ['zone_id' => $zone_id]),
-            dnsWizardActions: $this->moduleCapabilityData('dns_wizard', ['zone_id' => $zone_id]),
-            exportFormats: $this->moduleCapabilityData('zone_export', ['zone_id' => $zone_id]),
-            importEnabled: $this->moduleProvides('zone_import'),
+            whoisActions: $this->moduleCapabilityData(ModuleInterface::CAP_WHOIS_LOOKUP, ['zone_id' => $zone_id]),
+            rdapActions: $this->moduleCapabilityData(ModuleInterface::CAP_RDAP_LOOKUP, ['zone_id' => $zone_id]),
+            dnsWizardActions: $this->moduleCapabilityData(ModuleInterface::CAP_DNS_WIZARD, ['zone_id' => $zone_id]),
+            exportFormats: $this->moduleCapabilityData(ModuleInterface::CAP_ZONE_EXPORT, ['zone_id' => $zone_id]),
+            importEnabled: $this->moduleProvides(ModuleInterface::CAP_ZONE_IMPORT),
         );
 
         $this->render('edit.html', $presenter->toTemplateVariables() + ['pagination_items' => $paginationVariables['pagination_items']]);

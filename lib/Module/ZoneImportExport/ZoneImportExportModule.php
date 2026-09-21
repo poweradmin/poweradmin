@@ -75,12 +75,12 @@ class ZoneImportExportModule implements ModuleInterface
 
     public function getCapabilities(): array
     {
-        return ['zone_export', 'zone_import'];
+        return [self::CAP_ZONE_EXPORT, self::CAP_ZONE_IMPORT];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'zone_export') {
+        if ($capability === self::CAP_ZONE_EXPORT) {
             return [
                 [
                     'label' => 'Zone File',

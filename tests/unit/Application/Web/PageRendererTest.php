@@ -22,7 +22,7 @@ use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Module\ModuleRegistry;
+use Poweradmin\Application\Module\ModuleRegistry;
 use ReflectionClass;
 
 /**

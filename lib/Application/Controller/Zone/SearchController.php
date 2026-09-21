@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\SearchCriteria;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Module\ModuleInterface;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Zone\ZoneSortingService;
@@ -249,8 +250,8 @@ class SearchController extends BaseController
             'user_id' => $this->getCurrentUserId(),
             'show_zone_owners' => $ownershipViewPermission !== 'none',
             'is_owner_sort_supported' => $ownerSortAllowed,
-            'whois_action_patterns' => $this->moduleCapabilityData('whois_lookup'),
-            'rdap_action_patterns' => $this->moduleCapabilityData('rdap_lookup'),
+            'whois_action_patterns' => $this->moduleCapabilityData(ModuleInterface::CAP_WHOIS_LOOKUP),
+            'rdap_action_patterns' => $this->moduleCapabilityData(ModuleInterface::CAP_RDAP_LOOKUP),
             'record_types' => $recordTypes,
         ]);
     }

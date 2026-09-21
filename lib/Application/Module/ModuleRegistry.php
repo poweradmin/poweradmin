@@ -20,9 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Module;
+namespace Poweradmin\Application\Module;
 
-use Poweradmin\Application\Module\ModuleManifest;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Module\ModuleInterface;
 
@@ -145,7 +144,7 @@ class ModuleRegistry
     /**
      * Get aggregated capability data from all enabled modules.
      *
-     * @param string $capability The capability identifier (e.g., 'zone_export')
+     * @param string $capability One of the ModuleInterface::CAP_* identifiers
      * @param array<string, mixed> $context Context for placeholder resolution (e.g., ['zone_id' => 123])
      * @param bool $isAdmin Whether the current user is an administrator
      * @return array<array<string, string>>

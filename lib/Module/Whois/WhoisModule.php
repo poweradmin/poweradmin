@@ -68,12 +68,12 @@ class WhoisModule implements ModuleInterface
 
     public function getCapabilities(): array
     {
-        return ['whois_lookup'];
+        return [self::CAP_WHOIS_LOOKUP];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'whois_lookup') {
+        if ($capability === self::CAP_WHOIS_LOOKUP) {
             return [
                 [
                     'label' => 'WHOIS',

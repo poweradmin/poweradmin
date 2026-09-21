@@ -36,7 +36,7 @@ use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Poweradmin\Infrastructure\Service\StyleManager;
 use Poweradmin\Infrastructure\Web\PermissionTwigExtension;
-use Poweradmin\Module\ModuleRegistry;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Version;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\RecordType;

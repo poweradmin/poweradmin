@@ -24,8 +24,9 @@ namespace Poweradmin\Tests\Unit\Application\Module;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Module\ModuleManifest;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Domain\Module\ModuleInterface;
-use Poweradmin\Module\ModuleRegistry;
+use ReflectionClass;
 use TestHelpers\FakeConfiguration;
 
 class ModuleManifestTest extends TestCase
@@ -40,6 +41,37 @@ class ModuleManifestTest extends TestCase
 
     public function testEveryEntryIsAModuleReportingItsOwnKey(): void
     {
+        $registry = $this->allEnabled();
+
+        $this->assertSame(array_keys(ModuleManifest::MODULES), array_keys($registry->getEnabledModules()));
+        foreach ($registry->getEnabledModules() as $name => $module) {
+            $this->assertInstanceOf(ModuleInterface::class, $module, $name);
+            $this->assertSame($name, $module->getName(), $name);
+        }
+    }
+
+    public function testEveryDeclaredCapabilityIsANamedConstant(): void
+    {
+        $known = [];
+        foreach ((new ReflectionClass(ModuleInterface::class))->getConstants() as $constant => $value) {
+            if (str_starts_with($constant, 'CAP_')) {
+                $known[] = $value;
+            }
+        }
+        $this->assertSame(['zone_export', 'zone_import', 'whois_lookup', 'rdap_lookup', 'dns_wizard'], $known);
+
+        $declared = [];
+        foreach ($this->allEnabled()->getEnabledModules() as $name => $module) {
+            foreach ($module->getCapabilities() as $capability) {
+                $this->assertContains($capability, $known, "$name declares an unnamed capability");
+                $declared[] = $capability;
+            }
+        }
+        $this->assertSame([], array_diff($known, $declared), 'a named capability no bundled module provides');
+    }
+
+    private function allEnabled(): ModuleRegistry
+    {
         $enabled = [];
         foreach (array_keys(ModuleManifest::MODULES) as $name) {
             $enabled["$name.enabled"] = true;
@@ -47,10 +79,6 @@ class ModuleManifestTest extends TestCase
         $registry = new ModuleRegistry(new FakeConfiguration(['modules' => $enabled]));
         $registry->loadModules();
 
-        $this->assertSame(array_keys(ModuleManifest::MODULES), array_keys($registry->getEnabledModules()));
-        foreach ($registry->getEnabledModules() as $name => $module) {
-            $this->assertInstanceOf(ModuleInterface::class, $module, $name);
-            $this->assertSame($name, $module->getName(), $name);
-        }
+        return $registry;
     }
 }
