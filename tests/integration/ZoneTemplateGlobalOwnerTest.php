@@ -133,7 +133,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
 
     private function zoneTemplate(): ZoneTemplate
     {
-        return new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
+        return new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
     }
 
     private function ownerOfTemplateNamed(string $name): int

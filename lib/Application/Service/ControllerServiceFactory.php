@@ -255,11 +255,11 @@ class ControllerServiceFactory
             $this->db,
             $this->repositoryFactory(),
             $this->dnsBackendProvider(),
+            $this->permissionService(),
             $this->logger,
             capabilities: $capabilities,
             signing: $this->zoneSigningService(),
             domainRepository: $this->domainRepository(),
-            permissions: $this->permissionService(),
             zoneTemplateRepository: $this->zoneTemplateRepository()
         );
     }
@@ -352,7 +352,7 @@ class ControllerServiceFactory
 
     public function recordManager(): RecordManagerInterface
     {
-        return $this->recordManager ??= DnsServiceFactory::createRecordManager($this->db, $this->config, $this->dnsBackendProvider());
+        return $this->recordManager ??= DnsServiceFactory::createRecordManager($this->db, $this->config, $this->dnsBackendProvider(), $this->permissionService());
     }
 
     public function rrsetReplaceService(): RRSetReplaceService
@@ -510,6 +510,8 @@ class ControllerServiceFactory
             $this->domainRepository(),
             $this->repositoryFactory(),
             $this->dnsBackendProvider(),
+            $this->permissionService(),
+            $this->userRepository(),
             zoneTemplateRepository: $this->zoneTemplateRepository()
         );
     }
@@ -530,7 +532,7 @@ class ControllerServiceFactory
 
     public function zoneTemplate(): ZoneTemplate
     {
-        return $this->zoneTemplate ??= new ZoneTemplate($this->db, $this->config, $this->dnsBackendProvider(), $this->logger, $this->zoneTemplateRepository());
+        return $this->zoneTemplate ??= new ZoneTemplate($this->db, $this->config, $this->dnsBackendProvider(), $this->permissionService(), $this->logger, $this->zoneTemplateRepository());
     }
 
     public function catalogZoneService(): CatalogZoneService

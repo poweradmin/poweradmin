@@ -170,7 +170,7 @@ class DeleteRecordController extends BaseController
             }
         }
 
-        $zone_info = $domainRepository->getZoneInfoFromId($zid);
+        $zone_info = $domainRepository->getZoneInfoFromId($zid, $this->getViewPermissionLevel());
 
         // Secondary and Consumer zones replicate records from a primary - records are read-only
         if (ZoneType::isReadOnly($zone_info['type'])) {

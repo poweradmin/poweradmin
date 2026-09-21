@@ -101,7 +101,7 @@ class DeleteDomainController extends BaseController
      */
     private function requestDomainDeletion(int $zone_id): void
     {
-        $zone_info = $this->createDomainRepository()->getZoneInfoFromId($zone_id);
+        $zone_info = $this->createDomainRepository()->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel());
         $comment = trim((string)$this->httpRequest->getPostParam('request_comment', ''));
         $result = $this->createZoneChangeRequestService()->fileZoneDelete(
             $zone_id,
@@ -122,7 +122,7 @@ class DeleteDomainController extends BaseController
 
     private function deleteDomain(int $zone_id): void
     {
-        $zone_info = $this->createDomainRepository()->getZoneInfoFromId($zone_id);
+        $zone_info = $this->createDomainRepository()->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel());
 
         // The zone service deletes keys, comments, records and metadata with the zone, as the API does
         $deleted = $this->createZoneManagementService()->deleteZone($zone_id);
@@ -149,7 +149,7 @@ class DeleteDomainController extends BaseController
     private function showDeleteDomain(int $zone_id, bool $requestsDeletion = false): void
     {
         $domainRepository = $this->createDomainRepository();
-        $zone_info = $domainRepository->getZoneInfoFromId($zone_id);
+        $zone_info = $domainRepository->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel());
         $zone_owners = $this->createUserRepository()->getZoneOwnerFullNames($zone_id);
 
         $slave_master_exists = false;

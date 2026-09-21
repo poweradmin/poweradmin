@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\PermissionService;
@@ -38,7 +39,6 @@ use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
@@ -58,8 +58,8 @@ class DomainManager implements DomainManagerInterface
     private DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
-    private ?PermissionService $permissionService = null;
-    private ?DbUserRepository $userRepository = null;
+    private PermissionService $permissionService;
+    private UserRepositoryInterface $userRepository;
     private UserContextService $userContext;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
     private RepositoryFactoryInterface $repositoryFactory;
@@ -73,6 +73,8 @@ class DomainManager implements DomainManagerInterface
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param RepositoryFactoryInterface $repositoryFactory Builds the zone repository
      * @param DnsBackendProviderInterface $backendProvider DNS backend provider
+     * @param PermissionService $permissionService Permissions and zone ownership of the acting user
+     * @param UserRepositoryInterface $userRepository Resolves the users named as zone owners
      */
     public function __construct(
         PDO $db,
@@ -81,6 +83,8 @@ class DomainManager implements DomainManagerInterface
         DomainRepositoryInterface $domainRepository,
         RepositoryFactoryInterface $repositoryFactory,
         DnsBackendProviderInterface $backendProvider,
+        PermissionService $permissionService,
+        UserRepositoryInterface $userRepository,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
         ?UserContextService $userContext = null,
@@ -94,6 +98,8 @@ class DomainManager implements DomainManagerInterface
         $this->domainRepository = $domainRepository;
         $this->ipAddressValidator = new IPAddressValidator();
         $this->backendProvider = $backendProvider;
+        $this->permissionService = $permissionService;
+        $this->userRepository = $userRepository;
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
         $this->userContext = $userContext ?? new UserContextService();
@@ -117,7 +123,7 @@ class DomainManager implements DomainManagerInterface
         if ($userId === null) {
             return false;
         }
-        return $this->userRepository()->userOwnsZone($userId, $zoneId);
+        return $this->permissionService->userOwnsZone($userId, $zoneId);
     }
 
     /**
@@ -129,13 +135,7 @@ class DomainManager implements DomainManagerInterface
         if ($userId === null) {
             return false;
         }
-        $this->permissionService ??= new PermissionService($this->userRepository());
         return $this->permissionService->hasPermission($userId, $permission);
-    }
-
-    private function userRepository(): DbUserRepository
-    {
-        return $this->userRepository ??= new DbUserRepository($this->db, $this->config);
     }
 
     /**
@@ -343,7 +343,7 @@ class DomainManager implements DomainManagerInterface
 
                             $templ_records = ZoneTemplate::getZoneTemplRecords($db, (int)$zone_template);
                             if (!empty($templ_records)) {
-                                $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger, $this->zoneTemplateRepository);
+                                $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->permissionService, $this->logger, $this->zoneTemplateRepository);
                                 foreach ($templ_records as $r) {
                                     if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
                                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
@@ -624,7 +624,7 @@ class DomainManager implements DomainManagerInterface
         if (!$this->userCanEditZoneMetadata($zone_id)) {
             return ZoneWriteResult::forbidden(_('You do not have the permission to edit zone metadata.'));
         }
-        if ($this->userRepository()->getUserById($user_id) === null) {
+        if ($this->userRepository->getUserById($user_id) === null) {
             return ZoneWriteResult::failure(sprintf(_('Unknown user ID: %s'), $user_id), 404);
         }
 
@@ -746,7 +746,7 @@ class DomainManager implements DomainManagerInterface
 
                     // Get all records from the template
                     $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
-                    $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger, $this->zoneTemplateRepository);
+                    $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->permissionService, $this->logger, $this->zoneTemplateRepository);
 
                     // Writes outside this transaction would not see the rows above until it commits
                     if (!$localTransaction) {

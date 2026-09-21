@@ -77,7 +77,19 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
 
         $backend = DnsBackendProviderFactory::create($this->db, $config);
 
-        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend, null, null, $capabilities, null, $domains);
+        return new ZoneManagementService(
+            $this->createMock(ZoneRepositoryInterface::class),
+            $config,
+            $this->db,
+            new RepositoryFactory($this->db, $config, $backend),
+            $backend,
+            $this->permissionService($config),
+            null,
+            null,
+            $capabilities,
+            null,
+            $domains
+        );
     }
 
     private function existingZoneOfType(string $type): DomainRepositoryInterface
@@ -131,7 +143,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(fn(string $group, string $key, $default = null) => $default);
         $backend = DnsBackendProviderFactory::create($this->db, $config);
-        $service = new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend, null, null, $lazy);
+        $service = new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend, $this->permissionService($config), null, null, $lazy);
 
         $service->createZone('new.example', 'BOGUS', self::ADMIN_USER_ID);
         $this->assertSame(0, $lookups, 'a basic-kind refusal must not fetch the server version');

@@ -159,6 +159,18 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
             $backend->method('addRecordGetId')->willReturn(55);
         }
 
-        return new RecordManager($this->db, $config, $validation, $soa, $domainRepository, new RepositoryFactory($this->db, $config, $backend), fn() => $this->createMock(DnssecProviderInterface::class), $backend, null, $changeLogger);
+        return new RecordManager(
+            $this->db,
+            $config,
+            $validation,
+            $soa,
+            $domainRepository,
+            new RepositoryFactory($this->db, $config, $backend),
+            fn() => $this->createMock(DnssecProviderInterface::class),
+            $backend,
+            $this->permissionService($config),
+            null,
+            $changeLogger
+        );
     }
 }

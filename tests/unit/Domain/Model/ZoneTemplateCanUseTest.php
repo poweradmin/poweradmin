@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\PermissionService;
 
 /**
  * Zone templates are private to their owner unless global. Applying one by a posted
@@ -53,7 +54,7 @@ class ZoneTemplateCanUseTest extends TestCase
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturn(null);
 
-        $this->zoneTemplate = new ZoneTemplate($db, $config, $this->createMock(DnsBackendProviderInterface::class));
+        $this->zoneTemplate = new ZoneTemplate($db, $config, $this->createMock(DnsBackendProviderInterface::class), $this->createMock(PermissionService::class));
     }
 
     public function testForeignTemplateIsRefused(): void

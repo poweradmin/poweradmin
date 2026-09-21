@@ -30,7 +30,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -44,7 +43,7 @@ class ApiKeyService
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private UserContextService $userContextService;
-    private ?PermissionService $permissionService = null;
+    private PermissionService $permissionService;
 
     /**
      * Get the database connection for debugging
@@ -62,17 +61,20 @@ class ApiKeyService
      * @param ApiKeyRepositoryInterface $apiKeyRepository The API key repository
      * @param PDO $db The database connection
      * @param ConfigurationInterface $config The configuration manager
+     * @param PermissionService $permissionService Decides who may see and manage other users' keys
      */
     public function __construct(
         ApiKeyRepositoryInterface $apiKeyRepository,
         PDO $db,
         ConfigurationInterface $config,
+        PermissionService $permissionService,
         ?LoggerInterface $logger = null,
         ?UserContextService $userContextService = null
     ) {
         $this->apiKeyRepository = $apiKeyRepository;
         $this->db = $db;
         $this->config = $config;
+        $this->permissionService = $permissionService;
         $this->logger = $logger ?? new NullLogger();
         $this->userContextService = $userContextService ?? new UserContextService();
     }
@@ -86,7 +88,6 @@ class ApiKeyService
         if ($userId === null) {
             return false;
         }
-        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
         return $this->permissionService->hasPermission($userId, $permission);
     }
 

@@ -77,7 +77,7 @@ class ZoneManagementService
     private DnsBackendProviderInterface $backendProvider;
     private RepositoryFactoryInterface $repositoryFactory;
     private ?DomainRepositoryInterface $domainRepository;
-    private ?PermissionService $permissions;
+    private PermissionService $permissions;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
     private ?DomainManagerInterface $domainManager = null;
     private ?ZoneOverlapService $overlapService = null;
@@ -88,10 +88,10 @@ class ZoneManagementService
     /**
      * @param RepositoryFactoryInterface $repositoryFactory Builds the record and domain repositories
      * @param DnsBackendProviderInterface $backendProvider Backend used by the zone template model and the domain manager
+     * @param PermissionService $permissions Shares the request's permission cache
      * @param PdnsCapabilities|Closure|null $capabilities What the connected server supports, or a closure returning it; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
-     * @param PermissionService|null $permissions Shares the request's permission cache; built on demand when omitted
      */
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
@@ -99,12 +99,12 @@ class ZoneManagementService
         object $db,
         RepositoryFactoryInterface $repositoryFactory,
         DnsBackendProviderInterface $backendProvider,
+        PermissionService $permissions,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
         PdnsCapabilities|Closure|null $capabilities = null,
         ?ZoneSigningService $signing = null,
         ?DomainRepositoryInterface $domainRepository = null,
-        ?PermissionService $permissions = null,
         ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
     ) {
         $this->zoneTemplateRepository = $zoneTemplateRepository;
@@ -143,7 +143,7 @@ class ZoneManagementService
     private function lookUpZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
     {
 
-        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger, $this->zoneTemplateRepository);
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->permissions, $this->logger, $this->zoneTemplateRepository);
         if (is_numeric($zoneTemplate)) {
             if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
                 return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
@@ -160,7 +160,7 @@ class ZoneManagementService
         }
 
         if ($actingUserId !== null) {
-            $isAdmin = $this->permissions()->isAdmin($actingUserId);
+            $isAdmin = $this->permissions->isAdmin($actingUserId);
             if (!$zoneTemplateModel->canUseTemplate($templateId, $actingUserId, $isAdmin)) {
                 return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'status' => 403, 'code' => self::ERR_TEMPLATE_FORBIDDEN];
             }
@@ -235,7 +235,7 @@ class ZoneManagementService
 
         // Block a zone that would overlap an existing zone owned by another user.
         if ($actingUserId !== null) {
-            $this->overlapService ??= new ZoneOverlapService($this->db, $this->config, $this->permissions());
+            $this->overlapService ??= new ZoneOverlapService($this->db, $this->config, $this->permissions);
             if ($this->overlapService->findConflictingZone($domain, $actingUserId) !== null) {
                 return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409, 'code' => self::ERR_OVERLAP];
             }
@@ -470,11 +470,6 @@ class ZoneManagementService
     private function domainManager(): DomainManagerInterface
     {
         return $this->domainManager ??= DnsServiceFactory::createDomainManager($this->db, $this->config, $this->backendProvider);
-    }
-
-    private function permissions(): PermissionService
-    {
-        return $this->permissions ??= (new ApiPermissionService($this->db, config: $this->config))->permissions();
     }
 
     private function domainRepository(): DomainRepositoryInterface

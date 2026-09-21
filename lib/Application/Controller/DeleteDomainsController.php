@@ -86,7 +86,7 @@ class DeleteDomainsController extends BaseController
     public function deleteDomains($zone_ids): void
     {
         $domainRepository = $this->createDomainRepository();
-        $deleted_zones = $domainRepository->getZoneInfoFromIds($zone_ids);
+        $deleted_zones = $domainRepository->getZoneInfoFromIds($zone_ids, $this->getViewPermissionLevel());
 
         // Permission for every zone was already established by verifyDeletePermission();
         // the zone service deletes keys, comments, records and metadata with each zone.
@@ -174,7 +174,7 @@ class DeleteDomainsController extends BaseController
 
         // Fetch all zone details in one bulk call to avoid per-zone API round-trips
         $zoneInfos = [];
-        foreach ($domainRepository->getZoneInfoFromIds($zone_ids) as $info) {
+        foreach ($domainRepository->getZoneInfoFromIds($zone_ids, $this->getViewPermissionLevel()) as $info) {
             $zoneInfos[(int)($info['id'] ?? 0)] = $info;
         }
 

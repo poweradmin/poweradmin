@@ -26,16 +26,17 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\ApiKeyWriteResult;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\PermissionServiceTestCase;
 
 #[CoversClass(ApiKeyService::class)]
-class ApiKeyServiceTest extends TestCase
+class ApiKeyServiceTest extends PermissionServiceTestCase
 {
     private ApiKeyService $service;
     private ApiKeyRepositoryInterface&MockObject $apiKeyRepository;
@@ -53,7 +54,8 @@ class ApiKeyServiceTest extends TestCase
         $this->service = new ApiKeyService(
             $this->apiKeyRepository,
             $this->db,
-            $this->config
+            $this->config,
+            $this->createMock(PermissionService::class)
         );
 
         // Initialize session
@@ -392,33 +394,29 @@ class ApiKeyServiceTest extends TestCase
     }
 
     /**
-     * Point the PDO mock's permission queries at exactly the given permission set.
-     * The admin-check query (filtered on 'user_is_ueberuser') and the full permission
-     * list query are answered separately, matching DbUserRepository's two queries.
-     * The creator-lookup query (username/fullname) answers with $creatorRow.
+     * Rebuild the service so user 7 holds exactly the given permissions; the
+     * creator-lookup query (username/fullname) answers with $creatorRow.
      *
      * @param string[] $permissions Permission names the logged-in user holds.
      * @param array|false $creatorRow Row returned for the creator lookup; false means user not found.
      */
     private function grantPermissions(array $permissions, array|false $creatorRow = false): void
     {
-        $this->db->method('prepare')->willReturnCallback(function (string $query) use ($permissions, $creatorRow) {
+        $this->db->method('prepare')->willReturnCallback(function () use ($creatorRow) {
             $stmt = $this->createMock(\PDOStatement::class);
             $stmt->method('execute')->willReturn(true);
-
-            if (str_contains($query, "= '" . Permission::PERM_USER_IS_UEBERUSER . "'")) {
-                $isAdmin = in_array(Permission::PERM_USER_IS_UEBERUSER, $permissions, true);
-                $stmt->method('fetch')->willReturn($isAdmin ? ['permission' => Permission::PERM_USER_IS_UEBERUSER] : false);
-            } elseif (str_contains($query, 'SELECT username, fullname FROM users')) {
-                $stmt->method('fetch')->willReturn($creatorRow);
-            } else {
-                $rows = array_map(static fn($name) => ['permission' => $name], $permissions);
-                $rows[] = false;
-                $stmt->method('fetch')->willReturnOnConsecutiveCalls(...$rows);
-            }
+            $stmt->method('fetch')->willReturn($creatorRow);
 
             return $stmt;
         });
+
+        $isAdmin = in_array(Permission::PERM_USER_IS_UEBERUSER, $permissions, true);
+        $this->service = new ApiKeyService(
+            $this->apiKeyRepository,
+            $this->db,
+            $this->config,
+            $this->buildPermissionService(permissionsByUser: [7 => $permissions], adminUserIds: $isAdmin ? [7] : [])
+        );
 
         $_SESSION['userid'] = 7;
     }

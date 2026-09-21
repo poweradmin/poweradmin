@@ -51,8 +51,8 @@ class DynamicDnsController extends PublicApiController
         $repository = $this->getRepositoryFactory($backendProvider)->createDynamicDnsRepository($this->createSOARecordManager());
 
         $this->validationService = new DynamicDnsValidationService($config);
-        $this->updateService = DynamicDnsRequestFactory::createUpdateService($this->db, $config, $repository, $this->createAuditService());
         $this->apiPermissionService = $this->createApiPermissionService();
+        $this->updateService = DynamicDnsRequestFactory::createUpdateService($this->db, $config, $repository, $this->apiPermissionService->permissions(), $this->createAuditService());
     }
 
     public function run(): void

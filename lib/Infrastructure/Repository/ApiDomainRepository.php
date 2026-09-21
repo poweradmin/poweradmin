@@ -26,7 +26,6 @@ use PDO;
 use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\Constants;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneReadBackendInterface;
@@ -290,11 +289,9 @@ class ApiDomainRepository implements DomainRepositoryInterface
         return $map;
     }
 
-    public function getZoneInfoFromId(int $zid): array
+    public function getZoneInfoFromId(int $zid, string $viewPermissionLevel): array
     {
-        $perm_view = Permission::getViewPermission($this->db, $this->config);
-
-        if ($perm_view == "none") {
+        if ($viewPermissionLevel === "none") {
             $this->messageService->addSystemError(_("You do not have permission to view this zone."));
             return [];
         }
@@ -312,14 +309,13 @@ class ApiDomainRepository implements DomainRepositoryInterface
         ];
     }
 
-    public function getZoneInfoFromIds(array $zones): array
+    public function getZoneInfoFromIds(array $zones, string $viewPermissionLevel): array
     {
         if (empty($zones)) {
             return [];
         }
 
-        $perm_view = Permission::getViewPermission($this->db, $this->config);
-        if ($perm_view == "none") {
+        if ($viewPermissionLevel === "none") {
             $this->messageService->addSystemError(_("You do not have permission to view this zone."));
             return [];
         }

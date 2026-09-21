@@ -25,28 +25,30 @@ namespace TestHelpers;
 use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 
 /**
  * Base test case for integration tests that need a throwaway in-memory SQLite
  * database with Poweradmin's permission system wired up enough to satisfy
- * Permission::getEditPermission() / PermissionService::hasPermission().
+ * PermissionService::hasPermission() and the permission level lookups.
  *
  * What you get out of the box:
  *   - $this->db         : in-memory PDO with PRAGMA foreign_keys ON
  *   - $this->config     : FakeConfiguration with database.type=sqlite, no PDNS prefix
  *   - The perm tables and an admin user (id = ADMIN_USER_ID) holding
- *     user_is_ueberuser, so getEditPermission() resolves to "all".
+ *     user_is_ueberuser, so getEditPermissionLevel() resolves to "all".
  *
  * Tests are responsible for creating any domain-specific tables they need
  * (zones, domains, etc.) inside their own setUp().
  *
- * Note: Permission memoizes its PermissionService in a static
- * (Permission::$permissionService), which leaks across tests sharing a process. Add #[RunInSeparateProcess]
- * to test methods that change permissions or want a clean cache.
+ * PermissionService caches permissions per user, so build a fresh one
+ * (permissionService()) after changing a user's grants.
  */
 abstract class SqliteIntegrationTestCase extends TestCase
 {
@@ -97,8 +99,13 @@ abstract class SqliteIntegrationTestCase extends TestCase
     }
 
     /**
-     * Stub provider that lets tests pick whether the API or SQL code path runs.
+     * A permission service reading this test's database.
      */
+    protected function permissionService(?ConfigurationInterface $config = null): PermissionService
+    {
+        return new PermissionService(new DbUserRepository($this->db, $config ?? $this->config));
+    }
+
     /**
      * The Poweradmin-native zone tables DomainManager writes on create and delete.
      */

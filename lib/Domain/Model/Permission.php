@@ -22,15 +22,10 @@
 
 namespace Poweradmin\Domain\Model;
 
-use PDO;
-use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
- * Record-type restrictions for client-level editors and the current user's view, edit and delete level.
+ * Permission names and the record-type restrictions for client-level editors.
  */
 class Permission
 {
@@ -134,22 +129,6 @@ class Permission
         self::PERM_ZONE_CHANGE_APPROVE_OTHERS,
     ];
 
-    private static ?PermissionService $permissionService = null;
-
-    /**
-     * Check the logged-in user's permission (admins always pass). The memoized
-     * service keeps repeated level lookups at one query set per request.
-     */
-    private static function currentUserHasPermission($db, ConfigurationInterface $config, string $permission): bool
-    {
-        $userId = (new UserContextService())->getLoggedInUserId();
-        if ($userId === null) {
-            return false;
-        }
-        self::$permissionService ??= new PermissionService(new DbUserRepository($db, $config));
-        return self::$permissionService->hasPermission($userId, $permission);
-    }
-
     /**
      * Check whether the given record type is off-limits for a client-level editor.
      *
@@ -157,7 +136,7 @@ class Permission
      * and the record type is one that requires a stronger edit permission.
      *
      * @param string $type DNS record type (e.g. "A", "SOA", "NS")
-     * @param string $permEdit Edit permission level returned by getEditPermission()
+     * @param string $permEdit Edit permission level from PermissionService::getEditPermissionLevel()
      */
     public static function isRecordTypeRestrictedForClient(string $type, string $permEdit): bool
     {
@@ -178,7 +157,7 @@ class Permission
      * requires the standing to write one directly.
      *
      * @param string $type DNS record type (e.g. "A", "NS", "LUA")
-     * @param string $permEdit Edit permission level returned by getEditPermission()
+     * @param string $permEdit Edit permission level from PermissionService::getEditPermissionLevel()
      */
     public static function isTemplateRecordTypeRestricted(string $type, string $permEdit): bool
     {
@@ -197,7 +176,7 @@ class Permission
      * SOA and apex NS records stay restricted regardless of that permission.
      *
      * @param string $type DNS record type (e.g. "A", "SOA", "NS")
-     * @param string $permEdit Edit permission level returned by getEditPermission()
+     * @param string $permEdit Edit permission level from PermissionService::getEditPermissionLevel()
      * @param string|null $recordName Record name (FQDN); null keeps the type-only restriction
      * @param string|null $zoneName Zone name; null keeps the type-only restriction
      * @param bool $canEditSubzoneNs Whether the user holds zone_content_edit_ns_subzone
@@ -264,62 +243,5 @@ class Permission
                 default => _('You do not have the permission to delete SOA records.'),
             },
         };
-    }
-
-    /**
-     * Get view permission.
-     *
-     * This method determines the user's permission to view content.
-     *
-     * @return string Returns "all", "own", or "none" depending on the user's view permission.
-     */
-    public static function getViewPermission($db, ConfigurationInterface $config): string
-    {
-        if (self::currentUserHasPermission($db, $config, 'zone_content_view_others')) {
-            return "all";
-        } elseif (self::currentUserHasPermission($db, $config, 'zone_content_view_own')) {
-            return "own";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get edit permission.
-     *
-     * This method determines the user's permission to edit content.
-     *
-     * @return string Returns "all", "own", "own_as_client" or "none" depending on the user's edit permission.
-     */
-    public static function getEditPermission($db, ConfigurationInterface $config): string
-    {
-        if (self::currentUserHasPermission($db, $config, 'zone_content_edit_others')) {
-            return "all";
-        } elseif (self::currentUserHasPermission($db, $config, 'zone_content_edit_own')) {
-            return "own";
-        } elseif (self::currentUserHasPermission($db, $config, 'zone_content_edit_own_as_client')) {
-            return "own_as_client";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get delete permission.
-     *
-     * This method determines the user's permission to delete zones.
-     *
-     * @param PDO $db The database connection.
-     * @return string Returns "all", "own", or "none" depending on the user's delete permission.
-     */
-    public static function getDeletePermission(PDO $db, ConfigurationInterface $config): string
-    {
-        if (self::currentUserHasPermission($db, $config, 'zone_delete_others')) {
-            return "all";
-        } elseif (self::currentUserHasPermission($db, $config, 'zone_delete_own')) {
-            return "own";
-        } else {
-            return "none";
-        }
     }
 }

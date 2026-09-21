@@ -38,6 +38,8 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 
@@ -88,11 +90,14 @@ class DnsServiceFactory
 
     /**
      * Create RecordManager instance with all dependencies
+     *
+     * @param PermissionService|null $permissions The request's shared instance; a fresh one when omitted
      */
     public static function createRecordManager(
         PDO $db,
         ConfigurationManager $config,
-        ?DnsBackendProviderInterface $backendProvider = null
+        ?DnsBackendProviderInterface $backendProvider = null,
+        ?PermissionService $permissions = null
     ): RecordManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
@@ -104,28 +109,40 @@ class DnsServiceFactory
             $repositoryFactory->createDomainRepository(),
             $repositoryFactory,
             fn() => DnssecProviderFactory::create($db, $config, DnsBackendProviderFactory::apiClientFrom($backendProvider)),
-            $backendProvider
+            $backendProvider,
+            $permissions ?? self::createPermissionService($db, $config)
         );
     }
 
     /**
      * Create DomainManager instance with all dependencies
+     *
+     * @param PermissionService|null $permissions The request's shared instance; a fresh one when omitted
      */
     public static function createDomainManager(
         PDO $db,
         ConfigurationManager $config,
-        ?DnsBackendProviderInterface $backendProvider = null
+        ?DnsBackendProviderInterface $backendProvider = null,
+        ?PermissionService $permissions = null
     ): DomainManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
+        $userRepository = new DbUserRepository($db, $config);
         return new DomainManager(
             $db,
             $config,
             self::createSOARecordManager($db, $config, $backendProvider),
             $repositoryFactory->createDomainRepository(),
             $repositoryFactory,
-            $backendProvider
+            $backendProvider,
+            $permissions ?? new PermissionService($userRepository),
+            $userRepository
         );
+    }
+
+    private static function createPermissionService(PDO $db, ConfigurationManager $config): PermissionService
+    {
+        return new PermissionService(new DbUserRepository($db, $config));
     }
 
     /**

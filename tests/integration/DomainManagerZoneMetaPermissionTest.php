@@ -21,6 +21,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -234,6 +235,8 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
             $repo,
             new RepositoryFactory($this->db, $config, $backend),
             $backend,
+            $this->permissionService($config),
+            new DbUserRepository($this->db, $config),
             null,
             $changeLogger
         );

@@ -118,17 +118,19 @@ interface DomainRepositoryInterface
      * Get Zone details from Zone ID
      *
      * @param int $zid Zone ID
+     * @param string $viewPermissionLevel The caller's view level; "none" withholds the details
      * @return array array of zone details [type,name,master_ip,record_count]
      */
-    public function getZoneInfoFromId(int $zid): array;
+    public function getZoneInfoFromId(int $zid, string $viewPermissionLevel): array;
 
     /**
      * Get Zone(s) details from Zone IDs
      *
      * @param array $zones Zone IDs
+     * @param string $viewPermissionLevel The caller's view level; "none" withholds the details
      * @return array
      */
-    public function getZoneInfoFromIds(array $zones): array;
+    public function getZoneInfoFromIds(array $zones, string $viewPermissionLevel): array;
 
     /**
      * Every zone as a picker entry, sorted by name, regardless of who owns it.

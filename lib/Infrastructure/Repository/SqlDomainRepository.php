@@ -25,7 +25,6 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -491,11 +490,9 @@ class SqlDomainRepository implements DomainRepositoryInterface
         return $ret;
     }
 
-    public function getZoneInfoFromId(int $zid): array
+    public function getZoneInfoFromId(int $zid, string $viewPermissionLevel): array
     {
-        $perm_view = Permission::getViewPermission($this->db, $this->config);
-
-        if ($perm_view == "none") {
+        if ($viewPermissionLevel === "none") {
             $this->messageService->addSystemError(_("You do not have permission to view this zone."));
             return [];
         }
@@ -526,11 +523,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
         );
     }
 
-    public function getZoneInfoFromIds(array $zones): array
+    public function getZoneInfoFromIds(array $zones, string $viewPermissionLevel): array
     {
         $zone_infos = array();
         foreach ($zones as $zone) {
-            $zone_info = $this->getZoneInfoFromId($zone);
+            $zone_info = $this->getZoneInfoFromId($zone, $viewPermissionLevel);
             $zone_infos[] = $zone_info;
         }
         return $zone_infos;

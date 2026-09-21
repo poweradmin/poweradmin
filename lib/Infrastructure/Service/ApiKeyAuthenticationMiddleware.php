@@ -24,9 +24,11 @@ namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiKeyService;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -49,7 +51,8 @@ class ApiKeyAuthenticationMiddleware
     {
         $this->config = $config;
         $apiKeyRepository = new DbApiKeyRepository($db, $config);
-        $this->apiKeyService = new ApiKeyService($apiKeyRepository, $db, $config);
+        $permissions = new PermissionService(new DbUserRepository($db, $config));
+        $this->apiKeyService = new ApiKeyService($apiKeyRepository, $db, $config, $permissions);
     }
 
     /**

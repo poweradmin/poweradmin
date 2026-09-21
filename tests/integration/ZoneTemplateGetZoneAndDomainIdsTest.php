@@ -89,7 +89,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $domainId = $this->makeDomain('example.com');
         $zoneId = $this->linkZone($domainId, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -108,7 +108,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         // Orphan: domains row never inserted, so INNER JOIN must drop this one.
         $orphanZoneId = $this->linkZone(99999, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -128,7 +128,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $templateId = $this->makeTemplate();
         $apiZoneId = $this->linkZone(99999, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(true));
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(true), $this->permissionService());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -149,7 +149,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $targetZoneId = $this->linkZone($targetDomainId, $targetTemplateId);
         $this->linkZone($otherDomainId, $otherTemplateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($targetTemplateId, self::ADMIN_USER_ID);
 

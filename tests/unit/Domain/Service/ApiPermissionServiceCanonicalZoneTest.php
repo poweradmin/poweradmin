@@ -26,6 +26,8 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\FakeConfiguration;
 
 /**
@@ -50,7 +52,8 @@ class ApiPermissionServiceCanonicalZoneTest extends TestCase
         $this->db->exec("CREATE TABLE perm_items (id INTEGER PRIMARY KEY, name TEXT)");
         $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT, perm_templ INTEGER)");
 
-        $this->service = new ApiPermissionService($this->db, config: new FakeConfiguration());
+        $config = new FakeConfiguration();
+        $this->service = new ApiPermissionService($this->db, new PermissionService(new DbUserRepository($this->db, $config)), $config);
     }
 
     private function seedZone(int $id, ?int $domainId, int $owner): void

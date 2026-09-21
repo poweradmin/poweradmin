@@ -27,7 +27,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
-use ReflectionProperty;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -54,11 +53,6 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Permission::getEditPermission() memoizes its service per process; each
-        // test resolves the level against its own database.
-        $memo = new ReflectionProperty(Permission::class, 'permissionService');
-        $memo->setValue(null, null);
 
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT)");
@@ -97,7 +91,7 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
 
     private function model(DnsBackendProviderInterface $backend): ZoneTemplate
     {
-        return new ZoneTemplate($this->db, $this->config, $backend);
+        return new ZoneTemplate($this->db, $this->config, $backend, $this->permissionService());
     }
 
     private function actingAs(int $userId): void
@@ -194,8 +188,6 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
         $this->assertSame([self::DIRECT_DOMAIN, self::GROUP_DOMAIN, self::FOREIGN_DOMAIN, self::ORPHAN_DOMAIN], $ids);
 
         $this->actingAs(self::OWN_EDITOR);
-        $memo = new ReflectionProperty(Permission::class, 'permissionService');
-        $memo->setValue(null, null);
 
         $ids = $this->model($this->apiBackend())->getListZoneUseTempl(self::TEMPLATE, self::OWN_EDITOR);
 

@@ -9,9 +9,11 @@ use Poweradmin\Application\Service\DynamicDnsRequestFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\DynamicDnsHelper;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -33,7 +35,8 @@ $backendProvider = DnsBackendProviderFactory::create($db, $config);
 $soaRecordManager = DnsServiceFactory::createSOARecordManager($db, $config, $backendProvider);
 $repository = (new RepositoryFactory($db, $config, $backendProvider))->createDynamicDnsRepository($soaRecordManager);
 
-$updateService = DynamicDnsRequestFactory::createUpdateService($db, $config, $repository);
+$permissions = new PermissionService(new DbUserRepository($db, $config));
+$updateService = DynamicDnsRequestFactory::createUpdateService($db, $config, $repository, $permissions);
 
 $result = $updateService->processUpdate(DynamicDnsRequestFactory::fromHttpRequest($request));
 echo DynamicDnsHelper::statusMessage($result, $request->query->has('verbose'));

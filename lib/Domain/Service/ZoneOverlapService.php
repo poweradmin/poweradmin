@@ -44,11 +44,11 @@ class ZoneOverlapService
     public function __construct(
         object $db,
         ConfigurationInterface $config,
-        ?PermissionService $permissionService = null
+        PermissionService $permissionService
     ) {
         $this->db = $db;
         $this->config = $config;
-        $this->permissionService = $permissionService ?? (new ApiPermissionService($db, config: $this->config))->permissions();
+        $this->permissionService = $permissionService;
         $this->tableNameService = new TableNameService($config);
     }
 

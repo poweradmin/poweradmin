@@ -203,7 +203,16 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         $domainRepository->method('getDomainNameById')->willReturn('zone.example');
         $backend = $this->dnsBackendStub(false);
         $backend->method('deleteZone')->willReturn(true);
-        $domainManager = new DomainManager($this->db, $config, $this->createMock(SOARecordManagerInterface::class), $domainRepository, new RepositoryFactory($this->db, $config, $backend), $backend);
+        $domainManager = new DomainManager(
+            $this->db,
+            $config,
+            $this->createMock(SOARecordManagerInterface::class),
+            $domainRepository,
+            new RepositoryFactory($this->db, $config, $backend),
+            $backend,
+            $this->permissionService($config),
+            new DbUserRepository($this->db, $config)
+        );
 
         return new UserManagementService(
             $userRepository,

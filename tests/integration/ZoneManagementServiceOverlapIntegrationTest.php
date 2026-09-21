@@ -28,8 +28,10 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
  * Integration test for the API zone-creation path. Confirms that the
@@ -111,7 +113,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
 
         $backend = DnsBackendProviderFactory::create($this->db, $config);
 
-        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend);
+        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend, new PermissionService(new DbUserRepository($this->db, $config)));
     }
 
     public function testApiCreateRejectsOverlapForNonOwnerWith409(): void

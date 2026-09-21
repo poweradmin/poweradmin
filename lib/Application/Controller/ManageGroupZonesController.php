@@ -239,7 +239,7 @@ class ManageGroupZonesController extends BaseController
     private function zoneLogNames(DomainRepositoryInterface $domainRepository, array $zoneIds): array
     {
         $names = [];
-        foreach ($domainRepository->getZoneInfoFromIds($zoneIds) as $info) {
+        foreach ($domainRepository->getZoneInfoFromIds($zoneIds, $this->getViewPermissionLevel()) as $info) {
             if (isset($info['id'], $info['name']) && $info['name'] !== '') {
                 $names[(int)$info['id']] = (string)$info['name'];
             }
@@ -279,7 +279,7 @@ class ManageGroupZonesController extends BaseController
             // Get owned zone details in one bulk call to avoid per-zone API round-trips
             $ownedZones = [];
             if (!empty($ownedDomainIds)) {
-                foreach ($domainRepository->getZoneInfoFromIds($ownedDomainIds) as $zoneInfo) {
+                foreach ($domainRepository->getZoneInfoFromIds($ownedDomainIds, $this->getViewPermissionLevel()) as $zoneInfo) {
                     $name = $zoneInfo['name'] ?? '';
                     if ($name === '') {
                         continue;

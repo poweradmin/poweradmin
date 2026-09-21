@@ -505,6 +505,15 @@ abstract class BaseController
     }
 
     /**
+     * The logged-in user's zone view level: "all", "own" or "none"
+     */
+    protected function getViewPermissionLevel(): string
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        return $userId === null ? 'none' : $this->createPermissionService()->getViewPermissionLevel($userId);
+    }
+
+    /**
      * Whether the logged-in user wants the page to span the full browser width
      */
     protected function getWideLayout(): bool

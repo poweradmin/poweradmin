@@ -33,7 +33,6 @@ use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -48,8 +47,13 @@ class DynamicDnsRequestFactory
      * Wires the update service from the live database connection and configuration.
      * A controller passes its memoised AuditService; the dyndns2 script has none to share.
      */
-    public static function createUpdateService(PDO $db, ConfigurationManager $config, DynamicDnsRepositoryInterface $repository, ?AuditService $auditService = null): DynamicDnsUpdateService
-    {
+    public static function createUpdateService(
+        PDO $db,
+        ConfigurationManager $config,
+        DynamicDnsRepositoryInterface $repository,
+        PermissionService $permissions,
+        ?AuditService $auditService = null
+    ): DynamicDnsUpdateService {
         return new DynamicDnsUpdateService(
             new DynamicDnsValidationService($config),
             new DynamicDnsAuthenticationService(
@@ -60,17 +64,15 @@ class DynamicDnsRequestFactory
             $repository,
             $auditService ?? new AuditService($db),
             new IpAddressRetriever($_SERVER),
-            self::requiresApproval($db, $config)
+            self::requiresApproval($config, $permissions)
         );
     }
 
     /**
      * Whether a DDNS user's changes to a zone would have to go through review.
      */
-    private static function requiresApproval(PDO $db, ConfigurationManager $config): Closure
+    private static function requiresApproval(ConfigurationManager $config, PermissionService $permissions): Closure
     {
-        $permissions = new PermissionService(new DbUserRepository($db, $config));
-
         return static fn(int $userId, int $zoneId): bool => ChangeApprovalPolicy::mode(
             (bool)$config->get('approval', 'enabled', false),
             (bool)$config->get('approval', 'require_review_for_all', false),

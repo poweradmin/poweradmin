@@ -35,7 +35,6 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use LogicException;
 use PDO;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -51,17 +50,24 @@ class ZoneTemplate
     private MessageService $messageService;
     private DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $logger;
-    private ?PermissionService $permissionService = null;
+    private PermissionService $permissionService;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;
     private ?ZoneTemplateRepositoryInterface $repository;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, DnsBackendProviderInterface $backendProvider, ?LoggerInterface $logger = null, ?ZoneTemplateRepositoryInterface $repository = null)
-    {
+    public function __construct(
+        PDO $db,
+        ConfigurationInterface $config,
+        DnsBackendProviderInterface $backendProvider,
+        PermissionService $permissionService,
+        ?LoggerInterface $logger = null,
+        ?ZoneTemplateRepositoryInterface $repository = null
+    ) {
         $this->db = $db;
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
         $this->messageService = new MessageService();
         $this->backendProvider = $backendProvider;
+        $this->permissionService = $permissionService;
         $this->logger = $logger ?? new NullLogger();
         $this->repository = $repository;
     }
@@ -133,8 +139,19 @@ class ZoneTemplate
         if ($userId === null) {
             return false;
         }
-        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
         return $this->permissionService->hasPermission($userId, $permission);
+    }
+
+    /**
+     * The logged-in user's edit level: "all", "own", "own_as_client" or "none".
+     */
+    private function currentUserEditPermissionLevel(): string
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return 'none';
+        }
+        return $this->permissionService->getEditPermissionLevel($userId);
     }
 
     /**
@@ -558,7 +575,7 @@ class ZoneTemplate
      */
     private function canStoreTemplateRecordType(string $type): bool
     {
-        return !Permission::isTemplateRecordTypeRestricted($type, Permission::getEditPermission($this->db, $this->config));
+        return !Permission::isTemplateRecordTypeRestricted($type, $this->currentUserEditPermissionLevel());
     }
 
     /**
@@ -850,7 +867,7 @@ class ZoneTemplate
      */
     private function linkedZoneOwnerFilter(int $userid): ?int
     {
-        return Permission::getEditPermission($this->db, $this->config) != "all" ? $userid : null;
+        return $this->currentUserEditPermissionLevel() !== 'all' ? $userid : null;
     }
 
     /**
