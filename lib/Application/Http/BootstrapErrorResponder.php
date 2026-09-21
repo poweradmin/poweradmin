@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Http;
 
 use Closure;
-use Poweradmin\Application\Controller\NotFoundController;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Throwable;
 
@@ -39,12 +38,11 @@ final readonly class BootstrapErrorResponder
     /**
      * @param ConfigurationInterface $config Configuration, which may itself be
      *                                       the thing that failed to load
-     * @param Closure|null $notFoundRenderer Renders the HTML 404 body; defaults
-     *                                       to NotFoundController
+     * @param Closure $notFoundRenderer Renders the HTML 404 body (Bootstrap::notFoundRenderer() in production)
      */
     public function __construct(
         private ConfigurationInterface $config,
-        private ?Closure $notFoundRenderer = null,
+        private Closure $notFoundRenderer,
     ) {
     }
 
@@ -151,9 +149,7 @@ final readonly class BootstrapErrorResponder
     private function renderNotFound(): void
     {
         try {
-            ($this->notFoundRenderer ?? static function (): void {
-                (new NotFoundController([]))->run();
-            })();
+            ($this->notFoundRenderer)();
         } catch (Throwable) {
             echo 'Page not found.';
         }

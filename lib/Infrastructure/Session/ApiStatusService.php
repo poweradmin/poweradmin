@@ -20,9 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Service;
+namespace Poweradmin\Infrastructure\Session;
 
-use Poweradmin\Domain\Service\ApiStatusInterface;
+use Poweradmin\Domain\Service\ApiStatusRecorderInterface;
 
 /**
  * Tracks the most recent PowerDNS API error so the UI can surface it.
@@ -31,7 +31,7 @@ use Poweradmin\Domain\Service\ApiStatusInterface;
  * request without having to tail log files. Cleared on the next successful
  * request.
  */
-class ApiStatusService implements ApiStatusInterface
+class ApiStatusService implements ApiStatusRecorderInterface
 {
     private const SESSION_KEY = 'pdns_api_last_error';
 

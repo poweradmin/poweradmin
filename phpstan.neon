@@ -55,7 +55,7 @@ parameters:
       path: lib/Infrastructure/Service/SqlDnsBackendProvider.php
     -
       identifier: booleanAnd.rightAlwaysFalse
-      path: lib/Application/Service/ZoneSyncService.php
+      path: lib/Infrastructure/Service/ZoneSyncService.php
     # processIPv6() is kept alongside its commented-out call site until IPv6
     # reverse-record creation is finished; see the FIXME above that call.
     -
@@ -91,7 +91,7 @@ parameters:
     # matters. Dropping them turns a skipped row into a deprecation or a warning.
     -
       identifier: isset.offset
-      path: lib/Application/Service/ZoneSyncService.php
+      path: lib/Infrastructure/Service/ZoneSyncService.php
     -
       identifier: function.alreadyNarrowedType
       path: lib/Infrastructure/Logger/RecordChangeLogger.php

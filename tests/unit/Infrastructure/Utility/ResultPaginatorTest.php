@@ -1,10 +1,10 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Application\Service;
+namespace Poweradmin\Tests\Unit\Infrastructure\Utility;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\ResultPaginator;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
 #[CoversClass(ResultPaginator::class)]
 class ResultPaginatorTest extends TestCase

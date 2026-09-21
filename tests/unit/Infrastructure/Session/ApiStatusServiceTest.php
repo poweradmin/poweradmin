@@ -20,10 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Service;
+namespace Poweradmin\Tests\Unit\Infrastructure\Session;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Domain\Service\ApiStatusInterface;
+use Poweradmin\Domain\Service\ApiStatusRecorderInterface;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 
 class ApiStatusServiceTest extends TestCase
 {
@@ -31,6 +33,14 @@ class ApiStatusServiceTest extends TestCase
     {
         // Session is used as the backing store; clear between tests.
         $_SESSION = [];
+    }
+
+    public function testImplementsBothTheReadAndTheWriteContract(): void
+    {
+        $service = new ApiStatusService();
+
+        $this->assertInstanceOf(ApiStatusInterface::class, $service);
+        $this->assertInstanceOf(ApiStatusRecorderInterface::class, $service);
     }
 
     public function testGetLastErrorReturnsNullWhenNoneRecorded(): void

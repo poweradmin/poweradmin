@@ -64,5 +64,5 @@ try {
     // Throwable, not Exception: a TypeError from mistyped-but-valid JSON (e.g. an
     // array where a string is expected) is an Error, and must still be shaped into
     // a JSON 500 instead of escaping as a blank/HTML fatal.
-    (new BootstrapErrorResponder($configManager))->handle($e);
+    (new BootstrapErrorResponder($configManager, Bootstrap::notFoundRenderer()))->handle($e);
 }

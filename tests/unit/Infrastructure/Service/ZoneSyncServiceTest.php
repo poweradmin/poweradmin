@@ -1,12 +1,12 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Application\Service;
+namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\ZoneSyncService;
+use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Psr\Log\LoggerInterface;
 
@@ -241,7 +241,7 @@ class ZoneSyncServiceTest extends TestCase
         // Simulate the backend recording an error mid-call, which is what
         // ApiDnsBackendProvider::getZones() does when it catches ApiErrorException.
         $this->mockBackend->method('getZones')->willReturnCallback(function () {
-            (new \Poweradmin\Application\Service\ApiStatusService())
+            (new \Poweradmin\Infrastructure\Session\ApiStatusService())
                 ->recordError('An API request failed', ['endpoint' => 'zones', 'http_code' => 500]);
             return [];
         });

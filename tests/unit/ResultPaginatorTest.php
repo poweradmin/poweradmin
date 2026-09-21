@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\ResultPaginator;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
 class ResultPaginatorTest extends TestCase
 {

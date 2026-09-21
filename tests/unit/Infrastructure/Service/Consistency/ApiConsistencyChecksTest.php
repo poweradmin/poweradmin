@@ -26,7 +26,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Service\ApiStatusInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;

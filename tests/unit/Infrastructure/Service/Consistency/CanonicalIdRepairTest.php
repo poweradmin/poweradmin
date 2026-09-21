@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service\Consistency;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;

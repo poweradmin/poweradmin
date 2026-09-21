@@ -20,10 +20,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Service;
+namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Service\ZoneReadBackendInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;

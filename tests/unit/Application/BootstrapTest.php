@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Unit\Application;
 
+use Closure;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Bootstrap;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use ReflectionFunction;
 
 /**
  * Unit tests for the startup helper functions shared by index.php and
@@ -52,5 +54,15 @@ class BootstrapTest extends TestCase
         $this->assertEquals('Asia/Tokyo', date_default_timezone_get());
 
         date_default_timezone_set($originalTz);
+    }
+
+    public function testNotFoundRendererIsBuiltLazily(): void
+    {
+        // Building the closure must not construct the controller (that needs a database);
+        // only invoking it may.
+        $renderer = Bootstrap::notFoundRenderer();
+
+        $this->assertInstanceOf(Closure::class, $renderer);
+        $this->assertSame('void', (string) (new ReflectionFunction($renderer))->getReturnType());
     }
 }

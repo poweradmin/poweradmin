@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application;
 
+use Closure;
+use Poweradmin\Application\Controller\NotFoundController;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 
@@ -30,6 +32,16 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class Bootstrap
 {
+    /**
+     * The HTML 404 body BootstrapErrorResponder renders; deferred so the controller is only built on a miss.
+     */
+    public static function notFoundRenderer(): Closure
+    {
+        return static function (): void {
+            (new NotFoundController([]))->run();
+        };
+    }
+
     /**
      * Priority: configured timezone > php.ini date.timezone > UTC
      */

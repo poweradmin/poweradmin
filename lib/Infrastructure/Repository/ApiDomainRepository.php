@@ -23,8 +23,8 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
-use Poweradmin\Application\Service\ResultPaginator;
-use Poweradmin\Application\Service\ZoneSyncService;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
+use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;

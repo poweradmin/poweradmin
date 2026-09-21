@@ -45,12 +45,6 @@ parameters:
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
-			count: 3
-			path: lib/Application/Service/ApiStatusService.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
 			count: 2
 			path: lib/Application/Service/DnsDataService.php
 
@@ -89,12 +83,6 @@ parameters:
 			identifier: disallowed.variable
 			count: 7
 			path: lib/Application/Service/SqlAuthenticator.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 2
-			path: lib/Application/Service/ZoneSyncService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'

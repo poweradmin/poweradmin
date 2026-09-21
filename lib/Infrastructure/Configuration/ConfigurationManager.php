@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
-use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Domain\Model\PaginationLimits;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -149,15 +149,15 @@ class ConfigurationManager implements ConfigurationInterface
             return;
         }
 
-        $clamped = max(PaginationService::MIN_ROWS_PER_PAGE, min($configured, PaginationService::MAX_ROWS_PER_PAGE));
+        $clamped = max(PaginationLimits::MIN_ROWS_PER_PAGE, min($configured, PaginationLimits::MAX_ROWS_PER_PAGE));
         if ($clamped === $configured) {
             return;
         }
 
         $this->logger->warning('interface.rows_per_page {configured} is outside {min}-{max}; using {clamped}', [
             'configured' => $configured,
-            'min' => PaginationService::MIN_ROWS_PER_PAGE,
-            'max' => PaginationService::MAX_ROWS_PER_PAGE,
+            'min' => PaginationLimits::MIN_ROWS_PER_PAGE,
+            'max' => PaginationLimits::MAX_ROWS_PER_PAGE,
             'clamped' => $clamped,
         ]);
         $this->settings['interface']['rows_per_page'] = $clamped;

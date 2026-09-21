@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use Poweradmin\Application\Service\ResultPaginator;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;

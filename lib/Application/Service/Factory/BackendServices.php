@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service\Factory;
 
 use PDO;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\DnssecProviderFactory;

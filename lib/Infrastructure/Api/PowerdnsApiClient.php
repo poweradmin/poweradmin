@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Api;
 
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;

@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\RecordType;

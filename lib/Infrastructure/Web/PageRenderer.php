@@ -24,7 +24,7 @@ namespace Poweradmin\Infrastructure\Web;
 
 use Closure;
 use Poweradmin\AppManager;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Application\Service\AvatarService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PaginationService;

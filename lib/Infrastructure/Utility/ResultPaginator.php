@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Service;
+namespace Poweradmin\Infrastructure\Utility;
 
 /**
  * In-memory sorting, filtering, and pagination for datasets.

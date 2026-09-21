@@ -26,6 +26,7 @@ use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Poweradmin\Domain\Repository\UserAdminInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneReadBackendInterface;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
