@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Closure;
 use Exception;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\ReverseNetwork;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
@@ -106,260 +107,65 @@ class BatchReverseRecordCreator
         ?int $forwardTtl = null,
         ?int $matchingPtrTtl = null
     ): array {
-        $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
-
-        if (!$isReverseRecordAllowed) {
+        if (!$this->config->get('interface', 'add_reverse_record')) {
             return $this->createErrorResponse('Reverse record creation is not allowed.');
         }
 
-        // Check if CIDR notation is used
-        $cidr = 24; // Default to /24
-        $network = $networkPrefix;
-
-        if (str_contains($networkPrefix, '/')) {
-            list($network, $cidrPart) = explode('/', $networkPrefix);
-            $cidr = (int)$cidrPart;
-
-            // Support /20 through /30 (larger than /30 doesn't make sense for PTR records)
-            if ($cidr < 20 || $cidr > 30) {
-                return $this->createErrorResponse('Network size must be between /20 and /30. Supported range: /20 to /30.');
-            }
+        $network = $this->parseIPv4Network($networkPrefix);
+        if (is_array($network)) {
+            return $network;
         }
 
-        // Parse the IP address part
-        $ip = $network;
-
-        // Add .0 to the end if it's a 3-octet format
-        if (substr_count($ip, '.') === 2) {
-            $ip .= '.0';
-        }
-
-        // Validate IP format
-        if (!$this->ipValidator->isValidIPv4($ip)) {
-            return $this->createErrorResponse('Invalid IPv4 address format. Expected format: 192.168.1.0/24 or 10.0.0.0/20.');
-        }
-
-        // Calculate network details based on CIDR
-        $ipLong = ip2long($ip);
-        $netmask = IpHelper::getCidrNetmask($cidr);
-        $networkAddress = $ipLong & $netmask;
-
-        // Get octets for the network address
-        $octets = [
-            ($networkAddress >> 24) & 255,
-            ($networkAddress >> 16) & 255,
-            ($networkAddress >> 8) & 255,
-            $networkAddress & 255
-        ];
-
-        $successCount = 0;
-        $skipCount = 0;
-        $failCount = 0;
-        $errors = [];
-
-        // Calculate number of hosts based on CIDR
-        $hostCount = IpHelper::getCidrBlockSize($cidr);
-
-        // Limit the number of records to prevent excessive processing
-        // /24 = 256, /23 = 512, /22 = 1024, /21 = 2048, /20 = 4096
-        $maxRecords = 4096;
-        if ($hostCount > $maxRecords) {
-            return $this->createErrorResponse("Network size too large. Maximum supported is $maxRecords records (/20 network).");
-        }
-
-        // If only matching records, get A records from forward zone
         $matchingForwardRecords = [];
         if ($onlyMatchingRecords) {
-            $matchingForwardRecords = $this->recordMatchingService->getMatchingForwardRecords($domain, $networkAddress, $hostCount);
+            $matchingForwardRecords = $this->collectMatchingForwardRecords($domain, $network, false);
             if (empty($matchingForwardRecords)) {
                 return $this->createErrorResponse("No A records found in forward zone '$domain' that match the IP range $networkPrefix.");
             }
         }
 
-        try {
-            // First check if we can create at least one record to validate zone existence
-            // Use the first IP in the network range
-            $testIpOctets = $octets;
-            $testReverseDomain = IpHelper::buildReverseIPv4Domain($testIpOctets, $cidr);
-            $testFqdn = $hostPrefix . '0.' . $domain;
+        $tally = self::newTally();
 
-            // Get the reverse zone ID
-            $test_zone_rev_id = $this->domainRepository->getBestMatchingZoneIdFromName($testReverseDomain);
-            if ($test_zone_rev_id === -1) {
-                throw new Exception("No matching reverse zone found for $testReverseDomain");
+        try {
+            if ($this->domainRepository->getBestMatchingZoneIdFromName($network->probeReverseName) === -1) {
+                throw new Exception("No matching reverse zone found for {$network->probeReverseName}");
             }
 
-            // If we get here, the reverse zone exists, so proceed with creating records
             if ($onlyMatchingRecords) {
-                // Create PTRs only for existing A records
-                foreach ($matchingForwardRecords as $record) {
-                    $ip = $record['ip'];
-                    $fqdn = $record['name'];
-
-                    // Convert IP to reverse notation
-                    $reverseDomain = DomainUtility::convertIPv4AddrToPtrRec($ip);
-
-                    // Get the right reverse zone ID
-                    $zone_rev_id = $this->domainRepository->getBestMatchingZoneIdFromName($reverseDomain);
-                    if ($zone_rev_id === -1) {
-                        $failCount++;
-                        $errors[] = "No matching reverse zone found for $reverseDomain";
-                        continue;
-                    }
-
-                    // Check if ANY PTR record already exists for this IP (if configured)
-                    $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
-                    if ($preventDuplicatePTR) {
-                        $ptr_exists = $this->recordRepository->hasPtrRecord($zone_rev_id, $reverseDomain);
-                        if ($ptr_exists) {
-                            $skipCount++;
-                            continue;
-                        }
-                    } else {
-                        // Check if exact record exists to prevent exact duplicates
-                        $record_exists = $this->recordRepository->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
-                        if ($record_exists) {
-                            $skipCount++;
-                            continue;
-                        }
-                    }
-
-                    try {
-                        $ptrTtl = $matchingPtrTtl ?? $record['ttl'];
-                        $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ptrTtl, $record['prio'], $comment, $account);
-
-                        if ($result) {
-                            $successCount++;
-                        } else {
-                            $failCount++;
-                            $errors[] = "Failed to create PTR record for $ip";
-                        }
-                    } catch (Exception $e) {
-                        $failCount++;
-                        $errors[] = "Failed to create PTR record for $ip: " . $e->getMessage();
-                    }
-                }
+                $this->createPtrsForMatchingRecords($matchingForwardRecords, $zone_id, $matchingPtrTtl, $comment, $account, false, $tally);
             } else {
-                // Original behavior: create PTRs for all IPs in the range
-                for ($i = 0; $i < $hostCount; $i++) {
+                for ($i = 0; $i < $network->hostCount; $i++) {
                     // Skip network address (0) and broadcast address (last IP in range)
-                    if ($i === 0 || $i === $hostCount - 1) {
-                        $skipCount++;
+                    if ($i === 0 || $i === $network->hostCount - 1) {
+                        $tally['skip']++;
                         continue;
                     }
 
-                    // Calculate the IP for this host in the network
-                    $hostIp = $networkAddress + $i;
-                    $ipOctets = [
-                        ($hostIp >> 24) & 255,
-                        ($hostIp >> 16) & 255,
-                        ($hostIp >> 8) & 255,
-                        $hostIp & 255
-                    ];
+                    $ip = long2ip($network->networkAddress + $i);
+                    $fqdn = !empty($hostPrefix) ? $hostPrefix . $i . '.' . $domain : $domain;
 
-                    $ip = implode('.', $ipOctets);
-
-                    // Generate hostname based on whether host prefix is provided
-                    if (!empty($hostPrefix)) {
-                        $name = $hostPrefix . $i;
-                        $fqdn = $name . '.' . $domain;
-                    } else {
-                        // If no host prefix, use just the IP address as the hostname
-                        $fqdn = $domain;
-                    }
-
-                // Convert IP to reverse notation
-                    $reverseDomain = DomainUtility::convertIPv4AddrToPtrRec($ip);
-
-                // For larger networks, we need to make sure we're using the right reverse zone ID
-                // because subnet boundaries can cross zone boundaries
-                    $zone_rev_id = $this->domainRepository->getBestMatchingZoneIdFromName($reverseDomain);
-                    if ($zone_rev_id === -1) {
-                        $failCount++;
-                        $errors[] = "No matching reverse zone found for $reverseDomain";
-                        continue;
-                    }
-
-                // Check if ANY PTR record already exists for this IP (if configured)
-                    $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
-                    if ($preventDuplicatePTR) {
-                        $ptr_exists = $this->recordRepository->hasPtrRecord($zone_rev_id, $reverseDomain);
-                        if ($ptr_exists) {
-                            $skipCount++;
-                            continue;
-                        }
-                    } else {
-                        // Check if exact record exists to prevent exact duplicates
-                        $record_exists = $this->recordRepository->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
-                        if ($record_exists) {
-                            $skipCount++;
-                            continue;
-                        }
-                    }
-
-                    try {
-                        $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
-
-                        // Create forward A record if requested
-                        if ($result && $createForwardRecords) {
-                            // Find or get domain ID for the forward zone
-                            $forward_domain_id = $this->domainRepository->getDomainIdByName($domain);
-                            if ($forward_domain_id) {
-                                // Create the hostname for the A record
-                                $hostname = !empty($hostPrefix) ? $hostPrefix . $i . '.' . $domain : $domain;
-
-                                // Check if the record already exists
-                                if (!$this->recordRepository->recordExists($forward_domain_id, $hostname, RecordType::A, $ip)) {
-                                    try {
-                                        // Add the A record
-                                        $this->recordManager->addRecord($forward_domain_id, $hostname, RecordType::A, $ip, $forwardTtl ?? $ttl, $prio);
-                                    } catch (Exception $e) {
-                                        // Don't stop execution for forward record failures
-                                        $errors[] = "Failed to create forward A record for $ip: " . $e->getMessage();
-                                    }
-                                }
-                            }
-                        }
-
-                        if ($result) {
-                            $successCount++;
-                        } else {
-                            $failCount++;
-                            $errors[] = "Failed to create PTR record for $ip";
-                        }
-                    } catch (Exception $e) {
-                        $failCount++;
-                        $errors[] = "Failed to create PTR record for $ip: " . $e->getMessage();
-                    }
+                    $this->createPtrForHost(
+                        null,
+                        DomainUtility::convertIPv4AddrToPtrRec($ip),
+                        $ip,
+                        $fqdn,
+                        $zone_id,
+                        $ttl,
+                        $prio,
+                        $comment,
+                        $account,
+                        $createForwardRecords ? RecordType::A : null,
+                        $domain,
+                        $forwardTtl ?? $ttl,
+                        $tally
+                    );
                 }
             }
         } catch (Exception $e) {
             return $this->createErrorResponse('No matching reverse zone found for this network prefix. Please create the reverse zone first.');
         }
 
-        if ($successCount === 0 && $skipCount === 0) {
-            return $this->createErrorResponse('Failed to create any PTR records. ' . implode(' ', array_slice($errors, 0, 3)) . (count($errors) > 3 ? '...' : ''));
-        }
-
-        $message = "Created $successCount PTR records successfully";
-        if ($skipCount > 0) {
-            $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
-            if ($preventDuplicatePTR) {
-                $message .= " ($skipCount skipped - PTR record already exists for IP address)";
-            } else {
-                $message .= " ($skipCount skipped - exact PTR record already exists)";
-            }
-        }
-        if ($failCount > 0) {
-            $message .= " ($failCount failed)";
-        }
-
-        return [
-            'success' => true,
-            'type' => 'success',
-            'message' => $message,
-            'errors' => $errors
-        ];
+        return $this->summariseBatch($tally, 'PTR');
     }
 
     /**
@@ -396,202 +202,299 @@ class BatchReverseRecordCreator
         bool $onlyMatchingRecords = false,
         ?int $matchingPtrTtl = null
     ): array {
-        $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
-
-        if (!$isReverseRecordAllowed) {
+        if (!$this->config->get('interface', 'add_reverse_record')) {
             return $this->createErrorResponse('Reverse record creation is not allowed.');
         }
 
-        // Validate IPv6 prefix
-        if (substr_count($networkPrefix, ':') !== 3) {
-            return $this->createErrorResponse('Network prefix must be a valid IPv6 /64 prefix (e.g., "2001:db8:1:1").');
+        $network = $this->parseIPv6Network($networkPrefix, $count);
+        if (is_array($network)) {
+            return $network;
         }
 
-        // Test if it's a valid IPv6 address when combined with zeroes
-        $testAddress = $networkPrefix . '::';
-        if (!$this->ipValidator->isValidIPv6($testAddress)) {
-            return $this->createErrorResponse('Invalid IPv6 prefix.');
-        }
-
-        $successCount = 0;
-        $skipCount = 0;
-        $failCount = 0;
-        $errors = [];
-
-        // Limit count to prevent excessive record creation
-        $count = min($count, 1000);
-
-        // If only matching records, get AAAA records from forward zone
         $matchingForwardRecords = [];
         if ($onlyMatchingRecords) {
-            $matchingForwardRecords = $this->recordMatchingService->getMatchingIPv6ForwardRecords($domain, $networkPrefix);
+            $matchingForwardRecords = $this->collectMatchingForwardRecords($domain, $network, true);
             if (empty($matchingForwardRecords)) {
                 return $this->createErrorResponse("No AAAA records found in forward zone '$domain' that match the IPv6 prefix $networkPrefix.");
             }
         }
 
-        // Create IPv6 PTR records
-        try {
-            // Validate zone existence using a test IP
-            $testIp = $networkPrefix . '::1';
-            $testReverseDomain = DomainUtility::convertIPv6AddrToPtrRec($testIp);
-            $test_zone_rev_id = $this->domainRepository->getBestMatchingZoneIdFromName($testReverseDomain);
+        $tally = self::newTally();
 
-            if ($test_zone_rev_id === -1) {
+        try {
+            $zoneRevId = $this->domainRepository->getBestMatchingZoneIdFromName($network->probeReverseName);
+            if ($zoneRevId === -1) {
                 throw new Exception("No matching reverse zone found for this IPv6 network prefix. Please create the appropriate reverse zone first.");
             }
 
             if ($onlyMatchingRecords) {
-                // Create PTRs only for existing AAAA records
-                foreach ($matchingForwardRecords as $record) {
-                    $ip = $record['ip'];
-                    $fqdn = $record['name'];
-
-                    $reverseDomain = DomainUtility::convertIPv6AddrToPtrRec($ip);
-
-                    $zone_rev_id = $this->domainRepository->getBestMatchingZoneIdFromName($reverseDomain);
-                    if ($zone_rev_id === -1) {
-                        $failCount++;
-                        $errors[] = "No matching reverse zone found for $reverseDomain";
+                $this->createPtrsForMatchingRecords($matchingForwardRecords, $zone_id, $matchingPtrTtl, $comment, $account, true, $tally);
+            } else {
+                for ($i = 0; $i < $network->hostCount; $i++) {
+                    // Skip 0 for IPv6 as well (equivalent to network address)
+                    if ($i === 0) {
+                        $tally['skip']++;
                         continue;
                     }
 
-                    // Check if ANY PTR record already exists for this IP (if configured)
-                    $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
-                    if ($preventDuplicatePTR) {
-                        $ptr_exists = $this->recordRepository->hasPtrRecord($zone_rev_id, $reverseDomain);
-                        if ($ptr_exists) {
-                            $skipCount++;
-                            continue;
-                        }
-                    } else {
-                        $record_exists = $this->recordRepository->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
-                        if ($record_exists) {
-                            $skipCount++;
-                            continue;
-                        }
-                    }
+                    $hex = dechex($i);
+                    $ip = $network->prefix . '::' . $hex;
+                    $fqdn = !empty($hostPrefix) ? $hostPrefix . $hex . '.' . $domain : $domain;
 
-                    try {
-                        $ptrTtl = $matchingPtrTtl ?? $record['ttl'];
-                        $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ptrTtl, $record['prio'], $comment, $account);
-
-                        if ($result) {
-                            $successCount++;
-                        } else {
-                            $failCount++;
-                            $errors[] = "Failed to create PTR record for $ip";
-                        }
-                    } catch (Exception $e) {
-                        $failCount++;
-                        $errors[] = "Failed to create PTR record for $ip: " . $e->getMessage();
-                    }
-                }
-
-                return $this->buildIPv6Result($successCount, $skipCount, $failCount, $errors);
-            }
-
-            for ($i = 0; $i < $count; $i++) {
-                // Skip 0 for IPv6 as well (equivalent to network address)
-                if ($i === 0) {
-                    $skipCount++;
-                    continue;
-                }
-
-                // Generate a hex value for the last part
-                $hex = dechex($i);
-                $ip = $networkPrefix . '::' . $hex;
-
-                // Generate hostname based on whether host prefix is provided
-                if (!empty($hostPrefix)) {
-                    $name = $hostPrefix . $hex;
-                    $fqdn = $name . '.' . $domain;
-                } else {
-                    $fqdn = $domain;
-                }
-
-                // Convert IP to reverse notation with proper nibble expansion
-                $reverseDomain = DomainUtility::convertIPv6AddrToPtrRec($ip);
-
-                // Check if ANY PTR record already exists for this IP (if configured)
-                $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
-                if ($preventDuplicatePTR) {
-                    $ptr_exists = $this->recordRepository->hasPtrRecord($test_zone_rev_id, $reverseDomain);
-                    if ($ptr_exists) {
-                        $skipCount++;
-                        continue;
-                    }
-                } else {
-                    // Check if exact record exists to prevent exact duplicates
-                    $record_exists = $this->recordRepository->recordExists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
-                    if ($record_exists) {
-                        $skipCount++;
-                        continue;
-                    }
-                }
-
-                try {
-                    $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
-
-                    // Create forward AAAA record if requested
-                    if ($result && $createForwardRecords) {
-                        // Find or get domain ID for the forward zone
-                        $forward_domain_id = $this->domainRepository->getDomainIdByName($domain);
-                        if ($forward_domain_id) {
-                            // Create the hostname for the AAAA record
-                            $hostname = !empty($hostPrefix) ? $hostPrefix . $hex . '.' . $domain : $domain;
-
-                            // Check if the record already exists
-                            if (!$this->recordRepository->recordExists($forward_domain_id, $hostname, RecordType::AAAA, $ip)) {
-                                try {
-                                    // Add the AAAA record
-                                    $this->recordManager->addRecord($forward_domain_id, $hostname, RecordType::AAAA, $ip, $forwardTtl ?? $ttl, $prio);
-                                } catch (Exception $e) {
-                                    // Don't stop execution for forward record failures
-                                    $errors[] = "Failed to create forward AAAA record for $ip: " . $e->getMessage();
-                                }
-                            }
-                        }
-                    }
-
-                    if ($result) {
-                        $successCount++;
-                    } else {
-                        $failCount++;
-                        $errors[] = "Failed to create PTR record for $ip";
-                    }
-                } catch (Exception $e) {
-                    $failCount++;
-                    $errors[] = "Failed to create PTR record for $ip: " . $e->getMessage();
+                    // The whole /64 lives in one reverse zone, so the probe lookup is reused for every host
+                    $this->createPtrForHost(
+                        $zoneRevId,
+                        DomainUtility::convertIPv6AddrToPtrRec($ip),
+                        $ip,
+                        $fqdn,
+                        $zone_id,
+                        $ttl,
+                        $prio,
+                        $comment,
+                        $account,
+                        $createForwardRecords ? RecordType::AAAA : null,
+                        $domain,
+                        $forwardTtl ?? $ttl,
+                        $tally
+                    );
                 }
             }
         } catch (Exception $e) {
             return $this->createErrorResponse('No matching reverse zone found for this IPv6 network prefix. Please create the reverse zone first.');
         }
 
-        return $this->buildIPv6Result($successCount, $skipCount, $failCount, $errors);
+        return $this->summariseBatch($tally, 'IPv6 PTR');
     }
 
     /**
-     * Build the result payload shared by the IPv6 generate-all and matching-only paths.
+     * Parse "a.b.c.d/nn" (or the three-octet "a.b.c" shorthand meaning /24) into a network, or an error response.
      */
-    private function buildIPv6Result(int $successCount, int $skipCount, int $failCount, array $errors): array
+    private function parseIPv4Network(string $networkPrefix): ReverseNetwork|array
     {
-        if ($successCount === 0 && $skipCount === 0) {
-            return $this->createErrorResponse('Failed to create any IPv6 PTR records. ' . implode(' ', array_slice($errors, 0, 3)) . (count($errors) > 3 ? '...' : ''));
-        }
+        $cidr = 24;
+        $ip = $networkPrefix;
 
-        $message = "Created $successCount IPv6 PTR records successfully";
-        if ($skipCount > 0) {
-            $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
-            if ($preventDuplicatePTR) {
-                $message .= " ($skipCount skipped - PTR record already exists for IP address)";
-            } else {
-                $message .= " ($skipCount skipped - exact PTR record already exists)";
+        if (str_contains($networkPrefix, '/')) {
+            list($ip, $cidrPart) = explode('/', $networkPrefix);
+            $cidr = (int)$cidrPart;
+
+            // Larger than /30 makes no sense for PTR records; smaller than /20 exceeds the record cap
+            if ($cidr < 20 || $cidr > 30) {
+                return $this->createErrorResponse('Network size must be between /20 and /30. Supported range: /20 to /30.');
             }
         }
-        if ($failCount > 0) {
-            $message .= " ($failCount failed)";
+
+        if (substr_count($ip, '.') === 2) {
+            $ip .= '.0';
+        }
+
+        if (!$this->ipValidator->isValidIPv4($ip)) {
+            return $this->createErrorResponse('Invalid IPv4 address format. Expected format: 192.168.1.0/24 or 10.0.0.0/20.');
+        }
+
+        $networkAddress = ip2long($ip) & IpHelper::getCidrNetmask($cidr);
+        $hostCount = IpHelper::getCidrBlockSize($cidr);
+
+        $maxRecords = 4096;
+        if ($hostCount > $maxRecords) {
+            return $this->createErrorResponse("Network size too large. Maximum supported is $maxRecords records (/20 network).");
+        }
+
+        $octets = [
+            ($networkAddress >> 24) & 255,
+            ($networkAddress >> 16) & 255,
+            ($networkAddress >> 8) & 255,
+            $networkAddress & 255
+        ];
+
+        return new ReverseNetwork(
+            long2ip($networkAddress),
+            $networkAddress,
+            $hostCount,
+            IpHelper::buildReverseIPv4Domain($octets, $cidr)
+        );
+    }
+
+    /**
+     * Parse a four-hextet /64 prefix into a network capped at 1000 hosts, or an error response.
+     */
+    private function parseIPv6Network(string $networkPrefix, int $count): ReverseNetwork|array
+    {
+        if (substr_count($networkPrefix, ':') !== 3) {
+            return $this->createErrorResponse('Network prefix must be a valid IPv6 /64 prefix (e.g., "2001:db8:1:1").');
+        }
+
+        if (!$this->ipValidator->isValidIPv6($networkPrefix . '::')) {
+            return $this->createErrorResponse('Invalid IPv6 prefix.');
+        }
+
+        return new ReverseNetwork(
+            $networkPrefix,
+            0,
+            min($count, 1000),
+            DomainUtility::convertIPv6AddrToPtrRec($networkPrefix . '::1')
+        );
+    }
+
+    /**
+     * Forward A or AAAA records of $domain whose address falls inside the network.
+     */
+    private function collectMatchingForwardRecords(string $domain, ReverseNetwork $network, bool $ipv6): array
+    {
+        if ($ipv6) {
+            return $this->recordMatchingService->getMatchingIPv6ForwardRecords($domain, $network->prefix);
+        }
+
+        return $this->recordMatchingService->getMatchingForwardRecords($domain, $network->networkAddress, $network->hostCount);
+    }
+
+    /**
+     * Matching mode: one PTR per forward record, pointing back at the record's own name with its TTL and priority.
+     */
+    private function createPtrsForMatchingRecords(
+        array $forwardRecords,
+        string $zone_id,
+        ?int $matchingPtrTtl,
+        string $comment,
+        string $account,
+        bool $ipv6,
+        array &$tally
+    ): void {
+        foreach ($forwardRecords as $record) {
+            $ip = $record['ip'];
+            $reverseDomain = $ipv6 ? DomainUtility::convertIPv6AddrToPtrRec($ip) : DomainUtility::convertIPv4AddrToPtrRec($ip);
+
+            $this->createPtrForHost(
+                null,
+                $reverseDomain,
+                $ip,
+                $record['name'],
+                $zone_id,
+                $matchingPtrTtl ?? $record['ttl'],
+                $record['prio'],
+                $comment,
+                $account,
+                null,
+                '',
+                0,
+                $tally
+            );
+        }
+    }
+
+    /**
+     * Create one PTR (and optionally its forward record) and record the outcome in the tally.
+     *
+     * @param int|null $zoneRevId Reverse zone to check for duplicates, or null to resolve it from $reverseDomain
+     * @param string|null $forwardType A or AAAA to also create the forward record in $domain, null to skip it
+     */
+    private function createPtrForHost(
+        ?int $zoneRevId,
+        string $reverseDomain,
+        string $ip,
+        string $fqdn,
+        string $zone_id,
+        int $ttl,
+        int $prio,
+        string $comment,
+        string $account,
+        ?string $forwardType,
+        string $domain,
+        int $forwardTtl,
+        array &$tally
+    ): void {
+        if ($zoneRevId === null) {
+            // Subnet boundaries can cross reverse zone boundaries, so each host resolves its own zone
+            $zoneRevId = $this->domainRepository->getBestMatchingZoneIdFromName($reverseDomain);
+            if ($zoneRevId === -1) {
+                $tally['fail']++;
+                $tally['errors'][] = "No matching reverse zone found for $reverseDomain";
+                return;
+            }
+        }
+
+        if ($this->config->get('dns', 'prevent_duplicate_ptr', true)) {
+            $exists = $this->recordRepository->hasPtrRecord($zoneRevId, $reverseDomain);
+        } else {
+            $exists = $this->recordRepository->recordExists($zoneRevId, $reverseDomain, 'PTR', $fqdn);
+        }
+        if ($exists) {
+            $tally['skip']++;
+            return;
+        }
+
+        try {
+            $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
+
+            if ($result && $forwardType !== null) {
+                $this->createForwardRecord($domain, $fqdn, $forwardType, $ip, $forwardTtl, $prio, $tally);
+            }
+
+            if ($result) {
+                $tally['success']++;
+            } else {
+                $tally['fail']++;
+                $tally['errors'][] = "Failed to create PTR record for $ip";
+            }
+        } catch (Exception $e) {
+            $tally['fail']++;
+            $tally['errors'][] = "Failed to create PTR record for $ip: " . $e->getMessage();
+        }
+    }
+
+    /**
+     * Add the forward A/AAAA record unless it already exists; a failure is logged but never aborts the batch.
+     */
+    private function createForwardRecord(string $domain, string $hostname, string $type, string $ip, int $ttl, int $prio, array &$tally): void
+    {
+        $forwardDomainId = $this->domainRepository->getDomainIdByName($domain);
+        if (!$forwardDomainId) {
+            return;
+        }
+
+        if ($this->recordRepository->recordExists($forwardDomainId, $hostname, $type, $ip)) {
+            return;
+        }
+
+        try {
+            $this->recordManager->addRecord($forwardDomainId, $hostname, $type, $ip, $ttl, $prio);
+        } catch (Exception $e) {
+            $tally['errors'][] = "Failed to create forward $type record for $ip: " . $e->getMessage();
+        }
+    }
+
+    /**
+     * @return array{success: int, skip: int, fail: int, errors: string[]}
+     */
+    private static function newTally(): array
+    {
+        return ['success' => 0, 'skip' => 0, 'fail' => 0, 'errors' => []];
+    }
+
+    /**
+     * Turn the tally into the result payload; nothing created and nothing skipped counts as a failed batch.
+     *
+     * @param array{success: int, skip: int, fail: int, errors: string[]} $tally
+     * @param string $label "PTR" or "IPv6 PTR", as shown in the summary message
+     */
+    private function summariseBatch(array $tally, string $label): array
+    {
+        $errors = $tally['errors'];
+
+        if ($tally['success'] === 0 && $tally['skip'] === 0) {
+            return $this->createErrorResponse("Failed to create any $label records. " . implode(' ', array_slice($errors, 0, 3)) . (count($errors) > 3 ? '...' : ''));
+        }
+
+        $message = "Created {$tally['success']} $label records successfully";
+        if ($tally['skip'] > 0) {
+            if ($this->config->get('dns', 'prevent_duplicate_ptr', true)) {
+                $message .= " ({$tally['skip']} skipped - PTR record already exists for IP address)";
+            } else {
+                $message .= " ({$tally['skip']} skipped - exact PTR record already exists)";
+            }
+        }
+        if ($tally['fail'] > 0) {
+            $message .= " ({$tally['fail']} failed)";
         }
 
         return [

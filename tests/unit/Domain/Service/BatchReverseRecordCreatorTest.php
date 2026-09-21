@@ -409,6 +409,394 @@ class BatchReverseRecordCreatorTest extends TestCase
         $this->assertSame([1800, 7200], $ttls);
     }
 
+    public function testCreateIPv6NetworkTalliesPartialFailures(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')
+            ->willReturnCallback(fn($zoneId, $name) => !str_starts_with($name, '2.'));
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        $result = $service->createIPv6Network('2001:db8:1:1', 'host-', 'example.com', '1', 3600, 0, '', '', 4, false);
+
+        $this->assertSame([
+            'success' => true,
+            'type' => 'success',
+            'message' => 'Created 2 IPv6 PTR records successfully (1 skipped - PTR record already exists for IP address) (1 failed)',
+            'errors' => ['Failed to create PTR record for 2001:db8:1:1::2'],
+        ], $result);
+    }
+
+    public function testCreateIPv6NetworkFailsWhenEveryPtrFails(): void
+    {
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')->willReturn(true);
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+        $recordRepo->method('getRecordsByDomainId')->willReturn([
+            ['name' => 'a.example.com', 'content' => '2001:db8:1:1::a', 'ttl' => 60, 'prio' => 0],
+            ['name' => 'b.example.com', 'content' => '2001:db8:1:1::b', 'ttl' => 60, 'prio' => 0],
+            ['name' => 'c.example.com', 'content' => '2001:db8:1:1::c', 'ttl' => 60, 'prio' => 0],
+            ['name' => 'd.example.com', 'content' => '2001:db8:1:1::d', 'ttl' => 60, 'prio' => 0],
+        ]);
+
+        // The probe zone lookup succeeds but every per-record lookup fails, so all four are tallied as failures.
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
+        $domainRepository->method('getBestMatchingZoneIdFromName')
+            ->willReturnCallback(fn(string $name) => str_starts_with($name, '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.') ? 42 : -1);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        $result = $service->createIPv6Network('2001:db8:1:1', '', 'example.com', '1', 3600, 0, '', '', 256, false, null, true);
+
+        $this->assertSame([
+            'success' => false,
+            'type' => 'error',
+            'message' => 'Failed to create any IPv6 PTR records. '
+                . 'No matching reverse zone found for a.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa '
+                . 'No matching reverse zone found for b.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa '
+                . 'No matching reverse zone found for c.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa...',
+        ], $result);
+    }
+
+    public function testCreateIPv6NetworkCreatesForwardAaaaRecordsWithSeparateTtl(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
+
+        $added = [];
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')
+            ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$added) {
+                $added[] = [$zoneId, $name, $type, $content, $ttl];
+                return true;
+            });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+        $recordRepo->method('recordExists')->willReturn(false);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        $result = $service->createIPv6Network('2001:db8:1:1', 'host-', 'example.com', '1', 3600, 0, '', '', 2, true, 300);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame([
+            [42, '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', 'PTR', 'host-1.example.com', 3600],
+            [7, 'host-1.example.com', 'AAAA', '2001:db8:1:1::1', 300],
+        ], $added);
+    }
+
+    public function testCreateIPv4NetworkRejectsWhenReverseRecordsDisabled(): void
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturn(false);
+
+        $result = $this->createService(null, null, $config)->createIPv4Network('192.168.1.0/24', 'host', 'example.com', '1', 3600);
+
+        $this->assertSame(['success' => false, 'type' => 'error', 'message' => 'Reverse record creation is not allowed.'], $result);
+    }
+
+    public function testCreateIPv4NetworkRejectsCidrOutsideSupportedRange(): void
+    {
+        $service = $this->createService();
+
+        foreach (['10.0.0.0/19', '10.0.0.0/31'] as $prefix) {
+            $result = $service->createIPv4Network($prefix, 'host', 'example.com', '1', 3600);
+            $this->assertSame('Network size must be between /20 and /30. Supported range: /20 to /30.', $result['message']);
+            $this->assertFalse($result['success']);
+        }
+    }
+
+    public function testCreateIPv4NetworkRejectsInvalidAddress(): void
+    {
+        $result = $this->createService()->createIPv4Network('300.1.1.0/24', 'host', 'example.com', '1', 3600);
+
+        $this->assertSame([
+            'success' => false,
+            'type' => 'error',
+            'message' => 'Invalid IPv4 address format. Expected format: 192.168.1.0/24 or 10.0.0.0/20.',
+        ], $result);
+    }
+
+    public function testCreateIPv4NetworkReturnsErrorWhenNoReverseZone(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->expects($this->once())
+            ->method('getBestMatchingZoneIdFromName')
+            ->with('0.1.168.192.in-addr.arpa')
+            ->willReturn(-1);
+
+        $result = $this->createService($domainRepository)->createIPv4Network('192.168.1.0/24', 'host', 'example.com', '1', 3600);
+
+        $this->assertSame([
+            'success' => false,
+            'type' => 'error',
+            'message' => 'No matching reverse zone found for this network prefix. Please create the reverse zone first.',
+        ], $result);
+    }
+
+    public function testCreateIPv4NetworkSkipsNetworkAndBroadcastAndReportsSummary(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+
+        $added = [];
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')
+            ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$added) {
+                $added[] = [$zoneId, $name, $type, $content, $ttl, $prio];
+                return true;
+            });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        // Three-octet shorthand defaults to /24; /30 keeps the loop small.
+        $result = $service->createIPv4Network('192.168.1.4/30', 'host', 'example.com', '1', 3600, 10, 'c', 'a');
+
+        $this->assertSame([
+            'success' => true,
+            'type' => 'success',
+            'message' => 'Created 2 PTR records successfully (2 skipped - PTR record already exists for IP address)',
+            'errors' => [],
+        ], $result);
+        $this->assertSame([
+            [42, '5.1.168.192.in-addr.arpa', 'PTR', 'host1.example.com', 3600, 10],
+            [42, '6.1.168.192.in-addr.arpa', 'PTR', 'host2.example.com', 3600, 10],
+        ], $added);
+    }
+
+    public function testCreateIPv4NetworkUsesDomainAsPtrTargetWithoutHostPrefixAndThreeOctetForm(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+
+        $targets = [];
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')
+            ->willReturnCallback(function ($zoneId, $name, $type, $content) use (&$targets) {
+                $targets[$name] = $content;
+                return true;
+            });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        $result = $service->createIPv4Network('10.20.30', '', 'example.com', '1', 3600);
+
+        $this->assertSame('Created 254 PTR records successfully (2 skipped - PTR record already exists for IP address)', $result['message']);
+        $this->assertSame('example.com', $targets['1.30.20.10.in-addr.arpa']);
+        $this->assertSame('example.com', $targets['254.30.20.10.in-addr.arpa']);
+        $this->assertArrayNotHasKey('0.30.20.10.in-addr.arpa', $targets);
+        $this->assertArrayNotHasKey('255.30.20.10.in-addr.arpa', $targets);
+    }
+
+    public function testCreateIPv4NetworkReportsExactDuplicateSkipsWhenDuplicatePtrAllowed(): void
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
+            if ($group === 'interface' && $key === 'add_reverse_record') {
+                return true;
+            }
+            if ($group === 'dns' && $key === 'prevent_duplicate_ptr') {
+                return false;
+            }
+            return $default;
+        });
+
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')->willReturn(true);
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->expects($this->never())->method('hasPtrRecord');
+        $recordRepo->method('recordExists')
+            ->willReturnCallback(fn($zoneId, $name, $type, $content) => $name === '5.1.168.192.in-addr.arpa');
+
+        $service = $this->createService($domainRepository, $recordManager, $config, $recordRepo);
+
+        $result = $service->createIPv4Network('192.168.1.4/30', 'host', 'example.com', '1', 3600);
+
+        $this->assertSame('Created 1 PTR records successfully (3 skipped - exact PTR record already exists)', $result['message']);
+    }
+
+    public function testCreateIPv4NetworkTalliesPartialFailuresAndMissingZones(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')
+            ->willReturnCallback(fn(string $name) => $name === '6.1.168.192.in-addr.arpa' ? -1 : 42);
+
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')
+            ->willReturnCallback(function ($zoneId, $name) {
+                if ($name === '5.1.168.192.in-addr.arpa') {
+                    throw new \Exception('boom');
+                }
+                return false;
+            });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        $result = $service->createIPv4Network('192.168.1.0/29', 'host', 'example.com', '1', 3600);
+
+        $this->assertSame([
+            'success' => true,
+            'type' => 'success',
+            'message' => 'Created 0 PTR records successfully (2 skipped - PTR record already exists for IP address) (6 failed)',
+            'errors' => [
+                'Failed to create PTR record for 192.168.1.1',
+                'Failed to create PTR record for 192.168.1.2',
+                'Failed to create PTR record for 192.168.1.3',
+                'Failed to create PTR record for 192.168.1.4',
+                'Failed to create PTR record for 192.168.1.5: boom',
+                'No matching reverse zone found for 6.1.168.192.in-addr.arpa',
+            ],
+        ], $result);
+    }
+
+    public function testCreateIPv4NetworkFailsWhenNothingCreatedOrSkipped(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
+
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')->willReturn(false);
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+        $recordRepo->method('getRecordsByDomainId')->willReturn([
+            ['name' => 'a.example.com', 'content' => '192.168.1.1', 'ttl' => 60, 'prio' => 0],
+            ['name' => 'b.example.com', 'content' => '192.168.1.2', 'ttl' => 60, 'prio' => 0],
+        ]);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        $result = $service->createIPv4Network('192.168.1.0/24', 'host', 'example.com', '1', 3600, 0, '', '', false, true);
+
+        $this->assertSame([
+            'success' => false,
+            'type' => 'error',
+            'message' => 'Failed to create any PTR records. Failed to create PTR record for 192.168.1.1 Failed to create PTR record for 192.168.1.2',
+        ], $result);
+    }
+
+    public function testCreateIPv4NetworkCreatesForwardARecordsAndKeepsGoingWhenForwardFails(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
+
+        $added = [];
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')
+            ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$added) {
+                if ($type === 'A' && $content === '192.168.1.6') {
+                    throw new \Exception('forward boom');
+                }
+                $added[] = [$zoneId, $name, $type, $content, $ttl];
+                return true;
+            });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+        $recordRepo->method('recordExists')->willReturn(false);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        $result = $service->createIPv4Network('192.168.1.4/30', 'host', 'example.com', '1', 3600, 0, '', '', true, false, 300);
+
+        $this->assertSame([
+            'success' => true,
+            'type' => 'success',
+            'message' => 'Created 2 PTR records successfully (2 skipped - PTR record already exists for IP address)',
+            'errors' => ['Failed to create forward A record for 192.168.1.6: forward boom'],
+        ], $result);
+        $this->assertSame([
+            [42, '5.1.168.192.in-addr.arpa', 'PTR', 'host1.example.com', 3600],
+            [7, 'host1.example.com', 'A', '192.168.1.5', 300],
+            [42, '6.1.168.192.in-addr.arpa', 'PTR', 'host2.example.com', 3600],
+        ], $added);
+    }
+
+    public function testCreateIPv4NetworkMatchingModeReturnsErrorWhenNoMatches(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
+        $domainRepository->expects($this->never())->method('getBestMatchingZoneIdFromName');
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('getRecordsByDomainId')->willReturn([
+            ['name' => 'other.example.com', 'content' => '10.9.9.9', 'ttl' => 60, 'prio' => 0],
+        ]);
+
+        $service = $this->createService($domainRepository, null, null, $recordRepo);
+
+        $result = $service->createIPv4Network('192.168.1.0/24', 'host', 'example.com', '1', 3600, 0, '', '', false, true);
+
+        $this->assertSame([
+            'success' => false,
+            'type' => 'error',
+            'message' => "No A records found in forward zone 'example.com' that match the IP range 192.168.1.0/24.",
+        ], $result);
+    }
+
+    public function testCreateIPv4NetworkMatchingModeUsesForwardRecordTtlPrioAndNameAndSkipsDuplicates(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
+
+        $added = [];
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')
+            ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$added) {
+                $added[] = [$zoneId, $name, $type, $content, $ttl, $prio];
+                return true;
+            });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')
+            ->willReturnCallback(fn($zoneId, $name) => $name === '2.1.168.192.in-addr.arpa');
+        $recordRepo->method('getRecordsByDomainId')->willReturn([
+            ['name' => 'www.example.com', 'content' => '192.168.1.1', 'ttl' => 7200, 'prio' => 5],
+            ['name' => 'dup.example.com', 'content' => '192.168.1.2', 'ttl' => 7200, 'prio' => 0],
+            ['name' => 'other.example.com', 'content' => '10.9.9.9', 'ttl' => 7200, 'prio' => 0],
+        ]);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        // No forward records are created in matching mode even when requested, and the PTR TTL comes from the A record.
+        $result = $service->createIPv4Network('192.168.1.0/24', 'host', 'example.com', '1', 3600, 0, '', '', true, true);
+
+        $this->assertSame('Created 1 PTR records successfully (1 skipped - PTR record already exists for IP address)', $result['message']);
+        $this->assertSame([[42, '1.1.168.192.in-addr.arpa', 'PTR', 'www.example.com', 7200, 5]], $added);
+
+        $added = [];
+        $override = $service->createIPv4Network('192.168.1.0/24', 'host', 'example.com', '1', 3600, 0, '', '', false, true, null, 1800);
+        $this->assertTrue($override['success']);
+        $this->assertSame([[42, '1.1.168.192.in-addr.arpa', 'PTR', 'www.example.com', 1800, 5]], $added);
+    }
+
     public function testCreateIPv6NetworkMatchingModeSkipsDuplicatePtr(): void
     {
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);

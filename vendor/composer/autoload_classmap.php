@@ -1255,6 +1255,7 @@ return array(
     'Poweradmin\\Domain\\Model\\Permission' => $baseDir . '/lib/Domain/Model/Permission.php',
     'Poweradmin\\Domain\\Model\\RecordComment' => $baseDir . '/lib/Domain/Model/RecordComment.php',
     'Poweradmin\\Domain\\Model\\RecordType' => $baseDir . '/lib/Domain/Model/RecordType.php',
+    'Poweradmin\\Domain\\Model\\ReverseNetwork' => $baseDir . '/lib/Domain/Model/ReverseNetwork.php',
     'Poweradmin\\Domain\\Model\\SessionEntity' => $baseDir . '/lib/Domain/Model/SessionEntity.php',
     'Poweradmin\\Domain\\Model\\User' => $baseDir . '/lib/Domain/Model/User.php',
     'Poweradmin\\Domain\\Model\\UserGroup' => $baseDir . '/lib/Domain/Model/UserGroup.php',
