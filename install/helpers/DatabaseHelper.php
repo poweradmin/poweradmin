@@ -25,7 +25,7 @@ namespace PoweradminInstall;
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\DatabaseSchemaService;
+use Poweradmin\Domain\Service\Database\DatabaseSchemaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class DatabaseHelper

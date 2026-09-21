@@ -7,7 +7,7 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DynamicDnsRequestFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
-use Poweradmin\Domain\Service\DatabaseCredentialMapper;
+use Poweradmin\Domain\Service\Database\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\Dns\DynamicDnsHelper;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
