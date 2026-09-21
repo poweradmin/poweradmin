@@ -95,7 +95,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
         return $record;
     }
 
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array
+    public function getRecordsFromDomainId(int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array
     {
         $zoneName = $this->backendProvider->getZoneNameById($id);
         if ($zoneName === null) {

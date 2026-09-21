@@ -35,7 +35,6 @@ use Poweradmin\Domain\Service\Zone\ZoneCountService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
-use Poweradmin\Domain\Database\DbCompat;
 
 /**
  * Orchestration service for DNS data reads.
@@ -559,9 +558,7 @@ class DnsDataService
         } else {
             // Use getRecordsFromDomainId for unfiltered requests to preserve
             // special SOA-first, NS-second, apex-third ordering
-            $dbType = $this->config->get('database', 'type', 'mysql');
             $records = $recordRepository->getRecordsFromDomainId(
-                $dbType,
                 $zoneId,
                 $rowStart,
                 $rowAmount,
@@ -842,7 +839,7 @@ class DnsDataService
                 'content' => $record['content'] ?? '',
                 'ttl' => $record['ttl'] ?? 0,
                 'prio' => $record['prio'] ?? 0,
-                'disabled' => (bool)DbCompat::boolFromDb($record['disabled'] ?? 0),
+                'disabled' => (bool)($record['disabled'] ?? false),
                 'user_id' => $record['zone_owner_id'] ?? 0,
                 'fullname' => $record['zone_owner_fullname'] ?? '',
             ];

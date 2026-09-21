@@ -367,7 +367,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
     public function testTheUpdateResponseBodyIsTheDocumentedEnvelope(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
-        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9', 'ttl' => 60, 'disabled' => '1', 'auth' => 1]));
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9', 'ttl' => 60, 'disabled' => true, 'auth' => true]));
         $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
 
         $response = $this->update(['content' => '192.0.2.9', 'ttl' => 60, 'disabled' => true]);

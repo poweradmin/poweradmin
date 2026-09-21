@@ -365,8 +365,8 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
             'content' => '"hello"',
             'ttl' => '1800',
             'prio' => '5',
-            'disabled' => 't',
-            'auth' => 'f',
+            'disabled' => true,
+            'auth' => false,
         ]);
 
         $response = $this->create(['name' => 'www', 'type' => 'TXT', 'content' => 'hello', 'ttl' => 3600, 'priority' => 5, 'disabled' => true]);

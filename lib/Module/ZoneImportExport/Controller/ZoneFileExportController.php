@@ -138,10 +138,7 @@ class ZoneFileExportController extends BaseController
 
     private function generateFromDb(int $zone_id, string $zone_name): ?string
     {
-        $records = $this->services()->recordRepository()->getRecordsFromDomainId(
-            $this->getConfig()->get('database', 'type', 'mysql'),
-            $zone_id
-        );
+        $records = $this->services()->recordRepository()->getRecordsFromDomainId($zone_id);
 
         if (empty($records)) {
             return null;

@@ -43,7 +43,6 @@ interface RecordListingInterface
      *
      * Retrieve all fields of the records and send it back to the function caller.
      *
-     * @param string $db_type Database type
      * @param int $id Domain ID
      * @param int $rowstart Starting row [default=0]
      * @param int $rowamount Number of rows to return in this query [default=9999]
@@ -51,9 +50,9 @@ interface RecordListingInterface
      * @param string $sortDirection Sort direction [default='ASC']
      * @param bool $fetchComments Whether to fetch record comments [default=false]
      *
-     * @return array array of record details (empty array if nothing found)
+     * @return array array of record details (empty array if nothing found); disabled and auth are bools
      */
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array;
+    public function getRecordsFromDomainId(int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array;
 
     /**
      * Get filtered records from a domain with search capabilities

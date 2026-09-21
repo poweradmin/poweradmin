@@ -213,7 +213,11 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
-        return $stmt->fetchAll();
+        // PostgreSQL hands is_default back as 't'/'f'; callers get a bool on every driver
+        return array_map(static function (array $row): array {
+            $row['is_default'] = (bool)DbCompat::boolFromDb($row['is_default'] ?? 0);
+            return $row;
+        }, $stmt->fetchAll());
     }
 
     /**

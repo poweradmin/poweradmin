@@ -38,11 +38,13 @@ class SqlRecordRepository implements RecordRepositoryInterface
 {
     private PDO $db;
     private TableNameService $tableNameService;
+    private string $dbType;
 
     public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->tableNameService = new TableNameService($config);
+        $this->dbType = (string)$config->get('database', 'type', 'mysql');
     }
 
     public function getZoneIdFromRecordId(int|string $rid): int
@@ -69,7 +71,8 @@ class SqlRecordRepository implements RecordRepositoryInterface
 
         $stmt = $this->db->prepare("SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio, disabled FROM $records_table WHERE id = :id");
         $stmt->execute([':id' => $rid]);
-        return $stmt->fetch() ?: [];
+        $row = $stmt->fetch();
+        return $row ? self::decodeFlags($row) : [];
     }
 
     public function getRecordFromId(int|string $id): ?array
@@ -92,16 +95,16 @@ class SqlRecordRepository implements RecordRepositoryInterface
                 "content" => $result["content"],
                 "ttl" => $result["ttl"],
                 "prio" => $result["prio"],
-                "disabled" => $result["disabled"],
+                "disabled" => (bool)DbCompat::boolFromDb($result["disabled"]),
                 "ordername" => $result["ordername"],
-                "auth" => $result["auth"],
+                "auth" => (bool)DbCompat::boolFromDb($result["auth"]),
             );
         } else {
             return null;
         }
     }
 
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array
+    public function getRecordsFromDomainId(int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
@@ -110,7 +113,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
         if ($sortby == 'name') {
             $sortby = "$records_table.name";
         }
-        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSortOrder($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSortOrder($records_table, $this->dbType, $sortDirection) : $sortby . " " . $sortDirection;
         // Pin SOA, NS, and apex records to the top regardless of column or direction so
         // zone-level metadata stays grouped above the body the user is sorting through.
         $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " .
@@ -122,7 +125,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
                 ? "rc.comment AS comment, rc.account AS comment_account, rc.modified_at AS comment_modified_at"
                 : "NULL AS comment, NULL AS comment_account, NULL AS comment_modified_at") . "
             FROM $records_table
-            " . ($fetchComments ? $this->buildCommentJoin($db_type, $records_table, $comments_table) : "") . "
+            " . ($fetchComments ? $this->buildCommentJoin($this->dbType, $records_table, $comments_table) : "") . "
             WHERE $records_table.domain_id = :domain_id
             AND $records_table.type IS NOT NULL AND $records_table.type != ''
             ORDER BY " . $sql_sortby;
@@ -137,14 +140,26 @@ class SqlRecordRepository implements RecordRepositoryInterface
         $stmt = $this->db->prepare($query);
         $params = [':domain_id' => $id, ':domain_id_apex' => $id];
         $stmt->execute($params);
-        $records = $stmt;
 
-        if ($records) {
-            $result = $records->fetchAll();
-            return $result ?: [];
+        return array_map(self::decodeFlags(...), $stmt->fetchAll() ?: []);
+    }
+
+    /**
+     * The disabled and auth columns come back as 0/1 on MySQL and SQLite but
+     * 't'/'f' on PostgreSQL; callers get PHP bools either way.
+     *
+     * @param array<string, mixed> $row
+     * @return array<string, mixed>
+     */
+    private static function decodeFlags(array $row): array
+    {
+        foreach (['disabled', 'auth'] as $flag) {
+            if (array_key_exists($flag, $row)) {
+                $row[$flag] = (bool)DbCompat::boolFromDb($row[$flag]);
+            }
         }
 
-        return [];
+        return $row;
     }
 
     /**
@@ -315,7 +330,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(self::decodeFlags(...), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     public function getRecordsByName(int $domainId, string $name, ?string $type = null): array
@@ -342,7 +357,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(self::decodeFlags(...), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     public function getFilteredRecords(
@@ -444,7 +459,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
         $records = [];
 
         while ($record = $stmt->fetch()) {
-            $records[] = $record;
+            $records[] = self::decodeFlags($record);
         }
 
         return $records;
@@ -530,7 +545,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
         $stmt->execute([':id' => $recordId]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ?: null;
+        return $result ? self::decodeFlags($result) : null;
     }
 
     public function getRRSetRecords(int $domainId, string $name, string $type): array
@@ -553,6 +568,6 @@ class SqlRecordRepository implements RecordRepositoryInterface
             ':type' => $type
         ]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(self::decodeFlags(...), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 }

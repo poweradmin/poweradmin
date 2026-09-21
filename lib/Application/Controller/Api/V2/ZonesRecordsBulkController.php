@@ -30,7 +30,6 @@ use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
@@ -446,9 +445,7 @@ class ZonesRecordsBulkController extends PublicApiController
         $content = $this->inputString($operation, 'content', $existingRecord['content']);
         $ttl = $this->inputInt($operation, 'ttl', (int)$existingRecord['ttl']);
         $prio = $this->inputInt($operation, 'priority', (int)($existingRecord['prio'] ?? 0));
-        // Postgres stores this as 't'/'f', which an int cast reads as 0 and would
-        // silently re-enable a disabled record the operation did not mention
-        $disabled = $this->inputIntFromBool($operation, 'disabled', DbCompat::boolFromDb($existingRecord['disabled'] ?? 0));
+        $disabled = $this->inputIntFromBool($operation, 'disabled', !empty($existingRecord['disabled']) ? 1 : 0);
         if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
             throw new ApiErrorException('Invalid field types in request body', 400);
         }

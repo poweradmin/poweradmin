@@ -42,7 +42,6 @@ use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
-use Poweradmin\Domain\Database\DbCompat;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -330,7 +329,7 @@ class ZonesChangeRequestsController extends PublicApiController
         $content = $this->inputString($record, 'content', (string)$existing['content']);
         $ttl = $this->inputInt($record, 'ttl', (int)$existing['ttl']);
         $priority = $this->inputInt($record, 'priority', (int)($existing['prio'] ?? 0));
-        $disabled = $this->inputIntFromBool($record, 'disabled', DbCompat::boolFromDb($existing['disabled'] ?? 0));
+        $disabled = $this->inputIntFromBool($record, 'disabled', !empty($existing['disabled']) ? 1 : 0);
         if ($type === '' || $name === null || $content === null || $ttl === null || $priority === null || $disabled === null) {
             return $this->returnApiError($label . ': invalid field types in record', 400);
         }

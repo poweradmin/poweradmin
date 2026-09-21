@@ -62,7 +62,7 @@ class CsvExportController extends BaseController
             return;
         }
 
-        $records = $this->services()->recordRepository()->getRecordsFromDomainId($this->getConfig()->get('database', 'type', 'mysql'), $zone_id);
+        $records = $this->services()->recordRepository()->getRecordsFromDomainId($zone_id);
 
         if (empty($records)) {
             $this->showError(_('This zone does not have any records to export.'));

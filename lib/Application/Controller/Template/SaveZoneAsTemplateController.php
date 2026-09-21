@@ -111,7 +111,7 @@ class SaveZoneAsTemplateController extends BaseController
             return;
         }
 
-        $records = $this->services()->recordRepository()->getRecordsFromDomainId($this->config->get('database', 'type', 'mysql'), $zone_id);
+        $records = $this->services()->recordRepository()->getRecordsFromDomainId($zone_id);
 
         $description = $this->httpRequest->getPostParam('templ_descr') ?? '';
 

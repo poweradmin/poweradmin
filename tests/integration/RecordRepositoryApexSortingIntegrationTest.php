@@ -139,7 +139,7 @@ class RecordRepositoryApexSortingIntegrationTest extends TestCase
     public function testApexRecordsPinnedAtTopWhenSortingByNameAsc(): void
     {
         $repo = $this->makeRepository();
-        $records = $repo->getRecordsFromDomainId('mysql', $this->domainId, 0, 100, 'name', 'ASC');
+        $records = $repo->getRecordsFromDomainId($this->domainId, 0, 100, 'name', 'ASC');
 
         $order = $this->recordOrder($records);
         $apexCount = 0;
@@ -154,7 +154,7 @@ class RecordRepositoryApexSortingIntegrationTest extends TestCase
     public function testApexRecordsPinnedAtTopWhenSortingByNameDesc(): void
     {
         $repo = $this->makeRepository();
-        $records = $repo->getRecordsFromDomainId('mysql', $this->domainId, 0, 100, 'name', 'DESC');
+        $records = $repo->getRecordsFromDomainId($this->domainId, 0, 100, 'name', 'DESC');
 
         $order = $this->recordOrder($records);
         foreach (array_slice($order, 0, 3) as [$name, $type]) {
@@ -170,7 +170,7 @@ class RecordRepositoryApexSortingIntegrationTest extends TestCase
     public function testApexRecordsPinnedAtTopWhenSortingByType(): void
     {
         $repo = $this->makeRepository();
-        $records = $repo->getRecordsFromDomainId('mysql', $this->domainId, 0, 100, 'type', 'ASC');
+        $records = $repo->getRecordsFromDomainId($this->domainId, 0, 100, 'type', 'ASC');
 
         $order = $this->recordOrder($records);
         foreach (array_slice($order, 0, 3) as [$name, $type]) {
@@ -181,7 +181,7 @@ class RecordRepositoryApexSortingIntegrationTest extends TestCase
     public function testApexRecordsPinnedAtTopWhenSortingByContent(): void
     {
         $repo = $this->makeRepository();
-        $records = $repo->getRecordsFromDomainId('mysql', $this->domainId, 0, 100, 'content', 'ASC');
+        $records = $repo->getRecordsFromDomainId($this->domainId, 0, 100, 'content', 'ASC');
 
         $order = $this->recordOrder($records);
         foreach (array_slice($order, 0, 3) as [$name, $type]) {

@@ -36,7 +36,6 @@ use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
-use Poweradmin\Domain\Database\DbCompat;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -659,7 +658,7 @@ class ZonesRecordsController extends PublicApiController
             $content = $this->inputString($input, 'content', $existingRecord['content']);
             $ttl = $this->inputInt($input, 'ttl', (int)$existingRecord['ttl']);
             $prio = $this->inputInt($input, 'priority', (int)($existingRecord['prio'] ?? 0));
-            $disabled = $this->inputIntFromBool($input, 'disabled', DbCompat::boolFromDb($existingRecord['disabled'] ?? 0));
+            $disabled = $this->inputIntFromBool($input, 'disabled', !empty($existingRecord['disabled']) ? 1 : 0);
             $updatePtr = $this->inputBool($input, 'update_ptr', false);
             // A comment in the body is stored the way the edit form stores one;
             // without it the record's comment is left alone (a rename carries it along)

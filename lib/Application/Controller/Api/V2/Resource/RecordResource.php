@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller\Api\V2\Resource;
 
-use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
@@ -109,15 +108,17 @@ final class RecordResource
             'ttl' => (int)$row['ttl'],
             'priority' => isset($row['prio']) ? (int)$row['prio'] : 0,
             'disabled' => self::disabled($row),
-            'auth' => isset($row['auth']) ? (bool)DbCompat::boolFromDb($row['auth']) : true,
+            'auth' => isset($row['auth']) ? (bool)$row['auth'] : true,
         ];
     }
 
     /**
+     * The repositories decode the driver's flag encoding, so a plain cast is enough here.
+     *
      * @param array<string, mixed> $row
      */
     private static function disabled(array $row): bool
     {
-        return isset($row['disabled']) ? (bool)DbCompat::boolFromDb($row['disabled']) : false;
+        return !empty($row['disabled']);
     }
 }

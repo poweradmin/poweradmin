@@ -147,7 +147,7 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
     {
         // A full row and a bare one, so the defaults sit next to the decoded values
         $this->records->method('getRecordsByDomainId')->willReturn([
-            ['id' => '7', 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => '3600', 'prio' => '10', 'disabled' => '1', 'auth' => 't'],
+            ['id' => '7', 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => '3600', 'prio' => '10', 'disabled' => true, 'auth' => true],
             ['id' => 8, 'name' => 'example.com', 'type' => 'TXT', 'content' => '"v=spf1 -all"', 'ttl' => 60],
         ]);
 
@@ -173,8 +173,8 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
             'content' => '"hello"',
             'ttl' => '300',
             'prio' => '0',
-            'disabled' => 'f',
-            'auth' => '0',
+            'disabled' => false,
+            'auth' => false,
         ]);
 
         $this->assertSame([
@@ -194,6 +194,20 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
             ],
             'message' => 'Record retrieved successfully',
         ], $this->decode($this->invokeHandler('getRecord', ['record_id' => 7])));
+    }
+
+    public function testTheRepositoryBoolsReachTheJsonAsBools(): void
+    {
+        // Driver decoding is the repository's job; the controller only casts
+        $this->records->method('getRecordById')->willReturn([
+            'id' => 7, 'domain_id' => self::ZONE_ID, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 60, 'disabled' => true, 'auth' => false,
+        ]);
+
+        $record = $this->decode($this->invokeHandler('getRecord', ['record_id' => 7]))['data']['record'];
+
+        $this->assertTrue($record['disabled']);
+        $this->assertFalse($record['auth']);
+        $this->assertStringContainsString('"disabled":true,"auth":false', (string)$this->invokeHandler('getRecord', ['record_id' => 7])->getContent());
     }
 
     public function testAnApiBackendRecordIdStaysAString(): void

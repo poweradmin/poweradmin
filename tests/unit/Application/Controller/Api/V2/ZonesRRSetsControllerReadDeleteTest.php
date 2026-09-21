@@ -122,7 +122,7 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
     public function testTheListingBodyIsTheDocumentedEnvelope(): void
     {
         $this->records->method('getRecordsByDomainId')->willReturn([
-            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => '3600', 'prio' => '0', 'disabled' => 'f'],
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => '3600', 'prio' => '0', 'disabled' => false],
             ['id' => 2, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600],
             ['id' => 3, 'name' => 'example.com', 'type' => 'TXT', 'content' => '"v=spf1 -all"', 'ttl' => 60, 'prio' => 0, 'disabled' => 1],
         ]);
@@ -148,7 +148,7 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
     public function testTheSingleRRSetBodyIsTheDocumentedEnvelope(): void
     {
         $this->records->method('getRRSetRecords')->willReturn([
-            ['id' => 1, 'name' => 'mail.example.com', 'type' => 'MX', 'content' => 'mx1.example.com', 'ttl' => '7200', 'prio' => '10', 'disabled' => 't'],
+            ['id' => 1, 'name' => 'mail.example.com', 'type' => 'MX', 'content' => 'mx1.example.com', 'ttl' => '7200', 'prio' => '10', 'disabled' => true],
             ['id' => 2, 'name' => 'mail.example.com', 'type' => 'MX', 'content' => 'mx2.example.com', 'ttl' => 7200, 'prio' => 20],
         ]);
 
@@ -204,10 +204,11 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $this->assertSame('"part1" "part2"', $rrsets[1]['records'][0]['content']);
     }
 
-    public function testAPostgresBooleanStringBecomesATrueDisabledFlag(): void
+    public function testARepositoryBoolIsReportedAsIs(): void
     {
+        // The repository decodes the driver's 't'/'f' or 0/1; the controller only casts
         $this->records->method('getRecordsByDomainId')->willReturn([
-            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'disabled' => 't'],
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'disabled' => true],
         ]);
 
         $rrsets = $this->decode($this->invokeHandler('listRRSets'))['data']['rrsets'];

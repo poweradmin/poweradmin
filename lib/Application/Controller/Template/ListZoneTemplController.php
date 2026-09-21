@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Template;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Database\DbCompat;
 
 /**
  * Renders the zone templates list at /zones/templates.
@@ -69,17 +68,10 @@ class ListZoneTemplController extends BaseController
         $syncService = $this->services()->zoneTemplateSync();
         $syncStatus = $syncService->getTemplateSyncStatus($userId);
 
-        // PostgreSQL returns booleans as 't'/'f' strings, which Twig treats
-        // as truthy. Normalize via boolFromDb so templates can rely on 0/1.
-        foreach ($templatesList as &$row) {
-            $row['is_default'] = DbCompat::boolFromDb($row['is_default'] ?? 0);
-        }
-        unset($row);
-
         $effectiveDefaultId = $zone_templates->getDefaultTemplateId();
         $hasDbDefault = false;
         foreach ($templatesList as $row) {
-            if ($row['is_default'] === 1) {
+            if ($row['is_default'] === true) {
                 $hasDbDefault = true;
                 break;
             }

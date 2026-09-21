@@ -199,7 +199,7 @@ class RecordServices
      */
     private function zoneFileSnapshot(int $zoneId, string $zoneName): ?string
     {
-        $records = $this->services->recordRepository()->getRecordsFromDomainId((string)$this->config->get('database', 'type', 'mysql'), $zoneId);
+        $records = $this->services->recordRepository()->getRecordsFromDomainId($zoneId);
         if ($records === []) {
             return null;
         }

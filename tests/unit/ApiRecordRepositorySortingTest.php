@@ -57,7 +57,7 @@ class ApiRecordRepositorySortingTest extends TestCase
     {
         $repo = new ApiRecordRepository($this->backendWithRecords('example.com', $this->sampleRecords()));
 
-        $records = $repo->getRecordsFromDomainId('mysql', 1, 0, 100, 'name', 'ASC');
+        $records = $repo->getRecordsFromDomainId(1, 0, 100, 'name', 'ASC');
         $order = array_map(fn($r) => $r['name'] . '/' . $r['type'], $records);
 
         $this->assertSame('example.com/SOA', $order[0]);
@@ -82,7 +82,7 @@ class ApiRecordRepositorySortingTest extends TestCase
     {
         $repo = new ApiRecordRepository($this->backendWithRecords('example.com', $this->sampleRecords()));
 
-        $records = $repo->getRecordsFromDomainId('mysql', 1, 0, 100, 'name', 'DESC');
+        $records = $repo->getRecordsFromDomainId(1, 0, 100, 'name', 'DESC');
         $order = array_map(fn($r) => $r['name'] . '/' . $r['type'], $records);
 
         $this->assertSame('example.com/SOA', $order[0]);
@@ -118,7 +118,7 @@ class ApiRecordRepositorySortingTest extends TestCase
             ['name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1.example.com hostmaster.example.com 1'],
         ]));
 
-        $records = $repo->getRecordsFromDomainId('mysql', 1, 0, 100, 'name', 'ASC', true);
+        $records = $repo->getRecordsFromDomainId(1, 0, 100, 'name', 'ASC', true);
         $byName = array_column($records, null, 'name');
 
         $this->assertSame('web', $byName['www.example.com']['comment']);
@@ -127,7 +127,7 @@ class ApiRecordRepositorySortingTest extends TestCase
         $this->assertArrayNotHasKey('api_comment', $byName['www.example.com']);
         $this->assertNull($byName['example.com']['comment']);
 
-        $plain = $repo->getRecordsFromDomainId('mysql', 1, 0, 100, 'name', 'ASC');
+        $plain = $repo->getRecordsFromDomainId(1, 0, 100, 'name', 'ASC');
         $this->assertArrayNotHasKey('comment', array_column($plain, null, 'name')['www.example.com']);
     }
 }

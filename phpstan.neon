@@ -399,6 +399,14 @@ parameters:
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
+  # Driver encodings (0/1 versus 't'/'f') are decoded by the repositories; a
+  # controller works with the PHP bools they return.
+    -
+      namespace: 'Poweradmin\Domain\Database\DbCompat'
+      message: 'decode the driver value in the repository and return a PHP bool; controllers do not know the database type'
+      allowExceptIn:
+        - lib/Application/Controller/*
+        - lib/Module/*/Controller/*
   # lib/Domain returns; the caller emits HTTP and owns the session.
   disallowedFunctionCalls:
     -

@@ -352,6 +352,26 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $this->assertSame(['global', 'mine', 'theirs'], array_column($all, 'name'));
     }
 
+    public function testListZoneTemplatesDecodesIsDefaultToABool(): void
+    {
+        $global = $this->repository->createZoneTemplate('global', '', 0, 1);
+        $mine = $this->repository->createZoneTemplate('mine', '', 5, 5);
+        $pg = $this->repository->createZoneTemplate('pg', '', 5, 5);
+        $this->db->exec("UPDATE zone_templ SET is_default = 1 WHERE id = $global");
+        // PostgreSQL hands the column back as 't'/'f'; SQLite stores the string as given
+        $this->db->exec("UPDATE zone_templ SET is_default = 'f' WHERE id = $pg");
+
+        $byName = array_column($this->repository->listZoneTemplates(5, true), null, 'name');
+
+        $this->assertSame(
+            ['id', 'name', 'descr', 'owner', 'created_by', 'is_default', 'owner_username', 'owner_fullname', 'creator_username', 'creator_fullname', 'zones_linked'],
+            array_keys($byName['global'])
+        );
+        $this->assertTrue($byName['global']['is_default']);
+        $this->assertFalse($byName['mine']['is_default']);
+        $this->assertFalse($byName['pg']['is_default']);
+    }
+
     public function testUnlinkZoneFromTemplateMatchesOnDomainId(): void
     {
         $templateId = $this->repository->createZoneTemplate('linked', '', 0, 1);
