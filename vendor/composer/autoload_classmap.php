@@ -1047,6 +1047,8 @@ return array(
     'Poweradmin\\Application\\Controller\\Api\\V2\\OpenApiSpec' => $baseDir . '/lib/Application/Controller/Api/V2/OpenApiSpec.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionTemplatesController' => $baseDir . '/lib/Application/Controller/Api/V2/PermissionTemplatesController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionsController' => $baseDir . '/lib/Application/Controller/Api/V2/PermissionsController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V2\\Resource\\RecordResource' => $baseDir . '/lib/Application/Controller/Api/V2/Resource/RecordResource.php',
+    'Poweradmin\\Application\\Controller\\Api\\V2\\Resource\\ZoneResource' => $baseDir . '/lib/Application/Controller/Api/V2/Resource/ZoneResource.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\UsersController' => $baseDir . '/lib/Application/Controller/Api/V2/UsersController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneDnssecController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneDnssecController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneMetadataController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneMetadataController.php',

@@ -143,6 +143,59 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
         $this->assertFalse($record['auth']);
     }
 
+    public function testTheListingBodyIsTheDocumentedEnvelope(): void
+    {
+        // A full row and a bare one, so the defaults sit next to the decoded values
+        $this->records->method('getRecordsByDomainId')->willReturn([
+            ['id' => '7', 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => '3600', 'prio' => '10', 'disabled' => '1', 'auth' => 't'],
+            ['id' => 8, 'name' => 'example.com', 'type' => 'TXT', 'content' => '"v=spf1 -all"', 'ttl' => 60],
+        ]);
+
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'records' => [
+                    ['id' => 7, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'priority' => 10, 'disabled' => true, 'auth' => true],
+                    ['id' => 8, 'name' => 'example.com', 'type' => 'TXT', 'content' => 'v=spf1 -all', 'ttl' => 60, 'priority' => 0, 'disabled' => false, 'auth' => true],
+                ],
+            ],
+            'message' => 'Records retrieved successfully',
+        ], $this->decode($this->invokeHandler('listRecords')));
+    }
+
+    public function testTheSingleRecordBodyIsTheDocumentedEnvelope(): void
+    {
+        $this->records->method('getRecordById')->willReturn([
+            'id' => '7',
+            'domain_id' => self::ZONE_ID,
+            'name' => 'www.example.com',
+            'type' => 'TXT',
+            'content' => '"hello"',
+            'ttl' => '300',
+            'prio' => '0',
+            'disabled' => 'f',
+            'auth' => '0',
+        ]);
+
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'record' => [
+                    'id' => 7,
+                    'zone_id' => self::ZONE_ID,
+                    'name' => 'www',
+                    'type' => 'TXT',
+                    'content' => 'hello',
+                    'ttl' => 300,
+                    'priority' => 0,
+                    'disabled' => false,
+                    'auth' => false,
+                ],
+            ],
+            'message' => 'Record retrieved successfully',
+        ], $this->decode($this->invokeHandler('getRecord', ['record_id' => 7])));
+    }
+
     public function testAnApiBackendRecordIdStaysAString(): void
     {
         $this->records->method('getRecordsByDomainId')->willReturn([

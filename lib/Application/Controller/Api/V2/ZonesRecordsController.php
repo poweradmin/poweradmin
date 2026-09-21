@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RecordEditRequest;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -90,6 +91,7 @@ class ZonesRecordsController extends PublicApiController
         path: '/v2/zones/{id}/records',
         operationId: 'v2ListZoneRecords',
         summary: 'List all records in a zone',
+        description: 'Record names in the listing are fully qualified (www.example.com); the single-record endpoints (GET, POST, PUT /zones/{id}/records/{record_id}) report the name relative to the zone (www, or @ for the apex).',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -122,7 +124,7 @@ class ZonesRecordsController extends PublicApiController
                             items: new OA\Items(
                                 properties: [
                                     new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 1),
-                                    new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
+                                    new OA\Property(property: 'name', type: 'string', example: 'www.example.com', description: 'Fully qualified name, unlike the relative name of the single-record endpoints'),
                                     new OA\Property(property: 'type', type: 'string', example: 'A'),
                                     new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                                     new OA\Property(property: 'ttl', type: 'integer', example: 3600),
@@ -173,19 +175,7 @@ class ZonesRecordsController extends PublicApiController
                 return !empty($record['type']) && !empty($record['name']);
             }));
 
-            // Format record data
-            $formattedRecords = array_map(function ($record) {
-                return [
-                    'id' => $this->formatRecordId($record['id']),
-                    'name' => $record['name'],
-                    'type' => $record['type'],
-                    'content' => $this->stripTxtQuotes($record['content'], $record['type']),
-                    'ttl' => (int)$record['ttl'],
-                    'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
-                    'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false,
-                    'auth' => isset($record['auth']) ? (bool)DbCompat::boolFromDb($record['auth']) : true
-                ];
-            }, $validRecords);
+            $formattedRecords = array_map(fn(array $record): array => RecordResource::listItem($record, $this->formatRecordId(...)), $validRecords);
 
             return $this->returnApiResponse(['records' => $formattedRecords], true, 'Records retrieved successfully', 200);
         } catch (\Throwable $e) {
@@ -283,17 +273,7 @@ class ZonesRecordsController extends PublicApiController
 
             $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
-            $formattedRecord = [
-                'id' => $this->formatRecordId($record['id']),
-                'zone_id' => $zoneId,
-                'name' => DnsHelper::stripZoneSuffix($record['name'], $zoneName),
-                'type' => $record['type'],
-                'content' => $this->stripTxtQuotes($record['content'], $record['type']),
-                'ttl' => (int)$record['ttl'],
-                'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
-                'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false,
-                'auth' => isset($record['auth']) ? (bool)DbCompat::boolFromDb($record['auth']) : true
-            ];
+            $formattedRecord = RecordResource::item($record, $zoneId, $zoneName, $this->formatRecordId(...));
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record retrieved successfully', 200);
         } catch (\Throwable $e) {
@@ -507,8 +487,6 @@ class ZonesRecordsController extends PublicApiController
 
             // Fetch the newly created record; the stored values are what the manager validated
             $newRecord = $this->recordRepository->getRecordById($newRecordId);
-            $validatedTtl = (int)($newRecord['ttl'] ?? $ttl);
-            $validatedPriority = (int)($newRecord['prio'] ?? $priority);
 
             $ptrCreated = $added->companionCreated;
             $ptrMessage = '';
@@ -524,21 +502,18 @@ class ZonesRecordsController extends PublicApiController
                 }
             }
 
-            // Return stored content (not raw input) so POST and GET responses are consistent
-            $storedContent = $newRecord ? $this->stripTxtQuotes($newRecord['content'], $type) : $originalContent;
-
-            $responseData = [
-                'id' => $newRecord ? $this->formatRecordId($newRecord['id']) : null,
-                'zone_id' => $zoneId,
-                'name' => DnsHelper::stripZoneSuffix($name, $zoneName),
+            // The stored content, ttl and priority (not the raw input) so POST and GET
+            // agree; the name and the disabled flag are the submitted ones.
+            $responseData = RecordResource::item([
+                'id' => $newRecord['id'] ?? null,
+                'name' => $name,
                 'type' => $type,
-                'content' => $storedContent,
-                'ttl' => $validatedTtl,
-                'priority' => $validatedPriority,
-                'disabled' => (bool)$disabled,
+                'content' => $newRecord['content'] ?? $originalContent,
+                'ttl' => $newRecord['ttl'] ?? $ttl,
+                'prio' => $newRecord['prio'] ?? $priority,
+                'disabled' => $disabled,
                 'auth' => true,
-                'ptr_created' => $ptrCreated
-            ];
+            ], $zoneId, $zoneName, $this->formatRecordId(...)) + ['ptr_created' => $ptrCreated];
 
             $this->services()->auditService()->logApiRecordAdd($zoneId, $name, $type, $content);
 
@@ -753,19 +728,12 @@ class ZonesRecordsController extends PublicApiController
             // Get zone name for stripping suffix
             $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
-            $updatedRecord = $edited->record;
-            $formattedRecord = [
-                'id' => $this->formatRecordId($edited->recordId ?? $recordId),
-                'zone_id' => $zoneId,
-                'name' => DnsHelper::stripZoneSuffix($updatedRecord['name'], $zoneName),
-                'type' => $updatedRecord['type'],
-                'content' => $this->stripTxtQuotes($updatedRecord['content'], $updatedRecord['type']),
-                'ttl' => (int)$updatedRecord['ttl'],
-                'priority' => isset($updatedRecord['prio']) ? (int)$updatedRecord['prio'] : 0,
-                'disabled' => isset($updatedRecord['disabled']) ? (bool)DbCompat::boolFromDb($updatedRecord['disabled']) : false,
-                'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true,
-                'ptr_updated' => $edited->ptrUpdated === true
-            ];
+            $formattedRecord = RecordResource::item(
+                ['id' => $edited->recordId ?? $recordId] + $edited->record,
+                $zoneId,
+                $zoneName,
+                $this->formatRecordId(...)
+            ) + ['ptr_updated' => $edited->ptrUpdated === true];
 
             $this->services()->auditService()->logApiRecordEdit($zoneId, $formattedRecord['name'], $formattedRecord['type'], $formattedRecord['content']);
 

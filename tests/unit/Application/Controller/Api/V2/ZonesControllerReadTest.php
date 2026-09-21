@@ -96,6 +96,61 @@ class ZonesControllerReadTest extends V2ControllerTestCase
         $this->assertNull($body['data']['zones'][1]['created_at']);
     }
 
+    public function testTheListingBodyIsTheDocumentedEnvelope(): void
+    {
+        $this->permissions->method('getUserVisibleZoneIds')->willReturn(null);
+        $this->zones->method('getZoneCountFiltered')->willReturn(2);
+        $this->zones->method('getAllZonesFiltered')->willReturn([
+            ['id' => '1', 'canonical_id' => '9', 'name' => 'a.example.com', 'type' => 'SLAVE', 'created_at' => '2026-01-01 00:00:00', 'master' => '192.0.2.1', 'account' => 'x'],
+            ['id' => 2, 'name' => 'b.example.com'],
+        ]);
+
+        $body = $this->decode($this->listZones());
+        unset($body['meta']);
+
+        // The listing carries the summary only: no masters, account or description
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'zones' => [
+                    ['id' => 1, 'canonical_id' => 9, 'name' => 'a.example.com', 'type' => 'SLAVE', 'created_at' => '2026-01-01 00:00:00'],
+                    ['id' => 2, 'canonical_id' => 2, 'name' => 'b.example.com', 'type' => 'MASTER', 'created_at' => null],
+                ],
+            ],
+            'message' => 'Zones retrieved successfully',
+        ], $body);
+    }
+
+    public function testTheSingleZoneBodyIsTheDocumentedEnvelope(): void
+    {
+        $this->zones->method('getZoneById')->willReturn([
+            'id' => (string)self::ZONE_ID,
+            'canonical_id' => 9,
+            'name' => 'example.com',
+            'type' => 'SLAVE',
+            'account' => 'team-dns',
+            'master' => '192.0.2.1,192.0.2.2',
+            'created_at' => '2026-02-02 10:00:00',
+        ]);
+        $this->zones->method('getZoneComment')->willReturn('the corporate zone');
+
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'zone' => [
+                    'id' => self::ZONE_ID,
+                    'name' => 'example.com',
+                    'type' => 'SLAVE',
+                    'masters' => '192.0.2.1,192.0.2.2',
+                    'account' => 'team-dns',
+                    'description' => 'the corporate zone',
+                    'created_at' => '2026-02-02 10:00:00',
+                ],
+            ],
+            'message' => 'Zone retrieved successfully',
+        ], $this->decode($this->getZone()));
+    }
+
     public function testZonesSerializeAsAJsonArrayNotAnObject(): void
     {
         $this->permissions->method('getUserVisibleZoneIds')->willReturn(null);

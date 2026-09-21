@@ -295,6 +295,37 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $this->assertSame('the corporate zone', $this->decode($response)['data']['zone']['description']);
     }
 
+    public function testTheUpdateResponseBodyIsTheDocumentedEnvelope(): void
+    {
+        $this->zones->method('getZoneById')->willReturn([
+            'id' => (string)self::ZONE_ID,
+            'name' => 'example.com',
+            'type' => 'MASTER',
+            'account' => '',
+            'master' => '',
+        ]);
+        $this->zones->method('getZoneComment')->willReturn('');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['description' => '']);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'zone' => [
+                    'id' => self::ZONE_ID,
+                    'name' => 'example.com',
+                    'type' => 'MASTER',
+                    'masters' => null,
+                    'account' => null,
+                    'description' => null,
+                    'created_at' => null,
+                ],
+            ],
+            'message' => 'Zone updated successfully',
+        ], $this->decode($response));
+    }
+
     public function testANonPositiveZoneIdIsRefusedOnDelete(): void
     {
         $this->zoneIdParameter = -1;

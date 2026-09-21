@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -31,7 +32,6 @@ use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
-use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -524,13 +524,12 @@ class ZonesRRSetsController extends PublicApiController
             } catch (\Throwable $e) {
                 // Readback failed but write succeeded - reconstruct from validated input
                 // using the same transformations as formatRRSet()
-                $fallbackRecords = array_map(function ($vr) use ($type) {
-                    return [
-                        'content' => $this->stripTxtQuotes($vr['content'], $type),
-                        'priority' => (int)$vr['priority'],
-                        'disabled' => (bool)$vr['disabled'],
-                    ];
-                }, $validatedRecords);
+                $fallbackRecords = array_map(fn(array $vr): array => RecordResource::rrsetMember([
+                    'type' => $type,
+                    'content' => $vr['content'],
+                    'prio' => $vr['priority'],
+                    'disabled' => $vr['disabled'],
+                ]), $validatedRecords);
 
                 return $this->returnApiResponse(
                     ['rrset' => [
@@ -730,11 +729,7 @@ class ZonesRRSetsController extends PublicApiController
                 ];
             }
 
-            $rrsets[$key]['records'][] = [
-                'content' => $this->stripTxtQuotes($record['content'], $record['type']),
-                'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
-                'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false
-            ];
+            $rrsets[$key]['records'][] = RecordResource::rrsetMember($record);
 
             // Use the lowest TTL if records have different TTLs (shouldn't happen but be safe)
             if ((int)$record['ttl'] < $rrsets[$key]['ttl']) {
@@ -771,13 +766,7 @@ class ZonesRRSetsController extends PublicApiController
             'name' => DnsHelper::stripZoneSuffix($firstRecord['name'], $zoneName),
             'type' => $firstRecord['type'],
             'ttl' => (int)$firstRecord['ttl'],
-            'records' => array_map(function ($record) {
-                return [
-                    'content' => $this->stripTxtQuotes($record['content'] ?? '', $record['type'] ?? ''),
-                    'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
-                    'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false
-                ];
-            }, $validRecords)
+            'records' => array_map(RecordResource::rrsetMember(...), $validRecords)
         ];
     }
 }

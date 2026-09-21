@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Controller\Api\V2\Resource\ZoneResource;
 use Poweradmin\Application\Service\ZoneOwnershipInputFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipInput;
@@ -200,17 +201,7 @@ class ZonesController extends PublicApiController
             }
 
             // Format zone data
-            $formattedZones = array_map(function ($zone) {
-                return [
-                    'id' => (int)$zone['id'],
-                    // Equal to id except for API-backend zones migrated from SQL mode; the
-                    // value every other endpoint accepts. id will follow it in a later release.
-                    'canonical_id' => (int)($zone['canonical_id'] ?? $zone['id']),
-                    'name' => $zone['name'],
-                    'type' => $zone['type'] ?? 'MASTER',
-                    'created_at' => $zone['created_at'] ?? null
-                ];
-            }, $zones);
+            $formattedZones = array_map(ZoneResource::summary(...), $zones);
 
             $responseData = [
                 'meta' => [
@@ -305,22 +296,8 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
-            // Get zone comment/description from zones table
-            $comment = $this->zoneRepository->getZoneComment($zoneId);
-
-            // Get zone account and masters from domains table
-            $account = $zone['account'] ?? '';
-            $masters = $zone['master'] ?? '';
-
-            $formattedZone = [
-                'id' => (int)$zone['id'],
-                'name' => $zone['name'],
-                'type' => $zone['type'] ?? 'MASTER',
-                'masters' => $masters !== '' ? $masters : null,
-                'account' => $account !== '' ? $account : null,
-                'description' => ($comment !== null && $comment !== '') ? $comment : null,
-                'created_at' => $zone['created_at'] ?? null
-            ];
+            // The description lives in the zones table, the rest in domains
+            $formattedZone = ZoneResource::detail($zone, $this->zoneRepository->getZoneComment($zoneId));
 
             return $this->returnApiResponse(['zone' => $formattedZone], true, 'Zone retrieved successfully', 200);
         } catch (\Throwable $e) {
@@ -822,19 +799,7 @@ class ZonesController extends PublicApiController
 
             // Return updated zone data
             $zone = $this->zoneRepository->getZoneById($zoneId);
-            $comment = $this->zoneRepository->getZoneComment($zoneId);
-            $account = $zone['account'] ?? '';
-            $masters = $zone['master'] ?? '';
-
-            $formattedZone = [
-                'id' => (int)$zone['id'],
-                'name' => $zone['name'],
-                'type' => $zone['type'] ?? 'MASTER',
-                'masters' => $masters !== '' ? $masters : null,
-                'account' => $account !== '' ? $account : null,
-                'description' => ($comment !== null && $comment !== '') ? $comment : null,
-                'created_at' => $zone['created_at'] ?? null
-            ];
+            $formattedZone = ZoneResource::detail($zone, $this->zoneRepository->getZoneComment($zoneId));
 
             return $this->returnApiResponse(['zone' => $formattedZone], true, 'Zone updated successfully', 200);
         } catch (\Throwable $e) {

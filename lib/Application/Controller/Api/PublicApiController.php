@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
+use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneType;
@@ -506,19 +507,7 @@ abstract class PublicApiController extends AbstractApiController
      */
     protected function stripTxtQuotes(string $content, string $type): string
     {
-        if ($type !== 'TXT') {
-            return $content;
-        }
-
-        $content = trim($content);
-        $isMultiString = str_contains($content, '" "');
-
-        // Only strip quotes for single-string TXT records
-        if (!$isMultiString && str_starts_with($content, '"') && str_ends_with($content, '"') && strlen($content) > 1) {
-            return substr($content, 1, -1);
-        }
-
-        return $content;
+        return RecordResource::stripTxtQuotes($content, $type);
     }
 
     /**

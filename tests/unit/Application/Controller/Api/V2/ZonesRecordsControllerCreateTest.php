@@ -354,6 +354,72 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
         $this->assertFalse($record['ptr_created']);
     }
 
+    public function testTheCreateResponseBodyIsTheDocumentedEnvelope(): void
+    {
+        $this->addService->method('add')->willReturn(new RecordAddResult(RecordWriteResult::ok(77)));
+        $this->records->method('getRecordById')->with(77)->willReturn([
+            'id' => '77',
+            'domain_id' => self::ZONE_ID,
+            'name' => 'www.example.com',
+            'type' => 'TXT',
+            'content' => '"hello"',
+            'ttl' => '1800',
+            'prio' => '5',
+            'disabled' => 't',
+            'auth' => 'f',
+        ]);
+
+        $response = $this->create(['name' => 'www', 'type' => 'TXT', 'content' => 'hello', 'ttl' => 3600, 'priority' => 5, 'disabled' => true]);
+
+        $this->assertSame(201, $response->getStatusCode());
+        // The name and the disabled flag are the submitted ones, auth is always true
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'record' => [
+                    'id' => 77,
+                    'zone_id' => self::ZONE_ID,
+                    'name' => 'www',
+                    'type' => 'TXT',
+                    'content' => 'hello',
+                    'ttl' => 1800,
+                    'priority' => 5,
+                    'disabled' => true,
+                    'auth' => true,
+                    'ptr_created' => false,
+                ],
+            ],
+            'message' => 'Record created successfully',
+        ], $this->decode($response));
+    }
+
+    public function testWhenTheStoredRecordCannotBeRereadTheBodyIsBuiltFromTheSubmittedValues(): void
+    {
+        $this->addService->method('add')->willReturn(new RecordAddResult(RecordWriteResult::ok(78)));
+        $this->records->method('getRecordById')->willReturn(null);
+
+        $response = $this->create(['name' => 'www', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 900, 'priority' => 3]);
+
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'record' => [
+                    'id' => null,
+                    'zone_id' => self::ZONE_ID,
+                    'name' => 'www',
+                    'type' => 'A',
+                    'content' => '192.0.2.1',
+                    'ttl' => 900,
+                    'priority' => 3,
+                    'disabled' => false,
+                    'auth' => true,
+                    'ptr_created' => false,
+                ],
+            ],
+            'message' => 'Record created successfully',
+        ], $this->decode($response));
+    }
+
     public function testASingleStringTxtValueIsQuotedOnTheWayInAndUnquotedOnTheWayOut(): void
     {
         $this->addService->expects($this->once())

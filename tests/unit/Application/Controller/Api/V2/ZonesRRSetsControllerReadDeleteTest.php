@@ -119,6 +119,51 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $this->assertTrue($rrsets[1]['records'][0]['disabled']);
     }
 
+    public function testTheListingBodyIsTheDocumentedEnvelope(): void
+    {
+        $this->records->method('getRecordsByDomainId')->willReturn([
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => '3600', 'prio' => '0', 'disabled' => 'f'],
+            ['id' => 2, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600],
+            ['id' => 3, 'name' => 'example.com', 'type' => 'TXT', 'content' => '"v=spf1 -all"', 'ttl' => 60, 'prio' => 0, 'disabled' => 1],
+        ]);
+
+        // The listing keeps fully qualified names; only the single-RRSet fetch strips the zone
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'rrsets' => [
+                    ['name' => 'www.example.com', 'type' => 'A', 'ttl' => 3600, 'records' => [
+                        ['content' => '192.0.2.1', 'priority' => 0, 'disabled' => false],
+                        ['content' => '192.0.2.2', 'priority' => 0, 'disabled' => false],
+                    ]],
+                    ['name' => 'example.com', 'type' => 'TXT', 'ttl' => 60, 'records' => [
+                        ['content' => 'v=spf1 -all', 'priority' => 0, 'disabled' => true],
+                    ]],
+                ],
+            ],
+            'message' => 'RRSets retrieved successfully',
+        ], $this->decode($this->invokeHandler('listRRSets')));
+    }
+
+    public function testTheSingleRRSetBodyIsTheDocumentedEnvelope(): void
+    {
+        $this->records->method('getRRSetRecords')->willReturn([
+            ['id' => 1, 'name' => 'mail.example.com', 'type' => 'MX', 'content' => 'mx1.example.com', 'ttl' => '7200', 'prio' => '10', 'disabled' => 't'],
+            ['id' => 2, 'name' => 'mail.example.com', 'type' => 'MX', 'content' => 'mx2.example.com', 'ttl' => 7200, 'prio' => 20],
+        ]);
+
+        $this->assertSame([
+            'success' => true,
+            'data' => [
+                'rrset' => ['name' => 'mail', 'type' => 'MX', 'ttl' => 7200, 'records' => [
+                    ['content' => 'mx1.example.com', 'priority' => 10, 'disabled' => true],
+                    ['content' => 'mx2.example.com', 'priority' => 20, 'disabled' => false],
+                ]],
+            ],
+            'message' => 'RRSet retrieved successfully',
+        ], $this->decode($this->invokeHandler('getRRSet', ['name' => 'mail', 'type' => 'mx'])));
+    }
+
     public function testAnEntRowWithoutTypeOrNameIsSkipped(): void
     {
         $this->records->method('getRecordsByDomainId')->willReturn([
