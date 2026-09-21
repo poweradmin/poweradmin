@@ -112,7 +112,6 @@ class RecordManagerDeleteRecordCleanupTest extends SqliteIntegrationTestCase
             fn() => $this->createMock(DnssecProviderInterface::class),
             $backend,
             $this->permissionService($config),
-            null,
             $this->createMock(RecordChangeLogger::class)
         );
     }

@@ -31,6 +31,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
@@ -113,7 +114,15 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
 
         $backend = DnsBackendProviderFactory::create($this->db, $config);
 
-        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend, new PermissionService(new DbUserRepository($this->db, $config)));
+        return new ZoneManagementService(
+            $this->createMock(ZoneRepositoryInterface::class),
+            $config,
+            $this->db,
+            new RepositoryFactory($this->db, $config, $backend),
+            $backend,
+            new PermissionService(new DbUserRepository($this->db, $config)),
+            new RecordChangeLogger($this->db)
+        );
     }
 
     public function testApiCreateRejectsOverlapForNonOwnerWith409(): void

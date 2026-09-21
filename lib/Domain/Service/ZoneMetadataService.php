@@ -27,7 +27,6 @@ use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneWriteRepositoryInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -50,7 +49,7 @@ class ZoneMetadataService
         private readonly ConfigurationInterface $config,
         private readonly PermissionService $permissions,
         private readonly AuditLoggerInterface $audit,
-        private readonly RecordChangeLogger $changeLogger,
+        private readonly RecordChangeWriterInterface $changeLogger,
         private readonly ?PowerdnsApiClient $apiClient = null,
         ?LoggerInterface $logger = null
     ) {

@@ -36,7 +36,6 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use PDO;
 use Psr\Log\LoggerInterface;
@@ -70,7 +69,7 @@ class ZoneManagementService
     private ConfigurationInterface $config;
     private PDO $db;
     private LoggerInterface $logger;
-    private RecordChangeLogger $changeLogger;
+    private RecordChangeWriterInterface $changeLogger;
     /** @var PdnsCapabilities|Closure|null Resolved on first use so a lookup only happens for a catalog kind */
     private PdnsCapabilities|Closure|null $capabilities;
     private ?ZoneSigningService $signing;
@@ -89,6 +88,7 @@ class ZoneManagementService
      * @param RepositoryFactoryInterface $repositoryFactory Builds the record and domain repositories
      * @param DnsBackendProviderInterface $backendProvider Backend used by the zone template model and the domain manager
      * @param PermissionService $permissions Shares the request's permission cache
+     * @param RecordChangeWriterInterface $changeLogger Receives the zone create and delete snapshots
      * @param PdnsCapabilities|Closure|null $capabilities What the connected server supports, or a closure returning it; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
@@ -100,8 +100,8 @@ class ZoneManagementService
         RepositoryFactoryInterface $repositoryFactory,
         DnsBackendProviderInterface $backendProvider,
         PermissionService $permissions,
+        RecordChangeWriterInterface $changeLogger,
         ?LoggerInterface $logger = null,
-        ?RecordChangeLogger $changeLogger = null,
         PdnsCapabilities|Closure|null $capabilities = null,
         ?ZoneSigningService $signing = null,
         ?DomainRepositoryInterface $domainRepository = null,
@@ -116,7 +116,7 @@ class ZoneManagementService
         $this->config = $config;
         $this->db = $db;
         $this->logger = $logger ?? new NullLogger();
-        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+        $this->changeLogger = $changeLogger;
         $this->capabilities = $capabilities;
         $this->signing = $signing;
     }

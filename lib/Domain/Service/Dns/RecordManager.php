@@ -35,9 +35,9 @@ use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -59,7 +59,7 @@ class RecordManager implements RecordManagerInterface
     private DomainRepositoryInterface $domainRepository;
     private DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $logger;
-    private RecordChangeLogger $changeLogger;
+    private RecordChangeWriterInterface $changeLogger;
     private PermissionService $permissionService;
     private UserContextService $userContext;
     private RepositoryFactoryInterface $repositoryFactory;
@@ -78,6 +78,7 @@ class RecordManager implements RecordManagerInterface
      * @param Closure(): DnssecProviderInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
      * @param DnsBackendProviderInterface $backendProvider DNS backend provider
      * @param PermissionService $permissionService Edit levels and zone ownership of the acting user
+     * @param RecordChangeWriterInterface $changeLogger Receives the before/after record snapshots
      */
     public function __construct(
         PDO $db,
@@ -89,8 +90,8 @@ class RecordManager implements RecordManagerInterface
         Closure $dnssecProvider,
         DnsBackendProviderInterface $backendProvider,
         PermissionService $permissionService,
+        RecordChangeWriterInterface $changeLogger,
         ?LoggerInterface $logger = null,
-        ?RecordChangeLogger $changeLogger = null,
         ?UserContextService $userContext = null
     ) {
         $this->db = $db;
@@ -103,7 +104,7 @@ class RecordManager implements RecordManagerInterface
         $this->backendProvider = $backendProvider;
         $this->permissionService = $permissionService;
         $this->logger = $logger ?? new NullLogger();
-        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+        $this->changeLogger = $changeLogger;
         $this->userContext = $userContext ?? new UserContextService();
         $this->repositoryFactory = $repositoryFactory;
         $this->dnssecProvider = $dnssecProvider;

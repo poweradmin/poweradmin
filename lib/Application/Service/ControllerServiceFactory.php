@@ -45,6 +45,7 @@ use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
@@ -97,6 +98,7 @@ class ControllerServiceFactory
     private ?ZoneOwnershipModeService $zoneOwnershipModeService = null;
     private ?ZoneSigningService $zoneSigningService = null;
     private ?AuditService $auditService = null;
+    private ?RecordChangeWriterInterface $recordChangeLogger = null;
     private ?RecordManagerInterface $recordManager = null;
     private ?RecordCommentService $recordCommentService = null;
     private ?CatalogZoneService $catalogZoneService = null;
@@ -256,6 +258,7 @@ class ControllerServiceFactory
             $this->repositoryFactory(),
             $this->dnsBackendProvider(),
             $this->permissionService(),
+            $this->recordChangeLogger(),
             $this->logger,
             capabilities: $capabilities,
             signing: $this->zoneSigningService(),
@@ -269,6 +272,11 @@ class ControllerServiceFactory
         return $this->auditService ??= new AuditService($this->db);
     }
 
+    public function recordChangeLogger(): RecordChangeWriterInterface
+    {
+        return $this->recordChangeLogger ??= new RecordChangeLogger($this->db);
+    }
+
     public function zoneMetadataService(): ZoneMetadataService
     {
         return new ZoneMetadataService(
@@ -276,7 +284,7 @@ class ControllerServiceFactory
             $this->config,
             $this->permissionService(),
             $this->auditService(),
-            new RecordChangeLogger($this->db),
+            $this->recordChangeLogger(),
             $this->apiClient(),
             $this->logger
         );
@@ -512,6 +520,7 @@ class ControllerServiceFactory
             $this->dnsBackendProvider(),
             $this->permissionService(),
             $this->userRepository(),
+            $this->recordChangeLogger(),
             zoneTemplateRepository: $this->zoneTemplateRepository()
         );
     }

@@ -28,6 +28,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 
@@ -162,7 +163,8 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
             new RepositoryFactory($this->db, $config, $backend),
             $backend,
             $this->permissionService($config),
-            new DbUserRepository($this->db, $config)
+            new DbUserRepository($this->db, $config),
+            $this->createMock(RecordChangeWriterInterface::class)
         );
     }
 }

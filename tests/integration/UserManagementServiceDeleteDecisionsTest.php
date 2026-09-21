@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\UserProfileAssembler;
@@ -211,7 +212,8 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
             new RepositoryFactory($this->db, $config, $backend),
             $backend,
             $this->permissionService($config),
-            new DbUserRepository($this->db, $config)
+            new DbUserRepository($this->db, $config),
+            $this->createMock(RecordChangeWriterInterface::class)
         );
 
         return new UserManagementService(

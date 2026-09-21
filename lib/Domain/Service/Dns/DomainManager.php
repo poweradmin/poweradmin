@@ -34,11 +34,11 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
@@ -57,7 +57,7 @@ class DomainManager implements DomainManagerInterface
     private IPAddressValidator $ipAddressValidator;
     private DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $logger;
-    private RecordChangeLogger $changeLogger;
+    private RecordChangeWriterInterface $changeLogger;
     private PermissionService $permissionService;
     private UserRepositoryInterface $userRepository;
     private UserContextService $userContext;
@@ -75,6 +75,7 @@ class DomainManager implements DomainManagerInterface
      * @param DnsBackendProviderInterface $backendProvider DNS backend provider
      * @param PermissionService $permissionService Permissions and zone ownership of the acting user
      * @param UserRepositoryInterface $userRepository Resolves the users named as zone owners
+     * @param RecordChangeWriterInterface $changeLogger Receives the zone and record snapshots
      */
     public function __construct(
         PDO $db,
@@ -85,8 +86,8 @@ class DomainManager implements DomainManagerInterface
         DnsBackendProviderInterface $backendProvider,
         PermissionService $permissionService,
         UserRepositoryInterface $userRepository,
+        RecordChangeWriterInterface $changeLogger,
         ?LoggerInterface $logger = null,
-        ?RecordChangeLogger $changeLogger = null,
         ?UserContextService $userContext = null,
         ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
     ) {
@@ -101,7 +102,7 @@ class DomainManager implements DomainManagerInterface
         $this->permissionService = $permissionService;
         $this->userRepository = $userRepository;
         $this->logger = $logger ?? new NullLogger();
-        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+        $this->changeLogger = $changeLogger;
         $this->userContext = $userContext ?? new UserContextService();
     }
 

@@ -237,7 +237,6 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
             $backend,
             $this->permissionService($config),
             new DbUserRepository($this->db, $config),
-            null,
             $changeLogger
         );
     }

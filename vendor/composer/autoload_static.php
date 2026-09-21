@@ -1812,6 +1812,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\PermissionService' => __DIR__ . '/../..' . '/lib/Domain/Service/PermissionService.php',
         'Poweradmin\\Domain\\Service\\PermissionTemplateAssignmentGuard' => __DIR__ . '/../..' . '/lib/Domain/Service/PermissionTemplateAssignmentGuard.php',
         'Poweradmin\\Domain\\Service\\PermissionTemplateContentGuard' => __DIR__ . '/../..' . '/lib/Domain/Service/PermissionTemplateContentGuard.php',
+        'Poweradmin\\Domain\\Service\\RecordChangeWriterInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/RecordChangeWriterInterface.php',
         'Poweradmin\\Domain\\Service\\RecordCommentEditorInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/RecordCommentEditorInterface.php',
         'Poweradmin\\Domain\\Service\\RecordCommentSyncInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/RecordCommentSyncInterface.php',
         'Poweradmin\\Domain\\Service\\RecordDisplayService' => __DIR__ . '/../..' . '/lib/Domain/Service/RecordDisplayService.php',

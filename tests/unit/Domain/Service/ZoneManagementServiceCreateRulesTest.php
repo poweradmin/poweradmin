@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\SqliteIntegrationTestCase;
@@ -84,7 +85,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             new RepositoryFactory($this->db, $config, $backend),
             $backend,
             $this->permissionService($config),
-            null,
+            $this->createMock(RecordChangeWriterInterface::class),
             null,
             $capabilities,
             null,
@@ -143,7 +144,17 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(fn(string $group, string $key, $default = null) => $default);
         $backend = DnsBackendProviderFactory::create($this->db, $config);
-        $service = new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend, $this->permissionService($config), null, null, $lazy);
+        $service = new ZoneManagementService(
+            $this->createMock(ZoneRepositoryInterface::class),
+            $config,
+            $this->db,
+            new RepositoryFactory($this->db, $config, $backend),
+            $backend,
+            $this->permissionService($config),
+            $this->createMock(RecordChangeWriterInterface::class),
+            null,
+            $lazy
+        );
 
         $service->createZone('new.example', 'BOGUS', self::ADMIN_USER_ID);
         $this->assertSame(0, $lookups, 'a basic-kind refusal must not fetch the server version');

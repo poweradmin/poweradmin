@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use PDO;
 
 /**
@@ -110,7 +111,8 @@ class DnsServiceFactory
             $repositoryFactory,
             fn() => DnssecProviderFactory::create($db, $config, DnsBackendProviderFactory::apiClientFrom($backendProvider)),
             $backendProvider,
-            $permissions ?? self::createPermissionService($db, $config)
+            $permissions ?? self::createPermissionService($db, $config),
+            new RecordChangeLogger($db)
         );
     }
 
@@ -136,7 +138,8 @@ class DnsServiceFactory
             $repositoryFactory,
             $backendProvider,
             $permissions ?? new PermissionService($userRepository),
-            $userRepository
+            $userRepository,
+            new RecordChangeLogger($db)
         );
     }
 

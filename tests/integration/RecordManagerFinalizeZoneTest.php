@@ -169,7 +169,6 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
             fn() => $this->createMock(DnssecProviderInterface::class),
             $backend,
             $this->permissionService($config),
-            null,
             $changeLogger
         );
     }
