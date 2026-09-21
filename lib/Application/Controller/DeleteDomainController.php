@@ -75,7 +75,7 @@ class DeleteDomainController extends BaseController
         // With approval on, a request level stands in for the missing delete permission,
         // and require_review_for_all turns every deletion into a request
         $requestsDeletion = false;
-        if ($this->changeApprovalEnabled()) {
+        if ($this->changeApproval()->enabled()) {
             $canRequest = $permissionService->getChangeRequestPermissionLevelForZone((int)$userId, $zone_id) !== 'none';
             $requestsDeletion = (bool)$this->config->get('approval', 'require_review_for_all', false)
                 ? ($canDeleteDirectly || $canRequest)

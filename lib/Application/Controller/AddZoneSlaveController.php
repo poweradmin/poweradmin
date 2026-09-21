@@ -42,7 +42,7 @@ class AddZoneSlaveController extends BaseController
         $this->setCurrentPage('add_zone_slave');
         $this->setPageTitle(_('Add Secondary Zone'));
 
-        $blocker = $this->zoneOwnerOptionsBlocker();
+        $blocker = $this->services()->zoneOwnershipFormResolver()->blocker((int)$this->getCurrentUserId());
         if ($blocker !== null) {
             $this->showError($blocker);
             return;

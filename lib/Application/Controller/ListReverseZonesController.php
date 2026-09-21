@@ -194,7 +194,7 @@ class ListReverseZonesController extends BaseController
         // Ownership is resolved once for the page: the per-row delete control must
         // mirror the check the delete endpoint runs (ownership direct or via any group).
         $ownership = $this->services()->zoneListPermissionService()->index($loggedInUserId, array_column($reverse_zones, 'id'));
-        $groupNames = $ownership->hasGroupOwners() ? $this->groupNamesById() : [];
+        $groupNames = $ownership->hasGroupOwners() ? OwnerGroupColumnPresenter::namesById($this->services()->userGroupRepository()->findAll()) : [];
 
         foreach ($reverse_zones as &$zone) {
             // Shorten IPv6 reverse zones for display
@@ -221,7 +221,7 @@ class ListReverseZonesController extends BaseController
 
         $this->render('list_reverse_zones.html', [
             'zones' => $reverse_zones,
-            'pending_change_requests_by_zone' => $this->pendingChangeRequestsByZone(array_map('intval', array_column($reverse_zones, 'id'))),
+            'pending_change_requests_by_zone' => $this->changeApproval()->pendingByZone($this->getCurrentUserId(), array_map('intval', array_column($reverse_zones, 'id'))),
             'count_zones_view' => $count_zones_view,
             'count_zones_edit' => $count_zones_edit,
             'count_zones_delete' => $count_zones_delete,

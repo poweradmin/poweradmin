@@ -23,6 +23,9 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
@@ -31,13 +34,47 @@ use Poweradmin\Domain\Service\ZoneOwnershipResolution;
  * Reads the owner and group fields of the add-zone forms and applies the
  * shared ownership rules. The forms drop what the ownership mode disallows
  * instead of rejecting it, and word the refusals in the user's language.
+ * Also decides which users the owner pickers offer.
  */
 class ZoneOwnershipFormResolver
 {
     public function __construct(
         private readonly ZoneOwnershipModeService $mode,
-        private readonly ZoneCreateOwnershipResolver $resolver
+        private readonly ZoneCreateOwnershipResolver $resolver,
+        private readonly PermissionService $permissions
     ) {
+    }
+
+    /**
+     * The users an owner picker may offer: everyone with user_view_others,
+     * otherwise only the caller.
+     *
+     * @param list<array<string, mixed>> $users Rows with an 'id' key
+     * @return list<array<string, mixed>>
+     */
+    public function selectableOwners(array $users, int $callerUserId): array
+    {
+        return OwnerOptionsPresenter::offered($this->canViewOthers($callerUserId), $users, $callerUserId);
+    }
+
+    /**
+     * The users a new zone may be given to: everyone when the create path lets
+     * the caller assign other owners and they may see other users, otherwise
+     * only the caller.
+     *
+     * @param list<array<string, mixed>> $users Rows with an 'id' key
+     * @return list<array<string, mixed>>
+     */
+    public function assignableOwners(array $users, int $callerUserId): array
+    {
+        $everyone = $this->resolver->canAssignOtherOwners($callerUserId) && $this->canViewOthers($callerUserId);
+
+        return OwnerOptionsPresenter::offered($everyone, $users, $callerUserId);
+    }
+
+    private function canViewOthers(int $callerUserId): bool
+    {
+        return $this->permissions->hasPermission($callerUserId, Permission::PERM_USER_VIEW_OTHERS);
     }
 
     /**

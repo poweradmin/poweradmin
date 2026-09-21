@@ -26,6 +26,7 @@ use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request as HttpRequest;
+use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
@@ -133,6 +134,15 @@ abstract class ChangeRequestControllerTestCase extends TestCase
         $user->method('getLoggedInUserId')->willReturn(self::USER_ID);
         $user->method('getLoggedInUsername')->willReturn('reviewer');
         $user->method('isAuthenticated')->willReturn(true);
+
+        // The real context over the stubbed factory, so approval answers follow
+        // whatever permission and repository doubles a test plants
+        $this->factory->method('changeApprovalContext')->willReturn(new ChangeApprovalContext(
+            $config,
+            fn() => $this->factory->permissionService(),
+            fn() => $this->factory->zoneRepository(),
+            fn() => $this->factory->zoneChangeRequestRepository()
+        ));
 
         return new ControllerEnvironment(
             $config,

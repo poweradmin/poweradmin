@@ -46,7 +46,7 @@ class BulkRegistrationController extends BaseController
         $this->setCurrentPage('bulk_registration');
         $this->setPageTitle(_('Bulk Registration'));
 
-        $blocker = $this->zoneOwnerOptionsBlocker();
+        $blocker = $this->services()->zoneOwnershipFormResolver()->blocker((int)$this->getCurrentUserId());
         if ($blocker !== null) {
             $this->showError($blocker);
             return;

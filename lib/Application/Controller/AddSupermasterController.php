@@ -65,7 +65,7 @@ class AddSupermasterController extends BaseController
         $users = $this->services()->userRepository()->getUsersWithZoneCounts();
         $this->render('add_supermaster.html', [
             'users' => $users,
-            'selectable_owners' => $this->selectableOwners($users),
+            'selectable_owners' => $this->services()->zoneOwnershipFormResolver()->selectableOwners($users, (int)$this->getCurrentUserId()),
             'master_ip' => $master_ip,
             'ns_name' => $ns_name,
             'account' => $account,

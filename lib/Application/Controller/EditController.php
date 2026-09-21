@@ -267,7 +267,7 @@ class EditController extends BaseController
         if ($requests_only) {
             $perm_edit = $this->permissionService->getChangeRequestPermissionLevelForZone($userId, $zone_id);
         }
-        $pending_change_requests = $this->changeApprovalEnabled() && $perm_edit !== 'none'
+        $pending_change_requests = $this->changeApproval()->enabled() && $perm_edit !== 'none'
             ? ChangeRequestPresenter::summaries($this->services()->zoneChangeRequestRepository()->listPendingForZone($zone_id))
             : [];
 
@@ -312,7 +312,7 @@ class EditController extends BaseController
             permViewZoneOther: $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS),
             editMode: $edit_mode,
             pendingChangeRequests: $pending_change_requests,
-            canReviewChangeRequests: $pending_change_requests !== [] && $this->canReviewChangeRequestsForZone($zone_id),
+            canReviewChangeRequests: $pending_change_requests !== [] && $this->changeApproval()->canReviewZone($this->getCurrentUserId(), $zone_id),
             dnssecEnabled: (bool)$isDnsSecEnabled,
             isSecured: $is_secured,
             isPresigned: $is_presigned,

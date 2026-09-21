@@ -120,7 +120,7 @@ class EditSupermasterController extends BaseController
         }
 
         $users = $this->services()->userRepository()->getUsersWithZoneCounts();
-        $selectableOwners = $this->selectableOwners($users);
+        $selectableOwners = $this->services()->zoneOwnershipFormResolver()->selectableOwners($users, (int)$this->getCurrentUserId());
         // The account holder stays listed even when the caller may not see other users.
         foreach ($users as $user) {
             if ($user['username'] === $account && !in_array($user, $selectableOwners, true)) {

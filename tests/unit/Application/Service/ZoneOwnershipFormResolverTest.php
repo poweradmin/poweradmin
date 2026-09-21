@@ -26,6 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
@@ -43,6 +44,10 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
 {
 
     private const CALLER_ID = 7;
+    private const USERS = [
+        ['id' => 7, 'username' => 'client'],
+        ['id' => 9, 'username' => 'other'],
+    ];
 
     protected function tearDown(): void
     {
@@ -115,6 +120,28 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
         $this->assertStringContainsString('not a member of any group', (string)$this->resolver('groups_only')->blocker(self::CALLER_ID));
     }
 
+    public function testViewOthersGrantOffersEveryUser(): void
+    {
+        $resolver = $this->resolver('both', callerPermissions: [Permission::PERM_USER_VIEW_OTHERS]);
+
+        $this->assertSame(self::USERS, $resolver->selectableOwners(self::USERS, self::CALLER_ID));
+    }
+
+    public function testWithoutTheGrantOnlyTheCallerIsOffered(): void
+    {
+        $this->assertSame([['id' => 7, 'username' => 'client']], $this->resolver('both')->selectableOwners(self::USERS, self::CALLER_ID));
+        $this->assertSame([], $this->resolver('both')->selectableOwners(self::USERS, 42));
+    }
+
+    public function testAssigningOthersNeedsBothTheCreateRuleAndViewOthers(): void
+    {
+        $both = [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS, Permission::PERM_USER_VIEW_OTHERS];
+
+        $this->assertSame(self::USERS, $this->resolver('both', callerPermissions: $both)->assignableOwners(self::USERS, self::CALLER_ID));
+        $this->assertSame([['id' => 7, 'username' => 'client']], $this->resolver('both', callerPermissions: [Permission::PERM_USER_VIEW_OTHERS])->assignableOwners(self::USERS, self::CALLER_ID));
+        $this->assertSame([['id' => 7, 'username' => 'client']], $this->resolver('both', callerPermissions: [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS])->assignableOwners(self::USERS, self::CALLER_ID));
+    }
+
     public function testUnmappedCodesFallBackToTheResolutionText(): void
     {
         $result = ZoneOwnershipResolution::error('api wording', 400, ZoneOwnershipResolution::INVALID_INPUT);
@@ -125,7 +152,7 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
     /**
      * @param int[] $memberOf groups the caller belongs to; every requested group exists
      */
-    private function resolver(string $mode, array $memberOf = [], bool $adminCaller = false): ZoneOwnershipFormResolver
+    private function resolver(string $mode, array $memberOf = [], bool $adminCaller = false, array $callerPermissions = []): ZoneOwnershipFormResolver
     {
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->with('dns', 'zone_ownership_mode', 'both')->willReturn($mode);
@@ -136,11 +163,13 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
         $groups->method('getGroupIdsForUser')->willReturn($memberOf);
 
         // No user besides the caller exists, and the caller is never looked up.
-        $users = $this->scriptedUserRepository(adminUserIds: $adminCaller ? [self::CALLER_ID] : []);
+        $users = $this->scriptedUserRepository([self::CALLER_ID => $callerPermissions], adminUserIds: $adminCaller ? [self::CALLER_ID] : []);
+        $permissions = new PermissionService($users);
 
         return new ZoneOwnershipFormResolver(
             $ownershipMode,
-            new ZoneCreateOwnershipResolver($ownershipMode, new PermissionService($users), $groups, $users)
+            new ZoneCreateOwnershipResolver($ownershipMode, $permissions, $groups, $users),
+            $permissions
         );
     }
 }

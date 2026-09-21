@@ -58,7 +58,7 @@ class AddZoneMasterController extends BaseController
         $this->setCurrentPage('add_zone_master');
         $this->setPageTitle(_('Add Primary Zone'));
 
-        $blocker = $this->zoneOwnerOptionsBlocker();
+        $blocker = $this->services()->zoneOwnershipFormResolver()->blocker((int)$this->getCurrentUserId());
         if ($blocker !== null) {
             $this->showError($blocker);
             return;

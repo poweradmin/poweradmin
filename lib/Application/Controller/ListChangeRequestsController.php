@@ -43,7 +43,7 @@ class ListChangeRequestsController extends BaseController
 
     public function run(): void
     {
-        if (!$this->changeApprovalEnabled()) {
+        if (!$this->changeApproval()->enabled()) {
             $this->renderNotFound();
             return;
         }
@@ -52,7 +52,7 @@ class ListChangeRequestsController extends BaseController
         $this->setPageTitle(_('Change requests'));
 
         $userId = (int)$this->getCurrentUserId();
-        $scope = $this->changeRequestReviewScope();
+        $scope = $this->changeApproval()->reviewScope($this->getCurrentUserId());
         $requestLevel = $this->services()->permissionService()->getChangeRequestPermissionLevel($userId);
         if ($scope === [] && $requestLevel === 'none') {
             $this->showError(_('You do not have permission to view change requests.'));

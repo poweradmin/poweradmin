@@ -505,30 +505,12 @@ abstract class BaseController
     }
 
     /**
-     * Why the current user cannot pick any zone owner (groups_only mode), or null.
+     * Change-approval answers for one user and zone; callers pass the user id,
+     * usually getCurrentUserId(). One instance per request.
      */
-    protected function zoneOwnerOptionsBlocker(): ?string
+    protected function changeApproval(): ChangeApprovalContext
     {
-        return $this->services()->zoneOwnershipFormResolver()->blocker((int)$this->getCurrentUserId());
-    }
-
-    /**
-     * Change-approval answers for the logged-in user; the policy itself lives in
-     * ChangeApprovalContext, which takes the user id rather than reading it.
-     */
-    private function changeApproval(): ChangeApprovalContext
-    {
-        return $this->changeApprovalContext ??= new ChangeApprovalContext(
-            $this->config,
-            fn() => $this->services()->permissionService(),
-            fn() => $this->services()->zoneRepository(),
-            fn() => $this->services()->zoneChangeRequestRepository()
-        );
-    }
-
-    protected function changeApprovalEnabled(): bool
-    {
-        return $this->changeApproval()->enabled();
+        return $this->changeApprovalContext ??= $this->services()->changeApprovalContext();
     }
 
     protected function changeApprovalModeForZone(int $zoneId): string
@@ -536,46 +518,9 @@ abstract class BaseController
         return $this->changeApproval()->modeForZone($this->getCurrentUserId(), $zoneId);
     }
 
-    protected function canReviewChangeRequestsForZone(int $zoneId): bool
-    {
-        return $this->changeApproval()->canReviewZone($this->getCurrentUserId(), $zoneId);
-    }
-
-    /**
-     * @return list<int>|null
-     */
-    protected function changeRequestReviewScope(): ?array
-    {
-        return $this->changeApproval()->reviewScope($this->getCurrentUserId());
-    }
-
-    /**
-     * @param list<int> $zoneIds
-     * @return array<int, int>
-     */
-    protected function pendingChangeRequestsByZone(array $zoneIds): array
-    {
-        return $this->changeApproval()->pendingByZone($this->getCurrentUserId(), $zoneIds);
-    }
-
     private function pendingChangeRequestCount(): int
     {
         return $this->changeApproval()->pendingReviewCount($this->getCurrentUserId());
-    }
-
-    /**
-     * Group names keyed by id, for the group column of the zone lists.
-     *
-     * @return array<int, string>
-     */
-    protected function groupNamesById(): array
-    {
-        $names = [];
-        foreach ($this->services()->userGroupRepository()->findAll() as $group) {
-            $names[(int)$group->getId()] = $group->getName();
-        }
-
-        return $names;
     }
 
     /**
@@ -589,18 +534,6 @@ abstract class BaseController
     }
 
     /**
-     * The users an owner picker may offer: everyone with user_view_others,
-     * otherwise only the current user.
-     *
-     * @param list<array<string, mixed>> $users Rows with an 'id' key
-     * @return list<array<string, mixed>>
-     */
-    protected function selectableOwners(array $users): array
-    {
-        return $this->ownersOffered($this->hasPermission(Permission::PERM_USER_VIEW_OTHERS), $users);
-    }
-
-    /**
      * The users a new zone may be given to: everyone when the create path lets
      * the caller assign other owners and they may see other users, otherwise
      * only the current user.
@@ -610,13 +543,7 @@ abstract class BaseController
      */
     protected function assignableOwners(array $users): array
     {
-        $everyone = $this->canAssignOtherOwners() && $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS);
-        return $this->ownersOffered($everyone, $users);
-    }
-
-    protected function canAssignOtherOwners(): bool
-    {
-        return $this->services()->zoneCreateOwnershipResolver()->canAssignOtherOwners((int)$this->getCurrentUserId());
+        return $this->services()->zoneOwnershipFormResolver()->assignableOwners($users, (int)$this->getCurrentUserId());
     }
 
     /**
@@ -630,15 +557,6 @@ abstract class BaseController
     protected function preservedOwnerChoice(array $assignableOwners, mixed $ownerInput): int|string
     {
         return OwnerOptionsPresenter::preservedChoice($assignableOwners, $ownerInput, $this->getCurrentUserId());
-    }
-
-    /**
-     * @param list<array<string, mixed>> $users
-     * @return list<array<string, mixed>>
-     */
-    private function ownersOffered(bool $everyone, array $users): array
-    {
-        return OwnerOptionsPresenter::offered($everyone, $users, $this->getCurrentUserId());
     }
 
     /**

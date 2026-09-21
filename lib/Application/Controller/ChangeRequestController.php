@@ -38,7 +38,7 @@ class ChangeRequestController extends BaseController
 {
     public function run(): void
     {
-        if (!$this->changeApprovalEnabled()) {
+        if (!$this->changeApproval()->enabled()) {
             $this->renderNotFound();
             return;
         }
@@ -54,7 +54,7 @@ class ChangeRequestController extends BaseController
         }
 
         $userId = (int)$this->getCurrentUserId();
-        $canReview = $this->canReviewChangeRequestsForZone($request->zoneId);
+        $canReview = $this->changeApproval()->canReviewZone($this->getCurrentUserId(), $request->zoneId);
         $isRequester = $request->requesterId === $userId;
         // The edit page lists pending requests to everyone who may change the zone, so reading one follows the same rule
         if (!$canReview && !$isRequester && $this->changeApprovalModeForZone($request->zoneId) === ChangeApprovalPolicy::MODE_NONE) {

@@ -83,7 +83,7 @@ class DeleteRecordsController extends BaseController
      */
     private function refuseZonesNeedingApproval(array $record_ids): void
     {
-        if (!$this->changeApprovalEnabled()) {
+        if (!$this->changeApproval()->enabled()) {
             return;
         }
         $recordRepository = $this->services()->recordRepository();

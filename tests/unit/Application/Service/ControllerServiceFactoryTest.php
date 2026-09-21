@@ -115,6 +115,39 @@ class ControllerServiceFactoryTest extends TestCase
         $this->assertSame($factory->repositoryFactory(), $shared);
     }
 
+    public function testFlatAccessorsHandOutTheConcernFactoriesInstances(): void
+    {
+        $factory = $this->makeFactory();
+
+        $this->assertSame($factory->backend()->dnsBackendProvider(), $factory->dnsBackendProvider());
+        $this->assertSame($factory->users()->permissionService(), $factory->permissionService());
+        $this->assertSame($factory->auth()->clientContext(), $factory->clientContext());
+        $this->assertSame($factory->records()->recordChangeLogger(), $factory->recordChangeLogger());
+        $this->assertSame($factory->zones()->zoneOwnershipModeService(), $factory->zoneOwnershipModeService());
+    }
+
+    public function testConcernFactoriesAreOnePerRequest(): void
+    {
+        $factory = $this->makeFactory();
+
+        $this->assertSame($factory->backend(), $factory->backend());
+        $this->assertSame($factory->users(), $factory->users());
+        $this->assertSame($factory->auth(), $factory->auth());
+        $this->assertSame($factory->zones(), $factory->zones());
+        $this->assertSame($factory->records(), $factory->records());
+        $this->assertSame($factory->backend()->repositoryFactory(), $factory->repositoryFactory());
+    }
+
+    public function testDomainAndRecordManagersAreMemoized(): void
+    {
+        $factory = $this->makeFactory();
+
+        $this->assertSame($factory->domainManager(), $factory->domainManager());
+        $this->assertSame($factory->recordManager(), $factory->recordManager());
+        $this->assertSame($factory->zoneTemplateRepository(), $factory->zoneTemplateRepository());
+        $this->assertSame($factory->zoneChangeRequestRepository(), $factory->zoneChangeRequestRepository());
+    }
+
     public function testRepositoryFactoryGivesDedicatedWiringForAnotherProvider(): void
     {
         $factory = $this->makeFactory();

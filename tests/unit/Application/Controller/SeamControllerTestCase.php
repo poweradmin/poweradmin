@@ -27,6 +27,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Service\ControllerEnvironment;
+use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -143,6 +144,15 @@ abstract class SeamControllerTestCase extends TestCase
     {
         $csrf = $this->createMock(CsrfTokenService::class);
         $csrf->method('validateToken')->willReturn(true);
+
+        // The real context over the stubbed factory, so approval answers follow
+        // whatever permission and repository doubles a test plants
+        $this->factory->method('changeApprovalContext')->willReturn(new ChangeApprovalContext(
+            $config,
+            fn() => $this->factory->permissionService(),
+            fn() => $this->factory->zoneRepository(),
+            fn() => $this->factory->zoneChangeRequestRepository()
+        ));
 
         return new ControllerEnvironment(
             $config,

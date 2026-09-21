@@ -143,7 +143,7 @@ class ZoneOwnershipController extends BaseController
             'zone_name' => $zone_name,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
             'users' => $availableUsers,
-            'selectable_owners' => $this->selectableOwners($availableUsers),
+            'selectable_owners' => $this->services()->zoneOwnershipFormResolver()->selectableOwners($availableUsers, (int)$this->getCurrentUserId()),
             'owners' => $owners,
             'group_owners' => $groupOwners,
             'has_user_owners' => $has_user_owners,
