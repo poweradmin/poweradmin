@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service\Zone;
+namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Enum\SortDirection;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;

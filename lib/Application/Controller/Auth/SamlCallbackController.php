@@ -26,7 +26,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Enum\AuthMethod;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
@@ -74,7 +74,7 @@ class SamlCallbackController extends BaseController
     {
         // Check if SAML is enabled
         if (!$this->samlService->isEnabled()) {
-            $sessionEntity = new SessionEntity(_('SAML authentication is not enabled'), 'danger');
+            $sessionEntity = new FlashMessage(_('SAML authentication is not enabled'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
         }
@@ -90,7 +90,7 @@ class SamlCallbackController extends BaseController
             $this->handleSingleLogout();
         } else {
             // Unknown SAML endpoint
-            $sessionEntity = new SessionEntity(_('Unknown SAML endpoint'), 'danger');
+            $sessionEntity = new FlashMessage(_('Unknown SAML endpoint'), 'danger');
             $this->authService->auth($sessionEntity);
         }
     }
@@ -114,7 +114,7 @@ class SamlCallbackController extends BaseController
             // failure should not feed fail2ban brute-force counters.
             $this->services()->auditService()->logSsoLoginError(AuthMethod::SAML, $e->getMessage());
 
-            $sessionEntity = new SessionEntity(
+            $sessionEntity = new FlashMessage(
                 _('SAML authentication failed: ') . $e->getMessage(),
                 'danger'
             );
@@ -134,11 +134,11 @@ class SamlCallbackController extends BaseController
             $this->services()->auditService()->logSamlLogout($username);
 
             // Clear the session and redirect to login
-            $sessionEntity = new SessionEntity(_('You have been logged out'), 'info');
+            $sessionEntity = new FlashMessage(_('You have been logged out'), 'info');
             $this->authService->logout($sessionEntity);
         } catch (\Exception $e) {
             // Even if SLO fails, we should still log the user out locally
-            $sessionEntity = new SessionEntity(
+            $sessionEntity = new FlashMessage(
                 _('Logout completed (with warnings): ') . $e->getMessage(),
                 'warning'
             );

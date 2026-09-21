@@ -17,7 +17,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use ReflectionMethod;
@@ -110,6 +110,6 @@ class AuthenticationServiceApiRequestTest extends TestCase
         );
         $_SERVER['REQUEST_URI'] = '/api/internal/zone';
 
-        $service->auth(new SessionEntity('', 'danger'));
+        $service->auth(new FlashMessage('', 'danger'));
     }
 }

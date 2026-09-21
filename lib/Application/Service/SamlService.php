@@ -27,7 +27,7 @@ use OneLogin\Saml2\Settings;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Enum\AuthMethod;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
@@ -205,7 +205,7 @@ class SamlService
             $this->logger->warning('No provider ID in session or RelayState during SAML assertion. Session ID: {session_id}', [
                 'session_id' => session_id()
             ]);
-            $sessionEntity = new SessionEntity(_('Authentication failed: Invalid session'), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: Invalid session'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return null;
         }
@@ -214,7 +214,7 @@ class SamlService
             return $this->withProxyServerVars(fn() => $this->processAssertion($providerId));
         } catch (\Exception $e) {
             $this->logger->error('SAML authentication error: {error}', ['error' => $e->getMessage()]);
-            $sessionEntity = new SessionEntity(_('Authentication failed: ') . $e->getMessage(), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: ') . $e->getMessage(), 'danger');
             $this->authenticationService->auth($sessionEntity);
 
             // Clean up session data on exception
@@ -255,14 +255,14 @@ class SamlService
                 $this->logger->error('SAML error exception: {exception}', ['exception' => $lastErrorException->getMessage()]);
             }
 
-            $sessionEntity = new SessionEntity(_('Authentication failed: ') . $errorMsg, 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: ') . $errorMsg, 'danger');
             $this->authenticationService->auth($sessionEntity);
             return null;
         }
 
         if (!$auth->isAuthenticated()) {
             $this->logger->warning('SAML authentication failed - not authenticated');
-            $sessionEntity = new SessionEntity(_('Authentication failed: Invalid SAML response'), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: Invalid SAML response'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return null;
         }
@@ -365,7 +365,7 @@ class SamlService
             $this->logger->warning('Failed to provision SAML user: {username}', ['username' => $userInfo->getUsername()]);
             $this->setSessionValue('userlogin', $userInfo->getUsername());
             $this->auditService->logLoginFailed(AuthMethod::SAML);
-            $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: Unable to create or update user account'), 'danger');
             $this->authenticationService->auth($sessionEntity);
 
             // Clean up session data on provisioning failure

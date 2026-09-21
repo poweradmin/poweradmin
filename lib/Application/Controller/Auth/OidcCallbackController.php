@@ -26,7 +26,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Enum\AuthMethod;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
@@ -74,7 +74,7 @@ class OidcCallbackController extends BaseController
     {
         // Check if OIDC is enabled
         if (!$this->oidcService->isEnabled()) {
-            $sessionEntity = new SessionEntity(_('OIDC authentication is not enabled'), 'danger');
+            $sessionEntity = new FlashMessage(_('OIDC authentication is not enabled'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
         }
@@ -88,7 +88,7 @@ class OidcCallbackController extends BaseController
             // should not feed fail2ban brute-force counters.
             $this->services()->auditService()->logSsoLoginError(AuthMethod::OIDC, $error);
 
-            $sessionEntity = new SessionEntity(
+            $sessionEntity = new FlashMessage(
                 _('Authentication failed: ') . $errorDescription,
                 'danger'
             );

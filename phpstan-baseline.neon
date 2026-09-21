@@ -271,18 +271,6 @@ parameters:
 			path: lib/Domain/Service/Zone/ZoneMetadataService.php
 
 		-
-			message: '#^Class Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/Zone/ZoneSortingService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/Zone/ZoneSortingService.php
-
-		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 1

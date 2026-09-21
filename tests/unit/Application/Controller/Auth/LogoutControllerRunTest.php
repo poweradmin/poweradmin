@@ -27,7 +27,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\LogoutController;
 use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -49,7 +49,7 @@ class LogoutControllerRunTest extends SeamControllerTestCase
 
         $authentication = $this->createMock(AuthenticationService::class);
         $authentication->expects($this->once())->method('logout')->with($this->callback(
-            static fn(SessionEntity $entity): bool => $entity->getMessage() === 'You have logged out.'
+            static fn(FlashMessage $entity): bool => $entity->getMessage() === 'You have logged out.'
                 && $entity->getType() === 'success'
         ));
         $this->factory->expects($this->once())->method('authenticationService')->willReturn($authentication);

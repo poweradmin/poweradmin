@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\ChangePasswordController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\PasswordChangeService;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -51,7 +51,7 @@ class ChangePasswordControllerTest extends SeamControllerTestCase
 
         $authentication = $this->createMock(AuthenticationService::class);
         $authentication->expects($this->once())->method('logout')->with($this->callback(
-            static fn(SessionEntity $entity): bool => $entity->getMessage() === 'Password changed'
+            static fn(FlashMessage $entity): bool => $entity->getMessage() === 'Password changed'
                 && $entity->getType() === 'success'
         ));
         $this->factory->expects($this->once())->method('authenticationService')->willReturn($authentication);

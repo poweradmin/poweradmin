@@ -20,14 +20,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
+namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\Zone\ZoneSortingService;
+use Poweradmin\Application\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 
 #[CoversClass(ZoneSortingService::class)]

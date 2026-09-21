@@ -30,7 +30,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Zone\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
-use Poweradmin\Domain\Service\Zone\ZoneSortingService;
+use Poweradmin\Application\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
 
 /**

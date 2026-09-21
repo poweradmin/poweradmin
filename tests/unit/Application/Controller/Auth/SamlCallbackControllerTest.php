@@ -26,7 +26,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\SamlCallbackController;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -44,7 +44,7 @@ class SamlCallbackControllerTest extends SeamControllerTestCase
 
         $authentication = $this->createMock(AuthenticationService::class);
         $authentication->expects($this->once())->method('auth')->with($this->callback(
-            static fn(SessionEntity $entity): bool => $entity->getMessage() === 'SAML authentication is not enabled'
+            static fn(FlashMessage $entity): bool => $entity->getMessage() === 'SAML authentication is not enabled'
                 && $entity->getType() === 'danger'
         ));
         $this->factory->expects($this->atLeastOnce())->method('authenticationService')->willReturn($authentication);

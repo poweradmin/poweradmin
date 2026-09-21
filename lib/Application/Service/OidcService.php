@@ -27,7 +27,7 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Enum\AuthMethod;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
@@ -224,7 +224,7 @@ class OidcService
 
         if (empty($receivedState) || $receivedState !== $sessionState) {
             $this->logger->warning('Invalid state parameter in OIDC callback');
-            $sessionEntity = new SessionEntity(_('Authentication failed: Invalid state parameter'), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: Invalid state parameter'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return null;
         }
@@ -237,7 +237,7 @@ class OidcService
                 'error' => $error,
                 'description' => $errorDescription
             ]);
-            $sessionEntity = new SessionEntity(_('Authentication failed: ') . $errorDescription, 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: ') . $errorDescription, 'danger');
             $this->authenticationService->auth($sessionEntity);
             return null;
         }
@@ -245,7 +245,7 @@ class OidcService
         $code = $this->request->getParam('code');
         if (empty($code)) {
             $this->logger->warning('No authorization code in OIDC callback');
-            $sessionEntity = new SessionEntity(_('Authentication failed: No authorization code'), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: No authorization code'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return null;
         }
@@ -253,7 +253,7 @@ class OidcService
         $providerId = $this->getSessionValue('oidc_provider', '');
         if (empty($providerId)) {
             $this->logger->warning('No provider ID in session during OIDC callback');
-            $sessionEntity = new SessionEntity(_('Authentication failed: Invalid session'), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: Invalid session'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return null;
         }
@@ -417,12 +417,12 @@ class OidcService
                 $this->logger->warning('Failed to provision OIDC user: {username}', ['username' => $userInfo->getUsername()]);
                 $this->setSessionValue('userlogin', $userInfo->getUsername());
                 $this->auditService->logLoginFailed(AuthMethod::OIDC);
-                $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
+                $sessionEntity = new FlashMessage(_('Authentication failed: Unable to create or update user account'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
             }
         } catch (\Exception $e) {
             $this->logger->error('OIDC authentication error: {error}', ['error' => $e->getMessage()]);
-            $sessionEntity = new SessionEntity(_('Authentication failed: ') . $e->getMessage(), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed: ') . $e->getMessage(), 'danger');
             $this->authenticationService->auth($sessionEntity);
         }
 

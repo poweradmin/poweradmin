@@ -41,7 +41,7 @@ use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Application\Boot\AppManager;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\Zone\ZoneSortingService;
+use Poweradmin\Application\Service\ZoneSortingService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;

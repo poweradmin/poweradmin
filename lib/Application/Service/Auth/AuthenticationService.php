@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service\Auth;
 
 use Poweradmin\Application\Http\RequestContext;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
@@ -45,14 +45,14 @@ class AuthenticationService
         $this->config = $config;
     }
 
-    public function logout(SessionEntity $sessionEntity): void
+    public function logout(FlashMessage $sessionEntity): void
     {
         $this->sessionService->endSession();
         $this->sessionService->setSessionData($sessionEntity);
         $this->redirectToLogin();
     }
 
-    public function auth(SessionEntity $sessionEntity): void
+    public function auth(FlashMessage $sessionEntity): void
     {
         $this->sessionService->startSession($sessionEntity);
         $this->redirectToLogin();

@@ -33,7 +33,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Module\ModuleInterface;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Domain\Service\Zone\ZoneSortingService;
+use Poweradmin\Application\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
 
 /**

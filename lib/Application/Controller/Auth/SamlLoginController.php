@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller\Auth;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 
 /**
@@ -63,7 +63,7 @@ class SamlLoginController extends BaseController
     {
         // Check if SAML is enabled
         if (!$this->samlService->isEnabled()) {
-            $sessionEntity = new SessionEntity(_('SAML authentication is not enabled'), 'danger');
+            $sessionEntity = new FlashMessage(_('SAML authentication is not enabled'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
         }
@@ -75,7 +75,7 @@ class SamlLoginController extends BaseController
         if (empty($providerId)) {
             $availableProviders = $this->samlService->getAvailableProviders();
             if (empty($availableProviders)) {
-                $sessionEntity = new SessionEntity(_('No SAML providers are configured'), 'danger');
+                $sessionEntity = new FlashMessage(_('No SAML providers are configured'), 'danger');
                 $this->authService->auth($sessionEntity);
                 return;
             }
@@ -86,7 +86,7 @@ class SamlLoginController extends BaseController
 
         // Validate provider
         if (!$this->validateProvider($providerId)) {
-            $sessionEntity = new SessionEntity(_('Invalid SAML provider'), 'danger');
+            $sessionEntity = new FlashMessage(_('Invalid SAML provider'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
         }
@@ -99,7 +99,7 @@ class SamlLoginController extends BaseController
             header('Location: ' . $authUrl);
             exit;
         } catch (\Exception $e) {
-            $sessionEntity = new SessionEntity(_('SAML authentication failed: ') . $e->getMessage(), 'danger');
+            $sessionEntity = new FlashMessage(_('SAML authentication failed: ') . $e->getMessage(), 'danger');
             $this->authService->auth($sessionEntity);
         }
     }

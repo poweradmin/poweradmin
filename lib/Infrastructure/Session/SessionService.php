@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Session;
 
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
@@ -30,7 +30,7 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
  */
 class SessionService
 {
-    public function startSession(SessionEntity $sessionEntity): void
+    public function startSession(FlashMessage $sessionEntity): void
     {
         $this->setSessionData($sessionEntity);
     }
@@ -71,7 +71,7 @@ class SessionService
         }
     }
 
-    public function setSessionData(SessionEntity $sessionEntity): void
+    public function setSessionData(FlashMessage $sessionEntity): void
     {
         $_SESSION[SessionKeys::LOGIN_MESSAGE] = $sessionEntity->getMessage();
         $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE] = $sessionEntity->getType();

@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\PasswordChangeService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
@@ -146,7 +146,7 @@ class ChangePasswordController extends BaseController
         if ($success) {
             $this->services()->auditService()->logPasswordChange();
 
-            $sessionEntity = new SessionEntity($message, 'success');
+            $sessionEntity = new FlashMessage($message, 'success');
             $this->authService->logout($sessionEntity);
             return true;
         }

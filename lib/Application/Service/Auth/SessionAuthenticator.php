@@ -31,7 +31,7 @@ use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
@@ -158,7 +158,7 @@ class SessionAuthenticator
         ) {
             $this->logger->warning('Invalid CSRF token for user {username}', ['username' => $postedUsername]);
 
-            $sessionEntity = new SessionEntity(_('Invalid CSRF token.'), 'danger');
+            $sessionEntity = new FlashMessage(_('Invalid CSRF token.'), 'danger');
             $this->authService->auth($sessionEntity);
 
             $this->logger->debug('CSRF token validation failed for user {username}', ['username' => $postedUsername]);
@@ -176,7 +176,7 @@ class SessionAuthenticator
                 if (!$this->recaptchaService->verify($credentials->recaptchaResponse, $remoteIp)) {
                     $this->logger->warning('reCAPTCHA verification failed for user {username}', ['username' => $postedUsername]);
 
-                    $sessionEntity = new SessionEntity(_('reCAPTCHA verification failed. Please try again.'), 'danger');
+                    $sessionEntity = new FlashMessage(_('reCAPTCHA verification failed. Please try again.'), 'danger');
                     $this->authService->auth($sessionEntity);
 
                     $this->logger->debug('Authentication blocked due to reCAPTCHA failure for user {username}', ['username' => $postedUsername]);
@@ -199,7 +199,7 @@ class SessionAuthenticator
             } else {
                 $this->logger->error('Empty password attempt for user {username}', ['username' => $postedUsername]);
 
-                $sessionEntity = new SessionEntity(_('An empty password is not allowed'), 'danger');
+                $sessionEntity = new FlashMessage(_('An empty password is not allowed'), 'danger');
                 $this->authService->auth($sessionEntity);
 
                 $this->logger->debug('Authentication failed due to empty password for user {username}', ['username' => $postedUsername]);
@@ -213,7 +213,7 @@ class SessionAuthenticator
 
             $this->auditService()->logSessionExpired();
 
-            $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
+            $sessionEntity = new FlashMessage(_('Session expired, please login again.'), 'danger');
             $this->authService->logout($sessionEntity);
 
             $this->logger->debug('Session expired and user {userid} logged out', ['userid' => $_SESSION[SessionKeys::USERID]]);
@@ -241,7 +241,7 @@ class SessionAuthenticator
                     $this->completeLogin($this->ldapAuthenticator()->authenticate($credentials));
                 } else {
                     $this->logger->warning('User {username} configured for LDAP but LDAP is disabled', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
-                    $sessionEntity = new SessionEntity(_('LDAP authentication is disabled'), 'danger');
+                    $sessionEntity = new FlashMessage(_('LDAP authentication is disabled'), 'danger');
                     $this->authService->logout($sessionEntity);
                 }
                 break;
@@ -287,7 +287,7 @@ class SessionAuthenticator
     private function completeLogin(AuthOutcome $outcome): void
     {
         if ($outcome->isFailure()) {
-            $sessionEntity = new SessionEntity($outcome->message, 'danger');
+            $sessionEntity = new FlashMessage($outcome->message, 'danger');
             if ($outcome->endSession) {
                 $this->authService->logout($sessionEntity);
             } else {
@@ -504,7 +504,7 @@ class SessionAuthenticator
             ]);
 
             // Log out user and display error message
-            $sessionEntity = new SessionEntity(_('Database error: Unable to verify user authentication. Please check your database configuration.'), 'danger');
+            $sessionEntity = new FlashMessage(_('Database error: Unable to verify user authentication. Please check your database configuration.'), 'danger');
             $this->authService->logout($sessionEntity);
 
             return 'sql'; // Return default to prevent further errors

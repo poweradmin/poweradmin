@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
-use Poweradmin\Domain\Service\Zone\ZoneSortingService;
+use Poweradmin\Application\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**

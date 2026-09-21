@@ -26,7 +26,7 @@ use Exception;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
@@ -97,7 +97,7 @@ class LogoutController extends BaseController
 
     private function performStandardLogout(): void
     {
-        $sessionEntity = new SessionEntity(_('You have logged out.'), 'success');
+        $sessionEntity = new FlashMessage(_('You have logged out.'), 'success');
         $this->authService->logout($sessionEntity);
     }
 

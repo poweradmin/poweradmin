@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Model;
+namespace Poweradmin\Application\Web;
 
 /**
  * A flash message (text plus Bootstrap alert type) kept in the session across a redirect.
  */
-readonly class SessionEntity
+readonly class FlashMessage
 {
     private string $message;
     private string $type;

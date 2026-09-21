@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller\Auth;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 
 /**
@@ -63,7 +63,7 @@ class OidcLoginController extends BaseController
     {
         // Check if OIDC is enabled
         if (!$this->oidcService->isEnabled()) {
-            $sessionEntity = new SessionEntity(_('OIDC authentication is not enabled'), 'danger');
+            $sessionEntity = new FlashMessage(_('OIDC authentication is not enabled'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
         }
@@ -75,7 +75,7 @@ class OidcLoginController extends BaseController
         if (empty($providerId)) {
             $availableProviders = $this->oidcService->getAvailableProviders();
             if (empty($availableProviders)) {
-                $sessionEntity = new SessionEntity(_('No OIDC providers are configured'), 'danger');
+                $sessionEntity = new FlashMessage(_('No OIDC providers are configured'), 'danger');
                 $this->authService->auth($sessionEntity);
                 return;
             }
@@ -92,7 +92,7 @@ class OidcLoginController extends BaseController
             header('Location: ' . $authUrl);
             exit;
         } catch (\Exception $e) {
-            $sessionEntity = new SessionEntity(
+            $sessionEntity = new FlashMessage(
                 _('Failed to initiate OIDC authentication: ') . $e->getMessage(),
                 'danger'
             );

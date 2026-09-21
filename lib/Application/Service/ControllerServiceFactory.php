@@ -111,7 +111,7 @@ use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
-use Poweradmin\Domain\Service\Zone\ZoneSortingService;
+use Poweradmin\Application\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplateRecordService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
