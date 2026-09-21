@@ -100,7 +100,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend = $this->sqlBackend();
         $this->backend->expects($this->never())->method('createZone');
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'BOGUS', '', 'none');
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'BOGUS', '', 'none');
 
         $this->assertFalse($result->success);
         $this->assertSame(400, $result->status);
@@ -112,7 +112,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend = $this->sqlBackend();
         $this->backend->expects($this->never())->method('createZone');
 
-        $result = $this->manager([])->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', 'none');
+        $result = $this->manager([])->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none');
 
         $this->assertFalse($result->success);
         $this->assertSame(403, $result->status);
@@ -133,7 +133,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
                 ['new.example', 'MASTER', '', ''],
             ] as [$domain, $type, $master, $template]
         ) {
-            $result = $manager->addDomain($this->db, $domain, self::CALLER_ID, $type, $master, $template);
+            $result = $manager->addDomain($domain, self::CALLER_ID, $type, $master, $template);
             $this->assertFalse($result->success);
             $this->assertSame(400, $result->status);
             $this->assertSame('Invalid argument(s) given to function addDomain', $result->message);
@@ -146,7 +146,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->method('createZone')->willReturn(false);
         $this->backend->expects($this->never())->method('deleteZone');
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
 
         $this->assertFalse($result->success);
         $this->assertSame(500, $result->status);
@@ -161,7 +161,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->method('createZone')->willThrowException(new \RuntimeException('api down'));
         $this->backend->expects($this->never())->method('deleteZone');
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', 'none');
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none');
 
         $this->assertFalse($result->success);
         $this->assertSame(500, $result->status);
@@ -187,7 +187,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->expects($this->once())->method('updateZoneAccount')
             ->with(self::DOMAIN_ID, 'caller')->willReturn(true);
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', 'none', [], 'EPOCH');
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [], 'EPOCH');
 
         $this->assertTrue($result->success);
         $this->assertSame(self::DOMAIN_ID, $result->zoneId);
@@ -210,7 +210,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->method('addRecord')->willReturn(true);
         $this->backend->expects($this->never())->method('updateZoneAccount');
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', null, 'NATIVE', '', 'none', [5, 5, 6]);
+        $result = $this->manager()->addDomain('new.example', null, 'NATIVE', '', 'none', [5, 5, 6]);
 
         $this->assertTrue($result->success);
         $this->assertSame([['owner' => null]], $this->rows('SELECT owner FROM zones'));
@@ -230,7 +230,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->expects($this->never())->method('addRecordGetId');
 
         $result = $this->manager([Permission::PERM_ZONE_SLAVE_ADD])
-            ->addDomain($this->db, 'new.example', self::CALLER_ID, 'SLAVE', ' 192.0.2.1 ', self::TEMPLATE_ID, [3]);
+            ->addDomain('new.example', self::CALLER_ID, 'SLAVE', ' 192.0.2.1 ', self::TEMPLATE_ID, [3]);
 
         $this->assertTrue($result->success);
         $this->assertSame(self::DOMAIN_ID, $result->zoneId);
@@ -260,7 +260,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             return 500 + count($written);
         });
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID);
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame([
@@ -295,7 +295,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->method('createZone')->willReturn(self::DOMAIN_ID);
         $this->backend->expects($this->never())->method('addRecordGetId');
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', (string)self::TEMPLATE_ID);
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', (string)self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertCount(1, $this->rows('SELECT id FROM zone_template_sync'));
@@ -317,7 +317,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             return 600 + count($types);
         });
 
-        $result = $this->manager()->addDomain($this->db, '2.0.192.in-addr.arpa', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID);
+        $result = $this->manager()->addDomain('2.0.192.in-addr.arpa', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame(['NS'], $types);
@@ -335,7 +335,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         });
         $this->backend->method('addRecordGetId')->willReturn('new.example./NS/new.example.');
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
 
         $this->assertTrue($result->success);
         $this->assertSame(
@@ -362,7 +362,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->method('addRecord')->willReturn(false);
         $this->backend->expects($this->once())->method('deleteZone')->with(self::DOMAIN_ID, 'new.example')->willReturn(true);
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
 
         $this->assertFalse($result->success);
         $this->assertSame(500, $result->status);
@@ -381,7 +381,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->method('addRecord')->willReturn(false);
         $this->backend->expects($this->once())->method('deleteZone')->with(self::DOMAIN_ID, 'new.example')->willReturn(true);
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
 
         $this->assertFalse($result->success);
         $this->assertSame(500, $result->status);
@@ -403,7 +403,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->method('addRecordGetId')->willReturnCallback(fn(int $domainId, string $name, string $type) => $type === 'A' ? null : 501);
         $this->backend->expects($this->once())->method('deleteZone')->with(self::DOMAIN_ID, 'new.example')->willReturn(true);
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
 
         $this->assertFalse($result->success);
         $this->assertSame(500, $result->status);
@@ -423,7 +423,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->method('addRecord')->willThrowException(new \RuntimeException('disk full'));
         $this->backend->expects($this->once())->method('deleteZone')->with(self::DOMAIN_ID, 'new.example')->willReturn(true);
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
 
         $this->assertFalse($result->success);
         $this->assertSame(500, $result->status);
@@ -441,7 +441,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->backend->expects($this->never())->method('addRecord');
         $this->backend->expects($this->never())->method('addRecordGetId');
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', 'bogus', [4]);
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'bogus', [4]);
 
         $this->assertFalse($result->success);
         $this->assertSame(500, $result->status);
@@ -460,7 +460,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->changeLogger = $this->createMock(RecordChangeWriterInterface::class);
         $this->changeLogger->method('logZoneCreate')->willThrowException(new \RuntimeException('log table missing'));
 
-        $result = $this->manager()->addDomain($this->db, 'new.example', self::CALLER_ID, 'MASTER', '', 'none');
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none');
 
         $this->assertTrue($result->success);
         $this->assertCount(1, $this->rows('SELECT id FROM zones'));

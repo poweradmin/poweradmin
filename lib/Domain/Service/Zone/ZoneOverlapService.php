@@ -23,11 +23,8 @@
 
 namespace Poweradmin\Domain\Service\Zone;
 
-use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Database\PdnsTable;
-use Poweradmin\Domain\Database\TableNameService;
-use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
@@ -37,20 +34,18 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
  */
 class ZoneOverlapService
 {
-    private PDO $db;
+    private DomainRepositoryInterface $zones;
     private ConfigurationInterface $config;
     private PermissionService $permissionService;
-    private TableNameService $tableNameService;
 
     public function __construct(
-        object $db,
+        DomainRepositoryInterface $zones,
         ConfigurationInterface $config,
         PermissionService $permissionService
     ) {
-        $this->db = $db;
+        $this->zones = $zones;
         $this->config = $config;
         $this->permissionService = $permissionService;
-        $this->tableNameService = new TableNameService($config);
     }
 
     /**
@@ -84,7 +79,12 @@ class ZoneOverlapService
             return null;
         }
 
-        $existing = $this->findExistingZonesByName($ancestors);
+        // Key by the normalized name so a case-insensitive DB collation returning
+        // a mixed-case row still matches the lowercased ancestor lookup.
+        $existing = [];
+        foreach ($this->zones->findZoneIdsByNames($ancestors) as $name => $id) {
+            $existing[$this->normalizeName((string)$name)] = $id;
+        }
 
         // Closest-first, so the first existing ancestor is the one that shadows.
         foreach ($ancestors as $name) {
@@ -102,22 +102,9 @@ class ZoneOverlapService
      */
     private function findConflictingDescendant(string $zoneName, int $userId): ?string
     {
-        $name = $this->normalizeName($zoneName);
-        [$table, $nameCol, $idCol] = $this->zoneSource();
-
-        // Escape LIKE wildcards with '=' (not backslash, which MySQL mangles in
-        // string literals) so an underscore matches literally; escape '=' first.
-        $escaped = str_replace(['=', '%', '_'], ['==', '=%', '=_'], $name);
-        $pattern = '%.' . $escaped;
-
-        $stmt = $this->db->prepare(
-            "SELECT $idCol AS id, $nameCol AS name FROM $table WHERE LOWER($nameCol) LIKE :pattern ESCAPE '=' ORDER BY $nameCol"
-        );
-        $stmt->execute([':pattern' => $pattern]);
-
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if (!$this->permissionService->userOwnsZone($userId, (int)$row['id'])) {
-                return $row['name'];
+        foreach ($this->zones->findZonesUnder($this->normalizeName($zoneName)) as $zone) {
+            if (!$this->permissionService->userOwnsZone($userId, $zone['id'])) {
+                return $zone['name'];
             }
         }
 
@@ -144,52 +131,5 @@ class ZoneOverlapService
     private function normalizeName(string $name): string
     {
         return strtolower(rtrim($name, '.'));
-    }
-
-    /**
-     * Table and columns holding existing zone names for the active backend.
-     *
-     * SQL backend: the authoritative source is the domains table. API backend:
-     * domains is not maintained, so zone names are read from the Poweradmin-native
-     * zones.zone_name - no PowerDNS API call needed. Poweradmin writes zone_name
-     * synchronously on create, so every zone that carries an owner is present here;
-     * only zones created out-of-band in PowerDNS are absent, and those have no
-     * owner for this owner-based guard to compare against.
-     *
-     * @return array{0:string,1:string,2:string} [table, nameColumn, idColumn]
-     */
-    private function zoneSource(): array
-    {
-        if ($this->config->get('dns', 'backend') === 'api') {
-            // The id is only ever selected, never matched on, so the canonical expression
-            // stands in for the column here.
-            return ['zones', 'zone_name', CanonicalZoneSql::canonicalIdColumn()];
-        }
-
-        return [$this->tableNameService->getTable(PdnsTable::DOMAINS), 'name', 'id'];
-    }
-
-    /**
-     * @param list<string> $names
-     * @return array<string,int> Existing zone name => domain id, for names that exist.
-     */
-    private function findExistingZonesByName(array $names): array
-    {
-        [$table, $nameCol, $idCol] = $this->zoneSource();
-        $placeholders = implode(',', array_fill(0, count($names), '?'));
-
-        // LOWER(name) so the match is case-insensitive on every backend; the
-        // ancestor names are already lowercased.
-        $stmt = $this->db->prepare("SELECT $idCol AS id, $nameCol AS name FROM $table WHERE LOWER($nameCol) IN ($placeholders)");
-        $stmt->execute($names);
-
-        // Key by the normalized name so a case-insensitive DB collation returning
-        // a mixed-case row still matches the lowercased ancestor lookup.
-        $result = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[$this->normalizeName($row['name'])] = (int)$row['id'];
-        }
-
-        return $result;
     }
 }

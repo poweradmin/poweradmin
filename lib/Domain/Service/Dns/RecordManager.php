@@ -43,7 +43,6 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
-use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
  * Creates, updates and deletes records for the web UI, with validation, logging and serial updates.
@@ -579,24 +578,6 @@ class RecordManager implements RecordManagerInterface
         }
 
         return true;
-    }
-
-    /**
-     * Get Zone comment
-     *
-     * @param PDO $db Database connection
-     * @param int $zone_id Zone ID
-     *
-     * @return string Zone Comment
-     */
-    public static function getZoneComment($db, int $zone_id): string
-    {
-        $stmt = $db->prepare("SELECT comment FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?");
-        $stmt->bindValue(1, $zone_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $comment = $stmt->fetchColumn();
-
-        return $comment ?: '';
     }
 
     /**

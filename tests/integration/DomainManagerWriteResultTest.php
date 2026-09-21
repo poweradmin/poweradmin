@@ -61,7 +61,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->never())->method('createZone');
 
-        $result = $this->makeDomainManager($backend)->addDomain($this->db, 'new.example', self::ADMIN_USER_ID, 'BOGUS', '', 'none');
+        $result = $this->makeDomainManager($backend)->addDomain('new.example', self::ADMIN_USER_ID, 'BOGUS', '', 'none');
 
         $this->assertFalse($result->success);
         $this->assertSame(400, $result->status);
@@ -74,7 +74,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->never())->method('createZone');
 
-        $result = $this->makeDomainManager($backend)->addDomain($this->db, 'new.example', self::CLIENT_USER_ID, 'MASTER', '', 'none');
+        $result = $this->makeDomainManager($backend)->addDomain('new.example', self::CLIENT_USER_ID, 'MASTER', '', 'none');
 
         $this->assertFalse($result->success);
         $this->assertSame(403, $result->status);
@@ -86,7 +86,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $backend = $this->dnsBackendStub(false);
         $backend->method('createZone')->willReturn(false);
 
-        $result = $this->makeDomainManager($backend)->addDomain($this->db, 'new.example', null, 'SLAVE', '192.0.2.1', 'none', [5]);
+        $result = $this->makeDomainManager($backend)->addDomain('new.example', null, 'SLAVE', '192.0.2.1', 'none', [5]);
 
         $this->assertFalse($result->success);
         $this->assertSame(500, $result->status);
@@ -99,7 +99,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $backend = $this->dnsBackendStub(false);
         $backend->method('createZone')->with('new.example', 'SLAVE', '192.0.2.1')->willReturn(self::NEW_DOMAIN_ID);
 
-        $result = $this->makeDomainManager($backend)->addDomain($this->db, 'new.example', null, 'SLAVE', '192.0.2.1', 'none', [5, 5, 6]);
+        $result = $this->makeDomainManager($backend)->addDomain('new.example', null, 'SLAVE', '192.0.2.1', 'none', [5, 5, 6]);
 
         $this->assertTrue($result->success);
         $this->assertSame(self::NEW_DOMAIN_ID, $result->zoneId);

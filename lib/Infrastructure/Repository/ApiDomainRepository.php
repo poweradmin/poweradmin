@@ -425,4 +425,51 @@ class ApiDomainRepository implements DomainRepositoryInterface
 
         return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
+
+    /**
+     * Answered from zones.zone_name, which Poweradmin writes synchronously on create;
+     * zones created out-of-band in PowerDNS are absent, and those have no owner to compare.
+     */
+    public function findZoneIdsByNames(array $names): array
+    {
+        if ($names === []) {
+            return [];
+        }
+        $idCol = CanonicalZoneSql::canonicalIdColumn();
+        $placeholders = implode(',', array_fill(0, count($names), '?'));
+
+        // LOWER(zone_name) so the match is case-insensitive on every backend; the
+        // names are already lowercased.
+        $stmt = $this->db->prepare("SELECT $idCol AS id, zone_name AS name FROM zones WHERE LOWER(zone_name) IN ($placeholders)");
+        $stmt->execute($names);
+
+        $result = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[$row['name']] = (int)$row['id'];
+        }
+
+        return $result;
+    }
+
+    public function findZonesUnder(string $suffix): array
+    {
+        $idCol = CanonicalZoneSql::canonicalIdColumn();
+
+        // Escape LIKE wildcards with '=' (not backslash, which MySQL mangles in
+        // string literals) so an underscore matches literally; escape '=' first.
+        $escaped = str_replace(['=', '%', '_'], ['==', '=%', '=_'], $suffix);
+        $pattern = '%.' . $escaped;
+
+        $stmt = $this->db->prepare(
+            "SELECT $idCol AS id, zone_name AS name FROM zones WHERE LOWER(zone_name) LIKE :pattern ESCAPE '=' ORDER BY zone_name"
+        );
+        $stmt->execute([':pattern' => $pattern]);
+
+        $result = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = ['id' => (int)$row['id'], 'name' => (string)$row['name']];
+        }
+
+        return $result;
+    }
 }

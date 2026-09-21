@@ -32,13 +32,19 @@ use ReflectionMethod;
  * Builds the zone comment controller through the ControllerEnvironment seam.
  *
  * redirect() and showError() end the request in production, so each throws a
- * ControllerHalt; the form render is recorded instead of hitting the database
- * for the stored comment.
+ * ControllerHalt; the form render is recorded, and only rendered for real when
+ * a test opts in to inspect its template variables.
  */
 class TestableEditCommentController extends EditCommentController
 {
     /** @var list<array{0: int, 1: bool}> */
     public array $formsShown = [];
+
+    /** When true the form is rendered for real and its template variables land in $rendered */
+    public bool $renderForms = false;
+
+    /** @var list<array{0: string, 1: array<string, mixed>}> */
+    public array $rendered = [];
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
@@ -47,7 +53,16 @@ class TestableEditCommentController extends EditCommentController
 
     public function showCommentForm(int $zone_id, bool $perm_edit_comment): void
     {
+        if ($this->renderForms) {
+            parent::showCommentForm($zone_id, $perm_edit_comment);
+            return;
+        }
         $this->formsShown[] = [$zone_id, $perm_edit_comment];
+    }
+
+    public function render(string $template, array $params): void
+    {
+        $this->rendered[] = [$template, $params];
     }
 
     public function redirect(string $url, array $args = []): void

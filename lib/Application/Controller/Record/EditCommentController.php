@@ -26,7 +26,6 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Utility\DnsIdnService;
-use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
@@ -112,7 +111,7 @@ class EditCommentController extends BaseController
 
         $this->render('edit_comment.html', [
             'zone_id' => $zone_id,
-            'comment' => RecordManager::getZoneComment($this->db, $zone_id),
+            'comment' => $this->services()->zoneRepository()->getZoneComment($zone_id) ?? '',
             'disabled' => $perm_edit_comment,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,

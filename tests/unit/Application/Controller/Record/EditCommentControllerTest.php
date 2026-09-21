@@ -27,6 +27,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\Record\EditCommentController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -45,6 +46,7 @@ class EditCommentControllerTest extends SeamControllerTestCase
     private string $editLevel = 'all';
     private bool $ownsZone = true;
     private string $zoneType = 'MASTER';
+    private ?string $storedComment = 'kept in zones.comment';
 
     /** @var RecordManagerInterface&MockObject */
     private RecordManagerInterface $recordManager;
@@ -75,6 +77,10 @@ class EditCommentControllerTest extends SeamControllerTestCase
         $this->factory->method('domainRepository')->willReturn($domains);
         $this->factory->method('recordManager')->willReturn($this->recordManager);
         $this->factory->method('auditService')->willReturn($this->audit);
+
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('getZoneComment')->willReturnCallback(fn(): ?string => $this->storedComment);
+        $this->factory->method('zoneRepository')->willReturn($zones);
     }
 
     private function makeController(): TestableEditCommentController
@@ -94,6 +100,30 @@ class EditCommentControllerTest extends SeamControllerTestCase
         }
 
         $this->fail('Expected the request to end early.');
+    }
+
+    public function testTheFormShowsTheStoredZoneComment(): void
+    {
+        $controller = $this->makeController();
+        $controller->renderForms = true;
+
+        $controller->run();
+
+        $this->assertSame('edit_comment.html', $controller->rendered[0][0]);
+        $this->assertSame('kept in zones.comment', $controller->rendered[0][1]['comment']);
+        $this->assertSame(self::ZONE_ID, $controller->rendered[0][1]['zone_id']);
+        $this->assertSame('example.com', $controller->rendered[0][1]['zone_name']);
+    }
+
+    public function testAZoneWithoutACommentRendersAnEmptyTextarea(): void
+    {
+        $this->storedComment = null;
+        $controller = $this->makeController();
+        $controller->renderForms = true;
+
+        $controller->run();
+
+        $this->assertSame('', $controller->rendered[0][1]['comment']);
     }
 
     public function testASavedCommentFlashesSuccessAndReturnsToTheZone(): void

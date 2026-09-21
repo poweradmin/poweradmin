@@ -92,7 +92,6 @@ class ZoneServices
         return new ZoneManagementService(
             $this->services->zoneRepository(),
             $this->config,
-            $this->db,
             $this->services->repositoryFactory(),
             $this->services->permissionService(),
             $this->services->recordChangeLogger(),

@@ -22,10 +22,8 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
 
-use PDO;
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOverlapService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\PermissionServiceTestCase;
@@ -33,38 +31,34 @@ use TestHelpers\PermissionServiceTestCase;
 #[CoversClass(ZoneOverlapService::class)]
 class ZoneOverlapServiceTest extends PermissionServiceTestCase
 {
-
     private const USER_ID = 2;
 
-    /**
-     * @param array<array{id:int,name:string}> $ancestorRows zones matched by the ancestor IN lookup
-     * @param array<array{id:int,name:string}> $descendantRows zones matched by the descendant LIKE lookup
-     * @param list<int> $ownedZoneIds domain ids the user owns
-     */
-    /** @var list<string> SQL strings prepared during the last makeService() run */
-    private array $preparedSql = [];
+    /** @var list<list<string>> ancestor name lists handed to the repository */
+    private array $ancestorLookups = [];
 
+    /** @var list<string> descendant suffixes handed to the repository */
+    private array $descendantLookups = [];
+
+    /**
+     * @param array<string,int> $ancestorRows stored name => id for the ancestor lookup
+     * @param list<array{id:int,name:string}> $descendantRows zones under the new name, in repository order
+     * @param list<int> $ownedZoneIds zone ids the user owns
+     */
     private function makeService(
         array $ancestorRows = [],
         array $descendantRows = [],
         array $ownedZoneIds = [],
         bool $isAdmin = false,
-        bool $checkEnabled = true,
-        string $backend = 'sql'
+        bool $checkEnabled = true
     ): ZoneOverlapService {
-        $this->preparedSql = [];
+        $this->ancestorLookups = [];
+        $this->descendantLookups = [];
 
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(
-            function (string $group, string $key, $default = null) use ($checkEnabled, $backend) {
+            function (string $group, string $key, $default = null) use ($checkEnabled) {
                 if ($group === 'dns' && $key === 'parent_zone_ownership_check') {
                     return $checkEnabled;
-                }
-                if ($group === 'dns' && $key === 'backend') {
-                    return $backend;
-                }
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return null;
                 }
                 return $default;
             }
@@ -75,35 +69,22 @@ class ZoneOverlapServiceTest extends PermissionServiceTestCase
             ownedZonesByUser: [self::USER_ID => $ownedZoneIds]
         );
 
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturnCallback(function (string $sql) use ($ancestorRows, $descendantRows) {
-            $this->preparedSql[] = $sql;
-            if (str_contains($sql, ' IN (')) {
-                return $this->statementReturning($ancestorRows);
-            }
-            if (str_contains($sql, 'LIKE')) {
-                return $this->statementReturning($descendantRows);
-            }
-            return $this->statementReturning([]);
+        $zones = $this->createMock(DomainRepositoryInterface::class);
+        $zones->method('findZoneIdsByNames')->willReturnCallback(function (array $names) use ($ancestorRows): array {
+            $this->ancestorLookups[] = $names;
+            return $ancestorRows;
+        });
+        $zones->method('findZonesUnder')->willReturnCallback(function (string $suffix) use ($descendantRows): array {
+            $this->descendantLookups[] = $suffix;
+            return $descendantRows;
         });
 
-        return new ZoneOverlapService($db, $config, $permission);
-    }
-
-    /**
-     * @param array<array{id:int,name:string}> $rows
-     */
-    private function statementReturning(array $rows): PDOStatement
-    {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturnOnConsecutiveCalls(...[...$rows, false]);
-        return $stmt;
+        return new ZoneOverlapService($zones, $config, $permission);
     }
 
     public function testBlocksChildZoneUnderParentOwnedByAnother(): void
     {
-        $service = $this->makeService(ancestorRows: [['id' => 14, 'name' => 'a.com']]);
+        $service = $this->makeService(ancestorRows: ['a.com' => 14]);
 
         $this->assertSame('a.com', $service->findConflictingZone('b.a.com', self::USER_ID));
     }
@@ -111,7 +92,7 @@ class ZoneOverlapServiceTest extends PermissionServiceTestCase
     public function testAllowsChildZoneUnderParentOwnedBySelf(): void
     {
         $service = $this->makeService(
-            ancestorRows: [['id' => 14, 'name' => 'a.com']],
+            ancestorRows: ['a.com' => 14],
             ownedZoneIds: [14]
         );
 
@@ -125,22 +106,54 @@ class ZoneOverlapServiceTest extends PermissionServiceTestCase
         $this->assertNull($service->findConflictingZone('standalone.com', self::USER_ID));
     }
 
+    public function testLooksUpEveryAncestorClosestFirstAndTheLowercasedDescendantSuffix(): void
+    {
+        $service = $this->makeService();
+
+        $service->findConflictingZone('C.B.A.com.', self::USER_ID);
+
+        $this->assertSame([['b.a.com', 'a.com', 'com']], $this->ancestorLookups);
+        $this->assertSame(['c.b.a.com'], $this->descendantLookups);
+    }
+
+    public function testTopLevelNameSkipsTheAncestorLookup(): void
+    {
+        $service = $this->makeService();
+
+        $service->findConflictingZone('com', self::USER_ID);
+
+        $this->assertSame([], $this->ancestorLookups);
+        $this->assertSame(['com'], $this->descendantLookups);
+    }
+
     public function testClosestParentDecides(): void
     {
         // Both ancestors exist; the more-specific one owned by another user wins.
         $service = $this->makeService(
-            ancestorRows: [['id' => 99, 'name' => 'com'], ['id' => 14, 'name' => 'a.com']],
+            ancestorRows: ['com' => 99, 'a.com' => 14],
             ownedZoneIds: [99]
         );
 
         $this->assertSame('a.com', $service->findConflictingZone('b.a.com', self::USER_ID));
     }
 
+    public function testOwnedClosestParentStopsTheAncestorWalk(): void
+    {
+        // Owning the closest parent is legitimate sub-delegation even when a
+        // farther ancestor belongs to someone else.
+        $service = $this->makeService(
+            ancestorRows: ['com' => 99, 'a.com' => 14],
+            ownedZoneIds: [14]
+        );
+
+        $this->assertNull($service->findConflictingZone('b.a.com', self::USER_ID));
+    }
+
     public function testAncestorMatchIsCaseInsensitive(): void
     {
         // A case-insensitive collation can return a mixed-case row for the
         // lowercased lookup; it must still be detected.
-        $service = $this->makeService(ancestorRows: [['id' => 14, 'name' => 'A.CoM']]);
+        $service = $this->makeService(ancestorRows: ['A.CoM' => 14]);
 
         $this->assertSame('a.com', $service->findConflictingZone('b.a.com', self::USER_ID));
     }
@@ -162,41 +175,43 @@ class ZoneOverlapServiceTest extends PermissionServiceTestCase
         $this->assertNull($service->findConflictingZone('a.com', self::USER_ID));
     }
 
+    public function testFirstForeignDescendantInRepositoryOrderIsReported(): void
+    {
+        $service = $this->makeService(
+            descendantRows: [['id' => 15, 'name' => 'b.a.com'], ['id' => 16, 'name' => 'c.a.com']],
+            ownedZoneIds: [15]
+        );
+
+        $this->assertSame('c.a.com', $service->findConflictingZone('a.com', self::USER_ID));
+    }
+
     public function testCoversReverseZones(): void
     {
         // A /24 nested under a /16 owned by another user is blocked too.
-        $service = $this->makeService(ancestorRows: [['id' => 20, 'name' => '10.in-addr.arpa']]);
+        $service = $this->makeService(ancestorRows: ['10.in-addr.arpa' => 20]);
 
         $this->assertSame('10.in-addr.arpa', $service->findConflictingZone('1.10.in-addr.arpa', self::USER_ID));
-    }
-
-    public function testApiBackendMatchesAgainstZonesTable(): void
-    {
-        $service = $this->makeService(ancestorRows: [['id' => 14, 'name' => 'a.com']], backend: 'api');
-
-        $this->assertSame('a.com', $service->findConflictingZone('b.a.com', self::USER_ID));
-        // The lookup must read the API-mode source (zones.zone_name), not domains.
-        $this->assertNotEmpty(array_filter($this->preparedSql, fn(string $s): bool => str_contains($s, 'zone_name')));
-        $this->assertEmpty(array_filter($this->preparedSql, fn(string $s): bool => str_contains($s, ' domains ')));
     }
 
     public function testUeberuserBypassesCheck(): void
     {
         $service = $this->makeService(
-            ancestorRows: [['id' => 14, 'name' => 'a.com']],
+            ancestorRows: ['a.com' => 14],
             isAdmin: true
         );
 
         $this->assertNull($service->findConflictingZone('b.a.com', self::USER_ID));
+        $this->assertSame([], $this->ancestorLookups);
     }
 
     public function testDisabledCheckAllowsEverything(): void
     {
         $service = $this->makeService(
-            ancestorRows: [['id' => 14, 'name' => 'a.com']],
+            ancestorRows: ['a.com' => 14],
             checkEnabled: false
         );
 
         $this->assertNull($service->findConflictingZone('b.a.com', self::USER_ID));
+        $this->assertSame([], $this->ancestorLookups);
     }
 }

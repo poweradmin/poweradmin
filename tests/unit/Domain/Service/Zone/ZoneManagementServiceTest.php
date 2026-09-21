@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
 
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -36,7 +35,6 @@ use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 
 #[CoversClass(ZoneManagementService::class)]
 class ZoneManagementServiceTest extends TestCase
@@ -45,7 +43,6 @@ class ZoneManagementServiceTest extends TestCase
     private ZoneRepositoryInterface&MockObject $zoneRepository;
     private DomainRepositoryInterface&MockObject $domainRepository;
     private ConfigurationManager&MockObject $config;
-    private PDO&MockObject $db;
     private string $originalErrorLog;
 
     protected function setUp(): void
@@ -59,12 +56,10 @@ class ZoneManagementServiceTest extends TestCase
         $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
         $this->domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $this->config = $this->createMock(ConfigurationManager::class);
-        $this->db = $this->createMock(PDO::class);
 
         $this->service = new ZoneManagementService(
             $this->zoneRepository,
             $this->config,
-            $this->db,
             $this->createMock(RepositoryFactoryInterface::class),
             $this->createMock(PermissionService::class),
             $this->createMock(RecordChangeWriterInterface::class),
@@ -78,14 +73,6 @@ class ZoneManagementServiceTest extends TestCase
     {
         ini_set('error_log', $this->originalErrorLog);
         parent::tearDown();
-    }
-
-    private function setupDbPrepareForDelete(): void
-    {
-        // Mock db->prepare for ZoneTemplateSyncService cleanup
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $this->db->method('prepare')->willReturn($stmt);
     }
 
     // ========== createZone validation tests ==========
@@ -116,13 +103,6 @@ class ZoneManagementServiceTest extends TestCase
     #[Test]
     public function testCreateZoneRejectsCatalogZoneKinds(): void
     {
-        // Reach the type check: report the zone as absent and free of records.
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn(false);
-        $stmt->method('fetchColumn')->willReturn(0);
-        $this->db->method('prepare')->willReturn($stmt);
-
         foreach (['CONSUMER', 'PRODUCER'] as $type) {
             $result = $this->service->createZone(
                 'catalog.example.com',
@@ -229,8 +209,6 @@ class ZoneManagementServiceTest extends TestCase
     #[Test]
     public function testDeleteZoneReturnsErrorWhenDeleteFails(): void
     {
-        $this->setupDbPrepareForDelete();
-
         $this->domainRepository->method('zoneIdExists')
             ->with(1)
             ->willReturn(true);
@@ -249,8 +227,6 @@ class ZoneManagementServiceTest extends TestCase
     #[Test]
     public function testDeleteZoneReturnsSuccessWhenDeleteSucceeds(): void
     {
-        $this->setupDbPrepareForDelete();
-
         $this->domainRepository->method('zoneIdExists')
             ->with(1)
             ->willReturn(true);
@@ -269,25 +245,13 @@ class ZoneManagementServiceTest extends TestCase
     public function testDeleteZoneLeavesSyncRecordsToTheForeignKeyCascade(): void
     {
         // zone_template_sync.zone_id cascades from zones.id. Resolving that id here from a
-        // domains.id used to clear an unrelated zone's sync state, so nothing is issued now.
-        $preparedSql = [];
-
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $this->db->method('prepare')->willReturnCallback(
-            function (string $sql) use (&$preparedSql, $stmt): PDOStatement {
-                $preparedSql[] = $sql;
-                return $stmt;
-            }
-        );
-
+        // domains.id used to clear an unrelated zone's sync state, so only the repository
+        // delete is issued; the service holds no connection of its own any more.
         $this->domainRepository->method('zoneIdExists')->with(7)->willReturn(true);
-        $this->zoneRepository->method('deleteZone')->with(7)->willReturn(true);
+        $this->zoneRepository->expects($this->once())->method('deleteZone')->with(7)->willReturn(true);
 
         $result = $this->service->deleteZone(7);
 
         $this->assertTrue($result['success']);
-        $this->assertStringNotContainsString('zone_template_sync', implode("\n", $preparedSql));
-        $this->assertStringNotContainsString('FROM zones WHERE domain_id', implode("\n", $preparedSql));
     }
 }

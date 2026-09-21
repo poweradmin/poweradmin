@@ -145,4 +145,20 @@ interface DomainRepositoryInterface
      * @return int Zone ID
      */
     public function getBestMatchingZoneIdFromName(string $domain): int;
+
+    /**
+     * Zone ids for the given lowercased names, matched case-insensitively.
+     *
+     * @param list<string> $names Lowercased zone names
+     * @return array<string,int> Stored zone name => zone id, for the names that exist
+     */
+    public function findZoneIdsByNames(array $names): array;
+
+    /**
+     * Zones whose name ends in ".$suffix", matched case-insensitively and ordered by name.
+     *
+     * @param string $suffix Lowercased zone name without a trailing dot
+     * @return list<array{id:int,name:string}>
+     */
+    public function findZonesUnder(string $suffix): array;
 }

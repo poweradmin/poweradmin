@@ -30,7 +30,6 @@ interface DomainManagerInterface
     /**
      * Add a domain to the database
      *
-     * @param object $db Database connection
      * @param string $domain A domain name
      * @param int|null $owner Owner ID for domain (null if only groups are assigned)
      * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
@@ -39,7 +38,7 @@ interface DomainManagerInterface
      * @param int[] $groupIds Group IDs for group ownership (assigned atomically within the same transaction)
      * @param string|null $soaEditApi SOA-EDIT-API policy for the new zone; 'OFF' disables, null uses the dns.soa_edit_api config default
      */
-    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): ZoneWriteResult;
+    public function addDomain(string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): ZoneWriteResult;
 
     /**
      * Change Zone Type

@@ -177,7 +177,6 @@ class DomainManager implements DomainManagerInterface
     /**
      * Add a domain to the database
      *
-     * @param object $db Database connection
      * @param string $domain A domain name
      * @param int|null $owner Owner ID for domain (null if only groups are assigned)
      * @param string $type Type of domain ['NATIVE','MASTER','SLAVE','PRODUCER','CONSUMER']
@@ -186,7 +185,7 @@ class DomainManager implements DomainManagerInterface
      * @param array $groupIds Group IDs to assign as zone owners
      * @param string|null $soaEditApi SOA-EDIT-API policy for the new zone; 'OFF' disables, null uses the dns.soa_edit_api config default
      */
-    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): ZoneWriteResult
+    public function addDomain(string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): ZoneWriteResult
     {
         // Last-resort guard: not every caller whitelists the kind, and an unknown
         // string would otherwise be written straight into the zone type.
@@ -231,19 +230,19 @@ class DomainManager implements DomainManagerInterface
             $this->applySerialPolicy($domain_id, $domain, $soaEditApi);
         }
 
-        $db->beginTransaction();
+        $this->db->beginTransaction();
         try {
-            $zone_id = $this->createZoneShell($db, $domain_id, $owner, $zone_template);
-            $this->assignInitialOwnership($db, $domain_id, $zone_id, $owner, $zone_template, $groupIds);
+            $zone_id = $this->createZoneShell($this->db, $domain_id, $owner, $zone_template);
+            $this->assignInitialOwnership($this->db, $domain_id, $zone_id, $owner, $zone_template, $groupIds);
 
             $zoneLog = ['id' => $domain_id, 'name' => $domain, 'type' => $type];
             if ($replicates) {
                 // Records arrive by transfer, so skip the apex SOA and any template
                 // records. Master IP is already set by backendProvider->createZone().
-                $db->commit();
+                $this->db->commit();
                 $zoneLog['master'] = $slave_master;
             } else {
-                $zoneLog += $this->seedZoneRecords($db, $domain_id, $domain, $zone_template);
+                $zoneLog += $this->seedZoneRecords($this->db, $domain_id, $domain, $zone_template);
             }
             $zoneLog['owner'] = $owner;
 
@@ -252,11 +251,11 @@ class DomainManager implements DomainManagerInterface
             });
             return ZoneWriteResult::ok((int)$domain_id);
         } catch (ZoneCreationFailedException $e) {
-            $this->cleanupFailedCreation($db, $domain_id, $domain);
+            $this->cleanupFailedCreation($this->db, $domain_id, $domain);
             return ZoneWriteResult::backendFailure($e->getMessage());
         } catch (\Exception $e) {
             $this->logger->error('Zone creation for {domain} failed: {error}', ['domain' => $domain, 'error' => $e->getMessage()]);
-            $this->cleanupFailedCreation($db, $domain_id, $domain);
+            $this->cleanupFailedCreation($this->db, $domain_id, $domain);
             return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
         }
     }

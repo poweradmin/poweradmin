@@ -180,7 +180,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertFalse(
-            $domainManager->addDomain($this->db, 'new.example.com', null, 'MASTER', '', 'none')->success
+            $domainManager->addDomain('new.example.com', null, 'MASTER', '', 'none')->success
         );
     }
 

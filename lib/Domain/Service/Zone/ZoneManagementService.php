@@ -40,7 +40,6 @@ use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use PDO;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -70,7 +69,6 @@ class ZoneManagementService
 
     private ZoneRepositoryInterface $zoneRepository;
     private ConfigurationInterface $config;
-    private PDO $db;
     private LoggerInterface $logger;
     private RecordChangeWriterInterface $changeLogger;
     /** @var PdnsCapabilities|Closure|null Resolved on first use so a lookup only happens for a catalog kind */
@@ -99,7 +97,6 @@ class ZoneManagementService
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
         ConfigurationInterface $config,
-        object $db,
         RepositoryFactoryInterface $repositoryFactory,
         PermissionService $permissions,
         RecordChangeWriterInterface $changeLogger,
@@ -116,7 +113,6 @@ class ZoneManagementService
         $this->domainRepository = $domainRepository;
         $this->permissions = $permissions;
         $this->config = $config;
-        $this->db = $db;
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger;
         $this->domainManager = $domainManager;
@@ -236,7 +232,7 @@ class ZoneManagementService
 
         // Block a zone that would overlap an existing zone owned by another user.
         if ($actingUserId !== null) {
-            $this->overlapService ??= new ZoneOverlapService($this->db, $this->config, $this->permissions);
+            $this->overlapService ??= new ZoneOverlapService($domainRepository, $this->config, $this->permissions);
             if ($this->overlapService->findConflictingZone($domain, $actingUserId) !== null) {
                 return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409, 'code' => self::ERR_OVERLAP];
             }
@@ -294,7 +290,7 @@ class ZoneManagementService
             ['domain' => $domain, 'type' => $type, 'owner' => $owner ?? 'none', 'groups' => implode(',', $groupIds) ?: 'none']
         );
 
-        $created = $this->domainManager()->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
+        $created = $this->domainManager()->addDomain($domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
         if (!$created->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             return [

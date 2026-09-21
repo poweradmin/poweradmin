@@ -88,16 +88,6 @@ interface RecordManagerInterface
     public function deleteRecord(int|string $rid, bool $finalizeZone = true): RecordWriteResult;
 
     /**
-     * Get Zone comment
-     *
-     * @param \PDO $db Database connection
-     * @param int $zone_id Zone ID
-     *
-     * @return string Zone Comment
-     */
-    public static function getZoneComment($db, int $zone_id): string;
-
-    /**
      * Edit the zone comment
      *
      * @param int $zone_id Zone ID

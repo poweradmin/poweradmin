@@ -87,7 +87,6 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         return new ZoneManagementService(
             $this->createMock(ZoneRepositoryInterface::class),
             $config,
-            $this->db,
             new RepositoryFactory($this->db, $config, $backend),
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
@@ -166,7 +165,6 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         $service = new ZoneManagementService(
             $this->createMock(ZoneRepositoryInterface::class),
             $config,
-            $this->db,
             new RepositoryFactory($this->db, $config, $backend),
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),

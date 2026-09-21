@@ -122,7 +122,6 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
         return new ZoneManagementService(
             $this->createMock(ZoneRepositoryInterface::class),
             $config,
-            $this->db,
             new RepositoryFactory($this->db, $config, $backend),
             new PermissionService(new DbUserRepository($this->db, $config)),
             new RecordChangeLogger($this->db, $config),

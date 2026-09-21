@@ -73,7 +73,7 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
             return 500 + count($written);
         });
 
-        $result = $this->makeDomainManager($backend)->addDomain($this->db, 'new.example', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID);
+        $result = $this->makeDomainManager($backend)->addDomain('new.example', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame(self::NEW_DOMAIN_ID, $result->zoneId);
@@ -100,7 +100,7 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
         $backend->method('createZone')->willReturn(self::NEW_DOMAIN_ID);
         $backend->method('addRecordGetId')->willReturnOnConsecutiveCalls(501, 502);
 
-        $result = $this->makeDomainManager($backend)->addDomain($this->db, 'new.example', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
+        $result = $this->makeDomainManager($backend)->addDomain('new.example', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
 
         $this->assertTrue($result->success);
         $this->assertSame(
@@ -142,7 +142,7 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
             return 600 + count($types);
         });
 
-        $result = $this->makeDomainManager($backend)->addDomain($this->db, '2.0.192.in-addr.arpa', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID);
+        $result = $this->makeDomainManager($backend)->addDomain('2.0.192.in-addr.arpa', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame(['NS'], $types);
@@ -162,7 +162,7 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
         $backend->method('addRecordGetId')->willReturnOnConsecutiveCalls(501, null);
         $backend->expects($this->once())->method('deleteZone')->with(self::NEW_DOMAIN_ID, 'new.example')->willReturn(true);
 
-        $result = $this->makeDomainManager($backend)->addDomain($this->db, 'new.example', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
+        $result = $this->makeDomainManager($backend)->addDomain('new.example', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
 
         $this->assertFalse($result->success);
         $this->assertSame('Failed to create A record for zone.', $result->message);
@@ -186,7 +186,7 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
         });
         $backend->method('addRecordGetId')->willReturn('new.example./NS/new.example.');
 
-        $result = $this->makeDomainManager($backend)->addDomain($this->db, 'new.example', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID);
+        $result = $this->makeDomainManager($backend)->addDomain('new.example', self::ADMIN_USER_ID, 'MASTER', '', self::TEMPLATE_ID);
 
         $this->assertTrue($result->success);
         $this->assertSame(
