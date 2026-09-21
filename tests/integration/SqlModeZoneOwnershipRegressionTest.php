@@ -79,7 +79,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
         $config = new FakeConfiguration();
         $this->userRepository = new DbUserRepository($this->db, $config);
         $this->permissions = new PermissionService($this->userRepository);
-        $this->apiPermissions = new ApiPermissionService($this->db, $this->permissions, $config);
+        $this->apiPermissions = new ApiPermissionService($this->userRepository, $this->permissions, $config);
     }
 
     /**

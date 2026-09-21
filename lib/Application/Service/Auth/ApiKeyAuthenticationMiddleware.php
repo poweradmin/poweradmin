@@ -51,8 +51,8 @@ class ApiKeyAuthenticationMiddleware
     {
         $this->config = $config;
         $apiKeyRepository = new DbApiKeyRepository($db, $config);
-        $permissions = new PermissionService(new DbUserRepository($db, $config));
-        $this->apiKeyService = new ApiKeyService($apiKeyRepository, $db, $config, $permissions);
+        $users = new DbUserRepository($db, $config);
+        $this->apiKeyService = new ApiKeyService($apiKeyRepository, $users, $config, new PermissionService($users));
     }
 
     /**

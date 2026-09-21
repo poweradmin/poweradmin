@@ -24,11 +24,11 @@ namespace Poweradmin\Domain\Service\Auth;
 
 use DateTime;
 use Exception;
-use PDO;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -39,40 +39,30 @@ use Psr\Log\NullLogger;
 class ApiKeyService
 {
     private ApiKeyRepositoryInterface $apiKeyRepository;
-    private PDO $db;
+    private UserLookupInterface $users;
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
 
     /**
-     * Get the database connection for debugging
-     *
-     * @return PDO
-     */
-    public function getDb(): PDO
-    {
-        return $this->db;
-    }
-
-    /**
      * ApiKeyService constructor
      *
      * @param ApiKeyRepositoryInterface $apiKeyRepository The API key repository
-     * @param PDO $db The database connection
+     * @param UserLookupInterface $users Resolves key creators and owners
      * @param ConfigurationInterface $config The configuration manager
      * @param PermissionService $permissionService Decides who may see and manage other users' keys
      */
     public function __construct(
         ApiKeyRepositoryInterface $apiKeyRepository,
-        PDO $db,
+        UserLookupInterface $users,
         ConfigurationInterface $config,
         PermissionService $permissionService,
         ?LoggerInterface $logger = null,
         ?UserContextService $userContextService = null
     ) {
         $this->apiKeyRepository = $apiKeyRepository;
-        $this->db = $db;
+        $this->users = $users;
         $this->config = $config;
         $this->permissionService = $permissionService;
         $this->logger = $logger ?? new NullLogger();
@@ -107,25 +97,8 @@ class ApiKeyService
             $apiKeys = $this->apiKeyRepository->getAll($userId);
         }
 
-        // Add creator username and fullname for each API key
         foreach ($apiKeys as $key) {
-            if ($key->getCreatedBy() !== null) {
-                // Get creator username and fullname from database
-                $stmt = $this->db->prepare("SELECT username, fullname FROM users WHERE id = :user_id");
-                $stmt->execute(['user_id' => $key->getCreatedBy()]);
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($user) {
-                    $key->setCreatorUsername($user['username'] ?: '');
-                    $key->setCreatorFullname($user['fullname'] ?: '');
-                } else {
-                    $key->setCreatorUsername('');
-                    $key->setCreatorFullname('');
-                }
-            } else {
-                $key->setCreatorUsername('');
-                $key->setCreatorFullname('');
-            }
+            $this->attachCreator($key);
         }
 
         return $apiKeys;
@@ -148,24 +121,7 @@ class ApiKeyService
         // Check if the current user has access to this API key
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
         if ($this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER) || $apiKey->getCreatedBy() === $userId) {
-            // Add creator username and fullname
-            if ($apiKey->getCreatedBy() !== null) {
-                $stmt = $this->db->prepare("SELECT username, fullname FROM users WHERE id = :user_id");
-                $stmt->execute(['user_id' => $apiKey->getCreatedBy()]);
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($user) {
-                    $apiKey->setCreatorUsername($user['username'] ?: '');
-                    $apiKey->setCreatorFullname($user['fullname'] ?: '');
-                } else {
-                    $apiKey->setCreatorUsername('');
-                    $apiKey->setCreatorFullname('');
-                }
-            } else {
-                $apiKey->setCreatorUsername('');
-                $apiKey->setCreatorFullname('');
-            }
-
+            $this->attachCreator($apiKey);
             $apiKey->setZoneIds($this->apiKeyRepository->getZoneIds($apiKey->getId()));
 
             return $apiKey;
@@ -470,16 +426,24 @@ class ApiKeyService
         // Fail closed on a lookup error: authenticate() has no try block of its
         // own, so a throw here would surface as a 500 instead of an auth failure.
         try {
-            $stmt = $this->db->prepare("SELECT active FROM users WHERE id = :user_id");
-            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $this->users->getUserById($userId);
         } catch (Exception $e) {
             $this->logger->error('Failed to verify API key owner: {error}', ['error' => $e->getMessage()]);
             return false;
         }
 
         return is_array($row) && (int)($row['active'] ?? 0) === 1;
+    }
+
+    /**
+     * Creator username and fullname, empty when the key has no creator or the account is gone.
+     */
+    private function attachCreator(ApiKey $key): void
+    {
+        $user = $key->getCreatedBy() === null ? null : $this->users->getUserById($key->getCreatedBy());
+
+        $key->setCreatorUsername($user ? ($user['username'] ?: '') : '');
+        $key->setCreatorFullname($user ? ($user['fullname'] ?: '') : '');
     }
 
     /**

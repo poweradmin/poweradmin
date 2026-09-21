@@ -58,7 +58,7 @@ class ApiKeysController extends BaseController
 
         $this->routeName = (string)($request['page'] ?? '');
         $this->apiKeyRepository = $this->services()->apiKeyRepository();
-        $this->apiKeyService = new ApiKeyService($this->apiKeyRepository, $this->db, $this->config, $this->services()->permissionService());
+        $this->apiKeyService = new ApiKeyService($this->apiKeyRepository, $this->services()->userRepository(), $this->config, $this->services()->permissionService());
         $this->zoneRepository = $this->services()->zoneRepository();
     }
 

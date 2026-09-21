@@ -22,13 +22,11 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
-use PDO;
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\FakeConfiguration;
@@ -54,12 +52,7 @@ class ApiPermissionServiceChangeApprovalTest extends PermissionServiceTestCase
 
     private function service(bool $enabled, bool $requireReviewForAll = false): ApiPermissionService
     {
-        $db = $this->createMock(PDO::class);
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('fetchAll')->willReturn([self::OWNED_ZONE]);
-        $db->method('prepare')->willReturn($stmt);
-
-        $permissions = $this->buildPermissionService(
+        $repository = $this->scriptedUserRepository(
             permissionsByUser: [
                 self::EDITOR => [Permission::PERM_ZONE_CONTENT_EDIT_OWN],
                 self::REQUESTER => [Permission::PERM_ZONE_CHANGE_REQUEST_OWN],
@@ -77,7 +70,7 @@ class ApiPermissionServiceChangeApprovalTest extends PermissionServiceTestCase
             ]
         );
 
-        return new ApiPermissionService($db, $permissions, new FakeConfiguration([
+        return new ApiPermissionService($repository, new PermissionService($repository), new FakeConfiguration([
             'approval' => ['enabled' => $enabled, 'require_review_for_all' => $requireReviewForAll],
         ]));
     }

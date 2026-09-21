@@ -39,20 +39,23 @@ abstract class PermissionServiceTestCase extends TestCase
      * @param array<int, int[]> $ownedZonesByUser user id => zone ids owned directly or via a group
      * @param array<int, int> $templateByUser user id => perm_templ id
      * @param int[] $superuserTemplateIds templates that grant user_is_ueberuser
+     * @param array<int, int[]> $groupIdsByUser user id => ids of the groups the user belongs to
      */
     protected function buildPermissionService(
         array $permissionsByUser = [],
         array $adminUserIds = [],
         array $ownedZonesByUser = [],
         array $templateByUser = [],
-        array $superuserTemplateIds = []
+        array $superuserTemplateIds = [],
+        array $groupIdsByUser = []
     ): PermissionService {
         return new PermissionService($this->scriptedUserRepository(
             $permissionsByUser,
             $adminUserIds,
             $ownedZonesByUser,
             $templateByUser,
-            $superuserTemplateIds
+            $superuserTemplateIds,
+            $groupIdsByUser
         ));
     }
 
@@ -62,13 +65,15 @@ abstract class PermissionServiceTestCase extends TestCase
      * @param array<int, int[]> $ownedZonesByUser
      * @param array<int, int> $templateByUser
      * @param int[] $superuserTemplateIds
+     * @param array<int, int[]> $groupIdsByUser
      */
     protected function scriptedUserRepository(
         array $permissionsByUser = [],
         array $adminUserIds = [],
         array $ownedZonesByUser = [],
         array $templateByUser = [],
-        array $superuserTemplateIds = []
+        array $superuserTemplateIds = [],
+        array $groupIdsByUser = []
     ): UserRepositoryInterface&MockObject {
         $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('getUserPermissions')
@@ -77,6 +82,10 @@ abstract class PermissionServiceTestCase extends TestCase
             ->willReturnCallback(fn(int $userId): bool => in_array($userId, $adminUserIds, true));
         $repository->method('userOwnsZone')
             ->willReturnCallback(fn(int $userId, int $zoneId): bool => in_array($zoneId, $ownedZonesByUser[$userId] ?? [], true));
+        $repository->method('getUserOwnedZoneIds')
+            ->willReturnCallback(fn(int $userId): array => $ownedZonesByUser[$userId] ?? []);
+        $repository->method('getUserGroupIds')
+            ->willReturnCallback(fn(int $userId): array => $groupIdsByUser[$userId] ?? []);
         $repository->method('getUserById')
             ->willReturnCallback(fn(int $userId): ?array => isset($templateByUser[$userId])
                 ? ['id' => $userId, 'perm_templ' => $templateByUser[$userId]]

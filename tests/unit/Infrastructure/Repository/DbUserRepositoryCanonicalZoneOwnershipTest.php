@@ -131,4 +131,29 @@ class DbUserRepositoryCanonicalZoneOwnershipTest extends TestCase
             );
         }
     }
+
+    public function testOwnedZoneIdsUnionDirectAndGroupOwnershipAsCanonicalIntegers(): void
+    {
+        $this->seedZone(55, 0, 1);
+        $this->seedZone(56, null, 1);
+        $this->seedZone(7, 201, 1);
+        $this->seedZone(60, 60, 99);
+        $this->seedZone(61, 61, 99);
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (60, 5), (61, 6)");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (1, 5)");
+
+        $ids = $this->repository->getUserOwnedZoneIds(1);
+        sort($ids);
+
+        $this->assertSame([55, 56, 60, 201], $ids);
+        $this->assertSame([], $this->repository->getUserOwnedZoneIds(2));
+    }
+
+    public function testGroupIdsListEveryMembershipAsIntegers(): void
+    {
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (1, 5), (1, 3), (2, 8)");
+
+        $this->assertSame([5, 3], $this->repository->getUserGroupIds(1));
+        $this->assertSame([], $this->repository->getUserGroupIds(9));
+    }
 }

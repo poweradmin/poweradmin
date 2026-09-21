@@ -22,13 +22,13 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\ApiKeyWriteResult;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -40,7 +40,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
 {
     private ApiKeyService $service;
     private ApiKeyRepositoryInterface&MockObject $apiKeyRepository;
-    private PDO&MockObject $db;
+    private UserLookupInterface&MockObject $users;
     private ConfigurationManager&MockObject $config;
 
     protected function setUp(): void
@@ -48,12 +48,12 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
         parent::setUp();
 
         $this->apiKeyRepository = $this->createMock(ApiKeyRepositoryInterface::class);
-        $this->db = $this->createMock(PDO::class);
+        $this->users = $this->createMock(UserLookupInterface::class);
         $this->config = $this->createMock(ConfigurationManager::class);
 
         $this->service = new ApiKeyService(
             $this->apiKeyRepository,
-            $this->db,
+            $this->users,
             $this->config,
             $this->createMock(PermissionService::class)
         );
@@ -68,13 +68,6 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     {
         $_SESSION = [];
         parent::tearDown();
-    }
-
-    #[Test]
-    public function testGetDbReturnsDbConnection(): void
-    {
-        $result = $this->service->getDb();
-        $this->assertSame($this->db, $result);
     }
 
     #[Test]
@@ -307,17 +300,12 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     }
 
     /**
-     * Answer the owner-active lookup that every key resolution now performs.
+     * Answer the owner lookup that every key resolution performs.
      * Pass false to model a created_by pointing at a row that no longer exists.
      */
     private function mockOwnerRow(array|false $row): void
     {
-        $this->db->method('prepare')->willReturnCallback(function () use ($row) {
-            $stmt = $this->createMock(\PDOStatement::class);
-            $stmt->method('execute')->willReturn(true);
-            $stmt->method('fetch')->willReturn($row);
-            return $stmt;
-        });
+        $this->users->method('getUserById')->with(42)->willReturn($row === false ? null : $row);
     }
 
     private function validKeyOwnedBy(?int $ownerId): ApiKey&MockObject
@@ -395,25 +383,19 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
 
     /**
      * Rebuild the service so user 7 holds exactly the given permissions; the
-     * creator-lookup query (username/fullname) answers with $creatorRow.
+     * creator lookup (username/fullname) answers with $creatorRow.
      *
      * @param string[] $permissions Permission names the logged-in user holds.
      * @param array|false $creatorRow Row returned for the creator lookup; false means user not found.
      */
     private function grantPermissions(array $permissions, array|false $creatorRow = false): void
     {
-        $this->db->method('prepare')->willReturnCallback(function () use ($creatorRow) {
-            $stmt = $this->createMock(\PDOStatement::class);
-            $stmt->method('execute')->willReturn(true);
-            $stmt->method('fetch')->willReturn($creatorRow);
-
-            return $stmt;
-        });
+        $this->users->method('getUserById')->willReturn($creatorRow === false ? null : $creatorRow);
 
         $isAdmin = in_array(Permission::PERM_USER_IS_UEBERUSER, $permissions, true);
         $this->service = new ApiKeyService(
             $this->apiKeyRepository,
-            $this->db,
+            $this->users,
             $this->config,
             $this->buildPermissionService(permissionsByUser: [7 => $permissions], adminUserIds: $isAdmin ? [7] : [])
         );
@@ -455,6 +437,36 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
         $this->apiKeyRepository->method('getZoneIds')->with(5)->willReturn([]);
 
         $this->assertSame($apiKey, $this->service->getApiKey(5));
+    }
+
+    #[Test]
+    public function testGetAllApiKeysAttachesCreatorsAndLeavesOrphansEmpty(): void
+    {
+        $this->grantPermissions([Permission::PERM_USER_IS_UEBERUSER], ['username' => 'alice', 'fullname' => 'Alice Admin']);
+
+        $owned = $this->createMock(ApiKey::class);
+        $owned->method('getCreatedBy')->willReturn(7);
+        $owned->expects($this->once())->method('setCreatorUsername')->with('alice');
+        $owned->expects($this->once())->method('setCreatorFullname')->with('Alice Admin');
+
+        $orphan = $this->createMock(ApiKey::class);
+        $orphan->method('getCreatedBy')->willReturn(null);
+        $orphan->expects($this->once())->method('setCreatorUsername')->with('');
+        $orphan->expects($this->once())->method('setCreatorFullname')->with('');
+
+        $this->apiKeyRepository->expects($this->once())->method('getAll')->with(null)->willReturn([$owned, $orphan]);
+
+        $this->assertSame([$owned, $orphan], $this->service->getAllApiKeys());
+    }
+
+    #[Test]
+    public function testAuthenticateFailsClosedWhenTheOwnerLookupThrows(): void
+    {
+        $this->validKeyOwnedBy(42);
+        $this->users->method('getUserById')->willThrowException(new \RuntimeException('db gone'));
+        $this->apiKeyRepository->expects($this->never())->method('updateLastUsed');
+
+        $this->assertFalse($this->service->authenticate('pwa_valid_key'));
     }
 
     #[Test]

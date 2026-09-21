@@ -22,16 +22,16 @@
 
 namespace Poweradmin\Domain\Service\Auth;
 
-use PDO;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Repository\UserLookupInterface;
+use Poweradmin\Domain\Repository\UserPermissionReadInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 
 /**
  * Permission gate for the public API. A facade over PermissionService so the API
- * and the web UI share one oracle; only the group and visible-zone lookups query here.
+ * and the web UI share one oracle; group and visible-zone lookups read the user repository.
  */
 class ApiPermissionService
 {
@@ -39,16 +39,19 @@ class ApiPermissionService
     public const TEMPLATE_SELF_ASSIGN_DENIED = PermissionService::TEMPLATE_SELF_ASSIGN_DENIED;
     public const TEMPLATE_SUPERUSER_DENIED = PermissionService::TEMPLATE_SUPERUSER_DENIED;
 
-    private PDO $db;
+    private UserLookupInterface&UserPermissionReadInterface $userRepository;
     private PermissionService $permissions;
     private ?ConfigurationInterface $config;
 
     /**
      * @param ConfigurationInterface|null $config Omitted, the change approval flags read as off
      */
-    public function __construct(PDO $db, PermissionService $permissions, ?ConfigurationInterface $config = null)
-    {
-        $this->db = $db;
+    public function __construct(
+        UserLookupInterface&UserPermissionReadInterface $userRepository,
+        PermissionService $permissions,
+        ?ConfigurationInterface $config = null
+    ) {
+        $this->userRepository = $userRepository;
         $this->permissions = $permissions;
         $this->config = $config;
     }
@@ -76,31 +79,7 @@ class ApiPermissionService
      */
     public function getUserGroupIds(int $userId): array
     {
-        $stmt = $this->db->prepare(
-            'SELECT group_id FROM user_group_members WHERE user_id = :user_id'
-        );
-        $stmt->execute([':user_id' => $userId]);
-
-        $rows = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        return array_map('intval', $rows ?: []);
-    }
-
-    /**
-     * Given a list of group IDs, return the subset that actually exists in user_groups.
-     *
-     * @param array<int> $groupIds
-     * @return array<int, int>
-     */
-    public function getExistingGroupIds(array $groupIds): array
-    {
-        if (empty($groupIds)) {
-            return [];
-        }
-        $placeholders = implode(',', array_fill(0, count($groupIds), '?'));
-        $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE id IN ($placeholders)");
-        $stmt->execute(array_values($groupIds));
-        $rows = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        return array_map('intval', $rows ?: []);
+        return $this->userRepository->getUserGroupIds($userId);
     }
 
     /**
@@ -246,13 +225,9 @@ class ApiPermissionService
      */
     public function getUserPermissionTemplateId(int $userId): ?int
     {
-        $stmt = $this->db->prepare("SELECT perm_templ FROM users WHERE id = :user_id");
-        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
+        $templateId = $this->userRepository->getUserById($userId)['perm_templ'] ?? null;
 
-        $templateId = $stmt->fetchColumn();
-
-        return $templateId === false || $templateId === null ? null : (int)$templateId;
+        return $templateId === null ? null : (int)$templateId;
     }
 
     public function templateGrantsSuperuser(int $permTemplId): bool
@@ -436,17 +411,7 @@ class ApiPermissionService
      */
     public function getUserOwnedZoneIds(int $userId): array
     {
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
-        $stmt = $this->db->prepare("
-            SELECT $canonicalId FROM zones WHERE owner = :user_id
-            UNION
-            SELECT zg.domain_id FROM zones_groups zg
-            INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-            WHERE ugm.user_id = :user_id2
-        ");
-        $stmt->execute([':user_id' => $userId, ':user_id2' => $userId]);
-
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        return $this->userRepository->getUserOwnedZoneIds($userId);
     }
 
     /**

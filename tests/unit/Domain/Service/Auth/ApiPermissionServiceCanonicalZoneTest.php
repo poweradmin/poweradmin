@@ -53,7 +53,8 @@ class ApiPermissionServiceCanonicalZoneTest extends TestCase
         $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT, perm_templ INTEGER)");
 
         $config = new FakeConfiguration();
-        $this->service = new ApiPermissionService($this->db, new PermissionService(new DbUserRepository($this->db, $config)), $config);
+        $users = new DbUserRepository($this->db, $config);
+        $this->service = new ApiPermissionService($users, new PermissionService($users), $config);
     }
 
     private function seedZone(int $id, ?int $domainId, int $owner): void

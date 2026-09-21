@@ -90,4 +90,18 @@ interface UserPermissionReadInterface
      * @return bool True if the user owns the zone
      */
     public function userOwnsZone(int $userId, int $domainId): bool;
+
+    /**
+     * Ids of the groups the user is a member of
+     *
+     * @return array<int, int>
+     */
+    public function getUserGroupIds(int $userId): array;
+
+    /**
+     * Canonical ids of the zones the user owns directly or through any group
+     *
+     * @return array<int, int>
+     */
+    public function getUserOwnedZoneIds(int $userId): array;
 }

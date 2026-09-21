@@ -147,6 +147,38 @@ class DbUserRepository implements UserRepositoryInterface
     }
 
     /**
+     * @return array<int, int>
+     */
+    public function getUserGroupIds(int $userId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT group_id FROM user_group_members WHERE user_id = :user_id'
+        );
+        $stmt->execute([':user_id' => $userId]);
+
+        $rows = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return array_map('intval', $rows ?: []);
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    public function getUserOwnedZoneIds(int $userId): array
+    {
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
+        $stmt = $this->db->prepare("
+            SELECT $canonicalId FROM zones WHERE owner = :user_id
+            UNION
+            SELECT zg.domain_id FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+            WHERE ugm.user_id = :user_id2
+        ");
+        $stmt->execute([':user_id' => $userId, ':user_id2' => $userId]);
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /**
      * Get all permissions for a specific user
      *
      * @param int $userId User ID to get permissions for

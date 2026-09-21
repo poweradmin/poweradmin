@@ -22,15 +22,12 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
-use PDO;
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use TestHelpers\PermissionServiceTestCase;
 
 /**
@@ -51,15 +48,7 @@ class ApiPermissionServiceTest extends PermissionServiceTestCase
     private const OWNED_ZONE = 100;
     private const OTHER_ZONE = 200;
 
-    private PDO&MockObject $db;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->db = $this->createMock(PDO::class);
-    }
-
-    private function service(array $extraGrants = [], array $superuserTemplates = [], array $templateByUser = []): ApiPermissionService
+    private function service(array $extraGrants = [], array $superuserTemplates = [], array $templateByUser = [], array $groupIdsByUser = []): ApiPermissionService
     {
         $grants = [
             self::OTHERS => [
@@ -81,7 +70,7 @@ class ApiPermissionServiceTest extends PermissionServiceTestCase
             $grants[$userId] = array_merge($grants[$userId] ?? [], $names);
         }
 
-        return new ApiPermissionService($this->db, $this->buildPermissionService(
+        $repository = $this->scriptedUserRepository(
             permissionsByUser: $grants,
             adminUserIds: [self::ADMIN],
             ownedZonesByUser: [
@@ -90,8 +79,11 @@ class ApiPermissionServiceTest extends PermissionServiceTestCase
                 self::SUBZONE => [self::OWNED_ZONE],
             ],
             templateByUser: $templateByUser,
-            superuserTemplateIds: $superuserTemplates
-        ));
+            superuserTemplateIds: $superuserTemplates,
+            groupIdsByUser: $groupIdsByUser
+        );
+
+        return new ApiPermissionService($repository, new PermissionService($repository));
     }
 
     #[Test]
@@ -286,11 +278,7 @@ class ApiPermissionServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testCanManageDnssecForNewZone(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn(['3', '5']);
-        $this->db->method('prepare')->willReturn($stmt);
-        $service = $this->service();
+        $service = $this->service(groupIdsByUser: [self::OWN => [3, 5]]);
 
         $this->assertTrue($service->canManageDnssecForNewZone(self::ADMIN, null));
         $this->assertFalse($service->canManageDnssecForNewZone(self::NOBODY, self::NOBODY));
@@ -302,42 +290,34 @@ class ApiPermissionServiceTest extends PermissionServiceTestCase
     }
 
     #[Test]
-    public function testGetUserGroupIdsReturnsIntegerList(): void
+    public function testGroupAndOwnedZoneIdsComeFromTheRepository(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())->method('execute')->with([':user_id' => 7])->willReturn(true);
-        $stmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn(['3', '5', '7']);
-        $this->db->expects($this->once())->method('prepare')->with($this->stringContains('user_group_members'))->willReturn($stmt);
+        $service = $this->service(groupIdsByUser: [self::OWN => [3, 5, 7]]);
 
-        $this->assertSame([3, 5, 7], $this->service()->getUserGroupIds(7));
-    }
-
-    #[Test]
-    public function testGetExistingGroupIdsBindsOnePlaceholderPerIdAndShortCircuitsOnEmptyInput(): void
-    {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())->method('execute')->with([3, 5, 8])->willReturn(true);
-        $stmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn(['3', '8']);
-        $this->db->expects($this->once())->method('prepare')->with($this->matchesRegularExpression('/IN \(\?,\?,\?\)/'))->willReturn($stmt);
-        $service = $this->service();
-
-        $this->assertSame([], $service->getExistingGroupIds([]));
-        $this->assertSame([3, 8], $service->getExistingGroupIds([3, 5, 8]));
+        $this->assertSame([3, 5, 7], $service->getUserGroupIds(self::OWN));
+        $this->assertSame([], $service->getUserGroupIds(self::NOBODY));
+        $this->assertSame([self::OWNED_ZONE], $service->getUserOwnedZoneIds(self::OWN));
+        $this->assertSame([], $service->getUserOwnedZoneIds(self::NOBODY));
     }
 
     #[Test]
     public function testGetUserVisibleZoneIds(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn(['1', '2']);
-        $this->db->method('prepare')->willReturn($stmt);
         $service = $this->service();
 
         $this->assertNull($service->getUserVisibleZoneIds(self::ADMIN));
         $this->assertNull($service->getUserVisibleZoneIds(self::OTHERS));
-        $this->assertSame([1, 2], $service->getUserVisibleZoneIds(self::OWN));
+        $this->assertSame([self::OWNED_ZONE], $service->getUserVisibleZoneIds(self::OWN));
         $this->assertSame([], $service->getUserVisibleZoneIds(self::NOBODY));
+    }
+
+    #[Test]
+    public function testUserPermissionTemplateIdReadsTheStoredTemplate(): void
+    {
+        $service = $this->service(templateByUser: [self::OWN => 5]);
+
+        $this->assertSame(5, $service->getUserPermissionTemplateId(self::OWN));
+        $this->assertNull($service->getUserPermissionTemplateId(self::NOBODY));
     }
 
     #[Test]

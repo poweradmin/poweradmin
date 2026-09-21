@@ -208,7 +208,7 @@ abstract class PublicApiController extends AbstractApiController
 
         // Create API key service to validate the key against the database
         $config = $this->getConfig();
-        $apiKeyService = new ApiKeyService($this->services()->apiKeyRepository(), $this->db, $config, $this->services()->permissionService());
+        $apiKeyService = new ApiKeyService($this->services()->apiKeyRepository(), $this->services()->userRepository(), $config, $this->services()->permissionService());
 
         // Authenticate using the API key service
         return $apiKeyService->authenticate($apiKey);

@@ -93,7 +93,7 @@ class UserServices
      */
     public function apiPermissionService(): ApiPermissionService
     {
-        return $this->apiPermissionService ??= new ApiPermissionService($this->db, $this->permissionService(), $this->config);
+        return $this->apiPermissionService ??= new ApiPermissionService($this->userRepository(), $this->permissionService(), $this->config);
     }
 
     /**
