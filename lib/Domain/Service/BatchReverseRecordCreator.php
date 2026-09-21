@@ -497,10 +497,14 @@ class BatchReverseRecordCreator
         if ($tally['fail'] > 0) {
             $message .= " ({$tally['fail']} failed)";
         }
+        // Refused companion writes never count as failures, so name them here or they go unseen
+        if ($errors !== []) {
+            $message .= '. ' . implode(' ', array_slice($errors, 0, 3)) . (count($errors) > 3 ? '...' : '');
+        }
 
         return [
             'success' => true,
-            'type' => 'success',
+            'type' => $errors === [] ? 'success' : 'warning',
             'message' => $message,
             'errors' => $errors
         ];

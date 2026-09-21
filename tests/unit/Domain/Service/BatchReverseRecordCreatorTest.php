@@ -427,8 +427,8 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $this->assertSame([
             'success' => true,
-            'type' => 'success',
-            'message' => 'Created 2 IPv6 PTR records successfully (1 skipped - PTR record already exists for IP address) (1 failed)',
+            'type' => 'warning',
+            'message' => 'Created 2 IPv6 PTR records successfully (1 skipped - PTR record already exists for IP address) (1 failed). Failed to create PTR record for 2001:db8:1:1::2: refused',
             'errors' => ['Failed to create PTR record for 2001:db8:1:1::2: refused'],
         ], $result);
     }
@@ -660,8 +660,9 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $this->assertSame([
             'success' => true,
-            'type' => 'success',
-            'message' => 'Created 0 PTR records successfully (2 skipped - PTR record already exists for IP address) (6 failed)',
+            'type' => 'warning',
+            'message' => 'Created 0 PTR records successfully (2 skipped - PTR record already exists for IP address) (6 failed). '
+                . 'Failed to create PTR record for 192.168.1.1: refused Failed to create PTR record for 192.168.1.2: refused Failed to create PTR record for 192.168.1.3: refused...',
             'errors' => [
                 'Failed to create PTR record for 192.168.1.1: refused',
                 'Failed to create PTR record for 192.168.1.2: refused',
@@ -727,8 +728,8 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $this->assertSame([
             'success' => true,
-            'type' => 'success',
-            'message' => 'Created 2 PTR records successfully (2 skipped - PTR record already exists for IP address)',
+            'type' => 'warning',
+            'message' => 'Created 2 PTR records successfully (2 skipped - PTR record already exists for IP address). Failed to create forward A record for 192.168.1.6: forward boom',
             'errors' => ['Failed to create forward A record for 192.168.1.6: forward boom'],
         ], $result);
         $this->assertSame([
@@ -758,8 +759,8 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $this->assertSame([
             'success' => true,
-            'type' => 'success',
-            'message' => 'Created 2 PTR records successfully (2 skipped - PTR record already exists for IP address)',
+            'type' => 'warning',
+            'message' => 'Created 2 PTR records successfully (2 skipped - PTR record already exists for IP address). Failed to create forward A record for 192.168.1.6: no A for you',
             'errors' => ['Failed to create forward A record for 192.168.1.6: no A for you'],
         ], $result);
     }

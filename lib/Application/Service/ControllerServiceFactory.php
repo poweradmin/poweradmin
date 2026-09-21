@@ -558,7 +558,6 @@ class ControllerServiceFactory
     public function reverseRecordCreator(): ReverseRecordCreator
     {
         return new ReverseRecordCreator(
-            $this->db,
             $this->config,
             $this->auditService(),
             $this->domainRepository(),

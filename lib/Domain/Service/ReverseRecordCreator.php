@@ -26,53 +26,33 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 
 /**
  * Keeps PTR records in step with A/AAAA records: adds, updates and deletes the counterpart in the paired zone.
  */
 class ReverseRecordCreator
 {
-    private PDO $db;
     private ConfigurationInterface $config;
     private AuditLoggerInterface $audit;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
-    private ?DnsBackendProviderInterface $backendProvider;
+    private RecordReadBackendInterface $recordBackend;
 
     public function __construct(
-        PDO $db,
         ConfigurationInterface $config,
         AuditLoggerInterface $audit,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
-        ?DnsBackendProviderInterface $backendProvider = null
+        RecordReadBackendInterface $recordBackend
     ) {
-        $this->db = $db;
         $this->config = $config;
         $this->audit = $audit;
         $this->domainRepository = $domainRepository;
         $this->recordManager = $recordManager;
-        $this->backendProvider = $backendProvider;
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
-    }
-
-    private function createRecordRepository(): \Poweradmin\Domain\Repository\RecordRepositoryInterface
-    {
-        if ($this->backendProvider !== null) {
-            return (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-        }
-        return new \Poweradmin\Infrastructure\Repository\SqlRecordRepository($this->db, $this->config);
+        $this->recordBackend = $recordBackend;
     }
 
     public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
@@ -101,9 +81,9 @@ class ReverseRecordCreator
         $existingPtrRecords = $this->getExistingPtrRecords($zoneRevId, $contentRev);
         $hasExistingRecords = !empty($existingPtrRecords);
 
-        $isRecordAdded = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account);
+        $written = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account);
 
-        if ($isRecordAdded) {
+        if ($written->success) {
             if ($hasExistingRecords) {
                 // Return success with warning about existing PTR records
                 return $this->createWarningResponse(
@@ -117,7 +97,7 @@ class ReverseRecordCreator
             return $this->createSuccessResponse('Reverse record added');
         }
 
-        return $this->createErrorResponse('Failed to create a reverse record due to an unknown error.');
+        return $this->createErrorResponse($written->message !== '' ? $written->message : 'Failed to create a reverse record due to an unknown error.');
     }
 
     public function getContentRev($type, $content): ?string
@@ -150,41 +130,14 @@ class ReverseRecordCreator
             return false;
         }
 
-        if ($this->isApiBackend()) {
-            $zoneRevId = $this->domainRepository->getBestMatchingZoneIdFromName($contentRev);
-            if ($zoneRevId === -1) {
-                return false;
-            }
-            $records = $this->backendProvider->getRecordsByZoneId($zoneRevId, 'PTR');
-            foreach ($records as $r) {
-                if ($r['name'] === $contentRev && ($r['content'] === $name || str_starts_with($r['content'], "$name."))) {
-                    $recordId = $r['id'] ?? 0;
-                    // The manager takes the comment along and finalises the reverse zone
-                    if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
-                        return true;
-                    }
+        // PTR content may carry a trailing dot depending on the backend
+        $records = $this->recordBackend->findRecordsByName($contentRev, 'PTR');
+        foreach ($records as $r) {
+            if ($r['content'] === $name || str_starts_with($r['content'], "$name.")) {
+                $recordId = $r['id'] ?? 0;
+                if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
+                    return true;
                 }
-            }
-            return false;
-        }
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        // Look for a PTR record pointing to this name
-        $query = "SELECT id FROM $records_table
-                  WHERE type = 'PTR' AND name = ?
-                  AND (content = ? OR content LIKE ? ESCAPE '!')";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([$contentRev, $name, DbCompat::escapeLike($name) . '.%']);
-
-        $result = $stmt->fetch();
-        if ($result) {
-            $recordId = (int)$result['id'];
-
-            if ($this->recordManager->deleteRecord($recordId)->success) {
-                return true;
             }
         }
 
@@ -251,36 +204,13 @@ class ReverseRecordCreator
         // Remove trailing dot from PTR content if present
         $hostname = rtrim($ptrContent, '.');
 
-        if ($this->isApiBackend()) {
-            $result = $this->backendProvider->searchDnsData($hostname, 'record', 100);
-            foreach ($result['records'] as $r) {
-                if ($r['type'] === $recordType && $r['content'] === $ipAddress && ($r['name'] === $hostname || str_starts_with($r['name'], "$hostname."))) {
-                    $recordId = $r['id'] ?? 0;
-                    if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
-                        return true;
-                    }
+        $records = $this->recordBackend->findRecordsByContent($ipAddress, $recordType);
+        foreach ($records as $r) {
+            if ($r['name'] === $hostname || str_starts_with($r['name'], "$hostname.")) {
+                $recordId = $r['id'] ?? 0;
+                if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
+                    return true;
                 }
-            }
-            return false;
-        }
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        // Look for A or AAAA record with matching hostname and IP address
-        $query = "SELECT id FROM $records_table
-                  WHERE type = ? AND content = ?
-                  AND (name = ? OR name LIKE ? ESCAPE '!')";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([$recordType, $ipAddress, $hostname, DbCompat::escapeLike($hostname) . '.%']);
-
-        $result = $stmt->fetch();
-        if ($result) {
-            $recordId = (int)$result['id'];
-
-            if ($this->recordManager->deleteRecord($recordId)->success) {
-                return true;
             }
         }
 
@@ -322,20 +252,19 @@ class ReverseRecordCreator
         return null;
     }
 
-    private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
+    private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): RecordWriteResult
     {
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         $fqdn_name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         // Duplicate check moved to the main createReverseRecord method
 
-        if ($this->recordManager->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+        $written = $this->recordManager->addRecordGetId($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio);
+        if ($written->success) {
             $this->audit->logRecordAdd((int)$zone_rev_id, RecordType::PTR, $content_rev, $fqdn_name, $ttl, $prio);
-
-            return true;
         }
 
-        return false;
+        return $written;
     }
 
     private function createSuccessResponse(string $message): array
@@ -375,8 +304,7 @@ class ReverseRecordCreator
      */
     private function ptrRecordExists(int $zone_id, string $name, string $content): bool
     {
-        $recordRepository = $this->createRecordRepository();
-        return $recordRepository->recordExists($zone_id, $name, 'PTR', $content);
+        return $this->recordBackend->recordExists($zone_id, $name, 'PTR', $content);
     }
 
     /**
@@ -388,8 +316,7 @@ class ReverseRecordCreator
      */
     private function getExistingPtrRecords(int $zone_id, string $name): array
     {
-        $recordRepository = $this->createRecordRepository();
-        $records = $recordRepository->getRecordsByDomainId($zone_id, 'PTR');
+        $records = $this->recordBackend->getRecordsByZoneId($zone_id, 'PTR');
         $contents = [];
         foreach ($records as $r) {
             if ($r['name'] === $name) {

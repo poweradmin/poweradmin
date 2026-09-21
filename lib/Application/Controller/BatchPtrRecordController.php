@@ -208,7 +208,7 @@ class BatchPtrRecordController extends BaseController
             }
 
             if ($result['success']) {
-                $this->setMessage('batch_ptr_record', 'success', $result['message']);
+                $this->setMessage('batch_ptr_record', $result['type'] ?? 'success', $result['message']);
                 return true;
             } else {
                 $this->setMessage('batch_ptr_record', 'error', $result['message']);

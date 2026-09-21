@@ -5,27 +5,25 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\AuditService;
-use PDO;
-use PDOStatement;
 
 class ReverseRecordCreatorUpdateTest extends TestCase
 {
     /**
-     * @param array<int,array<string,mixed>>|null $deleteLookupRows Rows returned by the
-     *        PTR-lookup SELECT inside deleteReverseRecord. Null means "no PDO mock" -
-     *        used when the test does not expect deleteReverseRecord to run.
+     * @param array<int,array<string,mixed>>|null $deleteLookupRows PTR records the backend
+     *        answers to the lookup inside deleteReverseRecord. Null means the test does not
+     *        expect deleteReverseRecord to run at all.
      */
     private function createService(?DomainRepositoryInterface $domainRepository = null, ?RecordManagerInterface $recordManager = null, ?array $deleteLookupRows = null): ReverseRecordCreator
     {
-        $db = $this->createMock(PDO::class);
-        if ($deleteLookupRows !== null) {
-            $stmt = $this->createMock(PDOStatement::class);
-            $stmt->method('execute')->willReturn(true);
-            $stmt->method('fetch')->willReturn($deleteLookupRows[0] ?? false);
-            $db->method('prepare')->willReturn($stmt);
+        $backend = $this->createMock(RecordReadBackendInterface::class);
+        if ($deleteLookupRows === null) {
+            $backend->expects($this->never())->method('findRecordsByName');
+        } else {
+            $backend->method('findRecordsByName')->willReturn($deleteLookupRows);
         }
 
         $audit = $this->createMock(AuditService::class);
@@ -40,7 +38,7 @@ class ReverseRecordCreatorUpdateTest extends TestCase
         $domainRepository ??= $this->createMock(DomainRepositoryInterface::class);
         $recordManager ??= $this->createMock(RecordManagerInterface::class);
 
-        return new ReverseRecordCreator($db, $config, $audit, $domainRepository, $recordManager);
+        return new ReverseRecordCreator($config, $audit, $domainRepository, $recordManager, $backend);
     }
 
     public function testUpdateReverseRecordSkipsWhenBothTypesAreNonAddress(): void
