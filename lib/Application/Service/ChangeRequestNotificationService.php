@@ -66,6 +66,7 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         EmailTemplateService $emailTemplateService,
         DomainRepositoryInterface $domainRepository,
         PermissionService $permissions,
+        UrlService $urlService,
         ?LoggerInterface $logger = null,
         private readonly ?AuditService $audit = null,
         private readonly ?SOARecordManagerInterface $soaRecords = null
@@ -76,7 +77,7 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         $this->emailTemplateService = $emailTemplateService;
         $this->domainRepository = $domainRepository;
         $this->permissions = $permissions;
-        $this->urlService = new UrlService($config);
+        $this->urlService = $urlService;
         $this->logger = $logger ?? new NullLogger();
     }
 

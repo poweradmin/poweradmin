@@ -42,6 +42,7 @@ class PasswordResetService
     private UserAuthenticationService $authService;
     private ClientContext $client;
     private LoggerInterface $logger;
+    private UrlService $urlService;
     private EmailTemplateService $templateService;
 
     public function __construct(
@@ -51,7 +52,8 @@ class PasswordResetService
         ConfigurationInterface $config,
         UserAuthenticationService $authService,
         ClientContext $client,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        UrlService $urlService
     ) {
         $this->tokenRepository = $tokenRepository;
         $this->userRepository = $userRepository;
@@ -60,6 +62,7 @@ class PasswordResetService
         $this->authService = $authService;
         $this->client = $client;
         $this->logger = $logger;
+        $this->urlService = $urlService;
         $this->templateService = new EmailTemplateService($config);
     }
 
@@ -271,8 +274,7 @@ class PasswordResetService
      */
     private function getResetUrl(string $token): string
     {
-        $urlService = new UrlService($this->config, $this->logger);
-        return $urlService->getEmailUrl('/password/reset?token=' . urlencode($token)) ?? '';
+        return $this->urlService->getEmailUrl('/password/reset?token=' . urlencode($token)) ?? '';
     }
 
     /**

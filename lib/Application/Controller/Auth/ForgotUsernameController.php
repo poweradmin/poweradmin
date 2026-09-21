@@ -61,7 +61,8 @@ class ForgotUsernameController extends BaseController
                 $this->config,
                 $this->client,
                 $this->logger,
-                $this->db
+                $this->db,
+                $this->services()->urlService()
             );
 
             $this->recaptchaService = new RecaptchaService($this->config);

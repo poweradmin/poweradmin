@@ -192,6 +192,7 @@ class RecordServices
             new EmailTemplateService($this->config),
             $this->services->domainRepository(),
             $this->services->permissionService(),
+            $this->services->urlService(),
             $this->logger,
             $this->services->auditService(),
             $this->services->soaRecordManager()

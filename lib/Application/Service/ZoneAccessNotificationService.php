@@ -53,6 +53,7 @@ class ZoneAccessNotificationService
         MailService $mailService,
         EmailTemplateService $emailTemplateService,
         DomainRepositoryInterface $domainRepository,
+        UrlService $urlService,
         ?LoggerInterface $logger = null
     ) {
         $this->db = $db;
@@ -60,7 +61,7 @@ class ZoneAccessNotificationService
         $this->mailService = $mailService;
         $this->emailTemplateService = $emailTemplateService;
         $this->domainRepository = $domainRepository;
-        $this->urlService = new UrlService($config);
+        $this->urlService = $urlService;
         $this->logger = $logger ?? new NullLogger();
     }
 

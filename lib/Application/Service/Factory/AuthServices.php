@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\MfaVerificationMailer;
+use Poweradmin\Application\Service\UrlService;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
@@ -44,6 +45,7 @@ use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Application\Service\Auth\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -59,6 +61,7 @@ class AuthServices
 
     private ?AuditService $auditService = null;
     private ?ClientContext $clientContext = null;
+    private ?UrlService $urlService = null;
     private ?ApiKeyRepositoryInterface $apiKeyRepository = null;
     private ?UserMfaRepositoryInterface $userMfaRepository = null;
     private ?MfaService $mfaService = null;
@@ -100,6 +103,15 @@ class AuthServices
     public function clientContext(): ClientContext
     {
         return $this->clientContext ??= ClientContext::fromServer($_SERVER, $this->config);
+    }
+
+    /**
+     * Absolute URLs for emails and redirects; the protocol comes from the
+     * request environment when no application_url is configured.
+     */
+    public function urlService(): UrlService
+    {
+        return $this->urlService ??= new UrlService($this->config, new ProtocolDetector(), $this->logger);
     }
 
     public function userMfaRepository(): UserMfaRepositoryInterface

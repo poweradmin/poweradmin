@@ -316,6 +316,7 @@ class ZoneOwnershipController extends BaseController
             $mailService,
             $emailTemplateService,
             $this->domainRepository,
+            $this->services()->urlService(),
             $this->logger
         );
     }

@@ -36,11 +36,13 @@ use Psr\Log\NullLogger;
 class UrlService
 {
     private ConfigurationInterface $config;
+    private ProtocolDetector $protocolDetector;
     private LoggerInterface $logger;
 
-    public function __construct(ConfigurationInterface $config, ?LoggerInterface $logger = null)
+    public function __construct(ConfigurationInterface $config, ProtocolDetector $protocolDetector, ?LoggerInterface $logger = null)
     {
         $this->config = $config;
+        $this->protocolDetector = $protocolDetector;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -127,8 +129,7 @@ class UrlService
      */
     private function getProtocol(): string
     {
-        $protocolDetector = new ProtocolDetector();
-        return $protocolDetector->detect();
+        return $this->protocolDetector->detect();
     }
 
     /**

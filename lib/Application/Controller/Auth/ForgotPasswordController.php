@@ -64,7 +64,8 @@ class ForgotPasswordController extends BaseController
             $this->config,
             $authService,
             $this->client,
-            $this->logger
+            $this->logger,
+            $this->services()->urlService()
         );
 
         $this->recaptchaService = new RecaptchaService($this->config);

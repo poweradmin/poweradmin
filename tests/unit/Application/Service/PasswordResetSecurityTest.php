@@ -26,10 +26,12 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\MailService;
+use Poweradmin\Application\Service\UrlService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 
@@ -81,7 +83,8 @@ class PasswordResetSecurityTest extends TestCase
             $this->config,
             $this->authService,
             new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false),
-            $this->logger
+            $this->logger,
+            new UrlService($this->config, new ProtocolDetector(), $this->logger)
         );
     }
 

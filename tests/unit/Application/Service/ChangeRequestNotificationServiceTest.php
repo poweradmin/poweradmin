@@ -29,11 +29,13 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
+use Poweradmin\Application\Service\UrlService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\FakeConfiguration;
 
@@ -143,6 +145,7 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
             new EmailTemplateService($config),
             $domainRepository,
             $permissions ?? $this->defaultPermissions(),
+            new UrlService($config, new ProtocolDetector()),
             null,
             $audit,
             $soaRecord === null ? null : $this->soaRecords($soaRecord)
@@ -334,7 +337,8 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
             $mailService,
             new EmailTemplateService($config),
             $this->createMock(DomainRepositoryInterface::class),
-            $this->defaultPermissions()
+            $this->defaultPermissions(),
+            new UrlService($config, new ProtocolDetector())
         );
 
         $this->assertFalse($this->fileRequest($service));

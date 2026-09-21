@@ -65,7 +65,8 @@ class ResetPasswordController extends BaseController
             $this->config,
             $authService,
             $this->client,
-            $this->logger
+            $this->logger,
+            $this->services()->urlService()
         );
 
         $this->passwordPolicyService = new PasswordPolicyService($this->config);

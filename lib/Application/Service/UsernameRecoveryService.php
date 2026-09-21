@@ -40,6 +40,7 @@ class UsernameRecoveryService
     private LoggerInterface $logger;
     private EmailTemplateService $templateService;
     private PDO $db;
+    private UrlService $urlService;
 
     public function __construct(
         DbUsernameRecoveryRepository $recoveryRepository,
@@ -47,7 +48,8 @@ class UsernameRecoveryService
         ConfigurationInterface $config,
         ClientContext $client,
         LoggerInterface $logger,
-        PDO $db
+        PDO $db,
+        UrlService $urlService
     ) {
         $this->recoveryRepository = $recoveryRepository;
         $this->mailService = $mailService;
@@ -55,6 +57,7 @@ class UsernameRecoveryService
         $this->client = $client;
         $this->logger = $logger;
         $this->db = $db;
+        $this->urlService = $urlService;
         $this->templateService = new EmailTemplateService($config);
     }
 
@@ -253,8 +256,7 @@ class UsernameRecoveryService
      */
     private function getLoginUrl(): ?string
     {
-        $urlService = new UrlService($this->config, $this->logger);
-        return $urlService->getEmailUrl('/login');
+        return $this->urlService->getEmailUrl('/login');
     }
 
     /**

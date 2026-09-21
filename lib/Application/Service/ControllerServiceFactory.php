@@ -41,6 +41,7 @@ use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Application\Service\UrlService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
@@ -304,6 +305,11 @@ class ControllerServiceFactory
     public function clientContext(): ClientContext
     {
         return $this->auth->clientContext();
+    }
+
+    public function urlService(): UrlService
+    {
+        return $this->auth->urlService();
     }
 
     public function userMfaRepository(): UserMfaRepositoryInterface
