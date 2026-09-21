@@ -25,7 +25,6 @@ namespace Poweradmin\Infrastructure\Service\Consistency;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Service\ApiStatusInterface;
-use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
@@ -37,7 +36,7 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
  * Zones PowerDNS reports but Poweradmin has not synced yet carry id 0 and have no
  * local row; every per-zone check skips them until ZoneSyncService imports them.
  */
-class ApiConsistencyChecks implements ConsistencyCheckerInterface
+class ApiConsistencyChecks extends AbstractConsistencyChecks
 {
     private bool $recordReadFailed = false;
 
@@ -45,8 +44,9 @@ class ApiConsistencyChecks implements ConsistencyCheckerInterface
         private readonly PDO $db,
         private readonly DnsBackendProviderInterface $backend,
         private readonly ApiStatusInterface $apiStatus,
-        private readonly ZoneOwnerRepair $ownerRepair
+        ZoneOwnerRepair $ownerRepair
     ) {
+        parent::__construct($ownerRepair);
     }
 
     public function checkZonesHaveOwners(): array
@@ -115,20 +115,6 @@ class ApiConsistencyChecks implements ConsistencyCheckerInterface
         ];
 
         return $this->unlessARecordReadFailed($results);
-    }
-
-    public function fixZoneWithoutOwner(int $zoneId, int $currentUserId): bool
-    {
-        return $this->ownerRepair->assign($zoneId, $currentUserId);
-    }
-
-    public function fixAllZonesWithoutOwner(int $currentUserId): array
-    {
-        return ConsistencyReport::repairEach(
-            ConsistencyReport::findingIds($this->checkZonesHaveOwners()),
-            fn(int $zoneId): bool => $this->fixZoneWithoutOwner($zoneId, $currentUserId),
-            'assigned'
-        );
     }
 
     public function fixZoneCanonicalId(int $zoneId): bool

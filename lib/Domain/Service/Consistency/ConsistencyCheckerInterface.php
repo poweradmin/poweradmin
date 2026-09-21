@@ -77,4 +77,21 @@ interface ConsistencyCheckerInterface
     public function fixDuplicateSOA(int $zoneId): bool;
 
     public function createDefaultSOA(int $zoneId): bool;
+
+    /**
+     * Apply the single-item repair for a consistency page check type
+     * (zones_without_owners, zones_without_canonical_ids, slave_zones_without_masters,
+     * orphaned_records, duplicate_soa, zones_without_soa) to one finding.
+     *
+     * @return array{status: string, message: string} status is success or error
+     */
+    public function fixOne(string $type, int $id, int $currentUserId): array;
+
+    /**
+     * Apply a check type's bulk repair to every finding; only the two zone checks
+     * offer one.
+     *
+     * @return array{status: string, message: string} status is success, warning or error
+     */
+    public function fixAll(string $type, int $currentUserId): array;
 }

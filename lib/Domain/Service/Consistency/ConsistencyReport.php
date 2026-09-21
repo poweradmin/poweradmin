@@ -74,6 +74,29 @@ final class ConsistencyReport
         return [$successKey => $succeeded, 'failed' => $failed];
     }
 
+    /**
+     * The message for a fix-all outcome from repairEach(): $nothing when there was
+     * nothing to repair, $allFormat with the count when every repair succeeded, and
+     * $partialFormat with both counts (a warning) otherwise.
+     *
+     * @param array<string, int> $counts
+     * @return array{status: string, message: string}
+     */
+    public static function tally(array $counts, string $successKey, string $nothing, string $allFormat, string $partialFormat): array
+    {
+        $succeeded = $counts[$successKey];
+        $failed = $counts['failed'];
+
+        if ($succeeded === 0 && $failed === 0) {
+            return ['status' => 'success', 'message' => $nothing];
+        }
+        if ($failed === 0) {
+            return ['status' => 'success', 'message' => sprintf($allFormat, $succeeded)];
+        }
+
+        return ['status' => 'warning', 'message' => sprintf($partialFormat, $succeeded, $failed)];
+    }
+
     /** The SOA content written when a zone has no SOA record at all. */
     public static function defaultSoaContent(string $zoneName): string
     {

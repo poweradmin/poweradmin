@@ -94,110 +94,39 @@ class DatabaseConsistencyController extends BaseController
         ]);
     }
 
+    // Single-item verb each check type accepts; anything else is refused before any repair runs
+    private const SINGLE_ITEM_ACTIONS = [
+        'zones_without_owners' => 'fix',
+        'zones_without_canonical_ids' => 'fix',
+        'slave_zones_without_masters' => 'delete',
+        'orphaned_records' => 'delete',
+        'duplicate_soa' => 'fix',
+        'zones_without_soa' => 'fix',
+    ];
+
+    /**
+     * The check type picks the repair; fix_all runs the bulk form, the type's own
+     * verb the single-item form. The checker owns the mapping and the messages.
+     */
     private function handleFixAction(ConsistencyCheckerInterface $service): void
     {
-        $checkType = $this->httpRequest->getPostParam('check_type', '');
-        $action = $this->httpRequest->getPostParam('action', '');
-        $itemId = $this->httpRequest->getPostParam('item_id');
+        $checkType = (string)$this->httpRequest->getPostParam('check_type', '');
+        $action = (string)$this->httpRequest->getPostParam('action', '');
+        $currentUserId = (int)$this->getUserContextService()->getLoggedInUserId();
 
         try {
-            $result = false;
-            $message = '';
-
-            switch ($checkType) {
-                case 'zones_without_owners':
-                    if ($action === 'fix') {
-                        $currentUserId = $this->getUserContextService()->getLoggedInUserId();
-                        $result = $service->fixZoneWithoutOwner($itemId, $currentUserId);
-                        $message = $result ? _('Zone owner assigned successfully') : _('Failed to assign zone owner');
-                    } elseif ($action === 'fix_all') {
-                        $currentUserId = $this->getUserContextService()->getLoggedInUserId();
-                        $counts = $service->fixAllZonesWithoutOwner($currentUserId);
-                        if ($counts['assigned'] === 0 && $counts['failed'] === 0) {
-                            $this->setMessage('database_consistency', 'success', _('No zones without owners to fix'));
-                        } elseif ($counts['failed'] === 0) {
-                            $this->setMessage('database_consistency', 'success', sprintf(
-                                _('Assigned ownership of %d zones'),
-                                $counts['assigned']
-                            ));
-                        } else {
-                            $this->setMessage('database_consistency', 'warning', sprintf(
-                                _('Assigned %d zones; %d failed'),
-                                $counts['assigned'],
-                                $counts['failed']
-                            ));
-                        }
-                        $this->redirect('/tools/database-consistency');
-                        return;
-                    }
-                    break;
-
-                case 'zones_without_canonical_ids':
-                    if ($action === 'fix') {
-                        $result = $service->fixZoneCanonicalId((int)$itemId);
-                        $message = $result ? _('Zone canonical ID repaired') : _('Failed to repair zone canonical ID');
-                    } elseif ($action === 'fix_all') {
-                        $counts = $service->fixAllZonesWithCanonicalIdIssue();
-                        if ($counts['fixed'] === 0 && $counts['failed'] === 0) {
-                            $this->setMessage('database_consistency', 'success', _('No zones without a canonical ID to fix'));
-                        } elseif ($counts['failed'] === 0) {
-                            $this->setMessage('database_consistency', 'success', sprintf(
-                                _('Repaired the canonical ID of %d zones'),
-                                $counts['fixed']
-                            ));
-                        } else {
-                            $this->setMessage('database_consistency', 'warning', sprintf(
-                                _('Repaired %d zones; %d failed'),
-                                $counts['fixed'],
-                                $counts['failed']
-                            ));
-                        }
-                        $this->redirect('/tools/database-consistency');
-                        return;
-                    }
-                    break;
-
-                case 'slave_zones_without_masters':
-                    if ($action === 'delete') {
-                        $result = $service->deleteSlaveZone($itemId);
-                        $message = $result ? _('Slave zone deleted successfully') : _('Failed to delete slave zone');
-                    }
-                    break;
-
-                case 'orphaned_records':
-                    if ($action === 'delete') {
-                        $result = $service->deleteOrphanedRecord($itemId);
-                        $message = $result ? _('Orphaned record deleted successfully') : _('Failed to delete orphaned record');
-                    }
-                    break;
-
-                case 'duplicate_soa':
-                    if ($action === 'fix') {
-                        $result = $service->fixDuplicateSOA($itemId);
-                        $message = $result ? _('Duplicate SOA records fixed successfully') : _('Failed to fix duplicate SOA records');
-                    }
-                    break;
-
-                case 'zones_without_soa':
-                    if ($action === 'fix') {
-                        $result = $service->createDefaultSOA($itemId);
-                        $message = $result ? _('Default SOA record created successfully') : _('Failed to create default SOA record');
-                    }
-                    break;
-
-                default:
-                    $message = _('Invalid check type');
-            }
-
-            if ($result) {
-                $this->setMessage('database_consistency', 'success', $message);
+            if ($action === 'fix_all') {
+                $outcome = $service->fixAll($checkType, $currentUserId);
+            } elseif ($action !== '' && $action === (self::SINGLE_ITEM_ACTIONS[$checkType] ?? null)) {
+                $outcome = $service->fixOne($checkType, (int)$this->httpRequest->getPostParam('item_id', 0), $currentUserId);
             } else {
-                $this->setMessage('database_consistency', 'error', $message);
+                $outcome = ['status' => 'error', 'message' => _('Invalid action')];
             }
         } catch (Exception $e) {
-            $this->setMessage('database_consistency', 'error', $e->getMessage());
+            $outcome = ['status' => 'error', 'message' => $e->getMessage()];
         }
 
+        $this->setMessage('database_consistency', $outcome['status'], $outcome['message']);
         $this->redirect('/tools/database-consistency');
     }
 }

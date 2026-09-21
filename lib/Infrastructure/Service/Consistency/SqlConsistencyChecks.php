@@ -24,7 +24,6 @@ namespace Poweradmin\Infrastructure\Service\Consistency;
 
 use Exception;
 use PDO;
-use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -32,7 +31,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 /**
  * Consistency checks against the PowerDNS tables in the local database.
  */
-class SqlConsistencyChecks implements ConsistencyCheckerInterface
+class SqlConsistencyChecks extends AbstractConsistencyChecks
 {
     private string $domainsTable;
     private string $recordsTable;
@@ -40,8 +39,9 @@ class SqlConsistencyChecks implements ConsistencyCheckerInterface
     public function __construct(
         private readonly PDO $db,
         TableNameService $tableNameService,
-        private readonly ZoneOwnerRepair $ownerRepair
+        ZoneOwnerRepair $ownerRepair
     ) {
+        parent::__construct($ownerRepair);
         $this->domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
         $this->recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
     }
@@ -172,20 +172,6 @@ class SqlConsistencyChecks implements ConsistencyCheckerInterface
             'duplicate_soa_records' => $this->checkDuplicateSOARecords(),
             'zones_without_soa' => $this->checkZonesWithoutSOA(),
         ];
-    }
-
-    public function fixZoneWithoutOwner(int $zoneId, int $currentUserId): bool
-    {
-        return $this->ownerRepair->assign($zoneId, $currentUserId);
-    }
-
-    public function fixAllZonesWithoutOwner(int $currentUserId): array
-    {
-        return ConsistencyReport::repairEach(
-            ConsistencyReport::findingIds($this->checkZonesHaveOwners()),
-            fn(int $zoneId): bool => $this->fixZoneWithoutOwner($zoneId, $currentUserId),
-            'assigned'
-        );
     }
 
     public function fixZoneCanonicalId(int $zoneId): bool

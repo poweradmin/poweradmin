@@ -1946,6 +1946,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Service\\ApiKeyAuthenticationMiddleware' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/ApiKeyAuthenticationMiddleware.php',
         'Poweradmin\\Infrastructure\\Service\\AuthenticationService' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/AuthenticationService.php',
         'Poweradmin\\Infrastructure\\Service\\BasicAuthenticationMiddleware' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/BasicAuthenticationMiddleware.php',
+        'Poweradmin\\Infrastructure\\Service\\Consistency\\AbstractConsistencyChecks' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php',
         'Poweradmin\\Infrastructure\\Service\\Consistency\\ApiConsistencyChecks' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php',
         'Poweradmin\\Infrastructure\\Service\\Consistency\\SqlConsistencyChecks' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php',
         'Poweradmin\\Infrastructure\\Service\\Consistency\\ZoneOwnerRepair' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/Consistency/ZoneOwnerRepair.php',

@@ -1540,6 +1540,7 @@ return array(
     'Poweradmin\\Infrastructure\\Service\\ApiKeyAuthenticationMiddleware' => $baseDir . '/lib/Infrastructure/Service/ApiKeyAuthenticationMiddleware.php',
     'Poweradmin\\Infrastructure\\Service\\AuthenticationService' => $baseDir . '/lib/Infrastructure/Service/AuthenticationService.php',
     'Poweradmin\\Infrastructure\\Service\\BasicAuthenticationMiddleware' => $baseDir . '/lib/Infrastructure/Service/BasicAuthenticationMiddleware.php',
+    'Poweradmin\\Infrastructure\\Service\\Consistency\\AbstractConsistencyChecks' => $baseDir . '/lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php',
     'Poweradmin\\Infrastructure\\Service\\Consistency\\ApiConsistencyChecks' => $baseDir . '/lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php',
     'Poweradmin\\Infrastructure\\Service\\Consistency\\SqlConsistencyChecks' => $baseDir . '/lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php',
     'Poweradmin\\Infrastructure\\Service\\Consistency\\ZoneOwnerRepair' => $baseDir . '/lib/Infrastructure/Service/Consistency/ZoneOwnerRepair.php',
