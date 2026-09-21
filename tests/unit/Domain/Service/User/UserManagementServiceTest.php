@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\User;
 
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -37,9 +37,9 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
-use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
-use Poweradmin\Domain\Service\UserProfileAssembler;
+use Poweradmin\Domain\Service\User\UserProfileAssembler;
 
 #[CoversClass(UserManagementService::class)]
 class UserManagementServiceTest extends TestCase

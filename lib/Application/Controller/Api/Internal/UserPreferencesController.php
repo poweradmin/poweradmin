@@ -26,7 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\UserPreferenceService;
+use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**

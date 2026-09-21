@@ -20,16 +20,16 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\User;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
-use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
-use Poweradmin\Domain\Service\UserProfileAssembler;
+use Poweradmin\Domain\Service\User\UserProfileAssembler;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 

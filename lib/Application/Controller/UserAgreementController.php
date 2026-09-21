@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\UserAgreementService;
+use Poweradmin\Domain\Service\User\UserAgreementService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**

@@ -30,7 +30,7 @@ use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Domain\Service\UserPreferenceService;
+use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipIndex;
 

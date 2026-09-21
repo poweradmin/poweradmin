@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\User\UserManagementService;
 
 /**
  * Words a refused UserManagementService write for the user forms. The

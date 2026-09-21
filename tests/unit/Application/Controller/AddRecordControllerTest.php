@@ -38,7 +38,7 @@ use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
-use Poweradmin\Domain\Service\UserPreferenceService;
+use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Session\FormStateService;
 

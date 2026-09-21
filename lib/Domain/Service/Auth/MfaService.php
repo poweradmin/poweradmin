@@ -33,7 +33,7 @@ use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Port\MfaVerificationMailerInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\Service\User\UserTimezoneService;
 use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;

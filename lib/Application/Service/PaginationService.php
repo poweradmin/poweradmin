@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use InvalidArgumentException;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\PaginationLimits;
-use Poweradmin\Domain\Service\UserPreferenceService;
+use Poweradmin\Domain\Service\User\UserPreferenceService;
 
 /**
  * Builds Pagination objects and resolves the rows-per-page value within the allowed bounds.

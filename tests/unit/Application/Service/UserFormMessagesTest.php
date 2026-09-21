@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\User\UserManagementService;
 
 #[CoversClass(UserFormMessages::class)]
 class UserFormMessagesTest extends TestCase

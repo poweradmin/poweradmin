@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\User;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -34,9 +34,9 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
-use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
-use Poweradmin\Domain\Service\UserProfileAssembler;
+use Poweradmin\Domain\Service\User\UserProfileAssembler;
 
 /**
  * Password hashing, password policy and LDAP handling in UserManagementService.

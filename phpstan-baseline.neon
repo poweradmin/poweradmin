@@ -226,13 +226,13 @@ parameters:
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserAgreementRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserAgreementRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 2
-			path: lib/Domain/Service/UserAgreementService.php
+			path: lib/Domain/Service/User/UserAgreementService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Repository\\DbUserAgreementRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserAgreementRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
-			path: lib/Domain/Service/UserAgreementService.php
+			path: lib/Domain/Service/User/UserAgreementService.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
@@ -244,13 +244,13 @@ parameters:
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
-			path: lib/Domain/Service/UserTimezoneService.php
+			path: lib/Domain/Service/User/UserTimezoneService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
-			path: lib/Domain/Service/UserTimezoneService.php
+			path: lib/Domain/Service/User/UserTimezoneService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'

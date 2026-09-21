@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\User;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
-use Poweradmin\Domain\Service\UserPreferenceService;
+use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 #[CoversClass(UserPreferenceService::class)]

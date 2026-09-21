@@ -30,7 +30,7 @@ use Poweradmin\Application\Controller\Api\Internal\UserPreferencesController;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\UserPreferenceService;
+use Poweradmin\Domain\Service\User\UserPreferenceService;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;

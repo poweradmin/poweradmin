@@ -20,15 +20,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service\User;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\UserPreference;
-use Poweradmin\Domain\Service\UserPreferenceService;
-use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\Service\User\UserPreferenceService;
+use Poweradmin\Domain\Service\User\UserTimezoneService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 #[CoversClass(UserTimezoneService::class)]
