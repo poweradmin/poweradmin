@@ -29,7 +29,6 @@ use Poweradmin\Application\Http\ZoneEditIntent;
 use Poweradmin\Application\Presenter\EditZonePresenter;
 use Poweradmin\Application\Presenter\RecordFormFieldPresenter;
 use Poweradmin\Application\Presenter\ChangeRequestPresenter;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
@@ -108,7 +107,7 @@ class EditController extends BaseController
         $userPreferenceService = $this->services()->userPreferenceService();
         $iface_edit_add_record_top = $userPreferenceService->getRecordFormPosition($userId) === 'top';
         $iface_edit_save_changes_top = $userPreferenceService->getSaveButtonPosition($userId) === 'top';
-        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        $backend = $this->backendCapabilities();
         $iface_show_id = $userPreferenceService->getShowRecordId($userId);
         $iface_show_add_record_form = $userPreferenceService->getShowAddRecordForm($userId);
         $iface_show_record_edit_button = $userPreferenceService->getShowRecordEditButton($userId);
@@ -328,7 +327,8 @@ class EditController extends BaseController
             forwardTtl: $this->reverseTtlResolver->getForwardTtl(),
             ptrDefaultTtl: $this->reverseTtlResolver->getConfiguredReverseTtl(),
             typeDefaultTtls: $this->reverseTtlResolver->getTypeDefaults(),
-            isApiBackend: $isApiBackend,
+            supportsZoneRetrieve: $backend->supportsZoneRetrieve(),
+            recordIdsAreNumeric: $backend->recordIdsAreNumeric(),
             showRecordId: $iface_show_id,
             showAddRecordForm: $iface_show_add_record_form,
             showRecordEditButton: $iface_show_record_edit_button,
@@ -513,7 +513,7 @@ class EditController extends BaseController
     {
         // The SQL backend cannot trigger a transfer, and only a secondary has a primary to pull from
         $isSecondary = $this->domainRepository->getDomainType($zone_id) === ZoneType::SLAVE;
-        if (!DnsBackendProviderFactory::isApiBackend($this->getConfig()) || !$isSecondary) {
+        if (!$this->backendCapabilities()->supportsZoneRetrieve() || !$isSecondary) {
             $this->setMessage('edit', 'error', _('Retrieving a zone from its primary needs the PowerDNS API backend and a secondary zone.'));
             return;
         }

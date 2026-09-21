@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\System;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Application\Service\SamlConfigurationService;
@@ -170,7 +169,7 @@ class IndexController extends BaseController
             'iface_add_reverse_record' => $ifaceAddReverseRecord,
             'api_enabled' => $apiEnabled,
             'pdns_api_enabled' => $pdnsApiEnabled,
-            'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->config),
+            'is_api_backend' => $this->isApiBackend(),
             'show_pdns_status' => $showPdnsStatus,
             'pdns_server_status' => $pdnsServerStatus,
             'is_limited_user' => $isLimitedUser,

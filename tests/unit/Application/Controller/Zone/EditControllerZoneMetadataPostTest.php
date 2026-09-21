@@ -14,6 +14,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
+use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Zone\EditController;
 use Poweradmin\Application\Http\Request;
@@ -24,8 +25,12 @@ use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use Psr\Log\NullLogger;
 use ReflectionClass;
 
 /**
@@ -273,9 +278,12 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('zoneManagementService')->willReturn($zoneService ?? $this->createMock(ZoneManagementService::class));
         $factory->method('domainManager')->willReturn($domainManager);
+        $config = $this->primeConfig($configOverrides);
+        $factory->method('dnsBackendProvider')->willReturn($config->get('dns', 'backend') === 'api'
+            ? new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $this->createMock(PDO::class), $config, new NullLogger())
+            : new SqlDnsBackendProvider($this->createMock(PDO::class), $config, new NullLogger()));
         $this->setBaseProperty($controller, 'serviceFactory', $factory);
 
-        $config = $this->primeConfig($configOverrides);
         $this->setBaseProperty($controller, 'config', $config);
         $messages = new MessageService();
         $this->setBaseProperty($controller, 'messageService', $messages);

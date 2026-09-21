@@ -918,6 +918,31 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return false;
     }
 
+    public function providesSignedSerial(): bool
+    {
+        return false;
+    }
+
+    public function supportsRecordCountSort(): bool
+    {
+        return true;
+    }
+
+    public function supportsGroupSort(): bool
+    {
+        return true;
+    }
+
+    public function supportsZoneRetrieve(): bool
+    {
+        return false;
+    }
+
+    public function syncsZoneListFromServer(): bool
+    {
+        return false;
+    }
+
     public function hasSoaEditApi(int $domainId): bool
     {
         return false;

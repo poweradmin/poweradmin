@@ -30,10 +30,14 @@ use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionProperty;
@@ -154,9 +158,13 @@ abstract class SeamControllerTestCase extends TestCase
             fn() => $this->factory->zoneChangeRequestRepository()
         ));
 
+        $db = $this->createMock(PDO::class);
+        // Resolved per call: a test may reconfigure dns.backend between two controllers
+        $this->factory->method('dnsBackendProvider')->willReturnCallback(fn() => $this->backendProvider($config, $db));
+
         return new ControllerEnvironment(
             $config,
-            $this->createMock(PDO::class),
+            $db,
             new NullLogger(),
             $this->factory,
             new HttpRequest(),
@@ -164,6 +172,19 @@ abstract class SeamControllerTestCase extends TestCase
             $this->messageService,
             new UserContextService()
         );
+    }
+
+    /**
+     * The real provider for the configured dns.backend, so capability answers
+     * are the shipped ones; its data methods are never reached over a PDO mock.
+     */
+    private function backendProvider(ConfigurationManager $config, PDO $db): DnsBackendProviderInterface
+    {
+        if ($config->get('dns', 'backend') === 'api') {
+            return new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $db, $config, new NullLogger());
+        }
+
+        return new SqlDnsBackendProvider($db, $config, new NullLogger());
     }
 
     /**

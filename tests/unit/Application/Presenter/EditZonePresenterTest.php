@@ -97,7 +97,8 @@ class EditZonePresenterTest extends TestCase
             'forwardTtl' => 86400,
             'ptrDefaultTtl' => null,
             'typeDefaultTtls' => [],
-            'isApiBackend' => false,
+            'supportsZoneRetrieve' => false,
+            'recordIdsAreNumeric' => true,
             'showRecordId' => true,
             'showAddRecordForm' => true,
             'showRecordEditButton' => true,
@@ -209,11 +210,11 @@ class EditZonePresenterTest extends TestCase
 
     public function testRetrieveButtonNeedsTheApiBackendAndASecondaryWithAPrimary(): void
     {
-        $this->assertTrue($this->present(['isApiBackend' => true, 'domainType' => 'SLAVE', 'slaveMaster' => '192.0.2.10'])['can_retrieve_zone']);
-        $this->assertFalse($this->present(['isApiBackend' => false, 'domainType' => 'SLAVE', 'slaveMaster' => '192.0.2.10'])['can_retrieve_zone']);
-        $this->assertFalse($this->present(['isApiBackend' => true, 'domainType' => 'MASTER', 'slaveMaster' => '192.0.2.10'])['can_retrieve_zone']);
-        $this->assertFalse($this->present(['isApiBackend' => true, 'domainType' => 'SLAVE', 'slaveMaster' => null])['can_retrieve_zone']);
-        $this->assertFalse($this->present(['isApiBackend' => true, 'domainType' => 'SLAVE', 'slaveMaster' => ''])['can_retrieve_zone']);
+        $this->assertTrue($this->present(['supportsZoneRetrieve' => true, 'domainType' => 'SLAVE', 'slaveMaster' => '192.0.2.10'])['can_retrieve_zone']);
+        $this->assertFalse($this->present(['supportsZoneRetrieve' => false, 'domainType' => 'SLAVE', 'slaveMaster' => '192.0.2.10'])['can_retrieve_zone']);
+        $this->assertFalse($this->present(['supportsZoneRetrieve' => true, 'domainType' => 'MASTER', 'slaveMaster' => '192.0.2.10'])['can_retrieve_zone']);
+        $this->assertFalse($this->present(['supportsZoneRetrieve' => true, 'domainType' => 'SLAVE', 'slaveMaster' => null])['can_retrieve_zone']);
+        $this->assertFalse($this->present(['supportsZoneRetrieve' => true, 'domainType' => 'SLAVE', 'slaveMaster' => ''])['can_retrieve_zone']);
     }
 
     public function testCatalogKindsCannotBeRetypedFromTheBasicSelector(): void
@@ -296,9 +297,9 @@ class EditZonePresenterTest extends TestCase
 
     public function testApiBackendHidesTheIdColumnRegardlessOfPreference(): void
     {
-        $this->assertTrue($this->present(['showRecordId' => true, 'isApiBackend' => false])['iface_edit_show_id']);
-        $this->assertFalse($this->present(['showRecordId' => true, 'isApiBackend' => true])['iface_edit_show_id']);
-        $this->assertFalse($this->present(['showRecordId' => false, 'isApiBackend' => false])['iface_edit_show_id']);
+        $this->assertTrue($this->present(['showRecordId' => true, 'recordIdsAreNumeric' => true])['iface_edit_show_id']);
+        $this->assertFalse($this->present(['showRecordId' => true, 'recordIdsAreNumeric' => false])['iface_edit_show_id']);
+        $this->assertFalse($this->present(['showRecordId' => false, 'recordIdsAreNumeric' => true])['iface_edit_show_id']);
     }
 
     public function testStoredCommentIsShownWhenNothingWasRejected(): void

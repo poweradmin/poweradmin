@@ -57,6 +57,15 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($this->provider->allocatesZoneIdsLocally());
     }
 
+    public function testApiBackendOffersServerSideFeaturesButCannotSortListsInTheQuery(): void
+    {
+        $this->assertTrue($this->provider->providesSignedSerial());
+        $this->assertTrue($this->provider->supportsZoneRetrieve());
+        $this->assertTrue($this->provider->syncsZoneListFromServer());
+        $this->assertFalse($this->provider->supportsRecordCountSort());
+        $this->assertFalse($this->provider->supportsGroupSort());
+    }
+
     public function testDeleteZoneWithoutNameDeclinesInsteadOfTargetingTheRoot(): void
     {
         $this->mockClient->expects($this->never())->method('deleteZone');

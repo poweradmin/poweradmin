@@ -1323,6 +1323,31 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
         return true;
     }
 
+    public function providesSignedSerial(): bool
+    {
+        return true;
+    }
+
+    public function supportsRecordCountSort(): bool
+    {
+        return false;
+    }
+
+    public function supportsGroupSort(): bool
+    {
+        return false;
+    }
+
+    public function supportsZoneRetrieve(): bool
+    {
+        return true;
+    }
+
+    public function syncsZoneListFromServer(): bool
+    {
+        return true;
+    }
+
     public function hasSoaEditApi(int $domainId): bool
     {
         $zoneName = $this->getZoneNameByLocalId($domainId);

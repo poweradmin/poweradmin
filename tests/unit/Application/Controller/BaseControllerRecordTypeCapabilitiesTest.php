@@ -22,11 +22,16 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
+use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
+use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 
@@ -110,9 +115,21 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         $controller = (new ReflectionClass(RecordTypeCapabilitiesTestController::class))
             ->newInstanceWithoutConstructor();
 
+        $config = $this->buildConfig($overrides);
         $configProperty = (new ReflectionClass(BaseController::class))->getProperty('config');
         $configProperty->setAccessible(true);
-        $configProperty->setValue($controller, $this->buildConfig($overrides));
+        $configProperty->setValue($controller, $config);
+
+        // The backend question goes through the service factory's provider
+        $db = $this->createMock(PDO::class);
+        $provider = $config->get('dns', 'backend') === 'api'
+            ? new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $db, $config, new NullLogger())
+            : new SqlDnsBackendProvider($db, $config, new NullLogger());
+        $factory = $this->createMock(ControllerServiceFactory::class);
+        $factory->method('dnsBackendProvider')->willReturn($provider);
+        $factoryProperty = (new ReflectionClass(BaseController::class))->getProperty('serviceFactory');
+        $factoryProperty->setAccessible(true);
+        $factoryProperty->setValue($controller, $factory);
 
         // An expired or missing cache now triggers a refresh, which logs failures.
         $loggerProperty = (new ReflectionClass(BaseController::class))->getProperty('logger');

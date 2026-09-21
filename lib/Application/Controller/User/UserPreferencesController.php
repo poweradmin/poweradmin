@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\User;
 use InvalidArgumentException;
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Model\UserPreference;
 
@@ -78,7 +77,7 @@ class UserPreferencesController extends BaseController
             'timezone_cities' => $timezoneOptions['cities'],
             'current_timezone' => $preferences[UserPreference::KEY_TIMEZONE] ?? '',
             // Record IDs are not human-readable in API mode, so the toggle is hidden there.
-            'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
+            'is_api_backend' => $this->isApiBackend(),
         ];
 
         $this->render('user_preferences.html', $templateVars);
@@ -100,7 +99,7 @@ class UserPreferencesController extends BaseController
 
             // The record-ID toggle is hidden in API mode, so its checkbox is never
             // submitted; skip it to keep the user's saved SQL-mode preference intact.
-            if (DnsBackendProviderFactory::isApiBackend($this->getConfig())) {
+            if (!$this->backendCapabilities()->recordIdsAreNumeric()) {
                 unset($preferencesToUpdate[UserPreference::KEY_SHOW_RECORD_ID]);
             }
 

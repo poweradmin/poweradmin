@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Zone;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Enum\AccessScope;
@@ -69,7 +68,7 @@ class ListForwardZonesController extends BaseController
 
     private function forceSyncFromApi(): void
     {
-        if (!DnsBackendProviderFactory::isApiBackend($this->getConfig())) {
+        if (!$this->backendCapabilities()->syncsZoneListFromServer()) {
             $this->redirect('/zones/forward');
             return;
         }
@@ -111,9 +110,9 @@ class ListForwardZonesController extends BaseController
         $userPreferenceService = $this->services()->userPreferenceService();
         $userId = $this->getCurrentUserId();
         $iface_zonelist_serial = $userPreferenceService->getShowZoneSerial($userId);
-        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
-        // Signed serial data comes from the PowerDNS API zone list, so SQL backend cannot provide it
-        $iface_zonelist_signed_serial = $isApiBackend
+        $backend = $this->backendCapabilities();
+        $isApiBackend = $backend->isApiBackend();
+        $iface_zonelist_signed_serial = $backend->providesSignedSerial()
             && $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
         $iface_zonelist_template = $userPreferenceService->getShowZoneTemplate($userId);
         $iface_zonelist_record_count = $userPreferenceService->getShowZoneRecordCount($userId);
@@ -169,11 +168,8 @@ class ListForwardZonesController extends BaseController
         $ownershipSortAllowed = $perm_ownership_view === 'all'
             || ($perm_ownership_view === 'own' && $perm_view === 'own');
         $isOwnerSortSupported = $showOwnerColumn && $ownershipSortAllowed;
-        $isGroupSortSupported = $showGroupColumn && !$isApiBackend && $ownershipSortAllowed;
-
-        // In API mode record counts are resolved per page, so sorting on them
-        // would only order the rows already on screen
-        $isRecordCountSortSupported = $iface_zonelist_record_count && !$isApiBackend;
+        $isGroupSortSupported = $showGroupColumn && $backend->supportsGroupSort() && $ownershipSortAllowed;
+        $isRecordCountSortSupported = $iface_zonelist_record_count && $backend->supportsRecordCountSort();
 
         $allowedSort = ['name', 'type'];
         if ($isRecordCountSortSupported) {

@@ -33,7 +33,6 @@ use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\ZoneCreateService;
@@ -42,6 +41,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
@@ -248,7 +248,7 @@ abstract class BaseController
      */
     protected function getRecordTypeCapabilities(): ?PdnsCapabilities
     {
-        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
+        if (!$this->isApiBackend()) {
             return null;
         }
         // An unknown version must not strict-filter: sessions that never ran the
@@ -367,6 +367,24 @@ abstract class BaseController
     protected function services(): ControllerServiceFactory
     {
         return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger);
+    }
+
+    /**
+     * The request's backend as a capability probe; controllers ask it what the
+     * backend can do instead of re-reading dns.backend from the configuration.
+     */
+    protected function backendCapabilities(): BackendCapabilitiesInterface
+    {
+        return $this->services()->dnsBackendProvider();
+    }
+
+    /**
+     * Backend identity, for the few places that report it rather than act on a
+     * capability (the is_api_backend template variable, the API error banner).
+     */
+    protected function isApiBackend(): bool
+    {
+        return $this->backendCapabilities()->isApiBackend();
     }
 
     /**
@@ -730,7 +748,7 @@ abstract class BaseController
             $this->csrfTokenService,
             $this->userContextService,
             $this->moduleRegistry(),
-            DnsBackendProviderFactory::isApiBackend($this->config),
+            $this->isApiBackend(),
             $this->hasPermission(...),
             static fn(): ?array => PdnsVersionService::getCachedInfo($_SESSION ?? []),
             fn(): array => $this->init?->getDebugQueries() ?? [],

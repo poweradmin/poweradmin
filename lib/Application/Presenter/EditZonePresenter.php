@@ -101,7 +101,8 @@ final class EditZonePresenter
         private readonly int $forwardTtl,
         private readonly ?int $ptrDefaultTtl,
         private readonly array $typeDefaultTtls,
-        private readonly bool $isApiBackend,
+        private readonly bool $supportsZoneRetrieve,
+        private readonly bool $recordIdsAreNumeric,
         private readonly bool $showRecordId,
         private readonly bool $showAddRecordForm,
         private readonly bool $showRecordEditButton,
@@ -189,8 +190,7 @@ final class EditZonePresenter
             'slave_master' => $this->slaveMaster,
             'zone_types' => $zoneTypes,
             'zone_replicates_from_primary' => ZoneType::replicatesFromPrimary($this->domainType),
-            // Only the API backend can ask PowerDNS for a transfer, so the button is hidden otherwise
-            'can_retrieve_zone' => $this->isApiBackend && $this->domainType === ZoneType::SLAVE && ($this->slaveMaster ?? '') !== '',
+            'can_retrieve_zone' => $this->supportsZoneRetrieve && $this->domainType === ZoneType::SLAVE && ($this->slaveMaster ?? '') !== '',
             // Catalog kinds are absent from the basic types, so the browser would preselect
             // the first option and one click would silently retype the zone.
             'zone_type_change_allowed' => in_array($this->domainType, $zoneTypes, true),
@@ -252,9 +252,8 @@ final class EditZonePresenter
             'record_types' => $recordTypes,
             'iface_add_reverse_record' => $this->addReverseRecord,
             'iface_add_domain_record' => $this->addDomainRecord,
-            // API-backend records have no numeric ID, only an opaque composite identifier;
-            // showing it as a column is unreadable, so suppress it regardless of preference.
-            'iface_edit_show_id' => $this->showRecordId && !$this->isApiBackend,
+            // Encoded composite record ids are unreadable as a column, so the preference is ignored
+            'iface_edit_show_id' => $this->showRecordId && $this->recordIdsAreNumeric,
             'iface_show_add_record_form' => $this->showAddRecordForm,
             'iface_show_record_edit_button' => $this->showRecordEditButton,
             'iface_show_record_delete_button' => $this->showRecordDeleteButton,

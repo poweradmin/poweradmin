@@ -49,6 +49,15 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertFalse($this->provider->allocatesZoneIdsLocally());
     }
 
+    public function testSqlBackendSortsListsInTheQueryButHasNoServerSideFeatures(): void
+    {
+        $this->assertTrue($this->provider->supportsRecordCountSort());
+        $this->assertTrue($this->provider->supportsGroupSort());
+        $this->assertFalse($this->provider->providesSignedSerial());
+        $this->assertFalse($this->provider->supportsZoneRetrieve());
+        $this->assertFalse($this->provider->syncsZoneListFromServer());
+    }
+
     // ---------------------------------------------------------------
     // Cross-zone lookups and counts (sqlite in-memory)
     // ---------------------------------------------------------------

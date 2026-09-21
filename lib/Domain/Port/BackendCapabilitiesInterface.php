@@ -80,4 +80,56 @@ interface BackendCapabilitiesInterface
      * @return bool
      */
     public function allocatesZoneIdsLocally(): bool;
+
+    /**
+     * Whether the zone list can carry the serial PowerDNS serves for signed zones.
+     *
+     * True for the API backend, whose zone list reports the signed serial. False
+     * for the SQL backend, which only sees the stored SOA serial.
+     *
+     * @return bool
+     */
+    public function providesSignedSerial(): bool;
+
+    /**
+     * Whether zone lists can be ordered by record count across every page.
+     *
+     * True for the SQL backend, which counts in the query. False for the API
+     * backend, where counts are resolved per page and a sort would only order
+     * the rows already on screen.
+     *
+     * @return bool
+     */
+    public function supportsRecordCountSort(): bool;
+
+    /**
+     * Whether zone lists can be ordered by owning group.
+     *
+     * True for the SQL backend, which joins the Poweradmin ownership tables in
+     * the list query. False for the API backend, whose zone list comes from
+     * PowerDNS and cannot join them.
+     *
+     * @return bool
+     */
+    public function supportsGroupSort(): bool;
+
+    /**
+     * Whether a secondary zone can be pulled from its primary on request.
+     *
+     * True for the API backend, which asks PowerDNS to transfer the zone. False
+     * for the SQL backend, which has no way to trigger a transfer.
+     *
+     * @return bool
+     */
+    public function supportsZoneRetrieve(): bool;
+
+    /**
+     * Whether the local zone list is a mirror that can be refreshed from the server.
+     *
+     * True for the API backend, where the zones table is synced from PowerDNS.
+     * False for the SQL backend, where the domains table is the source itself.
+     *
+     * @return bool
+     */
+    public function syncsZoneListFromServer(): bool;
 }

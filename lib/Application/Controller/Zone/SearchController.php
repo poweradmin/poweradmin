@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Presenter\SearchResultPresenter;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\SearchCriteria;
 use Poweradmin\Domain\Enum\AccessScope;
@@ -73,9 +72,7 @@ class SearchController extends BaseController
         $ownershipViewPermission = $permissionService->getZoneOwnershipViewPermissionLevel($userId);
         $ownerSortAllowed = $ownershipViewPermission === 'all'
             || ($ownershipViewPermission === 'own' && $permissionService->getViewPermissionLevel($userId) === 'own');
-        // In API mode record counts are resolved per page, so sorting on them
-        // would only order the rows already on screen
-        $isRecordCountSortSupported = !DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        $isRecordCountSortSupported = $this->backendCapabilities()->supportsRecordCountSort();
         $allowedZoneSort = ['name', 'type'];
         if ($isRecordCountSortSupported) {
             $allowedZoneSort[] = 'count_records';
