@@ -55,7 +55,6 @@ use Poweradmin\Domain\Service\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneListPermissionService;
 use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -522,15 +521,6 @@ abstract class BaseController
     }
 
     /**
-     * Whether the logged-in user wants the page to span the full browser width
-     */
-    protected function getWideLayout(): bool
-    {
-        $userId = $this->userContextService->getLoggedInUserId();
-        return $userId !== null && $this->createUserPreferenceService()->getWideLayout($userId);
-    }
-
-    /**
      * Check if the logged-in user owns the given zone directly or via group membership
      */
     protected function isZoneOwner(int $zoneId): bool
@@ -628,14 +618,6 @@ abstract class BaseController
     protected function zoneOwnerOptionsBlocker(): ?string
     {
         return $this->services()->zoneOwnershipFormResolver()->blocker((int)$this->getCurrentUserId());
-    }
-
-    /**
-     * Owner and groups of the add-zone forms, checked against the shared ownership rules.
-     */
-    protected function resolveZoneOwnershipFromForm(HttpRequest $request): ZoneOwnershipResolution
-    {
-        return $this->services()->zoneOwnershipFormResolver()->resolve($request, (int)$this->getCurrentUserId());
     }
 
     protected function createUserGroupMemberRepository(): UserGroupMemberRepositoryInterface
@@ -757,25 +739,6 @@ abstract class BaseController
     protected function createDnssecProvider(): DnssecProviderInterface
     {
         return $this->services()->dnssecProvider();
-    }
-
-    /**
-     * Rebuilds ordername/auth after a record write so signed zones keep answering.
-     * Call after the transaction commits: the rectifier reads committed rows.
-     */
-    protected function rectifyZoneAfterWrite(string $zoneName): void
-    {
-        if (!$this->config->get('dnssec', 'enabled', false)) {
-            return;
-        }
-
-        try {
-            if (!$this->createDnssecProvider()->rectifyZone($zoneName)) {
-                $this->logger->warning('Failed to rectify zone {zone}', ['zone' => $zoneName]);
-            }
-        } catch (\Throwable $e) {
-            $this->logger->warning('Failed to rectify zone {zone}: {message}', ['zone' => $zoneName, 'message' => $e->getMessage()]);
-        }
     }
 
     protected function createRecordManagerService(): RecordManagerService
@@ -1026,6 +989,8 @@ abstract class BaseController
      */
     private function getPageRenderer(): PageRenderer
     {
+        $userId = $this->userContextService->getLoggedInUserId();
+
         return $this->pageRenderer ??= new PageRenderer(
             $this->app(),
             $this->config,
@@ -1033,7 +998,7 @@ abstract class BaseController
             $this->userContextService,
             $this->hasPermission(...),
             fn(): array => $this->init?->getDebugQueries() ?? [],
-            $this->getWideLayout(),
+            $userId !== null && $this->createUserPreferenceService()->getWideLayout($userId),
             fn(): int => $this->pendingChangeRequestCount()
         );
     }
