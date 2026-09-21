@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Template;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 use Poweradmin\Domain\Database\DbCompat;
 
 /**
@@ -67,7 +66,7 @@ class ListZoneTemplController extends BaseController
         $templatesList = $zone_templates->getListZoneTempl($userId);
 
         // Get sync status for all templates
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+        $syncService = $this->services()->zoneTemplateSync();
         $syncStatus = $syncService->getTemplateSyncStatus($userId);
 
         // PostgreSQL returns booleans as 't'/'f' strings, which Twig treats

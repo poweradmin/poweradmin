@@ -36,9 +36,9 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
@@ -418,7 +418,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             $domains,
             $templates,
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
-            new ZoneTemplateSyncService($this->db, $this->config),
+            new DbZoneTemplateSyncRepository($this->db, $this->config),
             new ZoneTemplatePlaceholders($this->config),
             $this->changeLogger,
             new NullLogger()
@@ -436,6 +436,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             $applier,
             $templates,
             new ZoneTemplatePlaceholders($this->config),
+            new DbZoneTemplateSyncRepository($this->db, $this->config),
             new NullLogger(),
             $userContext
         );

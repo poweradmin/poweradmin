@@ -38,7 +38,7 @@ use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
@@ -137,6 +137,7 @@ class DnsServiceFactory
         $domainRepository = $repositoryFactory->createDomainRepository();
         $changeLogger = new RecordChangeLogger($db, $config);
         $zoneTemplateRepository = new DbZoneTemplateRepository($db, $config, $backendProvider);
+        $templateSync = new DbZoneTemplateSyncRepository($db, $config);
         $templateApplier = new ZoneTemplateApplier(
             $db,
             $backendProvider,
@@ -144,7 +145,7 @@ class DnsServiceFactory
             $domainRepository,
             $zoneTemplateRepository,
             new DbTemplateRecordLinkRepository($db, $config, $backendProvider),
-            new ZoneTemplateSyncService($db, $config),
+            $templateSync,
             new ZoneTemplatePlaceholders($config),
             $changeLogger,
             new NullLogger()
@@ -160,7 +161,8 @@ class DnsServiceFactory
             $changeLogger,
             $templateApplier,
             $zoneTemplateRepository,
-            new ZoneTemplatePlaceholders($config)
+            new ZoneTemplatePlaceholders($config),
+            $templateSync
         );
     }
 

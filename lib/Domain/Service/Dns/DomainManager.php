@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
@@ -37,7 +38,6 @@ use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Error\ZoneCreationFailedException;
 use Psr\Log\LoggerInterface;
@@ -63,6 +63,7 @@ class DomainManager implements DomainManagerInterface
     private ZoneTemplatePlaceholders $placeholders;
     private RepositoryFactoryInterface $repositoryFactory;
     private ZoneTemplateApplier $templateApplier;
+    private ZoneTemplateSyncRepositoryInterface $templateSync;
 
     /**
      * Constructor
@@ -78,6 +79,7 @@ class DomainManager implements DomainManagerInterface
      * @param ZoneTemplateApplier $templateApplier Applies a template to an existing zone
      * @param ZoneTemplateRepositoryInterface $zoneTemplateRepository Reads the template records seeded into a new zone
      * @param ZoneTemplatePlaceholders $placeholders Expands the placeholders in those records
+     * @param ZoneTemplateSyncRepositoryInterface $templateSync Records which template a new zone was seeded from
      */
     public function __construct(
         PDO $db,
@@ -91,12 +93,14 @@ class DomainManager implements DomainManagerInterface
         ZoneTemplateApplier $templateApplier,
         ZoneTemplateRepositoryInterface $zoneTemplateRepository,
         ZoneTemplatePlaceholders $placeholders,
+        ZoneTemplateSyncRepositoryInterface $templateSync,
         ?LoggerInterface $logger = null,
         ?UserContextService $userContext = null
     ) {
         $this->templateApplier = $templateApplier;
         $this->zoneTemplateRepository = $zoneTemplateRepository;
         $this->placeholders = $placeholders;
+        $this->templateSync = $templateSync;
         $this->repositoryFactory = $repositoryFactory;
         $this->db = $db;
         $this->config = $config;
@@ -305,10 +309,9 @@ class DomainManager implements DomainManagerInterface
         }
 
         if ($zone_template != "none" && is_numeric($zone_template)) {
-            $syncService = new ZoneTemplateSyncService($db, $this->config);
-            $syncService->createSyncRecord((int)$zone_id, (int)$zone_template);
+            $this->templateSync->createSyncRecord((int)$zone_id, (int)$zone_template);
             // Mark as synced since we're creating from template
-            $syncService->markZoneAsSynced((int)$zone_id, (int)$zone_template);
+            $this->templateSync->markZoneAsSynced((int)$zone_id, (int)$zone_template);
         }
 
         foreach (array_unique($groupIds) as $groupId) {

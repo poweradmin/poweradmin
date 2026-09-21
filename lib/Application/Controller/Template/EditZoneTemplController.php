@@ -26,7 +26,6 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -127,7 +126,7 @@ class EditZoneTemplController extends BaseController
         $zones_linked_count = count($linked_zones);
 
         // Get sync status
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+        $syncService = $this->services()->zoneTemplateSync();
         $unsynced_zones_count = $syncService->getUnsyncedZoneCount($zone_templ_id);
 
         $this->render('edit_zone_templ.html', [
@@ -190,7 +189,7 @@ class EditZoneTemplController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $zones = $this->zoneTemplate->getZoneAndDomainIdsByTemplate($zone_templ_id, $userId);
         $domainManager = $this->services()->domainManager();
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+        $syncService = $this->services()->zoneTemplateSync();
 
         $defaultTtl = $this->config->get('dns', 'ttl', 86400);
         $syncedZoneIds = [];

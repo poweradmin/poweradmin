@@ -23,13 +23,13 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
+use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -54,7 +54,7 @@ class ZoneTemplateApplier
     private DomainRepositoryInterface $domainRepository;
     private ZoneTemplateRepositoryInterface $zoneTemplateRepository;
     private TemplateRecordLinkRepositoryInterface $recordLinks;
-    private ZoneTemplateSyncService $syncService;
+    private ZoneTemplateSyncRepositoryInterface $syncService;
     private ZoneTemplatePlaceholders $placeholders;
     private RecordChangeWriterInterface $changeLogger;
     private LoggerInterface $logger;
@@ -66,7 +66,7 @@ class ZoneTemplateApplier
         DomainRepositoryInterface $domainRepository,
         ZoneTemplateRepositoryInterface $zoneTemplateRepository,
         TemplateRecordLinkRepositoryInterface $recordLinks,
-        ZoneTemplateSyncService $syncService,
+        ZoneTemplateSyncRepositoryInterface $syncService,
         ZoneTemplatePlaceholders $placeholders,
         RecordChangeWriterInterface $changeLogger,
         LoggerInterface $logger

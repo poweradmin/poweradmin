@@ -20,21 +20,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service\Template;
+namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
- * Test for ZoneTemplateSyncService::removeStaleSyncRecords()
+ * Test for DbZoneTemplateSyncRepository::removeStaleSyncRecords()
  *
  * Issue #1249: zone_template_sync keeps stale entries when changing a zone template
  * @see https://github.com/poweradmin/poweradmin/issues/1249
  */
-class ZoneTemplateSyncServiceTest extends TestCase
+class DbZoneTemplateSyncRepositoryTest extends TestCase
 {
     public function testRemoveStaleSyncRecordsDeletesRowsForOtherTemplates(): void
     {
@@ -58,7 +58,7 @@ class ZoneTemplateSyncServiceTest extends TestCase
 
         $config = $this->createMock(ConfigurationInterface::class);
 
-        $service = new ZoneTemplateSyncService($pdo, $config);
+        $service = new DbZoneTemplateSyncRepository($pdo, $config);
         $service->removeStaleSyncRecords(34, 2);
     }
 
@@ -79,7 +79,7 @@ class ZoneTemplateSyncServiceTest extends TestCase
 
         $config = $this->createMock(ConfigurationInterface::class);
 
-        $service = new ZoneTemplateSyncService($pdo, $config);
+        $service = new DbZoneTemplateSyncRepository($pdo, $config);
         $service->removeStaleSyncRecords(34, 0);
     }
 
@@ -111,7 +111,7 @@ class ZoneTemplateSyncServiceTest extends TestCase
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturn('mysql');
 
-        $service = new ZoneTemplateSyncService($pdo, $config);
+        $service = new DbZoneTemplateSyncRepository($pdo, $config);
         $service->createSyncRecord(7, 11);
     }
 
@@ -143,7 +143,7 @@ class ZoneTemplateSyncServiceTest extends TestCase
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturn('mysql');
 
-        $service = new ZoneTemplateSyncService($pdo, $config);
+        $service = new DbZoneTemplateSyncRepository($pdo, $config);
         $service->createSyncRecord(7, 11);
     }
 }

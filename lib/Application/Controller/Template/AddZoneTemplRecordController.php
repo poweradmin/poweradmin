@@ -27,7 +27,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -114,7 +113,7 @@ class AddZoneTemplRecordController extends BaseController
         $added = $this->zoneTemplate->addZoneTemplRecord($zone_templ_id, $name, $type, $content, (int)$ttl, (int)$prio);
         if ($added->success) {
             // Mark template as modified to track sync status
-            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+            $syncService = $this->services()->zoneTemplateSync();
             $syncService->markTemplateAsModified($zone_templ_id);
 
             $auditService = $this->services()->auditService();

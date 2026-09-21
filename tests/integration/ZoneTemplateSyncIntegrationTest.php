@@ -25,7 +25,7 @@ namespace integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use TestHelpers\FakeConfiguration;
 
 /**
@@ -86,12 +86,12 @@ class ZoneTemplateSyncIntegrationTest extends TestCase
         $this->db = null;
     }
 
-    private function makeService(): ZoneTemplateSyncService
+    private function makeService(): DbZoneTemplateSyncRepository
     {
         $config = new FakeConfiguration([
             'database' => ['type' => 'mysql'],
         ]);
-        return new ZoneTemplateSyncService($this->db, $config);
+        return new DbZoneTemplateSyncRepository($this->db, $config);
     }
 
     private function createTemplate(string $name): int

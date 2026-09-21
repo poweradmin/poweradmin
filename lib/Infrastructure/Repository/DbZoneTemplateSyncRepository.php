@@ -20,16 +20,17 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service\Template;
+namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 
 /**
- * Tracks which zones are out of date against their template after the template changes.
+ * Tracks which zones are out of date against their template in the zone_template_sync table.
  */
-class ZoneTemplateSyncService
+class DbZoneTemplateSyncRepository implements ZoneTemplateSyncRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

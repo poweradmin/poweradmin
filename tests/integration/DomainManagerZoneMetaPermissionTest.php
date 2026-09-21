@@ -24,6 +24,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -240,7 +241,8 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
             $changeLogger,
             $this->createMock(ZoneTemplateApplier::class),
             new DbZoneTemplateRepository($this->db, $config, $backend),
-            new ZoneTemplatePlaceholders($config)
+            new ZoneTemplatePlaceholders($config),
+            new DbZoneTemplateSyncRepository($this->db, $config)
         );
     }
 }

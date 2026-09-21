@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Template;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 
 /**
  * Handles the delete confirmation for a zone template record and marks the template modified after deletion.
@@ -57,7 +56,7 @@ class DeleteZoneTemplRecordController extends BaseController
             $deleted = $this->zoneTemplate->deleteZoneTemplRecord($record_id, $zone_templ_id);
             if ($deleted->success) {
                 // Mark template as modified to track sync status
-                $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+                $syncService = $this->services()->zoneTemplateSync();
                 $syncService->markTemplateAsModified($zone_templ_id);
 
                 $auditService = $this->services()->auditService();

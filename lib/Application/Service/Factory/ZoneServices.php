@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
+use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\CatalogZoneService;
@@ -49,10 +50,10 @@ use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
-use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\Zone\ZoneValidationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
@@ -75,6 +76,7 @@ class ZoneServices
     private ?ZoneSigningService $zoneSigningService = null;
     private ?CatalogZoneService $catalogZoneService = null;
     private ?DomainManagerInterface $domainManager = null;
+    private ?ZoneTemplateSyncRepositoryInterface $zoneTemplateSync = null;
     private ?SupermasterManager $supermasterManager = null;
     private ?ZoneTemplateService $zoneTemplateService = null;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
@@ -209,8 +211,14 @@ class ZoneServices
             $this->services->recordChangeLogger(),
             $this->zoneTemplateApplier(),
             $this->zoneTemplateRepository(),
-            new ZoneTemplatePlaceholders($this->config)
+            new ZoneTemplatePlaceholders($this->config),
+            $this->zoneTemplateSync()
         );
+    }
+
+    public function zoneTemplateSync(): ZoneTemplateSyncRepositoryInterface
+    {
+        return $this->zoneTemplateSync ??= new DbZoneTemplateSyncRepository($this->db, $this->config);
     }
 
     public function zoneTemplateApplier(): ZoneTemplateApplier
@@ -222,7 +230,7 @@ class ZoneServices
             $this->services->domainRepository(),
             $this->zoneTemplateRepository(),
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->services->dnsBackendProvider()),
-            new ZoneTemplateSyncService($this->db, $this->config),
+            $this->zoneTemplateSync(),
             new ZoneTemplatePlaceholders($this->config),
             $this->services->recordChangeLogger(),
             $this->logger
