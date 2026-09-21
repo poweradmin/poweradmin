@@ -36,7 +36,8 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Application\Service\Auth\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthOutcomeStatus;
+use Poweradmin\Application\Service\Auth\LoginCredentials;
 use Psr\Log\NullLogger;
 
 /**
@@ -47,20 +48,16 @@ use Psr\Log\NullLogger;
 class SqlAuthenticatorClientAddressTest extends TestCase
 {
     private array $sessionBackup = [];
-    private array $postBackup = [];
 
     protected function setUp(): void
     {
         $this->sessionBackup = $_SESSION ?? [];
-        $this->postBackup = $_POST;
         $_SESSION = [];
-        $_POST = ['authenticate' => '1'];
     }
 
     protected function tearDown(): void
     {
         $_SESSION = $this->sessionBackup;
-        $_POST = $this->postBackup;
     }
 
     public function testLockedAccountIsCheckedAndAuditedAgainstTheInjectedClientAddress(): void
@@ -71,14 +68,10 @@ class SqlAuthenticatorClientAddressTest extends TestCase
         $audit = $this->createMock(AuditService::class);
         $audit->expects($this->once())->method('logLoginLocked')->with(AuthMethod::SQL);
 
-        $authentication = $this->createMock(AuthenticationService::class);
-        $authentication->expects($this->once())->method('auth');
-
         $authenticator = new SqlAuthenticator(
             $this->createMock(PDO::class),
             $this->createMock(ConfigurationManager::class),
             $audit,
-            $authentication,
             $this->createMock(CsrfTokenService::class),
             new NullLogger(),
             $attempts,
@@ -87,6 +80,8 @@ class SqlAuthenticatorClientAddressTest extends TestCase
             $this->createMock(UserRepositoryInterface::class)
         );
 
-        $authenticator->authenticate();
+        $outcome = $authenticator->authenticate(new LoginCredentials('', 'secret'));
+
+        $this->assertSame(AuthOutcomeStatus::Failure, $outcome->status);
     }
 }

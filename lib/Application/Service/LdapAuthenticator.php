@@ -26,8 +26,8 @@ use PDO;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
-use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Application\Service\Auth\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthOutcome;
+use Poweradmin\Application\Service\Auth\LoginCredentials;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
@@ -48,7 +48,6 @@ class LdapAuthenticator
     private PDO $db;
     private ConfigurationInterface $configManager;
     private AuditService $auditService;
-    private AuthenticationService $authenticationService;
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
     private UserContextService $userContextService;
@@ -63,7 +62,6 @@ class LdapAuthenticator
         PDO $connection,
         ConfigurationInterface $configManager,
         AuditService $auditService,
-        AuthenticationService $authService,
         CsrfTokenService $csrfTokenService,
         LoggerInterface $logger,
         LoginAttemptService $loginAttemptService,
@@ -77,7 +75,6 @@ class LdapAuthenticator
         $this->db = $connection;
         $this->configManager = $configManager;
         $this->auditService = $auditService;
-        $this->authenticationService = $authService;
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
         $this->userContextService = $userContextService;
@@ -88,22 +85,26 @@ class LdapAuthenticator
     }
 
 
-    public function authenticate(): void
+    /**
+     * Verifies the session's stored credentials, or the just-posted $credentials on
+     * the login request, against the directory and records the result in the session.
+     * The caller turns the outcome into a redirect; nothing here writes to the response.
+     */
+    public function authenticate(?LoginCredentials $credentials = null): AuthOutcome
     {
         $this->logger->info('Starting LDAP authentication process.');
 
+        $isLogin = $credentials !== null;
         $ipAddress = $this->client->ip ?: '0.0.0.0';
-        $username = $this->userContextService->getLoggedInUsername() ?? '';
+        $username = $credentials !== null ? $credentials->username : ($this->userContextService->getLoggedInUsername() ?? '');
 
         // Check if the account is locked
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logger->warning('Account is locked for LDAP user {username}', ['username' => $username]);
-            if (isset($_POST["authenticate"])) {
+            if ($isLogin) {
                 $this->auditService->logLoginLocked(AuthMethod::LDAP);
             }
-            $sessionEntity = new SessionEntity(_('Account is temporarily locked. Please try again later.'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
-            return;
+            return AuthOutcome::failure(_('Account is temporarily locked. Please try again later.'));
         }
 
         // Check if LDAP authentication is cached and still valid
@@ -113,13 +114,11 @@ class LdapAuthenticator
             if (!$this->validateUserActiveStatus($username)) {
                 $this->logger->warning('Cached LDAP user {username} is no longer active, invalidating cache', ['username' => $username]);
                 $this->invalidateAuthenticationCache();
-                $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
-                $this->authenticationService->logout($sessionEntity);
-                return;
+                return AuthOutcome::failure(_('LDAP Authentication failed!'), endSession: true);
             }
 
             $this->logger->info('Using cached LDAP authentication for user {username}', ['username' => $username]);
-            return;
+            return AuthOutcome::success();
         }
 
         $session_key = $this->configManager->get('security', 'session_key', '');
@@ -141,10 +140,8 @@ class LdapAuthenticator
 
         if (!$this->userContextService->hasSessionData(SessionKeys::USERLOGIN) || !$this->userContextService->hasSessionData(SessionKeys::USERPWD)) {
             $this->logger->warning('Session variables userlogin or userpwd are not set.');
-            $sessionEntity = new SessionEntity('', 'danger');
-            $this->authenticationService->auth($sessionEntity);
             $this->logger->info('LDAP authentication process ended due to missing session variables.');
-            return;
+            return AuthOutcome::failure('');
         }
 
         if ($ldap_debug) {
@@ -154,13 +151,11 @@ class LdapAuthenticator
         $ldapconn = ldap_connect($ldap_uri);
         if (!$ldapconn) {
             $this->logger->error('Failed to connect to LDAP server.');
-            if (isset($_POST["authenticate"])) {
+            if ($isLogin) {
                 $this->auditService->logLoginError(AuthMethod::LDAP, LoginFailureReason::LDAP_CONNECT_FAILED);
             }
-            $sessionEntity = new SessionEntity(_('Failed to connect to LDAP server!'), 'danger');
-            $this->authenticationService->logout($sessionEntity);
             $this->logger->info('LDAP authentication process ended due to connection failure.');
-            return;
+            return AuthOutcome::failure(_('Failed to connect to LDAP server!'), endSession: true);
         }
 
         ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
@@ -169,15 +164,12 @@ class LdapAuthenticator
         if (!(@ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw))) {
             $this->logger->error('Failed to bind to LDAP server.');
 
-            if (isset($_POST["authenticate"])) {
+            if ($isLogin) {
                 $this->auditService->logLoginError(AuthMethod::LDAP, LoginFailureReason::LDAP_BIND_FAILED);
             }
 
-            $sessionEntity = new SessionEntity(_('Failed to bind to LDAP server!'), 'danger');
-            $this->authenticationService->logout($sessionEntity);
-
             $this->logger->info('LDAP authentication process ended due to bind failure.');
-            return;
+            return AuthOutcome::failure(_('Failed to bind to LDAP server!'), endSession: true);
         }
 
         $attributes = array($ldap_user_attribute, 'dn');
@@ -189,7 +181,7 @@ class LdapAuthenticator
         }
 
         // Properly escape user input to prevent LDAP injection
-        $escaped_userlogin = ldap_escape($this->userContextService->getLoggedInUsername(), '', LDAP_ESCAPE_FILTER);
+        $escaped_userlogin = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
 
         $filter = $ldap_search_filter
             ? "(&($ldap_user_attribute=$escaped_userlogin)$ldap_search_filter)"
@@ -204,46 +196,42 @@ class LdapAuthenticator
         $ldapsearch = @ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
         if (!$ldapsearch) {
             $this->logger->error('Failed to search LDAP.');
-            if (isset($_POST["authenticate"])) {
+            if ($isLogin) {
                 $this->auditService->logLoginError(AuthMethod::LDAP, LoginFailureReason::LDAP_SEARCH_FAILED);
             }
-            $sessionEntity = new SessionEntity(_('Failed to search LDAP.'), 'danger');
-            $this->authenticationService->logout($sessionEntity);
             $this->logger->info('LDAP authentication process ended due to search failure.');
-            return;
+            return AuthOutcome::failure(_('Failed to search LDAP.'), endSession: true);
         }
 
         $entries = ldap_get_entries($ldapconn, $ldapsearch);
         $count = (int)$entries["count"];
         if ($count !== 1) {
             $this->logger->warning('LDAP search did not return exactly one user. Count: {count}', ['count' => $count]);
-            if (isset($_POST["authenticate"])) {
+            if ($isLogin) {
                 if ($count === 0) {
                     $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::NO_SUCH_USER);
                 } else {
                     $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::DUPLICATE_USERS);
                 }
             }
-            $sessionEntity = new SessionEntity(_('Failed to authenticate against LDAP.'), 'danger');
-            $this->authenticationService->logout($sessionEntity);
             $this->logger->info('LDAP authentication process ended due to incorrect user count.');
-            return;
+            return AuthOutcome::failure(_('Failed to authenticate against LDAP.'), endSession: true);
         }
         $user_dn = $entries[0]["dn"];
 
         $passwordEncryptionService = new PasswordEncryptionService($session_key);
-        $session_pass = $passwordEncryptionService->decrypt($this->userContextService->getSessionData(SessionKeys::USERPWD));
+        $session_pass = $credentials !== null
+            ? $credentials->password
+            : $passwordEncryptionService->decrypt($this->userContextService->getSessionData(SessionKeys::USERPWD));
         // A zero-length credential would be an unauthenticated bind, which some directories accept
         if ($session_pass === '' || !@ldap_bind($ldapconn, $user_dn, $session_pass)) {
             $this->logger->warning('LDAP authentication failed for user {username}', ['username' => $username]);
-            if (isset($_POST["authenticate"])) {
+            if ($isLogin) {
                 $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::WRONG_PASSWORD);
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             }
-            $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
             $this->logger->info('LDAP authentication process ended due to incorrect password.');
-            return;
+            return AuthOutcome::failure(_('LDAP Authentication failed!'));
         }
 
         $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
@@ -269,17 +257,17 @@ class LdapAuthenticator
 
         if (!$rowObj) {
             $this->logger->warning('No active LDAP user found with the provided username: {username}', ['username' => $username]);
-            if (isset($_POST["authenticate"])) {
+            if ($isLogin) {
                 $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::ACCOUNT_DISABLED);
             }
-            $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
             $this->logger->info('LDAP authentication process ended due to no active user found.');
-            return;
+            return AuthOutcome::failure(_('LDAP Authentication failed!'));
         }
 
-        session_regenerate_id(true);
-        $this->logger->info('Session ID regenerated for user {username}', ['username' => $username]);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+            $this->logger->info('Session ID regenerated for user {username}', ['username' => $username]);
+        }
 
         // Email for MFA delivery. Only trust the LDAP directory's mail when user-info
         // sync is on; otherwise the Poweradmin account email is authoritative so a
@@ -289,7 +277,7 @@ class LdapAuthenticator
         $sessionEmail = ($ldap_sync_user_info ? $userInfo->getEmail() : '') ?: ($rowObj['email'] ?? '');
 
         // A fresh token on login: one planted before authentication must not survive it
-        if (isset($_POST['authenticate']) || !$this->userContextService->hasSessionData(SessionKeys::CSRF_TOKEN)) {
+        if ($isLogin || !$this->userContextService->hasSessionData(SessionKeys::CSRF_TOKEN)) {
             $this->userContextService->setSessionData(SessionKeys::CSRF_TOKEN, $this->csrfTokenService->generateToken());
             $this->logger->info('CSRF token generated for user {username}', ['username' => $username]);
         }
@@ -313,46 +301,37 @@ class LdapAuthenticator
             // Use our centralized MFA session manager to set MFA required
             MfaSessionManager::setMfaRequired($rowObj['id']);
 
-            if (isset($_POST['authenticate'])) {
-                $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
-                $this->auditService->logLoginSuccess(AuthMethod::LDAP);
-
-                // Log before redirect
-                $this->logger->info('LdapAuthenticator: Redirecting to MFA verification page');
-
-                // Clear any output buffers
-                if (ob_get_level()) {
-                    ob_end_clean();
-                }
-
-                // Build redirect URL with base_url_prefix support for subfolder deployments
-                $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
-                $redirectUrl = $baseUrlPrefix . '/mfa/verify';
-                header("Location: $redirectUrl", true, 302);
-                exit;
+            if (!$isLogin) {
+                return AuthOutcome::mfaRequired();
             }
-        } else {
-            // No MFA required, proceed with full authentication
-            // NOW it's safe to set userid since MFA is not required
-            $this->userContextService->setSessionData(SessionKeys::USERID, $rowObj['id']);
-            $this->userContextService->setSessionData(SessionKeys::NAME, $rowObj['fullname']);
-            $this->userContextService->setSessionData(SessionKeys::EMAIL, $sessionEmail);
-            $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'ldap');
-            $this->userContextService->setSessionData(SessionKeys::AUTHENTICATED, true);
-            MfaSessionManager::setMfaNotRequired();
 
-            // Update LDAP authentication cache BEFORE redirect (so next page load uses cache)
-            $this->updateAuthenticationCache($ipAddress);
-
-            if (isset($_POST['authenticate'])) {
-                $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
-                $this->auditService->logLoginSuccess(AuthMethod::LDAP);
-                session_write_close();
-                $this->authenticationService->redirectToIndex();
-            }
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+            $this->auditService->logLoginSuccess(AuthMethod::LDAP);
+            $this->logger->info('LdapAuthenticator: Redirecting to MFA verification page');
+            return AuthOutcome::mfaRequired('/mfa/verify');
         }
 
+        // No MFA required, proceed with full authentication
+        // NOW it's safe to set userid since MFA is not required
+        $this->userContextService->setSessionData(SessionKeys::USERID, $rowObj['id']);
+        $this->userContextService->setSessionData(SessionKeys::NAME, $rowObj['fullname']);
+        $this->userContextService->setSessionData(SessionKeys::EMAIL, $sessionEmail);
+        $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'ldap');
+        $this->userContextService->setSessionData(SessionKeys::AUTHENTICATED, true);
+        MfaSessionManager::setMfaNotRequired();
+
+        // Update LDAP authentication cache BEFORE redirect (so next page load uses cache)
+        $this->updateAuthenticationCache($ipAddress);
+
         $this->logger->info('LDAP authentication process completed successfully for user {username}', ['username' => $username]);
+
+        if (!$isLogin) {
+            return AuthOutcome::success();
+        }
+
+        $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+        $this->auditService->logLoginSuccess(AuthMethod::LDAP);
+        return AuthOutcome::success('/');
     }
 
     /**

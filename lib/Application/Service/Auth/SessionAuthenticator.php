@@ -42,6 +42,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\AuditService;
 
@@ -61,9 +62,11 @@ class SessionAuthenticator
     private RecaptchaService $recaptchaService;
     private RedirectService $redirectService;
     private ControllerServiceFactory $services;
+    private Request $request;
 
-    public function __construct(PDO $connection, ConfigurationInterface $configManager)
+    public function __construct(PDO $connection, ConfigurationInterface $configManager, Request $request)
     {
+        $this->request = $request;
         $this->logger = ClassContextLogger::for(Logger::fromConfig($configManager), self::class);
 
         $this->db = $connection;
@@ -93,7 +96,6 @@ class SessionAuthenticator
             $this->db,
             $this->configManager,
             $this->auditService(),
-            $this->authService,
             $this->csrfTokenService,
             $this->logger,
             $this->loginAttemptService,
@@ -114,7 +116,6 @@ class SessionAuthenticator
             $this->db,
             $this->configManager,
             $this->auditService(),
-            $this->authService,
             $this->csrfTokenService,
             $this->logger,
             $this->loginAttemptService,
@@ -143,61 +144,64 @@ class SessionAuthenticator
 
         // Logout is now handled by LogoutController via /logout route
 
+        $isLogin = $this->request->getPostParam('authenticate') !== null;
+        $credentials = $isLogin ? $this->postedCredentials() : null;
+        $postedUsername = $credentials !== null ? $credentials->username : 'unknown';
+
         // A posted _token[] arrives as an array, which validateToken() cannot accept
-        $login_token = is_string($_POST['_token'] ?? null) ? $_POST['_token'] : '';
+        $login_token = $this->request->getPostParam('_token');
         if (
             ($login_token_validation || $global_token_validation)
-            && isset($_POST['authenticate'])
-            && !$this->csrfTokenService->validateToken($login_token, SessionKeys::LOGIN_TOKEN)
+            && $isLogin
+            && !$this->csrfTokenService->validateToken(is_string($login_token) ? $login_token : '', SessionKeys::LOGIN_TOKEN)
         ) {
-            $this->logger->warning('Invalid CSRF token for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+            $this->logger->warning('Invalid CSRF token for user {username}', ['username' => $postedUsername]);
 
             $sessionEntity = new SessionEntity(_('Invalid CSRF token.'), 'danger');
             $this->authService->auth($sessionEntity);
 
-            $this->logger->debug('CSRF token validation failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+            $this->logger->debug('CSRF token validation failed for user {username}', ['username' => $postedUsername]);
             return;
         }
 
         // If a user had just entered his/her login && password, store them in our session.
-        if (isset($_POST["authenticate"])) {
-            $this->logger->debug('User {username} attempting to authenticate', ['username' => $_POST["username"] ?? 'unknown']);
+        if ($credentials !== null) {
+            $this->logger->debug('User {username} attempting to authenticate', ['username' => $postedUsername]);
 
             // Verify reCAPTCHA if enabled
             if ($this->recaptchaService->isEnabled()) {
-                $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
                 $remoteIp = $this->services->clientContext()->ip;
 
-                if (!$this->recaptchaService->verify($recaptchaResponse, $remoteIp)) {
-                    $this->logger->warning('reCAPTCHA verification failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+                if (!$this->recaptchaService->verify($credentials->recaptchaResponse, $remoteIp)) {
+                    $this->logger->warning('reCAPTCHA verification failed for user {username}', ['username' => $postedUsername]);
 
                     $sessionEntity = new SessionEntity(_('reCAPTCHA verification failed. Please try again.'), 'danger');
                     $this->authService->auth($sessionEntity);
 
-                    $this->logger->debug('Authentication blocked due to reCAPTCHA failure for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+                    $this->logger->debug('Authentication blocked due to reCAPTCHA failure for user {username}', ['username' => $postedUsername]);
                     return;
                 }
             }
 
-            if ($_POST['password'] != '') {
+            if ($credentials->password !== '') {
                 $passwordEncryptionService = new PasswordEncryptionService($session_key);
-                $_SESSION[SessionKeys::USERPWD] = $passwordEncryptionService->encrypt($_POST['password']);
-                $this->logger->debug('Password encrypted for user {username}', ['username' => $_POST["username"]]);
+                $_SESSION[SessionKeys::USERPWD] = $passwordEncryptionService->encrypt($credentials->password);
+                $this->logger->debug('Password encrypted for user {username}', ['username' => $credentials->username]);
 
-                $_SESSION[SessionKeys::USERLOGIN] = $_POST["username"];
-                $this->logger->debug('User login set for user {username}', ['username' => $_POST["username"]]);
+                $_SESSION[SessionKeys::USERLOGIN] = $credentials->username;
+                $this->logger->debug('User login set for user {username}', ['username' => $credentials->username]);
 
-                $_SESSION[SessionKeys::USERLANG] = $_POST["userlang"] ?? $this->configManager->get('interface', 'language', 'en_EN');
-                $this->logger->debug('User language set for user {username}', ['username' => $_POST["username"]]);
+                $_SESSION[SessionKeys::USERLANG] = $credentials->userlang ?? $this->configManager->get('interface', 'language', 'en_EN');
+                $this->logger->debug('User language set for user {username}', ['username' => $credentials->username]);
 
-                $this->logger->info('User {username} authenticated', ['username' => $_POST["username"]]);
+                $this->logger->info('User {username} authenticated', ['username' => $credentials->username]);
             } else {
-                $this->logger->error('Empty password attempt for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
+                $this->logger->error('Empty password attempt for user {username}', ['username' => $postedUsername]);
 
                 $sessionEntity = new SessionEntity(_('An empty password is not allowed'), 'danger');
                 $this->authService->auth($sessionEntity);
 
-                $this->logger->debug('Authentication failed due to empty password for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
+                $this->logger->debug('Authentication failed due to empty password for user {username}', ['username' => $postedUsername]);
                 return;
             }
         }
@@ -233,7 +237,7 @@ class SessionAuthenticator
             case UserProvisioningService::AUTH_METHOD_LDAP:
                 if ($ldap_use) {
                     $this->logger->info('User {username} uses LDAP for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
-                    $this->ldapAuthenticator()->authenticate();
+                    $this->completeLogin($this->ldapAuthenticator()->authenticate($credentials));
                 } else {
                     $this->logger->warning('User {username} configured for LDAP but LDAP is disabled', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                     $sessionEntity = new SessionEntity(_('LDAP authentication is disabled'), 'danger');
@@ -245,7 +249,7 @@ class SessionAuthenticator
                 if (isset($_SESSION[SessionKeys::USERLOGIN])) {
                     $this->logger->info('User {username} uses SQL for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                 }
-                $this->sqlAuthenticator()->authenticate();
+                $this->completeLogin($this->sqlAuthenticator()->authenticate($credentials));
                 break;
         }
 
@@ -258,6 +262,51 @@ class SessionAuthenticator
         $this->checkPendingMfaVerification();
 
         $this->logger->debug('Authentication process completed for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
+    }
+
+    private function postedCredentials(): LoginCredentials
+    {
+        $username = $this->request->getPostParam('username');
+        $password = $this->request->getPostParam('password');
+        $userlang = $this->request->getPostParam('userlang');
+        $recaptcha = $this->request->getPostParam('g-recaptcha-response');
+
+        return new LoginCredentials(
+            is_string($username) ? $username : '',
+            is_string($password) ? $password : '',
+            is_string($userlang) ? $userlang : null,
+            is_string($recaptcha) ? $recaptcha : ''
+        );
+    }
+
+    /**
+     * Turns the authenticator's decision into the response: a failure flashes its
+     * message on the login page, a completed login leaves for the outcome's path.
+     */
+    private function completeLogin(AuthOutcome $outcome): void
+    {
+        if ($outcome->isFailure()) {
+            $sessionEntity = new SessionEntity($outcome->message, 'danger');
+            if ($outcome->endSession) {
+                $this->authService->logout($sessionEntity);
+            } else {
+                $this->authService->auth($sessionEntity);
+            }
+            return;
+        }
+
+        if ($outcome->redirectPath === null) {
+            return;
+        }
+
+        // Nothing buffered so far belongs in a redirect response
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        session_write_close();
+
+        $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
+        $this->redirectService->redirectTo($baseUrlPrefix . $outcome->redirectPath);
     }
 
     /**

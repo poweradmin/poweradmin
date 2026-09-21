@@ -100,7 +100,11 @@ class SamlCallbackController extends BaseController
     {
         try {
             // Process the SAML assertion
-            $this->samlService->handleAssertion();
+            $redirectPath = $this->samlService->handleAssertion();
+            if ($redirectPath !== null) {
+                $this->redirect($redirectPath);
+                return;
+            }
 
             // Log successful SAML login if session was established
             if (isset($_SESSION[SessionKeys::USERID])) {

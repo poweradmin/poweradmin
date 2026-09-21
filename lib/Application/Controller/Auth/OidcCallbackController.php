@@ -98,7 +98,11 @@ class OidcCallbackController extends BaseController
         }
 
         // Process the OIDC callback
-        $this->oidcService->handleCallback();
+        $redirectPath = $this->oidcService->handleCallback();
+        if ($redirectPath !== null) {
+            $this->redirect($redirectPath);
+            return;
+        }
 
         // Log successful OIDC login if session was established
         if (isset($_SESSION[SessionKeys::USERID])) {

@@ -200,7 +200,11 @@ class OidcService
         }
     }
 
-    public function handleCallback(): void
+    /**
+     * Finishes the login from the provider's callback. Returns the application path
+     * the caller must redirect to when a second factor is still owed, null otherwise.
+     */
+    public function handleCallback(): ?string
     {
         $this->logger->info('Handling OIDC callback');
 
@@ -222,7 +226,7 @@ class OidcService
             $this->logger->warning('Invalid state parameter in OIDC callback');
             $sessionEntity = new SessionEntity(_('Authentication failed: Invalid state parameter'), 'danger');
             $this->authenticationService->auth($sessionEntity);
-            return;
+            return null;
         }
 
         // Check for error parameter from OIDC provider
@@ -235,7 +239,7 @@ class OidcService
             ]);
             $sessionEntity = new SessionEntity(_('Authentication failed: ') . $errorDescription, 'danger');
             $this->authenticationService->auth($sessionEntity);
-            return;
+            return null;
         }
 
         $code = $this->request->getParam('code');
@@ -243,7 +247,7 @@ class OidcService
             $this->logger->warning('No authorization code in OIDC callback');
             $sessionEntity = new SessionEntity(_('Authentication failed: No authorization code'), 'danger');
             $this->authenticationService->auth($sessionEntity);
-            return;
+            return null;
         }
 
         $providerId = $this->getSessionValue('oidc_provider', '');
@@ -251,7 +255,7 @@ class OidcService
             $this->logger->warning('No provider ID in session during OIDC callback');
             $sessionEntity = new SessionEntity(_('Authentication failed: Invalid session'), 'danger');
             $this->authenticationService->auth($sessionEntity);
-            return;
+            return null;
         }
 
         try {
@@ -372,11 +376,7 @@ class OidcService
                     $this->unsetSessionValue('oidc_state');
                     $this->unsetSessionValue('oidc_code_verifier');
 
-                    // Redirect to MFA verification
-                    $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
-                    $redirectUrl = $baseUrlPrefix . '/mfa/verify';
-                    header("Location: $redirectUrl", true, 302);
-                    exit;
+                    return '/mfa/verify';
                 } else {
                     // No MFA required, proceed with full authentication
                     // NOW it's safe to set userid since MFA is not required
@@ -429,6 +429,8 @@ class OidcService
         // Clean up session data (in error cases only)
         $this->unsetSessionValue('oidc_state');
         $this->unsetSessionValue('oidc_code_verifier');
+
+        return null;
     }
 
     private function createProvider(string $providerId): ?GenericProvider

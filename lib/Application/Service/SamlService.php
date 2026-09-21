@@ -177,7 +177,11 @@ class SamlService
         }
     }
 
-    public function handleAssertion(): void
+    /**
+     * Consumes the posted assertion and finishes the login. Returns the application
+     * path the caller must redirect to when a second factor is still owed, null otherwise.
+     */
+    public function handleAssertion(): ?string
     {
         $this->logger->info('Processing SAML assertion');
 
@@ -203,11 +207,11 @@ class SamlService
             ]);
             $sessionEntity = new SessionEntity(_('Authentication failed: Invalid session'), 'danger');
             $this->authenticationService->auth($sessionEntity);
-            return;
+            return null;
         }
 
         try {
-            $this->withProxyServerVars(fn() => $this->processAssertion($providerId));
+            return $this->withProxyServerVars(fn() => $this->processAssertion($providerId));
         } catch (\Exception $e) {
             $this->logger->error('SAML authentication error: {error}', ['error' => $e->getMessage()]);
             $sessionEntity = new SessionEntity(_('Authentication failed: ') . $e->getMessage(), 'danger');
@@ -216,13 +220,16 @@ class SamlService
             // Clean up session data on exception
             $this->unsetSessionValue('saml_provider');
         }
+
+        return null;
     }
 
     /**
      * Processes the posted SAML response for $providerId: validates it, provisions the
      * user and finishes the login. Runs with the proxy server variables in place.
+     * Returns the path to redirect to when MFA is owed, null otherwise.
      */
-    private function processAssertion(string $providerId): void
+    private function processAssertion(string $providerId): ?string
     {
         $auth = $this->createAuth($providerId);
         if (!$auth) {
@@ -250,14 +257,14 @@ class SamlService
 
             $sessionEntity = new SessionEntity(_('Authentication failed: ') . $errorMsg, 'danger');
             $this->authenticationService->auth($sessionEntity);
-            return;
+            return null;
         }
 
         if (!$auth->isAuthenticated()) {
             $this->logger->warning('SAML authentication failed - not authenticated');
             $sessionEntity = new SessionEntity(_('Authentication failed: Invalid SAML response'), 'danger');
             $this->authenticationService->auth($sessionEntity);
-            return;
+            return null;
         }
 
         // Get user information from SAML attributes
@@ -330,11 +337,7 @@ class SamlService
                 // Use our centralized MFA session manager to set MFA required
                 MfaSessionManager::setMfaRequired($userId);
 
-                // Redirect to MFA verification
-                $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
-                $redirectUrl = $baseUrlPrefix . '/mfa/verify';
-                header("Location: $redirectUrl", true, 302);
-                exit;
+                return '/mfa/verify';
             } else {
                 // No MFA required, proceed with full authentication
                 // NOW it's safe to set userid since MFA is not required
@@ -368,6 +371,8 @@ class SamlService
             // Clean up session data on provisioning failure
             $this->unsetSessionValue('saml_provider');
         }
+
+        return null;
     }
 
     /**

@@ -17,9 +17,11 @@ namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use ReflectionMethod;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * An unauthenticated internal-API request must be answered with a 401 JSON body
@@ -77,5 +79,37 @@ class AuthenticationServiceApiRequestTest extends TestCase
     {
         // An API-looking return URL in the query string must not flip detection.
         $this->assertFalse($this->isApiRequest('/zones/forward?return=/api/v1/zones/1'));
+    }
+
+    public function testUnauthorizedResponseCarriesTheContractBodyAndStatus(): void
+    {
+        $service = new AuthenticationService(
+            $this->createMock(SessionService::class),
+            $this->createMock(RedirectService::class),
+            $this->createMock(ConfigurationInterface::class)
+        );
+
+        $response = $service->apiUnauthorizedResponse();
+
+        $this->assertSame(401, $response->getStatusCode());
+        $this->assertSame('application/json', $response->headers->get('Content-Type'));
+        $this->assertSame('{"error":true,"message":"Unauthorized"}', $response->getContent());
+    }
+
+    public function testApiRequestIsAnsweredWithTheUnauthorizedResponseInsteadOfALoginRedirect(): void
+    {
+        $redirects = $this->createMock(RedirectService::class);
+        $redirects->expects($this->once())->method('send')->with($this->callback(
+            fn(Response $response) => $response->getStatusCode() === 401
+        ));
+        $redirects->expects($this->never())->method('redirectTo');
+        $service = new AuthenticationService(
+            $this->createMock(SessionService::class),
+            $redirects,
+            $this->createMock(ConfigurationInterface::class)
+        );
+        $_SERVER['REQUEST_URI'] = '/api/internal/zone';
+
+        $service->auth(new SessionEntity('', 'danger'));
     }
 }

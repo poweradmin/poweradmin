@@ -20,26 +20,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Service;
-
-use Symfony\Component\HttpFoundation\Response;
+namespace Poweradmin\Application\Service\Auth;
 
 /**
- * Sends a Location header for the given URL, or a prepared response, and ends the request.
+ * What the login form posted: the fields SessionAuthenticator reads before handing the attempt to an authenticator.
  */
-class RedirectService
+final readonly class LoginCredentials
 {
-    public function redirectTo(string $url): void
-    {
-        if (!headers_sent()) {
-            header("Location: $url");
-        }
-        exit;
-    }
-
-    public function send(Response $response): void
-    {
-        $response->send();
-        exit;
+    public function __construct(
+        public string $username,
+        #[\SensitiveParameter] public string $password,
+        public ?string $userlang = null,
+        public string $recaptchaResponse = '',
+    ) {
     }
 }

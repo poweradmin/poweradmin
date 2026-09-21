@@ -129,7 +129,7 @@ class AppInitializer
      */
     private function authenticateUser(): void
     {
-        $sessionAuthenticator = new SessionAuthenticator($this->db, $this->configManager);
+        $sessionAuthenticator = new SessionAuthenticator($this->db, $this->configManager, new Request());
         $sessionAuthenticator->authenticate();
     }
 

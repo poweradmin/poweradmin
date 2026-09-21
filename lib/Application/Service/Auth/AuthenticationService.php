@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Starts or ends a session with a flash message, then redirects to login; API requests get a 401 JSON instead.
@@ -63,7 +64,8 @@ class AuthenticationService
         // them to the HTML login page gives clients a 302 to parse instead of an
         // auth error, so answer unauthenticated API requests with a 401 JSON body.
         if ($this->isApiRequest()) {
-            $this->sendApiUnauthorized();
+            $this->redirectService->send($this->apiUnauthorizedResponse());
+            return;
         }
 
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
@@ -77,14 +79,12 @@ class AuthenticationService
         return RequestContext::isApiRequest(requireTrailingSlash: true);
     }
 
-    private function sendApiUnauthorized(): void
+    /**
+     * The 401 body an unauthenticated API request receives in place of the login redirect.
+     */
+    public function apiUnauthorizedResponse(): JsonResponse
     {
-        if (!headers_sent()) {
-            http_response_code(401);
-            header('Content-Type: application/json');
-        }
-        echo json_encode(['error' => true, 'message' => 'Unauthorized']);
-        exit;
+        return new JsonResponse(['error' => true, 'message' => 'Unauthorized'], 401);
     }
 
     public function redirectToIndex(): void

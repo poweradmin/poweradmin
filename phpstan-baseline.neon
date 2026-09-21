@@ -49,18 +49,6 @@ parameters:
 			path: lib/Application/Service/DnsDataService.php
 
 		-
-			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
-			identifier: disallowed.variable
-			count: 10
-			path: lib/Application/Service/LdapAuthenticator.php
-
-		-
-			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
-			identifier: disallowed.variable
-			count: 7
-			path: lib/Application/Service/SqlAuthenticator.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
@@ -293,12 +281,6 @@ parameters:
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/Zone/ZoneSortingService.php
-
-		-
-			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
-			identifier: disallowed.variable
-			count: 20
-			path: lib/Application/Service/Auth/SessionAuthenticator.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'

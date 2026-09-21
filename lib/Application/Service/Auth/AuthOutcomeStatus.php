@@ -20,26 +20,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Service;
-
-use Symfony\Component\HttpFoundation\Response;
+namespace Poweradmin\Application\Service\Auth;
 
 /**
- * Sends a Location header for the given URL, or a prepared response, and ends the request.
+ * The decision an authenticator reached for the current request.
  */
-class RedirectService
+enum AuthOutcomeStatus
 {
-    public function redirectTo(string $url): void
-    {
-        if (!headers_sent()) {
-            header("Location: $url");
-        }
-        exit;
-    }
-
-    public function send(Response $response): void
-    {
-        $response->send();
-        exit;
-    }
+    case Success;
+    case MfaRequired;
+    case Failure;
 }
