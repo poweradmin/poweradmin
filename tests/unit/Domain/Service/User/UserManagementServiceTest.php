@@ -31,12 +31,15 @@ use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\UserCommandFactory;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
+use Poweradmin\Domain\Service\User\CreateUserCommand;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\User\UserProfileAssembler;
@@ -335,12 +338,27 @@ class UserManagementServiceTest extends TestCase
         $this->assertSame([], $result['groups']);
     }
 
+    /** Runs the request through the controllers' mapping so the wire outcomes stay pinned. */
+    private function createUser(array $input): array
+    {
+        $command = UserCommandFactory::create($input);
+
+        return is_array($command) ? $command : $this->service->createUser($command);
+    }
+
+    private function updateUser(int $userId, array $input): array
+    {
+        $command = UserCommandFactory::update($input);
+
+        return is_array($command) ? $command : $this->service->updateUser($userId, $command);
+    }
+
     // ========== createUser tests ==========
 
     #[Test]
     public function testCreateUserFailsWithMissingUsername(): void
     {
-        $result = $this->service->createUser(['password' => 'test123']);
+        $result = $this->createUser(['password' => 'test123']);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Username is required', $result['message']);
@@ -351,7 +369,7 @@ class UserManagementServiceTest extends TestCase
     #[Test]
     public function testCreateUserFailsWithMissingPassword(): void
     {
-        $result = $this->service->createUser(['username' => 'testuser']);
+        $result = $this->createUser(['username' => 'testuser']);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Password is required', $result['message']);
@@ -362,7 +380,7 @@ class UserManagementServiceTest extends TestCase
     #[Test]
     public function testCreateUserRejectsOverlongUsername(): void
     {
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => str_repeat('a', 65),
             'password' => 'secret123'
         ]);
@@ -379,7 +397,7 @@ class UserManagementServiceTest extends TestCase
             ->with('existinguser')
             ->willReturn(['id' => 1]);
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'existinguser',
             'password' => 'test123'
         ]);
@@ -400,7 +418,7 @@ class UserManagementServiceTest extends TestCase
             ->with('existing@test.com')
             ->willReturn(['id' => 1]);
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'newuser',
             'password' => 'test123',
             'email' => 'existing@test.com'
@@ -427,7 +445,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('createUser')
             ->willReturn(42);
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'newuser',
             'password' => 'test123',
             'email' => 'new@test.com',
@@ -450,7 +468,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('createUser')
             ->willReturn(null);
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'newuser',
             'password' => 'test123',
             'perm_templ' => 3
@@ -473,7 +491,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('createUser')
             ->willThrowException(new Exception('Database error'));
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'newuser',
             'password' => 'test123',
             'perm_templ' => 3
@@ -489,7 +507,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserByUsername')->willReturn(null);
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'baduser',
             'password' => 'test123',
             'perm_templ' => 0,
@@ -507,7 +525,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('permissionTemplateExists')->with(999, 'user')->willReturn(false);
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'baduser',
             'password' => 'test123',
             'perm_templ' => 999,
@@ -524,7 +542,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserByUsername')->willReturn(null);
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'baduser',
             'password' => 'test123',
             'perm_templ' => 'admin',
@@ -542,7 +560,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->expects($this->never())->method('permissionTemplateExists');
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'baduser',
             'password' => 'test123',
             'perm_templ' => '2foo',
@@ -560,12 +578,10 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('permissionTemplateExists')->with(3, 'user')->willReturn(true);
         $this->userRepository->expects($this->once())
             ->method('createUser')
-            ->with($this->callback(function ($userData) {
-                return isset($userData['perm_templ']) && $userData['perm_templ'] === 3;
-            }))
+            ->with($this->callback(fn(CreateUserCommand $user): bool => $user->permissionTemplateId === 3))
             ->willReturn(13);
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'gooduser',
             'password' => 'test123',
             'perm_templ' => '3',
@@ -582,7 +598,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('permissionTemplateExists')->with(6, 'user')->willReturn(false);
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'baduser',
             'password' => 'test123',
             'perm_templ' => 6,
@@ -600,12 +616,10 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('permissionTemplateExists')->with(2, 'user')->willReturn(true);
         $this->userRepository->expects($this->once())
             ->method('createUser')
-            ->with($this->callback(function ($userData) {
-                return isset($userData['perm_templ']) && $userData['perm_templ'] === 2;
-            }))
+            ->with($this->callback(fn(CreateUserCommand $user): bool => $user->permissionTemplateId === 2))
             ->willReturn(42);
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'gooduser',
             'password' => 'test123',
             'perm_templ' => 2,
@@ -622,7 +636,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserByUsername')->willReturn(null);
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'newuser',
             'password' => 'test123',
         ]);
@@ -637,7 +651,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserByUsername')->willReturn(null);
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service->createUser([
+        $result = $this->createUser([
             'username' => 'newuser',
             'password' => 'test123',
             'perm_templ' => null,
@@ -656,7 +670,7 @@ class UserManagementServiceTest extends TestCase
             ->with(999)
             ->willReturn(null);
 
-        $result = $this->service->updateUser(999, ['fullname' => 'New Name']);
+        $result = $this->updateUser(999, ['fullname' => 'New Name']);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('User not found', $result['message']);
@@ -673,7 +687,7 @@ class UserManagementServiceTest extends TestCase
             ->with('existinguser')
             ->willReturn(['id' => 2]); // Different user
 
-        $result = $this->service->updateUser(1, ['username' => 'existinguser']);
+        $result = $this->updateUser(1, ['username' => 'existinguser']);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Username already exists', $result['message']);
@@ -689,7 +703,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->expects($this->never())->method('getUserByEmail');
         $this->userRepository->method('updateUser')->willReturn(true);
 
-        $result = $this->service->updateUser(1, ['email' => 'shared@example.com']);
+        $result = $this->updateUser(1, ['email' => 'shared@example.com']);
 
         $this->assertTrue($result['success']);
     }
@@ -703,7 +717,7 @@ class UserManagementServiceTest extends TestCase
             ->with('taken@example.com')
             ->willReturn(['id' => 2]);
 
-        $result = $this->service->updateUser(1, ['email' => 'taken@example.com']);
+        $result = $this->updateUser(1, ['email' => 'taken@example.com']);
 
         $this->assertFalse($result['success']);
         $this->assertSame(409, $result['status']);
@@ -724,7 +738,7 @@ class UserManagementServiceTest extends TestCase
         // No template change, so the cached permission answers stay valid
         $this->permissionService->expects($this->never())->method('forgetUser');
 
-        $result = $this->service->updateUser(1, ['username' => 'sameuser']);
+        $result = $this->updateUser(1, ['username' => 'sameuser']);
 
         $this->assertTrue($result['success']);
     }
@@ -739,7 +753,7 @@ class UserManagementServiceTest extends TestCase
             ->with(1)
             ->willReturn(true);
 
-        $result = $this->service->updateUser(1, ['active' => false]);
+        $result = $this->updateUser(1, ['active' => false]);
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('Cannot disable the last remaining super admin', $result['message']);
@@ -759,7 +773,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('updateUser')
             ->willReturn(true);
 
-        $result = $this->service->updateUser(1, ['active' => false]);
+        $result = $this->updateUser(1, ['active' => false]);
 
         $this->assertTrue($result['success']);
     }
@@ -770,7 +784,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserById')
             ->willReturn(['id' => 1, 'auth_method' => 'oidc']);
 
-        $result = $this->service->updateUser(1, ['password' => 'newpassword']);
+        $result = $this->updateUser(1, ['password' => 'newpassword']);
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('OIDC', $result['message']);
@@ -782,7 +796,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserById')
             ->willReturn(['id' => 1, 'auth_method' => 'saml']);
 
-        $result = $this->service->updateUser(1, ['password' => 'newpassword']);
+        $result = $this->updateUser(1, ['password' => 'newpassword']);
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('SAML', $result['message']);
@@ -794,7 +808,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserById')
             ->willReturn(['id' => 1, 'auth_method' => 'ldap']);
 
-        $result = $this->service->updateUser(1, ['password' => 'newpassword']);
+        $result = $this->updateUser(1, ['password' => 'newpassword']);
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('LDAP', $result['message']);
@@ -809,7 +823,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('updateUser')
             ->willReturn(true);
 
-        $result = $this->service->updateUser(1, ['password' => 'newpassword']);
+        $result = $this->updateUser(1, ['password' => 'newpassword']);
 
         $this->assertTrue($result['success']);
     }
@@ -821,7 +835,7 @@ class UserManagementServiceTest extends TestCase
             ->willReturn(['id' => 1, 'auth_method' => 'sql']);
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service->updateUser(1, ['perm_templ' => 0]);
+        $result = $this->updateUser(1, ['perm_templ' => 0]);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
@@ -836,7 +850,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('permissionTemplateExists')->with(999, 'user')->willReturn(false);
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service->updateUser(1, ['perm_templ' => 999]);
+        $result = $this->updateUser(1, ['perm_templ' => 999]);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
@@ -850,7 +864,7 @@ class UserManagementServiceTest extends TestCase
             ->willReturn(['id' => 1, 'auth_method' => 'sql']);
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service->updateUser(1, ['perm_templ' => null]);
+        $result = $this->updateUser(1, ['perm_templ' => null]);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
@@ -865,13 +879,11 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('permissionTemplateExists')->with(2, 'user')->willReturn(true);
         $this->userRepository->expects($this->once())
             ->method('updateUser')
-            ->with(1, $this->callback(function ($userData) {
-                return isset($userData['perm_templ']) && $userData['perm_templ'] === 2;
-            }))
+            ->with(1, $this->callback(fn(UpdateUserCommand $changes): bool => $changes->permissionTemplateId === 2))
             ->willReturn(true);
         $this->permissionService->expects($this->once())->method('forgetUser')->with(1);
 
-        $result = $this->service->updateUser(1, ['perm_templ' => 2]);
+        $result = $this->updateUser(1, ['perm_templ' => 2]);
 
         $this->assertTrue($result['success']);
     }
@@ -884,7 +896,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('permissionTemplateExists')->with(6, 'user')->willReturn(false);
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service->updateUser(1, ['perm_templ' => 6]);
+        $result = $this->updateUser(1, ['perm_templ' => 6]);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
@@ -899,7 +911,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->expects($this->never())->method('permissionTemplateExists');
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service->updateUser(1, ['perm_templ' => '2foo']);
+        $result = $this->updateUser(1, ['perm_templ' => '2foo']);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);

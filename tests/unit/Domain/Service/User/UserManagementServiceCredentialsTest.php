@@ -28,12 +28,15 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\UserCommandFactory;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\User\CreateUserCommand;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\User\UserProfileAssembler;
@@ -50,8 +53,8 @@ class UserManagementServiceCredentialsTest extends TestCase
     private UserRepositoryInterface&MockObject $userRepository;
     private PasswordPolicyService&MockObject $passwordPolicy;
     private UserAuthenticationService&MockObject $hasher;
-    /** Row handed to the repository by the last captured create or update call. */
-    private array $stored = [];
+    /** Command handed to the repository by the last captured create or update call. */
+    private CreateUserCommand|UpdateUserCommand|null $stored = null;
 
     protected function setUp(): void
     {
@@ -82,6 +85,21 @@ class UserManagementServiceCredentialsTest extends TestCase
         );
     }
 
+    /** Runs the request through the controllers' mapping so the wire outcomes stay pinned. */
+    private function createUser(bool $ldapEnabled, array $input): array
+    {
+        $command = UserCommandFactory::create($input);
+
+        return is_array($command) ? $command : $this->service($ldapEnabled)->createUser($command);
+    }
+
+    private function updateUser(bool $ldapEnabled, int $userId, array $input): array
+    {
+        $command = UserCommandFactory::update($input);
+
+        return is_array($command) ? $command : $this->service($ldapEnabled)->updateUser($userId, $command);
+    }
+
     private function captureWrite(string $method): void
     {
         $this->userRepository->method($method)
@@ -98,14 +116,14 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->hasher->expects($this->once())->method('hashPassword')->with('Secret123!');
         $this->captureWrite('createUser');
 
-        $result = $this->service()->createUser([
+        $result = $this->createUser(false, [
             'username' => 'newuser',
             'password' => 'Secret123!',
             'perm_templ' => 3,
         ]);
 
         $this->assertTrue($result['success']);
-        $this->assertSame(self::HASHED, $this->stored['password']);
+        $this->assertSame(self::HASHED, $this->stored->password);
     }
 
     #[Test]
@@ -116,7 +134,7 @@ class UserManagementServiceCredentialsTest extends TestCase
             ->willReturn(['Password must be at least 8 characters long', 'Password must contain at least one number']);
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service()->createUser([
+        $result = $this->createUser(false, [
             'username' => 'newuser',
             'password' => 'short',
             'perm_templ' => 3,
@@ -132,7 +150,7 @@ class UserManagementServiceCredentialsTest extends TestCase
     {
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service(false)->createUser([
+        $result = $this->createUser(false, [
             'username' => 'ldapuser',
             'use_ldap' => true,
             'perm_templ' => 3,
@@ -149,7 +167,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->passwordPolicy->method('validatePassword')->willReturn([]);
         $this->captureWrite('createUser');
 
-        $result = $this->service(true)->createUser([
+        $result = $this->createUser(true, [
             'username' => 'newuser',
             'use_ldap' => 'false',
             'password' => 'Secret123!',
@@ -157,8 +175,8 @@ class UserManagementServiceCredentialsTest extends TestCase
         ]);
 
         $this->assertTrue($result['success']);
-        $this->assertSame(0, $this->stored['use_ldap']);
-        $this->assertSame(self::HASHED, $this->stored['password']);
+        $this->assertSame(0, (int)$this->stored->useLdap);
+        $this->assertSame(self::HASHED, $this->stored->password);
     }
 
     #[Test]
@@ -166,7 +184,7 @@ class UserManagementServiceCredentialsTest extends TestCase
     {
         $this->userRepository->expects($this->never())->method('createUser');
 
-        $result = $this->service(true)->createUser([
+        $result = $this->createUser(true, [
             'username' => 'newuser',
             'use_ldap' => 'maybe',
             'password' => 'Secret123!',
@@ -194,11 +212,11 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->hasher->expects($this->never())->method('hashPassword');
         $this->captureWrite('createUser');
 
-        $result = $this->service(true)->createUser(['username' => 'ldapuser', 'use_ldap' => 1, 'perm_templ' => 3] + $extra);
+        $result = $this->createUser(true, ['username' => 'ldapuser', 'use_ldap' => 1, 'perm_templ' => 3] + $extra);
 
         $this->assertTrue($result['success']);
-        $this->assertSame(AuthMethod::LDAP_PASSWORD_PLACEHOLDER, $this->stored['password']);
-        $this->assertSame(1, $this->stored['use_ldap']);
+        $this->assertSame(AuthMethod::LDAP_PASSWORD_PLACEHOLDER, $this->stored->password);
+        $this->assertSame(1, (int)$this->stored->useLdap);
     }
 
     #[Test]
@@ -208,10 +226,10 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->hasher->expects($this->once())->method('hashPassword')->with('Another1!');
         $this->captureWrite('updateUser');
 
-        $result = $this->service()->updateUser(7, ['password' => 'Another1!']);
+        $result = $this->updateUser(false, 7, ['password' => 'Another1!']);
 
         $this->assertTrue($result['success']);
-        $this->assertSame(self::HASHED, $this->stored['password']);
+        $this->assertSame(self::HASHED, $this->stored->password);
     }
 
     #[Test]
@@ -221,7 +239,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->userRepository->expects($this->never())->method('getUserByUsername');
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service()->updateUser(7, ['username' => 'renamed', 'password' => 'lowercase1!']);
+        $result = $this->updateUser(false, 7, ['username' => 'renamed', 'password' => 'lowercase1!']);
 
         $this->assertFalse($result['success']);
         $this->assertSame(400, $result['status']);
@@ -234,7 +252,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->passwordPolicy->expects($this->never())->method('validatePassword');
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service(true)->updateUser(7, ['use_ldap' => 1, 'password' => 'Secret123!']);
+        $result = $this->updateUser(true, 7, ['use_ldap' => 1, 'password' => 'Secret123!']);
 
         $this->assertFalse($result['success']);
         $this->assertSame(400, $result['status']);
@@ -246,7 +264,7 @@ class UserManagementServiceCredentialsTest extends TestCase
     {
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service(false)->updateUser(7, ['use_ldap' => 1]);
+        $result = $this->updateUser(false, 7, ['use_ldap' => 1]);
 
         $this->assertFalse($result['success']);
         $this->assertSame('LDAP authentication is not enabled', $result['message']);
@@ -260,10 +278,10 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->passwordPolicy->method('validatePassword')->willReturn([]);
         $this->captureWrite('updateUser');
 
-        $result = $this->service(true)->updateUser(7, ['use_ldap' => 0, 'password' => 'Secret123!']);
+        $result = $this->updateUser(true, 7, ['use_ldap' => 0, 'password' => 'Secret123!']);
 
         $this->assertTrue($result['success']);
-        $this->assertSame(self::HASHED, $this->stored['password']);
+        $this->assertSame(self::HASHED, $this->stored->password);
     }
 
     #[Test]
@@ -272,11 +290,11 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->hasher->expects($this->never())->method('hashPassword');
         $this->captureWrite('updateUser');
 
-        $result = $this->service(true)->updateUser(7, ['use_ldap' => true]);
+        $result = $this->updateUser(true, 7, ['use_ldap' => true]);
 
         $this->assertTrue($result['success']);
-        $this->assertSame(AuthMethod::LDAP_PASSWORD_PLACEHOLDER, $this->stored['password']);
-        $this->assertSame(1, $this->stored['use_ldap']);
+        $this->assertSame(AuthMethod::LDAP_PASSWORD_PLACEHOLDER, $this->stored->password);
+        $this->assertSame(1, (int)$this->stored->useLdap);
     }
 
     #[Test]
@@ -286,7 +304,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'ldap']);
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service(true)->updateUser(7, ['use_ldap' => false]);
+        $result = $this->updateUser(true, 7, ['use_ldap' => false]);
 
         $this->assertFalse($result['success']);
         $this->assertSame(400, $result['status']);
@@ -300,10 +318,10 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'ldap']);
         $this->captureWrite('updateUser');
 
-        $result = $this->service(true)->updateUser(7, ['fullname' => 'Renamed']);
+        $result = $this->updateUser(true, 7, ['fullname' => 'Renamed']);
 
         $this->assertTrue($result['success']);
-        $this->assertArrayNotHasKey('password', $this->stored);
+        $this->assertNull($this->stored->password);
     }
 
     #[Test]
@@ -312,7 +330,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->passwordPolicy->method('validatePassword')->with('0')->willReturn(['Password must be at least 8 characters long']);
         $this->userRepository->expects($this->never())->method('updateUser');
 
-        $result = $this->service()->updateUser(7, ['password' => '0']);
+        $result = $this->updateUser(false, 7, ['password' => '0']);
 
         $this->assertFalse($result['success']);
         $this->assertSame(400, $result['status']);
@@ -325,7 +343,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->hasher->expects($this->never())->method('hashPassword');
         $this->userRepository->method('updateUser')->willReturn(true);
 
-        $result = $this->service()->updateUser(7, ['fullname' => 'New Name']);
+        $result = $this->updateUser(false, 7, ['fullname' => 'New Name']);
 
         $this->assertTrue($result['success']);
     }

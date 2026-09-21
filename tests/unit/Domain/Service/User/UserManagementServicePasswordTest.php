@@ -24,9 +24,11 @@ namespace Poweradmin\Tests\Unit\Domain\Service\User;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\UserCommandFactory;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\User\UserProfileAssembler;
@@ -85,7 +87,7 @@ class UserManagementServicePasswordTest extends TestCase
         $this->userRepository->expects($this->never())
             ->method('updateUser');
 
-        $result = $this->userManagementService->updateUser($userId, $userData);
+        $result = $this->updateUser($userId, $userData);
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('Cannot set password for OIDC authenticated users', $result['message']);
@@ -112,7 +114,7 @@ class UserManagementServicePasswordTest extends TestCase
         $this->userRepository->expects($this->never())
             ->method('updateUser');
 
-        $result = $this->userManagementService->updateUser($userId, $userData);
+        $result = $this->updateUser($userId, $userData);
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('Cannot set password for SAML authenticated users', $result['message']);
@@ -139,7 +141,7 @@ class UserManagementServicePasswordTest extends TestCase
         $this->userRepository->expects($this->never())
             ->method('updateUser');
 
-        $result = $this->userManagementService->updateUser($userId, $userData);
+        $result = $this->updateUser($userId, $userData);
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('Cannot set password for LDAP authenticated users', $result['message']);
@@ -166,15 +168,15 @@ class UserManagementServicePasswordTest extends TestCase
         // Mock successful update
         $this->userRepository->expects($this->once())
             ->method('updateUser')
-            ->with($userId, $this->callback(function ($data) {
+            ->with($userId, $this->callback(function (UpdateUserCommand $changes) {
                 // Verify password was hashed
-                return isset($data['password'])
-                    && $data['password'] !== 'sqlpassword123' // Not plain text
-                    && password_verify('sqlpassword123', $data['password']); // But verifies correctly
+                return $changes->password !== null
+                    && $changes->password !== 'sqlpassword123' // Not plain text
+                    && password_verify('sqlpassword123', $changes->password); // But verifies correctly
             }))
             ->willReturn(true);
 
-        $result = $this->userManagementService->updateUser($userId, $userData);
+        $result = $this->updateUser($userId, $userData);
 
         $this->assertTrue($result['success']);
         $this->assertEquals('User updated successfully', $result['message']);
@@ -203,7 +205,7 @@ class UserManagementServicePasswordTest extends TestCase
             ->method('updateUser')
             ->willReturn(true);
 
-        $result = $this->userManagementService->updateUser($userId, $userData);
+        $result = $this->updateUser($userId, $userData);
 
         $this->assertTrue($result['success']);
     }
@@ -232,10 +234,10 @@ class UserManagementServicePasswordTest extends TestCase
         // Should be allowed since no password is being set
         $this->userRepository->expects($this->once())
             ->method('updateUser')
-            ->with($userId, $userData)
+            ->with($userId, new UpdateUserCommand(fullname: 'Updated Name', email: 'newemail@example.com'))
             ->willReturn(true);
 
-        $result = $this->userManagementService->updateUser($userId, $userData);
+        $result = $this->updateUser($userId, $userData);
 
         $this->assertTrue($result['success']);
     }
@@ -264,10 +266,10 @@ class UserManagementServicePasswordTest extends TestCase
         // updateUser should be called since empty password skips auth method check
         $this->userRepository->expects($this->once())
             ->method('updateUser')
-            ->with($userId, $userData)
+            ->with($userId, new UpdateUserCommand(fullname: 'Updated Name'))
             ->willReturn(true);
 
-        $result = $this->userManagementService->updateUser($userId, $userData);
+        $result = $this->updateUser($userId, $userData);
 
         // Should succeed even for OIDC user since no password is being set
         $this->assertTrue($result['success']);
@@ -288,7 +290,7 @@ class UserManagementServicePasswordTest extends TestCase
         $this->userRepository->expects($this->never())
             ->method('updateUser');
 
-        $result = $this->userManagementService->updateUser($userId, ['username' => '']);
+        $result = $this->updateUser($userId, ['username' => '']);
 
         $this->assertFalse($result['success']);
         $this->assertSame(400, $result['status']);
@@ -306,7 +308,7 @@ class UserManagementServicePasswordTest extends TestCase
         $this->userRepository->expects($this->never())
             ->method('updateUser');
 
-        $result = $this->userManagementService->updateUser($userId, ['username' => '   ']);
+        $result = $this->updateUser($userId, ['username' => '   ']);
 
         $this->assertFalse($result['success']);
         $this->assertSame(400, $result['status']);
@@ -333,11 +335,19 @@ class UserManagementServicePasswordTest extends TestCase
 
         $this->userRepository->expects($this->once())
             ->method('updateUser')
-            ->with($userId, $userData)
+            ->with($userId, new UpdateUserCommand(fullname: 'Updated Name', email: ''))
             ->willReturn(true);
 
-        $result = $this->userManagementService->updateUser($userId, $userData);
+        $result = $this->updateUser($userId, $userData);
 
         $this->assertTrue($result['success']);
+    }
+
+    /** Runs the request through the controllers' mapping so the wire outcomes stay pinned. */
+    private function updateUser(int $userId, array $input): array
+    {
+        $command = UserCommandFactory::update($input);
+
+        return is_array($command) ? $command : $this->userManagementService->updateUser($userId, $command);
     }
 }

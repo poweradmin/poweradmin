@@ -31,6 +31,8 @@ use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Service\User\CreateUserCommand;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
 
 /**
  * SQL persistence for accounts in the users table, with permission lookups through perm_templ and perm_items.
@@ -743,13 +745,13 @@ class DbUserRepository implements UserRepositoryInterface
         return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
-    public function createUser(array $userData): ?int
+    public function createUser(CreateUserCommand $user): ?int
     {
-        $useLdap = (int)($userData['use_ldap'] ?? 0);
+        $useLdap = (int)$user->useLdap;
 
         // No implicit template: defaulting to id 1 handed the bundled
         // Administrator template to every caller that omitted perm_templ.
-        $permTemplId = (int)($userData['perm_templ'] ?? 0);
+        $permTemplId = (int)$user->permissionTemplateId;
         if ($permTemplId <= 0) {
             return null;
         }
@@ -759,12 +761,12 @@ class DbUserRepository implements UserRepositoryInterface
 
         $stmt = $this->db->prepare($query);
         $result = $stmt->execute([
-            ':username' => $userData['username'],
-            ':password' => $userData['password'],
-            ':fullname' => $userData['fullname'] ?? '',
-            ':email' => $userData['email'] ?? '',
-            ':description' => $userData['description'] ?? '',
-            ':active' => (int)($userData['active'] ?? 1),
+            ':username' => $user->username,
+            ':password' => $user->password,
+            ':fullname' => $user->fullname,
+            ':email' => $user->email,
+            ':description' => $user->description,
+            ':active' => (int)$user->active,
             ':perm_templ' => $permTemplId,
             ':use_ldap' => $useLdap,
             ':auth_method' => AuthMethod::resolve((bool)$useLdap, null)->value
@@ -825,43 +827,42 @@ class DbUserRepository implements UserRepositoryInterface
         return DbCompat::caseInsensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), $column, $placeholder);
     }
 
-    public function updateUser(int $userId, array $userData): bool
+    public function updateUser(int $userId, UpdateUserCommand $changes): bool
     {
-        // Build dynamic update query based on provided fields
+        // Build dynamic update query from the fields the request carried
         $setFields = [];
         $params = [':id' => $userId];
 
-        $allowedFields = ['username', 'password', 'fullname', 'email', 'description', 'active', 'perm_templ', 'use_ldap'];
-
         // An empty password means "leave it unchanged"; callers only hash non-empty
         // values, so storing it verbatim would replace the hash with an empty string.
-        if (array_key_exists('password', $userData) && (string)$userData['password'] === '') {
-            unset($userData['password']);
-        }
+        $columns = [
+            'username' => $changes->username,
+            'password' => $changes->passwordGiven() ? $changes->password : null,
+            'fullname' => $changes->fullname,
+            'email' => $changes->email,
+            'description' => $changes->description,
+            'active' => $changes->active,
+            'perm_templ' => $changes->permissionTemplateId,
+            'use_ldap' => $changes->useLdap,
+        ];
 
-        foreach ($allowedFields as $field) {
-            if (array_key_exists($field, $userData)) {
+        foreach ($columns as $field => $value) {
+            if ($value !== null) {
                 $setFields[] = "{$field} = :{$field}";
-
-                // Handle type casting for specific fields
-                if ($field === 'active' || $field === 'perm_templ' || $field === 'use_ldap') {
-                    $params[":{$field}"] = (int)$userData[$field];
-                } else {
-                    $params[":{$field}"] = $userData[$field];
-                }
+                $params[":{$field}"] = is_bool($value) ? (int)$value : $value;
             }
         }
 
         // A template set by hand is no longer the SSO mapping's to revoke on the next login.
-        if (array_key_exists('perm_templ', $userData)) {
+        if ($changes->permissionTemplateId !== null) {
             $setFields[] = "perm_templ_source = 'admin'";
         }
 
         // Keep auth_method in sync with use_ldap; preserve external methods (oidc, saml)
         // when LDAP is being disabled.
-        if (array_key_exists('use_ldap', $userData)) {
+        if ($changes->useLdap !== null) {
             $setFields[] = 'auth_method = :auth_method';
-            $useLdap = (int)$userData['use_ldap'] === 1;
+            $useLdap = $changes->useLdap;
 
             // The current method is only needed to avoid downgrading an SSO
             // account to sql when LDAP is switched off.

@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\User\UsersController;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use ReflectionMethod;
 
@@ -38,10 +39,8 @@ class UsersControllerSelfEditTest extends TestCase
 {
     private const CALLER_ID = 7;
 
-    /**
-     * @return array<string, mixed> the input handed to UserManagementService::updateUser()
-     */
-    private function updateRow(int $targetId, bool $editOthers): array
+    /** The command handed to UserManagementService::updateUser() */
+    private function updateRow(int $targetId, bool $editOthers): UpdateUserCommand
     {
         $controller = $this->getMockBuilder(UsersController::class)
             ->disableOriginalConstructor()
@@ -56,9 +55,9 @@ class UsersControllerSelfEditTest extends TestCase
         $apiPermissions = $this->createMock(ApiPermissionService::class);
         $apiPermissions->method('canEditUser')->willReturn(true);
 
-        $captured = [];
+        $captured = null;
         $users = $this->createMock(UserManagementService::class);
-        $users->method('updateUser')->willReturnCallback(function (int $id, array $input) use (&$captured): array {
+        $users->method('updateUser')->willReturnCallback(function (int $id, UpdateUserCommand $input) use (&$captured): array {
             $captured = $input;
             return ['success' => true];
         });
@@ -78,14 +77,14 @@ class UsersControllerSelfEditTest extends TestCase
     {
         $input = $this->updateRow(self::CALLER_ID, false);
 
-        $this->assertArrayNotHasKey('username', $input);
-        $this->assertArrayNotHasKey('active', $input);
-        $this->assertSame('Name', $input['fullname']);
+        $this->assertNull($input->username);
+        $this->assertNull($input->active);
+        $this->assertSame('Name', $input->fullname);
     }
 
     public function testEditOthersGrantWritesEveryField(): void
     {
-        $this->assertSame('renamed', $this->updateRow(self::CALLER_ID, true)['username']);
-        $this->assertSame('renamed', $this->updateRow(9, false)['username']);
+        $this->assertSame('renamed', $this->updateRow(self::CALLER_ID, true)->username);
+        $this->assertSame('renamed', $this->updateRow(9, false)->username);
     }
 }

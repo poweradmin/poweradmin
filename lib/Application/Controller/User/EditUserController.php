@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\User;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\UserCommandFactory;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
@@ -100,7 +101,10 @@ class EditUserController extends BaseController
             }
         }
 
-        $updated = $this->services()->userManagementService()->updateUser($editId, $input);
+        $updated = UserCommandFactory::update($input);
+        if (!is_array($updated)) {
+            $updated = $this->services()->userManagementService()->updateUser($editId, $updated);
+        }
         if ($updated['success']) {
             $username = (string)($input['username'] ?? $stored['username']);
             $oldPermTempl = (int)$stored['tpl_id'];

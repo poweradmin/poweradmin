@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
+use Poweradmin\Application\Service\UserCommandFactory;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
@@ -581,7 +582,10 @@ class UsersController extends PublicApiController
             }
 
             // Use the domain service to create user
-            $result = $this->userManagementService->createUser($input);
+            $result = UserCommandFactory::create($input);
+            if (!is_array($result)) {
+                $result = $this->userManagementService->createUser($result);
+            }
 
             if (!$result['success']) {
                 $statusCode = $result['status'] ?? 400;
@@ -764,7 +768,7 @@ class UsersController extends PublicApiController
             // Setting another user's password requires user_passwd_edit_others,
             // matching the web flow; without it the password field is not writable.
             if (
-                UserManagementService::passwordGiven($input)
+                UserCommandFactory::passwordGiven($input)
                 && !$this->apiPermissionService->canEditUserPassword($currentUserId, $targetUserId)
             ) {
                 return $this->returnApiError('You do not have permission to change this user\'s password', 403);
@@ -794,7 +798,10 @@ class UsersController extends PublicApiController
             }
 
             // Use the domain service to update user
-            $result = $this->userManagementService->updateUser($targetUserId, $input);
+            $result = UserCommandFactory::update($input);
+            if (!is_array($result)) {
+                $result = $this->userManagementService->updateUser($targetUserId, $result);
+            }
 
             if (!$result['success']) {
                 $statusCode = $result['status'] ?? 400;

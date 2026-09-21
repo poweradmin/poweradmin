@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipInput;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -79,7 +80,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both');
 
-        $result = $resolver->resolve([], self::CALLER_ID);
+        $result = $resolver->resolve(new ZoneOwnershipInput(), self::CALLER_ID);
 
         $this->assertFalse($result->hasError());
         $this->assertSame(self::CALLER_ID, $result->owner);
@@ -87,35 +88,11 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     }
 
     #[Test]
-    public function rejectsGroupIdsThatAreNotAnArray(): void
-    {
-        $resolver = $this->buildResolver('both');
-
-        $result = $resolver->resolve(['group_ids' => 'nope'], self::CALLER_ID);
-
-        $this->assertTrue($result->hasError());
-        $this->assertSame('group_ids must be an array of integers', $result->error);
-        $this->assertSame(400, $result->status);
-    }
-
-    #[Test]
-    public function rejectsGroupIdsWithNonIntegerEntries(): void
-    {
-        $resolver = $this->buildResolver('both');
-
-        $result = $resolver->resolve(['group_ids' => [1, 'two']], self::CALLER_ID);
-
-        $this->assertTrue($result->hasError());
-        $this->assertSame('group_ids must be an array of integers', $result->error);
-        $this->assertSame(400, $result->status);
-    }
-
-    #[Test]
-    public function deduplicatesGroupIdsAndCoercesNumericStrings(): void
+    public function deduplicatesGroupIds(): void
     {
         $resolver = $this->buildResolver('both', [Permission::PERM_USER_IS_UEBERUSER => true]);
 
-        $result = $resolver->resolve(['group_ids' => [3, '3', 5]], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([3, 3, 5]), self::CALLER_ID);
 
         $this->assertSame([3, 5], $result->groupIds);
     }
@@ -125,7 +102,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('users_only', [Permission::PERM_USER_IS_UEBERUSER => true]);
 
-        $result = $resolver->resolve(['group_ids' => [2]], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([2]), self::CALLER_ID);
 
         $this->assertSame(400, $result->status);
         $this->assertNotNull($result->error);
@@ -137,10 +114,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('groups_only', [Permission::PERM_USER_IS_UEBERUSER => true]);
 
-        $result = $resolver->resolve(
-            ['owner_user_id' => 2, 'group_ids' => [4]],
-            self::CALLER_ID
-        );
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(2, [4]), self::CALLER_ID);
 
         $this->assertSame(400, $result->status);
         $this->assertNotNull($result->error);
@@ -152,7 +126,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('groups_only', [Permission::PERM_USER_IS_UEBERUSER => true]);
 
-        $result = $resolver->resolve(['group_ids' => [4]], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([4]), self::CALLER_ID);
 
         $this->assertFalse($result->hasError());
         $this->assertNull($result->owner);
@@ -167,7 +141,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
         // client must send owner_user_id: null explicitly.
         $resolver = $this->buildResolver('both', [Permission::PERM_USER_IS_UEBERUSER => true]);
 
-        $result = $resolver->resolve(['group_ids' => [9]], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([9]), self::CALLER_ID);
 
         $this->assertFalse($result->hasError());
         $this->assertSame(self::CALLER_ID, $result->owner);
@@ -179,10 +153,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both', [Permission::PERM_USER_IS_UEBERUSER => true]);
 
-        $result = $resolver->resolve(
-            ['owner_user_id' => null, 'group_ids' => [11]],
-            self::CALLER_ID
-        );
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(null, [11]), self::CALLER_ID);
 
         $this->assertFalse($result->hasError());
         $this->assertNull($result->owner);
@@ -195,7 +166,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
         $resolver = $this->buildResolver('groups_only');
 
         // groups_only forces owner=null and groups stay empty -> nothing assigned.
-        $result = $resolver->resolve([], self::CALLER_ID);
+        $result = $resolver->resolve(new ZoneOwnershipInput(), self::CALLER_ID);
 
         $this->assertSame(400, $result->status);
         $this->assertNotNull($result->error);
@@ -207,7 +178,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both');
 
-        $result = $resolver->resolve(['owner_user_id' => 99], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(99), self::CALLER_ID);
 
         $this->assertSame(403, $result->status);
         $this->assertNotNull($result->error);
@@ -219,7 +190,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true], existingUsers: [99]);
 
-        $result = $resolver->resolve(['owner_user_id' => 99], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(99), self::CALLER_ID);
 
         $this->assertFalse($result->hasError());
         $this->assertSame(99, $result->owner);
@@ -230,7 +201,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true]);
 
-        $result = $resolver->resolve(['owner_user_id' => 42], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(42), self::CALLER_ID);
 
         $this->assertSame(404, $result->status);
         $this->assertSame(ZoneOwnershipResolution::UNKNOWN_OWNER, $result->code);
@@ -243,7 +214,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both');
 
-        $result = $resolver->resolve(['owner_user_id' => 42], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(42), self::CALLER_ID);
 
         $this->assertSame(403, $result->status);
         $this->assertSame(ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN, $result->code);
@@ -262,10 +233,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both', [Permission::PERM_USER_IS_UEBERUSER => true]);
 
-        $result = $resolver->resolve(
-            ['owner_user_id' => self::CALLER_ID, 'group_ids' => [42]],
-            self::CALLER_ID
-        );
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(self::CALLER_ID, [42]), self::CALLER_ID);
 
         $this->assertFalse($result->hasError());
         $this->assertSame(self::CALLER_ID, $result->owner);
@@ -277,7 +245,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both', [], [3, 4, 5]);
 
-        $result = $resolver->resolve(['group_ids' => [3, 4]], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([3, 4]), self::CALLER_ID);
 
         // owner_user_id omitted -> caller stays as user owner (backward-compat default)
         $this->assertFalse($result->hasError());
@@ -291,7 +259,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
         // owner_user_id = 0 must not produce an orphaned zone in either mode.
         $resolver = $this->buildResolver('both');
 
-        $result = $resolver->resolve(['owner_user_id' => 0], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(0), self::CALLER_ID);
 
         $this->assertSame(400, $result->status);
         $this->assertNotNull($result->error);
@@ -303,10 +271,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both', [Permission::PERM_USER_IS_UEBERUSER => true]);
 
-        $result = $resolver->resolve(
-            ['owner_user_id' => 0, 'group_ids' => [9]],
-            self::CALLER_ID
-        );
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(0, [9]), self::CALLER_ID);
 
         $this->assertFalse($result->hasError());
         $this->assertNull($result->owner);
@@ -318,7 +283,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both', [Permission::PERM_USER_IS_UEBERUSER => true], [], [3]);
 
-        $result = $resolver->resolve(['group_ids' => [3, 99]], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([3, 99]), self::CALLER_ID);
 
         $this->assertSame(404, $result->status);
         $this->assertNotNull($result->error);
@@ -332,7 +297,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     {
         $resolver = $this->buildResolver('both', [], [3]);
 
-        $result = $resolver->resolve(['group_ids' => [3, 9]], self::CALLER_ID);
+        $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([3, 9]), self::CALLER_ID);
 
         $this->assertSame(403, $result->status);
         $this->assertNotNull($result->error);

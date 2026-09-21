@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\GroupMembershipService;
+use Poweradmin\Application\Service\UserCommandFactory;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PasswordGenerationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
@@ -129,7 +130,10 @@ class AddUserController extends BaseController
             $input['password'] = $generatedPassword;
         }
 
-        $created = $this->services()->userManagementService()->createUser($input);
+        $created = UserCommandFactory::create($input);
+        if (!is_array($created)) {
+            $created = $this->services()->userManagementService()->createUser($created);
+        }
         if ($created['success']) {
             $newUserId = (int)$created['user_id'];
             $successMessage = _('The user has been created successfully.');

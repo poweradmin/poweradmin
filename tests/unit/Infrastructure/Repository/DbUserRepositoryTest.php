@@ -30,6 +30,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Service\User\CreateUserCommand;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
@@ -279,15 +281,9 @@ class DbUserRepositoryTest extends TestCase
 
         $this->db->method('lastInsertId')->willReturn('42');
 
-        $userData = [
-            'username' => 'newuser',
-            'password' => 'hashed_password',
-            'fullname' => 'New User',
-            'email' => 'new@example.com',
-            'perm_templ' => 3
-        ];
+        $user = new CreateUserCommand('newuser', 'hashed_password', 'New User', 'new@example.com', permissionTemplateId: 3);
 
-        $result = $this->repository->createUser($userData);
+        $result = $this->repository->createUser($user);
 
         $this->assertEquals(42, $result);
     }
@@ -309,12 +305,7 @@ class DbUserRepositoryTest extends TestCase
             ->willReturn($stmt);
         $this->db->method('lastInsertId')->willReturn('43');
 
-        $result = $this->repository->createUser([
-            'username' => 'ldapuser',
-            'password' => 'LDAP_USER',
-            'use_ldap' => 1,
-            'perm_templ' => 3,
-        ]);
+        $result = $this->repository->createUser(new CreateUserCommand('ldapuser', 'LDAP_USER', permissionTemplateId: 3, useLdap: true));
 
         $this->assertEquals(43, $result);
     }
@@ -334,11 +325,7 @@ class DbUserRepositoryTest extends TestCase
         $this->db->method('prepare')->willReturn($stmt);
         $this->db->method('lastInsertId')->willReturn('44');
 
-        $result = $this->repository->createUser([
-            'username' => 'sqluser',
-            'password' => 'hashed',
-            'perm_templ' => 3,
-        ]);
+        $result = $this->repository->createUser(new CreateUserCommand('sqluser', 'hashed', permissionTemplateId: 3));
 
         $this->assertEquals(44, $result);
     }
@@ -351,12 +338,7 @@ class DbUserRepositoryTest extends TestCase
 
         $this->db->method('prepare')->willReturn($stmt);
 
-        $userData = [
-            'username' => 'newuser',
-            'password' => 'hashed_password'
-        ];
-
-        $result = $this->repository->createUser($userData);
+        $result = $this->repository->createUser(new CreateUserCommand('newuser', 'hashed_password', permissionTemplateId: 3));
 
         $this->assertNull($result);
     }
@@ -373,7 +355,7 @@ class DbUserRepositoryTest extends TestCase
             ->with($this->stringContains('UPDATE users SET'))
             ->willReturn($stmt);
 
-        $result = $this->repository->updateUser(1, ['fullname' => 'Updated Name']);
+        $result = $this->repository->updateUser(1, new UpdateUserCommand(fullname: 'Updated Name'));
 
         $this->assertTrue($result);
     }
@@ -382,7 +364,7 @@ class DbUserRepositoryTest extends TestCase
     public function testUpdateUserReturnsTrueWhenNoFieldsToUpdate(): void
     {
         // When no valid fields to update, should return true without DB call
-        $result = $this->repository->updateUser(1, []);
+        $result = $this->repository->updateUser(1, new UpdateUserCommand());
 
         $this->assertTrue($result);
     }
@@ -407,7 +389,7 @@ class DbUserRepositoryTest extends TestCase
             ))
             ->willReturn($stmt);
 
-        $this->assertTrue($this->repository->updateUser(1, ['use_ldap' => 1]));
+        $this->assertTrue($this->repository->updateUser(1, new UpdateUserCommand(useLdap: true)));
     }
 
     #[Test]
@@ -425,7 +407,7 @@ class DbUserRepositoryTest extends TestCase
             ))
             ->willReturn($stmt);
 
-        $this->assertTrue($this->repository->updateUser(1, ['perm_templ' => 3]));
+        $this->assertTrue($this->repository->updateUser(1, new UpdateUserCommand(permissionTemplateId: 3)));
     }
 
     #[Test]
@@ -446,7 +428,7 @@ class DbUserRepositoryTest extends TestCase
 
         $this->db->method('prepare')->willReturnOnConsecutiveCalls($selectStmt, $updateStmt);
 
-        $this->assertTrue($this->repository->updateUser(1, ['use_ldap' => 0]));
+        $this->assertTrue($this->repository->updateUser(1, new UpdateUserCommand(useLdap: false)));
     }
 
     #[Test]
@@ -467,29 +449,17 @@ class DbUserRepositoryTest extends TestCase
 
         $this->db->method('prepare')->willReturnOnConsecutiveCalls($selectStmt, $updateStmt);
 
-        $this->assertTrue($this->repository->updateUser(1, ['use_ldap' => 0]));
+        $this->assertTrue($this->repository->updateUser(1, new UpdateUserCommand(useLdap: false)));
     }
 
     #[Test]
-    public function testUpdateUserIgnoresInvalidFields(): void
+    public function testUpdateUserWritesOnlyTheFieldsGiven(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-
-        $this->db->expects($this->once())
-            ->method('prepare')
-            ->with($this->logicalAnd(
-                $this->stringContains('fullname'),
-                $this->logicalNot($this->stringContains('invalid_field'))
-            ))
-            ->willReturn($stmt);
-
-        $result = $this->repository->updateUser(1, [
-            'fullname' => 'Updated Name',
-            'invalid_field' => 'should be ignored'
-        ]);
+        [$result, $query, $params] = $this->captureUpdateUser(1, new UpdateUserCommand(fullname: 'Updated Name', active: false));
 
         $this->assertTrue($result);
+        $this->assertSame('UPDATE users SET fullname = :fullname, active = :active WHERE id = :id', $query);
+        $this->assertSame([':id' => 1, ':fullname' => 'Updated Name', ':active' => 0], $params);
     }
 
     // ========== getUserPermissions tests ==========
@@ -781,7 +751,7 @@ class DbUserRepositoryTest extends TestCase
     /**
      * @return array{0: bool, 1: string, 2: array} the result, the prepared SQL and the bound params
      */
-    private function captureUpdateUser(int $userId, array $userData): array
+    private function captureUpdateUser(int $userId, UpdateUserCommand $changes): array
     {
         $query = null;
         $params = [];
@@ -797,14 +767,14 @@ class DbUserRepositoryTest extends TestCase
             return $stmt;
         });
 
-        return [$this->repository->updateUser($userId, $userData), (string)$query, (array)$params];
+        return [$this->repository->updateUser($userId, $changes), (string)$query, (array)$params];
     }
 
     #[Test]
     public function testUpdateUserIgnoresEmptyPassword(): void
     {
         foreach (['', null] as $empty) {
-            [$result, $query, $params] = $this->captureUpdateUser(1, ['fullname' => 'Updated Name', 'password' => $empty]);
+            [$result, $query, $params] = $this->captureUpdateUser(1, new UpdateUserCommand(fullname: 'Updated Name', password: $empty));
 
             $this->assertTrue($result);
             $this->assertStringNotContainsString('password', $query);
@@ -817,13 +787,13 @@ class DbUserRepositoryTest extends TestCase
     {
         $this->db->expects($this->never())->method('prepare');
 
-        $this->assertTrue($this->repository->updateUser(1, ['password' => '']));
+        $this->assertTrue($this->repository->updateUser(1, new UpdateUserCommand(password: '')));
     }
 
     #[Test]
     public function testUpdateUserStillWritesNonEmptyPassword(): void
     {
-        [$result, $query] = $this->captureUpdateUser(1, ['password' => 'hashed-value']);
+        [$result, $query] = $this->captureUpdateUser(1, new UpdateUserCommand(password: 'hashed-value'));
 
         $this->assertTrue($result);
         $this->assertStringContainsString('password = :password', $query);

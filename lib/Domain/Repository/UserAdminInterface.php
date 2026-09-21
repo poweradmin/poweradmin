@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Repository;
 
+use Poweradmin\Domain\Service\User\CreateUserCommand;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
+
 /**
  * Account administration: listing, creating, updating and deleting users and moving their zones.
  */
@@ -101,19 +104,19 @@ interface UserAdminInterface
     /**
      * Create a new user
      *
-     * @param array $userData User data containing username, password, email, etc.
+     * @param CreateUserCommand $user The row to write, with the password already in its stored form
      * @return int|null User ID if created successfully, null otherwise
      */
-    public function createUser(array $userData): ?int;
+    public function createUser(CreateUserCommand $user): ?int;
 
     /**
      * Update a user's information
      *
      * @param int $userId User ID to update
-     * @param array $userData Array of user data to update
+     * @param UpdateUserCommand $changes The fields to write (null ones stay), the password already in its stored form
      * @return bool True if updated successfully, false otherwise
      */
-    public function updateUser(int $userId, array $userData): bool;
+    public function updateUser(int $userId, UpdateUserCommand $changes): bool;
 
     /**
      * Assign permission template to a user

@@ -167,13 +167,11 @@ class UserManagementService
     /**
      * Create a new user
      *
-     * @param array $userData User data containing username, fullname, email, password, etc.
      * @return array Result with success status, message, and user ID if successful
      */
-    public function createUser(array $userData): array
+    public function createUser(CreateUserCommand $command): array
     {
-        // Validate required fields
-        if (empty($userData['username'])) {
+        if ($command->username === '') {
             return [
                 'success' => false,
                 'message' => 'Username is required',
@@ -182,13 +180,12 @@ class UserManagementService
             ];
         }
 
-        if (($ldapError = $this->useLdapError($userData)) !== null) {
+        if (($ldapError = $this->useLdapError($command->useLdap)) !== null) {
             return $ldapError;
         }
-        $userData = self::normalizeUseLdap($userData);
-        $useLdap = ($userData['use_ldap'] ?? 0) === 1;
+        $useLdap = $command->useLdap;
 
-        if (!$useLdap && !self::passwordGiven($userData)) {
+        if (!$useLdap && !$command->passwordGiven()) {
             return [
                 'success' => false,
                 'message' => 'Password is required',
@@ -197,16 +194,17 @@ class UserManagementService
             ];
         }
 
-        if (!$useLdap && ($policyError = $this->passwordPolicyError($userData['password'])) !== null) {
+        if (!$useLdap && ($policyError = $this->passwordPolicyError((string)$command->password)) !== null) {
             return $policyError;
         }
 
-        if (($lengthError = $this->validateFieldLengths($userData)) !== null) {
+        $lengthError = $this->validateFieldLengths($command->username, $command->fullname, $command->email, $command->description);
+        if ($lengthError !== null) {
             return $lengthError;
         }
 
         // Check if username already exists
-        if ($this->userRepository->getUserByUsername($userData['username'])) {
+        if ($this->userRepository->getUserByUsername($command->username)) {
             return [
                 'success' => false,
                 'message' => 'Username already exists',
@@ -216,7 +214,7 @@ class UserManagementService
         }
 
         // Check if email already exists (if provided)
-        if (!empty($userData['email']) && $this->userRepository->getUserByEmail($userData['email'])) {
+        if ($command->email !== '' && $this->userRepository->getUserByEmail($command->email)) {
             return [
                 'success' => false,
                 'message' => 'Email already exists',
@@ -227,7 +225,7 @@ class UserManagementService
 
         // A template must be resolved by now; without one the row would inherit
         // Administrator. Group templates are rejected to match the web UI flow.
-        if (!array_key_exists('perm_templ', $userData) || $userData['perm_templ'] === null) {
+        if ($command->permissionTemplateId === null) {
             return [
                 'success' => false,
                 'message' => 'No permission template available to assign',
@@ -236,23 +234,16 @@ class UserManagementService
             ];
         }
 
-        $permTemplId = $this->normalizePermTemplId($userData['perm_templ']);
-        if ($permTemplId === null || !$this->permissionTemplateExists($permTemplId, 'user')) {
-            return [
-                'success' => false,
-                'message' => 'Permission template not found',
-                'status' => 400,
-                'code' => self::ERR_TEMPLATE_NOT_FOUND,
-            ];
+        if (!$this->permissionTemplateExists($command->permissionTemplateId, 'user')) {
+            return $this->templateNotFound();
         }
-        $userData['perm_templ'] = $permTemplId;
 
         try {
-            $userData['password'] = $useLdap
+            $stored = $command->withPassword($useLdap
                 ? AuthMethod::LDAP_PASSWORD_PLACEHOLDER
-                : $this->authService->hashPassword($userData['password']);
+                : $this->authService->hashPassword((string)$command->password));
 
-            $userId = $this->userRepository->createUser($userData);
+            $userId = $this->userRepository->createUser($stored);
 
             if (!$userId) {
                 return [
@@ -282,10 +273,9 @@ class UserManagementService
      * Update an existing user
      *
      * @param int $userId User ID to update
-     * @param array $userData Updated user data
      * @return array Result with success status and message
      */
-    public function updateUser(int $userId, array $userData): array
+    public function updateUser(int $userId, UpdateUserCommand $command): array
     {
         $user = $this->userRepository->getUserById($userId);
         if ($user === null) {
@@ -297,26 +287,26 @@ class UserManagementService
             ];
         }
 
-        if (($lengthError = $this->validateFieldLengths($userData)) !== null) {
+        $lengthError = $this->validateFieldLengths($command->username, $command->fullname, $command->email, $command->description);
+        if ($lengthError !== null) {
             return $lengthError;
         }
 
-        if (($emptyError = $this->validateFieldsNotEmpty($userData)) !== null) {
+        if (($emptyError = $this->validateFieldsNotEmpty($command->username)) !== null) {
             return $emptyError;
         }
 
-        if (($ldapError = $this->useLdapError($userData)) !== null) {
+        if (($ldapError = $this->useLdapError($command->useLdap)) !== null) {
             return $ldapError;
         }
-        $userData = self::normalizeUseLdap($userData);
 
         // Judge by the method the repository will persist, so switching an LDAP
         // account back to SQL in the same request may (and must) set a password.
         $storedMethod = AuthMethod::fromDb($user['auth_method'] ?? null);
-        $targetMethod = array_key_exists('use_ldap', $userData)
-            ? AuthMethod::resolve($userData['use_ldap'] === 1, $user['auth_method'] ?? null)
+        $targetMethod = $command->useLdap !== null
+            ? AuthMethod::resolve($command->useLdap, $user['auth_method'] ?? null)
             : $storedMethod;
-        $passwordGiven = self::passwordGiven($userData);
+        $passwordGiven = $command->passwordGiven();
 
         if ($passwordGiven && $targetMethod->isExternal()) {
             return [
@@ -332,7 +322,7 @@ class UserManagementService
         }
 
         if ($targetMethod === AuthMethod::LDAP && $storedMethod !== AuthMethod::LDAP) {
-            $userData['password'] = AuthMethod::LDAP_PASSWORD_PLACEHOLDER;
+            $command = $command->withPassword(AuthMethod::LDAP_PASSWORD_PLACEHOLDER);
         }
 
         if ($storedMethod === AuthMethod::LDAP && $targetMethod === AuthMethod::SQL && !$passwordGiven) {
@@ -344,14 +334,14 @@ class UserManagementService
             ];
         }
 
-        if ($passwordGiven && ($policyError = $this->passwordPolicyError($userData['password'])) !== null) {
+        if ($passwordGiven && ($policyError = $this->passwordPolicyError((string)$command->password)) !== null) {
             return $policyError;
         }
 
         // A changed username must be free; an unchanged one is not looked up, since
         // legacy data may hold it twice and the lookup could land on the other row.
-        if (!empty($userData['username']) && (string)$userData['username'] !== (string)($user['username'] ?? '')) {
-            $existingUser = $this->userRepository->getUserByUsername($userData['username']);
+        if ($command->username !== null && $command->username !== (string)($user['username'] ?? '')) {
+            $existingUser = $this->userRepository->getUserByUsername($command->username);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return [
                     'success' => false,
@@ -364,8 +354,8 @@ class UserManagementService
 
         // A changed email must be free; an unchanged one stays editable even where
         // older data already holds duplicates.
-        if (!empty($userData['email']) && strcasecmp((string)$userData['email'], (string)($user['email'] ?? '')) !== 0) {
-            $existingUser = $this->userRepository->getUserByEmail($userData['email']);
+        if ($command->email !== null && $command->email !== '' && strcasecmp($command->email, (string)($user['email'] ?? '')) !== 0) {
+            $existingUser = $this->userRepository->getUserByEmail($command->email);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return [
                     'success' => false,
@@ -376,25 +366,13 @@ class UserManagementService
             }
         }
 
-        // Reject invalid permission template ids; on update path null also fails (no repo default).
         // Group templates are rejected to match the web UI flow.
-        if (array_key_exists('perm_templ', $userData)) {
-            $permTemplId = $userData['perm_templ'] === null
-                ? null
-                : $this->normalizePermTemplId($userData['perm_templ']);
-            if ($permTemplId === null || !$this->permissionTemplateExists($permTemplId, 'user')) {
-                return [
-                    'success' => false,
-                    'message' => 'Permission template not found',
-                    'status' => 400,
-                    'code' => self::ERR_TEMPLATE_NOT_FOUND,
-                ];
-            }
-            $userData['perm_templ'] = $permTemplId;
+        if ($command->permissionTemplateId !== null && !$this->permissionTemplateExists($command->permissionTemplateId, 'user')) {
+            return $this->templateNotFound();
         }
 
         // Check if trying to disable the last remaining uberuser
-        if (array_key_exists('active', $userData) && !$userData['active'] && $this->userRepository->isLastUberuser($userId)) {
+        if ($command->active === false && $this->userRepository->isLastUberuser($userId)) {
             return [
                 'success' => false,
                 'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
@@ -405,10 +383,10 @@ class UserManagementService
 
         try {
             if ($passwordGiven) {
-                $userData['password'] = $this->authService->hashPassword($userData['password']);
+                $command = $command->withPassword($this->authService->hashPassword((string)$command->password));
             }
 
-            $success = $this->userRepository->updateUser($userId, $userData);
+            $success = $this->userRepository->updateUser($userId, $command);
 
             if (!$success) {
                 return [
@@ -419,7 +397,7 @@ class UserManagementService
                 ];
             }
 
-            if (array_key_exists('perm_templ', $userData)) {
+            if ($command->permissionTemplateId !== null) {
                 $this->permissions->forgetUser($userId);
             }
 
@@ -691,27 +669,10 @@ class UserManagementService
         }
     }
 
-    /**
-     * The error for a use_ldap value that is not a boolean or asks for LDAP while
-     * it is disabled, or null when the flag is absent or acceptable.
-     */
-    private function useLdapError(array $userData): ?array
+    /** The error for a request that asks for LDAP while it is disabled, or null. */
+    private function useLdapError(?bool $useLdap): ?array
     {
-        if (!array_key_exists('use_ldap', $userData)) {
-            return null;
-        }
-
-        $useLdap = filter_var($userData['use_ldap'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-        if ($useLdap === null) {
-            return [
-                'success' => false,
-                'message' => 'use_ldap must be a boolean',
-                'status' => 400,
-                'code' => self::ERR_INVALID_LDAP,
-            ];
-        }
-
-        if ($useLdap && !$this->ldapEnabled) {
+        if ($useLdap === true && !$this->ldapEnabled) {
             return [
                 'success' => false,
                 'message' => 'LDAP authentication is not enabled',
@@ -723,23 +684,14 @@ class UserManagementService
         return null;
     }
 
-    /**
-     * Coerces an accepted use_ldap to 0/1 so the service and the repository agree on it.
-     * Missing on create means 0; missing on update leaves the stored value alone.
-     */
-    private static function normalizeUseLdap(array $userData): array
+    private function templateNotFound(): array
     {
-        if (array_key_exists('use_ldap', $userData)) {
-            $userData['use_ldap'] = filter_var($userData['use_ldap'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
-        }
-
-        return $userData;
-    }
-
-    /** Only the empty string means "leave unchanged"; "0" is a password. */
-    public static function passwordGiven(array $userData): bool
-    {
-        return isset($userData['password']) && (string)$userData['password'] !== '';
+        return [
+            'success' => false,
+            'message' => 'Permission template not found',
+            'status' => 400,
+            'code' => self::ERR_TEMPLATE_NOT_FOUND,
+        ];
     }
 
     /** First policy violation as a 400 result, or null when the password passes. */
@@ -774,15 +726,12 @@ class UserManagementService
      * Reject field values longer than their database column so an over-long value
      * returns a clear 400 instead of surfacing as a database truncation 500.
      * Returns a service error array on the first offending field, or null.
-     *
-     * @param array $userData
-     * @return array|null
      */
-    private function validateFieldLengths(array $userData): ?array
+    private function validateFieldLengths(?string $username, ?string $fullname, ?string $email, ?string $description): ?array
     {
-        $limits = ['username' => 64, 'fullname' => 255, 'email' => 255, 'description' => 1024];
-        foreach ($limits as $field => $max) {
-            if (isset($userData[$field]) && is_string($userData[$field]) && mb_strlen($userData[$field]) > $max) {
+        $limits = ['username' => [$username, 64], 'fullname' => [$fullname, 255], 'email' => [$email, 255], 'description' => [$description, 1024]];
+        foreach ($limits as $field => [$value, $max]) {
+            if ($value !== null && mb_strlen($value) > $max) {
                 return [
                     'success' => false,
                     'message' => ucfirst($field) . " must not exceed $max characters",
@@ -800,39 +749,16 @@ class UserManagementService
      * Email is deliberately not checked: IdP-managed accounts legitimately carry an
      * empty address, and a client echoing that value back must not be rejected.
      * An empty password means "leave unchanged" and is filtered by the repository.
-     *
-     * @param array $userData
-     * @return array|null
      */
-    private function validateFieldsNotEmpty(array $userData): ?array
+    private function validateFieldsNotEmpty(?string $username): ?array
     {
-        if (array_key_exists('username', $userData) && trim((string)$userData['username']) === '') {
+        if ($username !== null && trim($username) === '') {
             return [
                 'success' => false,
                 'message' => 'Username cannot be empty',
                 'status' => 400,
                 'code' => self::ERR_USERNAME_REQUIRED,
             ];
-        }
-        return null;
-    }
-
-    /**
-     * Coerce an API-supplied perm_templ to a positive int, or null if invalid.
-     * Accepts ints and numeric strings; rejects malformed strings like "2foo"
-     * (which (int) would silently truncate to 2).
-     *
-     * @param mixed $value
-     * @return int|null
-     */
-    private function normalizePermTemplId(mixed $value): ?int
-    {
-        if (is_int($value)) {
-            return $value > 0 ? $value : null;
-        }
-        if (is_string($value) && $value !== '' && ctype_digit($value)) {
-            $intValue = (int)$value;
-            return $intValue > 0 ? $intValue : null;
         }
         return null;
     }

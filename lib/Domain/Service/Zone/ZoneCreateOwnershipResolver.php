@@ -29,8 +29,8 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
  * Resolves the user-owner and group-owner assignment for a new zone, applying
- * the active zone_ownership_mode and permission rules. The API hands in its
- * JSON body; the web forms hand in the owner and groups they already parsed.
+ * the active zone_ownership_mode and permission rules. The API hands in the
+ * typed request input; the web forms hand in the owner and groups they parsed.
  */
 class ZoneCreateOwnershipResolver
 {
@@ -68,28 +68,14 @@ class ZoneCreateOwnershipResolver
     }
 
     /**
-     * @param array<string, mixed> $input  Decoded JSON body.
-     * @param int                  $callerUserId  Authenticated caller.
+     * Applies the ownership mode to what the request asked for, then the shared
+     * ownership rules of {@see resolveOwnership()}.
      */
-    public function resolve(array $input, int $callerUserId): ZoneOwnershipResolution
+    public function resolve(ZoneOwnershipInput $input, int $callerUserId): ZoneOwnershipResolution
     {
-        $ownerSupplied = array_key_exists('owner_user_id', $input);
-        $groupIdsSupplied = array_key_exists('group_ids', $input);
+        $groupIds = $input->groupIds ?? [];
 
-        $groupIds = [];
-        if ($groupIdsSupplied) {
-            if (!is_array($input['group_ids'])) {
-                return ZoneOwnershipResolution::error('group_ids must be an array of integers', 400, ZoneOwnershipResolution::INVALID_INPUT);
-            }
-            foreach ($input['group_ids'] as $candidate) {
-                if (!is_int($candidate) && !(is_string($candidate) && ctype_digit($candidate))) {
-                    return ZoneOwnershipResolution::error('group_ids must be an array of integers', 400, ZoneOwnershipResolution::INVALID_INPUT);
-                }
-                $groupIds[] = (int)$candidate;
-            }
-        }
-
-        if (!$this->mode->isUserOwnerAllowed() && $ownerSupplied && $input['owner_user_id'] !== null) {
+        if (!$this->mode->isUserOwnerAllowed() && $input->ownerSupplied && $input->ownerUserId !== null) {
             return ZoneOwnershipResolution::error(
                 'User-owner assignment is disabled by the current zone ownership mode (groups_only). Omit owner_user_id or set it to null.',
                 400,
@@ -106,25 +92,14 @@ class ZoneCreateOwnershipResolver
 
         if (!$this->mode->isUserOwnerAllowed()) {
             $owner = null;
+        } elseif ($input->ownerSupplied) {
+            // An explicit null opts out of the user-owner default (a group-only zone);
+            // 0 or a negative id reads as "no user owner", as zones.owner=0 does everywhere.
+            $owner = $input->ownerUserId !== null && $input->ownerUserId > 0 ? $input->ownerUserId : null;
         } else {
-            $rawOwner = $input['owner_user_id'] ?? null;
-            if ($ownerSupplied && $rawOwner === null) {
-                // Explicit null opts out of the user-owner default; required to
-                // create a group-only zone via API in modes that allow it.
-                $owner = null;
-            } elseif ($ownerSupplied) {
-                if (!is_int($rawOwner) && !(is_string($rawOwner) && ctype_digit($rawOwner))) {
-                    return ZoneOwnershipResolution::error('owner_user_id must be a numeric ID', 400, ZoneOwnershipResolution::INVALID_INPUT);
-                }
-                $parsed = (int)$rawOwner;
-                // Treat 0/negative as "no user owner"; matches how zones.owner=0
-                // is read everywhere else and prevents orphaned-zone creation.
-                $owner = $parsed > 0 ? $parsed : null;
-            } else {
-                // Backward-compatible default: omitted owner_user_id keeps the
-                // caller as user owner even when group_ids is supplied.
-                $owner = $callerUserId;
-            }
+            // Backward-compatible default: an omitted owner keeps the caller as
+            // user owner even when groups are supplied.
+            $owner = $callerUserId;
         }
 
         return $this->resolveOwnership($owner, $groupIds, $callerUserId);

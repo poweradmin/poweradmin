@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\UserCommandFactory;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
@@ -130,7 +131,10 @@ class UsersController extends BaseController
             }
         }
 
-        $updated = $this->services()->userManagementService()->updateUser($targetId, $input);
+        $updated = UserCommandFactory::update($input);
+        if (!is_array($updated)) {
+            $updated = $this->services()->userManagementService()->updateUser($targetId, $updated);
+        }
         if (!$updated['success']) {
             $this->setMessage('users', 'error', UserFormMessages::errorMessage($updated));
             return false;

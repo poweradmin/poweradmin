@@ -23,7 +23,9 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Service\ZoneOwnershipInputFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipInput;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -530,7 +532,10 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to create zones of this type', 403);
             }
 
-            $resolved = $this->services()->zoneCreateOwnershipResolver()->resolve($input, $userId);
+            $resolved = ZoneOwnershipInputFactory::fromJsonBody($input);
+            if ($resolved instanceof ZoneOwnershipInput) {
+                $resolved = $this->services()->zoneCreateOwnershipResolver()->resolve($resolved, $userId);
+            }
             if ($resolved->hasError()) {
                 return $this->returnApiError($resolved->error, $resolved->status);
             }
