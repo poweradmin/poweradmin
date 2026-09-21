@@ -258,7 +258,9 @@ class SqlDomainRepository implements DomainRepositoryInterface
         if ($letterstart != 'all' && $rowamount < Constants::DEFAULT_MAX_ROWS) {
             $originalSqlMode = DbCompat::handleSqlMode($this->db, $db_type);
 
-            if ($db_type == 'pgsql' && $sortby == "$domains_table.name") {
+            // The natural sort is an expression over name, so a driver that cannot
+            // ORDER BY it under DISTINCT pages by the plain column instead.
+            if (!DbCompat::distinctAllowsOrderByExpression($db_type) && $sortby == "$domains_table.name") {
                 $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
                             FROM $domains_table";
 
@@ -299,7 +301,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                                 FROM $domains_table
                                 LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
                                 LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id";
-                } elseif ($db_type === 'mysql' && $sortUsesAggregateOrJoin) {
+                } elseif (DbCompat::distinctNeedsOrderColumnsSelected($db_type) && $sortUsesAggregateOrJoin) {
                     $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
                                 FROM $domains_table";
                 } else {
@@ -340,7 +342,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                 if ($sortByGroupInner) {
                     $id_query .= " GROUP BY $domains_table.id, $domains_table.name"
                         . " ORDER BY MIN(user_groups.name) " . $sortDirection . ", $domains_table.name";
-                } elseif ($db_type === 'mysql' && $sortUsesAggregateOrJoin) {
+                } elseif (DbCompat::distinctNeedsOrderColumnsSelected($db_type) && $sortUsesAggregateOrJoin) {
                     $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 } elseif (!$sortUsesAggregateOrJoin) {
                     $id_query .= " ORDER BY " . $sql_sortby;

@@ -412,6 +412,54 @@ final class DbCompat
     }
 
     /**
+     * Column reference that compares byte-for-byte, for a secret that must match
+     * exactly. MySQL/MariaDB compare through a case-insensitive collation by
+     * default; BINARY restores the byte comparison whatever the column's charset,
+     * which binaryCollation() cannot promise on a latin1 or utf8mb3 column.
+     * PostgreSQL and SQLite compare bytes already.
+     *
+     * @param string|null $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @param string $column The column reference to compare
+     * @return string The column reference to use in the comparison
+     */
+    public static function binaryCompare(?string $db_type, string $column): string
+    {
+        return match ($db_type) {
+            'mysql', 'mysqli' => "BINARY $column",
+            default => $column,
+        };
+    }
+
+    /**
+     * Whether SELECT DISTINCT may ORDER BY an expression over selected columns
+     * that is not itself in the select list. PostgreSQL rejects it ("ORDER BY
+     * expressions must appear in select list"); MySQL and SQLite allow it.
+     *
+     * @param string|null $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @return bool
+     */
+    public static function distinctAllowsOrderByExpression(?string $db_type): bool
+    {
+        return $db_type !== 'pgsql';
+    }
+
+    /**
+     * Whether SELECT DISTINCT must carry every ORDER BY column in its select
+     * list. MySQL rejects a column missing from the list (error 3065) and
+     * PostgreSQL rejects any ORDER BY entry outside it; SQLite sorts freely.
+     *
+     * @param string|null $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @return bool
+     */
+    public static function distinctNeedsOrderColumnsSelected(?string $db_type): bool
+    {
+        return match ($db_type) {
+            'mysql', 'mysqli', 'pgsql' => true,
+            default => false,
+        };
+    }
+
+    /**
      * Equality that ignores case but not accents on every backend, for values
      * like email addresses where User@x and user@x are one identity.
      *

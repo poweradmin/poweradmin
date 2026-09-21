@@ -275,6 +275,31 @@ class DbCompatTest extends TestCase
         $this->assertSame('LOWER(email) = LOWER(?)', DbCompat::caseInsensitiveEquals('sqlite', 'email'));
     }
 
+    public function testBinaryCompareForcesByteComparisonOnMySQLOnly(): void
+    {
+        $this->assertSame('BINARY secret_key', DbCompat::binaryCompare('mysql', 'secret_key'));
+        $this->assertSame('BINARY secret_key', DbCompat::binaryCompare('mysqli', 'secret_key'));
+        $this->assertSame('secret_key', DbCompat::binaryCompare('pgsql', 'secret_key'));
+        $this->assertSame('secret_key', DbCompat::binaryCompare('sqlite', 'secret_key'));
+        $this->assertSame('secret_key', DbCompat::binaryCompare(null, 'secret_key'));
+    }
+
+    public function testOnlyPostgresRefusesOrderByExpressionsUnderDistinct(): void
+    {
+        $this->assertFalse(DbCompat::distinctAllowsOrderByExpression('pgsql'));
+        $this->assertTrue(DbCompat::distinctAllowsOrderByExpression('mysql'));
+        $this->assertTrue(DbCompat::distinctAllowsOrderByExpression('mysqli'));
+        $this->assertTrue(DbCompat::distinctAllowsOrderByExpression('sqlite'));
+    }
+
+    public function testSqliteAloneOrdersDistinctRowsByUnselectedColumns(): void
+    {
+        $this->assertTrue(DbCompat::distinctNeedsOrderColumnsSelected('mysql'));
+        $this->assertTrue(DbCompat::distinctNeedsOrderColumnsSelected('mysqli'));
+        $this->assertTrue(DbCompat::distinctNeedsOrderColumnsSelected('pgsql'));
+        $this->assertFalse(DbCompat::distinctNeedsOrderColumnsSelected('sqlite'));
+    }
+
     public function testCastToStringUsesAsciiCharsetOnMySQL(): void
     {
         // ascii must match record_comment_links.record_id or MariaDB 11.6+ rejects the comparison

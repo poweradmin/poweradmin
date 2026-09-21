@@ -450,6 +450,30 @@ class DbApiKeyRepositoryTest extends TestCase
     }
 
     #[Test]
+    public function testLegacyPlaintextLookupComparesBytesOnMysqlOnly(): void
+    {
+        foreach (['mysql' => 'BINARY secret_key = :secretKey', 'pgsql' => 'WHERE secret_key = :secretKey', 'sqlite' => 'WHERE secret_key = :secretKey'] as $dbType => $expected) {
+            $db = $this->createMock(PDO::class);
+            $config = $this->createMock(ConfigurationManager::class);
+            $config->method('get')->willReturnCallback(fn($group, $key, $default = null) => $group === 'database' && $key === 'type' ? $dbType : $default);
+
+            $miss = $this->createMock(PDOStatement::class);
+            $miss->method('execute')->willReturn(true);
+            $miss->method('fetch')->willReturn(false);
+            $captured = [];
+            $db->method('prepare')->willReturnCallback(function (string $sql) use ($miss, &$captured) {
+                $captured[] = $sql;
+                return $miss;
+            });
+
+            (new DbApiKeyRepository($db, $config))->findBySecretKey('pwa_legacy_plaintext_key');
+
+            $this->assertCount(2, $captured, $dbType);
+            $this->assertStringContainsString($expected, $captured[1], $dbType);
+        }
+    }
+
+    #[Test]
     public function testFindBySecretKeyRejectsSubmittedHashAsCandidate(): void
     {
         // Regression test: an attacker who reads the hashed `secret_key` column

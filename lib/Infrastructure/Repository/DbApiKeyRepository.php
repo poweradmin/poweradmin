@@ -153,13 +153,9 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
             return null;
         }
 
-        // MySQL's default collation is case-insensitive, which would let a
-        // mistyped/case-shifted candidate match the stored plaintext and then
-        // migrate the row to the wrong-cased hash, locking the real owner out.
-        // BINARY restores byte-exact comparison; PostgreSQL and SQLite are
-        // already byte-exact by default.
-        $dbType = $this->config->get('database', 'type', 'mysql');
-        $matchExpr = ($dbType === 'mysql' || $dbType === 'mysqli') ? 'BINARY secret_key' : 'secret_key';
+        // A case-shifted candidate must not match the stored plaintext, or the row
+        // would migrate to the wrong-cased hash and lock the real owner out.
+        $matchExpr = DbCompat::binaryCompare($this->config->get('database', 'type', 'mysql'), 'secret_key');
 
         $stmt = $this->db->prepare("SELECT * FROM api_keys WHERE $matchExpr = :secretKey");
         $stmt->bindValue(':secretKey', $plaintext);
