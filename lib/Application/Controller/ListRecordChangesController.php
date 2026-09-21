@@ -49,7 +49,7 @@ class ListRecordChangesController extends BaseController
     {
         parent::__construct($request);
 
-        $this->changeLogger = new RecordChangeLogger($this->db);
+        $this->changeLogger = $this->services()->recordChangeLog();
     }
 
     public function run(): void

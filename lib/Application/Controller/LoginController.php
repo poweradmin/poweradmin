@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
-use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -46,7 +45,7 @@ class LoginController extends BaseController
         $this->csrfTokenService = new CsrfTokenService();
 
         $samlConfigService = new SamlConfigurationService($this->config, $this->logger);
-        $userProvisioningService = new UserProvisioningService($this->db, $this->config, $this->logger);
+        $userProvisioningService = $this->services()->userProvisioningService();
 
         $this->samlService = new SamlService(
             $this->config,

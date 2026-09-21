@@ -30,7 +30,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
-use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 
 /**
  * Renders the API key list page and links to the add, edit, delete and regenerate actions.
@@ -58,7 +57,7 @@ class ApiKeysController extends BaseController
         parent::__construct($request);
 
         $this->routeName = (string)($request['page'] ?? '');
-        $this->apiKeyRepository = new DbApiKeyRepository($this->db, $this->config);
+        $this->apiKeyRepository = $this->services()->apiKeyRepository();
         $this->apiKeyService = new ApiKeyService($this->apiKeyRepository, $this->db, $this->config, $this->createPermissionService());
         $this->zoneRepository = $this->createZoneRepository();
     }

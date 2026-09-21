@@ -36,7 +36,7 @@ class ListLogApiController extends AbstractListLogController
     {
         parent::__construct($request);
 
-        $this->dbApiLogger = new DbApiLogger($this->db);
+        $this->dbApiLogger = $this->services()->apiLogger();
     }
 
     protected function authorize(): bool

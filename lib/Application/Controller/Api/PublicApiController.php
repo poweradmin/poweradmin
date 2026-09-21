@@ -22,26 +22,19 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Logger\DbApiLogger;
-use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
-use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -129,14 +122,7 @@ abstract class PublicApiController extends AbstractApiController
             return;
         }
 
-        // Create database connection with proper credentials
         $config = $this->getConfig();
-        $credentials = DatabaseCredentialMapper::mapCredentials($config);
-
-        // Create the database connection
-        $databaseConnection = new PDODatabaseConnection();
-        $databaseService = new DatabaseService($databaseConnection);
-        $db = $databaseService->connect($credentials);
 
         // Try authentication methods in order:
         // 1. API Key auth
@@ -144,7 +130,7 @@ abstract class PublicApiController extends AbstractApiController
         $authenticated = false;
 
         // Always try API key authentication when API is enabled
-        $apiKeyMiddleware = new ApiKeyAuthenticationMiddleware($db, $config);
+        $apiKeyMiddleware = $this->services()->apiKeyAuthenticationMiddleware();
         $authenticated = $apiKeyMiddleware->process($this->request);
 
         // Get authenticated user ID in a stateless way
@@ -164,7 +150,7 @@ abstract class PublicApiController extends AbstractApiController
 
         // Try Basic auth if API key auth failed and it's enabled
         if (!$authenticated && $config->get('api', 'basic_auth_enabled', false)) {
-            $basicAuthMiddleware = new BasicAuthenticationMiddleware($db, $config);
+            $basicAuthMiddleware = $this->services()->basicAuthenticationMiddleware();
             $this->authenticatedUserId = $basicAuthMiddleware->getAuthenticatedUserId($this->request);
             $authenticated = ($this->authenticatedUserId > 0);
         }
@@ -222,8 +208,7 @@ abstract class PublicApiController extends AbstractApiController
 
         // Create API key service to validate the key against the database
         $config = $this->getConfig();
-        $apiKeyRepository = new DbApiKeyRepository($this->db, $config);
-        $apiKeyService = new ApiKeyService($apiKeyRepository, $this->db, $config, $this->createPermissionService());
+        $apiKeyService = new ApiKeyService($this->services()->apiKeyRepository(), $this->db, $config, $this->createPermissionService());
 
         // Authenticate using the API key service
         return $apiKeyService->authenticate($apiKey);
@@ -424,7 +409,7 @@ abstract class PublicApiController extends AbstractApiController
             // being written - so the default (logging off) path pays nothing.
             $keyId = '-';
             if ($this->authenticatedUserId > 0) {
-                $id = (new ApiKeyAuthenticationMiddleware($this->db, $config))->getAuthenticatedApiKeyId($this->request);
+                $id = $this->services()->apiKeyAuthenticationMiddleware()->getAuthenticatedApiKeyId($this->request);
                 if ($id !== null) {
                     $keyId = (string)$id;
                 }
@@ -461,7 +446,7 @@ abstract class PublicApiController extends AbstractApiController
         if (random_int(1, 100) !== 1) {
             return;
         }
-        (new DbApiLogger($this->db))->pruneOlderThan($retentionDays);
+        $this->services()->apiLogger()->pruneOlderThan($retentionDays);
     }
 
     /**

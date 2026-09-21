@@ -36,7 +36,7 @@ class ListLogUsersController extends AbstractListLogController
     {
         parent::__construct($request);
 
-        $this->dbUserLogger = new DbUserLogger($this->db);
+        $this->dbUserLogger = $this->services()->userLogger();
     }
 
     protected function authorize(): bool

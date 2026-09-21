@@ -29,7 +29,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -52,7 +51,7 @@ class ForgotUsernameController extends BaseController
 
         // Create UsernameRecoveryService with dependencies
         try {
-            $recoveryRepository = new DbUsernameRecoveryRepository($this->db, $this->config);
+            $recoveryRepository = $this->services()->usernameRecoveryRepository();
             $mailService = new MailService($this->config, $this->logger);
             $this->client = $this->services()->clientContext();
 

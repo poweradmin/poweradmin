@@ -54,6 +54,7 @@ class LdapAuthenticator
     private UserContextService $userContextService;
     private ClientContext $client;
     private MfaService $mfaService;
+    private UserProvisioningService $provisioningService;
 
     /** Database driver name, used to build the LDAP username-match predicate. */
     private string $dbType = '';
@@ -68,7 +69,8 @@ class LdapAuthenticator
         LoginAttemptService $loginAttemptService,
         UserContextService $userContextService,
         ClientContext $client,
-        MfaService $mfaService
+        MfaService $mfaService,
+        UserProvisioningService $provisioningService
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -81,6 +83,7 @@ class LdapAuthenticator
         $this->userContextService = $userContextService;
         $this->client = $client;
         $this->mfaService = $mfaService;
+        $this->provisioningService = $provisioningService;
         $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
     }
 
@@ -246,7 +249,6 @@ class LdapAuthenticator
         $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
 
         $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute, $ldap_groups_attribute);
-        $provisioningService = new UserProvisioningService($this->db, $this->configManager, $this->logger);
 
         // Accent-exact match, so a look-alike username cannot resolve to another account.
         $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
@@ -256,12 +258,12 @@ class LdapAuthenticator
         ]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$rowObj && $ldap_auto_provision && $provisioningService->provisionUser($userInfo, 'ldap')) {
+        if (!$rowObj && $ldap_auto_provision && $this->provisioningService->provisionUser($userInfo, 'ldap')) {
             $stmt->execute(['username' => $username]);
             $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->logger->info('Auto-provisioned LDAP user {username}', ['username' => $username]);
         } elseif ($rowObj && ($ldap_sync_user_info || $ldap_group_sync)) {
-            $provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo);
+            $this->provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo);
             $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
         }
 

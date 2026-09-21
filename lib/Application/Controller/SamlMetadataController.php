@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
-use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
 
 /**
@@ -41,7 +40,7 @@ class SamlMetadataController extends BaseController
 
         // Initialize SAML services
         $samlConfigService = new SamlConfigurationService($this->config, $this->logger);
-        $userProvisioningService = new UserProvisioningService($this->db, $this->config, $this->logger);
+        $userProvisioningService = $this->services()->userProvisioningService();
 
         $this->samlService = new SamlService(
             $this->config,

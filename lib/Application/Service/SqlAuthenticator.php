@@ -27,6 +27,7 @@ use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
@@ -34,7 +35,6 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
  * Session login against the users table with lockout checks, hash upgrades and MFA hand-off.
@@ -50,6 +50,7 @@ class SqlAuthenticator
     private LoginAttemptService $loginAttemptService;
     private ClientContext $client;
     private MfaService $mfaService;
+    private UserRepositoryInterface $userRepository;
 
     public function __construct(
         PDO $connection,
@@ -60,7 +61,8 @@ class SqlAuthenticator
         LoggerInterface $logger,
         LoginAttemptService $loginAttemptService,
         ClientContext $client,
-        MfaService $mfaService
+        MfaService $mfaService,
+        UserRepositoryInterface $userRepository
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -72,6 +74,7 @@ class SqlAuthenticator
         $this->loginAttemptService = $loginAttemptService;
         $this->client = $client;
         $this->mfaService = $mfaService;
+        $this->userRepository = $userRepository;
     }
 
 
@@ -157,8 +160,7 @@ class SqlAuthenticator
 
         if ($userAuthService->requiresRehash($rowObj['password'])) {
             $this->logger->info('Password requires rehashing for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
-            $userRepository = new DbUserRepository($this->connection, $this->configManager);
-            $userRepository->updatePassword((int)$rowObj["id"], $userAuthService->hashPassword($sessionPassword));
+            $this->userRepository->updatePassword((int)$rowObj["id"], $userAuthService->hashPassword($sessionPassword));
         }
 
         // Regenerate the session id only at actual login (credentials just posted),

@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\OidcService;
-use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -47,7 +46,7 @@ class OidcCallbackController extends BaseController
 
         // Initialize OIDC services
         $oidcConfigService = new OidcConfigurationService($this->config, $this->logger);
-        $oidcProvisioningService = new UserProvisioningService($this->db, $this->config, $this->logger);
+        $oidcProvisioningService = $this->services()->userProvisioningService();
 
         $this->oidcService = new OidcService(
             $this->config,

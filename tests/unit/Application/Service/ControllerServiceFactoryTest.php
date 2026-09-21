@@ -87,6 +87,22 @@ class ControllerServiceFactoryTest extends TestCase
         $this->assertSame($factory->mfaService(), $factory->mfaService());
     }
 
+    public function testRequestScopedRepositoriesAndProvisioningAreMemoized(): void
+    {
+        $factory = $this->makeFactory();
+
+        $this->assertSame($factory->apiKeyRepository(), $factory->apiKeyRepository());
+        $this->assertSame($factory->recordTypeDefaultRepository(), $factory->recordTypeDefaultRepository());
+        $this->assertSame($factory->userProvisioningService(), $factory->userProvisioningService());
+    }
+
+    public function testRecordChangeLogIsTheSameInstanceAsTheWriter(): void
+    {
+        $factory = $this->makeFactory();
+
+        $this->assertSame($factory->recordChangeLogger(), $factory->recordChangeLog());
+    }
+
     public function testRepositoryFactoryMemoizesTheSharedProviderPath(): void
     {
         $factory = $this->makeFactory();

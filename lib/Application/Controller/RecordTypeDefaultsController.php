@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
+use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
 
 /**
  * Admin UI for managing per-record-type default TTLs. The repository drives
@@ -49,7 +49,7 @@ class RecordTypeDefaultsController extends BaseController
         $this->setCurrentPage(self::PAGE_KEY);
         $this->setPageTitle(_('Default TTLs by record type'));
 
-        $repository = new DbRecordTypeDefaultRepository($this->db);
+        $repository = $this->services()->recordTypeDefaultRepository();
 
         if ($this->isPost()) {
             $this->handlePost($repository);
@@ -73,7 +73,7 @@ class RecordTypeDefaultsController extends BaseController
         ]);
     }
 
-    private function handlePost(DbRecordTypeDefaultRepository $repository): void
+    private function handlePost(RecordTypeDefaultRepositoryInterface $repository): void
     {
         $submitted = $this->requestData['ttls'] ?? [];
         if (!is_array($submitted)) {

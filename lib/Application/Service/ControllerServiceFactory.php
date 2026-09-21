@@ -98,6 +98,19 @@ use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
+use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
+use Poweradmin\Domain\Repository\UserAgreementRepositoryInterface;
+use Poweradmin\Infrastructure\Logger\DbApiLogger;
+use Poweradmin\Infrastructure\Logger\DbGroupLogger;
+use Poweradmin\Infrastructure\Logger\DbUserLogger;
+use Poweradmin\Infrastructure\Logger\DbZoneLogger;
+use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
+use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
+use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
+use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
+use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -118,7 +131,7 @@ class ControllerServiceFactory
     private ?ZoneOwnershipModeService $zoneOwnershipModeService = null;
     private ?ZoneSigningService $zoneSigningService = null;
     private ?AuditService $auditService = null;
-    private ?RecordChangeWriterInterface $recordChangeLogger = null;
+    private ?RecordChangeLogger $recordChangeLogger = null;
     private ?RecordManagerInterface $recordManager = null;
     private ?RecordCommentService $recordCommentService = null;
     private ?CatalogZoneService $catalogZoneService = null;
@@ -139,6 +152,9 @@ class ControllerServiceFactory
     private ?ZoneChangeRequestService $zoneChangeRequestService = null;
     private ?ChangeRequestNotificationService $changeRequestNotificationService = null;
     private ?ClientContext $clientContext = null;
+    private ?RecordTypeDefaultRepositoryInterface $recordTypeDefaultRepository = null;
+    private ?ApiKeyRepositoryInterface $apiKeyRepository = null;
+    private ?UserProvisioningService $userProvisioningService = null;
     private ?UserMfaRepositoryInterface $userMfaRepository = null;
     private ?MfaService $mfaService = null;
     private ?SessionService $sessionService = null;
@@ -354,12 +370,86 @@ class ControllerServiceFactory
 
     public function auditService(): AuditService
     {
-        return $this->auditService ??= new AuditService(new AuditLogWriter($this->db), $this->clientContext(), new UserContextService());
+        return $this->auditService ??= new AuditService($this->auditLogWriter(), $this->clientContext(), new UserContextService());
     }
 
     public function recordChangeLogger(): RecordChangeWriterInterface
     {
+        return $this->recordChangeLog();
+    }
+
+    /**
+     * The same change log as recordChangeLogger(), for the log views that read
+     * it back rather than write to it.
+     */
+    public function recordChangeLog(): RecordChangeLogger
+    {
         return $this->recordChangeLogger ??= new RecordChangeLogger($this->db);
+    }
+
+    public function auditLogWriter(): AuditLogWriter
+    {
+        return new AuditLogWriter($this->db);
+    }
+
+    public function apiLogger(): DbApiLogger
+    {
+        return new DbApiLogger($this->db);
+    }
+
+    public function userLogger(): DbUserLogger
+    {
+        return new DbUserLogger($this->db);
+    }
+
+    public function groupLogger(): DbGroupLogger
+    {
+        return new DbGroupLogger($this->db);
+    }
+
+    public function zoneLogger(): DbZoneLogger
+    {
+        return new DbZoneLogger($this->db, $this->dnsBackendProvider());
+    }
+
+    public function apiKeyRepository(): ApiKeyRepositoryInterface
+    {
+        return $this->apiKeyRepository ??= new DbApiKeyRepository($this->db, $this->config);
+    }
+
+    public function apiKeyAuthenticationMiddleware(): ApiKeyAuthenticationMiddleware
+    {
+        return new ApiKeyAuthenticationMiddleware($this->db, $this->config);
+    }
+
+    public function basicAuthenticationMiddleware(): BasicAuthenticationMiddleware
+    {
+        return new BasicAuthenticationMiddleware($this->db, $this->config);
+    }
+
+    public function passwordResetTokenRepository(): DbPasswordResetTokenRepository
+    {
+        return new DbPasswordResetTokenRepository($this->db, $this->config);
+    }
+
+    public function usernameRecoveryRepository(): DbUsernameRecoveryRepository
+    {
+        return new DbUsernameRecoveryRepository($this->db, $this->config);
+    }
+
+    public function userAgreementRepository(): UserAgreementRepositoryInterface
+    {
+        return new DbUserAgreementRepository($this->db, $this->config);
+    }
+
+    public function recordTypeDefaultRepository(): RecordTypeDefaultRepositoryInterface
+    {
+        return $this->recordTypeDefaultRepository ??= new DbRecordTypeDefaultRepository($this->db);
+    }
+
+    public function userProvisioningService(): UserProvisioningService
+    {
+        return $this->userProvisioningService ??= new UserProvisioningService($this->db, $this->config, $this->logger, $this->userRepository());
     }
 
     /**
@@ -466,7 +556,7 @@ class ControllerServiceFactory
 
     public function reverseTtlResolver(): ReverseTtlResolver
     {
-        return new ReverseTtlResolver($this->config, new DbRecordTypeDefaultRepository($this->db));
+        return new ReverseTtlResolver($this->config, $this->recordTypeDefaultRepository());
     }
 
     public function recordManager(): RecordManagerInterface

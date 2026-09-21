@@ -54,7 +54,7 @@ class ListLogZonesController extends AbstractListLogController
     {
         parent::__construct($request);
 
-        $this->dbZoneLogger = new DbZoneLogger($this->db, $this->createDnsBackendProvider());
+        $this->dbZoneLogger = $this->services()->zoneLogger();
     }
 
     protected function authorize(): bool

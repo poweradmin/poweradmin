@@ -26,7 +26,6 @@ use Exception;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
-use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
@@ -109,7 +108,7 @@ class LogoutController extends BaseController
         try {
             // Initialize SAML service for logout
             $samlConfigService = new SamlConfigurationService($this->config, $this->logger);
-            $userProvisioningService = new UserProvisioningService($this->db, $this->config, $this->logger);
+            $userProvisioningService = $this->services()->userProvisioningService();
             $samlService = new SamlService(
                 $this->config,
                 $samlConfigService,

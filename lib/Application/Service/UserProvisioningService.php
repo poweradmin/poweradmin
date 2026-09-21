@@ -23,12 +23,12 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
@@ -49,7 +49,7 @@ class UserProvisioningService
     private LoggerInterface $logger;
     private PDO $db;
     private ConfigurationManager $configManager;
-    private DbUserRepository $userRepository;
+    private UserRepositoryInterface $userRepository;
 
     /** Collation clause forcing byte-exact matches on OIDC/SAML subject lookups. */
     private string $binaryCollation;
@@ -60,13 +60,14 @@ class UserProvisioningService
     public function __construct(
         PDO $connection,
         ConfigurationManager $configManager,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        UserRepositoryInterface $userRepository
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
         $this->db = $connection;
         $this->configManager = $configManager;
-        $this->userRepository = new DbUserRepository($connection, $configManager);
+        $this->userRepository = $userRepository;
         $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
         $this->binaryCollation = DbCompat::binaryCollation($this->dbType);
     }

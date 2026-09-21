@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 
@@ -204,7 +205,9 @@ class LdapUserProvisioningIntegrationTest extends TestCase
 
     private function service(): UserProvisioningService
     {
-        return new UserProvisioningService($this->db, $this->configManager(), new NullLogger());
+        $config = $this->configManager();
+
+        return new UserProvisioningService($this->db, $config, new NullLogger(), new DbUserRepository($this->db, $config));
     }
 
     private function configManager(): ConfigurationManager

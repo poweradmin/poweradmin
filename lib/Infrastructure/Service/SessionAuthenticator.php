@@ -98,7 +98,8 @@ class SessionAuthenticator
             $this->loginAttemptService,
             new UserContextService(),
             $this->services->clientContext(),
-            $this->services->mfaService()
+            $this->services->mfaService(),
+            $this->services->userProvisioningService()
         );
     }
 
@@ -117,7 +118,8 @@ class SessionAuthenticator
             $this->logger,
             $this->loginAttemptService,
             $this->services->clientContext(),
-            $this->services->mfaService()
+            $this->services->mfaService(),
+            $this->services->userRepository()
         );
     }
 

@@ -36,7 +36,7 @@ class ListLogGroupsController extends AbstractListLogController
     {
         parent::__construct($request);
 
-        $this->dbGroupLogger = new DbGroupLogger($this->db);
+        $this->dbGroupLogger = $this->services()->groupLogger();
     }
 
     protected function authorize(): bool

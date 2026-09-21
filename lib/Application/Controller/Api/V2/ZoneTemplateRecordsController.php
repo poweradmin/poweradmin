@@ -24,10 +24,10 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
-use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -36,14 +36,14 @@ use OpenApi\Attributes as OA;
  */
 class ZoneTemplateRecordsController extends PublicApiController
 {
-    private DbZoneTemplateRepository $repository;
+    private ZoneTemplateRepositoryInterface $repository;
     private ApiPermissionService $apiPermissionService;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
-        $this->repository = new DbZoneTemplateRepository($this->db, $this->config);
+        $this->repository = $this->services()->zoneTemplateRepository();
         $this->apiPermissionService = $this->createApiPermissionService();
     }
 

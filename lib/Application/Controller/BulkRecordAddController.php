@@ -114,10 +114,7 @@ class BulkRecordAddController extends BaseController
         $lines = explode("\n", trim($records_text));
 
         $parser = new BulkRecordParser();
-        $reverseTtlResolver = new \Poweradmin\Domain\Service\ReverseTtlResolver(
-            $this->config,
-            new \Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository($this->db)
-        );
+        $reverseTtlResolver = $this->services()->reverseTtlResolver();
 
         // One submission, one changeset: every record added below is grouped under a
         // single entry in the change log carrying the reason the user gave.

@@ -27,7 +27,6 @@ use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\SelfEditFieldGuard;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -142,7 +141,7 @@ class UsersController extends BaseController
 
     private function superuserRowEdited(array $posted): bool
     {
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
+        $userRepository = $this->createUserRepository();
         $current = $userRepository->getUserById((int)($posted['uid'] ?? 0));
         if ($current === null) {
             return true;

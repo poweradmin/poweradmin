@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 
 /**
  * Handles the user agreement page: shows the text and records the user's acceptance.
@@ -40,7 +39,7 @@ class UserAgreementController extends BaseController
         parent::__construct($request, true);
 
         $this->agreementService = new UserAgreementService(
-            new DbUserAgreementRepository($this->db, $this->config),
+            $this->services()->userAgreementRepository(),
             $this->config
         );
         $this->userContextService = new UserContextService();
