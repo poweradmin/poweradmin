@@ -221,6 +221,55 @@ class ModuleRegistryTest extends TestCase
         $this->assertSame([['label' => 'Stub', 'url' => '/stub']], $registry->getNavItems());
     }
 
+    public function testOneInstanceAnswersLikeThreeSeparateOnes(): void
+    {
+        $configMap = [
+            'modules' => [
+                'csv_export.enabled' => true,
+                'zone_import_export.enabled' => true,
+                'whois.enabled' => true,
+                'rdap.enabled' => true,
+                'dns_wizards.enabled' => true,
+                'secondary_zone_import.enabled' => true,
+                'whois.restrict_to_admin' => true,
+            ],
+            'dns' => ['backend' => 'api'],
+        ];
+        $build = function () use ($configMap): ModuleRegistry {
+            $registry = new ModuleRegistry($this->createConfigMock($configMap));
+            $registry->loadModules();
+            return $registry;
+        };
+        $snapshot = static function (ModuleRegistry $registry): array {
+            $capabilities = [];
+            foreach (['zone_export', 'zone_import', 'whois_lookup', 'rdap_lookup', 'dns_wizard'] as $capability) {
+                $capabilities[$capability] = [
+                    $registry->getCapabilityData($capability, ['zone_id' => 7], false),
+                    $registry->getCapabilityData($capability, ['zone_id' => 7], true),
+                ];
+            }
+            return [
+                array_keys($registry->getEnabledModules()),
+                $registry->getRoutes(),
+                $registry->getNavItems(false),
+                $registry->getNavItems(true),
+                $capabilities,
+            ];
+        };
+
+        $once = $build();
+        $expected = $snapshot($once);
+        $this->assertNotSame([], $expected[1]);
+        $this->assertNotSame([], $expected[4]['zone_export'][0]);
+
+        // A second loadModules() on the same instance is a no-op, so the one
+        // instance the router keeps answers the same after any number of readers.
+        $once->loadModules();
+        $this->assertSame($expected, $snapshot($once));
+        $this->assertSame($expected, $snapshot($build()));
+        $this->assertSame($expected, $snapshot($build()));
+    }
+
     public function testModulesReadTheRegistryConfiguration(): void
     {
         $modules = ['secondary_zone_import' => SecondaryZoneImportModule::class];

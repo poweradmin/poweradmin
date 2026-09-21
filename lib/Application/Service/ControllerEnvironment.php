@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Application\Http\Request as HttpRequest;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -45,6 +46,7 @@ final class ControllerEnvironment
         public readonly ConfigurationInterface $config,
         public readonly PDO $db,
         public readonly LoggerInterface $logger,
+        public readonly ModuleRegistry $moduleRegistry,
         public readonly ?ControllerServiceFactory $serviceFactory = null,
         public readonly ?HttpRequest $httpRequest = null,
         public readonly ?CsrfTokenService $csrfTokenService = null,

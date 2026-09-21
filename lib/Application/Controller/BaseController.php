@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
+use LogicException;
 use Poweradmin\Application\Boot\AppInitializer;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
@@ -75,7 +76,10 @@ abstract class BaseController
     protected LoggerInterface $logger;
     private ?ControllerServiceFactory $serviceFactory = null;
     private ?ChangeApprovalContext $changeApprovalContext = null;
-    private ?ModuleRegistry $moduleRegistry = null;
+    private ModuleRegistry $moduleRegistry;
+
+    /** The registry the router loaded for this request; see bindModuleRegistry() */
+    private static ?ModuleRegistry $requestModuleRegistry = null;
     private ?PageRenderer $pageRenderer = null;
 
     /**
@@ -98,6 +102,7 @@ abstract class BaseController
             $this->config = $environment->config;
             $this->logger = $environment->logger;
             $this->db = $environment->db;
+            $this->moduleRegistry = $environment->moduleRegistry;
             $this->serviceFactory = $environment->serviceFactory;
 
             $this->requestData = $request;
@@ -120,6 +125,9 @@ abstract class BaseController
             // should still stop the request rather than surface deep in a handler
             AppManager::assertConfigurationUsable($manager);
 
+            $this->moduleRegistry = self::$requestModuleRegistry
+                ?? throw new LogicException('No module registry is bound for this request; SymfonyRouter binds one before dispatching');
+
             $this->init = new AppInitializer($authenticate);
             $this->db = $this->init->getDb();
 
@@ -136,6 +144,16 @@ abstract class BaseController
         if ($this->isPost() && $this->requiresCsrfValidation()) {
             $this->validateCsrfToken();
         }
+    }
+
+    /**
+     * Hands the request's loaded module registry to every controller the router
+     * builds. Controllers are constructed by class name with request data only,
+     * so the router cannot pass it through their constructors.
+     */
+    public static function bindModuleRegistry(ModuleRegistry $registry): void
+    {
+        self::$requestModuleRegistry = $registry;
     }
 
     /**
@@ -521,15 +539,10 @@ abstract class BaseController
     }
 
     /**
-     * Enabled modules, loaded once per request.
+     * The request's loaded module registry.
      */
     protected function moduleRegistry(): ModuleRegistry
     {
-        if ($this->moduleRegistry === null) {
-            $this->moduleRegistry = new ModuleRegistry($this->config);
-            $this->moduleRegistry->loadModules();
-        }
-
         return $this->moduleRegistry;
     }
 
@@ -746,7 +759,7 @@ abstract class BaseController
      */
     private function app(): AppManager
     {
-        return $this->app ??= new AppManager($this->logger);
+        return $this->app ??= new AppManager($this->moduleRegistry, $this->logger);
     }
 
     /**
@@ -763,7 +776,7 @@ abstract class BaseController
             $this->config,
             $this->csrfTokenService,
             $this->userContextService,
-            $this->moduleRegistry(),
+            $this->moduleRegistry,
             $this->isApiBackend(),
             $this->hasPermission(...),
             static fn(): ?array => PdnsVersionService::getCachedInfo($_SESSION ?? []),

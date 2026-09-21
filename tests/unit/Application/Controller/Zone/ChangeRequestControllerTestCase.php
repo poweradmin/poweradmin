@@ -26,6 +26,7 @@ use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request as HttpRequest;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ControllerServiceFactory;
@@ -144,10 +145,14 @@ abstract class ChangeRequestControllerTestCase extends TestCase
             fn() => $this->factory->zoneChangeRequestRepository()
         ));
 
+        $registry = new ModuleRegistry($config);
+        $registry->loadModules();
+
         return new ControllerEnvironment(
             $config,
             $this->createMock(PDO::class),
             new NullLogger(),
+            $registry,
             $this->factory,
             new HttpRequest(),
             $csrf,

@@ -29,6 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Log\AbstractListLogController;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Service\ControllerEnvironment;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
@@ -71,6 +72,7 @@ class ListLogFiltersTest extends TestCase
             ConfigurationManager::getInstance(),
             $this->createMock(PDO::class),
             new NullLogger(),
+            new ModuleRegistry(ConfigurationManager::getInstance()),
             null,
             new HttpRequest(),
             null,

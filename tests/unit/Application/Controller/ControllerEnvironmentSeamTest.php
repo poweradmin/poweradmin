@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ControllerEnvironment;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PaginationService;
@@ -64,6 +65,7 @@ class ControllerEnvironmentSeamTest extends TestCase
             ConfigurationManager::getInstance(),
             $this->createMock(PDO::class),
             new NullLogger(),
+            new ModuleRegistry(ConfigurationManager::getInstance()),
             $factory,
             null,
             null,
@@ -106,6 +108,7 @@ class ControllerEnvironmentSeamTest extends TestCase
             ConfigurationManager::getInstance(),
             $this->createMock(PDO::class),
             new NullLogger(),
+            new ModuleRegistry(ConfigurationManager::getInstance()),
             null,
             null,
             $csrf,

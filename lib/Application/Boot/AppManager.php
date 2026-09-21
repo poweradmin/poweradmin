@@ -77,17 +77,15 @@ class AppManager
     private array $supportedLocales;
 
     /**
-     * AppManager constructor.
      * Initializes the template renderer, configuration, and optional statistics display service.
+     *
+     * @param ModuleRegistry $registry The request's loaded registry; its enabled modules become template namespaces
      */
-    public function __construct(?LoggerInterface $logger = null)
+    public function __construct(ModuleRegistry $registry, ?LoggerInterface $logger = null)
     {
         $this->logger = $logger ?? new NullLogger();
         $this->configuration = ConfigurationManager::getInstance();
         $this->configuration->initialize();
-
-        $registry = new ModuleRegistry($this->configuration);
-        $registry->loadModules();
 
         $this->resolveTheme();
         $loader = $this->createTemplateLoader($registry);

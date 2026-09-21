@@ -282,6 +282,19 @@ class SymfonyRouterTest extends TestCase
      * Exception carrying a 405. Route-level method lists are asserted in
      * RoutingConfigurationTest instead.
      */
+    public function testBuildsOneModuleRegistryAndRoutesFromIt(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/whois';
+
+        $router = new SymfonyRouter(new FakeConfiguration(['modules' => ['whois.enabled' => true]]));
+
+        $registry = $router->getModuleRegistry();
+        $this->assertSame($registry, $router->getModuleRegistry());
+        $this->assertSame(['whois'], array_keys($registry->getEnabledModules()));
+        $this->assertContains('module_whois', array_column($registry->getRoutes(), 'name'));
+        $this->assertSame('module_whois', $router->match()['route']);
+    }
+
     public function testDisallowedMethodBecomes405(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';

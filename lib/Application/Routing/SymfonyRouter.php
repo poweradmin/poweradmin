@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Routing;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Application\Module\ModuleRegistry;
@@ -49,11 +50,24 @@ class SymfonyRouter
     private ?string $matchedRoute = null;
     private bool $routeFound = true;
     private bool $webEnabled = true;
+    private ModuleRegistry $moduleRegistry;
 
     public function __construct(ConfigurationInterface $config)
     {
         $this->request = Request::createFromGlobals();
+
+        // The one registry of the request: routes come from it here, and the
+        // controllers and the template loader read the same instance
+        $this->moduleRegistry = new ModuleRegistry($config);
+        $this->moduleRegistry->loadModules();
+        BaseController::bindModuleRegistry($this->moduleRegistry);
+
         $this->initializeRouter($config);
+    }
+
+    public function getModuleRegistry(): ModuleRegistry
+    {
+        return $this->moduleRegistry;
     }
 
     /**
@@ -69,11 +83,7 @@ class SymfonyRouter
         // Load YAML routes into a RouteCollection
         $routes = $loader->load('routes.yaml');
 
-        // Load module routes from enabled modules
-        $registry = new ModuleRegistry($config);
-        $registry->loadModules();
-
-        foreach ($registry->getRoutes() as $routeDef) {
+        foreach ($this->moduleRegistry->getRoutes() as $routeDef) {
             $defaults = ['_controller' => $routeDef['controller']];
             $requirements = $routeDef['requirements'] ?? [];
 

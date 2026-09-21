@@ -26,6 +26,7 @@ use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request as HttpRequest;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerServiceFactory;
@@ -161,11 +162,14 @@ abstract class SeamControllerTestCase extends TestCase
         $db = $this->createMock(PDO::class);
         // Resolved per call: a test may reconfigure dns.backend between two controllers
         $this->factory->method('dnsBackendProvider')->willReturnCallback(fn() => $this->backendProvider($config, $db));
+        $registry = new ModuleRegistry($config);
+        $registry->loadModules();
 
         return new ControllerEnvironment(
             $config,
             $db,
             new NullLogger(),
+            $registry,
             $this->factory,
             new HttpRequest(),
             $csrf,
