@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -285,9 +286,7 @@ class PowerdnsApiClient
      */
     public static function canonicalZoneName(string $name): string
     {
-        $trimmed = rtrim(trim($name), '.');
-
-        return $trimmed === '' ? '' : strtolower($trimmed);
+        return DnsHelper::canonicalZoneName($name);
     }
 
     /**

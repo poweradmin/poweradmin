@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -108,6 +108,18 @@ class DnsHelper
     public static function isZoneApex(string $recordName, string $zoneName): bool
     {
         return strtolower(rtrim($recordName, '.')) === strtolower(rtrim($zoneName, '.'));
+    }
+
+    /**
+     * The form PowerDNS stores in domains.catalog and matches members against:
+     * lowercase, no trailing dot. Its lookup is an exact string match, so any
+     * other spelling names a producer that is accepted and never published.
+     */
+    public static function canonicalZoneName(string $name): string
+    {
+        $trimmed = rtrim(trim($name), '.');
+
+        return $trimmed === '' ? '' : strtolower($trimmed);
     }
 
     /**

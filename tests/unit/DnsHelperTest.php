@@ -344,4 +344,19 @@ class DnsHelperTest extends TestCase
         $this->assertFalse(DnsHelper::isZoneApex('other.org', 'example.com'));
         $this->assertFalse(DnsHelper::isZoneApex('testexample.com', 'example.com'), 'A suffix match without a dot boundary is not the apex.');
     }
+
+    public function testCanonicalZoneNameLowercasesAndDropsTheTrailingDot(): void
+    {
+        $this->assertSame('producer.example.com', DnsHelper::canonicalZoneName('producer.example.com.'));
+        $this->assertSame('producer.example.com', DnsHelper::canonicalZoneName('Producer.Example.COM'));
+        $this->assertSame('producer.example.com', DnsHelper::canonicalZoneName(' Producer.Example.COM. '));
+        $this->assertSame('producer.example.com', DnsHelper::canonicalZoneName('producer.example.com'));
+    }
+
+    public function testCanonicalZoneNameMapsTheRootAndBlankToEmpty(): void
+    {
+        $this->assertSame('', DnsHelper::canonicalZoneName('.'));
+        $this->assertSame('', DnsHelper::canonicalZoneName(''));
+        $this->assertSame('', DnsHelper::canonicalZoneName('   '));
+    }
 }

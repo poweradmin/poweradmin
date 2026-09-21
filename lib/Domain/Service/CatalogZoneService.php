@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Catalog zone membership.
@@ -64,7 +64,7 @@ class CatalogZoneService
      */
     public function normalizeName(string $name): string
     {
-        return PowerdnsApiClient::canonicalZoneName($name);
+        return DnsHelper::canonicalZoneName($name);
     }
 
     /**
