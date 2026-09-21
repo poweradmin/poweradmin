@@ -127,7 +127,7 @@ class EditZoneTemplController extends BaseController
         $zones_linked_count = count($linked_zones);
 
         // Get sync status
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
+        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
         $unsynced_zones_count = $syncService->getUnsyncedZoneCount($zone_templ_id);
 
         $this->render('edit_zone_templ.html', [
@@ -190,7 +190,7 @@ class EditZoneTemplController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $zones = $this->zoneTemplate->getZoneAndDomainIdsByTemplate($zone_templ_id, $userId);
         $domainManager = $this->services()->domainManager();
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
+        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
 
         $defaultTtl = $this->config->get('dns', 'ttl', 86400);
         $syncedZoneIds = [];

@@ -140,7 +140,7 @@ class EditZoneTemplRecordController extends BaseController
             $this->addSystemMessage('error', (string)$edited->message);
         } else {
             // Mark template as modified to track sync status
-            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
+            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
             $syncService->markTemplateAsModified($zone_templ_id);
 
             $auditService = $this->services()->auditService();

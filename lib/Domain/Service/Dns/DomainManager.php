@@ -305,7 +305,7 @@ class DomainManager implements DomainManagerInterface
         }
 
         if ($zone_template != "none" && is_numeric($zone_template)) {
-            $syncService = new ZoneTemplateSyncService($db, $this->config, $this->backendProvider);
+            $syncService = new ZoneTemplateSyncService($db, $this->config);
             $syncService->createSyncRecord((int)$zone_id, (int)$zone_template);
             // Mark as synced since we're creating from template
             $syncService->markZoneAsSynced((int)$zone_id, (int)$zone_template);

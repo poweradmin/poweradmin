@@ -144,7 +144,7 @@ class DnsServiceFactory
             $domainRepository,
             $zoneTemplateRepository,
             new DbTemplateRecordLinkRepository($db, $config, $backendProvider),
-            new ZoneTemplateSyncService($db, $config, $backendProvider),
+            new ZoneTemplateSyncService($db, $config),
             new ZoneTemplatePlaceholders($config),
             $changeLogger,
             new NullLogger()

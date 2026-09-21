@@ -418,7 +418,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             $domains,
             $templates,
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
-            new ZoneTemplateSyncService($this->db, $this->config, $this->backend),
+            new ZoneTemplateSyncService($this->db, $this->config),
             new ZoneTemplatePlaceholders($this->config),
             $this->changeLogger,
             new NullLogger()

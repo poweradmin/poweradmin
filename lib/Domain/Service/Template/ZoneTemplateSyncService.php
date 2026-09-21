@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service\Template;
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
-use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 
 /**
  * Tracks which zones are out of date against their template after the template changes.
@@ -34,18 +33,11 @@ class ZoneTemplateSyncService
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private ?BackendCapabilitiesInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?BackendCapabilitiesInterface $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;
-        $this->backendProvider = $backendProvider;
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**

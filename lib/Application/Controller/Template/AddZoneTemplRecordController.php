@@ -114,7 +114,7 @@ class AddZoneTemplRecordController extends BaseController
         $added = $this->zoneTemplate->addZoneTemplRecord($zone_templ_id, $name, $type, $content, (int)$ttl, (int)$prio);
         if ($added->success) {
             // Mark template as modified to track sync status
-            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
+            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
             $syncService->markTemplateAsModified($zone_templ_id);
 
             $auditService = $this->services()->auditService();

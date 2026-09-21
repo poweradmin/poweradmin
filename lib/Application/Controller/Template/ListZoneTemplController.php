@@ -67,7 +67,7 @@ class ListZoneTemplController extends BaseController
         $templatesList = $zone_templates->getListZoneTempl($userId);
 
         // Get sync status for all templates
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
+        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
         $syncStatus = $syncService->getTemplateSyncStatus($userId);
 
         // PostgreSQL returns booleans as 't'/'f' strings, which Twig treats

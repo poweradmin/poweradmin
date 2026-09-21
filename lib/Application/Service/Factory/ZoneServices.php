@@ -211,7 +211,7 @@ class ZoneServices
             $this->services->domainRepository(),
             $this->zoneTemplateRepository(),
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->services->dnsBackendProvider()),
-            new ZoneTemplateSyncService($this->db, $this->config, $this->services->dnsBackendProvider()),
+            new ZoneTemplateSyncService($this->db, $this->config),
             new ZoneTemplatePlaceholders($this->config),
             $this->services->recordChangeLogger(),
             $this->logger
