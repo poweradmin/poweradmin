@@ -102,11 +102,11 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testChangesInOneScopeShareASingleChangeset(): void
     {
-        RecordChangeLogger::beginChangeset(10, 'move web tier to the new range');
-        $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
-        $this->logger->logRecordCreate($this->record(2, 'api.example.com', '192.0.2.2'), 10);
-        $this->logger->logRecordDelete($this->record(3, 'old.example.com', '198.51.100.9'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'move web tier to the new range', function () {
+            $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
+            $this->logger->logRecordCreate($this->record(2, 'api.example.com', '192.0.2.2'), 10);
+            $this->logger->logRecordDelete($this->record(3, 'old.example.com', '198.51.100.9'), 10);
+        });
 
         $this->assertSame(1, $this->changesetCount());
         $ids = $this->changesetIds();
@@ -117,9 +117,9 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testCommentIsStoredOnTheChangeset(): void
     {
-        RecordChangeLogger::beginChangeset(10, '  move web tier  ');
-        $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, '  move web tier  ', function () {
+            $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
+        });
 
         $row = $this->db->query("SELECT zone_id, user_id, username, comment FROM log_changesets")->fetch(PDO::FETCH_ASSOC);
         $this->assertSame('move web tier', $row['comment']);
@@ -130,32 +130,32 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testEmptyCommentIsStoredAsNull(): void
     {
-        RecordChangeLogger::beginChangeset(10, '   ');
-        $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, '   ', function () {
+            $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
+        });
 
         $this->assertNull($this->db->query("SELECT comment FROM log_changesets")->fetchColumn());
     }
 
     public function testScopeThatLogsNothingLeavesNoChangeset(): void
     {
-        RecordChangeLogger::beginChangeset(10, 'nothing actually changed');
-        // logRecordEdit short-circuits when before and after are identical.
-        $this->logger->logRecordEdit($this->record(1, 'www.example.com', '192.0.2.1'), $this->record(1, 'www.example.com', '192.0.2.1'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'nothing actually changed', function () {
+            // logRecordEdit short-circuits when before and after are identical.
+            $this->logger->logRecordEdit($this->record(1, 'www.example.com', '192.0.2.1'), $this->record(1, 'www.example.com', '192.0.2.1'), 10);
+        });
 
         $this->assertSame(0, $this->changesetCount());
     }
 
     public function testTwoScopesProduceTwoChangesets(): void
     {
-        RecordChangeLogger::beginChangeset(10, 'first');
-        $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'first', function () {
+            $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+        });
 
-        RecordChangeLogger::beginChangeset(10, 'second');
-        $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'second', function () {
+            $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
+        });
 
         $this->assertSame(2, $this->changesetCount());
         $ids = $this->changesetIds();
@@ -164,16 +164,16 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testNestedScopesJoinTheOutermostChangeset(): void
     {
-        RecordChangeLogger::beginChangeset(10, 'outer reason');
-        $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+        RecordChangeLogger::withChangeset(10, 'outer reason', function () {
+            $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
 
-        RecordChangeLogger::beginChangeset(99, 'inner reason that must not win');
-        $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
-        RecordChangeLogger::endChangeset();
+            RecordChangeLogger::withChangeset(99, 'inner reason that must not win', function () {
+                $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
+            });
 
-        // Still inside the outer scope.
-        $this->logger->logRecordCreate($this->record(3, 'c.example.com', '192.0.2.3'), 10);
-        RecordChangeLogger::endChangeset();
+            // Still inside the outer scope.
+            $this->logger->logRecordCreate($this->record(3, 'c.example.com', '192.0.2.3'), 10);
+        });
 
         $this->assertSame(1, $this->changesetCount());
         $ids = $this->changesetIds();
@@ -183,9 +183,9 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testScopeIsClosedAfterEndSoLaterChangesAreUngrouped(): void
     {
-        RecordChangeLogger::beginChangeset(10, 'grouped');
-        $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'grouped', function () {
+            $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+        });
 
         $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
 
@@ -207,30 +207,21 @@ class RecordChangeLoggerChangesetTest extends TestCase
         $userContext->method('getLoggedInUsername')->willReturn('alice');
         $other = new RecordChangeLogger($this->db, $userContext, $config);
 
-        RecordChangeLogger::beginChangeset(10, 'one submission');
-        $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
-        $other->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'one submission', function () use ($other) {
+            $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+            $other->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
+        });
 
         $this->assertSame(1, $this->changesetCount());
         $ids = $this->changesetIds();
         $this->assertSame($ids[0], $ids[1]);
     }
 
-    public function testUnbalancedEndCallIsHarmless(): void
-    {
-        RecordChangeLogger::endChangeset();
-        $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
-
-        $this->assertSame(0, $this->changesetCount());
-        $this->assertSame([null], $this->changesetIds());
-    }
-
     public function testGetFilteredExposesTheChangesetComment(): void
     {
-        RecordChangeLogger::beginChangeset(10, 'move web tier');
-        $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'move web tier', function () {
+            $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
+        });
         $this->logger->logRecordCreate($this->record(2, 'lone.example.com', '192.0.2.9'), 10);
 
         $rows = $this->logger->getFiltered([], 50, 0);
@@ -248,13 +239,13 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testCommentFilterMatchesASubstring(): void
     {
-        RecordChangeLogger::beginChangeset(10, 'migrating to the new range');
-        $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'migrating to the new range', function () {
+            $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+        });
 
-        RecordChangeLogger::beginChangeset(10, 'routine cleanup');
-        $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'routine cleanup', function () {
+            $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
+        });
 
         $matched = $this->logger->getFiltered(['comment' => 'new range'], 50, 0);
         $this->assertCount(1, $matched);
@@ -270,10 +261,10 @@ class RecordChangeLoggerChangesetTest extends TestCase
     {
         // A bulk delete can span zones, so the group must not claim whichever zone
         // happened to be touched first. The per-change rows still carry the truth.
-        RecordChangeLogger::beginChangeset(null, 'clean up stale records');
-        $this->logger->logRecordDelete($this->record(1, 'a.example.com', '192.0.2.1'), 10);
-        $this->logger->logRecordDelete($this->record(2, 'b.example.net', '192.0.2.2'), 20);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(null, 'clean up stale records', function () {
+            $this->logger->logRecordDelete($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+            $this->logger->logRecordDelete($this->record(2, 'b.example.net', '192.0.2.2'), 20);
+        });
 
         $this->assertNull($this->db->query("SELECT zone_id FROM log_changesets")->fetchColumn());
         $this->assertSame(
@@ -302,6 +293,26 @@ class RecordChangeLoggerChangesetTest extends TestCase
         $this->assertNull($ids[1]);
     }
 
+    public function testAThrowInANestedScopeLeavesTheOuterOneUsableAndThenClosed(): void
+    {
+        RecordChangeLogger::withChangeset(10, 'outer', function () {
+            try {
+                RecordChangeLogger::withChangeset(99, 'inner', function () {
+                    throw new \RuntimeException('boom');
+                });
+            } catch (\RuntimeException) {
+                // expected
+            }
+            $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+        });
+        $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
+
+        $ids = $this->changesetIds();
+        $this->assertNotNull($ids[0]);
+        $this->assertNull($ids[1]);
+        $this->assertSame('outer', $this->db->query("SELECT comment FROM log_changesets")->fetchColumn());
+    }
+
     public function testWithChangesetReturnsTheWorkResult(): void
     {
         $result = RecordChangeLogger::withChangeset(10, 'ok', fn() => 'done');
@@ -310,9 +321,9 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testCommentIsCappedAtTheServerSideLimit(): void
     {
-        RecordChangeLogger::beginChangeset(10, str_repeat('x', 1500));
-        $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, str_repeat('x', 1500), function () {
+            $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+        });
 
         $stored = (string) $this->db->query("SELECT comment FROM log_changesets")->fetchColumn();
         $this->assertSame(1000, mb_strlen($stored));
@@ -327,9 +338,9 @@ class RecordChangeLoggerChangesetTest extends TestCase
         $userContext->method('getLoggedInUsername')->willReturn('alice');
         $logger = new RecordChangeLogger($this->db, $userContext, $config);
 
-        RecordChangeLogger::beginChangeset(10, 'should not be written');
-        $logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
-        RecordChangeLogger::endChangeset();
+        RecordChangeLogger::withChangeset(10, 'should not be written', function () use ($logger) {
+            $logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+        });
 
         $this->assertSame(0, $this->changesetCount());
         $this->assertSame([], $this->changesetIds());

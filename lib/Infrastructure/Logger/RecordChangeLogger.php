@@ -61,8 +61,8 @@ class RecordChangeLogger
     // Write paths build their own logger (RecordManager, the v2 controllers), so an
     // instance-local scope would never reach the object that does the writing. The
     // row is only written once the first change actually lands, so a submission that
-    // turns out to be a no-op leaves no empty group behind. Nested begin/end calls
-    // join the outermost scope.
+    // turns out to be a no-op leaves no empty group behind. Only withChangeset()
+    // opens a scope, so a throwing write path cannot leave one open.
     private static int $changesetDepth = 0;
     private static ?int $changesetId = null;
     private static ?int $changesetZoneId = null;
@@ -102,11 +102,9 @@ class RecordChangeLogger
      * is grouped under one row carrying the reason for the change. Nested calls join
      * the outermost scope so a controller can wrap a service that also wraps.
      *
-     * Prefer withChangeset(), which cannot leave a scope open if $work throws.
-     *
      * @throws InvalidArgumentException when the installation requires a reason and none was given
      */
-    public static function beginChangeset(?int $zoneId = null, ?string $comment = null): void
+    private static function beginChangeset(?int $zoneId, ?string $comment): void
     {
         $comment = ($comment !== null && trim($comment) !== '') ? trim($comment) : null;
 
@@ -124,7 +122,7 @@ class RecordChangeLogger
         self::$changesetDepth++;
     }
 
-    public static function endChangeset(): void
+    private static function endChangeset(): void
     {
         if (self::$changesetDepth === 0) {
             return;
