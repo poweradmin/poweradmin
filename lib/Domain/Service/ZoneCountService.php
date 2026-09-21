@@ -22,37 +22,20 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use PDO;
-use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 
 /**
- * Counts the zones a user may see, on SQL or the API backend.
+ * Counts the zones a user may see; the backend-specific query lives in the zone repository.
  */
 class ZoneCountService
 {
-    private PDO $db;
-    private ConfigurationInterface $config;
+    private ZoneReadRepositoryInterface $zoneRepository;
     private UserContextService $userContext;
-    private TableNameService $tableNameService;
-    private (ZoneReadBackendInterface&BackendCapabilitiesInterface)|null $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?UserContextService $userContext = null, (ZoneReadBackendInterface&BackendCapabilitiesInterface)|null $backendProvider = null)
+    public function __construct(ZoneReadRepositoryInterface $zoneRepository, UserContextService $userContext)
     {
-        $this->db = $db;
-        $this->config = $config;
-        $this->userContext = $userContext ?? new UserContextService();
-        $this->tableNameService = new TableNameService($config);
-        $this->backendProvider = $backendProvider;
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
+        $this->zoneRepository = $zoneRepository;
+        $this->userContext = $userContext;
     }
 
     /**
@@ -66,133 +49,8 @@ class ZoneCountService
      */
     public function countZones(string $perm, string $letterstart = 'all', string $zone_type = 'forward'): int
     {
-        if ($this->isApiBackend()) {
-            return $this->countZonesApi($perm, $letterstart, $zone_type);
-        }
+        $userId = $perm === 'own' ? $this->userContext->getLoggedInUserId() : null;
 
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $tables = $domains_table;
-        $conditions = [];
-        $params = [];
-
-        if ($perm != "own" && $perm != "all") {
-            return 0;
-        }
-
-        if ($perm == "own") {
-            $userId = $this->userContext->getLoggedInUserId();
-
-            if ($userId) {
-                // Include zones accessible via direct ownership or group membership.
-                $tables .= " LEFT JOIN zones ON zones.domain_id = $domains_table.id";
-                $conditions[] = "(zones.owner = ? OR EXISTS (
-                    SELECT 1 FROM zones_groups zg
-                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = $domains_table.id AND ugm.user_id = ?
-                ))";
-                $params[] = (string)$userId;
-                $params[] = (string)$userId; // For the EXISTS subquery
-            } else {
-                return 0; // No user ID available
-            }
-        }
-
-        // Single letter filter (a through z) or numeric filter (1)
-        if ($letterstart !== 'all') {
-            if ($letterstart === '1') {
-                $db_type = $this->config->get('database', 'type');
-                $conditions[] = DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
-            } else {
-                // Exact first-character match, mirroring the zone list query, so a
-                // filter of `_` (e.g. _dmarc zones) matches literally instead of the
-                // unescaped LIKE `_%` treating `_` as a single-char wildcard.
-                $db_type = $this->config->get('database', 'type');
-                $conditions[] = DbCompat::substr($db_type) . "($domains_table.name,1,1) = ?";
-                $params[] = $letterstart;
-            }
-        }
-
-        // Add filter for forward/reverse zones
-        if ($zone_type == 'forward') {
-            $conditions[] = "$domains_table.name NOT LIKE '%.in-addr.arpa'";
-            $conditions[] = "$domains_table.name NOT LIKE '%.ip6.arpa'";
-        } elseif ($zone_type == 'reverse') {
-            $conditions[] = "($domains_table.name LIKE '%.in-addr.arpa' OR $domains_table.name LIKE '%.ip6.arpa')";
-        }
-
-        $whereClause = empty($conditions) ? '' : ' WHERE ' . implode(' AND ', $conditions);
-        $query = "SELECT COUNT(DISTINCT $domains_table.id) AS count_zones FROM $tables" . $whereClause;
-
-        if (empty($params)) {
-            // No parameters, use direct query and fetch
-            $stmt = $this->db->query($query);
-            $result = $stmt->fetch();
-            return (int) ($result['count_zones'] ?? 0);
-        } else {
-            // Use prepared statements when parameters are needed
-            $stmt = $this->db->prepare($query);
-            if ($stmt === false) {
-                return 0; // Return 0 if prepare fails
-            }
-            $stmt->execute($params);
-            $result = $stmt->fetch();
-
-            return (int) ($result['count_zones'] ?? 0);
-        }
-    }
-
-    private function countZonesApi(string $perm, string $letterstart, string $zone_type): int
-    {
-        // Only names and ids are counted, so skip the DNSSEC lookup
-        $allZones = $this->backendProvider->getZones(false);
-
-        // Filter by ownership
-        if ($perm === 'own') {
-            $userId = $this->userContext->getLoggedInUserId();
-            if (!$userId) {
-                return 0;
-            }
-
-            $stmt = $this->db->prepare(
-                "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :uid
-                 UNION
-                 SELECT DISTINCT zg.domain_id FROM zones_groups zg
-                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                 WHERE ugm.user_id = :uid2"
-            );
-            $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
-            $stmt->execute();
-            $ownedIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
-
-            $allZones = array_filter($allZones, fn($z) => in_array((int)($z['id'] ?? 0), $ownedIds, true));
-        } elseif ($perm !== 'all') {
-            return 0;
-        }
-
-        // Filter by letter
-        if ($letterstart !== 'all') {
-            $allZones = array_filter($allZones, function ($z) use ($letterstart) {
-                $name = rtrim($z['name'] ?? '', '.');
-                if ($letterstart === '1') {
-                    return !empty($name) && is_numeric($name[0]);
-                }
-                return !empty($name) && strtolower($name[0]) === strtolower($letterstart);
-            });
-        }
-
-        // Filter by zone type
-        if ($zone_type === 'forward') {
-            $allZones = array_filter($allZones, function ($z) {
-                return !DnsHelper::isReverseZoneName($z['name'] ?? '');
-            });
-        } elseif ($zone_type === 'reverse') {
-            $allZones = array_filter($allZones, function ($z) {
-                return DnsHelper::isReverseZoneName($z['name'] ?? '');
-            });
-        }
-
-        return count($allZones);
+        return $this->zoneRepository->countZones($perm, $userId, $letterstart, $zone_type);
     }
 }

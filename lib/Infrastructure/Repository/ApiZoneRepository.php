@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -379,6 +380,63 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         unset($zone);
 
         return $zones;
+    }
+
+    public function countZones(string $permType, ?int $userId, string $letterStart = 'all', string $zoneType = 'forward'): int
+    {
+        if ($permType !== 'own' && $permType !== 'all') {
+            return 0;
+        }
+
+        // Only names and ids are counted, so skip the DNSSEC lookup
+        $zones = $this->backendProvider->getZones(false);
+
+        if ($permType === 'own') {
+            if (!$userId) {
+                return 0;
+            }
+            $ownedIds = $this->ownedCanonicalIds($userId);
+            $zones = array_filter($zones, fn($z) => in_array((int)($z['id'] ?? 0), $ownedIds, true));
+        }
+
+        if ($letterStart !== 'all') {
+            $zones = array_filter($zones, function ($z) use ($letterStart) {
+                $name = rtrim($z['name'] ?? '', '.');
+                if ($letterStart === '1') {
+                    return !empty($name) && is_numeric($name[0]);
+                }
+                return !empty($name) && strtolower($name[0]) === strtolower($letterStart);
+            });
+        }
+
+        if ($zoneType === 'forward') {
+            $zones = array_filter($zones, fn($z) => !DnsHelper::isReverseZoneName($z['name'] ?? ''));
+        } elseif ($zoneType === 'reverse') {
+            $zones = array_filter($zones, fn($z) => DnsHelper::isReverseZoneName($z['name'] ?? ''));
+        }
+
+        return count($zones);
+    }
+
+    /**
+     * Canonical ids of the zones a user owns directly or through a group.
+     *
+     * @return int[]
+     */
+    private function ownedCanonicalIds(int $userId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :uid
+             UNION
+             SELECT DISTINCT zg.domain_id FROM zones_groups zg
+             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+             WHERE ugm.user_id = :uid2"
+        );
+        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function getReverseZoneCounts(string $permType, int $userId): array

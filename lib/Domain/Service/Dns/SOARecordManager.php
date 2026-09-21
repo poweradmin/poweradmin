@@ -22,15 +22,11 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use PDO;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\RecordWriteBackendInterface;
 use Poweradmin\Domain\Service\SerialBackendInterface;
 use Poweradmin\Domain\Service\ZoneReadBackendInterface;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Reads and rewrites SOA records and bumps their serial.
@@ -40,24 +36,14 @@ class SOARecordManager implements SOARecordManagerInterface
     /** Zone serials are 32-bit unsigned values (RFC 1982). */
     public const MAX_SERIAL = 4294967295;
 
-    private PDO $db;
-    private ConfigurationInterface $config;
     private RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&SerialBackendInterface&BackendCapabilitiesInterface $backendProvider;
 
     /**
-     * Constructor
-     *
-     * @param PDO $db Database connection
-     * @param ConfigurationInterface $config Configuration manager
      * @param RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&SerialBackendInterface&BackendCapabilitiesInterface $backendProvider Reads and writes the SOA record and reports the serial policy
      */
     public function __construct(
-        PDO $db,
-        ConfigurationInterface $config,
         RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&SerialBackendInterface&BackendCapabilitiesInterface $backendProvider
     ) {
-        $this->db = $db;
-        $this->config = $config;
         $this->backendProvider = $backendProvider;
     }
 
@@ -228,24 +214,7 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function updateSOARecord(int $domain_id, string $content): bool
     {
-        // The API backend rewrites the SOA RRset (and its TTL) from dns.ttl, the SQL
-        // backend keeps the stored TTL; the two are not one provider operation yet.
-        if ($this->backendProvider->isApiBackend()) {
-            $zoneName = $this->backendProvider->getZoneNameById($domain_id);
-            if ($zoneName === null) {
-                return false;
-            }
-            $soa_ttl = (int)$this->config->get('dns', 'ttl', 86400);
-            return $this->backendProvider->addRecord($domain_id, $zoneName, 'SOA', $content, $soa_ttl, 0);
-        }
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("UPDATE $records_table SET content = ? WHERE domain_id = ? AND type = ?");
-        $stmt->execute([$content, $domain_id, 'SOA']);
-
-        return true;
+        return $this->backendProvider->replaceSoaContent($domain_id, $content);
     }
 
     /**

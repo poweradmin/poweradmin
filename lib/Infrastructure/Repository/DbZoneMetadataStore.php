@@ -80,6 +80,16 @@ class DbZoneMetadataStore implements ZoneMetadataStoreInterface
         }
     }
 
+    public function writeRejection(string $kind): ?string
+    {
+        return null;
+    }
+
+    public function kindSupport(array $definition, callable $capabilities): string
+    {
+        return self::SUPPORT_SUPPORTED;
+    }
+
     public function replaceKind(int $zoneId, string $zoneName, string $kind, array $values, array $before): bool
     {
         return $this->replaceAll($zoneId, $zoneName, ZoneMetadataService::replaceKindIn($before, $kind, $values), $before);

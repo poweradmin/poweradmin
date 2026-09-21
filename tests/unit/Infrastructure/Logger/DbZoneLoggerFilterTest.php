@@ -6,6 +6,7 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use ReflectionClass;
@@ -184,6 +185,57 @@ class DbZoneLoggerFilterTest extends TestCase
         $this->assertStringContainsString('log_zones.created_at >= :date_from', $capturedSql);
         $this->assertStringContainsString('log_zones.zone_id IN (:zone_owner_id_0)', $capturedSql);
         $this->assertSame(2, substr_count($capturedSql, ' AND '));
+    }
+
+    public function testNameFilterJoinsTheZonesTableOnTheApiBackend(): void
+    {
+        $capturedSql = null;
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(['number_of_logs' => 0]);
+        $this->db->method('prepare')->willReturnCallback(function (string $sql) use (&$capturedSql, $stmt) {
+            $capturedSql = $sql;
+            return $stmt;
+        });
+        $backend = $this->createMock(BackendCapabilitiesInterface::class);
+        $backend->method('allocatesZoneIdsLocally')->willReturn(true);
+
+        $logger = new DbZoneLogger($this->db, $backend);
+        $logger->countFilteredLogs(['name' => 'example.com'], null);
+
+        $this->assertStringContainsString('INNER JOIN zones ON COALESCE(NULLIF(zones.domain_id, 0), zones.id) = log_zones.zone_id', $capturedSql);
+        $this->assertStringContainsString('zones.zone_name LIKE :search_by', $capturedSql);
+        $this->assertStringNotContainsString('domains', $capturedSql);
+    }
+
+    public function testNameFilterJoinsThePrefixedDomainsTableOnTheSqlBackend(): void
+    {
+        $this->resetConfigurationManager([
+            'database' => ['type' => 'mysql', 'pdns_db_name' => 'pdns'],
+            'logging' => ['database_enabled' => true],
+            'interface' => [],
+            'security' => [],
+            'dns' => [],
+            'mail' => [],
+            'dnssec' => [],
+            'pdns_api' => [],
+            'ldap' => [],
+            'misc' => [],
+        ]);
+        $capturedSql = null;
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(['number_of_logs' => 0]);
+        $this->db->method('prepare')->willReturnCallback(function (string $sql) use (&$capturedSql, $stmt) {
+            $capturedSql = $sql;
+            return $stmt;
+        });
+
+        $logger = new DbZoneLogger($this->db);
+        $logger->countFilteredLogs(['name' => 'example.com'], null);
+
+        $this->assertStringContainsString('INNER JOIN pdns.domains ON pdns.domains.id = log_zones.zone_id', $capturedSql);
+        $this->assertStringContainsString('pdns.domains.name LIKE :search_by', $capturedSql);
     }
 
     public function testGetDistinctUsersForZonesWithEmptyArrayReturnsEmpty(): void

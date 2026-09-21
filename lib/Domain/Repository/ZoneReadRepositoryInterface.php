@@ -135,6 +135,17 @@ interface ZoneReadRepositoryInterface
     public function getReverseZoneCounts(string $permType, int $userId): array;
 
     /**
+     * Count the zones a permission scope may see, optionally narrowed by first letter and zone kind.
+     *
+     * @param string $permType Permission type ('all', 'own'); anything else counts nothing
+     * @param int|null $userId User ID for 'own'; null counts nothing
+     * @param string $letterStart Single first letter, '1' for a leading digit, or 'all'
+     * @param string $zoneType 'forward', 'reverse' or 'all'
+     * @return int Number of matching zones
+     */
+    public function countZones(string $permType, ?int $userId, string $letterStart = 'all', string $zoneType = 'forward'): int;
+
+    /**
      * Find forward zones associated with reverse zones through PTR records
      *
      * @param array $reverseZoneIds Array of reverse zone IDs

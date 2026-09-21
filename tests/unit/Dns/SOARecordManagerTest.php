@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use PDO;
 use TestHelpers\FakeConfiguration;
@@ -15,7 +15,6 @@ class SOARecordManagerTest extends SqliteDnsBackendTestCase
 {
 
     private PDO $db;
-    private $configMock;
     private SqlDnsBackendProvider $backendProvider;
     private $soaRecordManager;
 
@@ -24,9 +23,8 @@ class SOARecordManagerTest extends SqliteDnsBackendTestCase
         $this->db = $this->sqliteRecordsDb([
             [1, 1, 'example.com', 'SOA', 'ns1.example.com. hostmaster.example.com. 2023060100 28800 7200 604800 86400'],
         ]);
-        $this->configMock = $this->createMock(ConfigurationManager::class);
         $this->backendProvider = new SqlDnsBackendProvider($this->db, new FakeConfiguration());
-        $this->soaRecordManager = new SOARecordManager($this->db, $this->configMock, $this->backendProvider);
+        $this->soaRecordManager = new SOARecordManager($this->backendProvider);
     }
 
     public function testGetSOARecordReadsThroughTheBackend(): void
@@ -50,6 +48,32 @@ class SOARecordManagerTest extends SqliteDnsBackendTestCase
     public function testUpdateSOASerialFailsWithoutSoaRecord(): void
     {
         $this->assertFalse($this->soaRecordManager->updateSOASerial(2));
+    }
+
+    public function testUpdateSOARecordRewritesContentAndKeepsStoredTtl(): void
+    {
+        $content = 'ns2.example.com. admin.example.com. 2024010101 7200 3600 1209600 300';
+
+        $this->assertTrue($this->soaRecordManager->updateSOARecord(1, $content));
+
+        $row = $this->db->query("SELECT content, ttl FROM records WHERE domain_id = 1 AND type = 'SOA'")->fetch(PDO::FETCH_ASSOC);
+        $this->assertSame($content, $row['content']);
+        $this->assertSame(3600, (int)$row['ttl']);
+    }
+
+    public function testUpdateSOARecordDelegatesToTheBackend(): void
+    {
+        $content = 'ns2.example.com. admin.example.com. 2024010101 7200 3600 1209600 300';
+
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->expects($this->once())
+            ->method('replaceSoaContent')
+            ->with(7, $content)
+            ->willReturn(false);
+
+        $manager = new SOARecordManager($backend);
+
+        $this->assertFalse($manager->updateSOARecord(7, $content));
     }
 
     #[DataProvider('soaSerialProvider')]
@@ -151,7 +175,7 @@ class SOARecordManagerTest extends SqliteDnsBackendTestCase
 
         // Mock getNextSerial to return a specific value
         $soaManagerMock = $this->getMockBuilder(SOARecordManager::class)
-            ->setConstructorArgs([$this->db, $this->configMock, $this->backendProvider])
+            ->setConstructorArgs([$this->backendProvider])
             ->onlyMethods(['getNextSerial'])
             ->getMock();
 

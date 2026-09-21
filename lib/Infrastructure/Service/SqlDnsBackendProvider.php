@@ -255,6 +255,16 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
     // Record operations
     // ---------------------------------------------------------------
 
+    public function replaceSoaContent(int $zoneId, string $content): bool
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+
+        $stmt = $this->db->prepare("UPDATE $recordsTable SET content = ? WHERE domain_id = ? AND type = ?");
+        $stmt->execute([$content, $zoneId, 'SOA']);
+
+        return true;
+    }
+
     public function addRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -896,6 +906,16 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
     public function recordIdsAreNumeric(): bool
     {
         return true;
+    }
+
+    public function managesSoaRecord(): bool
+    {
+        return false;
+    }
+
+    public function allocatesZoneIdsLocally(): bool
+    {
+        return false;
     }
 
     public function hasSoaEditApi(int $domainId): bool

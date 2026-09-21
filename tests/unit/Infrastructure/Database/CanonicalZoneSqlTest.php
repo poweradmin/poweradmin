@@ -75,6 +75,19 @@ class CanonicalZoneSqlTest extends TestCase
         $this->assertSame('domain_id', CanonicalZoneSql::canonicalIdColumn());
     }
 
+    public function testZoneNameJoinFollowsWhereZoneIdsAreAllocated(): void
+    {
+        $this->assertSame([
+            'join' => 'INNER JOIN zones ON COALESCE(NULLIF(zones.domain_id, 0), zones.id) = log_zones.zone_id',
+            'name' => 'zones.zone_name',
+        ], CanonicalZoneSql::zoneNameJoin(true, 'log_zones.zone_id', 'pdns.domains'));
+
+        $this->assertSame([
+            'join' => 'INNER JOIN pdns.domains ON pdns.domains.id = log_zones.zone_id',
+            'name' => 'pdns.domains.name',
+        ], CanonicalZoneSql::zoneNameJoin(false, 'log_zones.zone_id', 'pdns.domains'));
+    }
+
     public function testApiModeFallsBackToTheRowId(): void
     {
         $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z'));

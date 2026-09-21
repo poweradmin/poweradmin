@@ -191,9 +191,10 @@ class EditZoneMetadataController extends BaseController
      * Build metadata definitions for the template, already localized for display.
      *
      * @param bool $includeOperatorOnly Whether the caller may set operator-only kinds
+     * @param callable(): PdnsCapabilities $caps The connected server's capabilities, read on demand
      * @return array<int, array<string, mixed>>
      */
-    private function getMetadataDefinitionsForTemplate(bool $includeOperatorOnly, PdnsCapabilities $caps): array
+    private function getMetadataDefinitionsForTemplate(bool $includeOperatorOnly, callable $caps): array
     {
         $definitions = [];
 
@@ -339,15 +340,21 @@ class EditZoneMetadataController extends BaseController
 
     /**
      * What the connected PowerDNS supports, from the session cache the version
-     * probe keeps; the SQL backend has no version to ask for.
+     * probe keeps. Resolved once, and only when a store asks for it.
+     *
+     * @return callable(): PdnsCapabilities
      */
-    private function serverCapabilities(): PdnsCapabilities
+    private function serverCapabilities(): callable
     {
-        if (!$this->metadataService->isApiBackend()) {
-            return PdnsCapabilities::fromVersion(null);
-        }
-        $this->refreshPdnsCapabilities();
+        $capabilities = null;
 
-        return $this->getPdnsCapabilities();
+        return function () use (&$capabilities): PdnsCapabilities {
+            if ($capabilities === null) {
+                $this->refreshPdnsCapabilities();
+                $capabilities = $this->getPdnsCapabilities();
+            }
+
+            return $capabilities;
+        };
     }
 }

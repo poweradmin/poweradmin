@@ -94,6 +94,25 @@ class ApiZoneMetadataStore implements ZoneMetadataStoreInterface
         return $success;
     }
 
+    public function writeRejection(string $kind): ?string
+    {
+        return MetadataDefinitions::writeRejection($kind, true);
+    }
+
+    public function kindSupport(array $definition, callable $capabilities): string
+    {
+        $minVersion = $definition['min_version'] ?? null;
+        if (!is_string($minVersion) || $minVersion === '') {
+            return self::SUPPORT_SUPPORTED;
+        }
+        $capabilities = $capabilities();
+        if (!$capabilities->isKnown()) {
+            return self::SUPPORT_UNKNOWN;
+        }
+
+        return $capabilities->supportsMetadataKind($minVersion) ? self::SUPPORT_SUPPORTED : self::SUPPORT_UNSUPPORTED_KNOWN;
+    }
+
     public function replaceKind(int $zoneId, string $zoneName, string $kind, array $values, array $before): bool
     {
         $apiName = self::apiZoneName($zoneName);

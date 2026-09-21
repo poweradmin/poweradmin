@@ -86,7 +86,7 @@ class DnsServiceFactory
         ?DnsBackendProviderInterface $backendProvider = null
     ): SOARecordManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
-        return new SOARecordManager($db, $config, $backendProvider);
+        return new SOARecordManager($backendProvider);
     }
 
     /**

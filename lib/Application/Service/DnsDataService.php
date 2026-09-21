@@ -28,6 +28,7 @@ use Poweradmin\Infrastructure\Repository\ZoneSearch;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -179,8 +180,7 @@ class DnsDataService
     /**
      * Count zones matching criteria.
      *
-     * In SQL mode, delegates to ZoneCountService::countZones().
-     * In API mode, computes from the full zone list.
+     * Delegates to the zone repository through ZoneCountService.
      *
      * @param string $perm 'own' or 'all'
      * @param string $letterStart Starting letter filter
@@ -189,7 +189,7 @@ class DnsDataService
      */
     public function countZones(string $perm, string $letterStart = 'all', string $zoneType = 'forward'): int
     {
-        $zoneCountService = new ZoneCountService($this->db, $this->config, null, $this->backendProvider);
+        $zoneCountService = new ZoneCountService($this->repositoryFactory->createZoneRepository(), new UserContextService());
         return $zoneCountService->countZones($perm, $letterStart, $zoneType);
     }
 

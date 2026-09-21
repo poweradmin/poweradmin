@@ -353,6 +353,67 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $zones;
     }
 
+    public function countZones(string $permType, ?int $userId, string $letterStart = 'all', string $zoneType = 'forward'): int
+    {
+        if ($permType !== 'own' && $permType !== 'all') {
+            return 0;
+        }
+
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $tables = $domains_table;
+        $conditions = [];
+        $params = [];
+
+        if ($permType === 'own') {
+            if (!$userId) {
+                return 0;
+            }
+            // Include zones accessible via direct ownership or group membership.
+            $tables .= " LEFT JOIN zones ON zones.domain_id = $domains_table.id";
+            $conditions[] = "(zones.owner = ? OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = $domains_table.id AND ugm.user_id = ?
+            ))";
+            $params[] = (string)$userId;
+            $params[] = (string)$userId;
+        }
+
+        if ($letterStart !== 'all') {
+            if ($letterStart === '1') {
+                $conditions[] = DbCompat::substr($this->db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($this->db_type) . " '[0-9]'";
+            } else {
+                // Exact first-character match, so a filter of `_` (e.g. _dmarc zones)
+                // matches literally instead of LIKE `_%` treating `_` as a wildcard.
+                $conditions[] = DbCompat::substr($this->db_type) . "($domains_table.name,1,1) = ?";
+                $params[] = $letterStart;
+            }
+        }
+
+        if ($zoneType === 'forward') {
+            $conditions[] = "$domains_table.name NOT LIKE '%.in-addr.arpa'";
+            $conditions[] = "$domains_table.name NOT LIKE '%.ip6.arpa'";
+        } elseif ($zoneType === 'reverse') {
+            $conditions[] = "($domains_table.name LIKE '%.in-addr.arpa' OR $domains_table.name LIKE '%.ip6.arpa')";
+        }
+
+        $whereClause = empty($conditions) ? '' : ' WHERE ' . implode(' AND ', $conditions);
+        $query = "SELECT COUNT(DISTINCT $domains_table.id) AS count_zones FROM $tables" . $whereClause;
+
+        if (empty($params)) {
+            $result = $this->db->query($query)->fetch();
+            return (int)($result['count_zones'] ?? 0);
+        }
+
+        $stmt = $this->db->prepare($query);
+        if ($stmt === false) {
+            return 0;
+        }
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+        return (int)($result['count_zones'] ?? 0);
+    }
+
     /**
      * Get all reverse zone counts in a single query (optimization)
      *

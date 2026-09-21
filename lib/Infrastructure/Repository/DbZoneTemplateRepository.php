@@ -60,6 +60,8 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
     private ?DnsBackendProviderInterface $backendProvider;
     private ?DnsFormatter $dnsFormatter = null;
     private ?TableNameService $tableNameService = null;
+    /** @var array{from: string, idColumn: string, detailColumns: ?string, detailJoin: string, orderBy: string}|null */
+    private ?array $linkedZonesSource = null;
 
     public function __construct(object $db, ?ConfigurationInterface $config = null, ?DnsBackendProviderInterface $backendProvider = null)
     {
@@ -94,9 +96,59 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         return $this->tableNameService->getTable($table);
     }
 
-    private function isApiBackend(): bool
+    /**
+     * Where the zones linked to a template are read from. A backend that allocates
+     * zone ids locally is served by the zones table alone and the zone details come
+     * from the backend; otherwise the PowerDNS domains table is joined in, which drops
+     * links whose domain is gone and lets the details come from SQL.
+     *
+     * @return array{from: string, idColumn: string, detailColumns: ?string, detailJoin: string, orderBy: string}
+     */
+    private function linkedZonesSource(): array
     {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
+        if ($this->linkedZonesSource !== null) {
+            return $this->linkedZonesSource;
+        }
+        if ($this->backendProvider !== null && $this->backendProvider->allocatesZoneIdsLocally()) {
+            return $this->linkedZonesSource = [
+                'from' => 'zones',
+                'idColumn' => CanonicalZoneSql::canonicalIdColumn('zones'),
+                'detailColumns' => null,
+                'detailJoin' => '',
+                'orderBy' => '1',
+            ];
+        }
+
+        $domains = $this->pdnsTable(PdnsTable::DOMAINS);
+        $records = $this->pdnsTable(PdnsTable::RECORDS);
+
+        return $this->linkedZonesSource = [
+            'from' => "zones INNER JOIN $domains ON $domains.id = zones.domain_id",
+            'idColumn' => 'zones.domain_id',
+            'detailColumns' => "$domains.name, $domains.type, Record_Count.count_records",
+            'detailJoin' => " LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records GROUP BY domain_id) Record_Count ON Record_Count.domain_id = $domains.id",
+            'orderBy' => "$domains.name",
+        ];
+    }
+
+    /**
+     * SELECT over the linked-zone source for one template, optionally narrowed to an owner.
+     *
+     * @return array{0: string, 1: array<string, int>} Query and its parameters
+     */
+    private function linkedZonesSelect(string $columns, int $templateId, ?int $ownerId, string $joins = '', string $orderBy = ''): array
+    {
+        $source = $this->linkedZonesSource();
+        $params = [':zone_templ_id' => $templateId];
+        $filter = '';
+        if ($ownerId !== null) {
+            $filter = self::ownedZoneFilter();
+            $params += self::ownedZoneParams($ownerId);
+        }
+        $query = "SELECT $columns FROM {$source['from']}$joins WHERE zones.zone_templ_id = :zone_templ_id" . $filter
+            . ($orderBy === '' ? '' : " ORDER BY $orderBy");
+
+        return [$query, $params];
     }
 
     /**
@@ -690,47 +742,11 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      */
     public function listLinkedZoneIds(int $templateId, ?int $ownerId): array
     {
-        $params = [':zone_templ_id' => $templateId];
-        $sql_add = '';
-
-        if ($this->isApiBackend()) {
-            if ($ownerId !== null) {
-                $sql_add = self::ownedZoneFilter();
-                $params += self::ownedZoneParams($ownerId);
-            }
-
-            $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
-            $stmt = $this->db->prepare($query);
-            $stmt->execute($params);
-            return self::uniqueInts($stmt->fetchAll(PDO::FETCH_COLUMN));
-        }
-
-        $domains_table = $this->pdnsTable(PdnsTable::DOMAINS);
-        $records_table = $this->pdnsTable(PdnsTable::RECORDS);
-
-        if ($ownerId !== null) {
-            $sql_add = " AND zones.domain_id = $domains_table.id" . self::ownedZoneFilter();
-            $params += self::ownedZoneParams($ownerId);
-        }
-
-        $query = "SELECT zones.id,
-            zones.domain_id,
-            $domains_table.name,
-            $domains_table.type,
-            Record_Count.count_records
-            FROM $domains_table
-            INNER JOIN zones ON $domains_table.id=zones.domain_id
-            LEFT JOIN (
-                SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
-            ) Record_Count ON Record_Count.domain_id=$domains_table.id
-            WHERE 1=1" . $sql_add . "
-            AND zones.zone_templ_id = :zone_templ_id
-            GROUP BY $domains_table.name, zones.id, zones.domain_id, $domains_table.type, Record_Count.count_records";
-
+        [$query, $params] = $this->linkedZonesSelect($this->linkedZonesSource()['idColumn'] . ' AS domain_id', $templateId, $ownerId);
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
-        return self::uniqueInts($stmt->fetchAll(PDO::FETCH_COLUMN, 1));
+        return self::uniqueInts($stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
     /**
@@ -775,29 +791,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      */
     public function listLinkedZoneIdPairs(int $templateId, ?int $ownerId): array
     {
-        $params = [':zone_templ_id' => $templateId];
-        $sql_add = '';
-
-        if ($this->isApiBackend()) {
-            if ($ownerId !== null) {
-                $sql_add = self::ownedZoneFilter();
-                $params += self::ownedZoneParams($ownerId);
-            }
-            $query = "SELECT id AS zone_id, " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
-        } else {
-            // The inner join drops links whose PowerDNS domain is gone; those would
-            // crash later in updateZoneRecords.
-            $domains_table = $this->pdnsTable(PdnsTable::DOMAINS);
-            if ($ownerId !== null) {
-                $sql_add = self::ownedZoneFilter();
-                $params += self::ownedZoneParams($ownerId);
-            }
-            $query = "SELECT zones.id AS zone_id, zones.domain_id
-                      FROM zones
-                      INNER JOIN $domains_table ON $domains_table.id = zones.domain_id
-                      WHERE zones.zone_templ_id = :zone_templ_id" . $sql_add;
-        }
-
+        [$query, $params] = $this->linkedZonesSelect('zones.id AS zone_id, ' . $this->linkedZonesSource()['idColumn'] . ' AS domain_id', $templateId, $ownerId);
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
@@ -820,78 +814,46 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      */
     public function listLinkedZones(int $templateId, ?int $ownerId): array
     {
-        $params = [':zone_templ_id' => $templateId];
-        $sql_add = '';
+        $source = $this->linkedZonesSource();
+        $ownerColumns = 'zones.owner, zones.comment, u.username as owner_name, u.fullname as owner_fullname';
+        $ownerJoin = ' LEFT JOIN users u ON zones.owner = u.id';
 
-        if ($this->isApiBackend()) {
-            if ($ownerId !== null) {
-                $sql_add = self::ownedZoneFilter();
-                $params += self::ownedZoneParams($ownerId);
-            }
-
-            $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn('zones') . " AS domain_id, zones.owner, zones.comment,
-                      u.username as owner_name, u.fullname as owner_fullname
-                      FROM zones
-                      LEFT JOIN users u ON zones.owner = u.id
-                      WHERE zones.zone_templ_id = :zone_templ_id" . $sql_add . "
-                      ORDER BY 1";
+        if ($source['detailColumns'] !== null) {
+            [$query, $params] = $this->linkedZonesSelect(
+                "{$source['idColumn']} AS id, {$source['detailColumns']}, $ownerColumns",
+                $templateId,
+                $ownerId,
+                $ownerJoin . $source['detailJoin'],
+                $source['orderBy']
+            );
             $stmt = $this->db->prepare($query);
             $stmt->execute($params);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $result = [];
-            foreach ($rows as $row) {
-                $zoneId = (int)$row['domain_id'];
-                $zoneData = $this->backendProvider->getZoneById($zoneId);
-                $countRecords = $this->backendProvider->countZoneRecords($zoneId);
-                $result[] = [
-                    'id' => $zoneId,
-                    'name' => $zoneData['name'] ?? '',
-                    'type' => $zoneData['type'] ?? '',
-                    'count_records' => $countRecords,
-                    'owner' => $row['owner'],
-                    'comment' => $row['comment'],
-                    'owner_name' => $row['owner_name'],
-                    'owner_fullname' => $row['owner_fullname'],
-                ];
-            }
-
-            usort($result, fn($a, $b) => strcasecmp($a['name'], $b['name']));
-            return self::uniqueByZoneId($result);
+            return self::uniqueByZoneId($stmt->fetchAll());
         }
 
-        $domains_table = $this->pdnsTable(PdnsTable::DOMAINS);
-        $records_table = $this->pdnsTable(PdnsTable::RECORDS);
-
-        if ($ownerId !== null) {
-            $sql_add = " AND zones.domain_id = $domains_table.id" . self::ownedZoneFilter();
-            $params += self::ownedZoneParams($ownerId);
-        }
-
-        $query = "SELECT $domains_table.id,
-                $domains_table.name,
-                $domains_table.type,
-                Record_Count.count_records,
-                zones.owner,
-                zones.comment,
-                u.username as owner_name,
-                u.fullname as owner_fullname
-                FROM $domains_table
-                LEFT JOIN zones ON $domains_table.id=zones.domain_id
-                LEFT JOIN users u ON zones.owner=u.id
-                LEFT JOIN (
-                    SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
-                ) Record_Count ON Record_Count.domain_id=$domains_table.id
-                WHERE 1=1" . $sql_add . "
-                AND zone_templ_id = :zone_templ_id
-                GROUP BY $domains_table.name, $domains_table.id, $domains_table.type,
-                        Record_Count.count_records, zones.owner, zones.comment,
-                        u.username, u.fullname
-                ORDER BY $domains_table.name";
-
+        [$query, $params] = $this->linkedZonesSelect("{$source['idColumn']} AS domain_id, $ownerColumns", $templateId, $ownerId, $ownerJoin, $source['orderBy']);
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
-        return self::uniqueByZoneId($stmt->fetchAll());
+
+        $result = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $zoneId = (int)$row['domain_id'];
+            $zoneData = $this->backendProvider->getZoneById($zoneId);
+            $result[] = [
+                'id' => $zoneId,
+                'name' => $zoneData['name'] ?? '',
+                'type' => $zoneData['type'] ?? '',
+                'count_records' => $this->backendProvider->countZoneRecords($zoneId),
+                'owner' => $row['owner'],
+                'comment' => $row['comment'],
+                'owner_name' => $row['owner_name'],
+                'owner_fullname' => $row['owner_fullname'],
+            ];
+        }
+
+        usort($result, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+        return self::uniqueByZoneId($result);
     }
 
     /**

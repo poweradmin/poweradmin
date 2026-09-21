@@ -26,6 +26,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 
 #[CoversClass(DbZoneMetadataStore::class)]
@@ -106,5 +107,14 @@ class DbZoneMetadataStoreTest extends TestCase
         $this->db->exec('DROP TABLE domainmetadata');
 
         $this->assertFalse($this->store->replaceAll(self::ZONE_ID, 'example.com', [['kind' => 'X', 'content' => '1']], []));
+    }
+
+    public function testTheTableHoldsAnyKindWithoutAskingTheServer(): void
+    {
+        $neverAsked = fn(): PdnsCapabilities => $this->fail('the database store must not probe the server version');
+
+        $this->assertNull($this->store->writeRejection('PRESIGNED'));
+        $this->assertNull($this->store->writeRejection('MY-KIND'));
+        $this->assertSame(DbZoneMetadataStore::SUPPORT_SUPPORTED, $this->store->kindSupport(['min_version' => '9.9.9'], $neverAsked));
     }
 }

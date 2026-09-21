@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Repository;
 
+use Poweradmin\Domain\Service\PdnsCapabilities;
+
 /**
  * Where a zone's metadata rows live: the domainmetadata table on the SQL
  * backend, or the PowerDNS API (metadata plus zone-object properties) on the
@@ -29,6 +31,10 @@ namespace Poweradmin\Domain\Repository;
  */
 interface ZoneMetadataStoreInterface
 {
+    public const SUPPORT_SUPPORTED = 'supported';
+    public const SUPPORT_UNSUPPORTED_KNOWN = 'unsupported_known';
+    public const SUPPORT_UNKNOWN = 'unknown';
+
     /**
      * The zone's metadata rows sorted by kind.
      *
@@ -51,4 +57,20 @@ interface ZoneMetadataStoreInterface
      * @param list<array{kind: string, content: string}> $before The set as loaded before the write
      */
     public function replaceKind(int $zoneId, string $zoneName, string $kind, array $values, array $before): bool;
+
+    /**
+     * Why this store cannot hold the kind (a MetadataDefinitions::REJECT_* code), or null.
+     * Server-managed kinds are refused before the store is asked.
+     */
+    public function writeRejection(string $kind): ?string;
+
+    /**
+     * Whether the store is known to take a version-gated kind: a SUPPORT_* value.
+     * The capabilities are resolved only by a store whose support depends on the
+     * connected server, so a database store never triggers the version probe.
+     *
+     * @param array<string, mixed> $definition A MetadataDefinitions entry
+     * @param callable(): PdnsCapabilities $capabilities
+     */
+    public function kindSupport(array $definition, callable $capabilities): string;
 }

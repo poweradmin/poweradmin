@@ -6,7 +6,11 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\EditZoneMetadataController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use PDO;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
+use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Domain\Service\PermissionService;
@@ -175,24 +179,22 @@ class EditZoneMetadataControllerTest extends TestCase
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
         $config = $this->createRuntimeConfig($overrides);
         $this->setProperty($controller, 'zoneRepository', $this->createMock(DbZoneRepository::class));
-        $this->setProperty($controller, 'metadataService', $this->metadataService($config));
+        $this->setProperty($controller, 'metadataService', $this->metadataService($config, new DbZoneMetadataStore($this->createMock(PDO::class), $config)));
         $this->setBaseControllerProperty($controller, 'config', $config);
 
         return $controller;
     }
 
-    /**
-     * The controller's configuration must already name the api backend.
-     */
     private function useApiBackend(EditZoneMetadataController $controller): void
     {
-        $this->setProperty($controller, 'metadataService', $this->metadataService(ConfigurationManager::getInstance()));
+        $store = new ApiZoneMetadataStore($this->createMock(PowerdnsApiClient::class));
+        $this->setProperty($controller, 'metadataService', $this->metadataService(ConfigurationManager::getInstance(), $store));
     }
 
-    private function metadataService(ConfigurationManager $config): ZoneMetadataService
+    private function metadataService(ConfigurationManager $config, ZoneMetadataStoreInterface $store): ZoneMetadataService
     {
         return new ZoneMetadataService(
-            $this->createMock(ZoneMetadataStoreInterface::class),
+            $store,
             $config,
             $this->createMock(PermissionService::class),
             $this->createMock(AuditService::class),
@@ -205,7 +207,7 @@ class EditZoneMetadataControllerTest extends TestCase
      */
     private function definitions(EditZoneMetadataController $controller, PdnsCapabilities $caps): array
     {
-        return $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate', [true, $caps]);
+        return $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate', [true, fn(): PdnsCapabilities => $caps]);
     }
 
     private function createRuntimeConfig(array $overrides = []): ConfigurationManager

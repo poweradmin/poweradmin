@@ -33,7 +33,9 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\ZoneMetadataOutcome;
 use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use PDO;
 use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
+use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\PermissionServiceTestCase;
@@ -201,7 +203,7 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertSame(ZoneMetadataOutcome::CUSTOM_PREFIX, $service->replaceKind(self::ZONE_ID, self::ZONE, 'MY-KIND', ['1'], self::ADMIN)->outcome);
         $this->assertSame(ZoneMetadataOutcome::NO_API_ROUTE, $service->replaceKind(self::ZONE_ID, self::ZONE, 'PRESIGNED', ['1'], self::ADMIN)->outcome);
         $this->assertSame(MetadataDefinitions::REJECT_NO_API_ROUTE, $service->writeRejection('PRESIGNED'));
-        $this->assertNull($this->sqlService()->writeRejection('PRESIGNED'));
+        $this->assertNull($this->dbService()->writeRejection('PRESIGNED'));
     }
 
     public function testAnOverlongKindIsRefusedNotTruncated(): void
@@ -329,12 +331,22 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
     {
         $gated = ['min_version' => '4.8.0'];
         $api = $this->apiService($this->createMock(PowerdnsApiClient::class));
+        $version = fn(?string $version): callable => fn(): PdnsCapabilities => PdnsCapabilities::fromVersion($version);
+        $neverAsked = fn(): PdnsCapabilities => $this->fail('the database store must not probe the server version');
 
-        $this->assertSame(ZoneMetadataService::SUPPORT_SUPPORTED, $this->sqlService()->kindSupport($gated, PdnsCapabilities::fromVersion(null)));
-        $this->assertSame(ZoneMetadataService::SUPPORT_UNKNOWN, $api->kindSupport($gated, PdnsCapabilities::fromVersion(null)));
-        $this->assertSame(ZoneMetadataService::SUPPORT_UNSUPPORTED_KNOWN, $api->kindSupport($gated, PdnsCapabilities::fromVersion('4.7.0')));
-        $this->assertSame(ZoneMetadataService::SUPPORT_SUPPORTED, $api->kindSupport($gated, PdnsCapabilities::fromVersion('4.8.3')));
-        $this->assertSame(ZoneMetadataService::SUPPORT_SUPPORTED, $api->kindSupport([], PdnsCapabilities::fromVersion(null)));
+        $this->assertSame(ZoneMetadataService::SUPPORT_SUPPORTED, $this->dbService()->kindSupport($gated, $neverAsked));
+        $this->assertSame(ZoneMetadataService::SUPPORT_UNKNOWN, $api->kindSupport($gated, $version(null)));
+        $this->assertSame(ZoneMetadataService::SUPPORT_UNSUPPORTED_KNOWN, $api->kindSupport($gated, $version('4.7.0')));
+        $this->assertSame(ZoneMetadataService::SUPPORT_SUPPORTED, $api->kindSupport($gated, $version('4.8.3')));
+        $this->assertSame(ZoneMetadataService::SUPPORT_SUPPORTED, $api->kindSupport([], $neverAsked));
+    }
+
+    /**
+     * The database store over a mocked connection: its support answers need no rows.
+     */
+    private function dbService(): ZoneMetadataService
+    {
+        return $this->service(new DbZoneMetadataStore($this->createMock(PDO::class), $this->config), $this->config);
     }
 
     private function sqlService(): ZoneMetadataService
@@ -343,17 +355,11 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
     }
 
     /**
-     * The API backend: the real API store over a mocked client, and a
-     * configuration that names the api backend.
+     * The API backend: the real API store over a mocked client.
      */
     private function apiService(PowerdnsApiClient $apiClient): ZoneMetadataService
     {
-        $config = $this->createMock(ConfigurationInterface::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, mixed $default = null): mixed => $group === 'dns' && $key === 'backend' ? 'api' : $default
-        );
-
-        return $this->service(new ApiZoneMetadataStore($apiClient), $config);
+        return $this->service(new ApiZoneMetadataStore($apiClient), $this->config);
     }
 
     private function service(ZoneMetadataStoreInterface $store, ConfigurationInterface $config): ZoneMetadataService

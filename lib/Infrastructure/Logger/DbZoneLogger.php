@@ -27,6 +27,8 @@ use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\TableNameService;
 
 /**
  * Writes zone events to the log_zones table and queries them by domain or filter, with SQL and API-backend joins.
@@ -43,11 +45,6 @@ class DbZoneLogger
         $this->config = ConfigurationManager::getInstance();
         $this->config->initialize();
         $this->backendProvider = $backendProvider;
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     public function doLog($msg, $zone_id, $priority): void
@@ -200,15 +197,11 @@ class DbZoneLogger
     private function buildFilterConditions(array $filters, string &$query, array &$conditions, array &$params, ?array $zoneIds = null): void
     {
         if (!empty($filters['name'])) {
-            if ($this->isApiBackend()) {
-                $query = str_replace('FROM log_zones', 'FROM log_zones INNER JOIN zones ON ' . CanonicalZoneSql::canonicalIdColumn('zones') . ' = log_zones.zone_id', $query);
-                $conditions[] = "zones.zone_name LIKE :search_by ESCAPE '!'";
-            } else {
-                $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-                $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
-                $query = str_replace('FROM log_zones', "FROM log_zones INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id", $query);
-                $conditions[] = "$domains_table.name LIKE :search_by ESCAPE '!'";
-            }
+            $domainsTable = (new TableNameService($this->config))->getTable(PdnsTable::DOMAINS);
+            $zonesTableIsCanonical = $this->backendProvider !== null && $this->backendProvider->allocatesZoneIdsLocally();
+            $zoneName = CanonicalZoneSql::zoneNameJoin($zonesTableIsCanonical, 'log_zones.zone_id', $domainsTable);
+            $query = str_replace('FROM log_zones', 'FROM log_zones ' . $zoneName['join'], $query);
+            $conditions[] = "{$zoneName['name']} LIKE :search_by ESCAPE '!'";
             $params[':search_by'] = ["%" . DbCompat::escapeLike($filters['name']) . "%", PDO::PARAM_STR];
         }
 

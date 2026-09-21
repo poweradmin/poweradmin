@@ -82,6 +82,33 @@ final class CanonicalZoneSql
     }
 
     /**
+     * JOIN onto the table that names a zone, for a query keyed on $zoneIdColumn.
+     *
+     * When the zones table is the source of truth (BackendCapabilitiesInterface::allocatesZoneIdsLocally())
+     * it carries zone_name; otherwise the name lives in the PowerDNS domains table, which the
+     * caller resolves through TableNameService.
+     *
+     * @param bool $zonesTableIsCanonical Whether zone ids are allocated from the zones table
+     * @param string $zoneIdColumn Qualified zone id column of the driving table, e.g. 'log_zones.zone_id'
+     * @param string $domainsTable Resolved PowerDNS domains table name
+     * @return array{join: string, name: string} The JOIN clause and the qualified name column
+     */
+    public static function zoneNameJoin(bool $zonesTableIsCanonical, string $zoneIdColumn, string $domainsTable): array
+    {
+        if ($zonesTableIsCanonical) {
+            return [
+                'join' => 'INNER JOIN zones ON ' . self::canonicalIdColumn('zones') . " = $zoneIdColumn",
+                'name' => 'zones.zone_name',
+            ];
+        }
+
+        return [
+            'join' => "INNER JOIN $domainsTable ON $domainsTable.id = $zoneIdColumn",
+            'name' => "$domainsTable.name",
+        ];
+    }
+
+    /**
      * SELECT that resolves a zone ID to exactly one zones row.
      *
      * Placeholder ownership rows (zone_name IS NULL) never win. Among real rows the order is:

@@ -35,9 +35,9 @@ use Psr\Log\NullLogger;
  */
 class ZoneMetadataService
 {
-    public const SUPPORT_SUPPORTED = 'supported';
-    public const SUPPORT_UNSUPPORTED_KNOWN = 'unsupported_known';
-    public const SUPPORT_UNKNOWN = 'unknown';
+    public const SUPPORT_SUPPORTED = ZoneMetadataStoreInterface::SUPPORT_SUPPORTED;
+    public const SUPPORT_UNSUPPORTED_KNOWN = ZoneMetadataStoreInterface::SUPPORT_UNSUPPORTED_KNOWN;
+    public const SUPPORT_UNKNOWN = ZoneMetadataStoreInterface::SUPPORT_UNKNOWN;
     public const MAX_KIND_LENGTH = 32;
 
     private LoggerInterface $logger;
@@ -51,12 +51,6 @@ class ZoneMetadataService
         ?LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?? new NullLogger();
-    }
-
-    /** Whether metadata lives in PowerDNS behind its API rather than in the database */
-    public function isApiBackend(): bool
-    {
-        return $this->config->get('dns', 'backend') === 'api';
     }
 
     public static function normalizeKind(string $kind): string
@@ -124,34 +118,26 @@ class ZoneMetadataService
     }
 
     /**
-     * Why the active backend cannot store this kind (a MetadataDefinitions::REJECT_* code), or null.
+     * Why the active store cannot hold this kind (a MetadataDefinitions::REJECT_* code), or null.
      */
     public function writeRejection(string $kind): ?string
     {
-        return MetadataDefinitions::writeRejection($kind, $this->isApiBackend());
+        if (MetadataDefinitions::isServerManaged($kind)) {
+            return MetadataDefinitions::REJECT_SERVER_MANAGED;
+        }
+
+        return $this->store->writeRejection($kind);
     }
 
     /**
-     * Whether the connected server is known to take a version-gated kind:
-     * SUPPORT_* constants. The SQL backend stores anything.
+     * Whether the active store is known to take a version-gated kind: SUPPORT_* constants.
      *
      * @param array<string, mixed> $definition A MetadataDefinitions entry
+     * @param callable(): PdnsCapabilities $capabilities Resolved only when support is version-gated
      */
-    public function kindSupport(array $definition, PdnsCapabilities $capabilities): string
+    public function kindSupport(array $definition, callable $capabilities): string
     {
-        if (!$this->isApiBackend()) {
-            return self::SUPPORT_SUPPORTED;
-        }
-
-        $minVersion = $definition['min_version'] ?? null;
-        if (!is_string($minVersion) || $minVersion === '') {
-            return self::SUPPORT_SUPPORTED;
-        }
-        if (!$capabilities->isKnown()) {
-            return self::SUPPORT_UNKNOWN;
-        }
-
-        return $capabilities->supportsMetadataKind($minVersion) ? self::SUPPORT_SUPPORTED : self::SUPPORT_UNSUPPORTED_KNOWN;
+        return $this->store->kindSupport($definition, $capabilities);
     }
 
     /**

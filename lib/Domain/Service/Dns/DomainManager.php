@@ -266,9 +266,9 @@ class DomainManager implements DomainManagerInterface
     {
         $templateId = ($zone_template == "none") ? 0 : $zone_template;
 
-        if ($this->backendProvider->isApiBackend()) {
-            // Zone ids come from the zones table here, so createZone() already
-            // inserted the row; fill in owner and template instead of duplicating it.
+        if ($this->backendProvider->allocatesZoneIdsLocally()) {
+            // createZone() already inserted the row; fill in owner and template
+            // instead of duplicating it.
             $stmt = $db->prepare("UPDATE zones SET owner = :owner, zone_templ_id = :zone_template WHERE domain_id = :domain_id");
             $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
             $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
@@ -788,8 +788,7 @@ class DomainManager implements DomainManagerInterface
                             $recordType = $r["type"];
 
                             if ($recordType == "SOA") {
-                                if ($this->backendProvider->isApiBackend()) {
-                                    // PowerDNS manages the SOA of API-created zones; skip SOA template records
+                                if ($this->backendProvider->managesSoaRecord()) {
                                     continue;
                                 }
                                 // For SOA records, delete existing ones and use updated SOA record

@@ -48,17 +48,17 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
 {
     private PowerdnsApiClient $client;
     private PDO $db;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
 
     /** @var array<string, int>|null Zone name to local id, resolved once per request. */
     private ?array $localZoneIds = null;
 
-    // $config is unused here but kept so both DnsBackendProviderInterface implementations
-    // are constructed alike; the API backend needs no table-name resolution.
     public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->client = $client;
         $this->db = $db;
+        $this->config = $config;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -346,6 +346,17 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
     // ---------------------------------------------------------------
     // Record operations
     // ---------------------------------------------------------------
+
+    public function replaceSoaContent(int $zoneId, string $content): bool
+    {
+        $zoneName = $this->getZoneNameByLocalId($zoneId);
+        if ($zoneName === null) {
+            return false;
+        }
+        $soaTtl = (int)$this->config->get('dns', 'ttl', 86400);
+
+        return $this->addRecord($zoneId, $zoneName, 'SOA', $content, $soaTtl, 0);
+    }
 
     public function addRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
@@ -1300,6 +1311,16 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
     public function recordIdsAreNumeric(): bool
     {
         return false;
+    }
+
+    public function managesSoaRecord(): bool
+    {
+        return true;
+    }
+
+    public function allocatesZoneIdsLocally(): bool
+    {
+        return true;
     }
 
     public function hasSoaEditApi(int $domainId): bool

@@ -51,6 +51,12 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertFalse($this->provider->recordIdsAreNumeric());
     }
 
+    public function testApiBackendManagesTheSoaAndAllocatesZoneIds(): void
+    {
+        $this->assertTrue($this->provider->managesSoaRecord());
+        $this->assertTrue($this->provider->allocatesZoneIdsLocally());
+    }
+
     public function testDeleteZoneWithoutNameDeclinesInsteadOfTargetingTheRoot(): void
     {
         $this->mockClient->expects($this->never())->method('deleteZone');
@@ -2362,5 +2368,46 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockClient->method('getZoneRrset')->willReturn(null);
 
         $this->assertSame([], $this->provider->getRecordsByName(1, 'www.example.com', 'A'));
+    }
+
+    public function testReplaceSoaContentRewritesTheRrsetWithConfiguredTtl(): void
+    {
+        $content = 'ns2.example.com. admin.example.com. 2024010101 7200 3600 1209600 300';
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('fetch')->willReturn(['id' => 7, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+        $this->mockConfig->method('get')->willReturnCallback(fn($group, $key, $default = null) => $group === 'dns' && $key === 'ttl' ? 600 : $default);
+
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.', 'example.com.', 'SOA')
+            ->willReturn(['rrsets' => [[
+                'name' => 'example.com.',
+                'type' => 'SOA',
+                'records' => [['content' => 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1', 'disabled' => false]],
+            ]]]);
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', [
+                [
+                    'name' => 'example.com.',
+                    'type' => 'SOA',
+                    'ttl' => 600,
+                    'changetype' => 'REPLACE',
+                    'records' => [['content' => $content, 'disabled' => false]],
+                ],
+            ])
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->replaceSoaContent(7, $content));
+    }
+
+    public function testReplaceSoaContentFailsForUnknownZone(): void
+    {
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('fetch')->willReturn(false);
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+        $this->mockClient->expects($this->never())->method('patchZoneRRsets');
+
+        $this->assertFalse($this->provider->replaceSoaContent(7, 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1'));
     }
 }

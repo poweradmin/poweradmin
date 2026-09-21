@@ -96,4 +96,14 @@ interface RecordWriteBackendInterface
      * @return bool
      */
     public function deleteRecord(int|string $recordId): bool;
+
+    /**
+     * Replace the content of a zone's SOA record. The SQL backend keeps the stored
+     * TTL; the API backend rewrites the whole RRset with the configured dns.ttl.
+     *
+     * @param int $zoneId Domain ID
+     * @param string $content New SOA content
+     * @return bool True when the SOA record was rewritten
+     */
+    public function replaceSoaContent(int $zoneId, string $content): bool;
 }

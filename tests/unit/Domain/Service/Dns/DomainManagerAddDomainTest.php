@@ -503,6 +503,8 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $stub->method('isApiBackend')->willReturn($isApi);
         $stub->method('supportsLocalWriteTransaction')->willReturn(!$isApi);
         $stub->method('recordIdsAreNumeric')->willReturn(!$isApi);
+        $stub->method('managesSoaRecord')->willReturn($isApi);
+        $stub->method('allocatesZoneIdsLocally')->willReturn($isApi);
         return $stub;
     }
 

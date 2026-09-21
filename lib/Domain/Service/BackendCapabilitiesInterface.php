@@ -57,4 +57,27 @@ interface BackendCapabilitiesInterface
      * @return bool
      */
     public function recordIdsAreNumeric(): bool;
+
+    /**
+     * Whether the backend writes and maintains the apex SOA of the zones it creates.
+     *
+     * True for the API backend, where PowerDNS seeds the SOA on zone creation and
+     * template SOA records are skipped. False for the SQL backend, which stores
+     * whatever SOA Poweradmin writes.
+     *
+     * @return bool
+     */
+    public function managesSoaRecord(): bool;
+
+    /**
+     * Whether zone ids are allocated from the local zones table rather than the
+     * PowerDNS domains table.
+     *
+     * True for the API backend: createZone() inserts the zones row itself and a zone
+     * is identified by that row alone. False for the SQL backend, where the id is
+     * domains.id, the caller adds the zones row and a zone without a domains row is stale.
+     *
+     * @return bool
+     */
+    public function allocatesZoneIdsLocally(): bool;
 }

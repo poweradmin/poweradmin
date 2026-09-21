@@ -43,6 +43,12 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertTrue($this->provider->recordIdsAreNumeric());
     }
 
+    public function testSqlBackendLeavesSoaAndZoneIdsToPoweradmin(): void
+    {
+        $this->assertFalse($this->provider->managesSoaRecord());
+        $this->assertFalse($this->provider->allocatesZoneIdsLocally());
+    }
+
     // ---------------------------------------------------------------
     // Cross-zone lookups and counts (sqlite in-memory)
     // ---------------------------------------------------------------
@@ -107,6 +113,21 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertSame(3, $provider->countZones());
         // ENT rows count too: the dashboard reports table size, not served records
         $this->assertSame(6, $provider->countRecords());
+    }
+
+    public function testReplaceSoaContentRewritesOnlyTheSoaRowAndKeepsItsTtl(): void
+    {
+        $provider = $this->sqliteProvider();
+        $provider->addRecord(1, 'example.com', 'SOA', 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1', 86400, 0);
+        $content = 'ns2.example.com. admin.example.com. 2024010101 7200 3600 1209600 300';
+
+        $this->assertTrue($provider->replaceSoaContent(1, $content));
+
+        $soa = $provider->getRecordsByZoneId(1, 'SOA');
+        $this->assertCount(1, $soa);
+        $this->assertSame($content, $soa[0]['content']);
+        $this->assertSame(86400, (int)$soa[0]['ttl']);
+        $this->assertSame('192.0.2.1', $provider->getRecordsByZoneId(1, 'A')[0]['content']);
     }
 
     public function testRetrieveZoneReturnsFalse(): void
