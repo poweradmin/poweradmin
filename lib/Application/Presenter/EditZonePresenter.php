@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 
 /**
  * The zone editor's view model: maps the facts the controller has already
@@ -44,7 +45,7 @@ final class EditZonePresenter
      * @param string $storedZoneComment The comment as the zone holds it now
      * @param ?string $rejectedZoneComment The comment a stale submission carried, when one was refused
      * @param array<int, array<string, mixed>> $records Rows as the display service produced them
-     * @param array<int|string, mixed> $rejectedRecords Rows a stale submission carried, when one was refused
+     * @param list<ZoneEditRow> $rejectedRecords Rows a stale submission carried, when one was refused
      * @param bool $requestsOnly The caller may only file change requests, and $permEdit is their request level
      * @param string $editMode One of the ChangeApprovalPolicy::MODE_* values
      * @param list<array<string, mixed>> $pendingChangeRequests Summaries of the zone's open requests

@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -91,6 +92,45 @@ class ZonesChangeRequestsControllerTest extends TestCase
         $this->assertSame('pending', $body['data']['change_request']['status']);
     }
 
+    public function testFilingAnEditHandsTheEditorARowWithTheDisabledFlagAndTtl(): void
+    {
+        $this->permissions->method('getChangeApprovalMode')->willReturn(ChangeApprovalPolicy::MODE_REQUEST);
+        $this->permissions->method('canRequestZoneRecord')->willReturn(true);
+        $records = $this->createMock(RecordRepositoryInterface::class);
+        $records->method('getRecordById')->with(31)->willReturn(['id' => 31, 'domain_id' => self::ZONE_ID, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0]);
+        $submission = null;
+        $this->service->expects($this->once())->method('fileRecordEdits')
+            ->willReturnCallback(function (ZoneEditSubmission $s, ?string $comment) use (&$submission): ZoneChangeRequestResult {
+                $submission = $s;
+                return ZoneChangeRequestResult::ok(8, 'Change request filed for review.');
+            });
+        $this->requests->method('find')->with(8)->willReturn($this->storedRequest(8));
+
+        $response = $this->file([
+            'actions' => [['op' => 'edit', 'record_id' => 31, 'record' => ['content' => '192.0.2.9', 'ttl' => 300, 'disabled' => true, 'comment' => 'note']]],
+        ], records: $records);
+
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame(self::ZONE_ID, $submission->zoneId);
+        $this->assertSame('example.com', $submission->zoneName);
+        $this->assertSame(self::USER_ID, $submission->userId);
+        $this->assertSame('requester', $submission->username);
+        $this->assertFalse($submission->truncated);
+        $this->assertNull($submission->serial);
+        $this->assertFalse($submission->changedRowsOnly);
+        $this->assertNull($submission->zoneComment);
+        $this->assertCount(1, $submission->rows);
+        $row = $submission->rows[0];
+        $this->assertSame(31, $row->rid);
+        $this->assertSame('www.example.com', $row->name);
+        $this->assertSame('A', $row->type);
+        $this->assertSame('192.0.2.9', $row->content);
+        $this->assertSame(300, $row->ttl);
+        $this->assertSame(0, $row->prio);
+        $this->assertSame('note', $row->comment);
+        $this->assertTrue($row->disabled);
+    }
+
     public function testAZoneDeleteMustBeTheOnlyAction(): void
     {
         $this->service->expects($this->never())->method('fileZoneDelete');
@@ -137,7 +177,7 @@ class ZonesChangeRequestsControllerTest extends TestCase
     /**
      * @param array<string, mixed> $body
      */
-    private function file(array $body, bool $enabled = true): JsonResponse
+    private function file(array $body, bool $enabled = true, ?RecordRepositoryInterface $records = null): JsonResponse
     {
         $users = $this->createMock(UserRepositoryInterface::class);
         $users->method('getUserById')->willReturn(['id' => self::USER_ID, 'username' => 'requester']);
@@ -148,7 +188,7 @@ class ZonesChangeRequestsControllerTest extends TestCase
 
         $controller = (new ReflectionClass(ZonesChangeRequestsController::class))->newInstanceWithoutConstructor();
         $this->inject($controller, 'zoneRepository', $this->zoneRepository());
-        $this->inject($controller, 'recordRepository', $this->createMock(RecordRepositoryInterface::class));
+        $this->inject($controller, 'recordRepository', $records ?? $this->createMock(RecordRepositoryInterface::class));
         $this->inject($controller, 'recordComments', $this->createMock(RecordCommentRepositoryInterface::class));
         $this->inject($controller, 'linkedComments', null);
         $this->inject($controller, 'requests', $this->requests);

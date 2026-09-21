@@ -16,6 +16,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\RejectedZoneEditPresenter;
+use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 
 /**
  * Tests for RejectedZoneEditPresenter::restore(), which puts the rows of a
@@ -30,12 +31,12 @@ class RejectedZoneEditPresenterTest extends TestCase
         $records = [$this->storedRow(11, 'www', 'A', '192.0.2.1', 3600)];
 
         $dropped = $this->restore($records, [
-            11 => $this->submittedRow(11, 'www', 'A', '192.0.2.99', '7200'),
+            $this->submittedRow(11, 'www', 'A', '192.0.2.99', '7200'),
         ]);
 
         $this->assertSame([], $dropped);
         $this->assertSame('192.0.2.99', $records[0]['content']);
-        $this->assertSame('7200', $records[0]['ttl']);
+        $this->assertSame(7200, $records[0]['ttl']);
         $this->assertTrue($records[0]['unsaved_edit']);
     }
 
@@ -44,7 +45,7 @@ class RejectedZoneEditPresenterTest extends TestCase
         $records = [$this->storedRow(11, 'www', 'A', '192.0.2.1', 3600)];
 
         $this->restore($records, [
-            11 => $this->submittedRow(11, 'www', 'A', '192.0.2.99', '7200'),
+            $this->submittedRow(11, 'www', 'A', '192.0.2.99', '7200'),
         ]);
 
         $this->assertStringContainsString('192.0.2.1', $records[0]['stored_summary']);
@@ -58,7 +59,7 @@ class RejectedZoneEditPresenterTest extends TestCase
         $records = [$this->storedRow(11, 'www', 'A', '192.0.2.1', 3600)];
 
         $this->restore($records, [
-            11 => $this->submittedRow(11, 'www', 'A', '192.0.2.1', '3600'),
+            $this->submittedRow(11, 'www', 'A', '192.0.2.1', '3600'),
         ]);
 
         // The submitted TTL is a string against a stored integer, which must not count.
@@ -73,7 +74,7 @@ class RejectedZoneEditPresenterTest extends TestCase
         $records = [$stored];
 
         $dropped = $this->restore($records, [
-            11 => $this->submittedRow(11, 'example.com', 'NS', 'ns2.example.com', '3600'),
+            $this->submittedRow(11, 'example.com', 'NS', 'ns2.example.com', '3600'),
         ]);
 
         $this->assertCount(1, $dropped);
@@ -88,11 +89,10 @@ class RejectedZoneEditPresenterTest extends TestCase
         $stored['prio'] = 20;
         $records = [$stored];
 
-        $submitted = $this->submittedRow(11, 'mail', 'MX', 'mx2.example.com', '3600');
-        $submitted['prio'] = '10';
-        $this->restore($records, [11 => $submitted]);
+        $submitted = $this->submittedRow(11, 'mail', 'MX', 'mx2.example.com', '3600', prio: 10);
+        $this->restore($records, [$submitted]);
 
-        $this->assertSame('10', $records[0]['prio']);
+        $this->assertSame(10, $records[0]['prio']);
         $this->assertStringContainsString('20', $records[0]['stored_summary']);
     }
 
@@ -100,9 +100,9 @@ class RejectedZoneEditPresenterTest extends TestCase
     {
         $records = [$this->storedRow(11, 'www', 'A', '192.0.2.1', 3600)];
 
-        $submitted = $this->submittedRow(11, 'www', 'A', '192.0.2.1', '3600');
-        $submitted['prio'] = '';
-        $this->restore($records, [11 => $submitted]);
+        // The form parser turns an empty priority field into 0
+        $submitted = $this->submittedRow(11, 'www', 'A', '192.0.2.1', '3600', prio: 0);
+        $this->restore($records, [$submitted]);
 
         $this->assertSame('', $records[0]['stored_summary']);
     }
@@ -111,9 +111,8 @@ class RejectedZoneEditPresenterTest extends TestCase
     {
         $records = [$this->storedRow(11, 'www', 'A', '192.0.2.1', 3600)];
 
-        $submitted = $this->submittedRow(11, 'www', 'A', '192.0.2.1', '3600');
-        $submitted['disabled'] = 'on';
-        $this->restore($records, [11 => $submitted]);
+        $submitted = $this->submittedRow(11, 'www', 'A', '192.0.2.1', '3600', disabled: true);
+        $this->restore($records, [$submitted]);
 
         $this->assertSame(1, $records[0]['disabled']);
         $this->assertStringContainsString('Disabled', $records[0]['stored_summary']);
@@ -126,7 +125,7 @@ class RejectedZoneEditPresenterTest extends TestCase
         $records = [$stored];
 
         $this->restore($records, [
-            11 => $this->submittedRow(11, 'www', 'A', '192.0.2.1', '3600'),
+            $this->submittedRow(11, 'www', 'A', '192.0.2.1', '3600'),
         ]);
 
         $this->assertSame(0, $records[0]['disabled']);
@@ -140,7 +139,7 @@ class RejectedZoneEditPresenterTest extends TestCase
         ];
 
         $this->restore($records, [
-            11 => $this->submittedRow(11, 'www', 'A', '192.0.2.99', '3600'),
+            $this->submittedRow(11, 'www', 'A', '192.0.2.99', '3600'),
         ]);
 
         $this->assertSame('192.0.2.2', $records[1]['content']);
@@ -153,7 +152,7 @@ class RejectedZoneEditPresenterTest extends TestCase
         $records = [$this->storedRow(11, 'www', 'A', '192.0.2.1', 3600)];
 
         $dropped = $this->restore($records, [
-            12 => $this->submittedRow(12, 'mail', 'A', '192.0.2.2', '3600'),
+            $this->submittedRow(12, 'mail', 'A', '192.0.2.2', '3600'),
         ]);
 
         $this->assertCount(1, $dropped);
@@ -167,24 +166,11 @@ class RejectedZoneEditPresenterTest extends TestCase
         $records = [$this->storedRow(11, 'www', 'AAAA', '2001:db8::1', 3600)];
 
         $this->restore($records, [
-            11 => $this->submittedRow(11, 'www', 'A', '192.0.2.99', '3600'),
+            $this->submittedRow(11, 'www', 'A', '192.0.2.99', '3600'),
         ]);
 
         $this->assertSame('A', $records[0]['type']);
         $this->assertStringContainsString('AAAA', $records[0]['stored_summary']);
-    }
-
-    public function testATruncatedRowIsLeftAsTheZoneHasIt(): void
-    {
-        $records = [$this->storedRow(11, 'www', 'A', '192.0.2.1', 3600)];
-
-        $submitted = $this->submittedRow(11, 'www', 'A', '192.0.2.99', '7200');
-        unset($submitted['_complete'], $submitted['ttl'], $submitted['comment']);
-        $dropped = $this->restore($records, [11 => $submitted]);
-
-        $this->assertSame([], $dropped);
-        $this->assertSame('192.0.2.1', $records[0]['content']);
-        $this->assertFalse($records[0]['unsaved_edit']);
     }
 
     public function testNothingHappensWithoutARejectedSubmission(): void
@@ -215,21 +201,12 @@ class RejectedZoneEditPresenterTest extends TestCase
         ];
     }
 
-    private function submittedRow(int $rid, string $name, string $type, string $content, string $ttl): array
+    private function submittedRow(int $rid, string $name, string $type, string $content, string $ttl, int $prio = 0, bool $disabled = false): ZoneEditRow
     {
-        return [
-            'rid' => (string)$rid,
-            'zid' => '1',
-            '_complete' => '1',
-            'name' => $name,
-            'type' => $type,
-            'content' => $content,
-            'prio' => '0',
-            'ttl' => $ttl,
-            'comment' => '',
-        ];
+        return new ZoneEditRow((string)$rid, $name, $type, $content, (int)$ttl, $prio, $disabled, '');
     }
 
+    /** @param list<ZoneEditRow> $rejected */
     private function restore(array &$records, array $rejected): array
     {
         $result = RejectedZoneEditPresenter::restore($records, $rejected);

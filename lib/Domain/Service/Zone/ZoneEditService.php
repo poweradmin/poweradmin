@@ -77,33 +77,25 @@ class ZoneEditService
             return new ZoneSaveResult(ZoneSaveOutcome::READ_ONLY);
         }
 
-        $records = $submission->records;
-        // A truncated POST (max_input_vars) drops the form's trailing fields, so the
-        // zone comment must not be processed either: it would be saved as empty
-        $truncated = $records !== null && !$submission->formComplete;
-        $staleFormRejected = false;
+        // A truncated submission lost its trailing fields, so the zone comment must
+        // not be processed either: it would be saved as empty
+        $truncated = $submission->truncated;
         $rejectedRecords = [];
         $rejectedZoneComment = null;
         $errors = [];
         $changed = false;
 
-        // The client omits unchanged rows but always sends form_complete, so either
-        // counts as an edit-form save and both run the stale-form serial check
-        if ($records !== null || $submission->formComplete) {
-            $staleFormRejected = $this->isStale($submission);
-
-            if ($staleFormRejected) {
-                // Without the client filter every displayed row is posted, so a row that
-                // differs from the zone need not be one the operator touched. Restoring
-                // those would revert the other writer, so only a filtered post is kept.
-                if ($submission->changedRowsOnly) {
-                    $rejectedRecords = $records ?? [];
-                    $rejectedZoneComment = $submission->zoneComment;
-                }
-            } else {
-                [$changed, $errors, $rowsTruncated] = $this->saveRows($submission, $records ?? []);
-                $truncated = $truncated || $rowsTruncated;
+        $staleFormRejected = $this->isStale($submission);
+        if ($staleFormRejected) {
+            // Without the client filter every displayed row is posted, so a row that
+            // differs from the zone need not be one the operator touched. Restoring
+            // those would revert the other writer, so only a filtered post is kept.
+            if ($submission->changedRowsOnly) {
+                $rejectedRecords = $submission->rows;
+                $rejectedZoneComment = $submission->zoneComment;
             }
+        } else {
+            [$changed, $errors] = $this->saveRows($submission);
         }
 
         // A rejected form is rejected whole: writing the comment would persist half of a
@@ -137,25 +129,15 @@ class ZoneEditService
     /**
      * Writes the rows that differ from the zone.
      *
-     * @param array<int|string, mixed> $records
-     * @return array{0: bool, 1: list<string>, 2: bool} Whether any row differed, the refusals, whether rows were truncated
+     * @return array{0: bool, 1: list<string>} Whether any row differed, and the refusals
      */
-    private function saveRows(ZoneEditSubmission $submission, array $records): array
+    private function saveRows(ZoneEditSubmission $submission): array
     {
         $changed = false;
         $errors = [];
-        $truncated = false;
 
-        foreach ($records as $record) {
-            // Rows end with a hidden _complete marker; max_input_vars truncation
-            // drops it, so skip such rows and flag the partial save
-            if (!is_array($record) || !isset($record['_complete'])) {
-                $truncated = true;
-                continue;
-            }
-            unset($record['_complete']);
-
-            $written = $this->saveRow($submission, $record);
+        foreach ($submission->rows as $row) {
+            $written = $this->saveRow($submission, $row);
             if ($written === null) {
                 continue;
             }
@@ -165,7 +147,7 @@ class ZoneEditService
             }
         }
 
-        return [$changed, $errors, $truncated];
+        return [$changed, $errors];
     }
 
     /**
@@ -188,12 +170,11 @@ class ZoneEditService
     /**
      * Writes one edited row.
      *
-     * @param array<string, mixed> $record
      * @return RecordWriteResult|null The write, or null when the row matched the zone
      */
-    private function saveRow(ZoneEditSubmission $submission, array $record): ?RecordWriteResult
+    private function saveRow(ZoneEditSubmission $submission, ZoneEditRow $row): ?RecordWriteResult
     {
-        $change = $this->diffRow($submission, $record);
+        $change = $this->diffRow($submission, $row);
         if ($change === null) {
             return null;
         }
@@ -202,19 +183,28 @@ class ZoneEditService
     }
 
     /**
-     * Normalises one posted row and compares it with the zone, writing nothing.
+     * Normalises one row and compares it with the zone, writing nothing.
      * A change request files what this reports and replays it through writeRow().
      *
-     * @param array<string, mixed> $record A posted row (name, type, content, ttl, prio, disabled, comment, rid, zid)
      * @return ZoneEditRowChange|null The change, or null when the row matched the zone
      */
-    public function diffRow(ZoneEditSubmission $submission, array $record): ?ZoneEditRowChange
+    public function diffRow(ZoneEditSubmission $submission, ZoneEditRow $row): ?ZoneEditRowChange
     {
-        // Always the full name, so "@" and bare labels compare against what the zone holds
-        if (isset($record['name'])) {
-            $record['name'] = DnsHelper::restoreZoneSuffix((string)$record['name'], $submission->zoneName);
+        $record = [
+            'rid' => $row->rid,
+            'zid' => $submission->zoneId,
+            // Always the full name, so "@" and bare labels compare against what the zone holds
+            'name' => DnsHelper::restoreZoneSuffix($row->name, $submission->zoneName),
+            'type' => $row->type,
+            'content' => $row->content,
+            'ttl' => $row->ttl,
+            'prio' => $row->prio,
+            'disabled' => $row->disabled ? 1 : 0,
+        ];
+        // A comment the caller did not send must not compare against the stored one
+        if ($row->comment !== null) {
+            $record['comment'] = $row->comment;
         }
-        $record['disabled'] = isset($record['disabled']) && $record['disabled'] == 'on' ? 1 : 0;
 
         $showComments = (bool)$this->config->get('interface', 'show_record_comments', false);
         $comment = '';

@@ -37,6 +37,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 use Poweradmin\Domain\Service\Zone\ZoneEditService;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use TestHelpers\FakeConfiguration;
@@ -96,7 +97,7 @@ class ZoneEditServiceTest extends TestCase
         $this->zones->expects($this->never())->method('updateZoneComment');
         $this->recordManager->expects($this->never())->method('finalizeZone');
 
-        $result = $this->makeService()->save($this->submission(records: [], zoneComment: 'x'));
+        $result = $this->makeService()->save($this->submission(zoneComment: 'x'));
 
         $this->assertSame(ZoneSaveOutcome::FORBIDDEN, $result->outcome);
         $this->assertSame('error', ZoneSaveMessages::forResult($result)[0]);
@@ -153,10 +154,10 @@ class ZoneEditServiceTest extends TestCase
     {
         $this->recordManager->expects($this->never())->method('editRecord');
         $this->recordManager->expects($this->never())->method('finalizeZone');
-        $rows = ['5' => $this->row('5', 'www', '192.0.2.9')];
+        $rows = [$this->row('5', 'www', '192.0.2.9')];
 
         $result = $this->makeService(['misc' => ['edit_conflict_resolution' => 'only_latest_version']])
-            ->save($this->submission(records: $rows, serial: '2023010101', changedRowsOnly: true, zoneComment: 'typed'));
+            ->save($this->submission($rows, serial: '2023010101', changedRowsOnly: true, zoneComment: 'typed'));
 
         $this->assertSame(ZoneSaveOutcome::SERIAL_CONFLICT, $result->outcome);
         $this->assertSame($rows, $result->rejectedRecords);
@@ -167,7 +168,7 @@ class ZoneEditServiceTest extends TestCase
     public function testStaleUnfilteredFormIsRefusedWithoutRestoringRows(): void
     {
         $result = $this->makeService(['misc' => ['edit_conflict_resolution' => 'only_latest_version']])
-            ->save($this->submission(records: ['5' => $this->row('5', 'www', '192.0.2.9')], serial: '2023010101'));
+            ->save($this->submission([$this->row('5', 'www', '192.0.2.9')], serial: '2023010101'));
 
         $this->assertSame(ZoneSaveOutcome::SERIAL_CONFLICT, $result->outcome);
         $this->assertSame([], $result->rejectedRecords);
@@ -179,7 +180,7 @@ class ZoneEditServiceTest extends TestCase
         $this->recordManager->expects($this->once())->method('editRecord')->willReturn(RecordWriteResult::ok());
         $this->recordManager->expects($this->once())->method('finalizeZone');
 
-        $result = $this->makeService()->save($this->submission(records: ['5' => $this->row('5', 'www', '192.0.2.9')], serial: '2023010101'));
+        $result = $this->makeService()->save($this->submission([$this->row('5', 'www', '192.0.2.9')], serial: '2023010101'));
 
         $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
     }
@@ -189,7 +190,7 @@ class ZoneEditServiceTest extends TestCase
         $this->records->method('getRecordFromId')->willReturn($this->stored('5', 'www', '192.0.2.1'));
         $this->recordManager->expects($this->never())->method('editRecord');
 
-        $result = $this->makeService()->save($this->submission(records: ['5' => $this->row('5', 'www', '192.0.2.1')]));
+        $result = $this->makeService()->save($this->submission([$this->row('5', 'www', '192.0.2.1')]));
 
         $this->assertSame(ZoneSaveOutcome::NO_CHANGES, $result->outcome);
     }
@@ -200,7 +201,7 @@ class ZoneEditServiceTest extends TestCase
         $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::failure('Invalid IP address'));
         $this->recordManager->expects($this->never())->method('finalizeZone');
 
-        $result = $this->makeService()->save($this->submission(records: ['5' => $this->row('5', 'www', 'nope')]));
+        $result = $this->makeService()->save($this->submission([$this->row('5', 'www', 'nope')]));
 
         $this->assertSame(ZoneSaveOutcome::WRITE_FAILED, $result->outcome);
         $this->assertSame(['Invalid IP address'], $result->errors);
@@ -212,10 +213,8 @@ class ZoneEditServiceTest extends TestCase
         $this->zones->expects($this->never())->method('updateZoneComment');
         $this->recordManager->expects($this->never())->method('editRecord');
         $this->recordManager->expects($this->never())->method('finalizeZone');
-        $row = $this->row('5', 'www', '192.0.2.9');
-        unset($row['_complete']);
-
-        $result = $this->makeService()->save($this->submission(records: ['5' => $row], formComplete: false, zoneComment: 'lost'));
+        // The parser dropped the one row the post carried and flagged the truncation
+        $result = $this->makeService()->save($this->submission(truncated: true, zoneComment: 'lost'));
 
         $this->assertSame(ZoneSaveOutcome::NOTHING_SAVED, $result->outcome);
         $this->assertTrue($result->truncated);
@@ -227,16 +226,70 @@ class ZoneEditServiceTest extends TestCase
         $this->records->method('getRecordFromId')->willReturn($this->stored('5', 'www', '192.0.2.1'));
         $this->recordManager->expects($this->once())->method('editRecord')->willReturn(RecordWriteResult::ok());
         $this->recordManager->expects($this->once())->method('finalizeZone');
-        $partial = $this->row('6', 'mail', '192.0.2.2');
-        unset($partial['_complete']);
 
-        $result = $this->makeService()->save($this->submission(
-            records: ['5' => $this->row('5', 'www', '192.0.2.9'), '6' => $partial],
-            formComplete: false
-        ));
+        $result = $this->makeService()->save($this->submission([$this->row('5', 'www', '192.0.2.9')], truncated: true));
 
         $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
         $this->assertTrue($result->truncated);
+    }
+
+    public function testADisabledToggleIsWrittenAsAFlag(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn($this->stored('5', 'www', '192.0.2.1'));
+        $written = null;
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->willReturnCallback(function (array $record, bool $finalize, ?array $comment) use (&$written): RecordWriteResult {
+                $written = [$record, $finalize, $comment];
+                return RecordWriteResult::ok();
+            });
+        $row = $this->row('5', 'www', '192.0.2.1', disabled: true);
+
+        $result = $this->makeService()->save($this->submission([$row]));
+
+        $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
+        $this->assertSame(1, $written[0]['disabled']);
+        $this->assertSame('5', $written[0]['rid']);
+        $this->assertSame(self::ZONE_ID, (int)$written[0]['zid']);
+        $this->assertArrayNotHasKey('comment', $written[0], 'no comment field was posted');
+        $this->assertFalse($written[1]);
+        $this->assertNull($written[2], 'comments are off, so none is passed to the write');
+    }
+
+    public function testARenameIsWrittenWithTheZoneSuffixRestored(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn($this->stored('5', 'www', '192.0.2.1'));
+        $written = null;
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->willReturnCallback(function (array $record) use (&$written): RecordWriteResult {
+                $written = $record;
+                return RecordWriteResult::ok();
+            });
+
+        $result = $this->makeService()->save($this->submission([$this->row('5', 'web', '192.0.2.1')]));
+
+        $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
+        $this->assertSame('web.example.com', $written['name']);
+        $this->assertSame('A', $written['type']);
+        $this->assertSame(3600, (int)$written['ttl']);
+        $this->assertSame(0, (int)$written['prio']);
+        $this->assertSame(0, $written['disabled']);
+    }
+
+    public function testAPostedCommentIsPassedToTheWriteWhenCommentsAreShown(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn($this->stored('5', 'www', '192.0.2.1'));
+        $this->comments->method('findCommentByRecordId')->willReturn(null);
+        $this->comments->method('findComment')->willReturn(null);
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', 'hello', 5, 'alice');
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->with($this->anything(), false, ['content' => 'hello', 'account' => 'alice'])
+            ->willReturn(RecordWriteResult::ok());
+        $row = $this->row('5', 'www', '192.0.2.1', comment: 'hello');
+
+        $result = $this->makeService(['interface' => ['show_record_comments' => true]])->save($this->submission([$row]));
+
+        $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
     }
 
     /** @param array<string, array<string, mixed>> $overrides */
@@ -262,20 +315,20 @@ class ZoneEditServiceTest extends TestCase
         );
     }
 
+    /** @param list<ZoneEditRow> $rows */
     private function submission(
-        ?array $records = null,
-        bool $formComplete = true,
+        array $rows = [],
+        bool $truncated = false,
         ?string $serial = null,
         bool $changedRowsOnly = false,
         ?string $zoneComment = null
     ): ZoneEditSubmission {
-        return new ZoneEditSubmission(self::ZONE_ID, 'example.com', self::USER_ID, 'alice', $records, $formComplete, $serial, $changedRowsOnly, $zoneComment);
+        return new ZoneEditSubmission(self::ZONE_ID, 'example.com', self::USER_ID, 'alice', $rows, $truncated, $serial, $changedRowsOnly, $zoneComment);
     }
 
-    /** @return array<string, mixed> A posted row as the editor sends it */
-    private function row(string $rid, string $name, string $content): array
+    private function row(string $rid, string $name, string $content, bool $disabled = false, ?string $comment = null): ZoneEditRow
     {
-        return ['rid' => $rid, 'zid' => self::ZONE_ID, 'name' => $name, 'type' => 'A', 'content' => $content, 'ttl' => '3600', 'prio' => '0', '_complete' => '1'];
+        return new ZoneEditRow($rid, $name, 'A', $content, 3600, 0, $disabled, $comment);
     }
 
     /** @return array<string, mixed> The stored row RecordLog compares against */

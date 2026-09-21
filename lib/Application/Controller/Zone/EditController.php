@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\ZoneSaveMessages;
 use Poweradmin\Application\Service\ZoneSigningMessages;
+use Poweradmin\Application\Web\ZoneEditFormParser;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Model\ZoneType;
@@ -42,6 +43,7 @@ use Poweradmin\Domain\Service\Zone\CatalogZoneService;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
+use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
@@ -71,7 +73,10 @@ class EditController extends BaseController
     private PermissionService $permissionService;
     private RecordListingInterface $recordRepository;
     private DomainRepositoryInterface $domainRepository;
-    /** Rows and comment from a submission rejected as stale, so the re-render can restore them. */
+    /**
+     * Rows and comment from a submission rejected as stale, so the re-render can restore them.
+     * @var list<ZoneEditRow>
+     */
     private array $rejectedRecords = [];
     private ?string $rejectedZoneComment = null;
 
@@ -525,21 +530,7 @@ class EditController extends BaseController
      */
     private function requestRecordEdits(int $zone_id, string $zone_name): void
     {
-        $records = $this->httpRequest->getPostParam('record');
-        $serial = $this->httpRequest->getPostParam('serial');
-        $zoneComment = $this->httpRequest->getPostParam('zone_comment');
-
-        $result = $this->services()->zoneChangeRequestService()->fileRecordEdits(new ZoneEditSubmission(
-            $zone_id,
-            $zone_name,
-            (int)$this->getCurrentUserId(),
-            (string)$this->userContextService->getLoggedInUsername(),
-            is_array($records) ? $records : null,
-            $this->httpRequest->getPostParam('form_complete') !== null,
-            $serial === null ? null : (string)$serial,
-            $this->httpRequest->getPostParam('changed_rows_only') === '1',
-            $zoneComment === null ? null : (string)$zoneComment
-        ), $this->requestComment());
+        $result = $this->services()->zoneChangeRequestService()->fileRecordEdits($this->editSubmission($zone_id, $zone_name), $this->requestComment());
 
         if ($result->success) {
             $this->setMessage('edit', 'success', ChangeRequestMessages::submitted());
@@ -592,23 +583,20 @@ class EditController extends BaseController
         return $comment === '' ? null : $comment;
     }
 
-    public function saveRecords(int $zone_id, string $zone_name): void
+    private function editSubmission(int $zone_id, string $zone_name): ZoneEditSubmission
     {
-        $records = $this->httpRequest->getPostParam('record');
-        $serial = $this->httpRequest->getPostParam('serial');
-        $zoneComment = $this->httpRequest->getPostParam('zone_comment');
-
-        $result = $this->services()->zoneEditService()->save(new ZoneEditSubmission(
+        return ZoneEditFormParser::fromPost(
+            $this->httpRequest->getPostParams(),
             $zone_id,
             $zone_name,
             (int)$this->getCurrentUserId(),
-            (string)$this->userContextService->getLoggedInUsername(),
-            is_array($records) ? $records : null,
-            $this->httpRequest->getPostParam('form_complete') !== null,
-            $serial === null ? null : (string)$serial,
-            $this->httpRequest->getPostParam('changed_rows_only') === '1',
-            $zoneComment === null ? null : (string)$zoneComment
-        ));
+            (string)$this->userContextService->getLoggedInUsername()
+        );
+    }
+
+    public function saveRecords(int $zone_id, string $zone_name): void
+    {
+        $result = $this->services()->zoneEditService()->save($this->editSubmission($zone_id, $zone_name));
 
         foreach ($result->errors as $error) {
             $this->addSystemMessage('error', $error);

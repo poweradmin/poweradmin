@@ -35,6 +35,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
+use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -219,22 +220,18 @@ class EditRecordController extends BaseController
             return false;
         }
 
-        // The zone editor's row shape, so the same diff and validation serve both forms
-        $row = [
-            'rid' => (string)$this->httpRequest->getPostParam('rid', ''),
-            'zid' => (string)$zid,
-            'name' => DnsIdnService::toPunycode((string)$this->httpRequest->getPostParam('name', '')),
-            'type' => (string)$this->httpRequest->getPostParam('type', ''),
-            'content' => (string)$this->httpRequest->getPostParam('content', ''),
-            'ttl' => (string)$this->httpRequest->getPostParam('ttl', ''),
-            'prio' => (string)$this->httpRequest->getPostParam('prio', '0'),
-            'comment' => (string)$this->httpRequest->getPostParam('comment', ''),
-            '_complete' => '1',
-        ];
-        $row['content'] = DnsIdnService::convertContentToPunycode($row['type'], $row['content']);
-        if ($this->httpRequest->getPostParam('disabled') === 'on') {
-            $row['disabled'] = 'on';
-        }
+        // One zone editor row, so the same diff and validation serve both forms
+        $type = (string)$this->httpRequest->getPostParam('type', '');
+        $row = new ZoneEditRow(
+            (string)$this->httpRequest->getPostParam('rid', ''),
+            DnsIdnService::toPunycode((string)$this->httpRequest->getPostParam('name', '')),
+            $type,
+            DnsIdnService::convertContentToPunycode($type, (string)$this->httpRequest->getPostParam('content', '')),
+            (int)$this->httpRequest->getPostParam('ttl', ''),
+            (int)$this->httpRequest->getPostParam('prio', '0'),
+            $this->httpRequest->getPostParam('disabled') === 'on',
+            (string)$this->httpRequest->getPostParam('comment', '')
+        );
 
         $submission = new ZoneEditSubmission(
             $zid,
@@ -242,7 +239,7 @@ class EditRecordController extends BaseController
             (int)$this->getCurrentUserId(),
             (string)$this->userContextService->getLoggedInUsername(),
             [$row],
-            true,
+            false,
             null,
             false,
             null

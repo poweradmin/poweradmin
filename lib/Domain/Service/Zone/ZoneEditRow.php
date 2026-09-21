@@ -22,27 +22,27 @@
 
 namespace Poweradmin\Domain\Service\Zone;
 
-use Poweradmin\Domain\Enum\ZoneSaveOutcome;
-
 /**
- * How a zone editor save ended, with what the page needs to report it and,
- * for a refused stale form, the rows to put back in front of the operator.
+ * One row of the zone editor's record table as the caller wants it: the
+ * record it refers to and the values to store, already decoded from whatever
+ * form or request carried them.
  */
-final readonly class ZoneSaveResult
+final readonly class ZoneEditRow
 {
     /**
-     * @param bool $serialBumped Whether the SOA serial was incremented
-     * @param bool $truncated The transport dropped part of the submission
-     * @param list<string> $errors Reasons for the rows that failed to write
-     * @param list<ZoneEditRow> $rejectedRecords Rows to restore after a serial conflict
+     * @param int|string $rid The record id (a string on the API backend, where ids are encoded)
+     * @param string $name The name as typed; the editor restores the zone suffix
+     * @param string|null $comment The record comment, or null when the caller did not send one
      */
     public function __construct(
-        public ZoneSaveOutcome $outcome,
-        public bool $serialBumped = false,
-        public bool $truncated = false,
-        public array $errors = [],
-        public array $rejectedRecords = [],
-        public ?string $rejectedZoneComment = null
+        public int|string $rid,
+        public string $name,
+        public string $type,
+        public string $content,
+        public int $ttl,
+        public int $prio,
+        public bool $disabled,
+        public ?string $comment
     ) {
     }
 }

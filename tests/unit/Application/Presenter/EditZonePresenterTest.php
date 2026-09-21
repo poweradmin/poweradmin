@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Presenter\EditZonePresenter;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 
 /**
@@ -330,8 +331,8 @@ class EditZonePresenterTest extends TestCase
     {
         $vars = $this->present([
             'rejectedRecords' => [
-                2 => ['rid' => 2, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 60, 'prio' => 0, 'comment' => '', '_complete' => '1'],
-                9 => ['rid' => 9, 'name' => 'gone.example.com', 'type' => 'A', 'content' => '192.0.2.9', 'ttl' => 60, 'prio' => 0, 'comment' => '', '_complete' => '1'],
+                new ZoneEditRow(2, 'www.example.com', 'A', '192.0.2.2', 60, 0, false, ''),
+                new ZoneEditRow(9, 'gone.example.com', 'A', '192.0.2.9', 60, 0, false, ''),
             ],
         ]);
 

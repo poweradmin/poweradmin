@@ -27,6 +27,7 @@ use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
+use Poweradmin\Domain\Model\ZoneChangeRequestRowCodec;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\ChangeRequestNotifierInterface;
@@ -108,26 +109,20 @@ class ZoneChangeRequestService
         if ($refused !== null) {
             return $refused;
         }
-        if ($submission->records !== null && !$submission->formComplete) {
+        if ($submission->truncated) {
             return $this->truncated();
         }
 
         $actions = [];
         $errors = [];
-        foreach ($submission->records ?? [] as $record) {
-            // Rows end with a hidden _complete marker; max_input_vars truncation drops it
-            if (!is_array($record) || !isset($record['_complete'])) {
-                return $this->truncated();
-            }
-            unset($record['_complete']);
-
-            $change = $this->zoneEdit->diffRow($submission, $record);
+        foreach ($submission->rows as $editRow) {
+            $change = $this->zoneEdit->diffRow($submission, $editRow);
             if ($change === null) {
                 continue;
             }
             $before = $change->before();
             if (!isset($before['id']) || (int)($before['domain_id'] ?? 0) !== $submission->zoneId) {
-                $errors[] = sprintf('Record %s was not found in this zone.', (string)($record['rid'] ?? ''));
+                $errors[] = sprintf('Record %s was not found in this zone.', (string)$editRow->rid);
                 continue;
             }
 
@@ -142,8 +137,8 @@ class ZoneChangeRequestService
             $actions[] = [
                 'op' => ZoneChangeRequest::OP_EDIT,
                 'record_id' => (string)$row['rid'],
-                'before' => $this->snapshot($before, $submission->zoneName),
-                'after' => $this->afterState($row),
+                'before' => ZoneChangeRequestRowCodec::snapshot($before, $submission->zoneName),
+                'after' => ZoneChangeRequestRowCodec::afterState($row),
             ];
         }
         if ($errors !== []) {
@@ -186,7 +181,7 @@ class ZoneChangeRequestService
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, 409, [$error]);
         }
 
-        $actions = [['op' => ZoneChangeRequest::OP_ADD, 'after' => $this->afterState($row)]];
+        $actions = [['op' => ZoneChangeRequest::OP_ADD, 'after' => ZoneChangeRequestRowCodec::afterState($row)]];
 
         return $this->store($zoneId, $zoneName, ZoneChangeRequest::KIND_RECORDS, $userId, $username, $comment, null, $actions, null);
     }
@@ -209,7 +204,7 @@ class ZoneChangeRequestService
         $actions = [[
             'op' => ZoneChangeRequest::OP_DELETE,
             'record_id' => (string)$recordId,
-            'before' => $this->snapshot($stored, $zoneName),
+            'before' => ZoneChangeRequestRowCodec::snapshot($stored, $zoneName),
         ]];
 
         return $this->store($zoneId, $zoneName, ZoneChangeRequest::KIND_RECORDS, $userId, $username, $comment, null, $actions, null);
@@ -496,8 +491,8 @@ class ZoneChangeRequestService
                         ? RecordWriteResult::ok()
                         : RecordWriteResult::notFound('Record not found.');
                 }
-                $submission = new ZoneEditSubmission($zoneId, $request->zoneName, $reviewerId, $reviewerName, null, true, null, false, null);
-                $change = $this->zoneEdit->diffRow($submission, $this->postedRow($recordId, $zoneId, $after));
+                $submission = new ZoneEditSubmission($zoneId, $request->zoneName, $reviewerId, $reviewerName, [], false, null, false, null);
+                $change = $this->zoneEdit->diffRow($submission, ZoneChangeRequestRowCodec::rowFromAfter($recordId, $after));
 
                 // The zone already holds this state, so there is nothing left to write
                 return $change === null ? RecordWriteResult::ok() : $this->zoneEdit->writeRow($submission, $change);
@@ -604,32 +599,6 @@ class ZoneChangeRequestService
         $row = $this->currentRow($zoneId, $action);
 
         return $row === null || !isset($row['id']) ? null : RecordIdHelper::normalizeId($row['id']);
-    }
-
-    /**
-     * A filed "after" state in the shape the editor posts, so the same diff and
-     * write path serves both a direct save and an approved request.
-     *
-     * @param array<string, mixed> $after
-     * @return array<string, mixed>
-     */
-    private function postedRow(int|string $recordId, int $zoneId, array $after): array
-    {
-        $row = [
-            'rid' => $recordId,
-            'zid' => $zoneId,
-            'name' => (string)($after['name'] ?? ''),
-            'type' => (string)($after['type'] ?? ''),
-            'content' => (string)($after['content'] ?? ''),
-            'ttl' => (string)(int)($after['ttl'] ?? 0),
-            'prio' => (string)(int)($after['prio'] ?? 0),
-            'comment' => (string)($after['comment'] ?? ''),
-        ];
-        if (!empty($after['disabled'])) {
-            $row['disabled'] = 'on';
-        }
-
-        return $row;
     }
 
     /**
@@ -750,43 +719,5 @@ class ZoneChangeRequestService
         }
 
         return $text . sprintf(' Applied before the failure: %s.', implode(', ', array_map(fn(int $i): string => (string)($i + 1), $applied)));
-    }
-
-    /**
-     * The stored row in the change log's snapshot shape.
-     *
-     * @param array<string, mixed> $record
-     * @return array<string, mixed>
-     */
-    private function snapshot(array $record, string $zoneName): array
-    {
-        return [
-            'id' => isset($record['id']) ? (string)$record['id'] : null,
-            'name' => $record['name'] ?? null,
-            'type' => $record['type'] ?? null,
-            'content' => $record['content'] ?? null,
-            'ttl' => isset($record['ttl']) ? (int)$record['ttl'] : null,
-            'prio' => isset($record['prio']) ? (int)$record['prio'] : null,
-            'disabled' => isset($record['disabled']) ? (bool)$record['disabled'] : null,
-            'comment' => $record['comment'] ?? null,
-            'zone_name' => $zoneName,
-        ];
-    }
-
-    /**
-     * @param array<string, mixed> $row
-     * @return array<string, mixed>
-     */
-    private function afterState(array $row): array
-    {
-        return [
-            'name' => (string)$row['name'],
-            'type' => (string)$row['type'],
-            'content' => (string)$row['content'],
-            'ttl' => (int)($row['ttl'] ?? 0),
-            'prio' => (int)($row['prio'] ?? 0),
-            'disabled' => (int)($row['disabled'] ?? 0),
-            'comment' => (string)($row['comment'] ?? ''),
-        ];
     }
 }

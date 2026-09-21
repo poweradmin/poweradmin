@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
+use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
@@ -246,7 +247,7 @@ class ZonesChangeRequestsController extends PublicApiController
                 $results[] = $result;
             }
             if ($editRows !== []) {
-                $submission = new ZoneEditSubmission($zoneId, $zoneName, $userId, $username, $editRows, true, null, false, null);
+                $submission = new ZoneEditSubmission($zoneId, $zoneName, $userId, $username, $editRows, false, null, false, null);
                 $result = $this->changeRequests->fileRecordEdits($submission, $comment);
                 if (!$result->success) {
                     return $this->filed($results, [$result]);
@@ -342,21 +343,17 @@ class ZonesChangeRequestsController extends PublicApiController
             return $this->returnApiError('You do not have permission to edit this record type', 403);
         }
 
-        // The editor's row shape; an omitted comment keeps the stored one so approval does not clear it
-        $row = [
-            'rid' => $recordId,
-            'zid' => $zoneId,
-            'name' => $name,
-            'type' => $type,
-            'content' => $this->formatV2RecordContent($type, $content),
-            'ttl' => (string)$ttl,
-            'prio' => (string)$priority,
-            'comment' => $this->inputString($record, 'comment') ?? $this->storedComment($recordId, $zoneId, (string)$existing['name'], (string)$existing['type']),
-            '_complete' => '1',
-        ];
-        if ($disabled === 1) {
-            $row['disabled'] = 'on';
-        }
+        // An omitted comment keeps the stored one so approval does not clear it
+        $row = new ZoneEditRow(
+            $recordId,
+            $name,
+            $type,
+            $this->formatV2RecordContent($type, $content),
+            $ttl,
+            $priority,
+            $disabled === 1,
+            $this->inputString($record, 'comment') ?? $this->storedComment($recordId, $zoneId, (string)$existing['name'], (string)$existing['type'])
+        );
 
         return ['op' => $op, 'row' => $row];
     }

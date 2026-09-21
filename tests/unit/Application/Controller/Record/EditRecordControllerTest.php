@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
+use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -550,6 +551,38 @@ class EditRecordControllerTest extends SeamControllerTestCase
 
         $this->assertSame('/zones/12/edit', $halt->target);
         $this->assertNotSame([], $this->messagesFor('edit'));
+    }
+
+    public function testInRequestModeThePostedRowIsHandedToTheEditorAsOneSubmission(): void
+    {
+        $this->editLevel = 'none';
+        $this->changeRequestLevel = 'all';
+        $submission = null;
+        $this->changeRequests->expects($this->once())->method('fileRecordEdits')
+            ->willReturnCallback(function (ZoneEditSubmission $s, ?string $comment) use (&$submission): ZoneChangeRequestResult {
+                $submission = [$s, $comment];
+                return $this->fileResult;
+            });
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'wWw', 'type' => 'A', 'content' => '192.0.2.9', 'ttl' => '300', 'prio' => '', 'comment' => 'note', 'disabled' => 'on', 'request_comment' => ' why ']);
+
+        $this->haltOf($this->makeController(['approval' => ['enabled' => true]]));
+
+        $this->assertSame('why', $submission[1]);
+        $this->assertSame(self::ZONE_ID, $submission[0]->zoneId);
+        $this->assertSame('example.com', $submission[0]->zoneName);
+        $this->assertFalse($submission[0]->truncated);
+        $this->assertNull($submission[0]->serial);
+        $this->assertFalse($submission[0]->changedRowsOnly);
+        $this->assertNull($submission[0]->zoneComment);
+        $row = $submission[0]->rows[0];
+        $this->assertSame((string)self::RECORD_ID, $row->rid);
+        $this->assertSame('www', $row->name, 'toPunycode lowercases; the zone suffix is restored by the editor');
+        $this->assertSame('A', $row->type);
+        $this->assertSame('192.0.2.9', $row->content);
+        $this->assertSame(300, $row->ttl);
+        $this->assertSame(0, $row->prio);
+        $this->assertSame('note', $row->comment);
+        $this->assertTrue($row->disabled);
     }
 
     public function testARefusedFilingKeepsTheFormAndReportsEveryRowError(): void

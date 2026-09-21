@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
@@ -42,6 +43,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
+use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 use Poweradmin\Domain\Service\Zone\ZoneEditService;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
@@ -117,8 +119,8 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->recordManager->expects($this->never())->method('finalizeZone');
 
         $result = $this->makeService()->fileRecordEdits($this->submission([
-            '5' => $this->row('5', 'www', '192.0.2.9'),
-            '6' => $this->row('6', 'mail', '192.0.2.2'),
+            $this->row('5', 'www', '192.0.2.9'),
+            $this->row('6', 'mail', '192.0.2.2'),
         ], serial: '2024010101', zoneComment: 'old comment'), 'please apply');
 
         $this->assertTrue($result->success);
@@ -143,7 +145,7 @@ class ZoneChangeRequestServiceTest extends TestCase
 
     public function testAChangedZoneCommentIsFiledOnItsOwn(): void
     {
-        $result = $this->makeService()->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.1')], zoneComment: 'new comment'));
+        $result = $this->makeService()->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.1')], zoneComment: 'new comment'));
 
         $this->assertTrue($result->success);
         $this->assertSame('new comment', $this->repository->find($result->requestId)->zoneComment);
@@ -152,7 +154,7 @@ class ZoneChangeRequestServiceTest extends TestCase
 
     public function testNothingDifferentFilesNothing(): void
     {
-        $result = $this->makeService()->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.1')], zoneComment: 'old comment'));
+        $result = $this->makeService()->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.1')], zoneComment: 'old comment'));
 
         $this->assertFalse($result->success);
         $this->assertSame(ZoneChangeRequestResult::CODE_NO_CHANGES, $result->code);
@@ -164,7 +166,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->validator = $this->createMock(DnsRecordValidationServiceInterface::class);
         $this->validator->method('validateRecord')->willReturn(ValidationResult::failure('Invalid IP address'));
 
-        $result = $this->makeService()->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', 'nope')]));
+        $result = $this->makeService()->fileRecordEdits($this->submission([$this->row('5', 'www', 'nope')]));
 
         $this->assertFalse($result->success);
         $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $result->code);
@@ -181,6 +183,18 @@ class ZoneChangeRequestServiceTest extends TestCase
 
         $this->assertSame(ZoneChangeRequestResult::CODE_READ_ONLY_ZONE, $result->code);
         $this->assertSame(403, $result->status);
+    }
+
+    public function testATruncatedSubmissionFilesNothing(): void
+    {
+        $this->recordManager->expects($this->never())->method('editRecord');
+
+        $result = $this->makeService()->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.9')], truncated: true));
+
+        $this->assertFalse($result->success);
+        $this->assertSame(ZoneChangeRequestResult::CODE_TRUNCATED, $result->code);
+        $this->assertSame('The form was truncated by the server, so nothing was filed. Submit fewer changes at once.', $result->message);
+        $this->assertSame(0, $this->repository->countPending(null));
     }
 
     public function testOversizedPayloadIsRefusedNotTruncated(): void
@@ -454,7 +468,7 @@ class ZoneChangeRequestServiceTest extends TestCase
     public function testADecisionAlreadyTakenElsewhereIsReportedNotApplied(): void
     {
         $this->recordManager->expects($this->never())->method('editRecord');
-        $id = $this->makeService()->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]))->requestId;
+        $id = $this->makeService()->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.9')]))->requestId;
         // Another reviewer decided between the pending check and the claim
         $this->repository->markReviewed($id, ZoneChangeRequest::STATUS_REJECTED, 11, 'carol', null);
 
@@ -469,7 +483,7 @@ class ZoneChangeRequestServiceTest extends TestCase
     {
         $this->stored['77'] = ['id' => '77', 'domain_id' => 99, 'name' => 'secret.other.test', 'type' => 'A', 'content' => '198.51.100.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0];
 
-        $result = $this->makeService()->fileRecordEdits($this->submission(['77' => $this->row('77', 'secret', '198.51.100.2')]));
+        $result = $this->makeService()->fileRecordEdits($this->submission([$this->row('77', 'secret', '198.51.100.2')]));
 
         $this->assertFalse($result->success);
         $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $result->code);
@@ -490,9 +504,9 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
         $service = $this->makeService(null, null, $notifier);
 
-        $approved = $service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]))->requestId;
+        $approved = $service->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.9')]))->requestId;
         $service->approve($approved, self::REVIEWER, 'bob');
-        $rejected = $service->fileRecordEdits($this->submission(['6' => $this->row('6', 'mail', '192.0.2.3')]))->requestId;
+        $rejected = $service->fileRecordEdits($this->submission([$this->row('6', 'mail', '192.0.2.3')]))->requestId;
         $service->reject($rejected, self::REVIEWER, 'bob', 'no');
         $this->zoneManagement->method('deleteZone')->willReturn(['success' => false, 'message' => 'Zone not found', 'status' => 404]);
         $failed = $service->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice')->requestId;
@@ -505,12 +519,12 @@ class ZoneChangeRequestServiceTest extends TestCase
     {
         $service = $this->makeService(requireComment: true);
 
-        $refused = $service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]));
+        $refused = $service->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.9')]));
         $this->assertFalse($refused->success);
         $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $refused->code);
         $this->assertSame(0, $this->repository->countPending(null));
 
-        $this->assertTrue($service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]), 'because')->success);
+        $this->assertTrue($service->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.9')]), 'because')->success);
     }
 
     public function testCancellingTellsTheNotifier(): void
@@ -519,7 +533,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $notifier->expects($this->once())->method('requestCancelled')
             ->with($this->callback(fn(ZoneChangeRequest $r): bool => $r->status === ZoneChangeRequest::STATUS_CANCELLED));
         $service = $this->makeService(null, null, $notifier);
-        $id = $service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]))->requestId;
+        $id = $service->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.9')]))->requestId;
 
         $this->assertTrue($service->cancel($id, self::REQUESTER)->success);
     }
@@ -563,9 +577,69 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertTrue($this->makeService()->approve($id, self::REVIEWER, 'bob')->success);
     }
 
+    public function testAStoredEditWithDisabledAndACommentStillAppliesWithCommentsHidden(): void
+    {
+        $written = null;
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->willReturnCallback(function (array $record, bool $finalize, ?array $comment) use (&$written): RecordWriteResult {
+                $written = [$record, $finalize, $comment];
+                return RecordWriteResult::ok();
+            });
+        $this->recordManager->expects($this->once())->method('finalizeZone');
+        $recordComments = $this->createMock(RecordCommentRepositoryInterface::class);
+        $recordComments->expects($this->never())->method('addForRecord');
+        $id = $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', null, null, [[
+            'op' => 'edit',
+            'record_id' => '5',
+            'before' => ['id' => '5', 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => false, 'comment' => null, 'zone_name' => self::ZONE],
+            'after' => ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 300, 'prio' => 0, 'disabled' => 1, 'comment' => 'kept in the request'],
+        ]], null);
+
+        $result = $this->makeService(recordComments: $recordComments)->approve($id, self::REVIEWER, 'bob');
+
+        $this->assertTrue($result->success, (string)$result->message);
+        $this->assertSame('5', (string)$written[0]['rid']);
+        $this->assertSame(self::ZONE_ID, (int)$written[0]['zid']);
+        $this->assertSame('www.example.com', $written[0]['name']);
+        $this->assertSame(300, (int)$written[0]['ttl']);
+        $this->assertSame(1, $written[0]['disabled']);
+        $this->assertFalse($written[1]);
+        $this->assertNull($written[2], 'the display switch is off, so the write carries no comment');
+    }
+
+    public function testAStoredAddWithACommentIsAppliedButItsCommentIsNotStoredWithCommentsHidden(): void
+    {
+        $passed = null;
+        $this->recordManager->expects($this->once())->method('addRecordGetId')
+            ->willReturnCallback(function (int $zoneId, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled, bool $finalize, ?array $comment) use (&$passed): RecordWriteResult {
+                $passed = $comment;
+                return RecordWriteResult::ok(77);
+            });
+        $recordComments = $this->createMock(RecordCommentRepositoryInterface::class);
+        $recordComments->expects($this->never())->method('addForRecord');
+        $id = $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', null, null, [
+            ['op' => 'add', 'after' => ['name' => 'new.example.com', 'type' => 'A', 'content' => '192.0.2.5', 'ttl' => 300, 'prio' => 0, 'disabled' => 0, 'comment' => 'why']],
+        ], null);
+
+        $this->assertTrue($this->makeService(recordComments: $recordComments)->approve($id, self::REVIEWER, 'bob')->success);
+        $this->assertSame(['content' => 'why', 'account' => 'bob'], $passed);
+    }
+
+    public function testAStoredAddCommentIsStoredWhenCommentsAreShown(): void
+    {
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(77));
+        $recordComments = $this->createMock(RecordCommentRepositoryInterface::class);
+        $recordComments->expects($this->once())->method('addForRecord')->with(77, $this->anything());
+        $id = $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', null, null, [
+            ['op' => 'add', 'after' => ['name' => 'new.example.com', 'type' => 'A', 'content' => '192.0.2.5', 'ttl' => 300, 'prio' => 0, 'disabled' => 0, 'comment' => 'why']],
+        ], null);
+
+        $this->assertTrue($this->makeService(recordComments: $recordComments, showComments: true)->approve($id, self::REVIEWER, 'bob')->success);
+    }
+
     public function testRejectAndCancelStillRefuseAFailedRequest(): void
     {
-        $id = $this->makeService()->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]))->requestId;
+        $id = $this->makeService()->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.9')]))->requestId;
         $this->repository->markFailed($id, 'boom');
 
         $this->assertSame(ZoneChangeRequestResult::CODE_NOT_PENDING, $this->makeService()->reject($id, self::REVIEWER, 'bob')->code);
@@ -579,7 +653,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $notifier->method('requestDecided')->willThrowException(new \RuntimeException('smtp down'));
         $service = $this->makeService(null, null, $notifier);
 
-        $filed = $service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]));
+        $filed = $service->fileRecordEdits($this->submission([$this->row('5', 'www', '192.0.2.9')]));
         $this->assertTrue($filed->success);
         $this->assertTrue($service->reject($filed->requestId, self::REVIEWER, 'bob')->success);
         $this->assertSame(ZoneChangeRequest::STATUS_REJECTED, $this->repository->find($filed->requestId)->status);
@@ -669,10 +743,17 @@ class ZoneChangeRequestServiceTest extends TestCase
         ], $zoneComment);
     }
 
-    private function makeService(?\Closure $changeset = null, ?PermissionService $reviewerPermissions = null, ?ChangeRequestNotifierInterface $notifier = null, bool $requireComment = false, ?\Closure $zoneSnapshot = null): ZoneChangeRequestService
-    {
+    private function makeService(
+        ?\Closure $changeset = null,
+        ?PermissionService $reviewerPermissions = null,
+        ?ChangeRequestNotifierInterface $notifier = null,
+        bool $requireComment = false,
+        ?\Closure $zoneSnapshot = null,
+        ?RecordCommentRepositoryInterface $recordComments = null,
+        bool $showComments = false
+    ): ZoneChangeRequestService {
         $config = new FakeConfiguration([
-            'interface' => ['show_record_comments' => false, 'show_zone_comments' => true],
+            'interface' => ['show_record_comments' => $showComments, 'show_zone_comments' => true],
             'logging' => ['require_change_comment' => $requireComment],
             'misc' => ['edit_conflict_resolution' => 'last_writer_wins', 'record_comments_sync' => false],
             'dns' => ['bump_serial_on_unchanged_save' => true, 'hostmaster' => 'hostmaster.example.com', 'ttl' => 86400, 'txt_auto_quote' => false],
@@ -704,7 +785,7 @@ class ZoneChangeRequestServiceTest extends TestCase
             $this->backend,
             $this->db,
             $config,
-            null,
+            $recordComments,
             $changeset,
             $reviewerPermissions,
             $notifier,
@@ -712,15 +793,15 @@ class ZoneChangeRequestServiceTest extends TestCase
         );
     }
 
-    private function submission(?array $records = null, ?string $serial = null, ?string $zoneComment = null): ZoneEditSubmission
+    /** @param list<ZoneEditRow> $rows */
+    private function submission(array $rows = [], ?string $serial = null, ?string $zoneComment = null, bool $truncated = false): ZoneEditSubmission
     {
-        return new ZoneEditSubmission(self::ZONE_ID, self::ZONE, self::REQUESTER, 'alice', $records, true, $serial, true, $zoneComment);
+        return new ZoneEditSubmission(self::ZONE_ID, self::ZONE, self::REQUESTER, 'alice', $rows, $truncated, $serial, true, $zoneComment);
     }
 
-    /** @return array<string, mixed> A posted row as the editor sends it */
-    private function row(string $rid, string $name, string $content): array
+    private function row(string $rid, string $name, string $content): ZoneEditRow
     {
-        return ['rid' => $rid, 'zid' => self::ZONE_ID, 'name' => $name, 'type' => 'A', 'content' => $content, 'ttl' => '3600', 'prio' => '0', '_complete' => '1'];
+        return new ZoneEditRow($rid, $name, 'A', $content, 3600, 0, false, null);
     }
 
     /** @return array<string, mixed> The stored row RecordLog compares against */

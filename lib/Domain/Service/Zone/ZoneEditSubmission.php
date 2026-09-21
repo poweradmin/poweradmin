@@ -23,24 +23,24 @@
 namespace Poweradmin\Domain\Service\Zone;
 
 /**
- * One submission of the zone editor's record table, as posted.
+ * One submission of the zone editor's record table.
  */
 final readonly class ZoneEditSubmission
 {
     /**
-     * @param array<int|string, mixed>|null $records The posted rows, or null when none were sent
-     * @param bool $formComplete Whether the form's trailing marker arrived (absent when max_input_vars truncated the post)
+     * @param list<ZoneEditRow> $rows The rows that arrived in full
+     * @param bool $truncated Whether the transport dropped part of the submission (rows or its trailing fields)
      * @param string|null $serial The SOA serial the form was rendered with
-     * @param bool $changedRowsOnly Whether the client filtered the post down to edited rows
-     * @param string|null $zoneComment The posted zone comment, or null when the field was not sent
+     * @param bool $changedRowsOnly Whether the client filtered the submission down to edited rows
+     * @param string|null $zoneComment The zone comment, or null when it was not sent
      */
     public function __construct(
         public int $zoneId,
         public string $zoneName,
         public int $userId,
         public string $username,
-        public ?array $records,
-        public bool $formComplete,
+        public array $rows,
+        public bool $truncated,
         public ?string $serial,
         public bool $changedRowsOnly,
         public ?string $zoneComment
