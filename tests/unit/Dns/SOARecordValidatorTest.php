@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -65,8 +65,7 @@ class SOARecordValidatorTest extends TestCase
         $dns_hostmaster = "hostmaster@example.com";
         $zone = "example.com";
 
-        $this->validator->setSOAParams($dns_hostmaster, $zone);
-        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+        $result = $this->validator->validateSoa($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
 
         $this->assertTrue($result->isValid());
 
@@ -198,13 +197,34 @@ class SOARecordValidatorTest extends TestCase
         $dns_hostmaster = "hostmaster@example.com";
         $zone = "example.arpa";
 
-        $this->validator->setSOAParams($dns_hostmaster, $zone);
-        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+        $result = $this->validator->validateSoa($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
 
         $this->assertFalse($result->isValid());
 
 
         $this->assertNotEmpty($result->getErrors());
+    }
+
+    public function testACallDoesNotInheritTheZoneOfThePreviousCall()
+    {
+        // The registry keeps one validator per type, so a zone left behind by an
+        // earlier call must never stand in for the missing parameters of the next.
+        $content = "ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400";
+        $first = $this->validator->validate($content, "example.com", 0, 3600, 86400, "hostmaster@example.com", "example.com");
+        $this->assertTrue($first->isValid());
+
+        $second = $this->validator->validate($content, "example.com", 0, 3600, 86400);
+
+        $this->assertFalse($second->isValid());
+    }
+
+    public function testTheSameInstanceValidatesAnotherZoneAgainstItsOwnApex()
+    {
+        $content = "ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400";
+        $this->assertTrue($this->validator->validate($content, "example.com", 0, 3600, 86400, "hostmaster@example.com", "example.com")->isValid());
+
+        $this->assertTrue($this->validator->validate($content, "example.org", 0, 3600, 86400, "hostmaster@example.org", "example.org")->isValid());
+        $this->assertFalse($this->validator->validate($content, "example.com", 0, 3600, 86400, "hostmaster@example.org", "example.org")->isValid());
     }
 
     public function testValidateWithoutSOAParams()
@@ -229,8 +249,7 @@ class SOARecordValidatorTest extends TestCase
         // the validator (e.g. API submission), we must not pass it as numeric.
         $content = "ns1.example.com hostmaster.example.com [SERIAL] 7200 1800 1209600 86400";
 
-        $this->validator->setSOAParams("hostmaster@example.com", "example.com");
-        $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
+        $result = $this->validator->validateSoa($content, "example.com", 0, 3600, 86400, "hostmaster@example.com", "example.com");
 
         $this->assertFalse($result->isValid());
         $errors = $result->getErrors();
@@ -244,8 +263,7 @@ class SOARecordValidatorTest extends TestCase
         // Templates document [SERIAL] in uppercase; lowercase is not recognized.
         $content = "ns1.example.com hostmaster.example.com [serial] 7200 1800 1209600 86400";
 
-        $this->validator->setSOAParams("hostmaster@example.com", "example.com");
-        $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
+        $result = $this->validator->validateSoa($content, "example.com", 0, 3600, 86400, "hostmaster@example.com", "example.com");
 
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getErrors());
@@ -255,8 +273,7 @@ class SOARecordValidatorTest extends TestCase
     {
         $content = "[NS1] hostmaster.example.com 2023122801 7200 1800 1209600 86400";
 
-        $this->validator->setSOAParams("hostmaster@example.com", "example.com");
-        $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
+        $result = $this->validator->validateSoa($content, "example.com", 0, 3600, 86400, "hostmaster@example.com", "example.com");
 
         $this->assertFalse($result->isValid());
         $errors = $result->getErrors();
@@ -269,8 +286,7 @@ class SOARecordValidatorTest extends TestCase
     {
         $content = "ns1.example.com [HOSTMASTER] 2023122801 7200 1800 1209600 86400";
 
-        $this->validator->setSOAParams("hostmaster@example.com", "example.com");
-        $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
+        $result = $this->validator->validateSoa($content, "example.com", 0, 3600, 86400, "hostmaster@example.com", "example.com");
 
         $this->assertFalse($result->isValid());
         $errors = $result->getErrors();

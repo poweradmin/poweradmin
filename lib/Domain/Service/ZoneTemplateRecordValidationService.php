@@ -130,7 +130,7 @@ class ZoneTemplateRecordValidationService
         $validator = $this->validatorRegistry->getValidator($type);
 
         if ($type === RecordType::SOA && $validator instanceof SOARecordValidator) {
-            return $validator->validate($content, $name, $prio, $ttl, $defaultTtl, self::SAMPLE_HOSTMASTER, self::SAMPLE_ZONE);
+            return $validator->validateSoa($content, $name, $prio, $ttl, $defaultTtl, self::SAMPLE_HOSTMASTER, self::SAMPLE_ZONE);
         }
 
         // The remaining CNAME checks look for conflicting records in a zone the

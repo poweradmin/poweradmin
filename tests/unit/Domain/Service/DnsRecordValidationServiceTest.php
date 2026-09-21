@@ -298,18 +298,25 @@ class DnsRecordValidationServiceTest extends TestCase
     // ========== SOA record tests ==========
 
     #[Test]
-    public function testValidateRecordSetsSoaParamsForSoaType(): void
+    public function testValidateRecordPassesHostmasterAndZoneToTheSoaValidator(): void
     {
         $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
         $soaValidator = $this->createMock(SOARecordValidator::class);
+        $soaValidator->expects($this->never())->method('validate');
         $soaValidator->expects($this->once())
-            ->method('setSOAParams')
-            ->with('hostmaster@example.com', 'example.com');
-
-        $soaValidator->method('validate')
+            ->method('validateSoa')
+            ->with(
+                $this->anything(),
+                'example.com',
+                $this->anything(),
+                $this->anything(),
+                $this->anything(),
+                'hostmaster@example.com',
+                'example.com'
+            )
             ->willReturn(ValidationResult::success([
                 'content' => 'ns1.example.com. hostmaster.example.com. 2024010101 3600 600 86400 3600',
                 'name' => 'example.com',

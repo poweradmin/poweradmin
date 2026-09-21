@@ -98,11 +98,6 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
             }
         }
 
-        // Special case for SOA records
-        if ($type === RecordType::SOA && $validator instanceof SOARecordValidator) {
-            $validator->setSOAParams($dns_hostmaster, $zone);
-        }
-
         // Check for DNS violations (like multiple CNAMEs with the same name)
         $violationResult = $this->dnsViolationValidator->validate($rid, $zid, $type, $name, $content);
         if (!$violationResult->isValid()) {
@@ -113,9 +108,8 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         if ($type === RecordType::CNAME) {
             // CNAME validator expects: $rid, $zone
             $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl, $rid, $zone);
-        } elseif ($type === RecordType::SOA) {
-            // SOA validator expects: $dns_hostmaster, $zone
-            $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl, $dns_hostmaster, $zone);
+        } elseif ($type === RecordType::SOA && $validator instanceof SOARecordValidator) {
+            $validationResult = $validator->validateSoa($content, $name, $prio, $ttl, $dns_ttl, $dns_hostmaster, $zone);
         } else {
             // Other validators don't need additional parameters
             $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl);

@@ -128,7 +128,7 @@ class BaseDnsTest extends SqliteDnsBackendTestCase
 
         // Configure getValidator to return appropriate validator mocks
         $registryMock->method('getValidator')
-            ->willReturnCallback(function ($type) use ($configMock, $dbMock) {
+            ->willReturnCallback(function ($type) use ($configMock) {
                 // Create validator mock for each record type
                 $validator = null;
 
@@ -152,10 +152,7 @@ class BaseDnsTest extends SqliteDnsBackendTestCase
                         $validator = new PTRRecordValidator($configMock);
                         break;
                     case RecordType::SOA:
-                        $validator = $this->getMockBuilder(SOARecordValidator::class)
-                            ->setConstructorArgs([$configMock, $dbMock])
-                            ->onlyMethods(['setSOAParams'])
-                            ->getMock();
+                        $validator = new SOARecordValidator($configMock);
                         break;
                     case RecordType::TXT:
                         $validator = new TXTRecordValidator($configMock);
