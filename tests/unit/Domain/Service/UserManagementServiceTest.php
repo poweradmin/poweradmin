@@ -36,6 +36,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\UserProfileAssembler;
@@ -47,6 +48,7 @@ class UserManagementServiceTest extends TestCase
     private UserRepositoryInterface&MockObject $userRepository;
     private PermissionService&MockObject $permissionService;
     private UserGroupRepositoryInterface&MockObject $groupRepository;
+    private DomainManagerInterface&MockObject $domainManager;
 
     protected function setUp(): void
     {
@@ -55,6 +57,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->permissionService = $this->createMock(PermissionService::class);
         $this->groupRepository = $this->createMock(UserGroupRepositoryInterface::class);
+        $this->domainManager = $this->createMock(DomainManagerInterface::class);
 
         $passwordPolicy = $this->createMock(PasswordPolicyService::class);
         $passwordPolicy->method('validatePassword')->willReturn([]);
@@ -65,9 +68,34 @@ class UserManagementServiceTest extends TestCase
             new UserAuthenticationService('bcrypt', 4),
             $passwordPolicy,
             false,
-            $this->createMock(DomainManagerInterface::class),
+            $this->domainManager,
             $this->createMock(ZoneManagementService::class)
         );
+    }
+
+    #[Test]
+    public function testDeleteUserWithZoneDecisionsForgetsEveryReassignedZone(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('deleteUser')->willReturn(true);
+        $this->permissionService->method('canEditZoneMeta')->willReturn(true);
+        $this->domainManager->method('addOwnerToZone')
+            ->willReturnCallback(fn(int $zoneId): ZoneWriteResult => ZoneWriteResult::ok($zoneId));
+
+        $forgotten = [];
+        $this->permissionService->method('forgetZone')
+            ->willReturnCallback(function (int $zoneId) use (&$forgotten): void {
+                $forgotten[] = $zoneId;
+            });
+
+        $result = $this->service->deleteUserWithZoneDecisions(9, 1, [
+            ['zid' => 10, 'target' => 'new_owner', 'newowner' => 2],
+            ['zid' => 11, 'target' => 'new_owner', 'newowner' => 2],
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame([10, 11], $forgotten);
     }
 
     // ========== getUserById tests ==========
@@ -693,6 +721,8 @@ class UserManagementServiceTest extends TestCase
 
         $this->userRepository->method('updateUser')
             ->willReturn(true);
+        // No template change, so the cached permission answers stay valid
+        $this->permissionService->expects($this->never())->method('forgetUser');
 
         $result = $this->service->updateUser(1, ['username' => 'sameuser']);
 
@@ -839,6 +869,7 @@ class UserManagementServiceTest extends TestCase
                 return isset($userData['perm_templ']) && $userData['perm_templ'] === 2;
             }))
             ->willReturn(true);
+        $this->permissionService->expects($this->once())->method('forgetUser')->with(1);
 
         $result = $this->service->updateUser(1, ['perm_templ' => 2]);
 
@@ -993,6 +1024,8 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('deleteUser')
             ->with(1)
             ->willReturn(true);
+        // The target now owns more zones, so its cached ownership answers are stale
+        $this->permissionService->expects($this->once())->method('forgetUser')->with(2);
 
         $result = $this->service->deleteUser(1, 2);
 
@@ -1142,6 +1175,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('assignPermissionTemplate')
             ->with(1, 2)
             ->willReturn(true);
+        $this->permissionService->expects($this->once())->method('forgetUser')->with(1);
 
         $result = $this->service->assignPermissionTemplate(1, 2);
 

@@ -136,6 +136,7 @@ class ManageGroupMembersController extends BaseController
             $results = $this->membershipService->bulkAddUsers($groupId, $userIds);
 
             if (!empty($results['success'])) {
+                $this->forgetMembers($results['success']);
                 $message = sprintf(
                     ngettext(
                         '%d user added to group.',
@@ -171,6 +172,19 @@ class ManageGroupMembersController extends BaseController
         }
     }
 
+    /**
+     * Group templates and group-owned zones feed the permission cache.
+     *
+     * @param int[] $userIds
+     */
+    private function forgetMembers(array $userIds): void
+    {
+        $permissionService = $this->createPermissionService();
+        foreach ($userIds as $userId) {
+            $permissionService->forgetUser((int)$userId);
+        }
+    }
+
     private function removeMembers(int $groupId): void
     {
         $userIds = $this->getSelectedUserIds();
@@ -195,6 +209,7 @@ class ManageGroupMembersController extends BaseController
             $results = $this->membershipService->bulkRemoveUsers($groupId, $userIds);
 
             if (!empty($results['success'])) {
+                $this->forgetMembers($results['success']);
                 $message = sprintf(
                     ngettext(
                         '%d user removed from group.',

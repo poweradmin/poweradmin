@@ -726,6 +726,70 @@ class PermissionServiceTest extends PermissionServiceTestCase
         $this->assertSame('none', $this->service->getChangeApprovePermissionLevelForZone(3, 100));
     }
 
+    #[Test]
+    public function testAnswersAreCachedUntilForgotten(): void
+    {
+        $this->userRepository->method('hasAdminPermission')->willReturnOnConsecutiveCalls(false, true);
+        $this->userRepository->method('getUserPermissions')
+            ->willReturnOnConsecutiveCalls([], [Permission::PERM_ZONE_CONTENT_VIEW_OWN]);
+        $this->userRepository->method('userOwnsZone')->willReturnOnConsecutiveCalls(false, true);
+
+        $this->assertFalse($this->service->isAdmin(7));
+        $this->assertSame([], $this->service->getUserPermissions(7));
+        $this->assertFalse($this->service->userOwnsZone(7, 100));
+        // Repeated asks are served from the cache, not the repository.
+        $this->assertFalse($this->service->isAdmin(7));
+        $this->assertSame([], $this->service->getUserPermissions(7));
+        $this->assertFalse($this->service->userOwnsZone(7, 100));
+
+        $this->service->forgetUser(7);
+
+        $this->assertTrue($this->service->isAdmin(7));
+        $this->assertSame([Permission::PERM_ZONE_CONTENT_VIEW_OWN], $this->service->getUserPermissions(7));
+        $this->assertTrue($this->service->userOwnsZone(7, 100));
+    }
+
+    #[Test]
+    public function testForgetUserLeavesOtherUsersCached(): void
+    {
+        $this->userRepository->expects($this->exactly(3))->method('hasAdminPermission')->willReturn(false);
+        $this->userRepository->expects($this->exactly(3))->method('userOwnsZone')->willReturn(false);
+
+        $this->service->isAdmin(7);
+        $this->service->isAdmin(8);
+        $this->service->userOwnsZone(7, 100);
+        $this->service->userOwnsZone(8, 100);
+
+        $this->service->forgetUser(7);
+
+        $this->service->isAdmin(7);
+        $this->service->isAdmin(8);
+        $this->service->userOwnsZone(7, 100);
+        $this->service->userOwnsZone(8, 100);
+    }
+
+    #[Test]
+    public function testForgetZoneRefreshesOwnershipForEveryUserOfThatZoneOnly(): void
+    {
+        $this->userRepository->method('userOwnsZone')->willReturnCallback(
+            function (int $userId, int $domainId): bool {
+                static $calls = 0;
+                // Only the second round of lookups reports ownership.
+                return ++$calls > 3;
+            }
+        );
+
+        $this->assertFalse($this->service->userOwnsZone(7, 100));
+        $this->assertFalse($this->service->userOwnsZone(8, 100));
+        $this->assertFalse($this->service->userOwnsZone(7, 200));
+
+        $this->service->forgetZone(100);
+
+        $this->assertTrue($this->service->userOwnsZone(7, 100));
+        $this->assertTrue($this->service->userOwnsZone(8, 100));
+        $this->assertFalse($this->service->userOwnsZone(7, 200), 'zone 200 stays cached');
+    }
+
     /**
      * Every level ladder: method => [permissions that yield "all", permissions that yield "own"].
      *

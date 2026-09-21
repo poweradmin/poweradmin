@@ -148,6 +148,32 @@ class PermissionService
     }
 
     /**
+     * Drop the cached answers for a user after their template, groups or zone
+     * ownership changed within the request.
+     */
+    public function forgetUser(int $userId): void
+    {
+        unset($this->permissionsCache[$userId], $this->adminCache[$userId]);
+        $this->ownershipCache = array_filter(
+            $this->ownershipCache,
+            fn(string $key): bool => !str_starts_with($key, "$userId:"),
+            ARRAY_FILTER_USE_KEY
+        );
+    }
+
+    /**
+     * Drop the cached ownership answers for a zone after its owners or groups changed.
+     */
+    public function forgetZone(int $zoneId): void
+    {
+        $this->ownershipCache = array_filter(
+            $this->ownershipCache,
+            fn(string $key): bool => !str_ends_with($key, ":$zoneId"),
+            ARRAY_FILTER_USE_KEY
+        );
+    }
+
+    /**
      * Whether the user may perform an "_own" action on a zone: the grant comes from
      * the user's template or any of their groups (union), and the zone is owned
      * directly or through any group.

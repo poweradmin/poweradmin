@@ -208,6 +208,7 @@ class GroupMembersController extends PublicApiController
                 return $this->returnApiError('Invalid user_id', 400);
             }
             $this->membershipService->addUserToGroup($groupId, $userId);
+            $this->createPermissionService()->forgetUser($userId);
 
             return $this->returnApiResponse(null, true, 'Member added successfully', 201);
         } catch (GroupNotFoundException $e) {
@@ -282,6 +283,7 @@ class GroupMembersController extends PublicApiController
             if (!$success) {
                 return $this->returnApiError('Member not found in group', 404);
             }
+            $this->createPermissionService()->forgetUser($userId);
 
             return $this->returnApiResponse(null, true, 'Member removed successfully');
         } catch (GroupNotFoundException $e) {

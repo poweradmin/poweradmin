@@ -413,6 +413,10 @@ class UserManagementService
                 ];
             }
 
+            if (array_key_exists('perm_templ', $userData)) {
+                $this->permissions->forgetUser($userId);
+            }
+
             return [
                 'success' => true,
                 'message' => 'User updated successfully',
@@ -503,6 +507,7 @@ class UserManagementService
                         'code' => self::ERR_ZONE_WRITE,
                     ];
                 }
+                $this->permissions->forgetUser($transferToUserId);
             }
 
             // Delete the user
@@ -580,6 +585,7 @@ class UserManagementService
             if (!$result->success) {
                 return ['success' => false, 'message' => (string)$result->message, 'status' => $result->status, 'code' => self::ERR_ZONE_WRITE];
             }
+            $this->permissions->forgetZone($zoneId);
         }
 
         // Row cleanup (auth links, preferences, MFA, memberships, templates) is shared with the API.
@@ -664,6 +670,7 @@ class UserManagementService
                     'status' => 500
                 ];
             }
+            $this->permissions->forgetUser($userId);
 
             return [
                 'success' => true,

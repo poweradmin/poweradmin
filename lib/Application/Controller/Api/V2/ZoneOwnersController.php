@@ -276,6 +276,7 @@ class ZoneOwnersController extends PublicApiController
             }
 
             $this->zoneRepository->addOwnerToZone($zoneId, $userId);
+            $this->createPermissionService()->forgetZone($zoneId);
             $this->auditService->logZoneOwnerAdd($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner added successfully', 201);
@@ -319,6 +320,10 @@ class ZoneOwnersController extends PublicApiController
             $this->zoneRepository->addOwnerToZone($zoneId, $userId);
             $this->auditService->logZoneOwnerAdd($zoneId, $zoneName, $userId);
             $added[] = $userId;
+        }
+
+        if ($added !== []) {
+            $this->createPermissionService()->forgetZone($zoneId);
         }
 
         $message = count($added) . ' owner(s) added';
@@ -448,6 +453,7 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('Owner not found for this zone', 404);
             }
 
+            $this->createPermissionService()->forgetZone($zoneId);
             $this->auditService->logZoneOwnerRemove($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner removed successfully');

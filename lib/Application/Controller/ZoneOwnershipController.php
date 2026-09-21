@@ -174,6 +174,7 @@ class ZoneOwnershipController extends BaseController
             $this->reportZoneWrite('zone-ownership', $result, _('Owner has been added successfully.'));
 
             if ($result->success) {
+                $this->permissionService->forgetZone($zone_id);
                 $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$newowner);
 
                 // Send zone access granted notification
@@ -222,6 +223,7 @@ class ZoneOwnershipController extends BaseController
             $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $deleteUserId);
 
             if ($ownerRemoved) {
+                $this->permissionService->forgetZone($zone_id);
                 $auditService->logZoneOwnerRemove($zone_id, $zone_name, (int)$delete_owner);
                 $this->setMessage('zone-ownership', 'success', _('Owner has been removed successfully.'));
 
@@ -256,6 +258,7 @@ class ZoneOwnershipController extends BaseController
 
             $zoneGroupRepo = $this->createZoneGroupRepository();
             $zoneGroupRepo->add($zone_id, $groupId);
+            $this->permissionService->forgetZone($zone_id);
             $auditService->logZoneGroupAdd($zone_id, $zone_name, $groupId);
             $this->setMessage('zone-ownership', 'success', _('Group has been added successfully.'));
         }
@@ -296,6 +299,7 @@ class ZoneOwnershipController extends BaseController
                 return;
             }
             $zoneGroupRepo->remove($zone_id, $deleteGroupId);
+            $this->permissionService->forgetZone($zone_id);
             $auditService->logZoneGroupRemove($zone_id, $zone_name, $deleteGroupId);
             $this->setMessage('zone-ownership', 'success', _('Group has been removed successfully.'));
         }
