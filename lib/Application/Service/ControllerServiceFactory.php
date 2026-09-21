@@ -31,6 +31,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -70,8 +71,9 @@ use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
+use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
@@ -81,6 +83,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 use Psr\Log\LoggerInterface;
 
@@ -293,14 +296,22 @@ class ControllerServiceFactory
     public function zoneMetadataService(): ZoneMetadataService
     {
         return new ZoneMetadataService(
-            $this->zoneRepository(),
+            $this->zoneMetadataStore(),
             $this->config,
             $this->permissionService(),
             $this->auditService(),
             $this->recordChangeLogger(),
-            $this->apiClient(),
             $this->logger
         );
+    }
+
+    public function zoneMetadataStore(): ZoneMetadataStoreInterface
+    {
+        $apiClient = $this->apiClient();
+
+        return $apiClient === null
+            ? new DbZoneMetadataStore($this->db, $this->config)
+            : new ApiZoneMetadataStore($apiClient);
     }
 
     public function zoneSigningService(): ZoneSigningService

@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use LogicException;
 use PDO;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\ZoneType;
@@ -44,7 +43,6 @@ use Poweradmin\Domain\Enum\ZoneSoaHealth;
 readonly class ApiZoneRepository implements ZoneRepositoryInterface
 {
     // Failing beats returning an empty set that reads as "this zone has none".
-    private const METADATA_NOT_SUPPORTED = 'Zone metadata is not available through the API zone repository; use PowerdnsApiClient instead.';
 
     private TableNameService $tableNameService;
 
@@ -964,22 +962,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             'account' => '',
             'record_count' => $this->backendProvider->countZoneRecords($zoneId),
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDomainMetadata(int $zoneId): array
-    {
-        throw new LogicException(self::METADATA_NOT_SUPPORTED);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function replaceDomainMetadata(int $zoneId, array $metadata): bool
-    {
-        throw new LogicException(self::METADATA_NOT_SUPPORTED);
     }
 
     private function syncZoneAccount(int $cid): void

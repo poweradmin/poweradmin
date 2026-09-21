@@ -52,25 +52,4 @@ interface ZoneWriteRepositoryInterface
      * @return bool True if zone was deleted successfully
      */
     public function deleteZone(int $zoneId): bool;
-
-    /**
-     * Get raw PowerDNS domain metadata rows for a zone.
-     *
-     * SQL backend only; ApiZoneRepository throws LogicException.
-     *
-     * @param int $zoneId The zone ID
-     * @return array Array of metadata rows [['kind' => string, 'content' => string], ...]
-     */
-    public function getDomainMetadata(int $zoneId): array;
-
-    /**
-     * Replace all PowerDNS domain metadata rows for a zone.
-     *
-     * SQL backend only; ApiZoneRepository throws LogicException.
-     *
-     * @param int $zoneId The zone ID
-     * @param array $metadata Array of metadata rows [['kind' => string, 'content' => string], ...]
-     * @return bool True if metadata was replaced successfully
-     */
-    public function replaceDomainMetadata(int $zoneId, array $metadata): bool;
 }

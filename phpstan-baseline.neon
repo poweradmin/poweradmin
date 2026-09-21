@@ -505,20 +505,8 @@ parameters:
 			path: lib/Domain/Service/ZoneManagementService.php
 
 		-
-			message: '#^Class Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient matches Poweradmin\\Infrastructure\\Api\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneMetadataService.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
 			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneMetadataService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient matches Poweradmin\\Infrastructure\\Api\\\*\]$#'
-			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/ZoneMetadataService.php
 

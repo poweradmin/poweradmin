@@ -23,9 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Model\Zone;
-use Poweradmin\Domain\Repository\ZoneWriteRepositoryInterface;
-use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -45,12 +43,11 @@ class ZoneMetadataService
     private LoggerInterface $logger;
 
     public function __construct(
-        private readonly ZoneWriteRepositoryInterface $zoneRepository,
+        private readonly ZoneMetadataStoreInterface $store,
         private readonly ConfigurationInterface $config,
         private readonly PermissionService $permissions,
         private readonly AuditLoggerInterface $audit,
         private readonly RecordChangeWriterInterface $changeLogger,
-        private readonly ?PowerdnsApiClient $apiClient = null,
         ?LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?? new NullLogger();
@@ -59,7 +56,7 @@ class ZoneMetadataService
     /** Whether metadata lives in PowerDNS behind its API rather than in the database */
     public function isApiBackend(): bool
     {
-        return $this->apiClient !== null;
+        return $this->config->get('dns', 'backend') === 'api';
     }
 
     public static function normalizeKind(string $kind): string
@@ -165,18 +162,7 @@ class ZoneMetadataService
      */
     public function load(int $zoneId, string $zoneName): array
     {
-        if ($this->apiClient === null) {
-            return array_values($this->zoneRepository->getDomainMetadata($zoneId));
-        }
-
-        $apiName = self::apiZoneName($zoneName);
-        $rows = MetadataDefinitions::rowsFromApiPayload(
-            $this->apiClient->getZoneMetadata(new Zone($apiName)),
-            $this->apiClient->getZone($apiName, false)
-        );
-        usort($rows, fn(array $a, array $b): int => strcmp($a['kind'], $b['kind']));
-
-        return $rows;
+        return $this->store->load($zoneId, $zoneName);
     }
 
     /**
@@ -201,7 +187,7 @@ class ZoneMetadataService
             }
         }
 
-        if (!$this->persistAll($zoneId, $zoneName, $rows, $before)) {
+        if (!$this->store->replaceAll($zoneId, $zoneName, $rows, $before)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED);
         }
         $this->log($zoneId, $zoneName, $before, $rows);
@@ -239,7 +225,7 @@ class ZoneMetadataService
             return $refusal;
         }
 
-        if (!$this->persistKind($zoneId, $zoneName, $kind, $values, $before)) {
+        if (!$this->store->replaceKind($zoneId, $zoneName, $kind, $values, $before)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED, $kind);
         }
         $this->log($zoneId, $zoneName, $before, $after);
@@ -268,7 +254,7 @@ class ZoneMetadataService
             }
         }
 
-        if (!$this->persistKind($zoneId, $zoneName, $kind, [], $before)) {
+        if (!$this->store->replaceKind($zoneId, $zoneName, $kind, [], $before)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED, $kind);
         }
         $this->log($zoneId, $zoneName, $before, $after);
@@ -377,89 +363,13 @@ class ZoneMetadataService
     }
 
     /**
-     * @param list<array{kind: string, content: string}> $rows
-     * @param list<array{kind: string, content: string}> $before
-     */
-    private function persistAll(int $zoneId, string $zoneName, array $rows, array $before): bool
-    {
-        if ($this->apiClient === null) {
-            return $this->zoneRepository->replaceDomainMetadata($zoneId, $rows);
-        }
-
-        $apiName = self::apiZoneName($zoneName);
-        $zone = new Zone($apiName);
-        $grouped = [];
-        foreach ($rows as $row) {
-            $grouped[$row['kind']][] = $row['content'];
-        }
-        $beforeByKind = array_flip(array_column($before, 'kind'));
-
-        // Zone-object-backed kinds are set, or cleared when they left the set,
-        // through one zone properties update.
-        $properties = [];
-        foreach (MetadataDefinitions::ZONE_PROPERTY_KINDS as $kind => $property) {
-            if (isset($grouped[$kind])) {
-                $properties[$property] = MetadataDefinitions::toZonePropertyValue($kind, $grouped[$kind][0]);
-                unset($grouped[$kind]);
-            } elseif (isset($beforeByKind[$kind])) {
-                $properties[$property] = MetadataDefinitions::toZonePropertyValue($kind, '');
-            }
-        }
-
-        $success = true;
-        if ($properties !== []) {
-            $success = $this->apiClient->updateZoneProperties($apiName, $properties);
-        }
-
-        // Kinds the API cannot store never reach here changed; unchanged ones are left alone
-        foreach ($grouped as $kind => $values) {
-            if ($this->writeRejection((string)$kind) !== null) {
-                continue;
-            }
-            $success = $this->apiClient->updateZoneMetadata($zone, (string)$kind, $values) && $success;
-        }
-        foreach (array_keys($beforeByKind) as $kind) {
-            if (isset($grouped[$kind]) || isset(MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind]) || $this->writeRejection((string)$kind) !== null) {
-                continue;
-            }
-            $success = $this->apiClient->deleteZoneMetadata($zone, (string)$kind) && $success;
-        }
-
-        return $success;
-    }
-
-    /**
-     * @param list<string> $values Empty removes the kind
-     * @param list<array{kind: string, content: string}> $before
-     */
-    private function persistKind(int $zoneId, string $zoneName, string $kind, array $values, array $before): bool
-    {
-        if ($this->apiClient === null) {
-            return $this->zoneRepository->replaceDomainMetadata($zoneId, self::replaceKindIn($before, $kind, $values));
-        }
-
-        $apiName = self::apiZoneName($zoneName);
-        $property = MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind] ?? null;
-        if ($property !== null) {
-            return $this->apiClient->updateZoneProperties($apiName, [
-                $property => MetadataDefinitions::toZonePropertyValue($kind, $values[0] ?? ''),
-            ]);
-        }
-        if ($values === []) {
-            return $this->apiClient->deleteZoneMetadata(new Zone($apiName), $kind);
-        }
-
-        return $this->apiClient->updateZoneMetadata(new Zone($apiName), $kind, $values);
-    }
-
-    /**
      * The set with every row of one kind replaced by the given values.
      *
      * @param list<array{kind: string, content: string}> $rows
      * @param list<string> $values
      * @return list<array{kind: string, content: string}>
      */
-    private static function replaceKindIn(array $rows, string $kind, array $values): array
+    public static function replaceKindIn(array $rows, string $kind, array $values): array
     {
         $kept = [];
         foreach ($rows as $row) {
@@ -489,11 +399,5 @@ class ZoneMetadataService
         } catch (\Throwable $e) {
             $this->logger->warning('Failed to write zone metadata edit log: {error}', ['error' => $e->getMessage()]);
         }
-    }
-
-    /** The PowerDNS API wants the absolute name */
-    private static function apiZoneName(string $zoneName): string
-    {
-        return str_ends_with($zoneName, '.') ? $zoneName : $zoneName . '.';
     }
 }

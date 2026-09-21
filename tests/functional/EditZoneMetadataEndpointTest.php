@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\AppInitializer;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 
 class EditZoneMetadataEndpointTest extends TestCase
@@ -22,9 +22,9 @@ class EditZoneMetadataEndpointTest extends TestCase
         $zoneName = 'metadata-endpoint-test-' . bin2hex(random_bytes(4)) . '.example';
 
         try {
-            [$zoneRepository, $zoneId] = $this->createZoneRepositoryForTestZone($zoneName);
+            [$metadataStore, $zoneId] = $this->createMetadataStoreForTestZone($zoneName);
 
-            $zoneRepository->replaceDomainMetadata($zoneId, $this->buildAllMetadataRows());
+            $metadataStore->replaceAll($zoneId, $zoneName, $this->buildAllMetadataRows(), []);
 
             $output = $this->runEndpointRequest(
                 'GET',
@@ -63,7 +63,7 @@ class EditZoneMetadataEndpointTest extends TestCase
         $zoneName = 'metadata-endpoint-test-' . bin2hex(random_bytes(4)) . '.example';
 
         try {
-            [$zoneRepository, $zoneId] = $this->createZoneRepositoryForTestZone($zoneName);
+            [$metadataStore, $zoneId] = $this->createMetadataStoreForTestZone($zoneName);
 
             $token = 'csrf-token-' . bin2hex(random_bytes(6));
             $submittedRows = $this->buildAllMetadataRows();
@@ -84,7 +84,7 @@ class EditZoneMetadataEndpointTest extends TestCase
                 ]
             );
 
-            $rows = $zoneRepository->getDomainMetadata($zoneId);
+            $rows = $metadataStore->load($zoneId, $zoneName);
             $actual = [];
             foreach ($rows as $row) {
                 $actual[$row['kind']][] = $row['content'];
@@ -181,19 +181,19 @@ class EditZoneMetadataEndpointTest extends TestCase
         };
     }
 
-    private function createZoneRepositoryForTestZone(string $zoneName): array
+    private function createMetadataStoreForTestZone(string $zoneName): array
     {
         $this->createTestZone($zoneName);
 
         $initializer = new AppInitializer(false);
         $db = $initializer->getDb();
         $config = ConfigurationManager::getInstance();
-        $zoneRepository = new DbZoneRepository($db, $config);
+        $metadataStore = new DbZoneMetadataStore($db, $config);
 
         $zoneId = (new SqlDomainRepository($db, $config))->getDomainIdByName($zoneName);
         $this->assertNotNull($zoneId);
 
-        return [$zoneRepository, (int) $zoneId];
+        return [$metadataStore, (int) $zoneId];
     }
 
     private function createTestZone(string $zoneName): void

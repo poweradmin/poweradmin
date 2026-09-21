@@ -4,9 +4,9 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\EditZoneMetadataController;
-use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Domain\Service\PermissionService;
@@ -69,6 +69,7 @@ class EditZoneMetadataControllerTest extends TestCase
     public function testMetadataDefinitionsMarkKindsUnsupportedByDetectedApiVersionAsDisabled(): void
     {
         $controller = $this->createControllerWithConfig([
+            'dns' => ['backend' => 'api'],
             'pdns_api' => [
                 'url' => 'http://127.0.0.1:8081/',
                 'key' => 'test-key',
@@ -101,6 +102,7 @@ class EditZoneMetadataControllerTest extends TestCase
     public function testMetadataDefinitionsHideUnsupportedKindsWhenVersionIsUnknown(): void
     {
         $controller = $this->createControllerWithConfig([
+            'dns' => ['backend' => 'api'],
             'pdns_api' => [
                 'url' => 'http://127.0.0.1:8081/',
                 'key' => 'test-key',
@@ -173,26 +175,28 @@ class EditZoneMetadataControllerTest extends TestCase
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
         $config = $this->createRuntimeConfig($overrides);
         $this->setProperty($controller, 'zoneRepository', $this->createMock(DbZoneRepository::class));
-        $this->setProperty($controller, 'metadataService', $this->metadataService($config, null));
+        $this->setProperty($controller, 'metadataService', $this->metadataService($config));
         $this->setBaseControllerProperty($controller, 'config', $config);
 
         return $controller;
     }
 
+    /**
+     * The controller's configuration must already name the api backend.
+     */
     private function useApiBackend(EditZoneMetadataController $controller): void
     {
-        $this->setProperty($controller, 'metadataService', $this->metadataService(ConfigurationManager::getInstance(), $this->createMock(PowerdnsApiClient::class)));
+        $this->setProperty($controller, 'metadataService', $this->metadataService(ConfigurationManager::getInstance()));
     }
 
-    private function metadataService(ConfigurationManager $config, ?PowerdnsApiClient $apiClient): ZoneMetadataService
+    private function metadataService(ConfigurationManager $config): ZoneMetadataService
     {
         return new ZoneMetadataService(
-            $this->createMock(DbZoneRepository::class),
+            $this->createMock(ZoneMetadataStoreInterface::class),
             $config,
             $this->createMock(PermissionService::class),
             $this->createMock(AuditService::class),
-            $this->createMock(RecordChangeLogger::class),
-            $apiClient
+            $this->createMock(RecordChangeLogger::class)
         );
     }
 

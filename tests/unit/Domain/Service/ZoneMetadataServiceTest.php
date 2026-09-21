@@ -28,11 +28,12 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Zone;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\ZoneMetadataOutcome;
 use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\PermissionServiceTestCase;
@@ -52,14 +53,14 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
     private const ADMIN = 1;
     private const EDITOR = 7;
 
-    private ZoneRepositoryInterface&MockObject $zoneRepository;
+    private ZoneMetadataStoreInterface&MockObject $store;
     private ConfigurationInterface&MockObject $config;
     private AuditService&MockObject $audit;
     private RecordChangeLogger&MockObject $changeLogger;
 
     protected function setUp(): void
     {
-        $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
+        $this->store = $this->createMock(ZoneMetadataStoreInterface::class);
         $this->config = $this->createMock(ConfigurationInterface::class);
         $this->config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $default);
         $this->audit = $this->createMock(AuditService::class);
@@ -88,7 +89,7 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
     public function testValuesOutsideAKindVocabularyAreRefused(): void
     {
         $service = $this->sqlService();
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([]);
+        $this->store->method('load')->willReturn([]);
 
         $result = $service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'SOA-EDIT-API', 'content' => 'BOGUS']], self::ADMIN);
 
@@ -103,8 +104,8 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->config->method('get')->willReturnCallback(
             fn(string $group, string $key, mixed $default = null): mixed => $group === 'dns' && $key === 'soa_edit_api_options' ? ['EPOCH'] : $default
         );
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([]);
-        $this->zoneRepository->method('replaceDomainMetadata')->willReturn(true);
+        $this->store->method('load')->willReturn([]);
+        $this->store->method('replaceKind')->willReturn(true);
         $service = $this->sqlService();
 
         $this->assertSame(ZoneMetadataOutcome::INVALID_VALUE, $service->replaceKind(self::ZONE_ID, self::ZONE, 'SOA-EDIT-API', ['INCREASE'], self::ADMIN)->outcome);
@@ -120,8 +121,8 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
 
     public function testRepeatedMultiValueKindsAreAccepted(): void
     {
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([]);
-        $this->zoneRepository->method('replaceDomainMetadata')->willReturn(true);
+        $this->store->method('load')->willReturn([]);
+        $this->store->method('replaceAll')->willReturn(true);
         $rows = [['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'], ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.11']];
 
         $this->assertTrue($this->sqlService()->replaceAll(self::ZONE_ID, self::ZONE, $rows, self::ADMIN)->isOk());
@@ -129,7 +130,7 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
 
     public function testNsec3NarrowNeedsNsec3ParamInTheResultingSet(): void
     {
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([]);
+        $this->store->method('load')->willReturn([]);
         $service = $this->sqlService();
 
         $alone = $service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'NSEC3NARROW', 'content' => '1']], self::ADMIN);
@@ -142,11 +143,11 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
 
     public function testRemovingTheCompanionAnotherKindNeedsIsRefused(): void
     {
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([
+        $this->store->method('load')->willReturn([
             ['kind' => 'NSEC3PARAM', 'content' => '1 0 1 ab'],
             ['kind' => 'NSEC3NARROW', 'content' => '1'],
         ]);
-        $this->zoneRepository->expects($this->never())->method('replaceDomainMetadata');
+        $this->store->expects($this->never())->method('replaceKind');
 
         $result = $this->sqlService()->deleteKind(self::ZONE_ID, self::ZONE, 'NSEC3PARAM', self::ADMIN);
 
@@ -156,19 +157,19 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
 
     public function testAnUnrelatedDeleteIgnoresAnAlreadyInconsistentSet(): void
     {
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([
+        $this->store->method('load')->willReturn([
             ['kind' => 'NSEC3NARROW', 'content' => '1'],
             ['kind' => 'IXFR', 'content' => '1'],
         ]);
-        $this->zoneRepository->method('replaceDomainMetadata')->willReturn(true);
+        $this->store->method('replaceKind')->willReturn(true);
 
         $this->assertTrue($this->sqlService()->deleteKind(self::ZONE_ID, self::ZONE, 'IXFR', self::ADMIN)->isOk());
     }
 
     public function testOperatorOnlyKindsAreGatedOnlyWhenTheyChange(): void
     {
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([['kind' => 'LUA-AXFR-SCRIPT', 'content' => 'admin.lua']]);
-        $this->zoneRepository->method('replaceDomainMetadata')->willReturn(true);
+        $this->store->method('load')->willReturn([['kind' => 'LUA-AXFR-SCRIPT', 'content' => 'admin.lua']]);
+        $this->store->method('replaceAll')->willReturn(true);
         $service = $this->sqlService();
 
         // An administrator-set row echoed back does not lock the zone's editor out
@@ -183,7 +184,7 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
 
     public function testServerManagedKindsAreRefusedOnEveryBackend(): void
     {
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([]);
+        $this->store->method('load')->willReturn([]);
 
         $result = $this->sqlService()->replaceKind(self::ZONE_ID, self::ZONE, 'CATALOG-HASH', ['x'], self::ADMIN);
 
@@ -264,14 +265,52 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertTrue($this->apiService($apiClient)->deleteKind(self::ZONE_ID, self::ZONE, 'API-RECTIFY', self::ADMIN)->isOk());
     }
 
-    public function testReplaceKindOnSqlRewritesOnlyThatKind(): void
+    public function testReplaceKindOnTheApiBackendWritesOnlyThatKindsMetadata(): void
     {
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([['kind' => 'ALLOW-AXFR-FROM', 'metadata' => ['192.0.2.10']]]);
+        $apiClient->method('getZone')->willReturn([]);
+        $apiClient->expects($this->never())->method('updateZoneProperties');
+        $apiClient->expects($this->never())->method('deleteZoneMetadata');
+        $apiClient->expects($this->once())->method('updateZoneMetadata')
+            ->with($this->callback(fn(Zone $zone): bool => $zone->getName() === 'example.com.'), 'X-NOTE', ['hello'])
+            ->willReturn(true);
+
+        $this->assertTrue($this->apiService($apiClient)->replaceKind(self::ZONE_ID, self::ZONE, 'x-note', ['hello'], self::ADMIN)->isOk());
+    }
+
+    public function testDeleteKindOnTheApiBackendRemovesOnlyThatKindsMetadata(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([['kind' => 'X-NOTE', 'metadata' => ['hello']]]);
+        $apiClient->method('getZone')->willReturn([]);
+        $apiClient->expects($this->never())->method('updateZoneMetadata');
+        $apiClient->expects($this->once())->method('deleteZoneMetadata')
+            ->with($this->callback(fn(Zone $zone): bool => $zone->getName() === 'example.com.'), 'X-NOTE')
+            ->willReturn(true);
+
+        $this->assertTrue($this->apiService($apiClient)->deleteKind(self::ZONE_ID, self::ZONE, 'X-NOTE', self::ADMIN)->isOk());
+    }
+
+    public function testAFailedApiWriteIsReportedAndNotLogged(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([]);
+        $apiClient->method('getZone')->willReturn([]);
+        $apiClient->method('updateZoneMetadata')->willReturn(false);
+        $this->audit->expects($this->never())->method('logZoneMetadataEdit');
+
+        $this->assertSame(ZoneMetadataOutcome::WRITE_FAILED, $this->apiService($apiClient)->replaceKind(self::ZONE_ID, self::ZONE, 'X-NOTE', ['1'], self::ADMIN)->outcome);
+    }
+
+    public function testReplaceKindHandsTheStoreTheKindAndTheSnapshot(): void
+    {
+        $this->store->method('load')->willReturn([
             ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'],
             ['kind' => 'X-NOTE', 'content' => 'old'],
         ]);
-        $this->zoneRepository->expects($this->once())->method('replaceDomainMetadata')
-            ->with(self::ZONE_ID, [['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'], ['kind' => 'X-NOTE', 'content' => 'new']])
+        $this->store->expects($this->once())->method('replaceKind')
+            ->with(self::ZONE_ID, self::ZONE, 'X-NOTE', ['new'], [['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'], ['kind' => 'X-NOTE', 'content' => 'old']])
             ->willReturn(true);
 
         $this->assertTrue($this->sqlService()->replaceKind(self::ZONE_ID, self::ZONE, 'x-note', ['new'], self::ADMIN)->isOk());
@@ -279,8 +318,8 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
 
     public function testAFailedWriteIsReportedAndNotLogged(): void
     {
-        $this->zoneRepository->method('getDomainMetadata')->willReturn([]);
-        $this->zoneRepository->method('replaceDomainMetadata')->willReturn(false);
+        $this->store->method('load')->willReturn([]);
+        $this->store->method('replaceAll')->willReturn(false);
         $this->audit->expects($this->never())->method('logZoneMetadataEdit');
 
         $this->assertSame(ZoneMetadataOutcome::WRITE_FAILED, $this->sqlService()->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'X-NOTE', 'content' => '1']], self::ADMIN)->outcome);
@@ -300,23 +339,31 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
 
     private function sqlService(): ZoneMetadataService
     {
-        return $this->service(null);
+        return $this->service($this->store, $this->config);
     }
 
+    /**
+     * The API backend: the real API store over a mocked client, and a
+     * configuration that names the api backend.
+     */
     private function apiService(PowerdnsApiClient $apiClient): ZoneMetadataService
     {
-        return $this->service($apiClient);
+        $config = $this->createMock(ConfigurationInterface::class);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null): mixed => $group === 'dns' && $key === 'backend' ? 'api' : $default
+        );
+
+        return $this->service(new ApiZoneMetadataStore($apiClient), $config);
     }
 
-    private function service(?PowerdnsApiClient $apiClient): ZoneMetadataService
+    private function service(ZoneMetadataStoreInterface $store, ConfigurationInterface $config): ZoneMetadataService
     {
         return new ZoneMetadataService(
-            $this->zoneRepository,
-            $this->config,
+            $store,
+            $config,
             $this->buildPermissionService(adminUserIds: [self::ADMIN]),
             $this->audit,
-            $this->changeLogger,
-            $apiClient
+            $this->changeLogger
         );
     }
 }
