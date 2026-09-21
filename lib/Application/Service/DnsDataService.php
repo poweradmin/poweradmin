@@ -35,6 +35,7 @@ use Poweradmin\Domain\Service\Zone\ZoneCountService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\DbCompat;
 
 /**
  * Orchestration service for DNS data reads.
@@ -335,7 +336,7 @@ class DnsDataService
     }
 
     /**
-     * Search records.
+     * Search records. Rows carry `disabled` as a bool in both modes.
      *
      * In SQL mode, delegates to RecordSearch.
      * In API mode, uses DnsBackendProviderInterface::searchDnsData() with enrichment.
@@ -841,7 +842,7 @@ class DnsDataService
                 'content' => $record['content'] ?? '',
                 'ttl' => $record['ttl'] ?? 0,
                 'prio' => $record['prio'] ?? 0,
-                'disabled' => ($record['disabled'] ?? 0) == 1 ? _('Yes') : _('No'),
+                'disabled' => (bool)DbCompat::boolFromDb($record['disabled'] ?? 0),
                 'user_id' => $record['zone_owner_id'] ?? 0,
                 'fullname' => $record['zone_owner_fullname'] ?? '',
             ];

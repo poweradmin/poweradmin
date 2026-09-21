@@ -46,7 +46,7 @@ class RecordSearch extends BaseSearch
      * @param int $iface_rowamount The number of rows to display per page.
      * @param bool $iface_record_comments Whether to display record comments or not.
      * @param int $page The current page number (default is 1).
-     * @return array An array of found records.
+     * @return array An array of found records; `disabled` is a bool.
      */
     public function searchRecords(array $parameters, string $permission_view, string $sort_records_by, string $record_sort_direction, bool $iface_search_group_records, int $iface_rowamount, bool $iface_record_comments, int $page = 1): array
     {
@@ -228,7 +228,7 @@ class RecordSearch extends BaseSearch
         while ($record = $recordsResponse->fetch()) {
             $found_record = $record;
             $found_record['name'] = DnsIdnService::toUtf8($found_record['name']);
-            $found_record['disabled'] = $found_record['disabled'] == '1' ? _('Yes') : _('No');
+            $found_record['disabled'] = (bool)DbCompat::boolFromDb($found_record['disabled']);
             $foundRecords[] = $found_record;
         }
 

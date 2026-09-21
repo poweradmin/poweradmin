@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Presenter\SearchResultPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\SearchCriteria;
@@ -142,7 +143,7 @@ class SearchController extends BaseController
             $totalRecords = $dnsDataService->searchRecordsTotalCount($parameters, $permission_view, $iface_search_group_records);
 
             // Shorten IPv6 addresses in AAAA record content for display
-            $searchResultRecords = $this->shortenIPv6InRecords($searchResultRecords);
+            $searchResultRecords = SearchResultPresenter::records($this->shortenIPv6InRecords($searchResultRecords));
         }
 
         $editPermission = $permissionService->getEditPermissionLevel($userId);

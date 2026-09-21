@@ -1165,6 +1165,7 @@ return array(
     'Poweradmin\\Application\\Presenter\\PaginationPresenter' => $baseDir . '/lib/Application/Presenter/PaginationPresenter.php',
     'Poweradmin\\Application\\Presenter\\RecordFormFieldPresenter' => $baseDir . '/lib/Application/Presenter/RecordFormFieldPresenter.php',
     'Poweradmin\\Application\\Presenter\\RecordLockPresenter' => $baseDir . '/lib/Application/Presenter/RecordLockPresenter.php',
+    'Poweradmin\\Application\\Presenter\\SearchResultPresenter' => $baseDir . '/lib/Application/Presenter/SearchResultPresenter.php',
     'Poweradmin\\Application\\Presenter\\ZoneStartingLettersPresenter' => $baseDir . '/lib/Application/Presenter/ZoneStartingLettersPresenter.php',
     'Poweradmin\\Application\\Routing\\HeadlessRouteFilter' => $baseDir . '/lib/Application/Routing/HeadlessRouteFilter.php',
     'Poweradmin\\Application\\Routing\\SymfonyRouter' => $baseDir . '/lib/Application/Routing/SymfonyRouter.php',

@@ -427,6 +427,22 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->assertStringEndsWith('ip6.arpa', $records[0]['name']);
     }
 
+    public function testRecordsGetATranslatedDisabledLabelNextToTheBool(): void
+    {
+        $this->post(['query' => 'example.com']);
+        $this->foundRecords = [
+            ['domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'disabled' => 't'],
+            ['domain_id' => 1, 'name' => 'mail.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'disabled' => 0],
+        ];
+
+        $records = $this->runController()->renderedParams()['found_records'];
+
+        $this->assertTrue($records[0]['disabled']);
+        $this->assertSame('Yes', $records[0]['disabled_label']);
+        $this->assertFalse($records[1]['disabled']);
+        $this->assertSame('No', $records[1]['disabled_label']);
+    }
+
     public function testRecordsFallBackToTheirNameAsDisplayName(): void
     {
         // A GET renders no records, so this is the POST path's default

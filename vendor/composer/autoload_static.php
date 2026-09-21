@@ -1571,6 +1571,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Presenter\\PaginationPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/PaginationPresenter.php',
         'Poweradmin\\Application\\Presenter\\RecordFormFieldPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/RecordFormFieldPresenter.php',
         'Poweradmin\\Application\\Presenter\\RecordLockPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/RecordLockPresenter.php',
+        'Poweradmin\\Application\\Presenter\\SearchResultPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/SearchResultPresenter.php',
         'Poweradmin\\Application\\Presenter\\ZoneStartingLettersPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/ZoneStartingLettersPresenter.php',
         'Poweradmin\\Application\\Routing\\HeadlessRouteFilter' => __DIR__ . '/../..' . '/lib/Application/Routing/HeadlessRouteFilter.php',
         'Poweradmin\\Application\\Routing\\SymfonyRouter' => __DIR__ . '/../..' . '/lib/Application/Routing/SymfonyRouter.php',

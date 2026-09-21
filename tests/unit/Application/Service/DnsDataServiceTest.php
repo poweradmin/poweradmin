@@ -207,6 +207,7 @@ class DnsDataServiceTest extends TestCase
         $this->assertCount(1, $result);
         $this->assertSame('www.example.com', $result[0]['name']);
         $this->assertSame('A', $result[0]['type']);
+        $this->assertFalse($result[0]['disabled']);
         $this->assertArrayHasKey('user_id', $result[0]);
         $this->assertArrayHasKey('domain_id', $result[0]);
     }
