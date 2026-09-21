@@ -22,9 +22,13 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Service\RecordReadBackendInterface;
+use Poweradmin\Domain\Service\RecordWriteBackendInterface;
+use Poweradmin\Domain\Service\SerialBackendInterface;
+use Poweradmin\Domain\Service\ZoneReadBackendInterface;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -38,17 +42,20 @@ class SOARecordManager implements SOARecordManagerInterface
 
     private PDO $db;
     private ConfigurationInterface $config;
-    private DnsBackendProviderInterface $backendProvider;
+    private RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&SerialBackendInterface&BackendCapabilitiesInterface $backendProvider;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration manager
-     * @param DnsBackendProviderInterface $backendProvider DNS backend provider
+     * @param RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&SerialBackendInterface&BackendCapabilitiesInterface $backendProvider Reads and writes the SOA record and reports the serial policy
      */
-    public function __construct(PDO $db, ConfigurationInterface $config, DnsBackendProviderInterface $backendProvider)
-    {
+    public function __construct(
+        PDO $db,
+        ConfigurationInterface $config,
+        RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&SerialBackendInterface&BackendCapabilitiesInterface $backendProvider
+    ) {
         $this->db = $db;
         $this->config = $config;
         $this->backendProvider = $backendProvider;

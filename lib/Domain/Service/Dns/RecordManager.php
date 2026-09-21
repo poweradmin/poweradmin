@@ -29,13 +29,14 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
+use Poweradmin\Domain\Service\RecordWriteBackendInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -57,7 +58,7 @@ class RecordManager implements RecordManagerInterface
     private DnsRecordValidationServiceInterface $validationService;
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
-    private DnsBackendProviderInterface $backendProvider;
+    private RecordWriteBackendInterface&BackendCapabilitiesInterface $backendProvider;
     private LoggerInterface $logger;
     private RecordChangeWriterInterface $changeLogger;
     private PermissionService $permissionService;
@@ -76,7 +77,7 @@ class RecordManager implements RecordManagerInterface
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param RepositoryFactoryInterface $repositoryFactory Builds the record and comment repositories
      * @param Closure(): DnssecProviderInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
-     * @param DnsBackendProviderInterface $backendProvider DNS backend provider
+     * @param RecordWriteBackendInterface&BackendCapabilitiesInterface $backendProvider Writes records and says whether a local transaction wraps them
      * @param PermissionService $permissionService Edit levels and zone ownership of the acting user
      * @param RecordChangeWriterInterface $changeLogger Receives the before/after record snapshots
      */
@@ -88,7 +89,7 @@ class RecordManager implements RecordManagerInterface
         DomainRepositoryInterface $domainRepository,
         RepositoryFactoryInterface $repositoryFactory,
         Closure $dnssecProvider,
-        DnsBackendProviderInterface $backendProvider,
+        RecordWriteBackendInterface&BackendCapabilitiesInterface $backendProvider,
         PermissionService $permissionService,
         RecordChangeWriterInterface $changeLogger,
         ?LoggerInterface $logger = null,

@@ -26,8 +26,10 @@ use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\RecordReadBackendInterface;
+use Poweradmin\Domain\Service\RecordWriteBackendInterface;
+use Poweradmin\Domain\Service\ZoneReadBackendInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
@@ -39,7 +41,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
     public function __construct(
         private PDO $db,
         private SOARecordManagerInterface $soaRecordManager,
-        private DnsBackendProviderInterface $backendProvider
+        private RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface $backendProvider
     ) {
     }
 
