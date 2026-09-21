@@ -281,9 +281,9 @@ abstract class PublicApiController extends AbstractApiController
 
     protected function getAuthenticatedUsername(): string
     {
-        $stmt = $this->db->prepare("SELECT username FROM users WHERE id = :id");
-        $stmt->execute([':id' => $this->authenticatedUserId]);
-        return $stmt->fetchColumn() ?: 'user_id:' . $this->authenticatedUserId;
+        $user = $this->createUserRepository()->getUserById($this->authenticatedUserId);
+
+        return (string)($user['username'] ?? '') ?: 'user_id:' . $this->authenticatedUserId;
     }
 
     /**

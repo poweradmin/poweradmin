@@ -453,6 +453,7 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
         $factory->method('domainRepository')->willReturn($domains);
         $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
         $factory->method('recordAddService')->willReturn($this->addService);
+        $factory->method('userRepository')->willReturn($this->stubUsers());
 
         $ttlResolver = $this->createMock(ReverseTtlResolver::class);
         $ttlResolver->method('resolveTtlForType')->willReturn(3600);

@@ -27,6 +27,7 @@ use PDO;
 use PDOStatement;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use ReflectionClass;
@@ -95,8 +96,8 @@ abstract class V2ControllerTestCase extends TestCase
     }
 
     /**
-     * A PDO whose prepare() returns a statement, so the request logging and the
-     * username lookup on the response path never explode.
+     * A PDO whose prepare() returns a statement, so the request logging on the
+     * response path never explodes.
      */
     protected function stubDb(): PDO
     {
@@ -120,8 +121,20 @@ abstract class V2ControllerTestCase extends TestCase
     {
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
+        $factory->method('userRepository')->willReturn($this->stubUsers());
 
         return $factory;
+    }
+
+    /**
+     * The username lookup on the response path answers for any id.
+     */
+    protected function stubUsers(): UserRepositoryInterface
+    {
+        $users = $this->createMock(UserRepositoryInterface::class);
+        $users->method('getUserById')->willReturnCallback(fn(int $id): array => ['id' => $id, 'username' => 'apiuser']);
+
+        return $users;
     }
 
     /**

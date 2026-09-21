@@ -22,12 +22,11 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 
-use PDO;
-use PDOStatement;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesChangeRequestsController;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsController;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -38,6 +37,7 @@ use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\ZoneChangeRequestService;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -139,10 +139,10 @@ class ZonesChangeRequestsControllerTest extends TestCase
      */
     private function file(array $body, bool $enabled = true): JsonResponse
     {
-        $statement = $this->createMock(PDOStatement::class);
-        $statement->method('fetchColumn')->willReturn('requester');
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturn($statement);
+        $users = $this->createMock(UserRepositoryInterface::class);
+        $users->method('getUserById')->willReturn(['id' => self::USER_ID, 'username' => 'requester']);
+        $factory = $this->createMock(ControllerServiceFactory::class);
+        $factory->method('userRepository')->willReturn($users);
         $ttl = $this->createMock(ReverseTtlResolver::class);
         $ttl->method('resolveTtlForType')->willReturn(86400);
 
@@ -155,7 +155,7 @@ class ZonesChangeRequestsControllerTest extends TestCase
         $this->inject($controller, 'apiPermissionService', $this->permissions);
         $this->inject($controller, 'reverseTtlResolver', $ttl);
         $this->inject($controller, 'config', $this->config($enabled));
-        $this->inject($controller, 'db', $db);
+        $this->inject($controller, 'serviceFactory', $factory);
         $this->inject($controller, 'pathParameters', ['id' => self::ZONE_ID]);
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
         $this->inject($controller, 'request', new Request([], [], [], [], [], [], json_encode($body)));

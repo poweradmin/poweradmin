@@ -22,17 +22,17 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 
-use PDO;
-use PDOStatement;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ChangeRequestsController;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\ZoneChangeRequestService;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -202,17 +202,17 @@ class ChangeRequestsControllerTest extends TestCase
         $config->method('get')->willReturnCallback(
             fn(string $group, string $key, mixed $default = null): mixed => $group === 'approval' && $key === 'enabled' ? $enabled : $default
         );
-        $statement = $this->createMock(PDOStatement::class);
-        $statement->method('fetchColumn')->willReturn('reviewer');
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturn($statement);
+        $users = $this->createMock(UserRepositoryInterface::class);
+        $users->method('getUserById')->willReturn(['id' => self::USER_ID, 'username' => 'reviewer']);
+        $factory = $this->createMock(ControllerServiceFactory::class);
+        $factory->method('userRepository')->willReturn($users);
 
         $controller = (new ReflectionClass(ChangeRequestsController::class))->newInstanceWithoutConstructor();
         $this->inject($controller, 'requests', $this->requests);
         $this->inject($controller, 'changeRequests', $this->service);
         $this->inject($controller, 'apiPermissionService', $this->permissions);
         $this->inject($controller, 'config', $config);
-        $this->inject($controller, 'db', $db);
+        $this->inject($controller, 'serviceFactory', $factory);
         $this->inject($controller, 'pathParameters', $id === null ? [] : ['id' => $id]);
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
         $this->inject($controller, 'request', new Request($query, [], [], [], [], [], $body === null ? '' : json_encode($body)));
