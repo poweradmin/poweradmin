@@ -43,10 +43,9 @@ class ManageGroupZonesController extends BaseController
         parent::__construct($request);
 
         $groupRepository = $this->services()->userGroupRepository();
-        $zoneGroupRepository = $this->services()->zoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
+        $this->zoneGroupService = $this->services()->zoneGroupService();
     }
 
     public function run(): void

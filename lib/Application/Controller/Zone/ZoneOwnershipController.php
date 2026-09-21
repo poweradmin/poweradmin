@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\ZoneAccessNotificationService;
+use Poweradmin\Application\Service\ZoneOwnershipMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
@@ -188,36 +189,10 @@ class ZoneOwnershipController extends BaseController
         // Delete owner
         $delete_owner = $this->httpRequest->getPostParam('delete_owner');
         if ($delete_owner !== null && is_numeric($delete_owner) && $meta_edit) {
-            // Orphan prevention: refuse if this deletion would leave the zone
-            // with no remaining owners and no group ownership. The mode hint in
-            // the message tells the operator what kind of replacement is allowed.
-            $currentOwners = $this->zoneRepository->getZoneOwners($zone_id);
-            $zoneGroupRepo = $this->services()->zoneGroupRepository();
-            $currentGroups = $zoneGroupRepo->findByDomainId($zone_id);
             $deleteUserId = (int)$delete_owner;
-            $isCurrentOwner = false;
-            foreach ($currentOwners as $o) {
-                if ((int)($o['id'] ?? 0) === $deleteUserId) {
-                    $isCurrentOwner = true;
-                    break;
-                }
-            }
-            $wouldRemoveLastUserOwner = $isCurrentOwner && count($currentOwners) <= 1;
-            if ($wouldRemoveLastUserOwner && count($currentGroups) === 0) {
-                $hint = $this->buildLastOwnerHint($ownershipMode);
-                $this->setMessage('zone-ownership', 'error', _('Cannot remove the last owner: this would leave the zone with no ownership.') . ' ' . $hint);
-                return;
-            }
-            // users_only requires at least one user owner; refuse to leave the
-            // zone with only legacy group ownership that the mode forbids.
-            if ($wouldRemoveLastUserOwner && !$ownershipMode->isGroupOwnerAllowed()) {
-                $this->setMessage('zone-ownership', 'error', _('Cannot remove the last user owner: zone ownership mode is users_only and requires at least one user owner. Add another user owner first.'));
-                return;
-            }
-            // groups_only requires at least one group: block any user-owner
-            // removal on a zone that currently has no group ownership.
-            if ($isCurrentOwner && !$ownershipMode->isUserOwnerAllowed() && count($currentGroups) === 0) {
-                $this->setMessage('zone-ownership', 'error', _('Cannot remove user owner: zone ownership mode is groups_only and the zone has no group owners. Add a group first.'));
+            $refusal = $this->services()->zoneOwnershipGuard()->refuseUserOwnerRemoval($zone_id, $deleteUserId);
+            if ($refusal !== null) {
+                $this->setMessage('zone-ownership', 'error', ZoneOwnershipMessages::userOwnerRefusal($refusal));
                 return;
             }
             $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $deleteUserId);
@@ -266,39 +241,13 @@ class ZoneOwnershipController extends BaseController
         // Delete group
         $delete_group = $this->httpRequest->getPostParam('delete_group');
         if ($delete_group !== null && is_numeric($delete_group) && $meta_edit) {
-            $zoneGroupRepo = $this->services()->zoneGroupRepository();
-            // Orphan prevention: refuse if this deletion would leave the zone
-            // with no remaining groups and no user owners. Applies in every
-            // mode - the message hints what kind of replacement is allowed.
             $deleteGroupId = (int)$delete_group;
-            $currentGroups = $zoneGroupRepo->findByDomainId($zone_id);
-            $currentOwners = $this->zoneRepository->getZoneOwners($zone_id);
-            $isCurrentGroup = false;
-            foreach ($currentGroups as $zg) {
-                if ($zg->getGroupId() === $deleteGroupId) {
-                    $isCurrentGroup = true;
-                    break;
-                }
-            }
-            $wouldRemoveLastGroup = $isCurrentGroup && count($currentGroups) <= 1;
-            if ($wouldRemoveLastGroup && count($currentOwners) === 0) {
-                $hint = $this->buildLastOwnerHint($ownershipMode);
-                $this->setMessage('zone-ownership', 'error', _('Cannot remove the last owner: this would leave the zone with no ownership.') . ' ' . $hint);
+            $refusal = $this->services()->zoneOwnershipGuard()->refuseGroupRemoval($zone_id, $deleteGroupId);
+            if ($refusal !== null) {
+                $this->setMessage('zone-ownership', 'error', ZoneOwnershipMessages::groupRefusal($refusal));
                 return;
             }
-            // groups_only requires at least one group; refuse to leave the zone
-            // with only legacy user ownership that the mode forbids.
-            if ($wouldRemoveLastGroup && !$ownershipMode->isUserOwnerAllowed()) {
-                $this->setMessage('zone-ownership', 'error', _('Cannot remove the last group: zone ownership mode is groups_only and requires at least one group. Add another group first.'));
-                return;
-            }
-            // users_only requires at least one user owner: block any group
-            // removal on a zone that currently has no user owners.
-            if ($isCurrentGroup && !$ownershipMode->isGroupOwnerAllowed() && count($currentOwners) === 0) {
-                $this->setMessage('zone-ownership', 'error', _('Cannot remove group: zone ownership mode is users_only and the zone has no user owners. Add a user owner first.'));
-                return;
-            }
-            $zoneGroupRepo->remove($zone_id, $deleteGroupId);
+            $this->services()->zoneGroupRepository()->remove($zone_id, $deleteGroupId);
             $this->permissionService->forgetZone($zone_id);
             $auditService->logZoneGroupRemove($zone_id, $zone_name, $deleteGroupId);
             $this->setMessage('zone-ownership', 'success', _('Group has been removed successfully.'));
@@ -319,16 +268,5 @@ class ZoneOwnershipController extends BaseController
             $this->services()->urlService(),
             $this->logger
         );
-    }
-
-    private function buildLastOwnerHint(ZoneOwnershipModeService $mode): string
-    {
-        if ($mode->isUserOwnerAllowed() && $mode->isGroupOwnerAllowed()) {
-            return _('Add another owner or a group first.');
-        }
-        if ($mode->isUserOwnerAllowed()) {
-            return _('Add another user owner first (zone ownership mode is users_only).');
-        }
-        return _('Add a group first (zone ownership mode is groups_only).');
     }
 }

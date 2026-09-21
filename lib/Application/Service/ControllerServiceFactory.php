@@ -88,6 +88,7 @@ use Poweradmin\Domain\Service\Zone\ZoneEditService;
 use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\ZoneSortingService;
@@ -390,6 +391,16 @@ class ControllerServiceFactory
     public function zoneOwnershipFormResolver(): ZoneOwnershipFormResolver
     {
         return $this->zones->zoneOwnershipFormResolver();
+    }
+
+    public function zoneOwnershipGuard(): ZoneOwnershipGuard
+    {
+        return $this->zones->zoneOwnershipGuard();
+    }
+
+    public function zoneGroupService(): ZoneGroupService
+    {
+        return $this->zones->zoneGroupService();
     }
 
     public function zoneListPermissionService(): ZoneListPermissionService

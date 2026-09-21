@@ -13,19 +13,24 @@ use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
 
 #[CoversClass(ZoneGroupService::class)]
 class ZoneGroupServiceTest extends TestCase
 {
     private MockObject&ZoneGroupRepositoryInterface $zoneGroupRepo;
     private MockObject&UserGroupRepositoryInterface $groupRepo;
+    private MockObject&ZoneOwnershipGuard $ownershipGuard;
     private ZoneGroupService $service;
 
     protected function setUp(): void
     {
         $this->zoneGroupRepo = $this->createMock(ZoneGroupRepositoryInterface::class);
         $this->groupRepo = $this->createMock(UserGroupRepositoryInterface::class);
-        $this->service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo);
+        $this->ownershipGuard = $this->createMock(ZoneOwnershipGuard::class);
+        $this->service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo, $this->ownershipGuard);
     }
 
     // --- addGroupToZone ---
@@ -180,6 +185,28 @@ class ZoneGroupServiceTest extends TestCase
 
         $this->assertCount(1, $results['success']);
         $this->assertSame('Group does not own this zone', $results['failed'][101]);
+    }
+
+    #[Test]
+    public function bulkRemoveZonesKeepsAZoneWhoseLastOwnerIsTheGroup(): void
+    {
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->ownershipGuard->method('refuseGroupRemoval')->willReturnMap([
+            [100, 1, new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_OWNER, ZoneOwnershipModeService::MODE_BOTH)],
+            [101, 1, null],
+            [102, 1, new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_GROUP_GROUPS_ONLY, ZoneOwnershipModeService::MODE_GROUPS_ONLY)],
+            [103, 1, new ZoneOwnershipRefusal(ZoneOwnershipRefusal::USERS_ONLY_NO_USER_OWNERS, ZoneOwnershipModeService::MODE_USERS_ONLY)],
+        ]);
+        $this->zoneGroupRepo->expects($this->once())->method('remove')->with(101, 1)->willReturn(true);
+
+        $results = $this->service->bulkRemoveZones(1, [100, 101, 102, 103]);
+
+        $this->assertSame([101], $results['success']);
+        $this->assertSame([
+            100 => 'Cannot remove the last owner: this would leave the zone with no ownership',
+            102 => 'Cannot remove the last group: zone ownership mode is groups_only and requires at least one group',
+            103 => 'Cannot remove group: zone ownership mode is users_only and the zone has no user owners',
+        ], $results['failed']);
     }
 
     // --- isGroupOwner ---

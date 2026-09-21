@@ -38,9 +38,7 @@ class QuickRemoveGroupZoneController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = $this->services()->userGroupRepository();
-        $zoneRepository = $this->services()->zoneGroupRepository();
-        $this->zoneGroupService = new ZoneGroupService($zoneRepository, $groupRepository);
+        $this->zoneGroupService = $this->services()->zoneGroupService();
     }
 
     public function run(): void

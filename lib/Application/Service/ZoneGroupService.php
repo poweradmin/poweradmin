@@ -27,6 +27,8 @@ use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
 
 /**
  * Assigns zones to groups and removes them; the group-based half of zone ownership.
@@ -37,13 +39,16 @@ class ZoneGroupService
 {
     private ZoneGroupRepositoryInterface $zoneGroupRepository;
     private UserGroupLookupInterface $groupRepository;
+    private ZoneOwnershipGuard $ownershipGuard;
 
     public function __construct(
         ZoneGroupRepositoryInterface $zoneGroupRepository,
-        UserGroupLookupInterface $groupRepository
+        UserGroupLookupInterface $groupRepository,
+        ZoneOwnershipGuard $ownershipGuard
     ) {
         $this->zoneGroupRepository = $zoneGroupRepository;
         $this->groupRepository = $groupRepository;
+        $this->ownershipGuard = $ownershipGuard;
     }
 
     /**
@@ -157,7 +162,8 @@ class ZoneGroupService
     }
 
     /**
-     * Remove multiple zones from a group
+     * Remove multiple zones from a group. A zone whose last allowed owner is
+     * this group stays assigned and is reported in `failed` with the reason.
      *
      * @param int $groupId Group ID
      * @param int[] $domainIds Array of domain IDs
@@ -178,7 +184,10 @@ class ZoneGroupService
 
         foreach ($domainIds as $domainId) {
             try {
-                if ($this->zoneGroupRepository->remove($domainId, $groupId)) {
+                $refusal = $this->ownershipGuard->refuseGroupRemoval($domainId, $groupId);
+                if ($refusal !== null) {
+                    $results['failed'][$domainId] = self::refusalReason($refusal);
+                } elseif ($this->zoneGroupRepository->remove($domainId, $groupId)) {
                     $results['success'][] = $domainId;
                 } else {
                     $results['failed'][$domainId] = 'Group does not own this zone';
@@ -189,6 +198,15 @@ class ZoneGroupService
         }
 
         return $results;
+    }
+
+    private static function refusalReason(ZoneOwnershipRefusal $refusal): string
+    {
+        return match ($refusal->code) {
+            ZoneOwnershipRefusal::LAST_GROUP_GROUPS_ONLY => 'Cannot remove the last group: zone ownership mode is groups_only and requires at least one group',
+            ZoneOwnershipRefusal::USERS_ONLY_NO_USER_OWNERS => 'Cannot remove group: zone ownership mode is users_only and the zone has no user owners',
+            default => 'Cannot remove the last owner: this would leave the zone with no ownership',
+        };
     }
 
     /**

@@ -29,8 +29,8 @@ use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -42,18 +42,14 @@ class GroupZonesController extends PublicApiController
 {
     private ZoneGroupService $zoneGroupService;
     private ApiPermissionService $apiPermissionService;
-    private ZoneOwnershipRepositoryInterface $zoneRepository;
     private DomainRepositoryInterface $domainRepository;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $zoneGroupRepository = $this->services()->zoneGroupRepository();
-        $groupRepository = $this->services()->userGroupRepository();
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
+        $this->zoneGroupService = $this->services()->zoneGroupService();
         $this->apiPermissionService = $this->services()->apiPermissionService();
-        $this->zoneRepository = $this->services()->zoneRepository();
         $this->domainRepository = $this->services()->domainRepository();
     }
 
@@ -316,49 +312,9 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            $zoneGroupRepo = $this->services()->zoneGroupRepository();
-            $existingGroups = $zoneGroupRepo->findByDomainId($zoneId);
-            $hasThisGroup = false;
-            foreach ($existingGroups as $zg) {
-                if ($zg->getGroupId() === $groupId) {
-                    $hasThisGroup = true;
-                    break;
-                }
-            }
-            if ($hasThisGroup) {
-                $remainingOwners = count($this->zoneRepository->getZoneOwners($zoneId));
-                $wouldRemoveLast = count($existingGroups) <= 1;
-                $ownershipMode = new ZoneOwnershipModeService($this->config);
-
-                if ($wouldRemoveLast && $remainingOwners === 0) {
-                    if ($ownershipMode->isUserOwnerAllowed() && $ownershipMode->isGroupOwnerAllowed()) {
-                        $hint = 'Add another group or a user owner first.';
-                    } elseif ($ownershipMode->isGroupOwnerAllowed()) {
-                        $hint = 'Add another group first (zone ownership mode is groups_only).';
-                    } else {
-                        $hint = 'Add a user owner first (zone ownership mode is users_only).';
-                    }
-                    return $this->returnApiError(
-                        'Cannot remove the last owner: this would leave the zone with no ownership. ' . $hint,
-                        400
-                    );
-                }
-                // groups_only requires at least one group regardless of legacy user owners.
-                if ($wouldRemoveLast && !$ownershipMode->isUserOwnerAllowed()) {
-                    return $this->returnApiError(
-                        'Cannot remove the last group: zone ownership mode is groups_only and requires at least one group. Add another group first.',
-                        400
-                    );
-                }
-                // users_only requires at least one user owner: refuse to remove
-                // any group from a zone that has zero user owners (legacy state)
-                // until a user owner is added to bring the zone into compliance.
-                if (!$ownershipMode->isGroupOwnerAllowed() && $remainingOwners === 0) {
-                    return $this->returnApiError(
-                        'Cannot remove group: zone ownership mode is users_only and the zone has no user owners. Add a user owner first.',
-                        400
-                    );
-                }
+            $refusal = $this->services()->zoneOwnershipGuard()->refuseGroupRemoval($zoneId, $groupId);
+            if ($refusal !== null) {
+                return $this->returnApiError(self::refusalMessage($refusal), 400);
             }
 
             $success = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
@@ -373,5 +329,22 @@ class GroupZonesController extends PublicApiController
         } catch (Exception $e) {
             return $this->handleException($e, 'GroupZonesController::unassignZone', 'Failed to unassign zone');
         }
+    }
+
+    /**
+     * The contract wording for a refused group removal; the hint names the kind
+     * of owner the ownership mode still accepts.
+     */
+    private static function refusalMessage(ZoneOwnershipRefusal $refusal): string
+    {
+        return match ($refusal->code) {
+            ZoneOwnershipRefusal::LAST_GROUP_GROUPS_ONLY => 'Cannot remove the last group: zone ownership mode is groups_only and requires at least one group. Add another group first.',
+            ZoneOwnershipRefusal::USERS_ONLY_NO_USER_OWNERS => 'Cannot remove group: zone ownership mode is users_only and the zone has no user owners. Add a user owner first.',
+            default => 'Cannot remove the last owner: this would leave the zone with no ownership. ' . match ($refusal->mode) {
+                ZoneOwnershipModeService::MODE_GROUPS_ONLY => 'Add another group first (zone ownership mode is groups_only).',
+                ZoneOwnershipModeService::MODE_USERS_ONLY => 'Add a user owner first (zone ownership mode is users_only).',
+                default => 'Add another group or a user owner first.',
+            },
+        };
     }
 }

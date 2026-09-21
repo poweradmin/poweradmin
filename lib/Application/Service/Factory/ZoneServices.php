@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\DashboardStatsService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\ZoneCreateService;
+use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
@@ -42,6 +43,7 @@ use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\ZoneSortingService;
@@ -142,6 +144,16 @@ class ZoneServices
     public function zoneOwnershipFormResolver(): ZoneOwnershipFormResolver
     {
         return new ZoneOwnershipFormResolver($this->zoneOwnershipModeService(), $this->zoneCreateOwnershipResolver(), $this->services->permissionService());
+    }
+
+    public function zoneOwnershipGuard(): ZoneOwnershipGuard
+    {
+        return new ZoneOwnershipGuard($this->services->zoneRepository(), $this->zoneGroupRepository(), $this->zoneOwnershipModeService());
+    }
+
+    public function zoneGroupService(): ZoneGroupService
+    {
+        return new ZoneGroupService($this->zoneGroupRepository(), $this->services->userGroupRepository(), $this->zoneOwnershipGuard());
     }
 
     public function zoneListPermissionService(): ZoneListPermissionService
