@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\Dnssec;
 
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Utility\DnsIdnService;

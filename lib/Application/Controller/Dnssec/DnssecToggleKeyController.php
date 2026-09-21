@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\Dnssec;
 
 /**
  * Handles the POST that activates or deactivates a DNSSEC key, then returns to the zone's DNSSEC page.

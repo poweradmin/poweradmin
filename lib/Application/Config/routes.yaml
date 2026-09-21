@@ -382,20 +382,20 @@ groups_logs:
 # DNSSEC Management
 dnssec:
   path: /zones/{id}/dnssec
-  controller: Poweradmin\Application\Controller\DnssecController::run
+  controller: Poweradmin\Application\Controller\Dnssec\DnssecController::run
   requirements:
     id: '\d+'
 
 dnssec_add_key:
   path: /zones/{id}/dnssec/keys/add
-  controller: Poweradmin\Application\Controller\DnssecAddKeyController::run
+  controller: Poweradmin\Application\Controller\Dnssec\DnssecAddKeyController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 dnssec_edit_key:
   path: /zones/{zone_id}/dnssec/keys/{key_id}/edit
-  controller: Poweradmin\Application\Controller\DnssecEditKeyController::run
+  controller: Poweradmin\Application\Controller\Dnssec\DnssecEditKeyController::run
   requirements:
     zone_id: '\d+'
     key_id: '\d+'
@@ -403,7 +403,7 @@ dnssec_edit_key:
 
 dnssec_delete_key:
   path: /zones/{zone_id}/dnssec/keys/{key_id}/delete
-  controller: Poweradmin\Application\Controller\DnssecDeleteKeyController::run
+  controller: Poweradmin\Application\Controller\Dnssec\DnssecDeleteKeyController::run
   requirements:
     zone_id: '\d+'
     key_id: '\d+'
@@ -411,20 +411,20 @@ dnssec_delete_key:
 
 dnssec_ds_dnskey:
   path: /zones/{id}/dnssec/ds-dnskey
-  controller: Poweradmin\Application\Controller\DnssecDsDnskeyController::run
+  controller: Poweradmin\Application\Controller\Dnssec\DnssecDsDnskeyController::run
   requirements:
     id: '\d+'
 
 dnssec_key_import:
   path: /zones/{id}/dnssec/keys/import
-  controller: Poweradmin\Application\Controller\DnssecKeyImportController::run
+  controller: Poweradmin\Application\Controller\Dnssec\DnssecKeyImportController::run
   requirements:
     id: '\d+'
   methods: [POST]
 
 dnssec_key_export:
   path: /zones/{zone_id}/dnssec/keys/{key_id}/export
-  controller: Poweradmin\Application\Controller\DnssecKeyExportController::run
+  controller: Poweradmin\Application\Controller\Dnssec\DnssecKeyExportController::run
   requirements:
     zone_id: '\d+'
     key_id: '\d+'
@@ -844,7 +844,7 @@ unlink_zones_templ:
 # DNSSEC Key Management
 dnssec_key_toggle:
   path: /zones/{zone_id}/dnssec/keys/{key_id}/toggle
-  controller: Poweradmin\Application\Controller\DnssecToggleKeyController::run
+  controller: Poweradmin\Application\Controller\Dnssec\DnssecToggleKeyController::run
   requirements:
     zone_id: '\d+'
     key_id: '\d+'

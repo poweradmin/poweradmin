@@ -21,8 +21,9 @@
  *
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\Dnssec;
 
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 

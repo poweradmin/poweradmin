@@ -1,10 +1,10 @@
 <?php
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Dnssec;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Controller\DnssecKeyController;
-use Poweradmin\Application\Controller\DnssecToggleKeyController;
+use Poweradmin\Application\Controller\Dnssec\DnssecKeyController;
+use Poweradmin\Application\Controller\Dnssec\DnssecToggleKeyController;
 
 class DnssecToggleKeyControllerTest extends TestCase
 {

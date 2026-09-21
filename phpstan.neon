@@ -46,7 +46,7 @@ parameters:
     #   DnssecDeleteKeyController - keyExists() after removeZoneKey()
     -
       identifier: booleanAnd.rightAlwaysTrue
-      path: lib/Application/Controller/DnssecDeleteKeyController.php
+      path: lib/Application/Controller/Dnssec/DnssecDeleteKeyController.php
     #   SqlDnsBackendProvider, ZoneSyncService - inTransaction() in the catch,
     #   narrowed from the call made before beginTransaction(). Deleting either
     #   skips the rollback.

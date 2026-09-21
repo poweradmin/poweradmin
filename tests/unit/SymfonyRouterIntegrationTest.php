@@ -322,7 +322,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/zones/123/dnssec';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\DnssecController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Dnssec\DnssecController', $routeInfo['controller']);
         $this->assertEquals('dnssec', $routeInfo['route']);
         $this->assertEquals(['id' => '123'], $routeInfo['parameters']);
 
@@ -330,7 +330,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/zones/456/dnssec/keys/add';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\DnssecAddKeyController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Dnssec\DnssecAddKeyController', $routeInfo['controller']);
         $this->assertEquals('dnssec_add_key', $routeInfo['route']);
         $this->assertEquals(['id' => '456'], $routeInfo['parameters']);
 
@@ -338,7 +338,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/zones/789/dnssec/keys/111/edit';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\DnssecEditKeyController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Dnssec\DnssecEditKeyController', $routeInfo['controller']);
         $this->assertEquals('dnssec_edit_key', $routeInfo['route']);
         $this->assertEquals([
             'zone_id' => '789',
