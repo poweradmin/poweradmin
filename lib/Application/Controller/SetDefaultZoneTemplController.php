@@ -37,7 +37,7 @@ class SetDefaultZoneTemplController extends BaseController
         $this->checkCondition(!$perm_godlike, _("You do not have the permission to change the default zone template."));
 
         $action = $this->getSafeRequestValue('action');
-        $zoneTemplate = $this->createZoneTemplateService();
+        $zoneTemplate = $this->services()->zoneTemplateService();
 
         if ($action === 'unset') {
             $cleared = $zoneTemplate->unsetDefaultTemplate();

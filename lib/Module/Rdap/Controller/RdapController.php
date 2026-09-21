@@ -41,7 +41,7 @@ class RdapController extends BaseController
         parent::__construct($request);
 
         $this->rdapService = new RdapService();
-        $this->domainRepository = $this->createDomainRepository();
+        $this->domainRepository = $this->services()->domainRepository();
 
         $timeout = $this->getModuleConfig('rdap', 'request_timeout', 10);
         $this->rdapService->setRequestTimeout($timeout);

@@ -42,7 +42,7 @@ class EditZoneTemplController extends BaseController
     {
         parent::__construct($request);
         $this->userContext = new UserContextService();
-        $this->zoneTemplate = $this->createZoneTemplateService();
+        $this->zoneTemplate = $this->services()->zoneTemplateService();
     }
 
     public function run(): void
@@ -127,7 +127,7 @@ class EditZoneTemplController extends BaseController
         $zones_linked_count = count($linked_zones);
 
         // Get sync status
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
         $unsynced_zones_count = $syncService->getUnsyncedZoneCount($zone_templ_id);
 
         $this->render('edit_zone_templ.html', [
@@ -179,7 +179,7 @@ class EditZoneTemplController extends BaseController
             $this->addSystemMessage('error', (string)$edited->message);
             return;
         }
-        $auditService = $this->createAuditService();
+        $auditService = $this->services()->auditService();
         $auditService->logZoneTemplateEdit($zone_templ_id, $postParams['templ_name'] ?? '');
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
         $this->redirect('/zones/templates');
@@ -189,8 +189,8 @@ class EditZoneTemplController extends BaseController
     {
         $userId = $this->userContext->getLoggedInUserId();
         $zones = $this->zoneTemplate->getZoneAndDomainIdsByTemplate($zone_templ_id, $userId);
-        $domainManager = $this->createDomainManager();
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $domainManager = $this->services()->domainManager();
+        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
 
         $defaultTtl = $this->config->get('dns', 'ttl', 86400);
         $syncedZoneIds = [];

@@ -179,7 +179,7 @@ class MfaSetupController extends BaseController
             // Enable MFA
             $this->mfaService->enableMfa($userId);
 
-            $this->createAuditService()->logMfaEnable('app');
+            $this->services()->auditService()->logMfaEnable('app');
 
             // Generate recovery codes if they don't exist
             $recoveryCodes = $userMfa->getRecoveryCodesAsArray();
@@ -293,7 +293,7 @@ class MfaSetupController extends BaseController
             // Enable MFA
             $this->mfaService->enableMfa($userId, UserMfa::TYPE_EMAIL);
 
-            $this->createAuditService()->logMfaEnable('email');
+            $this->services()->auditService()->logMfaEnable('email');
 
             // Generate recovery codes
             $recoveryCodes = $this->mfaService->regenerateRecoveryCodes($userId);
@@ -329,7 +329,7 @@ class MfaSetupController extends BaseController
         // Disable MFA
         $this->mfaService->disableMfa($userId);
 
-        $this->createAuditService()->logMfaDisable();
+        $this->services()->auditService()->logMfaDisable();
 
         $this->addSystemMessage('success', _('MFA has been disabled.'));
         $this->displayMfaSetup();
@@ -354,7 +354,7 @@ class MfaSetupController extends BaseController
         // Generate new recovery codes
         $recoveryCodes = $this->mfaService->regenerateRecoveryCodes($userId);
 
-        $this->createAuditService()->logMfaRecoveryCodesRegenerate();
+        $this->services()->auditService()->logMfaRecoveryCodesRegenerate();
 
         $this->addSystemMessage('success', _('Recovery codes have been regenerated. Please save them in a safe place.'));
         $this->displayRecoveryCodes($recoveryCodes);

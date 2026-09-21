@@ -53,9 +53,9 @@ class AddRecordController extends BaseController
     {
         parent::__construct($request);
         $this->formStateService = new FormStateService();
-        $this->recordAdd = $this->createRecordAddService();
+        $this->recordAdd = $this->services()->recordAddService();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
-        $this->reverseTtlResolver = $this->createReverseTtlResolver();
+        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
         $this->userContextService = new UserContextService();
     }
 
@@ -176,7 +176,7 @@ class AddRecordController extends BaseController
 
         // Offer only what this caller may actually submit, so a restricted type is not
         // presented and then refused on save.
-        $permEdit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
+        $permEdit = $this->services()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $offeredTypes = array_values(array_filter(
             $offeredTypes,
             fn(string $type): bool => !Permission::isRecordTypeRestrictedForClient($type, $permEdit)
@@ -202,7 +202,7 @@ class AddRecordController extends BaseController
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
-            'display_hostname_only' => $this->createUserPreferenceService()->getDisplayHostnameOnly(
+            'display_hostname_only' => $this->services()->userPreferenceService()->getDisplayHostnameOnly(
                 $this->userContextService->getLoggedInUserId()
             ),
             'form_data' => $formData,

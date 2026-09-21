@@ -317,7 +317,7 @@ class DnsWizardApiController extends InternalApiController
         $zone_id = (int)$data['zone_id'];
 
         try {
-            $recordAdd = $this->createRecordAddService();
+            $recordAdd = $this->services()->recordAddService();
             $access = $recordAdd->open($zone_id, (int)$this->getCurrentUserId());
             if (!$access->isGranted()) {
                 return match ($access->code) {

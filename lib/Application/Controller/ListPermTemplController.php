@@ -47,7 +47,7 @@ class ListPermTemplController extends BaseController
         $showUser = $this->config->get('permissions', 'show_user_access_templates', true);
         $showGroup = $this->config->get('permissions', 'show_group_access_templates', true);
 
-        $permissionTemplateRepository = $this->createPermissionTemplateRepository();
+        $permissionTemplateRepository = $this->services()->permissionTemplateRepository();
         if ($showUser && $showGroup) {
             $templates = $permissionTemplateRepository->listPermissionTemplates();
         } elseif ($showGroup) {

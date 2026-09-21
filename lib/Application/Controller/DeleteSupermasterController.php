@@ -76,14 +76,14 @@ class DeleteSupermasterController extends BaseController
             $this->redirect('/supermasters');
         }
 
-        $supermasterManager = $this->createSupermasterManager();
+        $supermasterManager = $this->services()->supermasterManager();
         if (!$supermasterManager->supermasterIpNameExists($master_ip, $ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
             $this->redirect('/supermasters');
         }
         $deleted = $supermasterManager->deleteSupermaster($master_ip, $ns_name);
         if ($deleted->success) {
-            $this->createAuditService()->logSupermasterDelete($master_ip, $ns_name);
+            $this->services()->auditService()->logSupermasterDelete($master_ip, $ns_name);
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
         } else {
             $this->setMessage('list_supermasters', 'error', (string)$deleted->message);
@@ -94,7 +94,7 @@ class DeleteSupermasterController extends BaseController
     private function showDeleteSuperMaster(): void
     {
         $master_ip = (string)$this->httpRequest->getQueryParam('master_ip');
-        $supermasterManager = $this->createSupermasterManager();
+        $supermasterManager = $this->services()->supermasterManager();
         $info = $supermasterManager->getSupermasterInfoFromIp($master_ip);
 
         if (empty($info)) {

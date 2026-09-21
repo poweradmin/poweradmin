@@ -44,7 +44,7 @@ class ZoneTemplateRecordsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
         $this->repository = $this->services()->zoneTemplateRepository();
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -56,7 +56,7 @@ class ZoneTemplateRecordsController extends PublicApiController
     private function validateTemplateRecord(string $name, string $type, string $content, int $ttl, int $priority): ?JsonResponse
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
-            new DnsValidatorRegistry($this->config, $this->createDnsBackendProvider())
+            new DnsValidatorRegistry($this->config, $this->services()->dnsBackendProvider())
         );
 
         $result = $this->recordValidationService->validate(
@@ -304,7 +304,7 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $recordId = $this->repository->addRecord($templateId, $name, $type, $content, $ttl, $priority);
 
-            $this->createAuditService()->logApiZoneTemplateRecordAdd($templateId, $recordId, $name, $type);
+            $this->services()->auditService()->logApiZoneTemplateRecordAdd($templateId, $recordId, $name, $type);
 
             return $this->returnApiResponse(['id' => $recordId], true, null, 201);
         } catch (\Throwable $e) {
@@ -495,7 +495,7 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $this->repository->updateRecord($recordId, $name, $type, $content, $ttl, $priority);
 
-            $this->createAuditService()->logApiZoneTemplateRecordEdit($templateId, $recordId, $name, $type);
+            $this->services()->auditService()->logApiZoneTemplateRecordEdit($templateId, $recordId, $name, $type);
 
             return $this->returnApiResponse(null, true, 'Zone template record updated successfully');
         } catch (\Throwable $e) {
@@ -570,7 +570,7 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $this->repository->deleteRecord($recordId);
 
-            $this->createAuditService()->logApiZoneTemplateRecordDelete($templateId, $recordId);
+            $this->services()->auditService()->logApiZoneTemplateRecordDelete($templateId, $recordId);
 
             return $this->returnApiResponse(null, true, 'Zone template record deleted successfully');
         } catch (\Throwable $e) {

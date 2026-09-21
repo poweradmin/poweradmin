@@ -48,9 +48,9 @@ class AddSupermasterController extends BaseController
 
     private function addSuperMaster($master_ip, $ns_name, $account): void
     {
-        $added = $this->createSupermasterManager()->addSupermaster($master_ip, $ns_name, $account);
+        $added = $this->services()->supermasterManager()->addSupermaster($master_ip, $ns_name, $account);
         if ($added->success) {
-            $this->createAuditService()->logSupermasterAdd($master_ip, $ns_name);
+            $this->services()->auditService()->logSupermasterAdd($master_ip, $ns_name);
 
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been added successfully.'));
             $this->redirect('/supermasters');
@@ -62,7 +62,7 @@ class AddSupermasterController extends BaseController
 
     private function showAddSuperMaster($master_ip, $ns_name, $account): void
     {
-        $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
         $this->render('add_supermaster.html', [
             'users' => $users,
             'selectable_owners' => $this->selectableOwners($users),

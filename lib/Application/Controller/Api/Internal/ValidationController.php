@@ -45,18 +45,18 @@ class ValidationController extends InternalApiController
     {
         parent::__construct($request);
 
-        $backendProvider = $this->createDnsBackendProvider();
+        $backendProvider = $this->services()->dnsBackendProvider();
         $validatorRegistry = new DnsValidatorRegistry($this->getConfig(), $backendProvider);
         $dnsCommonValidator = new DnsCommonValidator($backendProvider);
-        $dnsViolationValidator = new DNSViolationValidator($this->getRepositoryFactory()->createRecordRepository());
+        $dnsViolationValidator = new DNSViolationValidator($this->services()->repositoryFactory()->createRecordRepository());
 
         $this->validationService = new DnsRecordValidationService(
             $validatorRegistry,
             $dnsCommonValidator,
-            $this->createDomainRepository(),
+            $this->services()->domainRepository(),
             $dnsViolationValidator
         );
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
         $this->userContextService = new UserContextService();
     }
 

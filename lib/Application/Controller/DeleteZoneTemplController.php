@@ -37,7 +37,7 @@ class DeleteZoneTemplController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->zoneTemplate = $this->createZoneTemplateService();
+        $this->zoneTemplate = $this->services()->zoneTemplateService();
     }
     public function run(): void
     {
@@ -88,7 +88,7 @@ class DeleteZoneTemplController extends BaseController
                 return;
             }
 
-            $auditService = $this->createAuditService();
+            $auditService = $this->services()->auditService();
             $auditService->logZoneTemplateDelete((int)$zone_templ_id);
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been deleted successfully.'));
             $this->redirect('/zones/templates');

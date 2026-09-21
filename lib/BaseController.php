@@ -27,58 +27,25 @@ use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
-use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\PdnsVersionService;
-use Poweradmin\Application\Service\RecordAddService;
-use Poweradmin\Application\Service\RecordManagerService;
-use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\ZoneTemplateService;
-use Poweradmin\Domain\Service\UserManagementService;
-use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\Validator;
-use Poweradmin\Domain\Service\ZoneChangeRequestService;
-use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
-use Poweradmin\Domain\Service\ZoneListPermissionService;
 use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneSigningService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
-use Poweradmin\Domain\Service\Dns\RecordDeletionService;
-use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SupermasterManager;
-use Poweradmin\Domain\Service\DnssecProviderInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Web\PageRenderer;
 use Poweradmin\Module\ModuleRegistry;
@@ -398,16 +365,6 @@ abstract class BaseController
         return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger);
     }
 
-    protected function createUserPreferenceService(): UserPreferenceService
-    {
-        return $this->services()->userPreferenceService();
-    }
-
-    protected function createPaginationService(): PaginationService
-    {
-        return $this->services()->paginationService();
-    }
-
     /**
      * Resolves the page size for a listing: the request value wins, then the user's
      * stored preference, then interface.rows_per_page with $fallback when unset.
@@ -416,7 +373,7 @@ abstract class BaseController
     {
         $default = (int) $this->config->get('interface', 'rows_per_page', $fallback);
 
-        return $this->createPaginationService()->getUserRowsPerPage(
+        return $this->services()->paginationService()->getUserRowsPerPage(
             $default,
             $this->getCurrentUserId(),
             $this->httpRequest->getRowsPerPage()
@@ -434,7 +391,7 @@ abstract class BaseController
     {
         $currentPage = $this->httpRequest->getPage();
 
-        $pagination = $this->createPaginationService()->createPagination($totalItems, $itemsPerPage, $currentPage);
+        $pagination = $this->services()->paginationService()->createPagination($totalItems, $itemsPerPage, $currentPage);
 
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $url = $baseUrlPrefix . $path;
@@ -452,51 +409,6 @@ abstract class BaseController
         return $presenter->present();
     }
 
-    protected function createDnsBackendProvider(): DnsBackendProviderInterface
-    {
-        return $this->services()->dnsBackendProvider();
-    }
-
-    protected function createDnsDataService(): DnsDataService
-    {
-        return $this->services()->dnsDataService();
-    }
-
-    protected function createZoneRepository(): ZoneRepositoryInterface
-    {
-        return $this->services()->zoneRepository();
-    }
-
-    protected function createDomainRepository(): DomainRepositoryInterface
-    {
-        return $this->services()->domainRepository();
-    }
-
-    protected function createRecordRepository(): RecordRepositoryInterface
-    {
-        return $this->services()->recordRepository();
-    }
-
-    protected function createUserRepository(): UserRepositoryInterface
-    {
-        return $this->services()->userRepository();
-    }
-
-    protected function createPermissionService(): PermissionService
-    {
-        return $this->services()->permissionService();
-    }
-
-    protected function createUserManagementService(): UserManagementService
-    {
-        return $this->services()->userManagementService();
-    }
-
-    protected function createApiPermissionService(): ApiPermissionService
-    {
-        return $this->services()->apiPermissionService();
-    }
-
     protected function createZoneSortingService(): ZoneSortingService
     {
         return $this->services()->zoneSortingService($this->userContextService);
@@ -508,7 +420,7 @@ abstract class BaseController
     protected function hasPermission(string $permission): bool
     {
         $userId = $this->userContextService->getLoggedInUserId();
-        return $userId !== null && $this->createPermissionService()->hasPermission($userId, $permission);
+        return $userId !== null && $this->services()->permissionService()->hasPermission($userId, $permission);
     }
 
     /**
@@ -517,7 +429,7 @@ abstract class BaseController
     protected function getViewPermissionLevel(): string
     {
         $userId = $this->userContextService->getLoggedInUserId();
-        return $userId === null ? 'none' : $this->createPermissionService()->getViewPermissionLevel($userId);
+        return $userId === null ? 'none' : $this->services()->permissionService()->getViewPermissionLevel($userId);
     }
 
     /**
@@ -526,7 +438,7 @@ abstract class BaseController
     protected function isZoneOwner(int $zoneId): bool
     {
         $userId = $this->userContextService->getLoggedInUserId();
-        return $userId !== null && $this->createPermissionService()->userOwnsZone($userId, $zoneId);
+        return $userId !== null && $this->services()->permissionService()->userOwnsZone($userId, $zoneId);
     }
 
     /**
@@ -535,14 +447,9 @@ abstract class BaseController
     protected function requireZoneView(int $zoneId): void
     {
         $userId = $this->userContextService->getLoggedInUserId();
-        if ($userId === null || !$this->createPermissionService()->canViewZone($userId, $zoneId)) {
+        if ($userId === null || !$this->services()->permissionService()->canViewZone($userId, $zoneId)) {
             $this->showError(_('You do not have permission to view this zone.'));
         }
-    }
-
-    protected function createUserGroupRepository(): UserGroupRepositoryInterface
-    {
-        return $this->services()->userGroupRepository();
     }
 
     /**
@@ -597,52 +504,12 @@ abstract class BaseController
         return false;
     }
 
-    protected function createAuditService(): AuditService
-    {
-        return $this->services()->auditService();
-    }
-
-    protected function createZoneSigningService(): ZoneSigningService
-    {
-        return $this->services()->zoneSigningService();
-    }
-
-    protected function createZoneCreateOwnershipResolver(): ZoneCreateOwnershipResolver
-    {
-        return $this->services()->zoneCreateOwnershipResolver();
-    }
-
     /**
      * Why the current user cannot pick any zone owner (groups_only mode), or null.
      */
     protected function zoneOwnerOptionsBlocker(): ?string
     {
         return $this->services()->zoneOwnershipFormResolver()->blocker((int)$this->getCurrentUserId());
-    }
-
-    protected function createUserGroupMemberRepository(): UserGroupMemberRepositoryInterface
-    {
-        return $this->services()->userGroupMemberRepository();
-    }
-
-    protected function createPermissionTemplateRepository(): DbPermissionTemplateRepository
-    {
-        return $this->services()->permissionTemplateRepository();
-    }
-
-    protected function createPermissionTemplateWriteService(): PermissionTemplateWriteService
-    {
-        return $this->services()->permissionTemplateWriteService();
-    }
-
-    protected function createZoneChangeRequestRepository(): ZoneChangeRequestRepositoryInterface
-    {
-        return $this->services()->zoneChangeRequestRepository();
-    }
-
-    protected function createZoneChangeRequestService(): ZoneChangeRequestService
-    {
-        return $this->services()->zoneChangeRequestService();
     }
 
     /**
@@ -653,9 +520,9 @@ abstract class BaseController
     {
         return $this->changeApprovalContext ??= new ChangeApprovalContext(
             $this->config,
-            fn() => $this->createPermissionService(),
-            fn() => $this->createZoneRepository(),
-            fn() => $this->createZoneChangeRequestRepository()
+            fn() => $this->services()->permissionService(),
+            fn() => $this->services()->zoneRepository(),
+            fn() => $this->services()->zoneChangeRequestRepository()
         );
     }
 
@@ -696,11 +563,6 @@ abstract class BaseController
         return $this->changeApproval()->pendingReviewCount($this->getCurrentUserId());
     }
 
-    protected function createZoneListPermissionService(): ZoneListPermissionService
-    {
-        return $this->services()->zoneListPermissionService();
-    }
-
     /**
      * Group names keyed by id, for the group column of the zone lists.
      *
@@ -709,76 +571,11 @@ abstract class BaseController
     protected function groupNamesById(): array
     {
         $names = [];
-        foreach ($this->createUserGroupRepository()->findAll() as $group) {
+        foreach ($this->services()->userGroupRepository()->findAll() as $group) {
             $names[(int)$group->getId()] = $group->getName();
         }
 
         return $names;
-    }
-
-    protected function createZoneGroupRepository(): ZoneGroupRepositoryInterface
-    {
-        return $this->services()->zoneGroupRepository();
-    }
-
-    protected function createReverseTtlResolver(): ReverseTtlResolver
-    {
-        return $this->services()->reverseTtlResolver();
-    }
-
-    protected function createRecordManager(): RecordManagerInterface
-    {
-        return $this->services()->recordManager();
-    }
-
-    protected function createSOARecordManager(): SOARecordManagerInterface
-    {
-        return $this->services()->soaRecordManager();
-    }
-
-    protected function createDnssecProvider(): DnssecProviderInterface
-    {
-        return $this->services()->dnssecProvider();
-    }
-
-    protected function createRecordManagerService(): RecordManagerService
-    {
-        return $this->services()->recordManagerService();
-    }
-
-    protected function createRecordAddService(): RecordAddService
-    {
-        return $this->services()->recordAddService();
-    }
-
-    protected function createReverseRecordCreator(): ReverseRecordCreator
-    {
-        return $this->services()->reverseRecordCreator();
-    }
-
-    protected function createRecordDeletionService(): RecordDeletionService
-    {
-        return $this->services()->recordDeletionService();
-    }
-
-    protected function createDomainManager(): DomainManagerInterface
-    {
-        return $this->services()->domainManager();
-    }
-
-    protected function createSupermasterManager(): SupermasterManager
-    {
-        return $this->services()->supermasterManager();
-    }
-
-    protected function createZoneTemplateService(): ZoneTemplateService
-    {
-        return $this->services()->zoneTemplateService();
-    }
-
-    protected function getRepositoryFactory(?DnsBackendProviderInterface $backendProvider = null): RepositoryFactory
-    {
-        return $this->services()->repositoryFactory($backendProvider);
     }
 
     /**
@@ -819,7 +616,7 @@ abstract class BaseController
 
     protected function canAssignOtherOwners(): bool
     {
-        return $this->createZoneCreateOwnershipResolver()->canAssignOtherOwners((int)$this->getCurrentUserId());
+        return $this->services()->zoneCreateOwnershipResolver()->canAssignOtherOwners((int)$this->getCurrentUserId());
     }
 
     /**
@@ -892,7 +689,7 @@ abstract class BaseController
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!$this->hasPermission($permission)) {
-            $this->createAuditService()->logAccessDenied($permission, $_SERVER['REQUEST_URI'] ?? '');
+            $this->services()->auditService()->logAccessDenied($permission, $_SERVER['REQUEST_URI'] ?? '');
 
             // Check if this request expects JSON
             if (RequestContext::expectsJson()) {
@@ -998,7 +795,7 @@ abstract class BaseController
             $this->userContextService,
             $this->hasPermission(...),
             fn(): array => $this->init?->getDebugQueries() ?? [],
-            $userId !== null && $this->createUserPreferenceService()->getWideLayout($userId),
+            $userId !== null && $this->services()->userPreferenceService()->getWideLayout($userId),
             fn(): int => $this->pendingChangeRequestCount()
         );
     }

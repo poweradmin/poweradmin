@@ -49,12 +49,12 @@ class GroupZonesController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $zoneGroupRepository = $this->createZoneGroupRepository();
-        $groupRepository = $this->createUserGroupRepository();
+        $zoneGroupRepository = $this->services()->zoneGroupRepository();
+        $groupRepository = $this->services()->userGroupRepository();
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->apiPermissionService = $this->createApiPermissionService();
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->domainRepository = $this->createDomainRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->domainRepository = $this->services()->domainRepository();
     }
 
     /**
@@ -316,7 +316,7 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            $zoneGroupRepo = $this->createZoneGroupRepository();
+            $zoneGroupRepo = $this->services()->zoneGroupRepository();
             $existingGroups = $zoneGroupRepo->findByDomainId($zoneId);
             $hasThisGroup = false;
             foreach ($existingGroups as $zg) {

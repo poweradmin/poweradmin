@@ -128,7 +128,7 @@ class AddZoneMasterController extends BaseController
         }
 
         $zone_template = $this->httpRequest->getPostParam('zone_template', 'none');
-        $zoneTemplateModel = $this->createZoneTemplateService();
+        $zoneTemplateModel = $this->services()->zoneTemplateService();
         if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
             $this->showForm();
@@ -174,7 +174,7 @@ class AddZoneMasterController extends BaseController
         };
         // Signing rectifies on its own; every other new primary is rectified here.
         if ($pdnssec_use && !$replicates && $signed?->outcome !== ZoneSigningOutcome::SIGNED) {
-            $this->createDnssecProvider()->rectifyZone($created->zoneName);
+            $this->services()->dnssecProvider()->rectifyZone($created->zoneName);
         }
 
         $messageKey = $created->isReverseZone() ? 'list_reverse_zones' : 'list_forward_zones';
@@ -218,9 +218,9 @@ class AddZoneMasterController extends BaseController
 
     private function showForm(): void
     {
-        $zone_templates = $this->createZoneTemplateService();
+        $zone_templates = $this->services()->zoneTemplateService();
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
-        $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
 
         // Keep the submitted zone name if there was an error
         $domainInput = $this->httpRequest->getPostParam('domain');
@@ -266,7 +266,7 @@ class AddZoneMasterController extends BaseController
         $templates = $zone_templates->getListZoneTempl($userId);
 
         // Fetch groups for the dropdown - admins see all, others see only their own
-        $userGroupRepo = $this->createUserGroupRepository();
+        $userGroupRepo = $this->services()->userGroupRepository();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 

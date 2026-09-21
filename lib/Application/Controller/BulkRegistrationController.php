@@ -92,7 +92,7 @@ class BulkRegistrationController extends BaseController
             return;
         }
 
-        $zoneTemplateModel = $this->createZoneTemplateService();
+        $zoneTemplateModel = $this->services()->zoneTemplateService();
         if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
             $this->setMessage('bulk_registration', 'error', _('Invalid or unexpected input given.'));
             $this->showBulkRegistrationForm();
@@ -128,14 +128,14 @@ class BulkRegistrationController extends BaseController
 
     private function showBulkRegistrationForm(array $failed_domains = [], array $added_domains = []): void
     {
-        $zone_templates = $this->createZoneTemplateService();
+        $zone_templates = $this->services()->zoneTemplateService();
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
-        $userGroupRepo = $this->createUserGroupRepository();
+        $userGroupRepo = $this->services()->userGroupRepository();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId((int)$this->getCurrentUserId());
 
-        $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
         $assignableOwners = $this->assignableOwners($users);
         $groupsInput = $this->httpRequest->getPostParam('groups');
         $this->render('bulk_registration.html', [

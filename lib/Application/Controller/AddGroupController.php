@@ -41,9 +41,9 @@ class AddGroupController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = $this->createUserGroupRepository();
+        $groupRepository = $this->services()->userGroupRepository();
         $this->groupService = new GroupService($groupRepository);
-        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
+        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
     }
 
     public function run(): void
@@ -100,7 +100,7 @@ class AddGroupController extends BaseController
                 }
             }
 
-            $this->createAuditService()->logGroupCreate($group->getId(), (string)$name, (string)$templateName, $permTemplId);
+            $this->services()->auditService()->logGroupCreate($group->getId(), (string)$name, (string)$templateName, $permTemplId);
 
             $this->setMessage('list_groups', 'success', _('Group has been created successfully.'));
             $this->redirect('/groups');

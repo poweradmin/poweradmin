@@ -44,7 +44,7 @@ class PdnsStatusController extends BaseController
     {
         parent::__construct($request);
         $this->statusService = new PowerdnsStatusService();
-        $this->supermasterManager = $this->createSupermasterManager();
+        $this->supermasterManager = $this->services()->supermasterManager();
     }
 
     /**

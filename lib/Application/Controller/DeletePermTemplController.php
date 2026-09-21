@@ -38,7 +38,7 @@ class DeletePermTemplController extends BaseController
     {
         parent::__construct($request);
 
-        $this->permissionTemplate = $this->createPermissionTemplateRepository();
+        $this->permissionTemplate = $this->services()->permissionTemplateRepository();
     }
 
     public function run(): void
@@ -63,7 +63,7 @@ class DeletePermTemplController extends BaseController
         $templDetails = $this->permissionTemplate->getPermissionTemplateDetails($id);
 
         if ($this->permissionTemplate->deletePermissionTemplate($id)) {
-            $this->createAuditService()->logPermTemplateDelete($id, (string)($templDetails['name'] ?? 'unknown'));
+            $this->services()->auditService()->logPermTemplateDelete($id, (string)($templDetails['name'] ?? 'unknown'));
 
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
         } else {

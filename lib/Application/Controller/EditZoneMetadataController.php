@@ -59,7 +59,7 @@ class EditZoneMetadataController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->zoneRepository = $this->createZoneRepository();
+        $this->zoneRepository = $this->services()->zoneRepository();
         $this->metadataService = $this->services()->zoneMetadataService();
     }
 
@@ -89,7 +89,7 @@ class EditZoneMetadataController extends BaseController
             return;
         }
 
-        $permissions = $this->createPermissionService();
+        $permissions = $this->services()->permissionService();
         $userId = (int)$this->getCurrentUserId();
         $canEditMetadata = $permissions->canEditZoneMeta($userId, $zoneId);
         // The view level folds meta-edit in, so editors always retain view access.

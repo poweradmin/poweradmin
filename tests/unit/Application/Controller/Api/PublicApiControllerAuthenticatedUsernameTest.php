@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 
 /**
@@ -40,8 +41,11 @@ class PublicApiControllerAuthenticatedUsernameTest extends TestCase
         $users = $this->createMock(UserRepositoryInterface::class);
         $users->method('getUserById')->with($userId)->willReturn($row);
 
-        $controller = new class ($users, $userId) extends PublicApiController {
-            public function __construct(private readonly UserRepositoryInterface $users, int $userId)
+        $services = $this->createMock(ControllerServiceFactory::class);
+        $services->method('userRepository')->willReturn($users);
+
+        $controller = new class ($services, $userId) extends PublicApiController {
+            public function __construct(private readonly ControllerServiceFactory $services, int $userId)
             {
                 $this->authenticatedUserId = $userId;
             }
@@ -50,9 +54,9 @@ class PublicApiControllerAuthenticatedUsernameTest extends TestCase
             {
             }
 
-            protected function createUserRepository(): UserRepositoryInterface
+            protected function services(): ControllerServiceFactory
             {
-                return $this->users;
+                return $this->services;
             }
 
             public function username(): string

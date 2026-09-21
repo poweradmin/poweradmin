@@ -40,8 +40,8 @@ class ManageGroupMembersController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = $this->createUserGroupRepository();
-        $memberRepository = $this->createUserGroupMemberRepository();
+        $groupRepository = $this->services()->userGroupRepository();
+        $memberRepository = $this->services()->userGroupMemberRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
@@ -126,7 +126,7 @@ class ManageGroupMembersController extends BaseController
             // Get group details and usernames before adding
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
@@ -149,7 +149,7 @@ class ManageGroupMembersController extends BaseController
 
                 // Build detailed log message with usernames
                 $addedUsernames = array_map(fn($id) => $userMap[$id] ?? "ID: $id", $results['success']);
-                $this->createAuditService()->logGroupMembersAdd($groupId, $groupName, array_values($addedUsernames));
+                $this->services()->auditService()->logGroupMembersAdd($groupId, $groupName, array_values($addedUsernames));
             }
 
             if (!empty($results['failed'])) {
@@ -179,7 +179,7 @@ class ManageGroupMembersController extends BaseController
      */
     private function forgetMembers(array $userIds): void
     {
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         foreach ($userIds as $userId) {
             $permissionService->forgetUser((int)$userId);
         }
@@ -199,7 +199,7 @@ class ManageGroupMembersController extends BaseController
             // Get group details and usernames before removing
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
@@ -222,7 +222,7 @@ class ManageGroupMembersController extends BaseController
 
                 // Build detailed log message with usernames
                 $removedUsernames = array_map(fn($id) => $userMap[$id] ?? "ID: $id", $results['success']);
-                $this->createAuditService()->logGroupMembersRemove($groupId, $groupName, array_values($removedUsernames));
+                $this->services()->auditService()->logGroupMembersRemove($groupId, $groupName, array_values($removedUsernames));
             }
 
             if (!empty($results['failed'])) {
@@ -250,7 +250,7 @@ class ManageGroupMembersController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($userId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
@@ -300,6 +300,6 @@ class ManageGroupMembersController extends BaseController
     private function getVisibleUsers(): array
     {
         $restrictToUserId = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS) ? null : ($this->getCurrentUserId() ?? 0);
-        return $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
+        return $this->services()->userRepository()->getUserDetailList(false, $restrictToUserId);
     }
 }

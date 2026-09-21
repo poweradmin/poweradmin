@@ -41,9 +41,9 @@ class SaveZoneAsTemplateController extends BaseController
     {
         parent::__construct($request);
         $this->userContextService = new UserContextService();
-        $this->domainRepository = $this->createDomainRepository();
+        $this->domainRepository = $this->services()->domainRepository();
 
-        $this->permissionService = $this->createPermissionService();
+        $this->permissionService = $this->services()->permissionService();
     }
 
     public function run(): void
@@ -99,7 +99,7 @@ class SaveZoneAsTemplateController extends BaseController
     private function saveAsTemplate(int $zone_id, string $zone_name): void
     {
         $template_name = $this->httpRequest->getPostParam('templ_name') ?? '';
-        $zoneTemplate = $this->createZoneTemplateService();
+        $zoneTemplate = $this->services()->zoneTemplateService();
 
         if ($zoneTemplate->zoneTemplNameExists($template_name)) {
             $this->setMessage('save-zone-template', 'error', _('Zone template with this name already exists, please choose another one.'));
@@ -111,7 +111,7 @@ class SaveZoneAsTemplateController extends BaseController
             return;
         }
 
-        $records = $this->createRecordRepository()->getRecordsFromDomainId($this->config->get('database', 'type', 'mysql'), $zone_id);
+        $records = $this->services()->recordRepository()->getRecordsFromDomainId($this->config->get('database', 'type', 'mysql'), $zone_id);
 
         $description = $this->httpRequest->getPostParam('templ_descr') ?? '';
 
@@ -137,7 +137,7 @@ class SaveZoneAsTemplateController extends BaseController
             $this->setMessage('list_zone_templ', 'warning', $saved->message);
         }
 
-        $auditService = $this->createAuditService();
+        $auditService = $this->services()->auditService();
         $auditService->logZoneTemplateAdd($template_name);
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been created successfully.'));
 

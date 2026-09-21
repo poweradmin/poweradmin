@@ -67,8 +67,8 @@ class UnlinkZonesTemplController extends BaseController
     {
         $successful = 0;
         $failed = 0;
-        $zoneTemplate = $this->createZoneTemplateService();
-        $auditService = $this->createAuditService();
+        $zoneTemplate = $this->services()->zoneTemplateService();
+        $auditService = $this->services()->auditService();
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
         foreach ($zone_ids as $zone_id) {
@@ -140,7 +140,7 @@ class UnlinkZonesTemplController extends BaseController
         }
 
         // Get zone details using ZoneTemplate service
-        $zoneTemplate = $this->createZoneTemplateService();
+        $zoneTemplate = $this->services()->zoneTemplateService();
         $zones = $zoneTemplate->getZonesByIds($valid_zone_ids);
 
         $this->render('confirm_unlink_zones_templ.html', [

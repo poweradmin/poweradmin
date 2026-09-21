@@ -71,7 +71,7 @@ class ZoneFileImportController extends BaseController
     private function checkImportPermission(): void
     {
         $canAdd = $this->hasPermission(Permission::PERM_ZONE_MASTER_ADD);
-        $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
+        $perm_edit = $this->services()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $this->checkCondition(
             !$canAdd && $perm_edit === 'none',
             _('You do not have permission to import zones.')
@@ -86,10 +86,10 @@ class ZoneFileImportController extends BaseController
         $targetZoneName = '';
 
         if (isset($_GET['zone_id']) && (int)$_GET['zone_id'] > 0) {
-            $zoneName = $this->createDomainRepository()->getDomainNameById((int)$_GET['zone_id']);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById((int)$_GET['zone_id']);
             if ($zoneName) {
                 $userId = $this->userContextService->getLoggedInUserId();
-                $permissionService = $this->createPermissionService();
+                $permissionService = $this->services()->permissionService();
                 $permEdit = $permissionService->getEditPermissionLevelForZone($userId, (int)$_GET['zone_id']);
                 if ($permEdit !== 'none') {
                     $targetZoneId = (int)$_GET['zone_id'];
@@ -159,7 +159,7 @@ class ZoneFileImportController extends BaseController
         $existingZoneId = isset($_POST['existing_zone_id']) ? (int)$_POST['existing_zone_id'] : 0;
 
         $userId = $this->userContextService->getLoggedInUserId();
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
 
         // Verify permission when importing into an existing zone via POST
         if ($importMode === 'existing' && $existingZoneId > 0) {
@@ -175,7 +175,7 @@ class ZoneFileImportController extends BaseController
         }
 
         // Auto-detect existing zone when importing from the menu
-        $domainRepository = $this->createDomainRepository();
+        $domainRepository = $this->services()->domainRepository();
         if ($importMode === 'new' && $origin !== null && $domainRepository->domainExists($origin)) {
             $existingZoneId = $domainRepository->getDomainIdByName($origin) ?? 0;
             if ($existingZoneId > 0) {
@@ -232,7 +232,7 @@ class ZoneFileImportController extends BaseController
             // memberships at execute time.
             $ownershipMode = new ZoneOwnershipModeService($this->config);
             $userId = $this->userContextService->getLoggedInUserId();
-            $userGroupRepo = $this->createUserGroupRepository();
+            $userGroupRepo = $this->services()->userGroupRepository();
             $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
             $availableGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
@@ -284,9 +284,9 @@ class ZoneFileImportController extends BaseController
 
         $userId = $this->userContextService->getLoggedInUserId();
         $userLogin = $this->userContextService->getLoggedInUsername();
-        $audit = $this->createAuditService();
+        $audit = $this->services()->auditService();
 
-        $domainRepository = $this->createDomainRepository();
+        $domainRepository = $this->services()->domainRepository();
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
             // Verify the zone exists
@@ -301,7 +301,7 @@ class ZoneFileImportController extends BaseController
             }
 
             // Verify user has permission to edit this zone
-            $permissionService = $this->createPermissionService();
+            $permissionService = $this->services()->permissionService();
             $permEdit = $permissionService->getEditPermissionLevelForZone($userId, $existingZoneId);
 
             if ($permEdit === 'none') {
@@ -347,7 +347,7 @@ class ZoneFileImportController extends BaseController
             $groupsForCreate = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups'])
                 ? array_map('intval', $_POST['groups'])
                 : [];
-            $ownership = $this->createZoneCreateOwnershipResolver()->resolveOwnership($ownerForCreate, $groupsForCreate, $userId);
+            $ownership = $this->services()->zoneCreateOwnershipResolver()->resolveOwnership($ownerForCreate, $groupsForCreate, $userId);
             if ($ownership->code === ZoneOwnershipResolution::NO_OWNER) {
                 $this->showError(_('Cannot create a new zone via import: select at least one group, or leave "No user owner" unchecked.'));
                 return;
@@ -370,9 +370,9 @@ class ZoneFileImportController extends BaseController
         }
 
         // Import records
-        $recordRepository = $this->createRecordRepository();
-        $dnsRecordManager = $this->createRecordManager();
-        $recordManager = $this->createRecordManagerService();
+        $recordRepository = $this->services()->recordRepository();
+        $dnsRecordManager = $this->services()->recordManager();
+        $recordManager = $this->services()->recordManagerService();
 
         $successCount = 0;
         $failCount = 0;

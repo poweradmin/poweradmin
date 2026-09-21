@@ -64,14 +64,14 @@ class ZonesChangeRequestsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = $this->createRecordRepository();
-        $this->recordComments = $this->getRepositoryFactory()->createRecordCommentRepository();
-        $this->linkedComments = $this->getRepositoryFactory()->createRecordLinkedCommentRepository();
-        $this->requests = $this->createZoneChangeRequestRepository();
-        $this->changeRequests = $this->createZoneChangeRequestService();
-        $this->apiPermissionService = $this->createApiPermissionService();
-        $this->reverseTtlResolver = $this->createReverseTtlResolver();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->recordRepository = $this->services()->recordRepository();
+        $this->recordComments = $this->services()->repositoryFactory()->createRecordCommentRepository();
+        $this->linkedComments = $this->services()->repositoryFactory()->createRecordLinkedCommentRepository();
+        $this->requests = $this->services()->zoneChangeRequestRepository();
+        $this->changeRequests = $this->services()->zoneChangeRequestService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
     }
 
     public function run(): void

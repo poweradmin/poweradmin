@@ -38,8 +38,8 @@ class RemoveUserGroupController extends BaseController
     {
         parent::__construct($request);
 
-        $memberRepository = $this->createUserGroupMemberRepository();
-        $groupRepository = $this->createUserGroupRepository();
+        $memberRepository = $this->services()->userGroupMemberRepository();
+        $groupRepository = $this->services()->userGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
     }
 
@@ -70,13 +70,13 @@ class RemoveUserGroupController extends BaseController
 
         try {
             // Get details before removal for logging
-            $groupRepository = $this->createUserGroupRepository();
+            $groupRepository = $this->services()->userGroupRepository();
 
             $group = $groupRepository->findById($groupId);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get target user details for logging
-            $userRepository = $this->createUserRepository();
+            $userRepository = $this->services()->userRepository();
             $targetUser = $userRepository->getUserById($targetUserId);
             $targetUsername = $targetUser !== null ? $targetUser['username'] : "ID: $targetUserId";
 
@@ -85,7 +85,7 @@ class RemoveUserGroupController extends BaseController
             if ($success) {
                 $this->setMessage('edit_user', 'success', _('User removed from group successfully.'));
 
-                $this->createAuditService()->logGroupMembersRemove($groupId, $groupName, [(string)$targetUsername]);
+                $this->services()->auditService()->logGroupMembersRemove($groupId, $groupName, [(string)$targetUsername]);
             } else {
                 $this->setMessage('edit_user', 'warning', _('User was not a member of this group.'));
             }

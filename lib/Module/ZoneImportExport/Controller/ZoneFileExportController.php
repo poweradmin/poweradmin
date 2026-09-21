@@ -47,7 +47,7 @@ class ZoneFileExportController extends BaseController
         }
 
         $userId = $userContextService->getLoggedInUserId();
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         $perm_view = $permissionService->getViewPermissionLevel($userId);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
@@ -56,7 +56,7 @@ class ZoneFileExportController extends BaseController
             return;
         }
 
-        $zone_name = $this->createDomainRepository()->getDomainNameById($zone_id);
+        $zone_name = $this->services()->domainRepository()->getDomainNameById($zone_id);
 
         if (!$zone_name) {
             $this->showError(_('There is no zone with this ID.'));
@@ -138,7 +138,7 @@ class ZoneFileExportController extends BaseController
 
     private function generateFromDb(int $zone_id, string $zone_name): ?string
     {
-        $records = $this->createRecordRepository()->getRecordsFromDomainId(
+        $records = $this->services()->recordRepository()->getRecordsFromDomainId(
             $this->getConfig()->get('database', 'type', 'mysql'),
             $zone_id
         );

@@ -48,7 +48,7 @@ class DeleteRecordController extends BaseController
     {
         parent::__construct($request);
         $this->userContextService = new UserContextService();
-        $this->permissionService = $this->createPermissionService();
+        $this->permissionService = $this->services()->permissionService();
     }
 
     public function run(): void
@@ -62,8 +62,8 @@ class DeleteRecordController extends BaseController
             $record_id = (int)$record_id;
         }
 
-        $recordRepository = $this->createRecordRepository();
-        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->services()->recordRepository();
+        $domainRepository = $this->services()->domainRepository();
 
         // Get zone ID from record first
         $zid = $recordRepository->getZoneIdFromRecordId($record_id);
@@ -90,7 +90,7 @@ class DeleteRecordController extends BaseController
         if ($this->isPost() && $edit_mode === ChangeApprovalPolicy::MODE_REQUEST) {
             $this->requestRecordDelete($zid, $record_id);
         } elseif ($this->isPost()) {
-            $outcome = $this->createRecordDeletionService()->deleteWithReverse(
+            $outcome = $this->services()->recordDeletionService()->deleteWithReverse(
                 $zid,
                 $record_id,
                 $this->httpRequest->getPostParam('delete_ptr') === '1',
@@ -138,7 +138,7 @@ class DeleteRecordController extends BaseController
     private function requestRecordDelete(int $zid, int|string $record_id): void
     {
         $comment = trim((string)$this->httpRequest->getPostParam('request_comment', ''));
-        $result = $this->createZoneChangeRequestService()->fileRecordDelete(
+        $result = $this->services()->zoneChangeRequestService()->fileRecordDelete(
             $zid,
             $record_id,
             (int)$this->getCurrentUserId(),
@@ -156,8 +156,8 @@ class DeleteRecordController extends BaseController
 
     public function showQuestion(string $record_id, $zid, int $zone_id, string $edit_mode = ChangeApprovalPolicy::MODE_DIRECT): void
     {
-        $recordRepository = $this->createRecordRepository();
-        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->services()->recordRepository();
+        $domainRepository = $this->services()->domainRepository();
         $zone_name = $domainRepository->getDomainNameById($zone_id);
 
         $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);

@@ -41,7 +41,7 @@ class UserPreferencesController extends InternalApiController
     {
         parent::__construct($request);
 
-        $this->userPreferenceService = $this->createUserPreferenceService();
+        $this->userPreferenceService = $this->services()->userPreferenceService();
         $this->userContextService = new UserContextService();
     }
 

@@ -55,14 +55,14 @@ class UsersController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->userRepository = $this->createUserRepository();
-        $this->groupRepository = $this->createUserGroupRepository();
-        $this->userManagementService = $this->createUserManagementService();
+        $this->userRepository = $this->services()->userRepository();
+        $this->groupRepository = $this->services()->userGroupRepository();
+        $this->userManagementService = $this->services()->userManagementService();
         $this->membershipService = new GroupMembershipService(
-            $this->createUserGroupMemberRepository(),
+            $this->services()->userGroupMemberRepository(),
             $this->groupRepository
         );
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -573,7 +573,7 @@ class UsersController extends PublicApiController
             $templateGate = $this->guardPermissionTemplateAssignment(
                 $currentUserId,
                 $input,
-                $this->createPermissionTemplateRepository()->getMinimalPermissionTemplateId('user'),
+                $this->services()->permissionTemplateRepository()->getMinimalPermissionTemplateId('user'),
                 null
             );
             if ($templateGate !== null) {
@@ -1142,7 +1142,7 @@ class UsersController extends PublicApiController
 
             $assigned[] = ['id' => $groupId, 'name' => $group->getName()];
 
-            $this->createAuditService()->logApiGroupMemberAdd($groupId, $group->getName(), $username);
+            $this->services()->auditService()->logApiGroupMemberAdd($groupId, $group->getName(), $username);
         }
 
         return $assigned;

@@ -44,8 +44,8 @@ class EditPermTemplController extends BaseController
     {
         parent::__construct($request);
 
-        $this->permissionTemplate = $this->createPermissionTemplateRepository();
-        $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
+        $this->permissionTemplate = $this->services()->permissionTemplateRepository();
+        $this->permissionTemplateWriteService = $this->services()->permissionTemplateWriteService();
         $this->userContextService = new UserContextService();
     }
 
@@ -64,7 +64,7 @@ class EditPermTemplController extends BaseController
 
         $templateId = (int)$this->getSafeRequestValue('id');
         $guardError = PermissionTemplateContentGuard::apply(
-            $this->createUserRepository(),
+            $this->services()->userRepository(),
             $this->callerId(),
             $templateId,
             null
@@ -104,7 +104,7 @@ class EditPermTemplController extends BaseController
             return;
         }
 
-        $this->createAuditService()->logPermTemplateEdit($templateId, $this->getSafeRequestValue('templ_name'));
+        $this->services()->auditService()->logPermTemplateEdit($templateId, $this->getSafeRequestValue('templ_name'));
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
         $this->redirect('/permissions/templates');

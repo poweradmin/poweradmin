@@ -67,7 +67,7 @@ class DeleteDomainController extends BaseController
         // Check zone-specific delete permission (includes group permissions)
         $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         $canDelete = $permissionService->canPerformZoneAction($userId, $zone_id, Permission::PERM_ZONE_DELETE_OWN);
         $canDeleteOthers = $this->hasPermission(Permission::PERM_ZONE_DELETE_OTHERS);
         $canDeleteDirectly = $canDeleteOthers || $canDelete;
@@ -101,9 +101,9 @@ class DeleteDomainController extends BaseController
      */
     private function requestDomainDeletion(int $zone_id): void
     {
-        $zone_info = $this->createDomainRepository()->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel());
+        $zone_info = $this->services()->domainRepository()->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel());
         $comment = trim((string)$this->httpRequest->getPostParam('request_comment', ''));
-        $result = $this->createZoneChangeRequestService()->fileZoneDelete(
+        $result = $this->services()->zoneChangeRequestService()->fileZoneDelete(
             $zone_id,
             (int)$this->getCurrentUserId(),
             (string)$this->userContextService->getLoggedInUsername(),
@@ -122,12 +122,12 @@ class DeleteDomainController extends BaseController
 
     private function deleteDomain(int $zone_id): void
     {
-        $zone_info = $this->createDomainRepository()->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel());
+        $zone_info = $this->services()->domainRepository()->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel());
 
         // The zone service deletes keys, comments, records and metadata with the zone, as the API does
         $deleted = $this->createZoneManagementService()->deleteZone($zone_id);
         if ($deleted['success']) {
-            $this->createAuditService()->logZoneDelete($zone_id, (string)$zone_info['name'], (string)$zone_info['type']);
+            $this->services()->auditService()->logZoneDelete($zone_id, (string)$zone_info['name'], (string)$zone_info['type']);
 
             // Check if the zone is a reverse zone and redirect accordingly
             if (!empty($zone_info['name']) && DnsHelper::isReverseZoneName($zone_info['name'])) {
@@ -148,9 +148,9 @@ class DeleteDomainController extends BaseController
 
     private function showDeleteDomain(int $zone_id, bool $requestsDeletion = false): void
     {
-        $domainRepository = $this->createDomainRepository();
+        $domainRepository = $this->services()->domainRepository();
         $zone_info = $domainRepository->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel());
-        $zone_owners = $this->createUserRepository()->getZoneOwnerFullNames($zone_id);
+        $zone_owners = $this->services()->userRepository()->getZoneOwnerFullNames($zone_id);
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {
@@ -158,7 +158,7 @@ class DeleteDomainController extends BaseController
             if ($slave_master) {
                 // Extract first IP from master field (can contain multiple IPs, hostnames, ports)
                 $master_ip = IpHelper::extractFirstIpFromMaster($slave_master);
-                $supermasterManager = $this->createSupermasterManager();
+                $supermasterManager = $this->services()->supermasterManager();
                 if ($master_ip && $supermasterManager->supermasterExists($master_ip)) {
                     $slave_master_exists = true;
                 }

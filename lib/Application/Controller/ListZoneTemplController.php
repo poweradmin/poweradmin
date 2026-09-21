@@ -63,11 +63,11 @@ class ListZoneTemplController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $userName = $this->userContext->getLoggedInUsername();
 
-        $zone_templates = $this->createZoneTemplateService();
+        $zone_templates = $this->services()->zoneTemplateService();
         $templatesList = $zone_templates->getListZoneTempl($userId);
 
         // Get sync status for all templates
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
         $syncStatus = $syncService->getTemplateSyncStatus($userId);
 
         // PostgreSQL returns booleans as 't'/'f' strings, which Twig treats
@@ -89,7 +89,7 @@ class ListZoneTemplController extends BaseController
         $this->render('list_zone_templ.html', [
             'perm_zone_templ_add' => $perm_zone_templ_add,
             'perm_zone_templ_edit' => $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT),
-            'user_name' => $this->createUserRepository()->getFullNameById($userId) ?: $userName,
+            'user_name' => $this->services()->userRepository()->getFullNameById($userId) ?: $userName,
             'zone_templates' => $templatesList,
             'sync_status' => $syncStatus,
             'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),

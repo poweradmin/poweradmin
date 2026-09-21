@@ -52,7 +52,7 @@ class DnssecDeleteKeyController extends DnssecKeyController
                 $keyStillExists = $dnssecProvider->keyExists($domain_name, $key_id);
 
                 if ($result && !$keyStillExists) {
-                    $auditService = $this->createAuditService();
+                    $auditService = $this->services()->auditService();
                     $auditService->logDnssecDeleteKey($zone_id, $domain_name, $key_id);
                     $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
                 } else {
@@ -79,7 +79,7 @@ class DnssecDeleteKeyController extends DnssecKeyController
 
     public function showKeyInfo($domain_name, $key_id, int $zone_id): void
     {
-        $dnssecProvider = $this->createDnssecProvider();
+        $dnssecProvider = $this->services()->dnssecProvider();
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
         $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);

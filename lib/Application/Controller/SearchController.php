@@ -67,7 +67,7 @@ class SearchController extends BaseController
         // Sorting by owner data the user cannot fully see would leak ownership
         // through row order, so it needs "all" scope, or "own" scope with
         // results already limited to owned zones.
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         $userId = (int)$this->getCurrentUserId();
         $ownershipViewPermission = $permissionService->getZoneOwnershipViewPermissionLevel($userId);
         $ownerSortAllowed = $ownershipViewPermission === 'all'
@@ -111,7 +111,7 @@ class SearchController extends BaseController
 
             $permission_view = $permissionService->getViewPermissionLevel($userId);
 
-            $dnsDataService = $this->createDnsDataService();
+            $dnsDataService = $this->services()->dnsDataService();
 
             $searchResultZones = $dnsDataService->searchZones(
                 $parameters,
@@ -267,7 +267,7 @@ class SearchController extends BaseController
         string $deletePermission,
         string $ownershipViewPermission
     ): array {
-        $ownership = $this->createZoneListPermissionService()->index($userId, array_merge(
+        $ownership = $this->services()->zoneListPermissionService()->index($userId, array_merge(
             array_map(fn($z) => (int)($z['id'] ?? 0), $zones),
             array_map(fn($r) => (int)($r['domain_id'] ?? 0), $records)
         ));

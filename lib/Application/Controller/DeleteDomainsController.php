@@ -78,14 +78,14 @@ class DeleteDomainsController extends BaseController
 
         foreach ((array)$zone_ids as $zone_id) {
             $canDelete = $canDeleteOthers
-                || $this->createPermissionService()->canPerformZoneAction($userId, (int)$zone_id, Permission::PERM_ZONE_DELETE_OWN);
+                || $this->services()->permissionService()->canPerformZoneAction($userId, (int)$zone_id, Permission::PERM_ZONE_DELETE_OWN);
             $this->checkCondition(!$canDelete, _("You do not have the permission to delete a zone."));
         }
     }
 
     public function deleteDomains($zone_ids): void
     {
-        $domainRepository = $this->createDomainRepository();
+        $domainRepository = $this->services()->domainRepository();
         $deleted_zones = $domainRepository->getZoneInfoFromIds($zone_ids, $this->getViewPermissionLevel());
 
         // Permission for every zone was already established by verifyDeletePermission();
@@ -110,7 +110,7 @@ class DeleteDomainsController extends BaseController
         $route = $all_reverse ? '/zones/reverse' : '/zones/forward';
 
         if (!$failed) {
-            $audit = $this->createAuditService();
+            $audit = $this->services()->auditService();
             foreach ($deleted_zones as $deleted_zone) {
                 if (!empty($deleted_zone['name'])) {
                     $audit->logZoneDelete((int)$deleted_zone['id'], (string)$deleted_zone['name'], (string)$deleted_zone['type']);
@@ -145,7 +145,7 @@ class DeleteDomainsController extends BaseController
             }
         }
 
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         $userId = $this->userContextService->getLoggedInUserId();
         // Same "all"/"own"/"none" contract as PermissionService::getDeletePermissionLevel(), but off
         // the request-cached service the delete check above already warmed
@@ -169,8 +169,8 @@ class DeleteDomainsController extends BaseController
     private function getZoneInfo($zone_ids): array
     {
         $zones = [];
-        $domainRepository = $this->createDomainRepository();
-        $supermasterManager = $this->createSupermasterManager();
+        $domainRepository = $this->services()->domainRepository();
+        $supermasterManager = $this->services()->supermasterManager();
 
         // Fetch all zone details in one bulk call to avoid per-zone API round-trips
         $zoneInfos = [];
@@ -178,7 +178,7 @@ class DeleteDomainsController extends BaseController
             $zoneInfos[(int)($info['id'] ?? 0)] = $info;
         }
 
-        $userRepository = $this->createUserRepository();
+        $userRepository = $this->services()->userRepository();
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id] = $zoneInfos[$zone_id] ?? ['id' => $zone_id];
             $zones[$zone_id]['owner'] = $userRepository->getZoneOwnerFullNames($zone_id);

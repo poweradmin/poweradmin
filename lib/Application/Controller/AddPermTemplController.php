@@ -44,8 +44,8 @@ class AddPermTemplController extends BaseController
     {
         parent::__construct($request);
 
-        $this->permissionTemplate = $this->createPermissionTemplateRepository();
-        $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
+        $this->permissionTemplate = $this->services()->permissionTemplateRepository();
+        $this->permissionTemplateWriteService = $this->services()->permissionTemplateWriteService();
         $this->userContextService = new UserContextService();
     }
 
@@ -78,7 +78,7 @@ class AddPermTemplController extends BaseController
             return;
         }
 
-        $this->createAuditService()->logPermTemplateAdd($this->getSafeRequestValue('templ_name'));
+        $this->services()->auditService()->logPermTemplateAdd($this->getSafeRequestValue('templ_name'));
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
         $this->redirect('/permissions/templates');

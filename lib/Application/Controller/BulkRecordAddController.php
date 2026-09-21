@@ -52,11 +52,11 @@ class BulkRecordAddController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->domainRepository = $this->createDomainRepository();
-        $this->recordManager = $this->createRecordManagerService();
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->recordManager = $this->services()->recordManagerService();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
-        $this->permissionService = $this->createPermissionService();
+        $this->permissionService = $this->services()->permissionService();
     }
 
     public function run(): void
@@ -232,7 +232,7 @@ class BulkRecordAddController extends BaseController
             'default_ttl' => $this->config->get('dns', 'ttl', 3600),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
             'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZoneName($zone_name),
-            'display_hostname_only' => $this->createUserPreferenceService()->getDisplayHostnameOnly(
+            'display_hostname_only' => $this->services()->userPreferenceService()->getDisplayHostnameOnly(
                 $this->userContextService->getLoggedInUserId()
             ),
         ]);

@@ -38,8 +38,8 @@ class QuickRemoveGroupZoneController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = $this->createUserGroupRepository();
-        $zoneRepository = $this->createZoneGroupRepository();
+        $groupRepository = $this->services()->userGroupRepository();
+        $zoneRepository = $this->services()->zoneGroupRepository();
         $this->zoneGroupService = new ZoneGroupService($zoneRepository, $groupRepository);
     }
 
@@ -72,7 +72,7 @@ class QuickRemoveGroupZoneController extends BaseController
             $success = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
 
             if ($success) {
-                $auditService = $this->createAuditService();
+                $auditService = $this->services()->auditService();
                 $auditService->logZoneGroupRemove($zoneId, (string)$zoneId, $groupId);
                 $this->setMessage('edit_group', 'success', _('Zone removed from group successfully.'));
             } else {

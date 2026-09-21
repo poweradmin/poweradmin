@@ -39,14 +39,14 @@ class EditCommentController extends BaseController
 
     public function run(): void
     {
-        $domainRepository = $this->createDomainRepository();
+        $domainRepository = $this->services()->domainRepository();
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
 
         if (!$iface_zone_comments) {
             $this->showError(_("Zone comments feature is disabled in configuration."));
         }
 
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         $userId = (int)$this->getCurrentUserId();
         $perm_view = $permissionService->getViewPermissionLevel($userId);
         $perm_edit = $permissionService->getEditPermissionLevel($userId);
@@ -87,11 +87,11 @@ class EditCommentController extends BaseController
             if ($perm_edit_comment) {
                 $this->addSystemMessage('error', _("You do not have the permission to edit this comment."));
             } else {
-                $written = $this->createRecordManager()->editZoneComment($zone_id, $this->httpRequest->getPostParam('comment'));
+                $written = $this->services()->recordManager()->editZoneComment($zone_id, $this->httpRequest->getPostParam('comment'));
                 if (!$written->success) {
                     $this->addSystemMessage('error', (string)$written->message);
                 } else {
-                    $auditService = $this->createAuditService();
+                    $auditService = $this->services()->auditService();
                     $auditService->logZoneCommentEdit($zone_id, $domainRepository->getDomainNameById($zone_id));
 
                     $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
@@ -105,7 +105,7 @@ class EditCommentController extends BaseController
 
     public function showCommentForm(int $zone_id, bool $perm_edit_comment): void
     {
-        $domainRepository = $this->createDomainRepository();
+        $domainRepository = $this->services()->domainRepository();
         $zone_name = $domainRepository->getDomainNameById($zone_id);
 
         $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);

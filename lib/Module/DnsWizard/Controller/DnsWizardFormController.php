@@ -47,7 +47,7 @@ class DnsWizardFormController extends BaseController
 
         $this->wizardRegistry = new WizardRegistry($this->getConfig());
         $this->formStateService = new FormStateService();
-        $this->recordAdd = $this->createRecordAddService();
+        $this->recordAdd = $this->services()->recordAddService();
     }
 
     public function run(): void

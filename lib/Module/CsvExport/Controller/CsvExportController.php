@@ -46,7 +46,7 @@ class CsvExportController extends BaseController
         }
 
         $userId = $userContextService->getLoggedInUserId();
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         $perm_view = $permissionService->getViewPermissionLevel($userId);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
@@ -55,14 +55,14 @@ class CsvExportController extends BaseController
             return;
         }
 
-        $zone_name = $this->createDomainRepository()->getDomainNameById($zone_id);
+        $zone_name = $this->services()->domainRepository()->getDomainNameById($zone_id);
 
         if (!$zone_name) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        $records = $this->createRecordRepository()->getRecordsFromDomainId($this->getConfig()->get('database', 'type', 'mysql'), $zone_id);
+        $records = $this->services()->recordRepository()->getRecordsFromDomainId($this->getConfig()->get('database', 'type', 'mysql'), $zone_id);
 
         if (empty($records)) {
             $this->showError(_('This zone does not have any records to export.'));

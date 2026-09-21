@@ -44,7 +44,7 @@ class AddZoneTemplRecordController extends BaseController
         parent::__construct($request);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
-        $this->zoneTemplate = $this->createZoneTemplateService();
+        $this->zoneTemplate = $this->services()->zoneTemplateService();
     }
 
     public function run(): void
@@ -114,10 +114,10 @@ class AddZoneTemplRecordController extends BaseController
         $added = $this->zoneTemplate->addZoneTemplRecord($zone_templ_id, $name, $type, $content, (int)$ttl, (int)$prio);
         if ($added->success) {
             // Mark template as modified to track sync status
-            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);
 
-            $auditService = $this->createAuditService();
+            $auditService = $this->services()->auditService();
             $auditService->logZoneTemplateRecordAdd($zone_templ_id, $name, $type);
 
             $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');

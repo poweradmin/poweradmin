@@ -37,6 +37,6 @@ class TestableSeamController extends BaseController
 
     public function paginationServiceForTest(): PaginationService
     {
-        return $this->createPaginationService();
+        return $this->services()->paginationService();
     }
 }

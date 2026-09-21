@@ -46,8 +46,8 @@ class ZoneMetadataController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->domainRepository = $this->createDomainRepository();
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
         $this->metadataService = $this->services()->zoneMetadataService();
     }
 

@@ -151,7 +151,7 @@ class MfaVerifyController extends BaseController
             if (!$recovered) {
                 $this->logger->warning('[MfaVerifyController] Account locked, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
                 // Audited like any wrong code, but not counted, so a bot cannot hold the window open
-                $this->createAuditService()->logMfaFailed($this->mfaService->getMfaType($userId) ?? 'unknown');
+                $this->services()->auditService()->logMfaFailed($this->mfaService->getMfaType($userId) ?? 'unknown');
                 $this->displayMfaForm(_('Too many failed attempts. Please try again later.'), 'danger');
                 return;
             }
@@ -184,7 +184,7 @@ class MfaVerifyController extends BaseController
         } else {
             $this->logger->warning('[MfaVerifyController] Verification failed for user ID: {user_id}', ['user_id' => $userId]);
             // Structured audit entry so fail2ban can react to wrong-code brute force.
-            $this->createAuditService()->logMfaFailed($userMfa->getType());
+            $this->services()->auditService()->logMfaFailed($userMfa->getType());
         }
 
         if ($isValid) {
@@ -218,7 +218,7 @@ class MfaVerifyController extends BaseController
             // Use the centralized session manager to mark MFA as verified
             MfaSessionManager::setMfaVerified();
 
-            $this->createAuditService()->logMfaVerify($this->mfaService->getMfaType($userId) ?? 'unknown');
+            $this->services()->auditService()->logMfaVerify($this->mfaService->getMfaType($userId) ?? 'unknown');
 
             // Populate LDAP authentication cache for LDAP users (if auth_used is ldap)
             // This ensures LDAP+MFA users benefit from session caching

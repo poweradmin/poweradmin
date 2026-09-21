@@ -51,12 +51,12 @@ class ZonesRRSetsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->reverseTtlResolver = $this->createReverseTtlResolver();
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = $this->createRecordRepository();
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->recordRepository = $this->services()->recordRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
 
-        $this->recordManager = $this->createRecordManager();
+        $this->recordManager = $this->services()->recordManager();
         $this->rrsetReplaceService = $this->services()->rrsetReplaceService();
     }
 
@@ -288,7 +288,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Get zone name for FQDN construction
-            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
             // Convert name to FQDN
             $fqdn = $this->normalizeV2RecordName($name, $zoneName);
@@ -455,7 +455,7 @@ class ZonesRRSetsController extends PublicApiController
             $type = strtoupper(trim($typeRaw));
 
             // Get zone name
-            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
             if ($zoneName === null) {
                 return $this->returnApiError('Zone not found', 404);
             }
@@ -620,7 +620,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Get zone name
-            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
             // Convert name to FQDN
             $fqdn = $this->normalizeV2RecordName($name, $zoneName);
@@ -666,12 +666,12 @@ class ZonesRRSetsController extends PublicApiController
                 }
 
                 if ($type !== 'SOA') {
-                    $this->createSOARecordManager()->updateSOASerial($zoneId);
+                    $this->services()->soaRecordManager()->updateSOASerial($zoneId);
                 }
                 $this->db->commit();
                 $this->recordManager->finalizeZone($zoneId, false);
 
-                $this->createAuditService()->logApiRrsetDelete($zoneId, $fqdn, $type, $recordsDeleted);
+                $this->services()->auditService()->logApiRrsetDelete($zoneId, $fqdn, $type, $recordsDeleted);
 
                 return $this->returnApiResponse(
                     ['records_deleted' => $recordsDeleted],

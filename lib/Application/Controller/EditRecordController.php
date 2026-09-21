@@ -60,8 +60,8 @@ class EditRecordController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $backendProvider = $this->services()->dnsBackendProvider();
+        $repositoryFactory = $this->services()->repositoryFactory($backendProvider);
         $this->recordCommentService = new RecordCommentService(
             $repositoryFactory->createRecordCommentRepository(),
             $repositoryFactory->createRecordLinkedCommentRepository()
@@ -69,13 +69,13 @@ class EditRecordController extends BaseController
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $repositoryFactory->createRecordRepository(), $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
-        $this->permissionService = $this->createPermissionService();
+        $this->permissionService = $this->services()->permissionService();
     }
 
     public function run(): void
     {
-        $recordRepository = $this->createRecordRepository();
-        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->services()->recordRepository();
+        $domainRepository = $this->services()->domainRepository();
         // Validate record ID parameter
         $record_id = $this->getSafeRequestValue('id');
         if (!$record_id || (!Validator::isNumber($record_id) && !RecordIdentifier::isEncoded($record_id))) {
@@ -138,8 +138,8 @@ class EditRecordController extends BaseController
 
     public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner, bool $validationFailed = false, string $edit_mode = ChangeApprovalPolicy::MODE_DIRECT): void
     {
-        $recordRepository = $this->createRecordRepository();
-        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->services()->recordRepository();
+        $domainRepository = $this->services()->domainRepository();
         $zone_name = $domainRepository->getDomainNameById($zid);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
@@ -153,7 +153,7 @@ class EditRecordController extends BaseController
             return;
         }
 
-        $display_hostname_only = $this->createUserPreferenceService()->getDisplayHostnameOnly(
+        $display_hostname_only = $this->services()->userPreferenceService()->getDisplayHostnameOnly(
             $this->userContextService->getLoggedInUserId()
         );
         if ($display_hostname_only) {
@@ -213,7 +213,7 @@ class EditRecordController extends BaseController
      */
     private function requestRecordEdit(int $zid): bool
     {
-        $zone_name = $this->createDomainRepository()->getDomainNameById($zid);
+        $zone_name = $this->services()->domainRepository()->getDomainNameById($zid);
         if ($zone_name === null) {
             $this->setMessage('edit', 'error', _('Zone not found.'));
             return false;
@@ -248,7 +248,7 @@ class EditRecordController extends BaseController
             null
         );
         $comment = trim((string)$this->httpRequest->getPostParam('request_comment', ''));
-        $result = $this->createZoneChangeRequestService()->fileRecordEdits($submission, $comment === '' ? null : $comment);
+        $result = $this->services()->zoneChangeRequestService()->fileRecordEdits($submission, $comment === '' ? null : $comment);
 
         if (!$result->success) {
             foreach ($result->errors as $error) {
@@ -266,8 +266,8 @@ class EditRecordController extends BaseController
 
     public function saveRecord($zid): bool
     {
-        $recordRepository = $this->createRecordRepository();
-        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->services()->recordRepository();
+        $domainRepository = $this->services()->domainRepository();
         $rid = $this->httpRequest->getPostParam('rid');
         $old_record_info = $recordRepository->getRecordFromId($rid);
         if ($old_record_info === null) {
@@ -315,7 +315,7 @@ class EditRecordController extends BaseController
         }
 
         $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
-        $result = $this->createRecordManager()->editRecord($postData, true, $showRecordComments ? [
+        $result = $this->services()->recordManager()->editRecord($postData, true, $showRecordComments ? [
             'content' => (string)$this->httpRequest->getPostParam('comment', ''),
             'account' => $this->userContextService->getLoggedInUsername() ?? '',
         ] : null);
@@ -331,7 +331,7 @@ class EditRecordController extends BaseController
             ($postData['type'] ?? '') === RecordType::SOA
             && ($this->config->get('dns', 'bump_serial_on_unchanged_save', true) || $this->savedRecordDiffers($recordRepository, $rid, $old_record_info))
         ) {
-            $this->createSOARecordManager()->updateSOASerial($zid);
+            $this->services()->soaRecordManager()->updateSOASerial($zid);
         }
 
         $this->syncReverseRecord($zid, $old_record_info, $postData);
@@ -349,7 +349,7 @@ class EditRecordController extends BaseController
             ];
         }
 
-        $this->createAuditService()->logRecordEdit($zid, $old_record_info, $new_record_info);
+        $this->services()->auditService()->logRecordEdit($zid, $old_record_info, $new_record_info);
 
         $nameOrTypeChanged = ($old_record_info['name'] !== $new_record_info['name'] ||
                               $old_record_info['type'] !== $new_record_info['type']);
@@ -419,7 +419,7 @@ class EditRecordController extends BaseController
             return;
         }
 
-        $result = $this->createReverseRecordCreator()->updateReverseRecord(
+        $result = $this->services()->reverseRecordCreator()->updateReverseRecord(
             $oldType,
             (string)($oldRecord['content'] ?? ''),
             (string)($oldRecord['name'] ?? ''),

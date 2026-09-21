@@ -44,7 +44,7 @@ class EditZoneTemplRecordController extends BaseController
         parent::__construct($request);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
-        $this->zoneTemplate = $this->createZoneTemplateService();
+        $this->zoneTemplate = $this->services()->zoneTemplateService();
     }
 
     public function run(): void
@@ -140,10 +140,10 @@ class EditZoneTemplRecordController extends BaseController
             $this->addSystemMessage('error', (string)$edited->message);
         } else {
             // Mark template as modified to track sync status
-            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);
 
-            $auditService = $this->createAuditService();
+            $auditService = $this->services()->auditService();
             $auditService->logZoneTemplateRecordEdit(
                 $zone_templ_id,
                 (int)$this->getSafeRequestValue('rid'),

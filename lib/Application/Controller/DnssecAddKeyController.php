@@ -102,7 +102,7 @@ class DnssecAddKeyController extends DnssecKeyController
                 } else {
                     try {
                         if ($dnssecProvider->addZoneKey($domain_name, $key_type, (int)$bits, $algorithm)) {
-                            $auditService = $this->createAuditService();
+                            $auditService = $this->services()->auditService();
                             $auditService->logDnssecAddKey($zone_id, $domain_name, $key_type, (string)$bits, $algorithm);
                             $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
                             $this->redirect('/zones/' . $zone_id . '/dnssec');

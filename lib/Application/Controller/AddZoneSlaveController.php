@@ -101,7 +101,7 @@ class AddZoneSlaveController extends BaseController
         $domain_value = $domainInput ?? '';
         $slaveMasterInput = $this->httpRequest->getPostParam('slave_master');
         $slave_master_value = $slaveMasterInput ?? '';
-        $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
 
         $assignableOwners = $this->assignableOwners($users);
         $owner_value = $this->preservedOwnerChoice($assignableOwners, $this->httpRequest->getPostParam('owner'));
@@ -109,7 +109,7 @@ class AddZoneSlaveController extends BaseController
         $is_post_request = !empty($this->httpRequest->getPostParams());
 
         // Fetch groups for the dropdown - admins see all, others see only their own
-        $userGroupRepo = $this->createUserGroupRepository();
+        $userGroupRepo = $this->services()->userGroupRepository();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId((int)$this->getCurrentUserId());
 

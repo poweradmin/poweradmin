@@ -72,7 +72,7 @@ class DnssecToggleKeyController extends DnssecKeyController
 
             // Set appropriate message and redirect
             if ($result) {
-                $auditService = $this->createAuditService();
+                $auditService = $this->services()->auditService();
                 $auditService->logDnssecToggleKey($zone_id, $domain_name, $key_id, $action);
                 $this->setMessage('dnssec', 'success', $success_message);
             } else {

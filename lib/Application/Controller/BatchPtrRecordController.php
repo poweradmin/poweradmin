@@ -53,11 +53,11 @@ class BatchPtrRecordController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->domainRepository = $this->createDomainRepository();
+        $this->domainRepository = $this->services()->domainRepository();
         $this->batchReverseRecordCreator = $this->services()->batchReverseRecordCreator();
         $this->userContextService = new UserContextService();
-        $this->reverseTtlResolver = $this->createReverseTtlResolver();
-        $this->permissionService = $this->createPermissionService();
+        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
+        $this->permissionService = $this->services()->permissionService();
     }
 
     public function run(): void
@@ -286,7 +286,7 @@ class BatchPtrRecordController extends BaseController
      */
     private function getReverseZones(): array
     {
-        $zoneRepository = $this->createZoneRepository();
+        $zoneRepository = $this->services()->zoneRepository();
 
         // Get permission type and user ID
         $userId = $this->userContextService->getLoggedInUserId();

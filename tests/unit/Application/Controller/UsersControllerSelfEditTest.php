@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\UsersController;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
@@ -44,7 +45,7 @@ class UsersControllerSelfEditTest extends TestCase
     {
         $controller = $this->getMockBuilder(UsersController::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['run', 'hasPermission', 'getCurrentUserId', 'createApiPermissionService', 'createUserManagementService', 'setValidationConstraints', 'doValidateRequest', 'setMessage'])
+            ->onlyMethods(['run', 'hasPermission', 'getCurrentUserId', 'services', 'setValidationConstraints', 'doValidateRequest', 'setMessage'])
             ->getMock();
         $controller->method('getCurrentUserId')->willReturn(self::CALLER_ID);
         $controller->method('hasPermission')->willReturnCallback(
@@ -54,7 +55,6 @@ class UsersControllerSelfEditTest extends TestCase
 
         $apiPermissions = $this->createMock(ApiPermissionService::class);
         $apiPermissions->method('canEditUser')->willReturn(true);
-        $controller->method('createApiPermissionService')->willReturn($apiPermissions);
 
         $captured = [];
         $users = $this->createMock(UserManagementService::class);
@@ -62,7 +62,11 @@ class UsersControllerSelfEditTest extends TestCase
             $captured = $input;
             return ['success' => true];
         });
-        $controller->method('createUserManagementService')->willReturn($users);
+
+        $services = $this->createMock(ControllerServiceFactory::class);
+        $services->method('apiPermissionService')->willReturn($apiPermissions);
+        $services->method('userManagementService')->willReturn($users);
+        $controller->method('services')->willReturn($services);
 
         $posted = ['uid' => $targetId, 'username' => 'renamed', 'fullname' => 'Name', 'email' => 'a@example.com', 'active' => 'on'];
         (new ReflectionMethod(UsersController::class, 'updateUserRow'))->invoke($controller, $posted);

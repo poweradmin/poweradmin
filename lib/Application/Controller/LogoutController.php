@@ -49,7 +49,7 @@ class LogoutController extends BaseController
     public function run(): void
     {
         // Log before logout since session data is destroyed during logout
-        $this->createAuditService()->logLogout();
+        $this->services()->auditService()->logLogout();
 
         // Check if user was authenticated via external auth
         $authMethod = $_SESSION[SessionKeys::AUTH_METHOD_USED] ?? null;
@@ -115,7 +115,7 @@ class LogoutController extends BaseController
                 $userProvisioningService,
                 $this->logger,
                 $this->services()->authenticationService(),
-                $this->createAuditService(),
+                $this->services()->auditService(),
                 $this->services()->mfaService()
             );
 

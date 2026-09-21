@@ -49,7 +49,7 @@ class DeleteUserController extends BaseController
         }
 
         // Prevent non-superusers from deleting superuser accounts (privilege escalation protection)
-        $targetIsSuperuser = $this->createPermissionService()->isAdmin($uid);
+        $targetIsSuperuser = $this->services()->permissionService()->isAdmin($uid);
 
         if ($targetIsSuperuser && !$perm_is_godlike) {
             $this->showError(_('You do not have permission to delete a superuser account.'));
@@ -65,7 +65,7 @@ class DeleteUserController extends BaseController
 
     public function deleteUser(int $uid): void
     {
-        $target = $this->createUserRepository()->getUserById($uid);
+        $target = $this->services()->userRepository()->getUserById($uid);
         if ($target === null) {
             $this->showError(_('User does not exist.'));
         }
@@ -99,13 +99,13 @@ class DeleteUserController extends BaseController
             $zones = $zone;
         }
 
-        $deleted = $this->createUserManagementService()->deleteUserWithZoneDecisions((int)$this->getCurrentUserId(), $uid, $zones);
+        $deleted = $this->services()->userManagementService()->deleteUserWithZoneDecisions((int)$this->getCurrentUserId(), $uid, $zones);
         if (!$deleted['success']) {
             $this->setMessage('delete_user', 'error', UserFormMessages::deleteErrorMessage($deleted));
             return;
         }
 
-        $this->createAuditService()->logUserDelete($targetUsername);
+        $this->services()->auditService()->logUserDelete($targetUsername);
 
         $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
         $this->redirect('/users');
@@ -146,16 +146,16 @@ class DeleteUserController extends BaseController
 
     public function showQuestion(int $uid): void
     {
-        $user = $this->createUserRepository()->getUserById($uid);
+        $user = $this->services()->userRepository()->getUserById($uid);
         $name = ($user['fullname'] ?? '') ?: ($user['username'] ?? '');
-        $repositoryFactory = $this->getRepositoryFactory();
+        $repositoryFactory = $this->services()->repositoryFactory();
         $domainRepository = $repositoryFactory->createDomainRepository();
         // The reassignment list renders neither health badges nor record counts
         $zones = $domainRepository->getZones("own", $uid, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false, false);
 
         $users = [];
         if (count($zones) > 0) {
-            $users = $this->createUserRepository()->getUsersWithZoneCounts();
+            $users = $this->services()->userRepository()->getUsersWithZoneCounts();
         }
 
         $this->render('delete_user.html', [

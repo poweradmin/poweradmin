@@ -48,8 +48,8 @@ class ListReverseZonesController extends BaseController
     {
         parent::__construct($request);
         // Initialize repository and services
-        $zoneRepository = $this->createZoneRepository();
-        $this->dnsDataService = $this->createDnsDataService();
+        $zoneRepository = $this->services()->zoneRepository();
+        $this->dnsDataService = $this->services()->dnsDataService();
         $this->forwardZoneAssociationService = new ForwardZoneAssociationService($zoneRepository);
         $this->userContextService = new UserContextService();
         $this->zoneSortingService = $this->createZoneSortingService();
@@ -76,7 +76,7 @@ class ListReverseZonesController extends BaseController
         $iface_zonelist_fullname = $this->config->get('interface', 'display_fullname_in_zone_list', false);
 
         // Get user preferences for zone list display
-        $userPreferenceService = $this->createUserPreferenceService();
+        $userPreferenceService = $this->services()->userPreferenceService();
         $userId = $this->getCurrentUserId();
         $iface_zonelist_serial = $userPreferenceService->getShowZoneSerial($userId);
         $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
@@ -95,7 +95,7 @@ class ListReverseZonesController extends BaseController
             $row_start = max(0, ($start - 1) * $iface_rowamount);
         }
 
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         $perm_view = $permissionService->getViewPermissionLevel((int)$userId);
         $perm_edit = $permissionService->getEditPermissionLevel((int)$userId);
         $perm_delete = $permissionService->getDeletePermissionLevel((int)$userId);
@@ -193,7 +193,7 @@ class ListReverseZonesController extends BaseController
 
         // Ownership is resolved once for the page: the per-row delete control must
         // mirror the check the delete endpoint runs (ownership direct or via any group).
-        $ownership = $this->createZoneListPermissionService()->index($loggedInUserId, array_column($reverse_zones, 'id'));
+        $ownership = $this->services()->zoneListPermissionService()->index($loggedInUserId, array_column($reverse_zones, 'id'));
         $groupNames = $ownership->hasGroupOwners() ? $this->groupNamesById() : [];
 
         foreach ($reverse_zones as &$zone) {

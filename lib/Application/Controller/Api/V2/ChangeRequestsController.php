@@ -111,9 +111,9 @@ class ChangeRequestsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->requests = $this->createZoneChangeRequestRepository();
-        $this->changeRequests = $this->createZoneChangeRequestService();
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->requests = $this->services()->zoneChangeRequestRepository();
+        $this->changeRequests = $this->services()->zoneChangeRequestService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     public function run(): void

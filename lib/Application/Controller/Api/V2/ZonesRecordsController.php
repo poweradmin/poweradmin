@@ -53,12 +53,12 @@ class ZonesRecordsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->reverseTtlResolver = $this->createReverseTtlResolver();
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = $this->createRecordRepository();
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->recordRepository = $this->services()->recordRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
 
-        $this->recordManager = $this->createRecordManager();
+        $this->recordManager = $this->services()->recordManager();
     }
 
     /**
@@ -280,7 +280,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone', 404);
             }
 
-            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
             $formattedRecord = [
                 'id' => $this->formatRecordId($record['id']),
@@ -438,7 +438,7 @@ class ZonesRecordsController extends PublicApiController
             $type = strtoupper(trim($this->inputString($input, 'type', '')));
             $originalContent = trim($this->inputString($input, 'content', ''));
             $content = $originalContent;
-            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
             if ($zoneName === null) {
                 return $this->returnApiError('Zone not found', 404);
             }
@@ -485,7 +485,7 @@ class ZonesRecordsController extends PublicApiController
             // serial bump, the change log, rectify, the record comment and the companion
             // PTR (whose TTL honours dns.ttl_reverse) all follow the shared rules.
             $companion = ($createPtr && ($type === 'A' || $type === 'AAAA')) ? RecordAddResult::COMPANION_PTR : '';
-            $added = $this->createRecordAddService()->add(
+            $added = $this->services()->recordAddService()->add(
                 $zoneId,
                 $zoneName,
                 $normalizedName,
@@ -539,7 +539,7 @@ class ZonesRecordsController extends PublicApiController
                 'ptr_created' => $ptrCreated
             ];
 
-            $this->createAuditService()->logApiRecordAdd($zoneId, $name, $type, $content);
+            $this->services()->auditService()->logApiRecordAdd($zoneId, $name, $type, $content);
 
             $message = 'Record created successfully' . $ptrMessage;
             return $this->returnApiResponse(['record' => $responseData], true, $message, 201);
@@ -739,7 +739,7 @@ class ZonesRecordsController extends PublicApiController
             $updatedRecord = $this->recordRepository->getRecordById($recordId);
 
             // Get zone name for stripping suffix
-            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
             $ptrUpdated = false;
             $ptrMessage = '';
@@ -748,7 +748,7 @@ class ZonesRecordsController extends PublicApiController
                     $newName = $updatedRecord['name'] ?? $recordData['name'];
                     $newContent = $updatedRecord['content'] ?? $recordData['content'];
 
-                    $reverseRecordCreator = $this->createReverseRecordCreator();
+                    $reverseRecordCreator = $this->services()->reverseRecordCreator();
 
                     $ptrResult = $reverseRecordCreator->updateReverseRecord(
                         $oldType,
@@ -812,7 +812,7 @@ class ZonesRecordsController extends PublicApiController
                 ];
             }
 
-            $this->createAuditService()->logApiRecordEdit($zoneId, $formattedRecord['name'], $formattedRecord['type'], $formattedRecord['content']);
+            $this->services()->auditService()->logApiRecordEdit($zoneId, $formattedRecord['name'], $formattedRecord['type'], $formattedRecord['content']);
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully' . $ptrMessage, 200);
         } catch (\Throwable $e) {
@@ -911,7 +911,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($result->status === 500 ? 'Failed to delete record' : (string)$result->message, $result->status);
             }
 
-            $this->createAuditService()->logApiRecordDelete($zoneId, $existingRecord['name'] ?? '', $existingRecord['type'] ?? '', $existingRecord['content'] ?? '');
+            $this->services()->auditService()->logApiRecordDelete($zoneId, $existingRecord['name'] ?? '', $existingRecord['type'] ?? '', $existingRecord['content'] ?? '');
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);
         } catch (\Throwable $e) {

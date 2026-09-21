@@ -58,11 +58,11 @@ class AddUserController extends BaseController
         $this->mailService = new MailService($this->config, $this->logger);
 
         // Initialize permission template repository
-        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
+        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
 
         // Initialize group repositories for group membership management
-        $this->groupRepository = $this->createUserGroupRepository();
-        $this->memberRepository = $this->createUserGroupMemberRepository();
+        $this->groupRepository = $this->services()->userGroupRepository();
+        $this->memberRepository = $this->services()->userGroupMemberRepository();
     }
 
     public function run(): void
@@ -110,7 +110,7 @@ class AddUserController extends BaseController
         // Same gate as the API: the template must stay within the caller's own authority,
         // and an omitted one falls back to the minimal template rather than Administrator.
         $templateError = PermissionTemplateAssignmentGuard::apply(
-            $this->createPermissionService(),
+            $this->services()->permissionService(),
             $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user'),
             $callerId,
             $input,
@@ -129,7 +129,7 @@ class AddUserController extends BaseController
             $input['password'] = $generatedPassword;
         }
 
-        $created = $this->createUserManagementService()->createUser($input);
+        $created = $this->services()->userManagementService()->createUser($input);
         if ($created['success']) {
             $newUserId = (int)$created['user_id'];
             $successMessage = _('The user has been created successfully.');
@@ -173,7 +173,7 @@ class AddUserController extends BaseController
                 }
             }
 
-            $this->createAuditService()->logUserAdd((string)$input['username'], (string)$input['email']);
+            $this->services()->auditService()->logUserAdd((string)$input['username'], (string)$input['email']);
 
             $this->setMessage('users', 'success', $successMessage);
             $this->redirect('/users');
@@ -300,7 +300,7 @@ class AddUserController extends BaseController
             }
         }
 
-        $audit = $this->createAuditService();
+        $audit = $this->services()->auditService();
         foreach ($successfulGroups as $groupInfo) {
             $audit->logGroupMembersAdd($groupInfo['id'], $groupInfo['name'], [$username]);
         }

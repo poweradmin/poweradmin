@@ -50,9 +50,9 @@ class TestableAddRecordController extends AddRecordController
         (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
 
         $this->plant('formStateService', new FormStateService());
-        $this->plant('recordAdd', $this->createRecordAddService());
+        $this->plant('recordAdd', $this->services()->recordAddService());
         $this->plant('recordTypeService', new RecordTypeService($this->getConfig()));
-        $this->plant('reverseTtlResolver', $this->createReverseTtlResolver());
+        $this->plant('reverseTtlResolver', $this->services()->reverseTtlResolver());
         $this->plant('userContextService', new UserContextService());
     }
 

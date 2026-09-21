@@ -185,7 +185,7 @@ class ForgotUsernameController extends BaseController
             // Create username recovery request
             $this->usernameRecoveryService->createRecoveryRequest($email);
 
-            $this->createAuditService()->logUsernameRecovery($email);
+            $this->services()->auditService()->logUsernameRecovery($email);
 
             // Always show success message (for security - don't reveal if email exists)
             $this->showSuccessMessage();

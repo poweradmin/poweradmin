@@ -54,7 +54,7 @@ class UserPreferencesController extends BaseController
     private function showUserPreferences(): void
     {
         $userId = $this->getCurrentUserId();
-        $userPreferenceService = $this->createUserPreferenceService();
+        $userPreferenceService = $this->services()->userPreferenceService();
 
         // Handle form submission
         if ($this->isPost()) {
@@ -140,7 +140,7 @@ class UserPreferencesController extends BaseController
     {
         $configured = (int)$this->config->get('interface', 'rows_per_page', PaginationService::DEFAULT_ROWS_PER_PAGE);
 
-        return $this->createPaginationService()->getRowsPerPageOptions($configured);
+        return $this->services()->paginationService()->getRowsPerPageOptions($configured);
     }
 
 

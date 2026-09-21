@@ -63,7 +63,7 @@ class UsersController extends BaseController
         $success = false;
         $blocked = false;
         $currentIsSuperuser = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         foreach ($this->httpRequest->getPostParam('user') as $user) {
             if (!is_array($user)) {
                 continue;
@@ -98,7 +98,7 @@ class UsersController extends BaseController
     {
         $callerId = (int)$this->getCurrentUserId();
         $targetId = (int)($posted['uid'] ?? 0);
-        if (!$this->createApiPermissionService()->canEditUser($callerId, $targetId)) {
+        if (!$this->services()->apiPermissionService()->canEditUser($callerId, $targetId)) {
             $this->setMessage('users', 'error', _('You do not have the permission to edit this user.'));
             return false;
         }
@@ -123,14 +123,14 @@ class UsersController extends BaseController
         }
         if ($this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM) && isset($posted['templ_id'])) {
             $input['perm_templ'] = $posted['templ_id'];
-            $templateError = PermissionTemplateAssignmentGuard::apply($this->createPermissionService(), null, $callerId, $input, $targetId);
+            $templateError = PermissionTemplateAssignmentGuard::apply($this->services()->permissionService(), null, $callerId, $input, $targetId);
             if ($templateError !== null) {
                 $this->setMessage('users', 'error', UserFormMessages::templateAssignmentError($templateError));
                 return false;
             }
         }
 
-        $updated = $this->createUserManagementService()->updateUser($targetId, $input);
+        $updated = $this->services()->userManagementService()->updateUser($targetId, $input);
         if (!$updated['success']) {
             $this->setMessage('users', 'error', UserFormMessages::errorMessage($updated));
             return false;
@@ -141,7 +141,7 @@ class UsersController extends BaseController
 
     private function superuserRowEdited(array $posted): bool
     {
-        $userRepository = $this->createUserRepository();
+        $userRepository = $this->services()->userRepository();
         $current = $userRepository->getUserById((int)($posted['uid'] ?? 0));
         if ($current === null) {
             return true;
@@ -160,7 +160,7 @@ class UsersController extends BaseController
 
     private function showUsers(): void
     {
-        $permissions = $this->createPermissionService()->getPermissionFlags(
+        $permissions = $this->services()->permissionService()->getPermissionFlags(
             (int)$this->getCurrentUserId(),
             [
                 Permission::PERM_USER_VIEW_OTHERS,
@@ -176,7 +176,7 @@ class UsersController extends BaseController
 
         // Get total count and paginated users; both restricted to the user's own
         // account when they lack the permission to view other users
-        $userRepository = $this->createUserRepository();
+        $userRepository = $this->services()->userRepository();
         $restrictToUserId = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS) ? null : ($this->getCurrentUserId() ?? 0);
         // ?search[]=x arrives as an array; treat anything non-string as no filter.
         $searchParam = $this->httpRequest->getQueryParam('search', '');
@@ -194,7 +194,7 @@ class UsersController extends BaseController
 
         $this->render('users.html', [
             'permissions' => $permissions,
-            'perm_templates' => $this->createPermissionTemplateRepository()->listPermissionTemplates('user'),
+            'perm_templates' => $this->services()->permissionTemplateRepository()->listPermissionTemplates('user'),
             'users' => $users,
             'session_userid' => $this->getCurrentUserId(),
             'perm_add_new' => $this->hasPermission(Permission::PERM_USER_ADD_NEW),

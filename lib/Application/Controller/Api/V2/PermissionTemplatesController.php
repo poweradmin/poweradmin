@@ -43,9 +43,9 @@ class PermissionTemplatesController extends PublicApiController
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
-        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
-        $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
+        $this->permissionTemplateWriteService = $this->services()->permissionTemplateWriteService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**

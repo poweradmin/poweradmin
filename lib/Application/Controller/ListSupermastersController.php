@@ -40,7 +40,7 @@ class ListSupermastersController extends BaseController
 
     private function showSuperMasters(): void
     {
-        $supermasterManager = $this->createSupermasterManager();
+        $supermasterManager = $this->services()->supermasterManager();
         $this->render('list_supermasters.html', [
             'perm_sm_add' => $this->hasPermission(Permission::PERM_SUPERMASTER_ADD),
             'perm_sm_edit' => $this->hasPermission(Permission::PERM_SUPERMASTER_EDIT),

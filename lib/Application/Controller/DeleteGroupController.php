@@ -40,8 +40,8 @@ class DeleteGroupController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = $this->createUserGroupRepository();
-        $zoneGroupRepository = $this->createZoneGroupRepository();
+        $groupRepository = $this->services()->userGroupRepository();
+        $zoneGroupRepository = $this->services()->zoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
@@ -89,7 +89,7 @@ class DeleteGroupController extends BaseController
             // Get group details and stats before deletion for logging
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($userId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($userId);
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
@@ -100,7 +100,7 @@ class DeleteGroupController extends BaseController
 
             $this->groupService->deleteGroup($groupId);
 
-            $this->createAuditService()->logGroupDelete($groupId, $groupName, $memberCount, $zoneCount);
+            $this->services()->auditService()->logGroupDelete($groupId, $groupName, $memberCount, $zoneCount);
 
             $this->setMessage('list_groups', 'success', _('Group has been deleted successfully.'));
             $this->redirect('/groups');
@@ -115,7 +115,7 @@ class DeleteGroupController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($userId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
@@ -130,7 +130,7 @@ class DeleteGroupController extends BaseController
             $impact = $this->zoneGroupService->getGroupDeletionImpact($groupId, 20);
 
             // Get zone details for display
-            $repositoryFactory = $this->getRepositoryFactory();
+            $repositoryFactory = $this->services()->repositoryFactory();
             $domainRepository = $repositoryFactory->createDomainRepository();
 
             $zoneDetails = [];

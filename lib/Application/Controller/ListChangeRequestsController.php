@@ -53,7 +53,7 @@ class ListChangeRequestsController extends BaseController
 
         $userId = (int)$this->getCurrentUserId();
         $scope = $this->changeRequestReviewScope();
-        $requestLevel = $this->createPermissionService()->getChangeRequestPermissionLevel($userId);
+        $requestLevel = $this->services()->permissionService()->getChangeRequestPermissionLevel($userId);
         if ($scope === [] && $requestLevel === 'none') {
             $this->showError(_('You do not have permission to view change requests.'));
             return;
@@ -79,7 +79,7 @@ class ListChangeRequestsController extends BaseController
             $filters['zoneIds'] = $this->narrowScope($scope, $zoneId);
         }
 
-        $repository = $this->createZoneChangeRequestRepository();
+        $repository = $this->services()->zoneChangeRequestRepository();
         $rowsPerPage = $this->resolveRowsPerPage();
         $total = $repository->count($filters);
         $offset = ($this->httpRequest->getPage() - 1) * $rowsPerPage;
@@ -87,7 +87,7 @@ class ListChangeRequestsController extends BaseController
 
         $zoneName = null;
         if ($zoneId !== null) {
-            $domainName = $this->createDomainRepository()->getDomainNameById($zoneId);
+            $domainName = $this->services()->domainRepository()->getDomainNameById($zoneId);
             $zoneName = $domainName !== null ? DnsIdnService::toUtf8($domainName) : null;
         }
 

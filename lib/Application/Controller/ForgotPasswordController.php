@@ -52,7 +52,7 @@ class ForgotPasswordController extends BaseController
 
         // Create PasswordResetService with dependencies
         $tokenRepository = $this->services()->passwordResetTokenRepository();
-        $userRepository = $this->createUserRepository();
+        $userRepository = $this->services()->userRepository();
         $mailService = new MailService($this->config, $this->logger);
         $authService = UserAuthenticationService::fromConfig($this->config);
         $this->client = $this->services()->clientContext();
@@ -198,7 +198,7 @@ class ForgotPasswordController extends BaseController
             // Create password reset request
             $this->passwordResetService->createResetRequest($email);
 
-            $this->createAuditService()->logPasswordResetRequest($email);
+            $this->services()->auditService()->logPasswordResetRequest($email);
 
             // Always show success message (for security - don't reveal if email exists)
             $this->showSuccessMessage();

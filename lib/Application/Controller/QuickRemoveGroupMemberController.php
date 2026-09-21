@@ -38,8 +38,8 @@ class QuickRemoveGroupMemberController extends BaseController
     {
         parent::__construct($request);
 
-        $memberRepository = $this->createUserGroupMemberRepository();
-        $groupRepository = $this->createUserGroupRepository();
+        $memberRepository = $this->services()->userGroupMemberRepository();
+        $groupRepository = $this->services()->userGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
     }
 
@@ -72,7 +72,7 @@ class QuickRemoveGroupMemberController extends BaseController
             $success = $this->membershipService->removeUserFromGroup($groupId, $memberId);
 
             if ($success) {
-                $auditService = $this->createAuditService();
+                $auditService = $this->services()->auditService();
                 $auditService->logGroupMemberRemove($groupId, $memberId);
                 $this->setMessage('edit_group', 'success', _('Member removed from group successfully.'));
             } else {

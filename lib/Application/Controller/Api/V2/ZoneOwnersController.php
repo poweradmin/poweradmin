@@ -48,11 +48,11 @@ class ZoneOwnersController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->domainRepository = $this->createDomainRepository();
-        $this->userRepository = $this->createUserRepository();
-        $this->apiPermissionService = $this->createApiPermissionService();
-        $this->auditService = $this->createAuditService();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->userRepository = $this->services()->userRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->auditService = $this->services()->auditService();
     }
 
     /**
@@ -276,7 +276,7 @@ class ZoneOwnersController extends PublicApiController
             }
 
             $this->zoneRepository->addOwnerToZone($zoneId, $userId);
-            $this->createPermissionService()->forgetZone($zoneId);
+            $this->services()->permissionService()->forgetZone($zoneId);
             $this->auditService->logZoneOwnerAdd($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner added successfully', 201);
@@ -323,7 +323,7 @@ class ZoneOwnersController extends PublicApiController
         }
 
         if ($added !== []) {
-            $this->createPermissionService()->forgetZone($zoneId);
+            $this->services()->permissionService()->forgetZone($zoneId);
         }
 
         $message = count($added) . ' owner(s) added';
@@ -411,7 +411,7 @@ class ZoneOwnersController extends PublicApiController
 
             if ($this->zoneRepository->isUserZoneOwner($zoneId, $userId)) {
                 $remainingOwners = count($this->zoneRepository->getZoneOwners($zoneId));
-                $zoneGroupRepo = $this->createZoneGroupRepository();
+                $zoneGroupRepo = $this->services()->zoneGroupRepository();
                 $remainingGroups = count($zoneGroupRepo->findByDomainId($zoneId));
                 $wouldRemoveLast = $remainingOwners <= 1;
                 $ownershipMode = new ZoneOwnershipModeService($this->config);
@@ -453,7 +453,7 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('Owner not found for this zone', 404);
             }
 
-            $this->createPermissionService()->forgetZone($zoneId);
+            $this->services()->permissionService()->forgetZone($zoneId);
             $this->auditService->logZoneOwnerRemove($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner removed successfully');

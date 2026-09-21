@@ -37,7 +37,7 @@ class ListGroupsController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = $this->createUserGroupRepository();
+        $groupRepository = $this->services()->userGroupRepository();
         $this->groupService = new GroupService($groupRepository);
     }
 
@@ -59,7 +59,7 @@ class ListGroupsController extends BaseController
     {
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        $isAdmin = $this->createPermissionService()->isAdmin($userId);
+        $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
         // Get groups based on user role (admin sees all, normal users see only their groups)
         $groups = $this->groupService->listGroups($userId, $isAdmin);

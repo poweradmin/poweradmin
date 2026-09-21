@@ -41,17 +41,17 @@ abstract class DnssecKeyController extends BaseController
     {
         $this->requireZoneView($zoneId);
 
-        $domainRepository = $this->createDomainRepository();
+        $domainRepository = $this->services()->domainRepository();
         if (!$domainRepository->zoneIdExists($zoneId)) {
             $this->showError(_('There is no zone with this ID.'));
         }
 
-        if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zoneId)) {
+        if (!$this->services()->permissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zoneId)) {
             $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
         }
 
         $domainName = (string)$domainRepository->getDomainNameById($zoneId);
-        $provider = $this->createDnssecProvider();
+        $provider = $this->services()->dnssecProvider();
 
         if ($provider->isZonePresigned($domainName)) {
             $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));

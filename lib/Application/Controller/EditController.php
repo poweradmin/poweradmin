@@ -77,16 +77,16 @@ class EditController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->recordRepository = $this->createRecordRepository();
-        $this->domainRepository = $this->createDomainRepository();
+        $this->recordRepository = $this->services()->recordRepository();
+        $this->domainRepository = $this->services()->domainRepository();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
-        $this->soaRecordManager = $this->createSOARecordManager();
-        $this->reverseTtlResolver = $this->createReverseTtlResolver();
+        $this->soaRecordManager = $this->services()->soaRecordManager();
+        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
         $this->userContextService = new UserContextService();
-        $this->zoneRepository = $this->createZoneRepository();
+        $this->zoneRepository = $this->services()->zoneRepository();
 
-        $this->permissionService = $this->createPermissionService();
+        $this->permissionService = $this->services()->permissionService();
     }
 
     public function run(): void
@@ -99,7 +99,7 @@ class EditController extends BaseController
         $iface_rowamount = $this->resolveRowsPerPage();
 
         // Get user preferences for form positioning
-        $userPreferenceService = $this->createUserPreferenceService();
+        $userPreferenceService = $this->services()->userPreferenceService();
         $iface_edit_add_record_top = $userPreferenceService->getRecordFormPosition($userId) === 'top';
         $iface_edit_save_changes_top = $userPreferenceService->getSaveButtonPosition($userId) === 'top';
         $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
@@ -237,7 +237,7 @@ class EditController extends BaseController
         $zone_template_id = $this->services()->zoneTemplateRepository()->getTemplateIdForZone($zone_id);
 
         // Get records via DnsDataService (supports both SQL and API backends)
-        $recordResult = $this->createDnsDataService()->getZoneRecords(
+        $recordResult = $this->services()->dnsDataService()->getZoneRecords(
             $zone_id,
             $zone_name,
             $row_start,
@@ -252,7 +252,7 @@ class EditController extends BaseController
         $total_filtered_count = $recordResult['total'];
 
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
-        $dnssecProvider = $this->createDnssecProvider();
+        $dnssecProvider = $this->services()->dnssecProvider();
         $is_secured = $dnssecProvider->isZoneSecured($zone_name, $this->getConfig());
         // Presigned zones always report secured, so unsigned zones skip the metadata lookup
         $is_presigned = $is_secured && $dnssecProvider->isZonePresigned($zone_name);
@@ -268,7 +268,7 @@ class EditController extends BaseController
             $perm_edit = $this->permissionService->getChangeRequestPermissionLevelForZone($userId, $zone_id);
         }
         $pending_change_requests = $this->changeApprovalEnabled() && $perm_edit !== 'none'
-            ? ChangeRequestPresenter::summaries($this->createZoneChangeRequestRepository()->listPendingForZone($zone_id))
+            ? ChangeRequestPresenter::summaries($this->services()->zoneChangeRequestRepository()->listPendingForZone($zone_id))
             : [];
 
         $presenter = new EditZonePresenter(
@@ -280,7 +280,7 @@ class EditController extends BaseController
             rejectedZoneComment: $this->rejectedZoneComment,
             domainType: $domain_type,
             slaveMaster: $this->domainRepository->getDomainMaster($zone_id),
-            zoneTemplates: $this->createZoneTemplateService()->getListZoneTempl($userId),
+            zoneTemplates: $this->services()->zoneTemplateService()->getListZoneTempl($userId),
             zoneTemplateId: $zone_template_id,
             zoneTemplateDetails: $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_template_id) ?: [],
             recordCount: $this->recordRepository->countZoneRecords($zone_id),
@@ -408,7 +408,7 @@ class EditController extends BaseController
             return false;
         }
 
-        $service = $this->createZoneSigningService();
+        $service = $this->services()->zoneSigningService();
         foreach ($requested as $action) {
             [$type, $message] = $action === 'sign'
                 ? ZoneSigningMessages::forSign($service->sign($zone_id, $zone_name))
@@ -447,7 +447,7 @@ class EditController extends BaseController
 
     private function handleZoneMetadataPost(int $zone_id): void
     {
-        $domainManager = $this->createDomainManager();
+        $domainManager = $this->services()->domainManager();
         $new_type = $this->httpRequest->getPostParam('newtype', '');
         if ($this->httpRequest->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
             // Converting a zone is equivalent to creating one of the target type.
@@ -528,7 +528,7 @@ class EditController extends BaseController
         $serial = $this->httpRequest->getPostParam('serial');
         $zoneComment = $this->httpRequest->getPostParam('zone_comment');
 
-        $result = $this->createZoneChangeRequestService()->fileRecordEdits(new ZoneEditSubmission(
+        $result = $this->services()->zoneChangeRequestService()->fileRecordEdits(new ZoneEditSubmission(
             $zone_id,
             $zone_name,
             (int)$this->getCurrentUserId(),
@@ -559,7 +559,7 @@ class EditController extends BaseController
     {
         $ttl = $this->httpRequest->getPostParam('ttl');
         $prio = $this->httpRequest->getPostParam('prio');
-        $result = $this->createZoneChangeRequestService()->fileRecordAdd($zone_id, $zone_name, [
+        $result = $this->services()->zoneChangeRequestService()->fileRecordAdd($zone_id, $zone_name, [
             'name' => (string)$this->httpRequest->getPostParam('name', ''),
             'type' => (string)$this->httpRequest->getPostParam('type', ''),
             'content' => (string)$this->httpRequest->getPostParam('content', ''),
@@ -665,7 +665,7 @@ class EditController extends BaseController
         $comment = (string)$this->httpRequest->getPostParam('comment', '');
 
         $ttl = $this->httpRequest->getPostParam('ttl');
-        $added = $this->createRecordAddService()->add(
+        $added = $this->services()->recordAddService()->add(
             $zone_id,
             $zone_name,
             $name,

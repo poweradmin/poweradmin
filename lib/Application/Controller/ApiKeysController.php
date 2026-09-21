@@ -58,8 +58,8 @@ class ApiKeysController extends BaseController
 
         $this->routeName = (string)($request['page'] ?? '');
         $this->apiKeyRepository = $this->services()->apiKeyRepository();
-        $this->apiKeyService = new ApiKeyService($this->apiKeyRepository, $this->db, $this->config, $this->createPermissionService());
-        $this->zoneRepository = $this->createZoneRepository();
+        $this->apiKeyService = new ApiKeyService($this->apiKeyRepository, $this->db, $this->config, $this->services()->permissionService());
+        $this->zoneRepository = $this->services()->zoneRepository();
     }
 
     /**
@@ -185,7 +185,7 @@ class ApiKeysController extends BaseController
 
             if ($created->success) {
                 $apiKey = $created->key;
-                $this->createAuditService()->logApiKeyCreate((int)$apiKey->getId(), $apiKey->getName());
+                $this->services()->auditService()->logApiKeyCreate((int)$apiKey->getId(), $apiKey->getName());
 
                 // Show confirmation with the secret key - user needs to save it
                 $this->render('api_key_created.html', [
@@ -256,7 +256,7 @@ class ApiKeysController extends BaseController
             );
 
             if ($updated->success) {
-                $this->createAuditService()->logApiKeyEdit($id, $updated->key->getName());
+                $this->services()->auditService()->logApiKeyEdit($id, $updated->key->getName());
 
                 $this->messageService->addMessage('api_keys', 'success', _('API key updated successfully.'));
                 $this->redirect('/settings/api-keys');
@@ -288,7 +288,7 @@ class ApiKeysController extends BaseController
             $deleted = $this->apiKeyService->deleteApiKey($id);
 
             if ($deleted->success) {
-                $this->createAuditService()->logApiKeyDelete($id, $deleted->key->getName());
+                $this->services()->auditService()->logApiKeyDelete($id, $deleted->key->getName());
                 $this->messageService->addMessage('api_keys', 'success', _('API key deleted successfully.'));
             } else {
                 $this->messageService->addMessage('api_keys', 'error', (string)$deleted->message);
@@ -330,7 +330,7 @@ class ApiKeysController extends BaseController
             $regenerated = $this->apiKeyService->regenerateSecretKey($id);
 
             if ($regenerated->success) {
-                $this->createAuditService()->logApiKeyRegenerate($id, $regenerated->key->getName());
+                $this->services()->auditService()->logApiKeyRegenerate($id, $regenerated->key->getName());
 
                 // Show confirmation with the new secret key
                 $this->render('api_key_regenerated.html', [
@@ -360,7 +360,7 @@ class ApiKeysController extends BaseController
         $toggled = $this->apiKeyService->toggleApiKey($id, $disable);
 
         if ($toggled->success) {
-            $this->createAuditService()->logApiKeyToggle($id, $toggled->key->getName(), $disable);
+            $this->services()->auditService()->logApiKeyToggle($id, $toggled->key->getName(), $disable);
 
             $translatedStatus = $disable ? _('disabled') : _('enabled');
             $this->messageService->addMessage('api_keys', 'success', sprintf(_('API key %s successfully.'), $translatedStatus));

@@ -43,27 +43,27 @@ class DnssecDsDnskeyController extends BaseController
         $this->requireZoneView($zone_id);
 
         // Validate zone existence
-        $domainRepository = $this->createDomainRepository();
+        $domainRepository = $this->services()->domainRepository();
         if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        $can_manage_dnssec = $this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id);
+        $can_manage_dnssec = $this->services()->permissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id);
 
         $this->showKeys($zone_id, $pdnssec_use, $can_manage_dnssec);
     }
 
     public function showKeys(int $zone_id, $pdnssec_use, bool $can_manage_dnssec): void
     {
-        $domainRepository = $this->createDomainRepository();
+        $domainRepository = $this->services()->domainRepository();
 
         $domain_name = $domainRepository->getDomainNameById($zone_id);
         $domain_type = $domainRepository->getDomainType($zone_id);
-        $record_count = $this->createRecordRepository()->countZoneRecords($zone_id);
+        $record_count = $this->services()->recordRepository()->countZoneRecords($zone_id);
         $zone_template_id = $this->services()->zoneTemplateRepository()->getTemplateIdForZone($zone_id);
 
-        $dnssecProvider = $this->createDnssecProvider();
+        $dnssecProvider = $this->services()->dnssecProvider();
         $dnskey_records = $dnssecProvider->getDnsKeyRecords($domain_name);
         $ds_records = $dnssecProvider->getDsRecords($domain_name);
 

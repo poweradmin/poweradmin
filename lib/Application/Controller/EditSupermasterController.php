@@ -74,7 +74,7 @@ class EditSupermasterController extends BaseController
             return;
         }
 
-        $supermasterManager = $this->createSupermasterManager();
+        $supermasterManager = $this->services()->supermasterManager();
 
         if (!$supermasterManager->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));
@@ -84,7 +84,7 @@ class EditSupermasterController extends BaseController
 
         $updated = $supermasterManager->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
         if ($updated->success) {
-            $this->createAuditService()->logSupermasterEdit($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name);
+            $this->services()->auditService()->logSupermasterEdit($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name);
 
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been updated successfully.'));
             $this->redirect('/supermasters');
@@ -96,7 +96,7 @@ class EditSupermasterController extends BaseController
 
     private function showEditSuperMaster($old_master_ip, $old_ns_name, $new_master_ip = null, $new_ns_name = null, $account = null): void
     {
-        $supermasterManager = $this->createSupermasterManager();
+        $supermasterManager = $this->services()->supermasterManager();
 
         if (!$supermasterManager->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));
@@ -119,7 +119,7 @@ class EditSupermasterController extends BaseController
             $account = $info['account'];
         }
 
-        $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
         $selectableOwners = $this->selectableOwners($users);
         // The account holder stays listed even when the caller may not see other users.
         foreach ($users as $user) {

@@ -48,7 +48,7 @@ class TestableDnsWizardFormController extends DnsWizardFormController
 
         $this->plant('wizardRegistry', new WizardRegistry($this->getConfig()));
         $this->plant('formStateService', new FormStateService());
-        $this->plant('recordAdd', $this->createRecordAddService());
+        $this->plant('recordAdd', $this->services()->recordAddService());
     }
 
     private function plant(string $property, object $value): void

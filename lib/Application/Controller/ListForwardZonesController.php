@@ -80,7 +80,7 @@ class ListForwardZonesController extends BaseController
             return;
         }
 
-        $backendProvider = $this->createDnsBackendProvider();
+        $backendProvider = $this->services()->dnsBackendProvider();
         $syncService = new ZoneSyncService($this->db, $backendProvider, 300, $this->logger);
 
         try {
@@ -108,7 +108,7 @@ class ListForwardZonesController extends BaseController
         $iface_zonelist_fullname = $this->config->get('interface', 'display_fullname_in_zone_list', false);
 
         // Get user preferences for zone list display
-        $userPreferenceService = $this->createUserPreferenceService();
+        $userPreferenceService = $this->services()->userPreferenceService();
         $userId = $this->getCurrentUserId();
         $iface_zonelist_serial = $userPreferenceService->getShowZoneSerial($userId);
         $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
@@ -127,12 +127,12 @@ class ListForwardZonesController extends BaseController
             $row_start = max(0, ($start - 1) * $iface_rowamount);
         }
 
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->services()->permissionService();
         $perm_view = $permissionService->getViewPermissionLevel((int)$userId);
         $perm_edit = $permissionService->getEditPermissionLevel((int)$userId);
         $perm_delete = $permissionService->getDeletePermissionLevel((int)$userId);
         $can_bulk_delete_zones = AccessScope::fromString($perm_delete)->grantsAnything();
-        $dnsDataService = $this->createDnsDataService();
+        $dnsDataService = $this->services()->dnsDataService();
 
         $count_zones_view = $dnsDataService->countZones($perm_view);
         $count_zones_edit = $dnsDataService->countZones($perm_edit);
@@ -208,7 +208,7 @@ class ListForwardZonesController extends BaseController
 
         // Ownership is resolved once for the page: the per-row delete control must
         // mirror the check the delete endpoint runs (ownership direct or via any group).
-        $ownership = $this->createZoneListPermissionService()->index($userId, array_column($zones, 'id'));
+        $ownership = $this->services()->zoneListPermissionService()->index($userId, array_column($zones, 'id'));
         $groupNames = $ownership->hasGroupOwners() ? $this->groupNamesById() : [];
 
         foreach ($zones as &$zone) {

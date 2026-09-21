@@ -37,7 +37,7 @@ class DeleteZoneTemplRecordController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->zoneTemplate = $this->createZoneTemplateService();
+        $this->zoneTemplate = $this->services()->zoneTemplateService();
     }
 
     public function run(): void
@@ -57,10 +57,10 @@ class DeleteZoneTemplRecordController extends BaseController
             $deleted = $this->zoneTemplate->deleteZoneTemplRecord($record_id, $zone_templ_id);
             if ($deleted->success) {
                 // Mark template as modified to track sync status
-                $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+                $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->services()->dnsBackendProvider());
                 $syncService->markTemplateAsModified($zone_templ_id);
 
-                $auditService = $this->createAuditService();
+                $auditService = $this->services()->auditService();
                 $auditService->logZoneTemplateRecordDelete($zone_templ_id, $record_id);
 
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));

@@ -44,7 +44,7 @@ class DnsWizardSelectController extends BaseController
     {
         parent::__construct($request);
 
-        $this->domainRepository = $this->createDomainRepository();
+        $this->domainRepository = $this->services()->domainRepository();
         $this->wizardRegistry = new WizardRegistry($this->getConfig());
     }
 
@@ -70,7 +70,7 @@ class DnsWizardSelectController extends BaseController
         }
 
         // Check permissions
-        $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
+        $perm_edit = $this->services()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 

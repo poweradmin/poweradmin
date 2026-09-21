@@ -63,7 +63,7 @@ class IndexController extends BaseController
         $userlogin = $this->userContextService->getLoggedInUsername();
         $userId = $this->userContextService->getLoggedInUserId();
 
-        $permissions = $this->createPermissionService()->getPermissionFlags((int)$userId, [
+        $permissions = $this->services()->permissionService()->getPermissionFlags((int)$userId, [
             Permission::PERM_SEARCH,
             Permission::PERM_ZONE_CONTENT_VIEW_OWN,
             Permission::PERM_ZONE_CONTENT_VIEW_OTHERS,

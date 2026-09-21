@@ -51,7 +51,7 @@ class ChangePasswordController extends BaseController
         $this->policyService = new PasswordPolicyService();
 
         $userAuthService = UserAuthenticationService::fromConfig($this->config);
-        $userRepository = $this->createUserRepository();
+        $userRepository = $this->services()->userRepository();
         $this->userContextService = new UserContextService();
         $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $this->userContextService);
     }
@@ -144,7 +144,7 @@ class ChangePasswordController extends BaseController
         );
 
         if ($success) {
-            $this->createAuditService()->logPasswordChange();
+            $this->services()->auditService()->logPasswordChange();
 
             $sessionEntity = new SessionEntity($message, 'success');
             $this->authService->logout($sessionEntity);

@@ -87,7 +87,7 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
-        $records = $this->createDnsBackendProvider()->countZoneRecords($zoneId);
+        $records = $this->services()->dnsBackendProvider()->countZoneRecords($zoneId);
         echo json_encode(['ready' => $records > 0, 'records' => $records]);
     }
 
@@ -118,7 +118,7 @@ class SecondaryZoneImportController extends BaseController
      */
     private function getOwnerOptionsBlocker(): ?string
     {
-        return match ($this->createZoneCreateOwnershipResolver()->ownerOptionsBlocker((int)$this->getCurrentUserId())) {
+        return match ($this->services()->zoneCreateOwnershipResolver()->ownerOptionsBlocker((int)$this->getCurrentUserId())) {
             ZoneOwnershipResolution::NO_GROUPS_EXIST => _('Zone ownership mode is groups_only but no groups exist. Create a group before importing zones.'),
             ZoneOwnershipResolution::NOT_IN_ANY_GROUP => _('Zone ownership mode is groups_only but you are not a member of any group. Ask an administrator to add you to a group before importing zones.'),
             default => null,
@@ -152,7 +152,7 @@ class SecondaryZoneImportController extends BaseController
         }
 
         // Ask PowerDNS to pull the zone now instead of waiting for the refresh.
-        $retrieved = $this->createDomainManager()->retrieveZone((int)$created->zoneId);
+        $retrieved = $this->services()->domainManager()->retrieveZone((int)$created->zoneId);
 
         $this->showForm([
             'imported' => true,
@@ -172,14 +172,14 @@ class SecondaryZoneImportController extends BaseController
 
         // Refuse to convert before the transfer has populated the zone: an empty
         // conversion would discard the secondary and stop PowerDNS retrying AXFR.
-        if ($this->createDnsBackendProvider()->countZoneRecords($zoneId) === 0) {
+        if ($this->services()->dnsBackendProvider()->countZoneRecords($zoneId) === 0) {
             $this->showError(_('This zone has no transferred records yet. Wait for the transfer to complete before converting it to a primary zone.'));
             return;
         }
 
         // changeZoneType() enforces the metadata-edit permission and ownership
         // and writes its own audit entry, so no extra gating is needed here.
-        $converted = $this->createDomainManager()->changeZoneType('NATIVE', $zoneId);
+        $converted = $this->services()->domainManager()->changeZoneType('NATIVE', $zoneId);
         if (!$converted->success) {
             $this->setMessage('import', 'error', (string)$converted->message);
             $this->showForm();
@@ -205,14 +205,14 @@ class SecondaryZoneImportController extends BaseController
         $ownershipMode = new ZoneOwnershipModeService($this->config);
         $sessionUserId = $this->userContextService->getLoggedInUserId();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $userGroupRepo = $this->createUserGroupRepository();
+        $userGroupRepo = $this->services()->userGroupRepository();
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($sessionUserId);
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds(array_map(fn($g) => $g->getId(), $allGroups));
 
         $ownerInput = $this->httpRequest->getPostParam('owner');
         $groupsInput = $this->httpRequest->getPostParam('groups');
 
-        $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
         $assignableOwners = $this->assignableOwners($users);
         $this->render('@secondary_zone_import/import.html', array_merge([
             'imported' => false,

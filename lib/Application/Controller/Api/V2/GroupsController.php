@@ -48,14 +48,14 @@ class GroupsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $groupRepository = $this->createUserGroupRepository();
-        $memberRepository = $this->createUserGroupMemberRepository();
-        $zoneGroupRepository = $this->createZoneGroupRepository();
+        $groupRepository = $this->services()->userGroupRepository();
+        $memberRepository = $this->services()->userGroupMemberRepository();
+        $zoneGroupRepository = $this->services()->zoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -335,7 +335,7 @@ class GroupsController extends PublicApiController
             }
 
             // Validate that the template is a group template
-            $permTemplateRepo = $this->createPermissionTemplateRepository();
+            $permTemplateRepo = $this->services()->permissionTemplateRepository();
             if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                 return $this->returnApiError('Invalid perm_templ_id: the specified permission template must be of type "group", not "user"', 400);
             }
@@ -429,7 +429,7 @@ class GroupsController extends PublicApiController
 
             // Validate that the template is a group template (if provided)
             if (isset($data['perm_templ_id'])) {
-                $permTemplateRepo = $this->createPermissionTemplateRepository();
+                $permTemplateRepo = $this->services()->permissionTemplateRepository();
                 if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                     return $this->returnApiError('Invalid permission template: must be a group template', 400);
                 }

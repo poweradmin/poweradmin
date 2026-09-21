@@ -52,8 +52,8 @@ class TestableListReverseZonesController extends ListReverseZonesController
         (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
 
         $userContext = new UserContextService();
-        $this->plant('dnsDataService', $this->createDnsDataService());
-        $this->plant('forwardZoneAssociationService', new ForwardZoneAssociationService($this->createZoneRepository()));
+        $this->plant('dnsDataService', $this->services()->dnsDataService());
+        $this->plant('forwardZoneAssociationService', new ForwardZoneAssociationService($this->services()->zoneRepository()));
         $this->plant('userContextService', $userContext);
         $this->plant('zoneSortingService', new ZoneSortingService(new ReverseZoneSorting(), $userContext));
     }

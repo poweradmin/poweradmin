@@ -45,14 +45,14 @@ class EditGroupController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = $this->createUserGroupRepository();
-        $memberRepository = $this->createUserGroupMemberRepository();
-        $zoneGroupRepository = $this->createZoneGroupRepository();
+        $groupRepository = $this->services()->userGroupRepository();
+        $memberRepository = $this->services()->userGroupMemberRepository();
+        $zoneGroupRepository = $this->services()->zoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
+        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
     }
 
     public function run(): void
@@ -105,7 +105,7 @@ class EditGroupController extends BaseController
             // Get current group details before update for change tracking
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
             $oldGroup = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
 
             // Track what changed
@@ -144,7 +144,7 @@ class EditGroupController extends BaseController
             $this->groupService->updateGroup($groupId, $name, $description, $permTemplId);
 
             if (!empty($changes)) {
-                $this->createAuditService()->logGroupEdit($groupId, (string)$name, $changes);
+                $this->services()->auditService()->logGroupEdit($groupId, (string)$name, $changes);
             }
 
             $this->setMessage('list_groups', 'success', _('Group has been updated successfully.'));
@@ -160,7 +160,7 @@ class EditGroupController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($userId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
@@ -186,7 +186,7 @@ class EditGroupController extends BaseController
             }
 
             // Get zone details
-            $repositoryFactory = $this->getRepositoryFactory();
+            $repositoryFactory = $this->services()->repositoryFactory();
             $domainRepository = $repositoryFactory->createDomainRepository();
 
             $zoneDetails = [];

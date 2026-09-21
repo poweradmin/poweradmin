@@ -64,7 +64,7 @@ class ListTemplateZonesController extends BaseController
         $currentPage = $this->httpRequest->getPage();
         $offset = ($currentPage - 1) * $itemsPerPage;
 
-        $zoneTemplate = $this->createZoneTemplateService();
+        $zoneTemplate = $this->services()->zoneTemplateService();
         $template_details = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [];
 
         // Get zones using this template with pagination
@@ -79,7 +79,7 @@ class ListTemplateZonesController extends BaseController
         $this->render('list_template_zones.html', [
             'template' => $template_details,
             'zones' => $paginatedZones,
-            'user_name' => $this->createUserRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
+            'user_name' => $this->services()->userRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
             'pagination' => $this->presentPagination($totalZones, $itemsPerPage, '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}'),
             'total_zones' => $totalZones,
             'iface_rowamount' => $itemsPerPage

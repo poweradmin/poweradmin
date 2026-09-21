@@ -90,7 +90,7 @@ class RecordTypeDefaultsController extends BaseController
             return;
         }
 
-        $audit = $this->createAuditService();
+        $audit = $this->services()->auditService();
 
         $allowed = array_flip($this->managedRecordTypes());
         $saved = 0;

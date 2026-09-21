@@ -41,7 +41,7 @@ class ZoneTemplatesController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
         $this->repository = $this->services()->zoneTemplateRepository();
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -321,7 +321,7 @@ class ZoneTemplatesController extends PublicApiController
             $owner = $isGlobal ? 0 : $userId;
             $newId = $this->repository->createZoneTemplate($name, $description, $owner, $userId);
 
-            $this->createAuditService()->logApiZoneTemplateAdd($newId, $name);
+            $this->services()->auditService()->logApiZoneTemplateAdd($newId, $name);
 
             return $this->returnApiResponse(['id' => $newId], true, 'Zone template created successfully', 201);
         } catch (\Throwable $e) {
@@ -443,7 +443,7 @@ class ZoneTemplatesController extends PublicApiController
 
             $this->repository->updateZoneTemplate($id, $name, $description, $newOwner);
 
-            $this->createAuditService()->logApiZoneTemplateEdit($id, $name);
+            $this->services()->auditService()->logApiZoneTemplateEdit($id, $name);
 
             return $this->returnApiResponse(null, true, 'Zone template updated successfully');
         } catch (\Throwable $e) {
@@ -516,7 +516,7 @@ class ZoneTemplatesController extends PublicApiController
 
             $this->repository->deleteZoneTemplate($id);
 
-            $this->createAuditService()->logApiZoneTemplateDelete($id);
+            $this->services()->auditService()->logApiZoneTemplateDelete($id);
 
             return $this->returnApiResponse(null, true, 'Zone template deleted successfully');
         } catch (\Throwable $e) {

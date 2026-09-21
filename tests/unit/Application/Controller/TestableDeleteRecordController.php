@@ -46,7 +46,7 @@ class TestableDeleteRecordController extends DeleteRecordController
         (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
 
         $this->plant('userContextService', new UserContextService());
-        $this->plant('permissionService', $this->createPermissionService());
+        $this->plant('permissionService', $this->services()->permissionService());
     }
 
     private function plant(string $property, object $value): void

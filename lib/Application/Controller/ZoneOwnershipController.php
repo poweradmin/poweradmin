@@ -50,9 +50,9 @@ class ZoneOwnershipController extends BaseController
     {
         parent::__construct($request);
         $this->userContextService = new UserContextService();
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->domainRepository = $this->createDomainRepository();
-        $this->permissionService = $this->createPermissionService();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->permissionService = $this->services()->permissionService();
     }
 
     public function run(): void
@@ -90,7 +90,7 @@ class ZoneOwnershipController extends BaseController
         }
 
         // Get owners
-        $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
         $owners = $this->zoneRepository->getZoneOwners($zone_id);
 
         // Filter out users who are already owners
@@ -100,11 +100,11 @@ class ZoneOwnershipController extends BaseController
         }));
 
         // Fetch group ownership
-        $zoneGroupRepo = $this->createZoneGroupRepository();
+        $zoneGroupRepo = $this->services()->zoneGroupRepository();
         $groupOwnerships = $zoneGroupRepo->findByDomainId($zone_id);
 
         // Fetch groups - all for name lookup, filtered for dropdown
-        $userGroupRepo = $this->createUserGroupRepository();
+        $userGroupRepo = $this->services()->userGroupRepository();
         $allGroups = $userGroupRepo->findAll();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $userGroups = $isAdmin ? $allGroups : $userGroupRepo->findByUserId($userId);
@@ -159,7 +159,7 @@ class ZoneOwnershipController extends BaseController
 
     private function handleFormSubmission(int $zone_id, string $zone_name, int $userId, bool $meta_edit): void
     {
-        $auditService = $this->createAuditService();
+        $auditService = $this->services()->auditService();
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         // Add owner
@@ -170,7 +170,7 @@ class ZoneOwnershipController extends BaseController
                 return;
             }
             // DomainManager is the one guarded write: it refuses unknown users.
-            $result = $this->createDomainManager()->addOwnerToZone($zone_id, (int)$newowner);
+            $result = $this->services()->domainManager()->addOwnerToZone($zone_id, (int)$newowner);
             $this->reportZoneWrite('zone-ownership', $result, _('Owner has been added successfully.'));
 
             if ($result->success) {
@@ -192,7 +192,7 @@ class ZoneOwnershipController extends BaseController
             // with no remaining owners and no group ownership. The mode hint in
             // the message tells the operator what kind of replacement is allowed.
             $currentOwners = $this->zoneRepository->getZoneOwners($zone_id);
-            $zoneGroupRepo = $this->createZoneGroupRepository();
+            $zoneGroupRepo = $this->services()->zoneGroupRepository();
             $currentGroups = $zoneGroupRepo->findByDomainId($zone_id);
             $deleteUserId = (int)$delete_owner;
             $isCurrentOwner = false;
@@ -247,7 +247,7 @@ class ZoneOwnershipController extends BaseController
             // Validate group ID against user's allowed groups
             $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
             if (!$isAdmin) {
-                $userGroupRepo = $this->createUserGroupRepository();
+                $userGroupRepo = $this->services()->userGroupRepository();
                 $allowedGroups = $userGroupRepo->findByUserId($userId);
                 $allowedGroupIds = array_map(fn($g) => $g->getId(), $allowedGroups);
                 if (!in_array($groupId, $allowedGroupIds)) {
@@ -256,7 +256,7 @@ class ZoneOwnershipController extends BaseController
                 }
             }
 
-            $zoneGroupRepo = $this->createZoneGroupRepository();
+            $zoneGroupRepo = $this->services()->zoneGroupRepository();
             $zoneGroupRepo->add($zone_id, $groupId);
             $this->permissionService->forgetZone($zone_id);
             $auditService->logZoneGroupAdd($zone_id, $zone_name, $groupId);
@@ -266,7 +266,7 @@ class ZoneOwnershipController extends BaseController
         // Delete group
         $delete_group = $this->httpRequest->getPostParam('delete_group');
         if ($delete_group !== null && is_numeric($delete_group) && $meta_edit) {
-            $zoneGroupRepo = $this->createZoneGroupRepository();
+            $zoneGroupRepo = $this->services()->zoneGroupRepository();
             // Orphan prevention: refuse if this deletion would leave the zone
             // with no remaining groups and no user owners. Applies in every
             // mode - the message hints what kind of replacement is allowed.

@@ -56,13 +56,13 @@ class ZonesRecordsBulkController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->backendProvider = $this->createDnsBackendProvider();
-        $this->reverseTtlResolver = $this->createReverseTtlResolver();
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = $this->createRecordRepository();
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->backendProvider = $this->services()->dnsBackendProvider();
+        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->recordRepository = $this->services()->recordRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
 
-        $this->recordManager = $this->createRecordManager();
+        $this->recordManager = $this->services()->recordManager();
     }
 
     /**
@@ -312,14 +312,14 @@ class ZonesRecordsBulkController extends PublicApiController
             // The serial moves with the records, inside the transaction; the rectify
             // waits for the commit since PowerDNS reads committed rows.
             if ($nonSOARecordModified) {
-                $this->createSOARecordManager()->updateSOASerial($zoneId);
+                $this->services()->soaRecordManager()->updateSOASerial($zoneId);
             }
             if ($useTransaction) {
                 $this->db->commit();
             }
             $this->recordManager->finalizeZone($zoneId, false);
 
-            $this->createAuditService()->logApiBulkRecords($zoneId, $results['total_operations']);
+            $this->services()->auditService()->logApiBulkRecords($zoneId, $results['total_operations']);
 
             // Any failed operation rethrows above, so reaching here means all succeeded
             return $this->returnApiResponse($results, true, 'Bulk operations completed successfully', 200);

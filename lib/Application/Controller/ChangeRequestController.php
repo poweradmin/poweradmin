@@ -47,7 +47,7 @@ class ChangeRequestController extends BaseController
         $this->setPageTitle(_('Change request'));
 
         $id = $this->requireNumericParam('id');
-        $request = $this->createZoneChangeRequestRepository()->find($id);
+        $request = $this->services()->zoneChangeRequestRepository()->find($id);
         if ($request === null) {
             $this->showError(_('There is no change request with this ID.'));
             return;
@@ -67,7 +67,7 @@ class ChangeRequestController extends BaseController
             return;
         }
         // The snapshot is the whole zone, so requesting rights alone do not open it
-        $canSeeSnapshot = $canReview || $isRequester || $this->createPermissionService()->canViewZone($userId, $request->zoneId);
+        $canSeeSnapshot = $canReview || $isRequester || $this->services()->permissionService()->canViewZone($userId, $request->zoneId);
         if ($this->httpRequest->getQueryParam('snapshot') !== null) {
             if (!$canSeeSnapshot) {
                 $this->showError(_('You do not have permission to view this zone.'));
@@ -105,7 +105,7 @@ class ChangeRequestController extends BaseController
         $comment = $comment === '' ? null : $comment;
         $userId = (int)$this->getCurrentUserId();
         $username = (string)$this->getUserContextService()->getLoggedInUsername();
-        $service = $this->createZoneChangeRequestService();
+        $service = $this->services()->zoneChangeRequestService();
 
         switch ($action) {
             case 'approve':
@@ -148,10 +148,10 @@ class ChangeRequestController extends BaseController
 
     private function show(ZoneChangeRequest $request, bool $canReview, bool $isRequester, bool $canSeeSnapshot): void
     {
-        $service = $this->createZoneChangeRequestService();
+        $service = $this->services()->zoneChangeRequestService();
         // Staleness only matters while the request can still be applied
         $stale = $request->canBeApplied() ? $service->staleActions($request) : [];
-        $zoneExists = $this->createDomainRepository()->zoneIdExists($request->zoneId);
+        $zoneExists = $this->services()->domainRepository()->zoneIdExists($request->zoneId);
 
         $this->render('change_request.html', [
             'request' => ChangeRequestPresenter::summary($request),

@@ -48,9 +48,9 @@ class ZonesController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->domainRepository = $this->createDomainRepository();
-        $this->apiPermissionService = $this->createApiPermissionService();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
         $this->ipAddressValidator = new IPAddressValidator();
 
         $this->zoneManagementService = $this->createZoneManagementService();
@@ -530,7 +530,7 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to create zones of this type', 403);
             }
 
-            $resolved = $this->createZoneCreateOwnershipResolver()->resolve($input, $userId);
+            $resolved = $this->services()->zoneCreateOwnershipResolver()->resolve($input, $userId);
             if ($resolved->hasError()) {
                 return $this->returnApiError($resolved->error, $resolved->status);
             }
@@ -577,7 +577,7 @@ class ZonesController extends PublicApiController
                 $this->updateDomainAccount($zoneId, $account);
             }
 
-            $this->createAuditService()->logApiZoneAdd($zoneId, $domain, $type);
+            $this->services()->auditService()->logApiZoneAdd($zoneId, $domain, $type);
 
             // Signing is best effort; the outcome tells a client whether it happened
             $payload = ['zone_id' => $zoneId];
@@ -600,7 +600,7 @@ class ZonesController extends PublicApiController
      */
     private function updateDomainAccount(int $zoneId, string $account): void
     {
-        $backendProvider = $this->createDnsBackendProvider();
+        $backendProvider = $this->services()->dnsBackendProvider();
         $backendProvider->updateZoneAccount($zoneId, $account);
     }
 
@@ -912,7 +912,7 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
-            $this->createAuditService()->logApiZoneDelete($zoneId, $zoneName);
+            $this->services()->auditService()->logApiZoneDelete($zoneId, $zoneName);
 
             return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
         } catch (\Throwable $e) {

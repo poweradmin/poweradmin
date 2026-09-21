@@ -42,8 +42,8 @@ class ManageGroupZonesController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = $this->createUserGroupRepository();
-        $zoneGroupRepository = $this->createZoneGroupRepository();
+        $groupRepository = $this->services()->userGroupRepository();
+        $zoneGroupRepository = $this->services()->zoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
@@ -128,11 +128,11 @@ class ManageGroupZonesController extends BaseController
             // Get group details and zone names before adding
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
-            $repositoryFactory = $this->getRepositoryFactory();
+            $repositoryFactory = $this->services()->repositoryFactory();
             $domainRepository = $repositoryFactory->createDomainRepository();
 
             $results = $this->zoneGroupService->bulkAddZones($groupId, $domainIds);
@@ -148,7 +148,7 @@ class ManageGroupZonesController extends BaseController
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
 
-                $this->createAuditService()->logGroupZonesAdd($groupId, $groupName, $this->zoneLogNames($domainRepository, $results['success']));
+                $this->services()->auditService()->logGroupZonesAdd($groupId, $groupName, $this->zoneLogNames($domainRepository, $results['success']));
             }
 
             if (!empty($results['failed'])) {
@@ -185,11 +185,11 @@ class ManageGroupZonesController extends BaseController
             // Get group details and zone names before removing
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
-            $repositoryFactory = $this->getRepositoryFactory();
+            $repositoryFactory = $this->services()->repositoryFactory();
             $domainRepository = $repositoryFactory->createDomainRepository();
 
             $results = $this->zoneGroupService->bulkRemoveZones($groupId, $domainIds);
@@ -205,7 +205,7 @@ class ManageGroupZonesController extends BaseController
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
 
-                $this->createAuditService()->logGroupZonesRemove($groupId, $groupName, $this->zoneLogNames($domainRepository, $results['success']));
+                $this->services()->auditService()->logGroupZonesRemove($groupId, $groupName, $this->zoneLogNames($domainRepository, $results['success']));
             }
 
             if (!empty($results['failed'])) {
@@ -260,7 +260,7 @@ class ManageGroupZonesController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = $this->createPermissionService()->isAdmin($userId);
+            $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
@@ -269,7 +269,7 @@ class ManageGroupZonesController extends BaseController
                 return;
             }
 
-            $repositoryFactory = $this->getRepositoryFactory();
+            $repositoryFactory = $this->services()->repositoryFactory();
             $domainRepository = $repositoryFactory->createDomainRepository();
 
             // Get zones owned by this group

@@ -54,7 +54,7 @@ class OidcCallbackController extends BaseController
             $oidcProvisioningService,
             $this->logger,
             $this->services()->authenticationService(),
-            $this->createAuditService(),
+            $this->services()->auditService(),
             $this->services()->mfaService(),
             $this->httpRequest
         );
@@ -87,7 +87,7 @@ class OidcCallbackController extends BaseController
 
             // operation:login_error (not login_failed) - IdP-side handshake error
             // should not feed fail2ban brute-force counters.
-            $this->createAuditService()->logSsoLoginError(AuthMethod::OIDC, $error);
+            $this->services()->auditService()->logSsoLoginError(AuthMethod::OIDC, $error);
 
             $sessionEntity = new SessionEntity(
                 _('Authentication failed: ') . $errorDescription,
@@ -102,7 +102,7 @@ class OidcCallbackController extends BaseController
 
         // Log successful OIDC login if session was established
         if (isset($_SESSION[SessionKeys::USERID])) {
-            $this->createAuditService()->logSsoLoginSuccess(AuthMethod::OIDC);
+            $this->services()->auditService()->logSsoLoginSuccess(AuthMethod::OIDC);
         }
     }
 }

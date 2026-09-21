@@ -50,9 +50,9 @@ class ZoneDnssecController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->domainRepository = $this->createDomainRepository();
-        $this->apiPermissionService = $this->createApiPermissionService();
-        $this->dnssecProvider = $this->createDnssecProvider();
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->dnssecProvider = $this->services()->dnssecProvider();
 
         // DNSSEC works whenever the PowerDNS API is configured, independent of the
         // dns.backend setting; createApiClient() returns null when it is not.
@@ -253,7 +253,7 @@ class ZoneDnssecController extends PublicApiController
      */
     protected function zoneSigningService(): ZoneSigningService
     {
-        return $this->createZoneSigningService();
+        return $this->services()->zoneSigningService();
     }
 
     /**

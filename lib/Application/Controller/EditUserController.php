@@ -50,8 +50,8 @@ class EditUserController extends BaseController
         parent::__construct($request);
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
-        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
-        $this->auditService = $this->createAuditService();
+        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
+        $this->auditService = $this->services()->auditService();
     }
 
     public function run(): void
@@ -92,7 +92,7 @@ class EditUserController extends BaseController
 
         // Same gate as the API: a chosen template must stay within the caller's own authority.
         if (array_key_exists('perm_templ', $input)) {
-            $templateError = PermissionTemplateAssignmentGuard::apply($this->createPermissionService(), null, $callerId, $input, $editId);
+            $templateError = PermissionTemplateAssignmentGuard::apply($this->services()->permissionService(), null, $callerId, $input, $editId);
             if ($templateError !== null) {
                 $this->setMessage('edit_user', 'error', UserFormMessages::templateAssignmentError($templateError));
                 $this->showUserEditForm($editId, $policyConfig);
@@ -100,7 +100,7 @@ class EditUserController extends BaseController
             }
         }
 
-        $updated = $this->createUserManagementService()->updateUser($editId, $input);
+        $updated = $this->services()->userManagementService()->updateUser($editId, $input);
         if ($updated['success']) {
             $username = (string)($input['username'] ?? $stored['username']);
             $oldPermTempl = (int)$stored['tpl_id'];
@@ -175,7 +175,7 @@ class EditUserController extends BaseController
         }
 
         // Prevent non-superusers from editing superuser accounts (privilege escalation protection)
-        $targetIsSuperuser = $this->createPermissionService()->isAdmin($editId);
+        $targetIsSuperuser = $this->services()->permissionService()->isAdmin($editId);
         $currentIsSuperuser = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
         if ($targetIsSuperuser && !$currentIsSuperuser) {
@@ -270,7 +270,7 @@ class EditUserController extends BaseController
         // the posted password is ignored and the other fields still save. An LDAP
         // account has no local password to set.
         $password = (string)$this->httpRequest->getPostParam('password', '');
-        if ($password !== '' && !$useLdap && $this->createApiPermissionService()->canEditUserPassword($callerId, $editId)) {
+        if ($password !== '' && !$useLdap && $this->services()->apiPermissionService()->canEditUserPassword($callerId, $editId)) {
             $input['password'] = $password;
         }
 
@@ -341,8 +341,8 @@ class EditUserController extends BaseController
         $isExternalAuth = AuthMethod::fromDb($user['auth_type'] ?? null)->isExternal();
 
         // Fetch user's group memberships
-        $groupMemberRepo = $this->createUserGroupMemberRepository();
-        $userGroupRepo = $this->createUserGroupRepository();
+        $groupMemberRepo = $this->services()->userGroupMemberRepository();
+        $userGroupRepo = $this->services()->userGroupRepository();
 
         $memberships = $groupMemberRepo->findByUserId($editId);
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
@@ -402,7 +402,7 @@ class EditUserController extends BaseController
             'user_groups' => $userGroups,
             'available_groups' => $availableGroupsArray,
             'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
-            'can_manage_users' => $this->createPermissionService()->canManageUsers((int)$this->userContextService->getLoggedInUserId()),
+            'can_manage_users' => $this->services()->permissionService()->canManageUsers((int)$this->userContextService->getLoggedInUserId()),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
@@ -441,8 +441,8 @@ class EditUserController extends BaseController
         // Convert to integers
         $groupIds = array_map('intval', $groupIds);
 
-        $groupRepository = $this->createUserGroupRepository();
-        $memberRepository = $this->createUserGroupMemberRepository();
+        $groupRepository = $this->services()->userGroupRepository();
+        $memberRepository = $this->services()->userGroupMemberRepository();
         $membershipService = new GroupMembershipService($memberRepository, $groupRepository);
 
         // Get target user details for logging
@@ -505,7 +505,7 @@ class EditUserController extends BaseController
 
     private function getUserDetails(int $editId): array
     {
-        $users = $this->createUserRepository()->getUserDetailList($this->config->get('ldap', 'enabled', false), null, $editId);
+        $users = $this->services()->userRepository()->getUserDetailList($this->config->get('ldap', 'enabled', false), null, $editId);
 
         if (empty($users)) {
             $this->showError(_('User does not exist.'));

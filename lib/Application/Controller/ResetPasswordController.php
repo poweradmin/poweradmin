@@ -53,7 +53,7 @@ class ResetPasswordController extends BaseController
 
         // Create PasswordResetService with dependencies
         $tokenRepository = $this->services()->passwordResetTokenRepository();
-        $userRepository = $this->createUserRepository();
+        $userRepository = $this->services()->userRepository();
         $mailService = new MailService($this->config, $this->logger);
         $authService = UserAuthenticationService::fromConfig($this->config);
         $this->client = $this->services()->clientContext();
@@ -231,7 +231,7 @@ class ResetPasswordController extends BaseController
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
 
-            $this->createAuditService()->logPasswordReset((int)$userId);
+            $this->services()->auditService()->logPasswordReset((int)$userId);
 
             // Set success message and redirect to login
             $this->setMessage('login', 'success', 'Your password has been successfully reset. You can now log in with your new password.');

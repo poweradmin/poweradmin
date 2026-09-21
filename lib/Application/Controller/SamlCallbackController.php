@@ -54,7 +54,7 @@ class SamlCallbackController extends BaseController
             $userProvisioningService,
             $this->logger,
             $this->services()->authenticationService(),
-            $this->createAuditService(),
+            $this->services()->auditService(),
             $this->services()->mfaService(),
             $this->httpRequest
         );
@@ -104,12 +104,12 @@ class SamlCallbackController extends BaseController
 
             // Log successful SAML login if session was established
             if (isset($_SESSION[SessionKeys::USERID])) {
-                $this->createAuditService()->logSsoLoginSuccess(AuthMethod::SAML);
+                $this->services()->auditService()->logSsoLoginSuccess(AuthMethod::SAML);
             }
         } catch (\Exception $e) {
             // operation:login_error (not login_failed) - SAML assertion-handling
             // failure should not feed fail2ban brute-force counters.
-            $this->createAuditService()->logSsoLoginError(AuthMethod::SAML, $e->getMessage());
+            $this->services()->auditService()->logSsoLoginError(AuthMethod::SAML, $e->getMessage());
 
             $sessionEntity = new SessionEntity(
                 _('SAML authentication failed: ') . $e->getMessage(),
@@ -128,7 +128,7 @@ class SamlCallbackController extends BaseController
             // Process SAML Single Logout
             $this->samlService->handleSingleLogout();
 
-            $this->createAuditService()->logSamlLogout($username);
+            $this->services()->auditService()->logSamlLogout($username);
 
             // Clear the session and redirect to login
             $sessionEntity = new SessionEntity(_('You have been logged out'), 'info');

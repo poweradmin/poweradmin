@@ -59,7 +59,7 @@ class ListLogZonesController extends AbstractListLogController
 
     protected function authorize(): bool
     {
-        $logPermission = $this->createPermissionService()->getZoneLogPermissionLevel((int)$this->getCurrentUserId());
+        $logPermission = $this->services()->permissionService()->getZoneLogPermissionLevel((int)$this->getCurrentUserId());
 
         if ($logPermission === 'none') {
             // Existing deny path: logs the access denial via AuditService and halts.
@@ -129,7 +129,7 @@ class ListLogZonesController extends AbstractListLogController
         // Only resolve the zone name/breadcrumb when the requested zone survived the
         // ownership intersection, so owner-scoped users cannot enumerate other zones' names.
         if ($this->requestedZoneId !== null && in_array($this->requestedZoneId, $this->ownedZoneIds, true)) {
-            $domainName = $this->createDomainRepository()->getDomainNameById($this->requestedZoneId);
+            $domainName = $this->services()->domainRepository()->getDomainNameById($this->requestedZoneId);
             $this->zoneFilterName = $domainName !== null ? DnsIdnService::toUtf8($domainName) : null;
             $this->isReverseZone = $domainName !== null && DnsHelper::isReverseZoneName($domainName);
         }
@@ -170,7 +170,7 @@ class ListLogZonesController extends AbstractListLogController
     {
         $userId = $this->getCurrentUserId() ?? 0;
 
-        return $userId > 0 ? $this->createZoneRepository()->getOwnedZoneIds($userId) : [];
+        return $userId > 0 ? $this->services()->zoneRepository()->getOwnedZoneIds($userId) : [];
     }
 
     protected function parseLogEvents(array $logs): array

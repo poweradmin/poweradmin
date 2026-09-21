@@ -45,9 +45,9 @@ class DeleteRecordsController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->reverseRecordCreator = $this->createReverseRecordCreator();
+        $this->reverseRecordCreator = $this->services()->reverseRecordCreator();
         $this->userContextService = new UserContextService();
-        $this->permissionService = $this->createPermissionService();
+        $this->permissionService = $this->services()->permissionService();
     }
 
     public function run(): void
@@ -86,7 +86,7 @@ class DeleteRecordsController extends BaseController
         if (!$this->changeApprovalEnabled()) {
             return;
         }
-        $recordRepository = $this->createRecordRepository();
+        $recordRepository = $this->services()->recordRepository();
         $checked = [];
         foreach ($record_ids as $record_id) {
             $zid = (int)$recordRepository->getZoneIdFromRecordId($record_id);
@@ -110,10 +110,10 @@ class DeleteRecordsController extends BaseController
      */
     public function deleteRecords(array $record_ids): void
     {
-        $recordRepository = $this->createRecordRepository();
-        $recordManager = $this->createRecordManager();
-        $domainRepository = $this->createDomainRepository();
-        $audit = $this->createAuditService();
+        $recordRepository = $this->services()->recordRepository();
+        $recordManager = $this->services()->recordManager();
+        $domainRepository = $this->services()->domainRepository();
+        $audit = $this->services()->auditService();
 
         // One submission, one changeset, so a multi-record delete reads as a single
         // action in the change log rather than N unrelated deletions. The selection can
@@ -212,8 +212,8 @@ class DeleteRecordsController extends BaseController
      */
     public function showRecords(array $record_ids): void
     {
-        $recordRepository = $this->createRecordRepository();
-        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->services()->recordRepository();
+        $domainRepository = $this->services()->domainRepository();
         $records = [];
 
         foreach ($record_ids as $record_id) {

@@ -208,7 +208,7 @@ abstract class PublicApiController extends AbstractApiController
 
         // Create API key service to validate the key against the database
         $config = $this->getConfig();
-        $apiKeyService = new ApiKeyService($this->services()->apiKeyRepository(), $this->db, $config, $this->createPermissionService());
+        $apiKeyService = new ApiKeyService($this->services()->apiKeyRepository(), $this->db, $config, $this->services()->permissionService());
 
         // Authenticate using the API key service
         return $apiKeyService->authenticate($apiKey);
@@ -266,7 +266,7 @@ abstract class PublicApiController extends AbstractApiController
 
     protected function getAuthenticatedUsername(): string
     {
-        $user = $this->createUserRepository()->getUserById($this->authenticatedUserId);
+        $user = $this->services()->userRepository()->getUserById($this->authenticatedUserId);
 
         return (string)($user['username'] ?? '') ?: 'user_id:' . $this->authenticatedUserId;
     }
@@ -423,7 +423,7 @@ abstract class PublicApiController extends AbstractApiController
             // violation) rejected and silently dropped.
             $path = mb_substr($this->request->getPathInfo(), 0, 1500);
 
-            $this->createAuditService()->logApiRequest($operation, $method, $path, $status, $keyId, $user);
+            $this->services()->auditService()->logApiRequest($operation, $method, $path, $status, $keyId, $user);
             $this->pruneApiLog($config);
         } catch (\Throwable $e) {
             // Audit logging must never break the API response.
