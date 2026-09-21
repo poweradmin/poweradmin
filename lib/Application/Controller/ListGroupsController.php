@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\GroupService;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 
 /**

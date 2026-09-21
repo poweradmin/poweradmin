@@ -27,7 +27,6 @@ use Exception;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\Auth\SessionKeys;

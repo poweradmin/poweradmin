@@ -23,7 +23,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 

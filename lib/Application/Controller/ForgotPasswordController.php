@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
-use Poweradmin\BaseController;
 use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserAuthenticationService;

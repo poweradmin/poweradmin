@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use DateTimeImmutable;
 use DateInterval;
 use DateTimeZone;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;

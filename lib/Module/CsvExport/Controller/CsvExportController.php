@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\CsvExport\Controller;
 
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 

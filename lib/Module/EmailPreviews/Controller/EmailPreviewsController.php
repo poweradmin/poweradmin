@@ -23,7 +23,7 @@
 namespace Poweradmin\Module\EmailPreviews\Controller;
 
 use Exception;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Module\EmailPreviews\Service\EmailPreviewService;

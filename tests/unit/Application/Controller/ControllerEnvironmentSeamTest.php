@@ -28,7 +28,7 @@ use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PaginationService;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;

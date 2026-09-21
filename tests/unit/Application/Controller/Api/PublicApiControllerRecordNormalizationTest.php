@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 

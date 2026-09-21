@@ -372,7 +372,7 @@ class RoutingConfigurationTest extends TestCase
 
             [$className] = explode('::', (string)$route->getDefault('_controller'));
             $this->assertFalse(
-                is_subclass_of($className, \Poweradmin\BaseController::class),
+                is_subclass_of($className, \Poweradmin\Application\Controller\BaseController::class),
                 sprintf('%s must not extend BaseController; it answers without a database', $className)
             );
         }

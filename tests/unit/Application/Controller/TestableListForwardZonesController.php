@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use Poweradmin\Application\Controller\ListForwardZonesController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Zone\ZoneSortingService;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use ReflectionMethod;

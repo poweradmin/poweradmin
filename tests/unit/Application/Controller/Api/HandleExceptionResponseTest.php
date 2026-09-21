@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use RuntimeException;

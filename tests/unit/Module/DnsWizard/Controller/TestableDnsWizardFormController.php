@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit\Module\DnsWizard\Controller;
 
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Module\DnsWizard\Controller\DnsWizardFormController;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;

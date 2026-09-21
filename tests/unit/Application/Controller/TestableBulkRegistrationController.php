@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use Poweradmin\Application\Controller\BulkRegistrationController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use ReflectionMethod;
 
 /**

@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Application\Service\Auth\AuthenticationService;

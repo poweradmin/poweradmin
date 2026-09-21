@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

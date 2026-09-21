@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\ZoneImportExport\Controller;
 
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 use Poweradmin\Domain\Service\Dns\BindZoneFileGenerator;

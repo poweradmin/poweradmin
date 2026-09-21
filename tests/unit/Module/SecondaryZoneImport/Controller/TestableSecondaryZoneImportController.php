@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit\Module\SecondaryZoneImport\Controller;
 
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Module\SecondaryZoneImport\Controller\SecondaryZoneImportController;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;

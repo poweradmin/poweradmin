@@ -33,7 +33,6 @@ use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\ZoneSaveMessages;
 use Poweradmin\Application\Service\ZoneSigningMessages;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Model\ZoneType;

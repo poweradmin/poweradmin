@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;

@@ -26,7 +26,6 @@ use InvalidArgumentException;
 use Exception;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserPreference;
 
 /**

@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordManagerService;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Dns\BulkRecordParser;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;

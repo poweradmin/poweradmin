@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;

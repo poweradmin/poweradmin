@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use Poweradmin\Application\Service\PaginationService;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 
 /**
  * Minimal concrete controller for exercising the ControllerEnvironment seam;

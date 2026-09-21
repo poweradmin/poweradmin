@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\ChangeRequestPresenter;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Utility\DnsIdnService;
 

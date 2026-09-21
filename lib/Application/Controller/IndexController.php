@@ -26,7 +26,6 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Application\Service\SamlConfigurationService;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Enum\AuthMethod;

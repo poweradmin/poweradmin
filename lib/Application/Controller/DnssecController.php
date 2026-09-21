@@ -24,7 +24,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\ZoneSigningMessages;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;

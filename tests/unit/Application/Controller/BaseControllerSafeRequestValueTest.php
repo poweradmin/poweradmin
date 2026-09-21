@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use ReflectionClass;
 
 /**

@@ -25,7 +25,7 @@ namespace Poweradmin\Module\DnsWizard\Controller;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordAddAccess;
 use Poweradmin\Application\Service\RecordAddService;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;

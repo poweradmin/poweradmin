@@ -151,7 +151,7 @@ class IndexEntryPointTest extends TestCase
     {
         // Test that BaseController class exists
         $this->assertTrue(
-            class_exists('Poweradmin\BaseController'),
+            class_exists('Poweradmin\Application\Controller\BaseController'),
             'BaseController should be available'
         );
 
@@ -176,7 +176,7 @@ class IndexEntryPointTest extends TestCase
         $requiredClasses = [
             'Poweradmin\Application\Routing\SymfonyRouter',
             'Poweradmin\Infrastructure\Configuration\ConfigurationManager',
-            'Poweradmin\BaseController',
+            'Poweradmin\Application\Controller\BaseController',
             'Poweradmin\Application\Controller\NotFoundController',
         ];
 

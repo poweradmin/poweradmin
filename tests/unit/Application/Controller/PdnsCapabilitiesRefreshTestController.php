@@ -21,7 +21,7 @@
  */
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 
 /**
  * BaseController whose version refresh writes a canned version to the

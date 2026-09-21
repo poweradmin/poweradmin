@@ -135,7 +135,7 @@ parameters:
         - lib/Infrastructure/*
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
+        - lib/Application/Controller/BaseController.php
         - lib/Application/Bootstrap.php
         - lib/Application/Service/Auth/*
         - lib/Application/Service/CsrfTokenService.php
@@ -163,7 +163,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -184,7 +183,7 @@ parameters:
         - lib/Infrastructure/*
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
+        - lib/Application/Controller/BaseController.php
         - lib/Application/Controller/Api/AbstractApiController.php
         - lib/Application/Controller/Api/HealthController.php
         - lib/Application/Controller/PingController.php
@@ -203,7 +202,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -220,7 +218,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -237,7 +234,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -254,7 +250,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -275,7 +270,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -292,7 +286,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -309,7 +302,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -326,7 +318,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -343,7 +334,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -360,7 +350,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -377,7 +366,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -394,7 +382,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -411,7 +398,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -428,7 +414,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -445,7 +430,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -462,7 +446,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -492,7 +475,6 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
         - lib/LocaleManager.php
         - lib/Application/*
         - lib/Infrastructure/*
@@ -517,7 +499,7 @@ parameters:
         - dynamic_update.php
         - lib/AppInitializer.php
         - lib/AppManager.php
-        - lib/BaseController.php
+        - lib/Application/Controller/BaseController.php
         - lib/LocaleManager.php
         - lib/Pages.php
         - lib/Application/Service/*
