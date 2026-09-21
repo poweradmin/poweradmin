@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
-use Poweradmin\Domain\Service\ZoneOwnershipIndex;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipIndex;
 
 /**
  * Collaborators shared by the forward and reverse zone listings. Everything the

@@ -29,7 +29,7 @@ use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
-use Poweradmin\Domain\Service\ZoneSigningOutcome;
+use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**

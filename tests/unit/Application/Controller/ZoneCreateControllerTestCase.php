@@ -26,16 +26,16 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
-use Poweradmin\Domain\Service\ZoneTemplateService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
-use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneOwnershipResolution;
-use Poweradmin\Domain\Service\ZoneSigningResult;
+use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Zone\ZoneSigningResult;
 
 /**
  * Shared fixture for the zone creation forms: the ownership resolver, the

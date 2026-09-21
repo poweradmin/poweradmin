@@ -32,10 +32,10 @@ use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
-use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneOwnershipResolution;
-use Poweradmin\Domain\Service\ZoneSigningOutcome;
-use Poweradmin\Domain\Service\ZoneSigningResult;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
+use Poweradmin\Domain\Service\Zone\ZoneSigningResult;
 
 /**
  * Every zone creation form goes through one flow: the name is normalised,

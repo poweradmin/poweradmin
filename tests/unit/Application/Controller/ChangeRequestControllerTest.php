@@ -26,8 +26,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\ChangeRequestController;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
-use Poweradmin\Domain\Service\ZoneChangeRequestResult;
-use Poweradmin\Domain\Service\ZoneChangeRequestService;
+use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
+use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use RuntimeException;
 
 #[CoversClass(ChangeRequestController::class)]

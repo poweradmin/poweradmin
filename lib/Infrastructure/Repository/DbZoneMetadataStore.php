@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
-use Poweradmin\Domain\Service\ZoneMetadataService;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
 

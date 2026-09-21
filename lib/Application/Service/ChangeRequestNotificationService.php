@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Port\ChangeRequestNotifierInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;

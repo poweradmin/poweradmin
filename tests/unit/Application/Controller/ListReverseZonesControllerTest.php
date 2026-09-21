@@ -29,7 +29,7 @@ use Poweradmin\Application\Controller\ListReverseZonesController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Domain\Service\ZoneOwnershipIndex;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipIndex;
 
 /**
  * Characterizes the reverse zone listing next to its forward twin: the same

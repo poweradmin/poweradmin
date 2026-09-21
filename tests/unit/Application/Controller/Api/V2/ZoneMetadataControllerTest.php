@@ -27,9 +27,9 @@ use Poweradmin\Application\Controller\Api\V2\ZoneMetadataController;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
-use Poweradmin\Domain\Service\ZoneMetadataOutcome;
-use Poweradmin\Domain\Service\ZoneMetadataResult;
-use Poweradmin\Domain\Service\ZoneMetadataService;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataOutcome;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataResult;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
 

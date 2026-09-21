@@ -27,7 +27,7 @@ use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 
 /**
  * Permission gate for the public API. A facade over PermissionService so the API

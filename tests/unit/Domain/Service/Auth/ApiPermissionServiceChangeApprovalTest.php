@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\FakeConfiguration;
 

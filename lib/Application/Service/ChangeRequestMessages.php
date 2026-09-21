@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Service\ZoneChangeRequestResult;
+use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 
 /**
  * Words a ZoneChangeRequestService outcome for the web flash messages.

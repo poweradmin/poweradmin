@@ -38,7 +38,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\UserManagementService;
-use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\UserProfileAssembler;
 
 #[CoversClass(UserManagementService::class)]

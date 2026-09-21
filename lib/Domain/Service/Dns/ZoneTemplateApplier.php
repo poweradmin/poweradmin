@@ -28,8 +28,8 @@ use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
-use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
-use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 use Psr\Log\LoggerInterface;
 use Throwable;
 

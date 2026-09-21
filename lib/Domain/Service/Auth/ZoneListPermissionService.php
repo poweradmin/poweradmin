@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\Auth;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
-use Poweradmin\Domain\Service\ZoneOwnershipIndex;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipIndex;
 
 /**
  * Builds the ownership index the zone lists and the search page use to decide

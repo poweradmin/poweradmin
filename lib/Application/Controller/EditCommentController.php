@@ -29,7 +29,7 @@ use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 use Poweradmin\Application\Service\ChangeRequestMessages;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 
 /**
  * Handles the zone comment form: shows the comment and saves it when the user may edit the zone.

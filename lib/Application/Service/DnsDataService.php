@@ -31,7 +31,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\ZoneCountService;
+use Poweradmin\Domain\Service\Zone\ZoneCountService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Database\CanonicalZoneSql;

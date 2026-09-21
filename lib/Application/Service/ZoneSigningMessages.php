@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Service\ZoneSigningOutcome;
-use Poweradmin\Domain\Service\ZoneSigningResult;
+use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
+use Poweradmin\Domain\Service\Zone\ZoneSigningResult;
 
 /**
  * Words a ZoneSigningService outcome for the web pages that sign or unsign

@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
-use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 
 #[CoversClass(ZoneCreateFormMessages::class)]
 class ZoneCreateFormMessagesTest extends TestCase

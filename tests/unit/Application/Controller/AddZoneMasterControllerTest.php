@@ -26,10 +26,10 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Poweradmin\Application\Controller\AddZoneMasterController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneOwnershipResolution;
-use Poweradmin\Domain\Service\ZoneSigningOutcome;
-use Poweradmin\Domain\Service\ZoneSigningResult;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
+use Poweradmin\Domain\Service\Zone\ZoneSigningResult;
 
 /**
  * Characterizes the add-primary-zone form: its gates, the order of its

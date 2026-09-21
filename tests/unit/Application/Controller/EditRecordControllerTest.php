@@ -31,15 +31,15 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserPreferenceService;
-use Poweradmin\Domain\Service\ZoneChangeRequestResult;
-use Poweradmin\Domain\Service\ZoneChangeRequestService;
+use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
+use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 
 /**
  * Characterizes the edit-record page: the order in which it refuses a request,

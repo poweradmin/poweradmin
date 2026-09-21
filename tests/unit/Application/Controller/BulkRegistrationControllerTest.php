@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\BulkRegistrationController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 
 /**
  * Characterizes bulk registration: its gates, one ownership resolution for

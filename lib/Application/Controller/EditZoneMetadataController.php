@@ -29,7 +29,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
-use Poweradmin\Domain\Service\ZoneMetadataService;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 

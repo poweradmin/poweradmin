@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Presenter;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Presenter\EditZonePresenter;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\RecordTypeService;
 
 /**

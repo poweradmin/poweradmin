@@ -23,8 +23,8 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Service\ZoneMetadataOutcome;
-use Poweradmin\Domain\Service\ZoneMetadataResult;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataOutcome;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataResult;
 
 /**
  * Words a refused ZoneMetadataService write for the metadata editor.

@@ -26,9 +26,9 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
-use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Domain\Service\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 
 /**
  * Reads the owner and group fields of the add-zone forms and applies the

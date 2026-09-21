@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Poweradmin\Application\Controller\ListForwardZonesController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Domain\Service\ZoneOwnershipIndex;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipIndex;
 
 /**
  * Characterizes the forward zone listing: the view gate, the sync action's own

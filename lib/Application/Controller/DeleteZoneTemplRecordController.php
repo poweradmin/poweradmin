@@ -24,8 +24,8 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\ZoneTemplateService;
-use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 
 /**
  * Handles the delete confirmation for a zone template record and marks the template modified after deletion.

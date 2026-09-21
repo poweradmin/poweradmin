@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ZoneMetadataFormMessages;
-use Poweradmin\Domain\Service\ZoneMetadataOutcome;
-use Poweradmin\Domain\Service\ZoneMetadataResult;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataOutcome;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataResult;
 
 #[CoversClass(ZoneMetadataFormMessages::class)]
 class ZoneMetadataFormMessagesTest extends TestCase

@@ -27,8 +27,8 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Domain\Service\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 
 /**
  * Imports a zone from a live primary by creating a secondary, triggering an

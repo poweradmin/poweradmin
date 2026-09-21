@@ -26,7 +26,7 @@ use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DomainHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 

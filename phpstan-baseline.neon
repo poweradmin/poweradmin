@@ -136,7 +136,7 @@ parameters:
 			message: '#^Namespace Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient matches Poweradmin\\Infrastructure\\Api\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 2
-			path: lib/Domain/Service/CatalogZoneService.php
+			path: lib/Domain/Service/Zone/CatalogZoneService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
@@ -256,43 +256,43 @@ parameters:
 			message: '#^Class Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
 			identifier: disallowed.class
 			count: 3
-			path: lib/Domain/Service/ZoneManagementService.php
+			path: lib/Domain/Service/Zone/ZoneManagementService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
-			path: lib/Domain/Service/ZoneManagementService.php
+			path: lib/Domain/Service/Zone/ZoneManagementService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Service\\DnsServiceFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Service\\DnsServiceFactory matches Poweradmin\\Infrastructure\\Service\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 2
-			path: lib/Domain/Service/ZoneManagementService.php
+			path: lib/Domain/Service/Zone/ZoneManagementService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
-			path: lib/Domain/Service/ZoneMetadataService.php
+			path: lib/Domain/Service/Zone/ZoneMetadataService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
-			path: lib/Domain/Service/ZoneMetadataService.php
+			path: lib/Domain/Service/Zone/ZoneMetadataService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
 			identifier: disallowed.class
 			count: 2
-			path: lib/Domain/Service/ZoneSortingService.php
+			path: lib/Domain/Service/Zone/ZoneSortingService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
-			path: lib/Domain/Service/ZoneSortingService.php
+			path: lib/Domain/Service/Zone/ZoneSortingService.php
 
 		-
 			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'

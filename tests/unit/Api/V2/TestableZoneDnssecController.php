@@ -6,7 +6,7 @@ use Poweradmin\Application\Controller\Api\V2\ZoneDnssecController;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
-use Poweradmin\Domain\Service\ZoneSigningService;
+use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;

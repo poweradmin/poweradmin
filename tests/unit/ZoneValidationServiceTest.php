@@ -4,7 +4,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Service\ZoneValidationService;
+use Poweradmin\Domain\Service\Zone\ZoneValidationService;
 
 /**
  * Tests for ZoneValidationService

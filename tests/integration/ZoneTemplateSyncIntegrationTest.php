@@ -25,7 +25,7 @@ namespace integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateSyncService;
 use TestHelpers\FakeConfiguration;
 
 /**

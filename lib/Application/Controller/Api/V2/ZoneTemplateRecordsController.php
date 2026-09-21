@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
-use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateRecordValidationService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 

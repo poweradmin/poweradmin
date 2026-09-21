@@ -37,7 +37,7 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Application\Service\ChangeRequestMessages;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 
 /**
  * Handles the batch PTR form: creates PTR records for an IPv4 or IPv6 network, optionally with forward records.

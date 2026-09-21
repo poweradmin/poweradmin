@@ -27,15 +27,15 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Domain\Service\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Application\Service\ChangeRequestMessages;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 
 /**
  * The /tools/zone-import page: uploads a BIND zone file, previews the parsed records and creates the zone.

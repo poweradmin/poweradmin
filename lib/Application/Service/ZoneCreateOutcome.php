@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Service\ZoneSigningResult;
+use Poweradmin\Domain\Service\Zone\ZoneSigningResult;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**

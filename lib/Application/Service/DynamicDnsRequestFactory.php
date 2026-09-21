@@ -26,7 +26,7 @@ use Closure;
 use PDO;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Auth\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;

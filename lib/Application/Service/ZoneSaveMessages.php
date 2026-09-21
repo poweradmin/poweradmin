@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
-use Poweradmin\Domain\Service\ZoneSaveResult;
+use Poweradmin\Domain\Service\Zone\ZoneSaveResult;
 
 /**
  * Words a ZoneEditService save for the zone editor's flash message.

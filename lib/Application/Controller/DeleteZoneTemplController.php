@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\ZoneTemplateService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

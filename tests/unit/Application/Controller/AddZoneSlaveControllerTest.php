@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\AddZoneSlaveController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 
 /**
  * Characterizes the add-secondary-zone form: its gates, what reaches the

@@ -32,7 +32,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
-use Poweradmin\Domain\Service\ZoneOwnershipIndex;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipIndex;
 
 /**
  * Characterizes what the search page decides for itself: the permission gate,
