@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Web;
+namespace Poweradmin\Application\Web;
 
 use Closure;
 use Poweradmin\AppManager;
@@ -28,8 +28,6 @@ use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Application\Service\AvatarService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PaginationService;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
@@ -37,6 +35,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Poweradmin\Infrastructure\Service\StyleManager;
+use Poweradmin\Infrastructure\Web\PermissionTwigExtension;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Version;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -46,7 +45,7 @@ use Poweradmin\Domain\Model\RecordType;
  * Renders the shared page chrome (header, footer, Twig globals) around
  * controller-rendered templates.
  *
- * The permission and debug-query lookups arrive as closures so they stay
+ * The permission, server-info and debug-query lookups arrive as closures so they stay
  * deferred until a template actually needs them, and so this class never
  * triggers authentication or database work on construction.
  */
@@ -59,7 +58,10 @@ class PageRenderer
     private ConfigurationManager $config;
     private CsrfTokenService $csrfTokenService;
     private UserContextService $userContextService;
+    private ModuleRegistry $moduleRegistry;
+    private bool $isApiBackend;
     private Closure $hasPermission;
+    private Closure $getPdnsServerInfo;
     private Closure $getDebugQueries;
     private bool $wideLayout;
     private ?Closure $pendingChangeRequestCount;
@@ -70,12 +72,20 @@ class PageRenderer
     private ?array $languageVars = null;
     private ?string $assetFingerprint = null;
 
+    /**
+     * @param ModuleRegistry $moduleRegistry Already loaded; the renderer only reads its nav items
+     * @param bool $isApiBackend Whether zones live behind the PowerDNS API (enables the API error banner)
+     * @param Closure $getPdnsServerInfo Returns the session-cached PowerDNS server info (array or null), read at first render
+     */
     public function __construct(
         AppManager $app,
         ConfigurationManager $config,
         CsrfTokenService $csrfTokenService,
         UserContextService $userContextService,
+        ModuleRegistry $moduleRegistry,
+        bool $isApiBackend,
         Closure $hasPermission,
+        Closure $getPdnsServerInfo,
         Closure $getDebugQueries,
         bool $wideLayout,
         ?Closure $pendingChangeRequestCount = null
@@ -84,7 +94,10 @@ class PageRenderer
         $this->config = $config;
         $this->csrfTokenService = $csrfTokenService;
         $this->userContextService = $userContextService;
+        $this->moduleRegistry = $moduleRegistry;
+        $this->isApiBackend = $isApiBackend;
         $this->hasPermission = $hasPermission;
+        $this->getPdnsServerInfo = $getPdnsServerInfo;
         $this->getDebugQueries = $getDebugQueries;
         $this->wideLayout = $wideLayout;
         $this->pendingChangeRequestCount = $pendingChangeRequestCount;
@@ -115,7 +128,7 @@ class PageRenderer
         $this->csrfTokenService->ensureTokenExists();
         $this->app->addTwigGlobal('csrf_token', $this->csrfTokenService->getToken());
         $this->app->addTwigGlobal('base_url_prefix', $this->config->get('interface', 'base_url_prefix', ''));
-        $pdnsInfo = PdnsVersionService::getCachedInfo($_SESSION ?? []);
+        $pdnsInfo = ($this->getPdnsServerInfo)();
         $this->app->addTwigGlobal('pdns_caps', PdnsCapabilities::fromServerInfo($pdnsInfo));
         $this->app->addTwigGlobal('pdns_server_info', $pdnsInfo);
         $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
@@ -329,7 +342,7 @@ class PageRenderer
             ]);
 
             // Surface PowerDNS API errors on every page, not just the dashboard.
-            if ($perm_is_godlike && DnsBackendProviderFactory::isApiBackend($this->config)) {
+            if ($perm_is_godlike && $this->isApiBackend) {
                 $vars['api_error'] = (new ApiStatusService())->getLastError();
             }
         }
@@ -451,11 +464,8 @@ class PageRenderer
 
     private function getModuleNavItems(): array
     {
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $items = $registry->getNavItems($isAdmin);
+        $items = $this->moduleRegistry->getNavItems($isAdmin);
 
         return array_values(array_filter($items, function (array $item): bool {
             if (!empty($item['permission'])) {

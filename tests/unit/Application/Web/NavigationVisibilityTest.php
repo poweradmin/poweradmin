@@ -20,11 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Infrastructure\Web;
+namespace Poweradmin\Tests\Unit\Application\Web;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Infrastructure\Web\NavigationVisibility;
+use Poweradmin\Application\Web\NavigationVisibility;
 use TestHelpers\FakeConfiguration;
 
 class NavigationVisibilityTest extends TestCase

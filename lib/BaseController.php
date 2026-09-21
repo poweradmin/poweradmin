@@ -47,7 +47,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Infrastructure\Web\PageRenderer;
+use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Module\ModuleRegistry;
 use Psr\Log\LoggerInterface;
 
@@ -711,7 +711,10 @@ abstract class BaseController
             $this->config,
             $this->csrfTokenService,
             $this->userContextService,
+            $this->moduleRegistry(),
+            DnsBackendProviderFactory::isApiBackend($this->config),
             $this->hasPermission(...),
+            static fn(): ?array => PdnsVersionService::getCachedInfo($_SESSION ?? []),
             fn(): array => $this->init?->getDebugQueries() ?? [],
             $userId !== null && $this->services()->userPreferenceService()->getWideLayout($userId),
             fn(): int => $this->pendingChangeRequestCount()

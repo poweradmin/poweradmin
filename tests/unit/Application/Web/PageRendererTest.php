@@ -12,15 +12,17 @@
  *  (at your option) any later version.
  */
 
-namespace Poweradmin\Tests\Unit\Infrastructure\Web;
+namespace Poweradmin\Tests\Unit\Application\Web;
 
+use Closure;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\AppManager;
-use Poweradmin\Infrastructure\Web\PageRenderer;
+use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Module\ModuleRegistry;
 use ReflectionClass;
 
 /**
@@ -30,8 +32,13 @@ use ReflectionClass;
  */
 class PageRendererTest extends TestCase
 {
-    private function makeRenderer(array $supportedLocales, string $interfaceLocale = 'en_EN', array $interfaceConfig = []): PageRenderer
-    {
+    private function makeRenderer(
+        array $supportedLocales,
+        string $interfaceLocale = 'en_EN',
+        array $interfaceConfig = [],
+        ?ModuleRegistry $moduleRegistry = null,
+        ?Closure $hasPermission = null
+    ): PageRenderer {
         $app = $this->createMock(AppManager::class);
         $app->method('getSupportedLocales')->willReturn($supportedLocales);
         $app->method('getInterfaceLocale')->willReturn($interfaceLocale);
@@ -48,10 +55,32 @@ class PageRendererTest extends TestCase
             $config,
             $this->createMock(CsrfTokenService::class),
             $this->createMock(UserContextService::class),
-            fn(string $permission): bool => false,
+            $moduleRegistry ?? $this->createMock(ModuleRegistry::class),
+            false,
+            $hasPermission ?? fn(string $permission): bool => false,
+            fn(): ?array => null,
             fn() => [],
             false
         );
+    }
+
+    public function testModuleNavItemsComeFromTheInjectedRegistryFilteredByPermission(): void
+    {
+        $registry = $this->createMock(ModuleRegistry::class);
+        $registry->expects($this->once())
+            ->method('getNavItems')
+            ->with(true)
+            ->willReturn([
+                ['label' => 'Open', 'url' => '/open'],
+                ['label' => 'Allowed', 'url' => '/allowed', 'permission' => 'zone_content_view_own'],
+                ['label' => 'Hidden', 'url' => '/hidden', 'permission' => 'user_is_ueberuser_only'],
+            ]);
+        $granted = ['user_is_ueberuser', 'zone_content_view_own'];
+        $renderer = $this->makeRenderer(['en_EN'], 'en_EN', [], $registry, fn(string $p): bool => in_array($p, $granted, true));
+
+        $items = (new ReflectionClass(PageRenderer::class))->getMethod('getModuleNavItems')->invoke($renderer);
+
+        $this->assertSame(['Open', 'Allowed'], array_column($items, 'label'));
     }
 
     private function brandingUrl(string $configured, string $baseUrlPrefix): string
