@@ -3,17 +3,14 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Bootstrap;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\DatabaseService;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DynamicDnsRequestFactory;
-use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\Database\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\Dns\DynamicDnsHelper;
-use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Application\Service\DnsServiceFactory;
+use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Request;
 
 $request = Request::createFromGlobals();
@@ -28,12 +25,11 @@ $credentials = DatabaseCredentialMapper::mapCredentials($config);
 
 $db = (new DatabaseService(new PDODatabaseConnection()))->connect($credentials);
 
-$backendProvider = DnsBackendProviderFactory::create($db, $config);
-$soaRecordManager = DnsServiceFactory::createSOARecordManager($db, $config, $backendProvider);
-$repository = (new RepositoryFactory($db, $config, $backendProvider))->createDynamicDnsRepository($soaRecordManager);
-
-$permissions = new PermissionService(new DbUserRepository($db, $config, $backendProvider->allocatesZoneIdsLocally()));
-$updateService = DynamicDnsRequestFactory::createUpdateService($db, $config, $repository, $permissions);
+// The same per-request service graph the web controllers use, so the backend
+// provider, repositories and permission cache are built once
+$services = new ControllerServiceFactory($db, $config, new NullLogger());
+$repository = $services->repositoryFactory()->createDynamicDnsRepository($services->soaRecordManager());
+$updateService = DynamicDnsRequestFactory::createUpdateService($db, $config, $repository, $services->permissionService());
 
 $result = $updateService->processUpdate(DynamicDnsRequestFactory::fromHttpRequest($request, $config));
 echo DynamicDnsHelper::statusMessage($result, $request->query->has('verbose'));

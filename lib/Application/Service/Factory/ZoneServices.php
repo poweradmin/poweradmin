@@ -61,7 +61,6 @@ use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
-use Poweradmin\Application\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Psr\Log\LoggerInterface;
 
@@ -253,7 +252,7 @@ class ZoneServices
 
     public function supermasterManager(): SupermasterManager
     {
-        return $this->supermasterManager ??= DnsServiceFactory::createSupermasterManager($this->db, $this->config, $this->services->dnsBackendProvider());
+        return $this->supermasterManager ??= new SupermasterManager($this->db, $this->config, $this->services->dnsBackendProvider());
     }
 
     /**

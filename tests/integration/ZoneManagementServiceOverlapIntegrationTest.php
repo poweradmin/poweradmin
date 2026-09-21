@@ -31,12 +31,11 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
-use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
-use Poweradmin\Application\Service\DnsServiceFactory;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Psr\Log\NullLogger;
 use TestHelpers\ZoneTemplateServiceBuilder;
 
@@ -126,7 +125,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             new RepositoryFactory($this->db, $config, $backend),
             new PermissionService(new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally())),
             new RecordChangeLogger($this->db, $config),
-            fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
+            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger()))->domainManager(),
             ZoneTemplateServiceBuilder::build(
                 new DbZoneTemplateRepository($this->db, $config, $backend),
                 $config,

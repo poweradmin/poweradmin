@@ -63,6 +63,7 @@ use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\BatchReverseRecordCreator;
@@ -441,6 +442,11 @@ class ControllerServiceFactory
     public function zoneTemplateApplier(): ZoneTemplateApplier
     {
         return $this->zones->zoneTemplateApplier();
+    }
+
+    public function templateRecordLinkRepository(): TemplateRecordLinkRepositoryInterface
+    {
+        return $this->zones->templateRecordLinkRepository();
     }
 
     public function supermasterManager(): SupermasterManager

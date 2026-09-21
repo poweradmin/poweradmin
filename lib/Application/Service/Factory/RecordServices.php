@@ -26,7 +26,6 @@ use PDO;
 use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\RecordAddService;
@@ -40,7 +39,13 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Service\Dns\RecordDeletionService;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
@@ -52,7 +57,6 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
-use Poweradmin\Application\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\Dns\BindZoneFileGenerator;
 use Psr\Log\LoggerInterface;
 
@@ -69,6 +73,7 @@ class RecordServices
 
     private ?RecordChangeLogger $recordChangeLogger = null;
     private ?RecordManagerInterface $recordManager = null;
+    private ?DnsRecordValidationServiceInterface $dnsRecordValidationService = null;
     private ?RecordCommentService $recordCommentService = null;
     private ?ZoneChangeRequestRepositoryInterface $zoneChangeRequestRepository = null;
     private ?ZoneChangeRequestService $zoneChangeRequestService = null;
@@ -85,7 +90,29 @@ class RecordServices
 
     public function recordManager(): RecordManagerInterface
     {
-        return $this->recordManager ??= DnsServiceFactory::createRecordManager($this->db, $this->config, $this->services->dnsBackendProvider(), $this->services->permissionService());
+        return $this->recordManager ??= new RecordManager(
+            $this->db,
+            $this->config,
+            $this->dnsRecordValidationService(),
+            $this->services->soaRecordManager(),
+            $this->services->domainRepository(),
+            $this->services->repositoryFactory(),
+            fn() => $this->services->dnssecProvider(),
+            $this->services->dnsBackendProvider(),
+            $this->services->permissionService(),
+            $this->recordChangeLog(),
+            $this->services->templateRecordLinkRepository()
+        );
+    }
+
+    public function dnsRecordValidationService(): DnsRecordValidationServiceInterface
+    {
+        return $this->dnsRecordValidationService ??= new DnsRecordValidationService(
+            new DnsValidatorRegistry($this->config, $this->services->dnsBackendProvider()),
+            new DnsCommonValidator($this->services->dnsBackendProvider()),
+            $this->services->domainRepository(),
+            new DNSViolationValidator($this->services->recordRepository())
+        );
     }
 
     public function recordChangeLogger(): RecordChangeWriterInterface
@@ -108,7 +135,7 @@ class RecordServices
             $this->db,
             $this->config,
             $this->services->dnsBackendProvider(),
-            DnsServiceFactory::createDnsRecordValidationService($this->db, $this->config, $this->services->dnsBackendProvider()),
+            $this->dnsRecordValidationService(),
             $this->services->recordRepository(),
             $this->recordManager(),
             $this->services->soaRecordManager(),
@@ -173,7 +200,7 @@ class RecordServices
         return $this->zoneChangeRequestService ??= new ZoneChangeRequestService(
             $this->zoneChangeRequestRepository(),
             $this->zoneEditService(),
-            DnsServiceFactory::createDnsRecordValidationService($this->db, $this->config, $this->services->dnsBackendProvider()),
+            $this->dnsRecordValidationService(),
             $this->services->recordRepository(),
             $this->services->domainRepository(),
             $this->services->zoneRepository(),
@@ -226,13 +253,12 @@ class RecordServices
     public function recordManagerService(): RecordManagerService
     {
         return new RecordManagerService(
-            $this->db,
             $this->services->domainRepository(),
+            $this->services->recordRepository(),
             $this->recordManager(),
             $this->recordCommentService(),
             $this->services->auditService(),
-            $this->config,
-            $this->services->dnsBackendProvider()
+            $this->config
         );
     }
 
@@ -313,7 +339,7 @@ class RecordServices
             $this->services->domainRepository(),
             $this->services->recordRepository(),
             $this->recordManager(),
-            fn() => DnssecProviderFactory::create($this->db, $this->config),
+            fn() => $this->services->dnssecProvider(),
             $this->reverseHandling()
         );
     }

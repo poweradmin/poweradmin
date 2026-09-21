@@ -1597,7 +1597,6 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\DatabaseService' => __DIR__ . '/../..' . '/lib/Application/Service/DatabaseService.php',
         'Poweradmin\\Application\\Service\\DnsBackendProviderFactory' => __DIR__ . '/../..' . '/lib/Application/Service/DnsBackendProviderFactory.php',
         'Poweradmin\\Application\\Service\\DnsDataService' => __DIR__ . '/../..' . '/lib/Application/Service/DnsDataService.php',
-        'Poweradmin\\Application\\Service\\DnsServiceFactory' => __DIR__ . '/../..' . '/lib/Application/Service/DnsServiceFactory.php',
         'Poweradmin\\Application\\Service\\DnssecProviderFactory' => __DIR__ . '/../..' . '/lib/Application/Service/DnssecProviderFactory.php',
         'Poweradmin\\Application\\Service\\DynamicDnsRequestFactory' => __DIR__ . '/../..' . '/lib/Application/Service/DynamicDnsRequestFactory.php',
         'Poweradmin\\Application\\Service\\EmailTemplateService' => __DIR__ . '/../..' . '/lib/Application/Service/EmailTemplateService.php',

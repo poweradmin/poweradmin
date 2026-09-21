@@ -35,7 +35,7 @@ use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
-use Poweradmin\Application\Service\DnsServiceFactory;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
@@ -94,7 +94,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             new RepositoryFactory($this->db, $config, $backend),
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
-            fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
+            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger()))->domainManager(),
             $this->zoneTemplateService($config, $backend),
             null,
             $capabilities,
@@ -172,7 +172,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             new RepositoryFactory($this->db, $config, $backend),
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
-            fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
+            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger()))->domainManager(),
             $this->zoneTemplateService($config, $backend),
             null,
             $lazy

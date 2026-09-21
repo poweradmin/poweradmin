@@ -27,7 +27,6 @@ use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneCountService;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\RecordSearchInterface;
 use Poweradmin\Domain\Port\ZoneSearchInterface;
 
@@ -42,7 +41,6 @@ use Poweradmin\Domain\Port\ZoneSearchInterface;
 class DnsDataService
 {
     private DnsBackendProviderInterface $backendProvider;
-    private ConfigurationInterface $config;
     private UserContextService $userContext;
     private ?ZoneSyncService $zoneSyncService = null;
     private RepositoryFactory $repositoryFactory;
@@ -50,15 +48,14 @@ class DnsDataService
     private ?RecordSearchInterface $recordSearch = null;
 
     public function __construct(
+        RepositoryFactory $repositoryFactory,
         DnsBackendProviderInterface $backendProvider,
         PDO $db,
-        ConfigurationInterface $config,
         UserContextService $userContext
     ) {
+        $this->repositoryFactory = $repositoryFactory;
         $this->backendProvider = $backendProvider;
-        $this->config = $config;
         $this->userContext = $userContext;
-        $this->repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
 
         if ($backendProvider->isApiBackend()) {
             $this->zoneSyncService = new ZoneSyncService($db, $backendProvider);

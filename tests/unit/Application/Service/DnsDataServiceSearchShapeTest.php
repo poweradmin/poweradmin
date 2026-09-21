@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DnsDataService;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
@@ -81,12 +82,19 @@ class DnsDataServiceSearchShapeTest extends TestCase
         ];
     }
 
+    private function build(DnsBackendProviderInterface $backend): DnsDataService
+    {
+        $config = new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]);
+
+        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend), $backend, $this->db, new UserContextService());
+    }
+
     private function sqlService(): DnsDataService
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(false);
 
-        return new DnsDataService($backend, $this->db, new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]), new UserContextService());
+        return $this->build($backend);
     }
 
     private function apiService(): DnsDataService
@@ -106,7 +114,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
         ]);
         $backend->method('countZoneRecords')->willReturnCallback(fn(int $id) => $id * 10);
 
-        return new DnsDataService($backend, $this->db, new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]), new UserContextService());
+        return $this->build($backend);
     }
 
     public function testSqlZoneRows(): void

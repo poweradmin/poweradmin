@@ -35,6 +35,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -45,7 +46,6 @@ use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
-use Poweradmin\Application\Service\DnsServiceFactory;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -128,11 +128,7 @@ class BackendServices
 
     public function soaRecordManager(): SOARecordManagerInterface
     {
-        return $this->soaRecordManager ??= DnsServiceFactory::createSOARecordManager(
-            $this->db,
-            $this->config,
-            $this->dnsBackendProvider()
-        );
+        return $this->soaRecordManager ??= new SOARecordManager($this->dnsBackendProvider());
     }
 
     public function dnssecProvider(): DnssecProviderInterface
@@ -142,7 +138,7 @@ class BackendServices
 
     public function dnsDataService(): DnsDataService
     {
-        return $this->dnsDataService ??= new DnsDataService($this->dnsBackendProvider(), $this->db, $this->config, new UserContextService());
+        return $this->dnsDataService ??= new DnsDataService($this->repositoryFactory(), $this->dnsBackendProvider(), $this->db, new UserContextService());
     }
 
     public function zoneMetadataStore(): ZoneMetadataStoreInterface

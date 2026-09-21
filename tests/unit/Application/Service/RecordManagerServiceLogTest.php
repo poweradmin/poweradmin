@@ -22,13 +22,13 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service;
 
-use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -54,13 +54,12 @@ class RecordManagerServiceLogTest extends TestCase
         $config->method('get')->willReturn(false);
 
         return new RecordManagerService(
-            $this->createMock(PDO::class),
             $domainRepository,
+            $this->createMock(RecordRepositoryInterface::class),
             $recordManager,
             $comments ?? $this->createMock(RecordCommentService::class),
             $audit,
-            $config,
-            null
+            $config
         );
     }
 

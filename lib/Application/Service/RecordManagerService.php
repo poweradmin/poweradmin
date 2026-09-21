@@ -23,45 +23,40 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use PDO;
 
 /**
  * Creates a record through RecordManager, then logs it, stores its comment and syncs the PTR comment.
  */
 class RecordManagerService
 {
-    private PDO $db;
     private DomainRepositoryInterface $domainRepository;
+    private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
     private RecordCommentService $recordCommentService;
     private AuditService $audit;
     private ConfigurationInterface $config;
-    private ?DnsBackendProviderInterface $backendProvider;
 
     public function __construct(
-        PDO $db,
         DomainRepositoryInterface $domainRepository,
+        RecordRepositoryInterface $recordRepository,
         RecordManagerInterface $recordManager,
         RecordCommentService $recordCommentService,
         AuditService $audit,
-        ConfigurationInterface $config,
-        ?DnsBackendProviderInterface $backendProvider = null
+        ConfigurationInterface $config
     ) {
-        $this->db = $db;
         $this->domainRepository = $domainRepository;
+        $this->recordRepository = $recordRepository;
         $this->recordManager = $recordManager;
         $this->recordCommentService = $recordCommentService;
         $this->audit = $audit;
         $this->config = $config;
-        $this->backendProvider = $backendProvider;
     }
 
     /**
@@ -145,8 +140,7 @@ class RecordManagerService
 
         $ptrZoneId = $this->domainRepository->getBestMatchingZoneIdFromName($ptrName);
         if ($ptrZoneId !== -1) {
-            $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-            $rrsetRecords = $recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
+            $rrsetRecords = $this->recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
 
             foreach ($rrsetRecords as $record) {
                 $this->recordCommentService->createCommentForRecord(
@@ -180,8 +174,7 @@ class RecordManagerService
         }
 
         if ($contentDomainId !== null) {
-            $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-            $rrsetRecords = $recordRepository->getRRSetRecords($contentDomainId, $content, RecordType::A);
+            $rrsetRecords = $this->recordRepository->getRRSetRecords($contentDomainId, $content, RecordType::A);
 
             foreach ($rrsetRecords as $record) {
                 $this->recordCommentService->createCommentForRecord(
