@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -723,5 +724,68 @@ class PermissionServiceTest extends PermissionServiceTestCase
 
         $this->assertSame('none', $this->service->getChangeRequestPermissionLevelForZone(3, 100));
         $this->assertSame('none', $this->service->getChangeApprovePermissionLevelForZone(3, 100));
+    }
+
+    /**
+     * Every level ladder: method => [permissions that yield "all", permissions that yield "own"].
+     *
+     * @return iterable<string, array{string, string[], string[]}>
+     */
+    public static function levelLadders(): iterable
+    {
+        yield 'view' => ['getViewPermissionLevel', [Permission::PERM_ZONE_CONTENT_VIEW_OTHERS], [Permission::PERM_ZONE_CONTENT_VIEW_OWN]];
+        yield 'edit' => ['getEditPermissionLevel', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS], [Permission::PERM_ZONE_CONTENT_EDIT_OWN]];
+        yield 'meta edit' => ['getZoneMetaEditPermissionLevel', [Permission::PERM_ZONE_META_EDIT_OTHERS], [Permission::PERM_ZONE_META_EDIT_OWN]];
+        yield 'metadata view' => [
+            'getZoneMetadataViewPermissionLevel',
+            [Permission::PERM_ZONE_METADATA_VIEW_OTHERS, Permission::PERM_ZONE_META_EDIT_OTHERS],
+            [Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_META_EDIT_OWN],
+        ];
+        yield 'ownership view' => [
+            'getZoneOwnershipViewPermissionLevel',
+            [Permission::PERM_ZONE_OWNERSHIP_VIEW_OTHERS, Permission::PERM_ZONE_META_EDIT_OTHERS],
+            [Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN, Permission::PERM_ZONE_META_EDIT_OWN],
+        ];
+        yield 'zone log' => ['getZoneLogPermissionLevel', [Permission::PERM_ZONE_LOGS_VIEW_OTHERS], [Permission::PERM_ZONE_LOGS_VIEW_OWN]];
+        yield 'change request' => ['getChangeRequestPermissionLevel', [Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS], [Permission::PERM_ZONE_CHANGE_REQUEST_OWN]];
+        yield 'change approve' => ['getChangeApprovePermissionLevel', [Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS], [Permission::PERM_ZONE_CHANGE_APPROVE_OWN]];
+        yield 'delete' => ['getDeletePermissionLevel', [Permission::PERM_ZONE_DELETE_OTHERS], [Permission::PERM_ZONE_DELETE_OWN]];
+    }
+
+    /**
+     * @param string[] $allGrants
+     * @param string[] $ownGrants
+     */
+    #[Test]
+    #[DataProvider('levelLadders')]
+    public function testLevelLadderResolvesAllOwnAndNone(string $method, array $allGrants, array $ownGrants): void
+    {
+        $permissionsByUser = [1 => [], 5 => []];
+        $userId = 10;
+        foreach ($allGrants as $grant) {
+            $permissionsByUser[$userId] = [$grant];
+            $permissionsByUser[$userId + 1] = [$grant, ...$ownGrants];
+            $userId += 2;
+        }
+        foreach ($ownGrants as $grant) {
+            $permissionsByUser[$userId++] = [$grant];
+        }
+        $noGrantUser = $userId;
+        $permissionsByUser[$noGrantUser] = [Permission::PERM_SEARCH];
+
+        $service = $this->buildPermissionService($permissionsByUser, [1]);
+
+        $this->assertSame('all', $service->$method(1), "$method: admin without grants");
+        $this->assertSame('none', $service->$method(5), "$method: empty grant list");
+        $userId = 10;
+        foreach ($allGrants as $grant) {
+            $this->assertSame('all', $service->$method($userId), "$method: $grant alone");
+            $this->assertSame('all', $service->$method($userId + 1), "$method: $grant wins over own grants");
+            $userId += 2;
+        }
+        foreach ($ownGrants as $grant) {
+            $this->assertSame('own', $service->$method($userId++), "$method: $grant alone");
+        }
+        $this->assertSame('none', $service->$method($noGrantUser), "$method: unrelated grant only");
     }
 }

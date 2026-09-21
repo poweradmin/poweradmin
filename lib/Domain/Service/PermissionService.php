@@ -39,6 +39,28 @@ class PermissionService
     public const TEMPLATE_SELF_ASSIGN_DENIED = 'Changing your own permission template requires user_edit_others';
     public const TEMPLATE_SUPERUSER_DENIED = 'Assigning a superuser permission template requires user_is_ueberuser';
 
+    /**
+     * Level ladders: name => [grants that yield "all", grants that yield "own"].
+     * Holders of zone_meta_edit_* may always see what they are allowed to edit.
+     */
+    private const LEVEL_PAIRS = [
+        'view' => [[Permission::PERM_ZONE_CONTENT_VIEW_OTHERS], [Permission::PERM_ZONE_CONTENT_VIEW_OWN]],
+        'edit' => [[Permission::PERM_ZONE_CONTENT_EDIT_OTHERS], [Permission::PERM_ZONE_CONTENT_EDIT_OWN]],
+        'meta_edit' => [[Permission::PERM_ZONE_META_EDIT_OTHERS], [Permission::PERM_ZONE_META_EDIT_OWN]],
+        'metadata_view' => [
+            [Permission::PERM_ZONE_METADATA_VIEW_OTHERS, Permission::PERM_ZONE_META_EDIT_OTHERS],
+            [Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_META_EDIT_OWN],
+        ],
+        'ownership_view' => [
+            [Permission::PERM_ZONE_OWNERSHIP_VIEW_OTHERS, Permission::PERM_ZONE_META_EDIT_OTHERS],
+            [Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN, Permission::PERM_ZONE_META_EDIT_OWN],
+        ],
+        'zone_log' => [[Permission::PERM_ZONE_LOGS_VIEW_OTHERS], [Permission::PERM_ZONE_LOGS_VIEW_OWN]],
+        'change_request' => [[Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS], [Permission::PERM_ZONE_CHANGE_REQUEST_OWN]],
+        'change_approve' => [[Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS], [Permission::PERM_ZONE_CHANGE_APPROVE_OWN]],
+        'delete' => [[Permission::PERM_ZONE_DELETE_OTHERS], [Permission::PERM_ZONE_DELETE_OWN]],
+    ];
+
     private UserRepositoryInterface $userRepository;
 
     /** @var array<int, array<string>> */
@@ -149,16 +171,7 @@ class PermissionService
      */
     public function getViewPermissionLevel(int $userId): string
     {
-        // Covers the user's own template and their groups' templates.
-        $permissions = $this->getUserPermissions($userId);
-
-        if (in_array(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS, $permissions) || $this->isAdmin($userId)) {
-            return 'all';
-        } elseif (in_array(Permission::PERM_ZONE_CONTENT_VIEW_OWN, $permissions)) {
-            return 'own';
-        } else {
-            return 'none';
-        }
+        return $this->levelFor($userId, 'view');
     }
 
     /**
@@ -169,18 +182,12 @@ class PermissionService
      */
     public function getEditPermissionLevel(int $userId): string
     {
-        // Covers the user's own template and their groups' templates.
-        $permissions = $this->getUserPermissions($userId);
-
-        if (in_array(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS, $permissions) || $this->isAdmin($userId)) {
-            return 'all';
-        } elseif (in_array(Permission::PERM_ZONE_CONTENT_EDIT_OWN, $permissions)) {
-            return 'own';
-        } elseif (in_array(Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, $permissions)) {
+        $level = $this->levelFor($userId, 'edit');
+        if ($level === 'none' && in_array(Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, $this->getUserPermissions($userId))) {
             return 'own_as_client';
-        } else {
-            return 'none';
         }
+
+        return $level;
     }
 
     /**
@@ -202,15 +209,7 @@ class PermissionService
      */
     public function getZoneMetaEditPermissionLevel(int $userId): string
     {
-        $permissions = $this->getUserPermissions($userId);
-
-        if (in_array(Permission::PERM_ZONE_META_EDIT_OTHERS, $permissions) || $this->isAdmin($userId)) {
-            return 'all';
-        } elseif (in_array(Permission::PERM_ZONE_META_EDIT_OWN, $permissions)) {
-            return 'own';
-        } else {
-            return 'none';
-        }
+        return $this->levelFor($userId, 'meta_edit');
     }
 
     /**
@@ -223,22 +222,7 @@ class PermissionService
      */
     public function getZoneMetadataViewPermissionLevel(int $userId): string
     {
-        $permissions = $this->getUserPermissions($userId);
-
-        if (
-            in_array(Permission::PERM_ZONE_METADATA_VIEW_OTHERS, $permissions)
-            || in_array(Permission::PERM_ZONE_META_EDIT_OTHERS, $permissions)
-            || $this->isAdmin($userId)
-        ) {
-            return 'all';
-        } elseif (
-            in_array(Permission::PERM_ZONE_METADATA_VIEW_OWN, $permissions)
-            || in_array(Permission::PERM_ZONE_META_EDIT_OWN, $permissions)
-        ) {
-            return 'own';
-        } else {
-            return 'none';
-        }
+        return $this->levelFor($userId, 'metadata_view');
     }
 
     /**
@@ -251,22 +235,7 @@ class PermissionService
      */
     public function getZoneOwnershipViewPermissionLevel(int $userId): string
     {
-        $permissions = $this->getUserPermissions($userId);
-
-        if (
-            in_array(Permission::PERM_ZONE_OWNERSHIP_VIEW_OTHERS, $permissions)
-            || in_array(Permission::PERM_ZONE_META_EDIT_OTHERS, $permissions)
-            || $this->isAdmin($userId)
-        ) {
-            return 'all';
-        } elseif (
-            in_array(Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN, $permissions)
-            || in_array(Permission::PERM_ZONE_META_EDIT_OWN, $permissions)
-        ) {
-            return 'own';
-        } else {
-            return 'none';
-        }
+        return $this->levelFor($userId, 'ownership_view');
     }
 
     /**
@@ -470,15 +439,7 @@ class PermissionService
      */
     public function getZoneLogPermissionLevel(int $userId): string
     {
-        $permissions = $this->getUserPermissions($userId);
-
-        if (in_array(Permission::PERM_ZONE_LOGS_VIEW_OTHERS, $permissions) || $this->isAdmin($userId)) {
-            return 'all';
-        } elseif (in_array(Permission::PERM_ZONE_LOGS_VIEW_OWN, $permissions)) {
-            return 'own';
-        }
-
-        return 'none';
+        return $this->levelFor($userId, 'zone_log');
     }
 
     /**
@@ -487,15 +448,7 @@ class PermissionService
      */
     public function getChangeRequestPermissionLevel(int $userId): string
     {
-        $permissions = $this->getUserPermissions($userId);
-
-        if (in_array(Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS, $permissions) || $this->isAdmin($userId)) {
-            return 'all';
-        } elseif (in_array(Permission::PERM_ZONE_CHANGE_REQUEST_OWN, $permissions)) {
-            return 'own';
-        }
-
-        return 'none';
+        return $this->levelFor($userId, 'change_request');
     }
 
     /**
@@ -504,15 +457,7 @@ class PermissionService
      */
     public function getChangeApprovePermissionLevel(int $userId): string
     {
-        $permissions = $this->getUserPermissions($userId);
-
-        if (in_array(Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS, $permissions) || $this->isAdmin($userId)) {
-            return 'all';
-        } elseif (in_array(Permission::PERM_ZONE_CHANGE_APPROVE_OWN, $permissions)) {
-            return 'own';
-        }
-
-        return 'none';
+        return $this->levelFor($userId, 'change_approve');
     }
 
     /**
@@ -535,6 +480,23 @@ class PermissionService
     public function getChangeApprovePermissionLevelForZone(int $userId, int $domainId): string
     {
         return $this->narrowLevelToZone($this->getChangeApprovePermissionLevel($userId), $userId, $domainId);
+    }
+
+    /**
+     * "all" when the user is admin or holds any of the ladder's others grants,
+     * "own" for any of its own grants, otherwise "none". Grants come from the
+     * user's template and their groups' templates. $ladder is a LEVEL_PAIRS key.
+     */
+    private function levelFor(int $userId, string $ladder): string
+    {
+        [$allGrants, $ownGrants] = self::LEVEL_PAIRS[$ladder];
+        $permissions = $this->getUserPermissions($userId);
+
+        if (array_intersect($allGrants, $permissions) !== [] || $this->isAdmin($userId)) {
+            return 'all';
+        }
+
+        return array_intersect($ownGrants, $permissions) !== [] ? 'own' : 'none';
     }
 
     private function narrowLevelToZone(string $level, int $userId, int $domainId): string
@@ -570,15 +532,7 @@ class PermissionService
      */
     public function getDeletePermissionLevel(int $userId): string
     {
-        $permissions = $this->getUserPermissions($userId);
-
-        if (in_array(Permission::PERM_ZONE_DELETE_OTHERS, $permissions) || $this->isAdmin($userId)) {
-            return 'all';
-        } elseif (in_array(Permission::PERM_ZONE_DELETE_OWN, $permissions)) {
-            return 'own';
-        } else {
-            return 'none';
-        }
+        return $this->levelFor($userId, 'delete');
     }
 
     /**
