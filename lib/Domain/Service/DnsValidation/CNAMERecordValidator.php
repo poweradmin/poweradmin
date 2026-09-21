@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Port\RecordReadBackendInterface;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
@@ -212,7 +213,8 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
         foreach ($this->backendProvider->findRecordsByName($name) as $r) {
             if ($r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
-                return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
+                return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'))
+                    ->withField(RecordField::DUPLICATE);
             }
         }
         return ValidationResult::success(true);
@@ -266,7 +268,8 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         // Existing-record edit: exclude the row being edited from the duplicate check.
         foreach ($this->backendProvider->findRecordsByName($name, 'CNAME') as $r) {
             if ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid) {
-                return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
+                return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'))
+                    ->withField(RecordField::DUPLICATE);
             }
         }
         return ValidationResult::success(true);
@@ -310,7 +313,8 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         // Standard validation: TLD must be at least 2 chars and all alphabetic
         if (strlen($tld) < 2 || !ctype_alpha($tld)) {
-            return ValidationResult::failure(_('CNAME target must be a fully qualified domain name (FQDN) with a valid top-level domain.'));
+            return ValidationResult::failure(_('CNAME target must be a fully qualified domain name (FQDN) with a valid top-level domain.'))
+                ->withField(RecordField::CONTENT);
         }
 
         return ValidationResult::success(true);

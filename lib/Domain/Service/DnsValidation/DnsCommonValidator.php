@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Port\RecordReadBackendInterface;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -60,7 +61,8 @@ class DnsCommonValidator
             if (is_numeric($prio) && $prio >= 0 && $prio <= 65535) {
                 return ValidationResult::success((int)$prio);
             } else {
-                return ValidationResult::failure(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
+                return ValidationResult::failure(_('Priority for MX/SRV records must be a number between 0 and 65535.'))
+                    ->withField(RecordField::PRIO);
             }
         }
 
@@ -79,7 +81,8 @@ class DnsCommonValidator
     public function validateNonAliasTarget(string $target): ValidationResult
     {
         if ($this->backendProvider->findRecordsByName($target, 'CNAME') !== []) {
-            return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
+            return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'))
+                ->withField(RecordField::CONTENT);
         }
         return ValidationResult::success(true);
     }

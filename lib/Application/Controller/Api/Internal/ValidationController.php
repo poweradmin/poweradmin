@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
-use Poweradmin\Domain\Service\Dns\RecordWriteResult;
+use Poweradmin\Application\Presenter\RecordFormFieldPresenter;
 use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
@@ -140,7 +140,7 @@ class ValidationController extends InternalApiController
             return $this->returnJsonResponse([
                 'valid' => false,
                 'errors' => $result->getErrors(),
-                'field' => RecordWriteResult::fieldForMessage($result->getFirstError())
+                'field' => RecordFormFieldPresenter::fieldId($result->getField(), $result->getFirstError())
             ]);
         }
     }

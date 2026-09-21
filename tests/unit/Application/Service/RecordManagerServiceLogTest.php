@@ -97,7 +97,7 @@ class RecordManagerServiceLogTest extends TestCase
         $this->assertFalse($result->success);
         $this->assertSame('Invalid IP address', $result->message);
         $this->assertSame(400, $result->status);
-        $this->assertSame(RecordWriteResult::FIELD_CONTENT, $result->field);
+        $this->assertNull($result->field);
     }
 
     public static function recordNameProvider(): array

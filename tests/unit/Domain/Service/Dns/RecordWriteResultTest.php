@@ -23,9 +23,9 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 #[CoversClass(RecordWriteResult::class)]
 class RecordWriteResultTest extends TestCase
@@ -54,30 +54,16 @@ class RecordWriteResultTest extends TestCase
         }
     }
 
-    public function testExplicitFieldWins(): void
+    public function testFailureCarriesTheFieldTheValidatorNamed(): void
     {
-        $result = RecordWriteResult::failure('A record with this hostname, type, and content already exists.', 409, RecordWriteResult::FIELD_DUPLICATE);
+        $result = RecordWriteResult::failure('A record with this hostname, type, and content already exists.', 409, RecordField::DUPLICATE);
 
         $this->assertSame(409, $result->status);
-        $this->assertSame(RecordWriteResult::FIELD_DUPLICATE, $result->field);
+        $this->assertSame(RecordField::DUPLICATE, $result->field);
     }
 
-    public static function messages(): array
+    public function testFailureWithoutANamedFieldDoesNotGuessOne(): void
     {
-        return [
-            ['A record with this hostname, type, and content already exists.', RecordWriteResult::FIELD_DUPLICATE],
-            ['Invalid record name.', RecordWriteResult::FIELD_NAME],
-            ['This is not a valid IPv4 address.', RecordWriteResult::FIELD_CONTENT],
-            ['Invalid hostname in content.', RecordWriteResult::FIELD_CONTENT],
-            ['TTL must be a positive number.', RecordWriteResult::FIELD_TTL],
-            ['Priority for MX/SRV records must be a number between 0 and 65535.', RecordWriteResult::FIELD_PRIO],
-            ['Something unexpected.', RecordWriteResult::FIELD_CONTENT],
-        ];
-    }
-
-    #[DataProvider('messages')]
-    public function testFieldIsGuessedFromTheMessage(string $message, string $expected): void
-    {
-        $this->assertSame($expected, RecordWriteResult::failure($message)->field);
+        $this->assertNull(RecordWriteResult::failure('TTL must be a positive number.')->field);
     }
 }

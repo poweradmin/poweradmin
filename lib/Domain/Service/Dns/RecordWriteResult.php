@@ -22,24 +22,20 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
+
 /**
  * Outcome of a record write. Replaces the bool return plus MessageService side
- * channel: callers read the reason, the HTTP status and the offending form field
- * from here instead of the session.
+ * channel: callers read the reason, the HTTP status and the offending record
+ * part from here instead of the session.
  */
 final readonly class RecordWriteResult
 {
-    public const FIELD_NAME = 'name';
-    public const FIELD_CONTENT = 'content';
-    public const FIELD_TTL = 'ttl';
-    public const FIELD_PRIO = 'prio';
-    public const FIELD_DUPLICATE = 'name-content-duplicate';
-
     private function __construct(
         public bool $success,
         public ?string $message,
         public int $status,
-        public ?string $field,
+        public ?RecordField $field,
         public int|string|null $recordId
     ) {
     }
@@ -51,11 +47,11 @@ final readonly class RecordWriteResult
     }
 
     /**
-     * @param string|null $field The form field the message is about; guessed from the message when omitted
+     * @param RecordField|null $field The record part the message is about, when the validator named one
      */
-    public static function failure(string $message, int $status = 400, ?string $field = null): self
+    public static function failure(string $message, int $status = 400, ?RecordField $field = null): self
     {
-        return new self(false, $message, $status, $field ?? self::fieldForMessage($message), null);
+        return new self(false, $message, $status, $field, null);
     }
 
     public static function forbidden(string $message): self
@@ -71,34 +67,5 @@ final readonly class RecordWriteResult
     public static function backendFailure(string $message): self
     {
         return new self(false, $message, 500, null, null);
-    }
-
-    /**
-     * Validators report a message, not a field; this keeps the one heuristic the
-     * forms used to carry each, until ValidationResult names the field itself.
-     */
-    public static function fieldForMessage(string $message): string
-    {
-        $lower = strtolower($message);
-
-        if (str_contains($lower, 'already exists')) {
-            return self::FIELD_DUPLICATE;
-        }
-        if (preg_match('/\bname\b/', $lower) && str_contains($lower, 'invalid')) {
-            return self::FIELD_NAME;
-        }
-        foreach (['content', 'value', 'address', 'hostname'] as $hint) {
-            if (str_contains($lower, $hint)) {
-                return self::FIELD_CONTENT;
-            }
-        }
-        if (str_contains($lower, 'ttl')) {
-            return self::FIELD_TTL;
-        }
-        if (str_contains($lower, 'prio')) {
-            return self::FIELD_PRIO;
-        }
-
-        return self::FIELD_CONTENT;
     }
 }

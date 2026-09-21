@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use TestHelpers\SqliteDnsBackendTestCase;
 
 /**
@@ -96,6 +97,7 @@ class DnsCommonValidatorTest extends SqliteDnsBackendTestCase
 
         $result8 = $this->validator->validatePriority("invalid", "MX");
         $this->assertFalse($result8->isValid());
+        $this->assertSame(RecordField::PRIO, $result8->getField());
     }
 
     public function testValidatePriorityWithSrvRecords()
@@ -154,5 +156,6 @@ class DnsCommonValidatorTest extends SqliteDnsBackendTestCase
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getErrors());
         $this->assertStringContainsString('You can not point a NS or MX record to a CNAME record', $result->getFirstError());
+        $this->assertSame(RecordField::CONTENT, $result->getField());
     }
 }

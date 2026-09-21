@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ final class ValidationResult
     private array $errors = [];
     private array $warnings = [];
     private $data;
+    private ?RecordField $field = null;
 
     /**
      * Private constructor - use factory methods
@@ -77,6 +78,24 @@ final class ValidationResult
     public static function errors(array $errors, array $warnings = []): self
     {
         return new self(false, $errors, $warnings);
+    }
+
+    /**
+     * Name the record part the errors are about; a copy so shared results stay untouched
+     */
+    public function withField(RecordField $field): self
+    {
+        $copy = clone $this;
+        $copy->field = $field;
+        return $copy;
+    }
+
+    /**
+     * The record part the errors are about, when the validator named one
+     */
+    public function getField(): ?RecordField
+    {
+        return $this->field;
     }
 
     /**

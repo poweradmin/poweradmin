@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 /**
  * Tests for the IPAddressValidator service
@@ -60,6 +61,7 @@ class IPAddressValidatorTest extends TestCase
         $result1 = $this->validator->validateIPv4("256.0.0.1");
         $this->assertFalse($result1->isValid());
         $this->assertNotEmpty($result1->getErrors());
+        $this->assertSame(RecordField::CONTENT, $result1->getField());
 
         $result2 = $this->validator->validateIPv4("192.168.1");
         $this->assertFalse($result2->isValid());

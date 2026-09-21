@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Application\Http\ZoneEditIntent;
 use Poweradmin\Application\Presenter\EditZonePresenter;
+use Poweradmin\Application\Presenter\RecordFormFieldPresenter;
 use Poweradmin\Application\Presenter\ChangeRequestPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\ChangeRequestMessages;
@@ -682,7 +683,7 @@ class EditController extends BaseController
             $this->formStateService->rememberAddRecordError([
                 'error' => true,
                 'errorMessage' => $added->record->message,
-                'fieldError' => $added->record->field
+                'fieldError' => RecordFormFieldPresenter::fieldId($added->record->field, (string)$added->record->message)
             ]);
             return false;
         }

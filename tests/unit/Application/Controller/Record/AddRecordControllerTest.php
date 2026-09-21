@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
@@ -153,7 +154,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
         return new RecordAddResult(RecordWriteResult::ok(1), $companion, $companionCreated, $companionWarning, $companionMessage);
     }
 
-    private static function refused(string $message, ?string $field = null): RecordAddResult
+    private static function refused(string $message, ?RecordField $field = null): RecordAddResult
     {
         return RecordAddResult::refused(RecordWriteResult::failure($message, 400, $field));
     }
@@ -395,7 +396,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
     public function testARefusedAddKeepsTheFormValuesAndReturnsToTheAddPage(): void
     {
-        $this->addResults = [self::refused('Invalid IPv4 address.', RecordWriteResult::FIELD_CONTENT)];
+        $this->addResults = [self::refused('Invalid IPv4 address.', RecordField::CONTENT)];
         $this->post(['type' => 'A', 'content' => 'nope', 'name' => 'www', 'ttl' => '300', 'prio' => '5', 'comment' => 'c']);
 
         $halt = $this->haltOf($this->makeController());

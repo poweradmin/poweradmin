@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\SqliteDnsBackendTestCase;
 
@@ -99,6 +100,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('already exists a record', $result->getFirstError());
+        $this->assertSame(RecordField::DUPLICATE, $result->getField());
     }
 
     public function testValidateWithInvalidSourceHostname()
@@ -333,6 +335,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('CNAME target must be a fully qualified domain name', $result->getFirstError());
+        $this->assertSame(RecordField::CONTENT, $result->getField());
     }
 
     public function testValidateWithValidFqdnTarget()
@@ -573,6 +576,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
         // No row is excluded for a new record, so any existing CNAME conflicts
         $result = $method->invoke($validator, 'alias.example.com', -1);
         $this->assertFalse($result->isValid());
+        $this->assertSame(RecordField::DUPLICATE, $result->getField());
 
         $result = $method->invoke($validator, 'other.example.com', -1);
         $this->assertTrue($result->isValid());

@@ -74,7 +74,7 @@ class RecordAddServiceTest extends TestCase
 
         $this->assertFalse($result->isOk());
         $this->assertSame('Invalid IP address', $result->record->message);
-        $this->assertSame(RecordWriteResult::FIELD_CONTENT, $result->record->field);
+        $this->assertNull($result->record->field);
     }
 
     public function testPtrCompanionUsesTheReverseTtlAndReportsWarnings(): void

@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Presenter\RecordFormFieldPresenter;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordAddAccess;
 use Poweradmin\Application\Service\RecordAddMessages;
@@ -125,7 +126,7 @@ class AddRecordController extends BaseController
                 'comment' => $comment,
                 'error' => true,
                 'errorMessage' => $added->record->message,
-                'fieldError' => $added->record->field,
+                'fieldError' => RecordFormFieldPresenter::fieldId($added->record->field, (string)$added->record->message),
             ]);
 
             $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use RuntimeException;
 
@@ -304,5 +305,24 @@ class ValidationResultTest extends TestCase
         $this->assertTrue($result->hasWarnings());
         $this->assertEquals(['Just a warning'], $result->getWarnings());
         $this->assertNull($result->getData());
+    }
+
+    public function testResultsCarryNoFieldUnlessNamed(): void
+    {
+        $this->assertNull(ValidationResult::failure('Invalid hostname')->getField());
+        $this->assertNull(ValidationResult::errors(['a', 'b'])->getField());
+        $this->assertNull(ValidationResult::success('x')->getField());
+    }
+
+    public function testWithFieldNamesTheFieldOnACopy(): void
+    {
+        $original = ValidationResult::failure('Invalid value for TTL field. It must be numeric.', ['slow']);
+        $named = $original->withField(RecordField::TTL);
+
+        $this->assertSame(RecordField::TTL, $named->getField());
+        $this->assertNull($original->getField());
+        $this->assertFalse($named->isValid());
+        $this->assertSame($original->getErrors(), $named->getErrors());
+        $this->assertSame($original->getWarnings(), $named->getWarnings());
     }
 }
