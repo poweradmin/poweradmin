@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DomainRecordCreator;
@@ -32,9 +33,10 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
- * The add-record flow shared by the add-record page and the inline form on the
- * zone editor: name and content are normalised the same way, the TTL default is
- * resolved the same way, and the companion PTR or A record follows the same rules.
+ * The add-record flow shared by the add-record page, the inline form on the
+ * zone editor and the record wizards: open() applies the same gates in the
+ * same order, and add() normalises name, content and TTL the same way and
+ * follows the same rules for the companion PTR or A record.
  */
 class RecordAddService
 {
@@ -44,8 +46,32 @@ class RecordAddService
         private readonly DomainRecordCreator $domainRecords,
         private readonly ReverseTtlResolver $ttlResolver,
         private readonly PermissionService $permissions,
-        private readonly DomainRepositoryInterface $domains
+        private readonly DomainRepositoryInterface $domains,
+        private readonly ChangeApprovalContext $approval
     ) {
+    }
+
+    /**
+     * Whether the user may add records to the zone directly: the zone must
+     * exist, the user's changes must not be routed through review (those go
+     * through the zone editor), and the zone must be writable by them.
+     */
+    public function open(int $zoneId, int $userId): RecordAddAccess
+    {
+        $zoneName = $this->domains->getDomainNameById($zoneId);
+        if ($zoneName === null) {
+            return RecordAddAccess::zoneNotFound();
+        }
+        $zoneType = $this->domains->getDomainType($zoneId);
+
+        if ($this->approval->modeForZone($userId, $zoneId) === ChangeApprovalPolicy::MODE_REQUEST) {
+            return RecordAddAccess::refused(RecordAddAccess::REQUIRES_APPROVAL, $zoneName, $zoneType);
+        }
+        if (!$this->permissions->canEditZoneContent($userId, $zoneId, $zoneType)) {
+            return RecordAddAccess::refused(RecordAddAccess::FORBIDDEN, $zoneName, $zoneType);
+        }
+
+        return RecordAddAccess::granted($zoneName, $zoneType);
     }
 
     /**

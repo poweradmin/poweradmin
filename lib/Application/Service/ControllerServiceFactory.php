@@ -522,7 +522,22 @@ class ControllerServiceFactory
             new DomainRecordCreator($this->config, $this->domainRepository(), $this->recordManager(), null, $ttlResolver),
             $ttlResolver,
             $this->permissionService(),
-            $this->domainRepository()
+            $this->domainRepository(),
+            $this->changeApprovalContext()
+        );
+    }
+
+    /**
+     * Change-approval answers for one user and zone; built lazily so a request
+     * that never asks does not open the repositories behind it.
+     */
+    public function changeApprovalContext(): ChangeApprovalContext
+    {
+        return new ChangeApprovalContext(
+            $this->config,
+            fn(): PermissionService => $this->permissionService(),
+            fn(): ZoneRepositoryInterface => $this->zoneRepository(),
+            fn(): ZoneChangeRequestRepositoryInterface => $this->zoneChangeRequestRepository()
         );
     }
 

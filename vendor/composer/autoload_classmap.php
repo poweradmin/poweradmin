@@ -1197,6 +1197,7 @@ return array(
     'Poweradmin\\Application\\Service\\PermissionTemplateWriteService' => $baseDir . '/lib/Application/Service/PermissionTemplateWriteService.php',
     'Poweradmin\\Application\\Service\\PowerdnsStatusService' => $baseDir . '/lib/Application/Service/PowerdnsStatusService.php',
     'Poweradmin\\Application\\Service\\RecaptchaService' => $baseDir . '/lib/Application/Service/RecaptchaService.php',
+    'Poweradmin\\Application\\Service\\RecordAddAccess' => $baseDir . '/lib/Application/Service/RecordAddAccess.php',
     'Poweradmin\\Application\\Service\\RecordAddMessages' => $baseDir . '/lib/Application/Service/RecordAddMessages.php',
     'Poweradmin\\Application\\Service\\RecordAddResult' => $baseDir . '/lib/Application/Service/RecordAddResult.php',
     'Poweradmin\\Application\\Service\\RecordAddService' => $baseDir . '/lib/Application/Service/RecordAddService.php',

@@ -1603,6 +1603,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\PermissionTemplateWriteService' => __DIR__ . '/../..' . '/lib/Application/Service/PermissionTemplateWriteService.php',
         'Poweradmin\\Application\\Service\\PowerdnsStatusService' => __DIR__ . '/../..' . '/lib/Application/Service/PowerdnsStatusService.php',
         'Poweradmin\\Application\\Service\\RecaptchaService' => __DIR__ . '/../..' . '/lib/Application/Service/RecaptchaService.php',
+        'Poweradmin\\Application\\Service\\RecordAddAccess' => __DIR__ . '/../..' . '/lib/Application/Service/RecordAddAccess.php',
         'Poweradmin\\Application\\Service\\RecordAddMessages' => __DIR__ . '/../..' . '/lib/Application/Service/RecordAddMessages.php',
         'Poweradmin\\Application\\Service\\RecordAddResult' => __DIR__ . '/../..' . '/lib/Application/Service/RecordAddResult.php',
         'Poweradmin\\Application\\Service\\RecordAddService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordAddService.php',

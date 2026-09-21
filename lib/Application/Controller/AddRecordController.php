@@ -23,30 +23,26 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\ChangeRequestMessages;
+use Poweradmin\Application\Service\RecordAddAccess;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * Handles the add-record form for a zone: checks edit rights, validates the record and saves one or several rows.
  */
 class AddRecordController extends BaseController
 {
-    private DomainRepositoryInterface $domainRepository;
     private RecordAddService $recordAdd;
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
@@ -57,7 +53,6 @@ class AddRecordController extends BaseController
     {
         parent::__construct($request);
         $this->formStateService = new FormStateService();
-        $this->domainRepository = $this->createDomainRepository();
         $this->recordAdd = $this->createRecordAddService();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
@@ -66,31 +61,24 @@ class AddRecordController extends BaseController
 
     public function run(): void
     {
-        $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $this->checkCondition(!$this->domainRepository->zoneIdExists($zone_id), _('There is no zone with this ID.'));
-        $zone_type = $this->domainRepository->getDomainType($zone_id);
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
-
+        $access = $this->recordAdd->open($zone_id, (int)$this->getCurrentUserId());
+        $this->checkCondition($access->code === RecordAddAccess::ZONE_NOT_FOUND, _('There is no zone with this ID.'));
         // Multi-record mode stays direct-only: users whose changes need review use the zone editor
-        $this->checkCondition(
-            $this->changeApprovalModeForZone($zone_id) === ChangeApprovalPolicy::MODE_REQUEST,
-            ChangeRequestMessages::requiresApproval()
-        );
-        $this->checkCondition(ZoneType::isReadOnly($zone_type)
-            || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner), _("You do not have the permission to add a record to this zone."));
+        $this->checkCondition($access->code === RecordAddAccess::REQUIRES_APPROVAL, ChangeRequestMessages::requiresApproval());
+        $this->checkCondition(!$access->isGranted(), _("You do not have the permission to add a record to this zone."));
 
         if ($this->isPost()) {
             if ($this->httpRequest->getPostParam('multi_record_mode') !== null && is_array($this->httpRequest->getPostParam('records'))) {
-                $this->addMultipleRecords();
+                $this->addMultipleRecords($zone_id, $access->zoneName);
             } else {
-                $this->addRecord();
+                $this->addRecord($zone_id, $access->zoneName);
             }
         }
-        $this->showForm();
+        $this->showForm($zone_id, $access->zoneName);
     }
 
-    private function addRecord(): void
+    private function addRecord(int $zone_id, string $zone_name): void
     {
         // Required wraps the rule so a blank or missing field fails instead of being skipped
         $this->setValidationConstraints([
@@ -110,13 +98,6 @@ class AddRecordController extends BaseController
         $prio = $this->httpRequest->getPostParam('prio');
         $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
         $comment = (string)$this->httpRequest->getPostParam('comment', '');
-        $zone_id = (int)$this->getSafeRequestValue('zone_id');
-
-        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-        if ($zone_name === null) {
-            $this->showError(_('Zone not found.'));
-            return;
-        }
         $ttl = $this->httpRequest->getPostParam('ttl');
 
         $added = $this->recordAdd->add(
@@ -164,10 +145,8 @@ class AddRecordController extends BaseController
         $this->redirect('/zones/' . $zone_id . '/edit');
     }
 
-    private function showForm(): void
+    private function showForm(int $zone_id, string $zone_name): void
     {
-        $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
 
         // Pre-fill with the plain dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
@@ -231,9 +210,8 @@ class AddRecordController extends BaseController
         ]);
     }
 
-    private function addMultipleRecords(): void
+    private function addMultipleRecords(int $zone_id, string $zone_name): void
     {
-        $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $records = $this->httpRequest->getPostParam('records', []);
         $successCount = 0;
         $failureReasons = [];
@@ -251,11 +229,6 @@ class AddRecordController extends BaseController
             return;
         }
 
-        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-        if ($zone_name === null) {
-            $this->showError(_('Zone not found.'));
-            return;
-        }
         $username = (string)$this->userContextService->getLoggedInUsername();
 
         foreach ($records as $record) {

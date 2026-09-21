@@ -24,13 +24,11 @@ namespace Poweradmin\Module\DnsWizard\Controller\Api;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Application\Service\ChangeRequestMessages;
+use Poweradmin\Application\Service\RecordAddAccess;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
-use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Service\SessionKeys;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * /api/internal/dns-wizard: validates and previews wizard input for the record form.
@@ -317,59 +315,33 @@ class DnsWizardApiController extends InternalApiController
         }
 
         $zone_id = (int)$data['zone_id'];
-        $name = $data['name'];
-        $type = $data['type'];
-        $content = $data['content'];
-        $prio = isset($data['priority']) && $data['priority'] !== '' ? (int)$data['priority'] : 0;
-        $comment = $data['comment'] ?? '';
 
         try {
-            // Check zone existence
-            $domainRepository = $this->createDomainRepository();
-            $zone_name = $domainRepository->getDomainNameById($zone_id);
-
-            if ($zone_name === null) {
-                return $this->returnApiError('Zone not found', 404);
+            $recordAdd = $this->createRecordAddService();
+            $access = $recordAdd->open($zone_id, (int)$this->getCurrentUserId());
+            if (!$access->isGranted()) {
+                return match ($access->code) {
+                    RecordAddAccess::ZONE_NOT_FOUND => $this->returnApiError('Zone not found', 404),
+                    RecordAddAccess::REQUIRES_APPROVAL => $this->returnApiError(ChangeRequestMessages::requiresApproval(), 403),
+                    default => $this->returnApiError('You do not have permission to add records to this zone', 403),
+                };
             }
 
-            $reverseTtlResolver = $this->createReverseTtlResolver();
-            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
-            $ttl = isset($data['ttl']) && $data['ttl'] !== ''
-                ? (int)$data['ttl']
-                : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
-
-            // Check user has permission to edit this zone
-            $zone_type = $domainRepository->getDomainType($zone_id);
-            $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
-            $user_is_zone_owner = $this->isZoneOwner($zone_id);
-
-            // Same permission check as AddRecordController
-            if (
-                ZoneType::isReadOnly($zone_type)
-                || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)
-            ) {
-                return $this->returnApiError('You do not have permission to add records to this zone', 403);
-            }
-
-            // Normalize wizard-provided names (e.g., '@' for zone apex) to actual zone names
-            // This ensures records match the zone apex even when display_hostname_only is disabled
-            $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
-
-            $userlogin = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
-
-            $result = $this->createRecordManagerService()->createRecord(
+            $added = $recordAdd->add(
                 $zone_id,
-                $name,
-                $type,
-                $content,
-                $ttl,
-                $prio,
-                $comment,
-                $userlogin
+                $access->zoneName,
+                (string)$data['name'],
+                (string)$data['type'],
+                (string)$data['content'],
+                isset($data['ttl']) && $data['ttl'] !== '' ? (int)$data['ttl'] : null,
+                isset($data['priority']) && $data['priority'] !== '' ? (int)$data['priority'] : 0,
+                (string)($data['comment'] ?? ''),
+                (int)$this->getCurrentUserId(),
+                $this->getUserContextService()->getLoggedInUsername() ?? 'unknown'
             );
 
-            if (!$result->success) {
-                return $this->returnApiError((string)$result->message, $result->status);
+            if (!$added->isOk()) {
+                return $this->returnApiError((string)$added->record->message, $added->record->status);
             }
 
             // Set success message for display after page reload

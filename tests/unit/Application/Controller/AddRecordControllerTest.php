@@ -26,13 +26,20 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\AddRecordController;
+use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RecordAddService;
+use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
+use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserPreferenceService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Session\FormStateService;
 
 /**
@@ -47,7 +54,6 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
     private string $editLevel = 'all';
     private bool $ownsZone = true;
-    private bool $zoneExists = true;
     private string $zoneType = 'MASTER';
     private ?string $zoneName = 'example.com';
 
@@ -76,17 +82,13 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $this->permissions->method('getEditPermissionLevelForZone')->willReturnCallback(fn(): string => $this->editLevel);
         $this->permissions->method('getChangeRequestPermissionLevelForZone')->willReturn('none');
         $this->permissions->method('userOwnsZone')->willReturnCallback(fn(): bool => $this->ownsZone);
+        $this->permissions->method('canEditZoneContent')->willReturnCallback(
+            fn(): bool => $this->zoneType === 'MASTER' && ($this->editLevel === 'all' || ($this->editLevel !== 'none' && $this->ownsZone))
+        );
 
         $this->domains = $this->createMock(DomainRepositoryInterface::class);
-        $this->domains->method('zoneIdExists')->willReturnCallback(fn(): bool => $this->zoneExists);
         $this->domains->method('getDomainType')->willReturnCallback(fn(): string => $this->zoneType);
         $this->domains->method('getDomainNameById')->willReturnCallback(fn(): ?string => $this->zoneName);
-
-        $this->recordAdd = $this->createMock(RecordAddService::class);
-        $this->recordAdd->method('add')->willReturnCallback(function (...$args): RecordAddResult {
-            $this->addCalls[] = $args;
-            return array_shift($this->addResults) ?? self::added();
-        });
 
         $ttl = $this->createMock(ReverseTtlResolver::class);
         $ttl->method('getForwardTtl')->willReturn(3600);
@@ -97,11 +99,47 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $preferences = $this->createMock(UserPreferenceService::class);
         $preferences->method('getDisplayHostnameOnly')->willReturn(false);
 
+        $this->recordAdd = $this->recordAddOver($this->permissions, $ttl);
+
         $this->factory->method('permissionService')->willReturn($this->permissions);
         $this->factory->method('domainRepository')->willReturn($this->domains);
         $this->factory->method('recordAddService')->willReturn($this->recordAdd);
         $this->factory->method('reverseTtlResolver')->willReturn($ttl);
         $this->factory->method('userPreferenceService')->willReturn($preferences);
+    }
+
+    /**
+     * The real gate (open) over the test's permission answers, with the write
+     * (add) scripted through $addResults.
+     *
+     * @return RecordAddService&MockObject
+     */
+    private function recordAddOver(PermissionService $permissions, ReverseTtlResolver $ttl): RecordAddService
+    {
+        $approval = new ChangeApprovalContext(
+            ConfigurationManager::getInstance(),
+            fn(): PermissionService => $permissions,
+            fn(): ZoneRepositoryInterface => $this->createMock(ZoneRepositoryInterface::class),
+            fn(): ZoneChangeRequestRepositoryInterface => $this->createMock(ZoneChangeRequestRepositoryInterface::class)
+        );
+        $recordAdd = $this->getMockBuilder(RecordAddService::class)
+            ->setConstructorArgs([
+                $this->createMock(RecordManagerService::class),
+                $this->createMock(ReverseRecordCreator::class),
+                $this->createMock(DomainRecordCreator::class),
+                $ttl,
+                $permissions,
+                $this->domains,
+                $approval,
+            ])
+            ->onlyMethods(['add'])
+            ->getMock();
+        $recordAdd->method('add')->willReturnCallback(function (...$args): RecordAddResult {
+            $this->addCalls[] = $args;
+            return array_shift($this->addResults) ?? self::added();
+        });
+
+        return $recordAdd;
     }
 
     private static function added(
@@ -143,8 +181,8 @@ class AddRecordControllerTest extends SeamControllerTestCase
     {
         // The route guarantees a numeric zone_id, so the zone lookup is the only gate
         $_GET = ['zone_id' => ''];
-        $this->zoneExists = false;
-        $this->domains->expects($this->once())->method('zoneIdExists')->with(0);
+        $this->zoneName = null;
+        $this->domains->expects($this->once())->method('getDomainNameById')->with(0);
 
         $halt = $this->haltOf(new TestableAddRecordController([], $this->environment($this->configure())));
 
@@ -154,7 +192,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
     public function testAnUnknownZoneIsRefused(): void
     {
-        $this->zoneExists = false;
+        $this->zoneName = null;
 
         $halt = $this->haltOf($this->makeController());
 
@@ -175,7 +213,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $this->factory = $this->createMock(\Poweradmin\Application\Service\ControllerServiceFactory::class);
         $this->factory->method('permissionService')->willReturn($this->permissions);
         $this->factory->method('domainRepository')->willReturn($this->domains);
-        $this->factory->method('recordAddService')->willReturn($this->recordAdd);
+        $this->factory->method('recordAddService')->willReturn($this->recordAddOver($this->permissions, $this->createMock(ReverseTtlResolver::class)));
 
         $halt = $this->haltOf($this->makeController(['approval' => ['enabled' => true]]));
 
@@ -377,18 +415,6 @@ class AddRecordControllerTest extends SeamControllerTestCase
             'errorMessage' => 'Invalid IPv4 address.',
             'fieldError' => 'content',
         ], $formData);
-    }
-
-    public function testAMissingZoneNameStopsTheAdd(): void
-    {
-        $this->zoneName = null;
-        $this->post(['type' => 'A', 'content' => '192.0.2.1']);
-        $this->recordAdd->expects($this->never())->method('add');
-
-        $halt = $this->haltOf($this->makeController());
-
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
-        $this->assertSame('Zone not found.', $halt->target);
     }
 
     // ------------------------------------------------------ multiple records

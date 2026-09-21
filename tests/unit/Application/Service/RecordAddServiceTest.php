@@ -22,12 +22,16 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\ChangeApprovalContext;
+use Poweradmin\Application\Service\RecordAddAccess;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\PermissionService;
@@ -35,9 +39,10 @@ use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 
 /**
- * Both add-record forms go through one flow: IDN input is stored as punycode,
- * bare names get the zone suffix, the type default fills a missing TTL, and the
- * companion PTR or A record is only attempted after the record itself is in.
+ * Every add-record entry point goes through one flow: open() gates the zone
+ * in a fixed order, IDN input is stored as punycode, bare names get the zone
+ * suffix, the type default fills a missing TTL, and the companion PTR or A
+ * record is only attempted after the record itself is in.
  */
 class RecordAddServiceTest extends TestCase
 {
@@ -170,13 +175,98 @@ class RecordAddServiceTest extends TestCase
         $this->assertTrue($result->isOk());
     }
 
+    // ------------------------------------------------------------- open()
+
+    public function testOpenRefusesAZoneThatDoesNotExist(): void
+    {
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainNameById')->with(5)->willReturn(null);
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->expects($this->never())->method('canEditZoneContent');
+
+        $access = $this->makeService($this->createMock(RecordManagerService::class), permissions: $permissions, domains: $domains)->open(5, 7);
+
+        $this->assertSame(RecordAddAccess::ZONE_NOT_FOUND, $access->code);
+        $this->assertFalse($access->isGranted());
+    }
+
+    public function testOpenSendsAReviewedZoneToTheChangeRequestFlowBeforeTheEditCheck(): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->expects($this->never())->method('canEditZoneContent');
+
+        $access = $this->makeService(
+            $this->createMock(RecordManagerService::class),
+            permissions: $permissions,
+            domains: $this->knownZone(),
+            approval: $this->approvalAnswering(ChangeApprovalPolicy::MODE_REQUEST)
+        )->open(5, 7);
+
+        $this->assertSame(RecordAddAccess::REQUIRES_APPROVAL, $access->code);
+        $this->assertSame('example.com', $access->zoneName);
+    }
+
+    public function testOpenRefusesAZoneTheUserMayNotWrite(): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->expects($this->once())->method('canEditZoneContent')->with(7, 5, 'SLAVE')->willReturn(false);
+
+        $access = $this->makeService(
+            $this->createMock(RecordManagerService::class),
+            permissions: $permissions,
+            domains: $this->knownZone('SLAVE'),
+            approval: $this->approvalAnswering(ChangeApprovalPolicy::MODE_DIRECT)
+        )->open(5, 7);
+
+        $this->assertSame(RecordAddAccess::FORBIDDEN, $access->code);
+        $this->assertSame('SLAVE', $access->zoneType);
+    }
+
+    public function testOpenGrantsAWritableZoneAndCarriesItsNameAndType(): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('canEditZoneContent')->willReturn(true);
+
+        $access = $this->makeService(
+            $this->createMock(RecordManagerService::class),
+            permissions: $permissions,
+            domains: $this->knownZone(),
+            approval: $this->approvalAnswering(ChangeApprovalPolicy::MODE_DIRECT)
+        )->open(5, 7);
+
+        $this->assertTrue($access->isGranted());
+        $this->assertSame(RecordAddAccess::OK, $access->code);
+        $this->assertSame('example.com', $access->zoneName);
+        $this->assertSame('MASTER', $access->zoneType);
+    }
+
+    /** @return DomainRepositoryInterface&MockObject */
+    private function knownZone(string $type = 'MASTER'): DomainRepositoryInterface
+    {
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainNameById')->with(5)->willReturn('example.com');
+        $domains->method('getDomainType')->with(5)->willReturn($type);
+
+        return $domains;
+    }
+
+    /** @return ChangeApprovalContext&MockObject */
+    private function approvalAnswering(string $mode): ChangeApprovalContext
+    {
+        $approval = $this->createMock(ChangeApprovalContext::class);
+        $approval->method('modeForZone')->with(7, 5)->willReturn($mode);
+
+        return $approval;
+    }
+
     private function makeService(
         RecordManagerService $records,
         ?ReverseRecordCreator $reverse = null,
         ?DomainRecordCreator $domain = null,
         ?ReverseTtlResolver $ttl = null,
         ?PermissionService $permissions = null,
-        ?DomainRepositoryInterface $domains = null
+        ?DomainRepositoryInterface $domains = null,
+        ?ChangeApprovalContext $approval = null
     ): RecordAddService {
         if ($permissions === null) {
             $permissions = $this->createMock(PermissionService::class);
@@ -189,7 +279,8 @@ class RecordAddServiceTest extends TestCase
             $domain ?? $this->createMock(DomainRecordCreator::class),
             $ttl ?? $this->createMock(ReverseTtlResolver::class),
             $permissions,
-            $domains ?? $this->createMock(DomainRepositoryInterface::class)
+            $domains ?? $this->createMock(DomainRepositoryInterface::class),
+            $approval ?? $this->createMock(ChangeApprovalContext::class)
         );
     }
 }
