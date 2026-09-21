@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\SessionEntity;
@@ -38,7 +39,6 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
  * Session login against an LDAP directory, with lockout tracking, a cached bind result and MFA hand-off.
@@ -53,7 +53,7 @@ class LdapAuthenticator
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
     private UserContextService $userContextService;
-    private array $serverParams;
+    private ClientContext $client;
     private ?MfaService $mfaService = null;
 
     /** Database driver name, used to build the LDAP username-match predicate. */
@@ -68,7 +68,7 @@ class LdapAuthenticator
         LoggerInterface $logger,
         LoginAttemptService $loginAttemptService,
         UserContextService $userContextService,
-        array $serverParams = []
+        ClientContext $client
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -79,7 +79,7 @@ class LdapAuthenticator
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
         $this->userContextService = $userContextService;
-        $this->serverParams = $serverParams ?: $_SERVER;
+        $this->client = $client;
         $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
     }
 
@@ -102,9 +102,7 @@ class LdapAuthenticator
     {
         $this->logger->info('Starting LDAP authentication process.');
 
-        // Get the client IP using the IpAddressRetriever
-        $ipRetriever = new IpAddressRetriever($this->serverParams);
-        $ipAddress = $ipRetriever->getClientIp() ?: '0.0.0.0';
+        $ipAddress = $this->client->ip ?: '0.0.0.0';
         $username = $this->userContextService->getLoggedInUsername() ?? '';
 
         // Check if the account is locked
@@ -435,8 +433,7 @@ class LdapAuthenticator
         }
 
         // Validate IP address hasn't changed (security measure)
-        $ipRetriever = new IpAddressRetriever($this->serverParams);
-        $currentIp = $ipRetriever->getClientIp() ?: '0.0.0.0';
+        $currentIp = $this->client->ip ?: '0.0.0.0';
         $cachedIp = $this->userContextService->getSessionData(SessionKeys::LDAP_AUTH_IP);
 
         if ($cachedIp && $cachedIp !== $currentIp) {

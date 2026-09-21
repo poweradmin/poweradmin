@@ -35,11 +35,9 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
-use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Psr\Log\LoggerInterface;
@@ -62,10 +60,10 @@ class SessionAuthenticator
     private CsrfTokenService $csrfTokenService;
     private ?LdapAuthenticator $ldapAuthenticator = null;
     private ?SqlAuthenticator $sqlAuthenticator = null;
-    private ?AuditService $auditService = null;
     private LoginAttemptService $loginAttemptService;
     private RecaptchaService $recaptchaService;
     private RedirectService $redirectService;
+    private ControllerServiceFactory $services;
 
     public function __construct(PDO $connection, ConfigurationManager $configManager)
     {
@@ -74,9 +72,9 @@ class SessionAuthenticator
         $this->db = $connection;
         $this->configManager = $configManager;
 
-        $sessionService = new SessionService();
-        $this->redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $this->redirectService, $this->configManager);
+        $this->services = new ControllerServiceFactory($connection, $configManager, $this->logger);
+        $this->redirectService = $this->services->redirectService();
+        $this->authService = $this->services->authenticationService();
         $this->csrfTokenService = new CsrfTokenService();
 
         $this->loginAttemptService = new LoginAttemptService($connection, $this->configManager);
@@ -85,7 +83,7 @@ class SessionAuthenticator
 
     private function auditService(): AuditService
     {
-        return $this->auditService ??= new AuditService($this->db);
+        return $this->services->auditService();
     }
 
     /**
@@ -102,7 +100,8 @@ class SessionAuthenticator
             $this->csrfTokenService,
             $this->logger,
             $this->loginAttemptService,
-            new UserContextService()
+            new UserContextService(),
+            $this->services->clientContext()
         );
     }
 
@@ -119,7 +118,8 @@ class SessionAuthenticator
             $this->authService,
             $this->csrfTokenService,
             $this->logger,
-            $this->loginAttemptService
+            $this->loginAttemptService,
+            $this->services->clientContext()
         );
     }
 
@@ -165,7 +165,7 @@ class SessionAuthenticator
             // Verify reCAPTCHA if enabled
             if ($this->recaptchaService->isEnabled()) {
                 $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-                $remoteIp = (new IpAddressRetriever($_SERVER))->getClientIp();
+                $remoteIp = $this->services->clientContext()->ip;
 
                 if (!$this->recaptchaService->verify($recaptchaResponse, $remoteIp)) {
                     $this->logger->warning('reCAPTCHA verification failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
@@ -355,7 +355,7 @@ class SessionAuthenticator
             $this->configManager,
             new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
             null,
-            (new ControllerServiceFactory($this->db, $this->configManager, $this->logger))->userTimezoneService()
+            $this->services->userTimezoneService()
         );
 
         // Check if MFA setup is required for this user

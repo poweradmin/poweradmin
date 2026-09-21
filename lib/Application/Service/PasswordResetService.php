@@ -22,11 +22,11 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Domain\Repository\UserCredentialWriterInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Enum\AuthMethod;
 
@@ -40,7 +40,7 @@ class PasswordResetService
     private MailService $mailService;
     private ConfigurationInterface $config;
     private UserAuthenticationService $authService;
-    private IpAddressRetriever $ipRetriever;
+    private ClientContext $client;
     private LoggerInterface $logger;
     private EmailTemplateService $templateService;
 
@@ -50,7 +50,7 @@ class PasswordResetService
         MailService $mailService,
         ConfigurationInterface $config,
         UserAuthenticationService $authService,
-        IpAddressRetriever $ipRetriever,
+        ClientContext $client,
         LoggerInterface $logger
     ) {
         $this->tokenRepository = $tokenRepository;
@@ -58,7 +58,7 @@ class PasswordResetService
         $this->mailService = $mailService;
         $this->config = $config;
         $this->authService = $authService;
-        $this->ipRetriever = $ipRetriever;
+        $this->client = $client;
         $this->logger = $logger;
         $this->templateService = new EmailTemplateService($config);
     }
@@ -136,7 +136,7 @@ class PasswordResetService
         // Clean up expired tokens before processing new request
         $this->cleanupExpiredTokens();
 
-        $ip = $this->ipRetriever->getClientIp();
+        $ip = $this->client->ip;
 
         // Check rate limits
         if (!$this->checkRateLimit($email, $ip)) {

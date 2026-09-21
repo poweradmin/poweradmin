@@ -22,11 +22,10 @@
 
 namespace Poweradmin\Application\Service;
 
-use PDO;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\AuditLoggerInterface;
 use Poweradmin\Domain\Service\UserContextService;
 
@@ -38,18 +37,14 @@ use Poweradmin\Domain\Service\UserContextService;
 class AuditService implements AuditLoggerInterface
 {
     private AuditLogWriter $logger;
-    private IpAddressRetriever $ipRetriever;
+    private ClientContext $client;
     private UserContextService $userContext;
 
-    public function __construct(
-        PDO $db,
-        ?AuditLogWriter $logger = null,
-        ?IpAddressRetriever $ipRetriever = null,
-        ?UserContextService $userContext = null
-    ) {
-        $this->logger = $logger ?? new AuditLogWriter($db);
-        $this->ipRetriever = $ipRetriever ?? new IpAddressRetriever($_SERVER);
-        $this->userContext = $userContext ?? new UserContextService();
+    public function __construct(AuditLogWriter $logger, ClientContext $client, UserContextService $userContext)
+    {
+        $this->logger = $logger;
+        $this->client = $client;
+        $this->userContext = $userContext;
     }
 
     private function getContext(): string
@@ -61,7 +56,7 @@ class AuditService implements AuditLoggerInterface
 
     private function contextFor(?string $username): string
     {
-        return sprintf('client_ip:%s user:%s', $this->ipRetriever->getClientIp(), $username ?? 'unknown');
+        return sprintf('client_ip:%s user:%s', $this->client->ip, $username ?? 'unknown');
     }
 
     /**
@@ -91,7 +86,7 @@ class AuditService implements AuditLoggerInterface
      */
     private function anonymousLine(string $operation, array $fields = []): string
     {
-        return $this->join('client_ip:' . $this->ipRetriever->getClientIp(), $operation, $fields);
+        return $this->join('client_ip:' . $this->client->ip, $operation, $fields);
     }
 
     /** @param array<string, int|string|null> $fields */
@@ -313,7 +308,7 @@ class AuditService implements AuditLoggerInterface
      */
     public function logApiRequest(string $operation, string $method, string $path, int $status, string $keyId, string $user): void
     {
-        $clientIp = $this->ipRetriever->getClientIp();
+        $clientIp = $this->client->ip;
         $this->logger->logApiInfo(sprintf(
             'operation:%s method:%s path:%s status:%d key_id:%s user:%s client_ip:%s',
             $operation,

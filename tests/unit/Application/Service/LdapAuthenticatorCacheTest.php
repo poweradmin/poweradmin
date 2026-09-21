@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Domain\Service\UserContextService;
 use ReflectionClass;
@@ -194,9 +195,9 @@ class LdapAuthenticatorCacheTest extends TestCase
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params with matching IP
-        $serverParamsProperty = $this->reflection->getProperty('serverParams');
-        $serverParamsProperty->setAccessible(true);
-        $serverParamsProperty->setValue($this->authenticator, ['REMOTE_ADDR' => '192.168.1.1']);
+        $clientProperty = $this->reflection->getProperty('client');
+        $clientProperty->setAccessible(true);
+        $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // Set valid cache (2 minutes ago)
         $_SESSION['userid'] = 1;
@@ -231,9 +232,9 @@ class LdapAuthenticatorCacheTest extends TestCase
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params with different IP
-        $serverParamsProperty = $this->reflection->getProperty('serverParams');
-        $serverParamsProperty->setAccessible(true);
-        $serverParamsProperty->setValue($this->authenticator, ['REMOTE_ADDR' => '192.168.1.2']);
+        $clientProperty = $this->reflection->getProperty('client');
+        $clientProperty->setAccessible(true);
+        $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.2', 'phpunit', 'Unknown', false));
 
         // Set cache with different IP
         $_SESSION['userid'] = 1;
@@ -268,9 +269,9 @@ class LdapAuthenticatorCacheTest extends TestCase
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params
-        $serverParamsProperty = $this->reflection->getProperty('serverParams');
-        $serverParamsProperty->setAccessible(true);
-        $serverParamsProperty->setValue($this->authenticator, ['REMOTE_ADDR' => '192.168.1.1']);
+        $clientProperty = $this->reflection->getProperty('client');
+        $clientProperty->setAccessible(true);
+        $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // Set cache with user A, but current session has user B (account switching scenario)
         $_SESSION['userid'] = 1;
@@ -305,9 +306,9 @@ class LdapAuthenticatorCacheTest extends TestCase
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params
-        $serverParamsProperty = $this->reflection->getProperty('serverParams');
-        $serverParamsProperty->setAccessible(true);
-        $serverParamsProperty->setValue($this->authenticator, ['REMOTE_ADDR' => '192.168.1.1']);
+        $clientProperty = $this->reflection->getProperty('client');
+        $clientProperty->setAccessible(true);
+        $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // Simulate MFA pending state: userid set but authenticated=false
         // This happens when MfaSessionManager::setMfaRequired() is called
@@ -343,9 +344,9 @@ class LdapAuthenticatorCacheTest extends TestCase
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params
-        $serverParamsProperty = $this->reflection->getProperty('serverParams');
-        $serverParamsProperty->setAccessible(true);
-        $serverParamsProperty->setValue($this->authenticator, ['REMOTE_ADDR' => '192.168.1.1']);
+        $clientProperty = $this->reflection->getProperty('client');
+        $clientProperty->setAccessible(true);
+        $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // authenticated not set at all (edge case)
         $_SESSION['userid'] = 1;

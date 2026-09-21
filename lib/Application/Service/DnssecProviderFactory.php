@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
@@ -34,7 +35,6 @@ use Poweradmin\Infrastructure\Logger\SyslogLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\NullDnssecProvider;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
  * Builds the DNSSEC provider for the configured PowerDNS API, or a null provider when the API is not set up.
@@ -115,13 +115,12 @@ class DnssecProviderFactory
 
         $transformer = new DnssecDataTransformer();
         $userContextService = new UserContextService();
-        $ipRetriever = new IpAddressRetriever($_SERVER);
 
         return new DnsSecApiProvider(
             $apiClient,
             $logger,
             $transformer,
-            $ipRetriever->getClientIp() ?: 'unknown',
+            ClientContext::fromServer($_SERVER)->ip ?: 'unknown',
             $userContextService->getLoggedInUsername() ?? 'api_user_' . ($userContextService->getLoggedInUserId() ?? 'unknown')
         );
     }

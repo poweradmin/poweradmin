@@ -1151,6 +1151,7 @@ return array(
     'Poweradmin\\Application\\Controller\\ZoneCatalogController' => $baseDir . '/lib/Application/Controller/ZoneCatalogController.php',
     'Poweradmin\\Application\\Controller\\ZoneOwnershipController' => $baseDir . '/lib/Application/Controller/ZoneOwnershipController.php',
     'Poweradmin\\Application\\Http\\BootstrapErrorResponder' => $baseDir . '/lib/Application/Http/BootstrapErrorResponder.php',
+    'Poweradmin\\Application\\Http\\ClientContext' => $baseDir . '/lib/Application/Http/ClientContext.php',
     'Poweradmin\\Application\\Http\\Request' => $baseDir . '/lib/Application/Http/Request.php',
     'Poweradmin\\Application\\Http\\RequestContext' => $baseDir . '/lib/Application/Http/RequestContext.php',
     'Poweradmin\\Application\\Http\\ZoneEditIntent' => $baseDir . '/lib/Application/Http/ZoneEditIntent.php',

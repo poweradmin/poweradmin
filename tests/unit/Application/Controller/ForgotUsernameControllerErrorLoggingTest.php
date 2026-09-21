@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Controller\ForgotUsernameController;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use RuntimeException;
@@ -89,19 +88,14 @@ class ForgotUsernameControllerErrorLoggingTest extends TestCase
             fn(string $name, $default = null) => $name === 'email' ? self::EMAIL : $default
         );
 
-        $ipRetriever = $this->createMock(IpAddressRetriever::class);
-        $ipRetriever->method('getClientIp')->willReturn('203.0.113.7');
-
-        $userAgentService = $this->createMock(UserAgentService::class);
-        $userAgentService->method('getUserAgent')->willReturn('phpunit');
+        $client = new ClientContext('203.0.113.7', 'phpunit', 'Unknown', false);
 
         $recaptchaService = $this->createMock(RecaptchaService::class);
         $recaptchaService->method('isEnabled')->willReturn(false);
 
         $this->setPrivate($controller, 'usernameRecoveryService', $usernameRecoveryService);
         $this->setPrivate($controller, 'httpRequest', $request);
-        $this->setPrivate($controller, 'ipRetriever', $ipRetriever);
-        $this->setPrivate($controller, 'userAgentService', $userAgentService);
+        $this->setPrivate($controller, 'client', $client);
         $this->setPrivate($controller, 'recaptchaService', $recaptchaService);
         $this->setPrivate($controller, 'csrfTokenService', $this->createMock(CsrfTokenService::class));
 

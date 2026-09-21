@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Closure;
 use PDO;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -31,9 +32,10 @@ use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -54,6 +56,8 @@ class DynamicDnsRequestFactory
         PermissionService $permissions,
         ?AuditService $auditService = null
     ): DynamicDnsUpdateService {
+        $client = ClientContext::fromServer($_SERVER);
+
         return new DynamicDnsUpdateService(
             new DynamicDnsValidationService($config),
             new DynamicDnsAuthenticationService(
@@ -62,8 +66,8 @@ class DynamicDnsRequestFactory
                 new LoginAttemptService($db, $config)
             ),
             $repository,
-            $auditService ?? new AuditService($db),
-            (new IpAddressRetriever($_SERVER))->getClientIp(),
+            $auditService ?? new AuditService(new AuditLogWriter($db), $client, new UserContextService()),
+            $client->ip,
             self::requiresApproval($config, $permissions)
         );
     }
@@ -95,8 +99,7 @@ class DynamicDnsRequestFactory
         [$ipv4, $ipv6] = self::routeAddressFamilies($ipv4, $ipv6);
 
         if ($ipv4 === 'whatismyip' || $ipv6 === 'whatismyip') {
-            $ipRetriever = new IpAddressRetriever($_SERVER);
-            $clientIp = $ipRetriever->getClientIp();
+            $clientIp = ClientContext::fromServer($_SERVER)->ip;
             $ipValidator = new IPAddressValidator();
 
             if ($ipv4 === 'whatismyip') {

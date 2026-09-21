@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\ClientContext;
 use Exception;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LoginAttemptService;
@@ -34,7 +35,6 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\SessionPromotionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use RuntimeException;
 
 /**
@@ -45,7 +45,7 @@ class MfaVerifyController extends BaseController
     private MfaService $mfaService;
     private CsrfTokenService $csrfTokenService;
     private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
+    private ClientContext $client;
     private LoginAttemptService $loginAttemptService;
 
     public function __construct(array $request)
@@ -58,7 +58,7 @@ class MfaVerifyController extends BaseController
 
         $this->csrfTokenService = new CsrfTokenService();
         $this->userContextService = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->client = $this->services()->clientContext();
         $this->loginAttemptService = new LoginAttemptService($this->db, $this->config);
     }
 
@@ -150,7 +150,7 @@ class MfaVerifyController extends BaseController
         // before the counter gate; a blacklisted address stays out regardless
         $recovered = false;
         if ($this->isMfaThrottled($username, (int)$userId)) {
-            $recovered = !$this->loginAttemptService->isIpBlacklisted($this->ipAddressRetriever->getClientIp())
+            $recovered = !$this->loginAttemptService->isIpBlacklisted($this->client->ip)
                 && $this->mfaService->consumeRecoveryCode($userId, $code);
             if (!$recovered) {
                 $this->logger->warning('[MfaVerifyController] Account locked, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
@@ -230,7 +230,7 @@ class MfaVerifyController extends BaseController
                 $this->userContextService->hasSessionData(SessionKeys::AUTH_USED) &&
                 $this->userContextService->getSessionData(SessionKeys::AUTH_USED) === 'ldap'
             ) {
-                $ipAddress = $this->ipAddressRetriever->getClientIp() ?: '0.0.0.0';
+                $ipAddress = $this->client->ip ?: '0.0.0.0';
                 $username = $this->userContextService->getLoggedInUsername();
 
                 $this->userContextService->setSessionData(SessionKeys::LDAP_AUTH_TIMESTAMP, time());
@@ -281,7 +281,7 @@ class MfaVerifyController extends BaseController
     {
         return $this->loginAttemptService->isAccountLocked(
             $username,
-            $this->ipAddressRetriever->getClientIp(),
+            $this->client->ip,
             LoginAttemptService::STAGE_MFA,
             $userId
         );
@@ -297,7 +297,7 @@ class MfaVerifyController extends BaseController
     {
         $this->loginAttemptService->recordAttempt(
             $username,
-            $this->ipAddressRetriever->getClientIp(),
+            $this->client->ip,
             $isValid,
             LoginAttemptService::STAGE_MFA,
             $userId

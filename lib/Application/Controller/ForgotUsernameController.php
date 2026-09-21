@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
@@ -29,8 +30,6 @@ use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -42,8 +41,7 @@ class ForgotUsernameController extends BaseController
     private RecaptchaService $recaptchaService;
     private UserContextService $userContextService;
     private CsrfTokenService $csrfTokenService;
-    private IpAddressRetriever $ipRetriever;
-    private UserAgentService $userAgentService;
+    private ClientContext $client;
 
     public function __construct(array $request)
     {
@@ -56,14 +54,13 @@ class ForgotUsernameController extends BaseController
         try {
             $recoveryRepository = new DbUsernameRecoveryRepository($this->db, $this->config);
             $mailService = new MailService($this->config, $this->logger);
-            $this->ipRetriever = new IpAddressRetriever($_SERVER);
-            $this->userAgentService = new UserAgentService($_SERVER);
+            $this->client = $this->services()->clientContext();
 
             $this->usernameRecoveryService = new UsernameRecoveryService(
                 $recoveryRepository,
                 $mailService,
                 $this->config,
-                $this->ipRetriever,
+                $this->client,
                 $this->logger,
                 $this->db
             );
@@ -93,10 +90,10 @@ class ForgotUsernameController extends BaseController
         // Check if username recovery is enabled
         if (!$this->usernameRecoveryService->isEnabled()) {
             $this->logger->warning('Username recovery attempt while feature is disabled', [
-                'ip' => $this->ipRetriever->getClientIp(),
-                'user_agent' => $this->userAgentService->getUserAgent(),
-                'browser' => $this->userAgentService->getBrowserInfo(),
-                'is_bot' => $this->userAgentService->isBot(),
+                'ip' => $this->client->ip,
+                'user_agent' => $this->client->userAgent,
+                'browser' => $this->client->browser,
+                'is_bot' => $this->client->isBot,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $this->showError('Username recovery functionality is disabled.');
@@ -108,7 +105,7 @@ class ForgotUsernameController extends BaseController
             $this->logger->info('Authenticated user attempted to access username recovery', [
                 'user_id' => $this->userContextService->getLoggedInUserId(),
                 'username' => $this->userContextService->getLoggedInUsername(),
-                'ip' => $this->ipRetriever->getClientIp(),
+                'ip' => $this->client->ip,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
@@ -125,8 +122,8 @@ class ForgotUsernameController extends BaseController
 
     private function handleUsernameRecoveryRequest(): void
     {
-        $ipAddress = $this->ipRetriever->getClientIp();
-        $userAgent = $this->userAgentService->getUserAgent();
+        $ipAddress = $this->client->ip;
+        $userAgent = $this->client->userAgent;
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
@@ -179,8 +176,8 @@ class ForgotUsernameController extends BaseController
             'email' => $email,
             'ip' => $ipAddress,
             'user_agent' => $userAgent,
-            'browser' => $this->userAgentService->getBrowserInfo(),
-            'is_bot' => $this->userAgentService->isBot(),
+            'browser' => $this->client->browser,
+            'is_bot' => $this->client->isBot,
             'referrer' => $_SERVER['HTTP_REFERER'] ?? 'none',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
@@ -222,7 +219,7 @@ class ForgotUsernameController extends BaseController
         if ($error) {
             $this->logger->debug('Username recovery form displayed with error', [
                 'error' => $error,
-                'ip' => $this->ipRetriever->getClientIp(),
+                'ip' => $this->client->ip,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
         }

@@ -22,15 +22,14 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
  * The audit line shape is what the log views and grep filters read, so each
@@ -50,13 +49,12 @@ class AuditServiceTest extends TestCase
             });
         }
 
-        $ip = $this->createMock(IpAddressRetriever::class);
-        $ip->method('getClientIp')->willReturn('192.0.2.10');
+        $ip = new ClientContext('192.0.2.10', 'phpunit', 'Unknown', false);
         $user = $this->createMock(UserContextService::class);
         $user->method('getActingUsername')->willReturn('alice');
         $user->method('getLoggedInUsername')->willReturn($loginUsername);
 
-        return new AuditService($this->createMock(PDO::class), $logger, $ip, $user);
+        return new AuditService($logger, $ip, $user);
     }
 
     public function testZoneAddCarriesOnlyTheGivenFields(): void
@@ -201,12 +199,11 @@ class AuditServiceTest extends TestCase
         $logger = $this->createMock(AuditLogWriter::class);
         $logger->expects($this->once())->method('logWarn')
             ->with('client_ip:192.0.2.10 user:unknown operation:access_denied permission:zone_master_add uri:/zones/add/master', null);
-        $ip = $this->createMock(IpAddressRetriever::class);
-        $ip->method('getClientIp')->willReturn('192.0.2.10');
+        $ip = new ClientContext('192.0.2.10', 'phpunit', 'Unknown', false);
         $user = $this->createMock(UserContextService::class);
         $user->method('getActingUsername')->willReturn(null);
 
-        (new AuditService($this->createMock(PDO::class), $logger, $ip, $user))
+        (new AuditService($logger, $ip, $user))
             ->logAccessDenied(Permission::PERM_ZONE_MASTER_ADD, '/zones/add/master');
     }
 

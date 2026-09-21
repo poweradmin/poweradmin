@@ -23,13 +23,13 @@
 namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 
@@ -44,7 +44,6 @@ class PasswordResetSecurityTest extends TestCase
     private $mailService;
     private ConfigurationManager $config;
     private $authService;
-    private $ipRetriever;
     private $logger;
     private PasswordResetService $passwordResetService;
 
@@ -55,7 +54,6 @@ class PasswordResetSecurityTest extends TestCase
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->mailService = $this->createMock(MailService::class);
         $this->authService = $this->createMock(UserAuthenticationService::class);
-        $this->ipRetriever = $this->createMock(IpAddressRetriever::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         // Setup ConfigurationManager with test data using reflection
@@ -75,7 +73,6 @@ class PasswordResetSecurityTest extends TestCase
             ]
         ]);
 
-        $this->ipRetriever->method('getClientIp')->willReturn('192.168.1.1');
 
         $this->passwordResetService = new PasswordResetService(
             $this->tokenRepository,
@@ -83,7 +80,7 @@ class PasswordResetSecurityTest extends TestCase
             $this->mailService,
             $this->config,
             $this->authService,
-            $this->ipRetriever,
+            new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false),
             $this->logger
         );
     }

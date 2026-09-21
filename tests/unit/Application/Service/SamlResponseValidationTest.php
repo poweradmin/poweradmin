@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\UserProvisioningService;
@@ -41,6 +42,7 @@ class SamlResponseValidationTest extends TestCase
             $this->mockLogger,
             $this->mockDb,
             $this->createMock(AuthenticationService::class),
+            $this->createMock(AuditService::class),
             $this->mockRequest
         );
 

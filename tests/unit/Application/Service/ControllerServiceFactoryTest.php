@@ -72,6 +72,13 @@ class ControllerServiceFactoryTest extends TestCase
         $this->assertSame($factory->authenticationService(), $factory->authenticationService());
     }
 
+    public function testClientContextIsResolvedOncePerRequest(): void
+    {
+        $factory = $this->makeFactory();
+
+        $this->assertSame($factory->clientContext(), $factory->clientContext());
+    }
+
     public function testRepositoryFactoryMemoizesTheSharedProviderPath(): void
     {
         $factory = $this->makeFactory();

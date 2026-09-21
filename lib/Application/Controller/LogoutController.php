@@ -116,7 +116,8 @@ class LogoutController extends BaseController
                 $userProvisioningService,
                 $this->logger,
                 $this->db,
-                $this->services()->authenticationService()
+                $this->services()->authenticationService(),
+                $this->createAuditService()
             );
 
             // Initiate SAML Single Logout

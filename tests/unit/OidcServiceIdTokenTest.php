@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\UserProvisioningService;
@@ -53,7 +54,8 @@ class OidcServiceIdTokenTest extends TestCase
             $userProvisioningService,
             $logger,
             $db,
-            $this->createMock(AuthenticationService::class)
+            $this->createMock(AuthenticationService::class),
+            $this->createMock(AuditService::class)
         );
 
         $this->decodeMethod = new ReflectionMethod(OidcService::class, 'decodeIdTokenPayload');

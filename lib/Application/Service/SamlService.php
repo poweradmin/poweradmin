@@ -61,8 +61,8 @@ class SamlService
         LoggerInterface $logger,
         PDO $db,
         AuthenticationService $authenticationService,
-        ?Request $request = null,
-        ?AuditService $auditService = null
+        AuditService $auditService,
+        ?Request $request = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -74,7 +74,7 @@ class SamlService
 
         $this->authenticationService = $authenticationService;
         $this->csrfTokenService = new CsrfTokenService();
-        $this->auditService = $auditService ?? new AuditService($db);
+        $this->auditService = $auditService;
     }
 
     /**

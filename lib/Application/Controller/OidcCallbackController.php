@@ -56,8 +56,8 @@ class OidcCallbackController extends BaseController
             $this->logger,
             $this->db,
             $this->services()->authenticationService(),
-            $this->httpRequest,
-            $this->createAuditService()
+            $this->createAuditService(),
+            $this->httpRequest
         );
 
         $this->authService = $this->services()->authenticationService();

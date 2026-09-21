@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Closure;
 use PDO;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
@@ -72,6 +73,7 @@ use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -133,6 +135,7 @@ class ControllerServiceFactory
     private ?ZoneChangeRequestRepositoryInterface $zoneChangeRequestRepository = null;
     private ?ZoneChangeRequestService $zoneChangeRequestService = null;
     private ?ChangeRequestNotificationService $changeRequestNotificationService = null;
+    private ?ClientContext $clientContext = null;
     private ?SessionService $sessionService = null;
     private ?RedirectService $redirectService = null;
     private ?AuthenticationService $authenticationService = null;
@@ -319,9 +322,18 @@ class ControllerServiceFactory
         return $this->authenticationService ??= new AuthenticationService($this->sessionService(), $this->redirectService(), $this->config);
     }
 
+    /**
+     * The requesting client, resolved once so every consumer logs the same
+     * address and user agent.
+     */
+    public function clientContext(): ClientContext
+    {
+        return $this->clientContext ??= ClientContext::fromServer($_SERVER);
+    }
+
     public function auditService(): AuditService
     {
-        return $this->auditService ??= new AuditService($this->db);
+        return $this->auditService ??= new AuditService(new AuditLogWriter($this->db), $this->clientContext(), new UserContextService());
     }
 
     public function recordChangeLogger(): RecordChangeWriterInterface

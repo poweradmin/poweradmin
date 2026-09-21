@@ -1557,6 +1557,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Controller\\ZoneCatalogController' => __DIR__ . '/../..' . '/lib/Application/Controller/ZoneCatalogController.php',
         'Poweradmin\\Application\\Controller\\ZoneOwnershipController' => __DIR__ . '/../..' . '/lib/Application/Controller/ZoneOwnershipController.php',
         'Poweradmin\\Application\\Http\\BootstrapErrorResponder' => __DIR__ . '/../..' . '/lib/Application/Http/BootstrapErrorResponder.php',
+        'Poweradmin\\Application\\Http\\ClientContext' => __DIR__ . '/../..' . '/lib/Application/Http/ClientContext.php',
         'Poweradmin\\Application\\Http\\Request' => __DIR__ . '/../..' . '/lib/Application/Http/Request.php',
         'Poweradmin\\Application\\Http\\RequestContext' => __DIR__ . '/../..' . '/lib/Application/Http/RequestContext.php',
         'Poweradmin\\Application\\Http\\ZoneEditIntent' => __DIR__ . '/../..' . '/lib/Application/Http/ZoneEditIntent.php',

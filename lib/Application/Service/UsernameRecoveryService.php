@@ -22,9 +22,9 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
 use PDO;
 
@@ -36,7 +36,7 @@ class UsernameRecoveryService
     private DbUsernameRecoveryRepository $recoveryRepository;
     private MailService $mailService;
     private ConfigurationInterface $config;
-    private IpAddressRetriever $ipRetriever;
+    private ClientContext $client;
     private LoggerInterface $logger;
     private EmailTemplateService $templateService;
     private PDO $db;
@@ -45,14 +45,14 @@ class UsernameRecoveryService
         DbUsernameRecoveryRepository $recoveryRepository,
         MailService $mailService,
         ConfigurationInterface $config,
-        IpAddressRetriever $ipRetriever,
+        ClientContext $client,
         LoggerInterface $logger,
         PDO $db
     ) {
         $this->recoveryRepository = $recoveryRepository;
         $this->mailService = $mailService;
         $this->config = $config;
-        $this->ipRetriever = $ipRetriever;
+        $this->client = $client;
         $this->logger = $logger;
         $this->db = $db;
         $this->templateService = new EmailTemplateService($config);
@@ -91,7 +91,7 @@ class UsernameRecoveryService
         // Clean up old requests before processing new request
         $this->cleanupOldRequests();
 
-        $ip = $this->ipRetriever->getClientIp();
+        $ip = $this->client->ip;
 
         // Check rate limits
         if (!$this->checkRateLimit($email, $ip)) {

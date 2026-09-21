@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
@@ -30,8 +31,6 @@ use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -43,8 +42,7 @@ class ForgotPasswordController extends BaseController
     private RecaptchaService $recaptchaService;
     private UserContextService $userContextService;
     private CsrfTokenService $csrfTokenService;
-    private IpAddressRetriever $ipRetriever;
-    private UserAgentService $userAgentService;
+    private ClientContext $client;
 
     public function __construct(array $request)
     {
@@ -58,8 +56,7 @@ class ForgotPasswordController extends BaseController
         $userRepository = $this->createUserRepository();
         $mailService = new MailService($this->config, $this->logger);
         $authService = UserAuthenticationService::fromConfig($this->config);
-        $this->ipRetriever = new IpAddressRetriever($_SERVER);
-        $this->userAgentService = new UserAgentService($_SERVER);
+        $this->client = $this->services()->clientContext();
 
         $this->passwordResetService = new PasswordResetService(
             $tokenRepository,
@@ -67,7 +64,7 @@ class ForgotPasswordController extends BaseController
             $mailService,
             $this->config,
             $authService,
-            $this->ipRetriever,
+            $this->client,
             $this->logger
         );
 
@@ -89,10 +86,10 @@ class ForgotPasswordController extends BaseController
         // Check if password reset is enabled
         if (!$this->passwordResetService->isEnabled()) {
             $this->logger->warning('Password reset attempt while feature is disabled', [
-                'ip' => $this->ipRetriever->getClientIp(),
-                'user_agent' => $this->userAgentService->getUserAgent(),
-                'browser' => $this->userAgentService->getBrowserInfo(),
-                'is_bot' => $this->userAgentService->isBot(),
+                'ip' => $this->client->ip,
+                'user_agent' => $this->client->userAgent,
+                'browser' => $this->client->browser,
+                'is_bot' => $this->client->isBot,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $this->showError('Password reset functionality is disabled.');
@@ -104,7 +101,7 @@ class ForgotPasswordController extends BaseController
             $this->logger->info('Authenticated user attempted to access password reset', [
                 'user_id' => $this->userContextService->getLoggedInUserId(),
                 'username' => $this->userContextService->getLoggedInUsername(),
-                'ip' => $this->ipRetriever->getClientIp(),
+                'ip' => $this->client->ip,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
@@ -121,8 +118,8 @@ class ForgotPasswordController extends BaseController
 
     private function handlePasswordResetRequest(): void
     {
-        $ipAddress = $this->ipRetriever->getClientIp();
-        $userAgent = $this->userAgentService->getUserAgent();
+        $ipAddress = $this->client->ip;
+        $userAgent = $this->client->userAgent;
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
@@ -192,8 +189,8 @@ class ForgotPasswordController extends BaseController
             'email' => $email,
             'ip' => $ipAddress,
             'user_agent' => $userAgent,
-            'browser' => $this->userAgentService->getBrowserInfo(),
-            'is_bot' => $this->userAgentService->isBot(),
+            'browser' => $this->client->browser,
+            'is_bot' => $this->client->isBot,
             'referrer' => $_SERVER['HTTP_REFERER'] ?? 'none',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
@@ -235,7 +232,7 @@ class ForgotPasswordController extends BaseController
         if ($error) {
             $this->logger->debug('Password reset form displayed with error', [
                 'error' => $error,
-                'ip' => $this->ipRetriever->getClientIp(),
+                'ip' => $this->client->ip,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
         }

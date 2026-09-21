@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
+use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\SessionEntity;
@@ -35,7 +36,6 @@ use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
  * Session login against the users table with lockout checks, hash upgrades and MFA hand-off.
@@ -49,7 +49,7 @@ class SqlAuthenticator
     private $authService; // Can be either AuthenticationService or UserAuthenticationService
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
-    private array $serverParams;
+    private ClientContext $client;
     private ?MfaService $mfaService = null;
 
     public function __construct(
@@ -60,7 +60,7 @@ class SqlAuthenticator
         CsrfTokenService $csrfTokenService,
         LoggerInterface $logger,
         LoginAttemptService $loginAttemptService,
-        array $serverParams = []
+        ClientContext $client
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -70,7 +70,7 @@ class SqlAuthenticator
         $this->authService = $authService;
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
-        $this->serverParams = $serverParams ?: $_SERVER;
+        $this->client = $client;
     }
 
     /**
@@ -92,9 +92,7 @@ class SqlAuthenticator
     {
         $this->logger->info('Starting authentication process.');
 
-        // Get the client IP using the IpAddressRetriever
-        $ipRetriever = new IpAddressRetriever($this->serverParams);
-        $ipAddress = $ipRetriever->getClientIp() ?: '0.0.0.0';
+        $ipAddress = $this->client->ip ?: '0.0.0.0';
         $username = $_SESSION[SessionKeys::USERLOGIN] ?? '';
 
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {

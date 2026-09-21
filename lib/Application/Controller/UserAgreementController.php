@@ -26,7 +26,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
  * Handles the user agreement page: shows the text and records the user's acceptance.
@@ -90,8 +89,7 @@ class UserAgreementController extends BaseController
         }
 
         $userId = $this->userContextService->getLoggedInUserId();
-        $ipRetriever = new IpAddressRetriever($_SERVER);
-        $ipAddress = $ipRetriever->getClientIp();
+        $ipAddress = $this->services()->clientContext()->ip;
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
         if ($this->agreementService->recordAgreementAcceptance($userId, $ipAddress, $userAgent)) {
