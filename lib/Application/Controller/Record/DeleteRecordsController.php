@@ -132,7 +132,7 @@ class DeleteRecordsController extends BaseController
         if (is_numeric($post_zone_id)) {
             $zone_id = (int) $post_zone_id;
             // Validate zone exists
-            if ($domainRepository->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel()) !== []) {
+            if ($this->canViewZones() && $domainRepository->getZoneInfoFromId($zone_id) !== []) {
                 $redirectPage = 'edit';
                 $messageKey = 'edit';
                 $redirectParams['id'] = $zone_id;
@@ -168,12 +168,12 @@ class DeleteRecordsController extends BaseController
                 $zid = $recordRepository->getZoneIdFromRecordId($record_id);
                 $domain_id = $recordRepository->recidToDomid($record_id);
 
-                $zone_info = $domainRepository->getZoneInfoFromId($zid, $this->getViewPermissionLevel());
+                $zone_info = $this->canViewZones() ? $domainRepository->getZoneInfoFromId($zid) : [];
 
                 $userId = $this->userContextService->getLoggedInUserId();
                 $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $domain_id);
 
-                if (ZoneType::isReadOnly($zone_info['type']) || $perm_edit === 'none') {
+                if (ZoneType::isReadOnly($zone_info['type'] ?? null) || $perm_edit === 'none') {
                     continue;
                 }
 
@@ -203,7 +203,7 @@ class DeleteRecordsController extends BaseController
             if (is_numeric($post_zone_id)) {
                 $zone_id = (int) $post_zone_id;
                 // Validate zone exists
-                if ($domainRepository->getZoneInfoFromId($zone_id, $this->getViewPermissionLevel()) !== []) {
+                if ($this->canViewZones() && $domainRepository->getZoneInfoFromId($zone_id) !== []) {
                     $redirectPage = 'edit';
                     $messageKey = 'edit';
                     $redirectParams['id'] = $zone_id;

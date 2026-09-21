@@ -54,6 +54,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
     private const RECORD_ID = 34;
 
     private string $editLevel = 'all';
+    private string $viewLevel = 'all';
     private string $changeRequestLevel = 'none';
     private bool $ownsZone = true;
     private string $zoneType = 'MASTER';
@@ -77,6 +78,9 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
     /** @var RecordRepositoryInterface&MockObject */
     private RecordRepositoryInterface $records;
 
+    /** @var DomainRepositoryInterface&MockObject */
+    private DomainRepositoryInterface $domains;
+
     /** @var RecordManagerInterface&MockObject */
     private RecordManagerInterface $recordManager;
 
@@ -99,6 +103,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('userOwnsZone')->willReturnCallback(fn(): bool => $this->ownsZone);
         $permissions->method('getEditPermissionLevelForZone')->willReturnCallback(fn(): string => $this->editLevel);
+        $permissions->method('getViewPermissionLevel')->willReturnCallback(fn(): string => $this->viewLevel);
         $permissions->method('getChangeRequestPermissionLevelForZone')
             ->willReturnCallback(fn(): string => $this->changeRequestLevel);
 
@@ -107,9 +112,9 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         $this->records->method('recidToDomid')->willReturn(self::ZONE_ID);
         $this->records->method('getRecordFromId')->willReturnCallback(fn(): ?array => $this->storedRecord);
 
-        $domains = $this->createMock(DomainRepositoryInterface::class);
-        $domains->method('getZoneInfoFromId')->willReturnCallback(fn(): array => ['type' => $this->zoneType]);
-        $domains->method('getDomainNameById')->willReturn('example.com');
+        $this->domains = $this->createMock(DomainRepositoryInterface::class);
+        $this->domains->method('getZoneInfoFromId')->willReturnCallback(fn(): array => ['type' => $this->zoneType]);
+        $this->domains->method('getDomainNameById')->willReturn('example.com');
 
         $this->recordManager = $this->createMock(RecordManagerInterface::class);
         $this->recordManager->method('deleteRecord')->willReturnCallback(fn(): RecordWriteResult => $this->deleteResult);
@@ -125,7 +130,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
 
         $this->factory->method('permissionService')->willReturn($permissions);
         $this->factory->method('recordRepository')->willReturn($this->records);
-        $this->factory->method('domainRepository')->willReturn($domains);
+        $this->factory->method('domainRepository')->willReturn($this->domains);
         $this->factory->method('recordManager')->willReturn($this->recordManager);
         $this->factory->method('reverseRecordCreator')->willReturn($this->reverseCreator);
         $this->factory->method('auditService')->willReturn($this->audit);
@@ -210,6 +215,18 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         $halt = $this->haltOf($this->makeController());
 
         $this->assertSame('You cannot delete records from a read-only zone.', $halt->target);
+    }
+
+    public function testWithoutAnyViewLevelTheZoneIsNotLookedUpAndTheRefusalIsFlashed(): void
+    {
+        $this->viewLevel = 'none';
+        $this->domains->expects($this->never())->method('getZoneInfoFromId');
+
+        $controller = $this->makeController();
+        $controller->run();
+
+        $this->assertSame([['error', 'You do not have permission to view this zone.']], $this->messagesFor('system'));
+        $this->assertSame('delete_record.html', $controller->rendered[0][0]);
     }
 
     public function testAGetRendersTheConfirmationPage(): void

@@ -26,6 +26,8 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
@@ -176,6 +178,9 @@ class ZoneFileImportController extends BaseController
 
         // Auto-detect existing zone when importing from the menu
         $domainRepository = $this->services()->domainRepository();
+        if ($importMode === 'new' && $origin !== null && !(new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig())))->isValid($origin)) {
+            $this->addSystemMessage('error', _('This is an invalid zone name.'));
+        }
         if ($importMode === 'new' && $origin !== null && $domainRepository->domainExists($origin)) {
             $existingZoneId = $domainRepository->getDomainIdByName($origin) ?? 0;
             if ($existingZoneId > 0) {

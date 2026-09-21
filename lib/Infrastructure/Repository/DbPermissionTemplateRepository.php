@@ -24,7 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 use Throwable;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
@@ -288,42 +288,28 @@ class DbPermissionTemplateRepository
     }
 
     /**
-     * Delete Permission Template ID
-     *
-     * @param int $id Permission template ID
-     *
-     * @return boolean true on success, false otherwise
+     * Delete a permission template and its items, unless a user or group still holds it.
      */
-    public function deletePermissionTemplate(int $id): bool
+    public function deletePermissionTemplate(int $id): PermissionTemplateDeleteResult
     {
-        // Check if template is assigned to users
         $stmt = $this->db->prepare("SELECT id FROM users WHERE perm_templ = :id");
         $stmt->execute([':id' => $id]);
-        $usedByUsers = $stmt->fetchColumn();
+        $usedByUsers = (bool)$stmt->fetchColumn();
 
-        // Check if template is assigned to groups
         $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE perm_templ = :id");
         $stmt->execute([':id' => $id]);
-        $usedByGroups = $stmt->fetchColumn();
+        $usedByGroups = (bool)$stmt->fetchColumn();
 
         if ($usedByUsers || $usedByGroups) {
-            $messageService = new MessageService();
-            if ($usedByUsers && $usedByGroups) {
-                $messageService->addSystemError(_('This template is assigned to at least one user and one group.'));
-            } elseif ($usedByUsers) {
-                $messageService->addSystemError(_('This template is assigned to at least one user.'));
-            } else {
-                $messageService->addSystemError(_('This template is assigned to at least one group.'));
-            }
-
-            return false;
-        } else {
-            $stmt = $this->db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :id");
-            $stmt->execute([':id' => $id]);
-
-            $stmt = $this->db->prepare("DELETE FROM perm_templ WHERE id = :id");
-            $stmt->execute([':id' => $id]);
-            return true;
+            return PermissionTemplateDeleteResult::inUse($usedByUsers, $usedByGroups);
         }
+
+        $stmt = $this->db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :id");
+        $stmt->execute([':id' => $id]);
+
+        $stmt = $this->db->prepare("DELETE FROM perm_templ WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+
+        return PermissionTemplateDeleteResult::DELETED;
     }
 }

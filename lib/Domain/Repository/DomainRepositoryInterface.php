@@ -79,7 +79,7 @@ interface DomainRepositoryInterface
     public function getDomainMaster(int $id): ?string;
 
     /**
-     * Check if a domain is already existing.
+     * Check if a domain is already existing. An invalid zone name never exists.
      *
      * @param string $domain Domain name
      * @return boolean true if existing, false if it doesn't exist.
@@ -118,19 +118,17 @@ interface DomainRepositoryInterface
      * Get Zone details from Zone ID
      *
      * @param int $zid Zone ID
-     * @param string $viewPermissionLevel The caller's view level; "none" withholds the details
-     * @return array array of zone details [type,name,master_ip,record_count]
+     * @return array array of zone details [type,name,master_ip,record_count], or [] when not found
      */
-    public function getZoneInfoFromId(int $zid, string $viewPermissionLevel): array;
+    public function getZoneInfoFromId(int $zid): array;
 
     /**
      * Get Zone(s) details from Zone IDs
      *
      * @param array $zones Zone IDs
-     * @param string $viewPermissionLevel The caller's view level; "none" withholds the details
      * @return array
      */
-    public function getZoneInfoFromIds(array $zones, string $viewPermissionLevel): array;
+    public function getZoneInfoFromIds(array $zones): array;
 
     /**
      * Every zone as a picker entry, sorted by name, regardless of who owns it.

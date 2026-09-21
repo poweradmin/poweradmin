@@ -437,6 +437,20 @@ abstract class BaseController
     }
 
     /**
+     * Whether the logged-in user may view any zone; flashes the refusal when not,
+     * so a zone lookup skipped on "none" still explains itself on the page.
+     */
+    protected function canViewZones(): bool
+    {
+        if ($this->getViewPermissionLevel() !== 'none') {
+            return true;
+        }
+
+        $this->addSystemMessage('error', _('You do not have permission to view this zone.'));
+        return false;
+    }
+
+    /**
      * Check if the logged-in user owns the given zone directly or via group membership
      */
     protected function isZoneOwner(int $zoneId): bool

@@ -94,7 +94,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
             ->willReturnMap([[100, 5], [101, 9], [102, 2]]);
 
         $repo = new ApiDomainRepository($this->db, $this->config, $backend);
-        $result = $repo->getZoneInfoFromIds([100, 101, 102], 'all');
+        $result = $repo->getZoneInfoFromIds([100, 101, 102]);
 
         $this->assertCount(3, $result);
         $byId = [];
@@ -120,7 +120,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
         $backend->expects($this->once())->method('countZoneRecords')->with(100)->willReturn(42);
 
         $repo = new ApiDomainRepository($this->db, $this->config, $backend);
-        $result = $repo->getZoneInfoFromIds([100, 999], 'all');
+        $result = $repo->getZoneInfoFromIds([100, 999]);
 
         $this->assertCount(1, $result);
         $this->assertSame(42, $result[0]['record_count']);
@@ -135,19 +135,18 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
 
         $repo = new ApiDomainRepository($this->db, $this->config, $backend);
 
-        $this->assertSame([], $repo->getZoneInfoFromIds([], 'all'));
+        $this->assertSame([], $repo->getZoneInfoFromIds([]));
     }
 
     #[Test]
-    public function zoneInfoIsWithheldWhenTheViewLevelIsNone(): void
+    public function zoneInfoIsEmptyForAZoneTheApiDoesNotHave(): void
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->expects($this->never())->method('getZones');
-        $backend->expects($this->never())->method('getZoneById');
+        $backend->method('getZoneById')->with(100)->willReturn(null);
+        $backend->expects($this->never())->method('countZoneRecords');
 
         $repo = new ApiDomainRepository($this->db, $this->config, $backend);
 
-        $this->assertSame([], $repo->getZoneInfoFromId(100, 'none'));
-        $this->assertSame([], $repo->getZoneInfoFromIds([100], 'none'));
+        $this->assertSame([], $repo->getZoneInfoFromId(100));
     }
 }

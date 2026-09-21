@@ -504,11 +504,13 @@ class PermissionTemplatesController extends PublicApiController
 
             $result = $this->permissionTemplateRepository->deletePermissionTemplate($id);
 
-            if ($result) {
-                return $this->returnApiResponse(null, true, 'Permission template deleted successfully');
-            } else {
+            if (!$result->isDeleted()) {
                 return $this->returnApiError('Cannot delete permission template - it is assigned to one or more users', 409);
             }
+
+            $this->services()->auditService()->logPermTemplateDelete((int)$id, (string)($existing['name'] ?? 'unknown'));
+
+            return $this->returnApiResponse(null, true, 'Permission template deleted successfully');
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::deleteTemplate', 'Failed to delete permission template');
         }

@@ -36,7 +36,6 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\TableNameService;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 /**
@@ -46,7 +45,6 @@ class ApiDomainRepository implements DomainRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private ZoneReadBackendInterface $backendProvider;
 
@@ -54,7 +52,6 @@ class ApiDomainRepository implements DomainRepositoryInterface
     {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
         $this->backendProvider = $backendProvider;
     }
@@ -91,7 +88,6 @@ class ApiDomainRepository implements DomainRepositoryInterface
     public function domainExists(string $domain): bool
     {
         if (!$this->hostnameValidator->isValid($domain)) {
-            $this->messageService->addSystemError(_('This is an invalid zone name.'));
             return false;
         }
         return $this->backendProvider->zoneExists($domain);
@@ -290,13 +286,8 @@ class ApiDomainRepository implements DomainRepositoryInterface
         return $map;
     }
 
-    public function getZoneInfoFromId(int $zid, string $viewPermissionLevel): array
+    public function getZoneInfoFromId(int $zid): array
     {
-        if ($viewPermissionLevel === "none") {
-            $this->messageService->addSystemError(_("You do not have permission to view this zone."));
-            return [];
-        }
-
         $zone = $this->backendProvider->getZoneById($zid);
         if ($zone === null) {
             return [];
@@ -310,14 +301,9 @@ class ApiDomainRepository implements DomainRepositoryInterface
         ];
     }
 
-    public function getZoneInfoFromIds(array $zones, string $viewPermissionLevel): array
+    public function getZoneInfoFromIds(array $zones): array
     {
         if (empty($zones)) {
-            return [];
-        }
-
-        if ($viewPermissionLevel === "none") {
-            $this->messageService->addSystemError(_("You do not have permission to view this zone."));
             return [];
         }
 

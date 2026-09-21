@@ -35,7 +35,6 @@ use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Database\ZoneHealthSql;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
@@ -46,7 +45,6 @@ class SqlDomainRepository implements DomainRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TableNameService $tableNameService;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
@@ -55,7 +53,6 @@ class SqlDomainRepository implements DomainRepositoryInterface
     {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
         $this->tableNameService = new TableNameService($config);
     }
@@ -130,7 +127,6 @@ class SqlDomainRepository implements DomainRepositoryInterface
     public function domainExists(string $domain): bool
     {
         if (!$this->hostnameValidator->isValid($domain)) {
-            $this->messageService->addSystemError(_('This is an invalid zone name.'));
             return false;
         }
 
@@ -502,13 +498,8 @@ class SqlDomainRepository implements DomainRepositoryInterface
         return $ret;
     }
 
-    public function getZoneInfoFromId(int $zid, string $viewPermissionLevel): array
+    public function getZoneInfoFromId(int $zid): array
     {
-        if ($viewPermissionLevel === "none") {
-            $this->messageService->addSystemError(_("You do not have permission to view this zone."));
-            return [];
-        }
-
         [$domains_table, $records_table] = $this->tableNameService->getTables(
             PdnsTable::DOMAINS,
             PdnsTable::RECORDS
@@ -535,11 +526,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
         );
     }
 
-    public function getZoneInfoFromIds(array $zones, string $viewPermissionLevel): array
+    public function getZoneInfoFromIds(array $zones): array
     {
         $zone_infos = array();
         foreach ($zones as $zone) {
-            $zone_info = $this->getZoneInfoFromId($zone, $viewPermissionLevel);
+            $zone_info = $this->getZoneInfoFromId($zone);
             $zone_infos[] = $zone_info;
         }
         return $zone_infos;

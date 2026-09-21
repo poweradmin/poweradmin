@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\PermissionTemplateMessages;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -62,13 +63,11 @@ class DeletePermTemplController extends BaseController
         $id = (int)$this->getSafeRequestValue('id');
         $templDetails = $this->permissionTemplate->getPermissionTemplateDetails($id);
 
-        if ($this->permissionTemplate->deletePermissionTemplate($id)) {
+        $result = $this->permissionTemplate->deletePermissionTemplate($id);
+        if ($result->isDeleted()) {
             $this->services()->auditService()->logPermTemplateDelete($id, (string)($templDetails['name'] ?? 'unknown'));
-
-            $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
-        } else {
-            $this->setMessage('list_perm_templ', 'error', _('The permission template could not be deleted.'));
         }
+        $this->setMessage('list_perm_templ', $result->isDeleted() ? 'success' : 'error', PermissionTemplateMessages::forDeleteResult($result));
 
         $this->redirect('/permissions/templates');
     }
