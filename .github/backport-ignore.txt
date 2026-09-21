@@ -26,6 +26,11 @@ release/4.2.x::fix(docker): remove dead api.log_requests config from entrypoint
 release/4.3.x::fix(docker): escape the favicon and logo paths when generating config
 release/4.2.x::fix(docker): escape the favicon and logo paths when generating config
 
+# PA_DNS_DEFAULT_ZONE_TEMPLATE arrived with the 4.4.0 default zone template, so
+# the 4.2.x/4.3.x entrypoints never generate that setting.
+release/4.3.x::fix(docker): escape the default zone template name when generating config
+release/4.2.x::fix(docker): escape the default zone template name when generating config
+
 # 4.5.x keeps its Docker image as released; this hardening ships with 4.6.0 (none is a
 # security or data-loss fix: settings.php escaping, DB wait, healthcheck, CORS scope,
 # php.ini-production, Caddy deny rules, file modes).
