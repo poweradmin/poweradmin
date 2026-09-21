@@ -23,11 +23,14 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * Regression tests for ZoneTemplate::getZoneAndDomainIdsByTemplate().
+ * Regression tests for ZoneTemplateService::getZoneAndDomainIdsByTemplate().
  *
  * Guards two failure modes from the same code path:
  * - #1210: returning a single id confuses callers that need either the Poweradmin
@@ -89,7 +92,8 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $domainId = $this->makeDomain('example.com');
         $zoneId = $this->linkZone($domainId, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
+        $backend = $this->dnsBackendStub(false);
+        $zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -108,7 +112,8 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         // Orphan: domains row never inserted, so INNER JOIN must drop this one.
         $orphanZoneId = $this->linkZone(99999, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
+        $backend = $this->dnsBackendStub(false);
+        $zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -128,7 +133,8 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $templateId = $this->makeTemplate();
         $apiZoneId = $this->linkZone(99999, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(true), $this->permissionService());
+        $backend = $this->dnsBackendStub(true);
+        $zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -149,7 +155,8 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $targetZoneId = $this->linkZone($targetDomainId, $targetTemplateId);
         $this->linkZone($otherDomainId, $otherTemplateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
+        $backend = $this->dnsBackendStub(false);
+        $zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($targetTemplateId, self::ADMIN_USER_ID);
 

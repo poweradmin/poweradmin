@@ -37,10 +37,13 @@ class SetDefaultZoneTemplController extends BaseController
         $this->checkCondition(!$perm_godlike, _("You do not have the permission to change the default zone template."));
 
         $action = $this->getSafeRequestValue('action');
-        $zoneTemplate = $this->createZoneTemplateModel();
+        $zoneTemplate = $this->createZoneTemplateService();
 
         if ($action === 'unset') {
-            if ($zoneTemplate->unsetDefaultTemplate()) {
+            $cleared = $zoneTemplate->unsetDefaultTemplate();
+            if (!$cleared->success) {
+                $this->setMessage('list_zone_templ', 'error', (string)$cleared->message);
+            } else {
                 // Warn when config fallback is still active so the message
                 // reflects the effective state, not just the DB write.
                 $remaining = $zoneTemplate->getDefaultTemplateId();
@@ -72,8 +75,11 @@ class SetDefaultZoneTemplController extends BaseController
         }
 
         $zone_templ_id = (int) $this->getSafeRequestValue('id');
-        if ($zoneTemplate->setDefaultTemplate($zone_templ_id)) {
+        $flagged = $zoneTemplate->setDefaultTemplate($zone_templ_id);
+        if ($flagged->success) {
             $this->setMessage('list_zone_templ', 'success', _('Default zone template updated.'));
+        } else {
+            $this->setMessage('list_zone_templ', 'error', (string)$flagged->message);
         }
         $this->redirect('/zones/templates');
     }

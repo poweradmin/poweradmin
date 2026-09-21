@@ -28,9 +28,8 @@ use Poweradmin\Domain\Model\Constants;
  * Persistence for zone templates (zone_templ), their records (zone_templ_records)
  * and the zone -> template links kept in zones.zone_templ_id.
  *
- * The domain model (Poweradmin\Domain\Model\ZoneTemplate) owns permission checks,
- * validation and placeholder expansion; every SQL statement behind those decisions
- * lives here.
+ * ZoneTemplateService owns permission checks and validation, ZoneTemplatePlaceholders
+ * the placeholder expansion; every SQL statement behind those decisions lives here.
  */
 interface ZoneTemplateRepositoryInterface
 {

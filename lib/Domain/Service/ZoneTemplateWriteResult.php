@@ -20,8 +20,38 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Test bootstrap: the autoloader, shared by the unit and integration suites.
- */
+namespace Poweradmin\Domain\Service;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+/**
+ * Outcome of a zone template write. Callers read the reason and HTTP status
+ * from here instead of the session; a success may still carry a warning.
+ */
+final readonly class ZoneTemplateWriteResult
+{
+    private function __construct(
+        public bool $success,
+        public ?string $message,
+        public int $status
+    ) {
+    }
+
+    public static function ok(?string $warning = null): self
+    {
+        return new self(true, $warning, 200);
+    }
+
+    public static function failure(string $message, int $status = 400): self
+    {
+        return new self(false, $message, $status);
+    }
+
+    public static function forbidden(string $message): self
+    {
+        return new self(false, $message, 403);
+    }
+
+    public static function backendFailure(string $message): self
+    {
+        return new self(false, $message, 500);
+    }
+}

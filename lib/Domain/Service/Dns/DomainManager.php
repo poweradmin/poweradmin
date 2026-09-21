@@ -26,7 +26,6 @@ use PDO;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
@@ -37,6 +36,7 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Error\ZoneCreationFailedException;
@@ -59,7 +59,8 @@ class DomainManager implements DomainManagerInterface
     private PermissionService $permissionService;
     private UserLookupInterface $userRepository;
     private UserContextService $userContext;
-    private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
+    private ZoneTemplateRepositoryInterface $zoneTemplateRepository;
+    private ZoneTemplatePlaceholders $placeholders;
     private RepositoryFactoryInterface $repositoryFactory;
     private ZoneTemplateApplier $templateApplier;
 
@@ -75,6 +76,8 @@ class DomainManager implements DomainManagerInterface
      * @param UserLookupInterface $userRepository Resolves the users named as zone owners
      * @param RecordChangeWriterInterface $changeLogger Receives the zone and record snapshots
      * @param ZoneTemplateApplier $templateApplier Applies a template to an existing zone
+     * @param ZoneTemplateRepositoryInterface $zoneTemplateRepository Reads the template records seeded into a new zone
+     * @param ZoneTemplatePlaceholders $placeholders Expands the placeholders in those records
      */
     public function __construct(
         PDO $db,
@@ -86,12 +89,14 @@ class DomainManager implements DomainManagerInterface
         UserLookupInterface $userRepository,
         RecordChangeWriterInterface $changeLogger,
         ZoneTemplateApplier $templateApplier,
+        ZoneTemplateRepositoryInterface $zoneTemplateRepository,
+        ZoneTemplatePlaceholders $placeholders,
         ?LoggerInterface $logger = null,
-        ?UserContextService $userContext = null,
-        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
+        ?UserContextService $userContext = null
     ) {
         $this->templateApplier = $templateApplier;
         $this->zoneTemplateRepository = $zoneTemplateRepository;
+        $this->placeholders = $placeholders;
         $this->repositoryFactory = $repositoryFactory;
         $this->db = $db;
         $this->config = $config;
@@ -380,23 +385,22 @@ class DomainManager implements DomainManagerInterface
      */
     private function materialiseTemplate(PDO $db, int $domain_id, string $domain, int $zone_template): void
     {
-        $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
+        $templ_records = $this->zoneTemplateRepository->getZoneTemplateRecords($zone_template);
         if (empty($templ_records)) {
             return;
         }
 
         $numericIds = $this->backendProvider->recordIdsAreNumeric();
         $dns_ttl = $this->config->get('dns', 'ttl');
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->permissionService, $this->logger, $this->zoneTemplateRepository);
 
         foreach ($templ_records as $r) {
             if (!ZoneTemplateApplier::shouldApplyTemplateRecord($domain, $r["type"])) {
                 continue;
             }
 
-            $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
+            $name = $this->placeholders->parseTemplateValue($r["name"], $domain);
             $recordType = $r["type"];
-            $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
+            $content = $this->placeholders->parseTemplateValue($r["content"], $domain, $recordType);
             $ttl = $r["ttl"] ?: $dns_ttl;
             $prio = intval($r["prio"]);
 

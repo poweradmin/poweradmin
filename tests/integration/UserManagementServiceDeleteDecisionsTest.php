@@ -37,7 +37,9 @@ use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\UserProfileAssembler;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -213,7 +215,9 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
             $this->permissionService($config),
             new DbUserRepository($this->db, $config),
             $this->createMock(RecordChangeWriterInterface::class),
-            $this->createMock(ZoneTemplateApplier::class)
+            $this->createMock(ZoneTemplateApplier::class),
+            new DbZoneTemplateRepository($this->db, $config, $backend),
+            new ZoneTemplatePlaceholders($config)
         );
 
         return new UserManagementService(

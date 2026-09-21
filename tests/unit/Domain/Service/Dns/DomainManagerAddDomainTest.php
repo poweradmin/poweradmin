@@ -34,6 +34,8 @@ use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
@@ -482,6 +484,8 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             $this->createMock(UserRepositoryInterface::class),
             $this->changeLogger,
             $this->createMock(ZoneTemplateApplier::class),
+            new DbZoneTemplateRepository($this->db, $this->config, $this->backend),
+            new ZoneTemplatePlaceholders($this->config),
             new NullLogger(),
             $userContext
         );

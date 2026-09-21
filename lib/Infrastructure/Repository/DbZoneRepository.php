@@ -23,8 +23,8 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
@@ -48,6 +48,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
     private object $config;
     private TableNameService $tableNameService;
     private ?DnsBackendProviderInterface $backendProvider;
+    private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
 
     public function __construct($db, $config, ?DnsBackendProviderInterface $backendProvider = null)
     {
@@ -59,6 +60,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->backendProvider = $backendProvider;
     }
 
+
+    /**
+     * Template names for the zone listing; built on first use since most listings never show them.
+     */
+    private function zoneTemplateRepository(): ZoneTemplateRepositoryInterface
+    {
+        return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db);
+    }
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
@@ -327,7 +336,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 ];
 
                 if ($showTemplate) {
-                    $zones[$name]['template'] = ZoneTemplate::getZoneTemplName($this->db, $row['id']);
+                    $zones[$name]['template'] = $this->zoneTemplateRepository()->getTemplateNameForZone($row['id']);
                 }
             }
 

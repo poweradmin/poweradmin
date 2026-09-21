@@ -29,12 +29,7 @@ use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
-use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Database\DebugPDO;
-use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SessionAuthenticator;
@@ -127,18 +122,6 @@ class AppInitializer
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
         $this->db = $databaseService->connect($credentials);
-
-        // The zone template model's static accessors are handed a bare connection
-        // and must not name a persistence class themselves
-        $config = $this->configManager;
-        ZoneTemplate::useRepositoryResolver(
-            static fn(
-                object $db,
-                ?ConfigurationInterface $resolverConfig = null,
-                ?DnsBackendProviderInterface $backendProvider = null
-            ): ZoneTemplateRepositoryInterface
-                => new DbZoneTemplateRepository($db, $resolverConfig ?? $config, $backendProvider)
-        );
     }
 
     /**

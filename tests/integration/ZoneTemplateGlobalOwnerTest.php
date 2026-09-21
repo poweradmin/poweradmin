@@ -24,7 +24,10 @@ namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -61,7 +64,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             self::CLIENT_USER_ID
         );
 
-        $this->assertTrue($created);
+        $this->assertTrue($created->success);
         $this->assertSame(self::CLIENT_USER_ID, $this->ownerOfTemplateNamed('ClientGlobal'), 'A non-ueberuser must not create a global (owner 0) template.');
     }
 
@@ -74,7 +77,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             self::ADMIN_USER_ID
         );
 
-        $this->assertTrue($created);
+        $this->assertTrue($created->success);
         $this->assertSame(0, $this->ownerOfTemplateNamed('AdminGlobal'), 'A ueberuser may create a global template.');
     }
 
@@ -91,7 +94,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             ['global' => true]
         );
 
-        $this->assertTrue($created);
+        $this->assertTrue($created->success);
         $this->assertSame(self::CLIENT_USER_ID, $this->ownerOfTemplateNamed('ClientSaveAs'), 'Save-as must not produce a global template for a non-ueberuser.');
     }
 
@@ -107,7 +110,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             self::CLIENT_USER_ID
         );
 
-        $this->assertTrue($updated);
+        $this->assertTrue($updated->success);
         $this->assertSame(self::CLIENT_USER_ID, $this->ownerOfTemplateId(30), 'A non-ueberuser must not promote a template to global.');
     }
 
@@ -122,7 +125,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             self::ADMIN_USER_ID
         );
 
-        $this->assertTrue($updated);
+        $this->assertTrue($updated->success);
         $this->assertSame(0, $this->ownerOfTemplateId(31), 'A ueberuser may promote a template to global.');
     }
 
@@ -131,9 +134,10 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
         $_SESSION['userid'] = self::CLIENT_USER_ID;
     }
 
-    private function zoneTemplate(): ZoneTemplate
+    private function zoneTemplate(): ZoneTemplateService
     {
-        return new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
+        $backend = $this->dnsBackendStub(false);
+        return new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
     }
 
     private function ownerOfTemplateNamed(string $name): int

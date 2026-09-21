@@ -20,21 +20,23 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace unit\Domain\Model;
+namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * Characterizes the four zone-listing queries on the zone template model: which
+ * Characterizes the four zone-listing queries on the zone template service: which
  * zones a template lists for a user at each edit permission level, what shape the
  * rows have, and how the API backend swaps the PowerDNS tables for client calls.
  */
-class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
+class ZoneTemplateServiceLinkedZonesTest extends SqliteIntegrationTestCase
 {
     private const OWN_EDITOR = 2;
     private const OTHER_USER = 3;
@@ -89,9 +91,9 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (" . self::GROUP_DOMAIN . ", " . self::EDITOR_GROUP . ")");
     }
 
-    private function model(DnsBackendProviderInterface $backend): ZoneTemplate
+    private function model(DnsBackendProviderInterface $backend): ZoneTemplateService
     {
-        return new ZoneTemplate($this->db, $this->config, $backend, $this->permissionService());
+        return new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
     }
 
     private function actingAs(int $userId): void

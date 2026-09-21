@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 
 /**
  * Renders the list of zones linked to one zone template.
@@ -51,7 +50,7 @@ class ListTemplateZonesController extends BaseController
 
         $zone_templ_id = (int)$id;
 
-        if (!ZoneTemplate::zoneTemplIdExists($this->db, $zone_templ_id)) {
+        if (!$this->services()->zoneTemplateRepository()->zoneTemplateExists($zone_templ_id)) {
             $this->showError(_('Template does not exist.'));
             return;
         }
@@ -65,8 +64,8 @@ class ListTemplateZonesController extends BaseController
         $currentPage = $this->httpRequest->getPage();
         $offset = ($currentPage - 1) * $itemsPerPage;
 
-        $zoneTemplate = $this->createZoneTemplateModel();
-        $template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
+        $zoneTemplate = $this->createZoneTemplateService();
+        $template_details = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [];
 
         // Get zones using this template with pagination
         $zones = $zoneTemplate->getZonesUsingTemplate($zone_templ_id, (int)$this->getCurrentUserId());

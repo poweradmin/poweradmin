@@ -88,7 +88,7 @@ class DnssecController extends BaseController
         $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
         $dnssecProvider = $this->createDnssecProvider();
-        $zone_templates = $this->createZoneTemplateModel();
+        $zone_templates = $this->createZoneTemplateService();
         $permissionService = $this->createPermissionService();
         $can_manage_dnssec = $permissionService->canManageDnssecForZone($this->getCurrentUserId(), $zone_id);
         // Kept for 4.4.0 theme forks that still gate the page on perm_edit

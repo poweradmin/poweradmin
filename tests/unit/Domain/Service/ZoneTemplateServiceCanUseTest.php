@@ -20,28 +20,31 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace unit\Domain\Model;
+namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Psr\Log\NullLogger;
 
 /**
  * Zone templates are private to their owner unless global. Applying one by a posted
  * id (zone creation, bulk registration, template change) must follow the listing
  * scope, or an enumerated id copies another user's records into the caller's zone.
  */
-class ZoneTemplateCanUseTest extends TestCase
+class ZoneTemplateServiceCanUseTest extends TestCase
 {
     private const USER_ID = 100;
     private const OWN_TEMPLATE_ID = 10;
     private const FOREIGN_TEMPLATE_ID = 11;
     private const GLOBAL_TEMPLATE_ID = 12;
 
-    private ZoneTemplate $zoneTemplate;
+    private ZoneTemplateService $zoneTemplate;
 
     protected function setUp(): void
     {
@@ -54,7 +57,8 @@ class ZoneTemplateCanUseTest extends TestCase
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturn(null);
 
-        $this->zoneTemplate = new ZoneTemplate($db, $config, $this->createMock(DnsBackendProviderInterface::class), $this->createMock(PermissionService::class));
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $this->zoneTemplate = new ZoneTemplateService(new DbZoneTemplateRepository($db, $config, $backend), $config, $backend, $this->createMock(PermissionService::class), new UserContextService(), new NullLogger());
     }
 
     public function testForeignTemplateIsRefused(): void

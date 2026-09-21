@@ -1,23 +1,18 @@
 <?php
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 
-class ZoneTemplateParsingTest extends TestCase
+class ZoneTemplatePlaceholdersParsingTest extends TestCase
 {
-    private ZoneTemplate $zoneTemplate;
-    private $mockDb;
+    private ZoneTemplatePlaceholders $zoneTemplate;
     private $mockConfig;
 
     protected function setUp(): void
     {
-        $this->mockDb = $this->createMock(PDO::class);
         $this->mockConfig = $this->createMock(ConfigurationManager::class);
 
         // Configure the mock to return expected values for the DNS settings
@@ -35,7 +30,7 @@ class ZoneTemplateParsingTest extends TestCase
                 ['database', 'pdns_db_name', null, null],
             ]);
 
-        $this->zoneTemplate = new ZoneTemplate($this->mockDb, $this->mockConfig, $this->createMock(DnsBackendProviderInterface::class), $this->createMock(PermissionService::class));
+        $this->zoneTemplate = new ZoneTemplatePlaceholders($this->mockConfig);
     }
 
     /**

@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 
 /**
  * Handles unlinking selected zones from a zone template, with a confirmation step.
@@ -68,7 +67,7 @@ class UnlinkZonesTemplController extends BaseController
     {
         $successful = 0;
         $failed = 0;
-        $zoneTemplate = $this->createZoneTemplateModel();
+        $zoneTemplate = $this->createZoneTemplateService();
         $auditService = $this->createAuditService();
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
@@ -133,7 +132,7 @@ class UnlinkZonesTemplController extends BaseController
         }
 
         // Get template information
-        $template_details = ZoneTemplate::getZoneTemplDetails($this->db, $template_id);
+        $template_details = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($template_id) ?: [];
 
         if (!$template_details) {
             $this->showError(_('Template not found.'));
@@ -141,7 +140,7 @@ class UnlinkZonesTemplController extends BaseController
         }
 
         // Get zone details using ZoneTemplate service
-        $zoneTemplate = $this->createZoneTemplateModel();
+        $zoneTemplate = $this->createZoneTemplateService();
         $zones = $zoneTemplate->getZonesByIds($valid_zone_ids);
 
         $this->render('confirm_unlink_zones_templ.html', [

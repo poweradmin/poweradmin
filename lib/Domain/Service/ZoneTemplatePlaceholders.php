@@ -38,6 +38,58 @@ class ZoneTemplatePlaceholders
     }
 
     /**
+     * Replace the zone name and site-specific values in a zone's records with
+     * template placeholders, for saving a zone as a template.
+     *
+     * @param array $record Record with name, content and optionally type
+     * @param array $options NS1 and HOSTMASTER values to recognise in an SOA
+     * @return array [name, content] with placeholders
+     */
+    public static function replaceWithTemplatePlaceholders(string $domain, array $record, array $options = []): array
+    {
+        if (empty($domain)) {
+            return [$record['name'], $record['content']];
+        }
+
+        $domainComponents = DomainParsingService::parseDomain($domain);
+        $domainName = $domainComponents['domain'];
+        $tld = $domainComponents['tld'];
+
+        $pattern = '/(\\.)?' . preg_quote($domain, '/') . '$/';
+        $name = preg_replace($pattern, '$1[ZONE]', $record['name']);
+        $content = preg_replace($pattern, '$1[ZONE]', $record['content']);
+
+        // Content such as example-com.mail.protection.outlook.com cannot use
+        // [ZONE] directly, so only the hyphenated domain-tld form is replaced.
+        if (!empty($domainName) && !empty($tld)) {
+            $content = str_replace($domainName . '-' . $tld, '[DOMAIN]-[TLD]', $content);
+        }
+
+        if (isset($record['type']) && $record['type'] === 'SOA') {
+            $parts = explode(' ', $content);
+
+            if (isset($options['NS1']) && $parts[0] === $options['NS1']) {
+                $parts[0] = '[NS1]';
+            }
+
+            if (isset($options['HOSTMASTER']) && $parts[1] === $options['HOSTMASTER']) {
+                $parts[1] = '[HOSTMASTER]';
+            }
+
+            // Any numeric serial becomes [SERIAL]; a literal serial in a template
+            // would only stamp stale values into zones created from it. Serial 0
+            // is kept: it means autoserial and getNextSerial() preserves it.
+            if (isset($parts[2]) && ctype_digit($parts[2]) && $parts[2] !== '0') {
+                $parts[2] = '[SERIAL]';
+            }
+
+            $content = implode(' ', $parts);
+        }
+
+        return [$name, $content];
+    }
+
+    /**
      * Parse string and substitute domain and serial
      *
      * @param string $val string to parse containing tokens like '[ZONE]', '[SERIAL]', '[UNIXTIME]' or '[COUNTER]'

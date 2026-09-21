@@ -54,7 +54,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
 
     /**
      * Read-only lookups never touch configuration, so callers that only read
-     * (the static accessors on the ZoneTemplate model) may omit it.
+     * (the zone listings resolving template names) may omit it.
      */
     private ?ConfigurationInterface $config;
     private ?DnsBackendProviderInterface $backendProvider;

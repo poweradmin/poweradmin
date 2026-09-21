@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -32,12 +32,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class DeleteZoneTemplController extends BaseController
 {
-    private ZoneTemplate $zoneTemplate;
+    private ZoneTemplateService $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->zoneTemplate = $this->createZoneTemplateModel();
+        $this->zoneTemplate = $this->createZoneTemplateService();
     }
     public function run(): void
     {
@@ -81,7 +81,12 @@ class DeleteZoneTemplController extends BaseController
 
         if ($this->doValidateRequest($this->requestData)) {
             $zone_templ_id = $this->getSafeRequestValue('id');
-            $this->zoneTemplate->deleteZoneTempl((int)$zone_templ_id);
+            $deleted = $this->zoneTemplate->deleteZoneTempl((int)$zone_templ_id);
+            if (!$deleted->success) {
+                $this->addSystemMessage('error', (string)$deleted->message);
+                $this->showDeleteZoneTempl();
+                return;
+            }
 
             $auditService = $this->createAuditService();
             $auditService->logZoneTemplateDelete((int)$zone_templ_id);
@@ -95,7 +100,7 @@ class DeleteZoneTemplController extends BaseController
     private function showDeleteZoneTempl(): void
     {
         $zone_templ_id = $this->getSafeRequestValue('id');
-        $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, (int)$zone_templ_id);
+        $templ_details = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails((int)$zone_templ_id) ?: [];
 
         $this->render('delete_zone_templ.html', [
             'templ_name' => $templ_details['name'],

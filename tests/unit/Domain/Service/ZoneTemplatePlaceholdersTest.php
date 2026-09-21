@@ -1,11 +1,11 @@
 <?php
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
 
-class ZoneTemplateTest extends TestCase
+class ZoneTemplatePlaceholdersTest extends TestCase
 {
     public function testReplaceWithTemplatePlaceholders()
     {
@@ -16,7 +16,7 @@ class ZoneTemplateTest extends TestCase
         ];
 
         $expected = ['www.[ZONE]', '100.100.100.100'];
-        $result = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        $result = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals($expected, $result);
     }
@@ -30,7 +30,7 @@ class ZoneTemplateTest extends TestCase
         ];
 
         $expected = ['otherdomain.com', '300.300.300.300'];
-        $result = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        $result = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals($expected, $result);
     }
@@ -44,7 +44,7 @@ class ZoneTemplateTest extends TestCase
         ];
 
         $expected = ['example.com', '400.400.400.400'];
-        $result = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        $result = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals($expected, $result);
     }
@@ -58,7 +58,7 @@ class ZoneTemplateTest extends TestCase
         ];
 
         $expected = ['', ''];
-        $result = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        $result = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals($expected, $result);
     }
@@ -77,7 +77,7 @@ class ZoneTemplateTest extends TestCase
         ];
 
         $expected = ['[ZONE]', '[NS1] [HOSTMASTER] [SERIAL] 3600 1800 1209600 3600'];
-        $result = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record, $options);
+        $result = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record, $options);
 
         $this->assertEquals($expected, $result);
     }
@@ -97,7 +97,7 @@ class ZoneTemplateTest extends TestCase
             'ns1.example.com hostmaster.example.com [SERIAL] 3600 1800 1209600 3600'
         ];
 
-        $this->assertEquals($expected, ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record, $options));
+        $this->assertEquals($expected, ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record, $options));
     }
 
     public function testReplaceWithTemplatePlaceholdersSOAWithPartialOptions()
@@ -117,7 +117,7 @@ class ZoneTemplateTest extends TestCase
             '[NS1] hostmaster.example.com [SERIAL] 3600 1800 1209600 3600'
         ];
 
-        $this->assertEquals($expected, ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record, $options));
+        $this->assertEquals($expected, ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record, $options));
     }
 
     public function testReplaceWithTemplatePlaceholdersSOAWithDifferentDomain()
@@ -138,7 +138,7 @@ class ZoneTemplateTest extends TestCase
             'ns1.sample.com hostmaster.sample.com [SERIAL] 3600 1800 1209600 3600'
         ];
 
-        $this->assertEquals($expected, ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record, $options));
+        $this->assertEquals($expected, ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record, $options));
     }
 
     public function testReplaceWithTemplatePlaceholdersHyphenatedDomainFormat()
@@ -154,7 +154,7 @@ class ZoneTemplateTest extends TestCase
             '[DOMAIN]-[TLD].mail.protection.outlook.com'
         ];
 
-        $result = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        $result = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
         $this->assertEquals($expected, $result);
     }
 
@@ -173,7 +173,7 @@ class ZoneTemplateTest extends TestCase
             'This is an example text with network settings'
         ];
 
-        $result = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        $result = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
         $this->assertEquals($expected, $result);
     }
 }

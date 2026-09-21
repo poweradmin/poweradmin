@@ -162,7 +162,8 @@ class DnsServiceFactory
             $userRepository,
             $changeLogger,
             $templateApplier,
-            zoneTemplateRepository: $zoneTemplateRepository
+            $zoneTemplateRepository,
+            new ZoneTemplatePlaceholders($config)
         );
     }
 

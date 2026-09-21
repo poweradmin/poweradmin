@@ -30,7 +30,9 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -243,7 +245,9 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
             $this->permissionService($config),
             new DbUserRepository($this->db, $config),
             $this->createMock(RecordChangeWriterInterface::class),
-            $this->createMock(ZoneTemplateApplier::class)
+            $this->createMock(ZoneTemplateApplier::class),
+            new DbZoneTemplateRepository($this->db, $config, $backend),
+            new ZoneTemplatePlaceholders($config)
         );
     }
 }

@@ -24,9 +24,9 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -37,14 +37,14 @@ class AddZoneTemplRecordController extends BaseController
 {
     private RecordTypeService $recordTypeService;
     private UserContextService $userContext;
-    private ZoneTemplate $zoneTemplate;
+    private ZoneTemplateService $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
-        $this->zoneTemplate = $this->createZoneTemplateModel();
+        $this->zoneTemplate = $this->createZoneTemplateService();
     }
 
     public function run(): void
@@ -111,7 +111,8 @@ class AddZoneTemplRecordController extends BaseController
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
         $ttl = $this->httpRequest->getPostParam('ttl', $dns_ttl);
 
-        if ($this->zoneTemplate->addZoneTemplRecord($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
+        $added = $this->zoneTemplate->addZoneTemplRecord($zone_templ_id, $name, $type, $content, (int)$ttl, (int)$prio);
+        if ($added->success) {
             // Mark template as modified to track sync status
             $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);
@@ -122,6 +123,7 @@ class AddZoneTemplRecordController extends BaseController
             $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');
             $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
         } else {
+            $this->addSystemMessage('error', (string)$added->message);
             $this->showAddZoneTemplRecord();
         }
     }
@@ -129,7 +131,7 @@ class AddZoneTemplRecordController extends BaseController
     private function showAddZoneTemplRecord(): void
     {
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
-        $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
+        $templ_details = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [];
         $name = $this->httpRequest->getPostParam('name', "[ZONE]");
         $type = $this->httpRequest->getPostParam('type', "");
         $content = $this->httpRequest->getPostParam('content', "");

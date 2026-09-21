@@ -434,9 +434,10 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             $this->createMock(UserRepositoryInterface::class),
             $this->changeLogger,
             $applier,
+            $templates,
+            new ZoneTemplatePlaceholders($this->config),
             new NullLogger(),
-            $userContext,
-            $templates
+            $userContext
         );
     }
 

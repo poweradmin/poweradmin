@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 
 /**
@@ -32,12 +32,12 @@ use Poweradmin\Domain\Service\ZoneTemplateSyncService;
  */
 class DeleteZoneTemplRecordController extends BaseController
 {
-    private ZoneTemplate $zoneTemplate;
+    private ZoneTemplateService $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->zoneTemplate = $this->createZoneTemplateModel();
+        $this->zoneTemplate = $this->createZoneTemplateService();
     }
 
     public function run(): void
@@ -54,7 +54,8 @@ class DeleteZoneTemplRecordController extends BaseController
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete this record."));
 
         if ($confirmed) {
-            if ($this->zoneTemplate->deleteZoneTemplRecord($record_id, $zone_templ_id)) {
+            $deleted = $this->zoneTemplate->deleteZoneTemplRecord($record_id, $zone_templ_id);
+            if ($deleted->success) {
                 // Mark template as modified to track sync status
                 $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
                 $syncService->markTemplateAsModified($zone_templ_id);
@@ -65,13 +66,13 @@ class DeleteZoneTemplRecordController extends BaseController
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
                 $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
             } else {
-                $this->setMessage('edit_zone_templ', 'error', _('The record could not be deleted.'));
+                $this->setMessage('edit_zone_templ', 'error', (string)$deleted->message);
                 $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
             }
         }
 
-        $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
-        $record_info = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id, $zone_templ_id);
+        $templ_details = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [];
+        $record_info = $this->services()->zoneTemplateRepository()->getZoneTemplateRecordById($record_id, $zone_templ_id);
 
         // The lookup is scoped to the template, so a record id from another template comes back empty
         if (!$record_info) {

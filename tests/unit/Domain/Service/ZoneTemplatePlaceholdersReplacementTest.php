@@ -20,19 +20,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Model;
+namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
 
 /**
  * Test Zone Template Placeholder Replacement Functionality
  *
  * @package Poweradmin\Tests\Unit\Domain\Model
  */
-#[CoversClass(ZoneTemplate::class)]
-class ZoneTemplateReplacementTest extends TestCase
+#[CoversClass(ZoneTemplatePlaceholders::class)]
+class ZoneTemplatePlaceholdersReplacementTest extends TestCase
 {
     public function testReplaceZoneInRecordName(): void
     {
@@ -43,7 +43,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'A'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals('www.[ZONE]', $name);
         $this->assertEquals('192.168.1.1', $content);
@@ -58,7 +58,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'CNAME'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals('@', $name);
         $this->assertEquals('mail.[ZONE]', $content);
@@ -73,7 +73,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'CNAME'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // The pattern matches domain at the end of string (before optional dot)
         $this->assertEquals('subdomain.[ZONE]', $name);
@@ -93,7 +93,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'HOSTMASTER' => 'hostmaster.example.com'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record, $options);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record, $options);
 
         $this->assertEquals('[ZONE]', $name);
         $this->assertStringContainsString('[NS1]', $content);
@@ -114,7 +114,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'HOSTMASTER' => 'admin.test.org'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record, $options);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record, $options);
 
         // Serial (10 digits) should be replaced with [SERIAL]
         $this->assertStringContainsString('[SERIAL]', $content);
@@ -130,7 +130,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'SOA'
         ];
 
-        [, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // A short counter-style serial must not leak into the template as a stale literal
         $this->assertEquals('ns1.test.org admin.test.org [SERIAL] 28800 7200 604800 86400', $content);
@@ -145,7 +145,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'SOA'
         ];
 
-        [, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // Serial 0 means autoserial and must survive the round trip
         $this->assertEquals('ns1.test.org admin.test.org 0 28800 7200 604800 86400', $content);
@@ -160,7 +160,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'MX'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // example-com should be replaced with [DOMAIN]-[TLD]
         $this->assertEquals('@', $name);
@@ -176,7 +176,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'CNAME'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals('deep.sub.level.[ZONE]', $name);
         $this->assertEquals('target.[ZONE]', $content);
@@ -191,7 +191,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'A'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // Should return original values when domain is empty
         $this->assertEquals('www.example.com', $name);
@@ -207,7 +207,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'TXT'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // Replacement only works for domain at the end of the string
         $this->assertEquals('[ZONE]', $name);
@@ -223,7 +223,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'MX'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals('[ZONE]', $name);
         $this->assertEquals('mail.[ZONE]', $content);
@@ -238,7 +238,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'NS'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals('[ZONE]', $name);
         $this->assertEquals('ns1.[ZONE]', $content);
@@ -253,7 +253,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'A'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // IP addresses should never be replaced
         $this->assertEquals('server.[ZONE]', $name);
@@ -269,7 +269,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'AAAA'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals('ipv6.[ZONE]', $name);
         $this->assertEquals('2001:0db8:85a3:0000:0000:8a2e:0370:7334', $content);
@@ -284,7 +284,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'CAA'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // CAA records should have name replaced but content preserved
         $this->assertEquals('[ZONE]', $name);
@@ -300,7 +300,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'SRV'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals('_http._tcp.[ZONE]', $name);
         $this->assertEquals('10 80 server.[ZONE]', $content);
@@ -315,7 +315,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'CNAME'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // Should not replace when domain doesn't match
         $this->assertEquals('other.domain.com', $name);
@@ -331,7 +331,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'CNAME'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // Should handle case-sensitive replacement
         $this->assertEquals('www.[ZONE]', $name);
@@ -347,7 +347,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'TXT'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         $this->assertEquals('_dmarc.[ZONE]', $name);
         $this->assertStringContainsString('rua=mailto:dmarc@[ZONE]', $content);
@@ -362,7 +362,7 @@ class ZoneTemplateReplacementTest extends TestCase
             'type' => 'PTR'
         ];
 
-        [$name, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record);
 
         // PTR name usually doesn't match domain, content should be replaced
         $this->assertEquals('1.0.168.192.in-addr.arpa', $name);

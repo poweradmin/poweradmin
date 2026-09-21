@@ -24,8 +24,8 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -36,13 +36,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class EditZoneTemplController extends BaseController
 {
     private UserContextService $userContext;
-    private ZoneTemplate $zoneTemplate;
+    private ZoneTemplateService $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->userContext = new UserContextService();
-        $this->zoneTemplate = $this->createZoneTemplateModel();
+        $this->zoneTemplate = $this->createZoneTemplateService();
     }
 
     public function run(): void
@@ -78,7 +78,7 @@ class EditZoneTemplController extends BaseController
             $this->showFirstValidationError($this->requestData);
         }
 
-        if (ZoneTemplate::zoneTemplIdExists($this->db, $zone_templ_id) == "0") {
+        if (!$this->services()->zoneTemplateRepository()->zoneTemplateExists($zone_templ_id)) {
             $this->showError(_('There is no zone template with this ID.'));
         }
 
@@ -117,8 +117,9 @@ class EditZoneTemplController extends BaseController
             submittedSortBy: $this->httpRequest->getPostParam('record_sort_by') ?? $this->httpRequest->getQueryParam('record_sort_by'),
             submittedDirection: $this->httpRequest->getPostParam('record_sort_by_direction') ?? $this->httpRequest->getQueryParam('record_sort_by_direction')
         );
-        $record_count = ZoneTemplate::countZoneTemplRecords($this->db, $zone_templ_id);
-        $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
+        $templates = $this->services()->zoneTemplateRepository();
+        $record_count = $templates->countZoneTemplateRecords($zone_templ_id);
+        $templ_details = $templates->getZoneTemplateDetails($zone_templ_id) ?: [];
 
         // Get count of zones using this template
         $userId = $this->userContext->getLoggedInUserId();
@@ -132,7 +133,7 @@ class EditZoneTemplController extends BaseController
         $this->render('edit_zone_templ.html', [
             'templ_details' => $templ_details,
             'pagination' => $this->presentPagination($record_count, $iface_rowamount, '/zones/templates/' . $zone_templ_id . '/edit?start={PageNumber}', ['id' => $zone_templ_id]),
-            'records' => ZoneTemplate::getZoneTemplRecords($this->db, $zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
+            'records' => $templates->getZoneTemplateRecords($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
             'zones_linked_count' => $zones_linked_count,
             'unsynced_zones_count' => $unsynced_zones_count,
@@ -173,7 +174,11 @@ class EditZoneTemplController extends BaseController
         }
 
         $userId = $this->userContext->getLoggedInUserId();
-        $this->zoneTemplate->editZoneTempl($postParams, $zone_templ_id, $userId);
+        $edited = $this->zoneTemplate->editZoneTempl($postParams, $zone_templ_id, $userId);
+        if (!$edited->success) {
+            $this->addSystemMessage('error', (string)$edited->message);
+            return;
+        }
         $auditService = $this->createAuditService();
         $auditService->logZoneTemplateEdit($zone_templ_id, $postParams['templ_name'] ?? '');
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
@@ -251,7 +256,7 @@ class EditZoneTemplController extends BaseController
         }
 
         $templateExists = $this->zoneTemplate->zoneTemplNameExists($postParams['templ_name']);
-        $currentTemplate = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
+        $currentTemplate = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [];
 
         if ($templateExists) {
             $this->showError(_('Zone template with this name already exists, please choose another one.'));
@@ -265,7 +270,7 @@ class EditZoneTemplController extends BaseController
         }
 
         // Get records from the current template
-        $records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_templ_id);
+        $records = $this->services()->zoneTemplateRepository()->getZoneTemplateRecords($zone_templ_id);
 
         // For a simple "save as" with no domain substitution
         $options = [];
@@ -274,7 +279,7 @@ class EditZoneTemplController extends BaseController
         }
 
         // Call the addZoneTemplSaveAs with the correct signature
-        $success = $this->zoneTemplate->addZoneTemplSaveAs(
+        $saved = $this->zoneTemplate->addZoneTemplSaveAs(
             $postParams['templ_name'],
             $postParams['templ_descr'],
             (int)$this->getCurrentUserId(),
@@ -283,9 +288,14 @@ class EditZoneTemplController extends BaseController
             '' // Empty domain since we're not doing domain substitution
         );
 
-        if ($success) {
-            $this->setMessage('list_zone_templ', 'success', _('Zone template has been copied successfully.'));
-            $this->redirect('/zones/templates');
+        if (!$saved->success) {
+            $this->addSystemMessage('error', (string)$saved->message);
+            return;
         }
+        if ($saved->message !== null) {
+            $this->setMessage('list_zone_templ', 'warning', $saved->message);
+        }
+        $this->setMessage('list_zone_templ', 'success', _('Zone template has been copied successfully.'));
+        $this->redirect('/zones/templates');
     }
 }

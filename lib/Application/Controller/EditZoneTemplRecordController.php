@@ -24,9 +24,9 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -37,14 +37,14 @@ class EditZoneTemplRecordController extends BaseController
 {
     private RecordTypeService $recordTypeService;
     private UserContextService $userContext;
-    private ZoneTemplate $zoneTemplate;
+    private ZoneTemplateService $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
-        $this->zoneTemplate = $this->createZoneTemplateModel();
+        $this->zoneTemplate = $this->createZoneTemplateService();
     }
 
     public function run(): void
@@ -84,7 +84,7 @@ class EditZoneTemplRecordController extends BaseController
 
     public function showZoneTemplateRecordForm(int $record_id, int $zone_templ_id): void
     {
-        $record = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id, $zone_templ_id);
+        $record = $this->services()->zoneTemplateRepository()->getZoneTemplateRecordById($record_id, $zone_templ_id);
 
         // The lookup is scoped to the template, so a record id from another template comes back empty
         if (!$record) {
@@ -100,7 +100,7 @@ class EditZoneTemplRecordController extends BaseController
             'record' => $record,
             'zone_templ_id' => $zone_templ_id,
             'record_id' => $record_id,
-            'templ_details' => ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id),
+            'templ_details' => $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [],
             'record_types' => $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities()),
             'zones_linked_count' => $zones_linked_count,
         ]);
@@ -135,7 +135,10 @@ class EditZoneTemplRecordController extends BaseController
             return;
         }
 
-        if ($this->zoneTemplate->editZoneTemplRecord($postParams, $zone_templ_id)) {
+        $edited = $this->zoneTemplate->editZoneTemplRecord($postParams, $zone_templ_id);
+        if (!$edited->success) {
+            $this->addSystemMessage('error', (string)$edited->message);
+        } else {
             // Mark template as modified to track sync status
             $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);

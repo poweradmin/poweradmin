@@ -36,7 +36,6 @@ use Poweradmin\Application\Service\ZoneSigningMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
@@ -281,9 +280,9 @@ class EditController extends BaseController
             rejectedZoneComment: $this->rejectedZoneComment,
             domainType: $domain_type,
             slaveMaster: $this->domainRepository->getDomainMaster($zone_id),
-            zoneTemplates: $this->createZoneTemplateModel()->getListZoneTempl($userId),
+            zoneTemplates: $this->createZoneTemplateService()->getListZoneTempl($userId),
             zoneTemplateId: $zone_template_id,
-            zoneTemplateDetails: ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id),
+            zoneTemplateDetails: $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_template_id) ?: [],
             recordCount: $this->recordRepository->countZoneRecords($zone_id),
             filteredRecordCount: $total_filtered_count,
             records: $displayRecords,

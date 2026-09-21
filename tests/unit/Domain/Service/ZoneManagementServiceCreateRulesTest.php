@@ -27,11 +27,16 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -84,14 +89,26 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             $config,
             $this->db,
             new RepositoryFactory($this->db, $config, $backend),
-            $backend,
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
             fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
+            $this->zoneTemplateService($config, $backend),
             null,
             $capabilities,
             null,
             $domains
+        );
+    }
+
+    private function zoneTemplateService(ConfigurationManager $config, DnsBackendProviderInterface $backend): ZoneTemplateService
+    {
+        return new ZoneTemplateService(
+            new DbZoneTemplateRepository($this->db, $config, $backend),
+            $config,
+            $backend,
+            $this->permissionService($config),
+            new UserContextService(),
+            new NullLogger()
         );
     }
 
@@ -151,10 +168,10 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             $config,
             $this->db,
             new RepositoryFactory($this->db, $config, $backend),
-            $backend,
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
             fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
+            $this->zoneTemplateService($config, $backend),
             null,
             $lazy
         );

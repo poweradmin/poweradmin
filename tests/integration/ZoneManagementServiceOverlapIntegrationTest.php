@@ -29,11 +29,15 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Psr\Log\NullLogger;
 
 /**
  * Integration test for the API zone-creation path. Confirms that the
@@ -120,10 +124,17 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             $config,
             $this->db,
             new RepositoryFactory($this->db, $config, $backend),
-            $backend,
             new PermissionService(new DbUserRepository($this->db, $config)),
             new RecordChangeLogger($this->db),
-            fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend)
+            fn() => DnsServiceFactory::createDomainManager($this->db, $config, $backend),
+            new ZoneTemplateService(
+                new DbZoneTemplateRepository($this->db, $config, $backend),
+                $config,
+                $backend,
+                new PermissionService(new DbUserRepository($this->db, $config)),
+                new UserContextService(),
+                new NullLogger()
+            )
         );
     }
 

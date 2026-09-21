@@ -63,7 +63,7 @@ class ListZoneTemplController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $userName = $this->userContext->getLoggedInUsername();
 
-        $zone_templates = $this->createZoneTemplateModel();
+        $zone_templates = $this->createZoneTemplateService();
         $templatesList = $zone_templates->getListZoneTempl($userId);
 
         // Get sync status for all templates

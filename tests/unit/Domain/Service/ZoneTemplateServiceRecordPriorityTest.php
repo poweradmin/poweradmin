@@ -20,17 +20,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace unit\Domain\Model;
+namespace Poweradmin\Tests\Unit\Domain\Service;
 
-use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
  * Pins the priority range check on zone template records: only the types that
  * carry a preference in the prio column are refused for an out-of-range value.
  */
-class ZoneTemplateRecordPriorityTest extends SqliteIntegrationTestCase
+class ZoneTemplateServiceRecordPriorityTest extends SqliteIntegrationTestCase
 {
     private const TEMPLATE = 10;
 
@@ -38,46 +40,43 @@ class ZoneTemplateRecordPriorityTest extends SqliteIntegrationTestCase
     {
         parent::setUp();
 
-        // Other tests leave system messages in the session; read them off first
-        (new MessageService())->getMessages('system');
-
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, owner INTEGER)");
         $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER)");
         $this->db->exec("INSERT INTO zone_templ (id, name, owner) VALUES (" . self::TEMPLATE . ", 'shared', 0)");
     }
 
-    protected function tearDown(): void
-    {
-        (new MessageService())->getMessages('system');
-        parent::tearDown();
-    }
-
     public function testAnOutOfRangePriorityIsRefusedForAPriorityBearingType(): void
     {
-        $model = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
+        $model = $this->service();
 
-        $this->assertFalse($model->addZoneTemplRecord(self::TEMPLATE, 'mail.example.com', 'MX', 'mx.example.com', 3600, 70000));
+        $result = $model->addZoneTemplRecord(self::TEMPLATE, 'mail.example.com', 'MX', 'mx.example.com', 3600, 70000);
 
-        $messages = (new MessageService())->getMessages('system');
-        $this->assertStringContainsString('between 0 and 65535', $messages[0]['content']);
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('between 0 and 65535', (string)$result->message);
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zone_templ_records")->fetchColumn());
     }
 
     public function testTheRangeCheckLeavesOtherTypesToTheirOwnValidator(): void
     {
-        $model = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
+        $model = $this->service();
 
-        $this->assertFalse($model->addZoneTemplRecord(self::TEMPLATE, 'www.example.com', 'A', '192.0.2.1', 3600, 70000));
+        $result = $model->addZoneTemplRecord(self::TEMPLATE, 'www.example.com', 'A', '192.0.2.1', 3600, 70000);
 
-        $messages = (new MessageService())->getMessages('system');
-        $this->assertStringContainsString('A records must have priority value of 0', $messages[0]['content']);
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('A records must have priority value of 0', (string)$result->message);
     }
 
     public function testAnInRangePriorityIsStoredForAPriorityBearingType(): void
     {
-        $model = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false), $this->permissionService());
+        $model = $this->service();
 
-        $this->assertTrue($model->addZoneTemplRecord(self::TEMPLATE, 'mail.example.com', 'MX', 'mx.example.com', 3600, 20));
+        $this->assertTrue($model->addZoneTemplRecord(self::TEMPLATE, 'mail.example.com', 'MX', 'mx.example.com', 3600, 20)->success);
         $this->assertSame(20, (int)$this->db->query("SELECT prio FROM zone_templ_records")->fetchColumn());
+    }
+
+    private function service(): ZoneTemplateService
+    {
+        $backend = $this->dnsBackendStub(false);
+        return new ZoneTemplateService(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new UserContextService(), new NullLogger());
     }
 }

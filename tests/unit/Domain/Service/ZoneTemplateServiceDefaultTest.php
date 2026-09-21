@@ -20,30 +20,41 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Model;
+namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Coverage for the default-template resolver and writers.
  *
- * @see ZoneTemplate::getDefaultTemplateId()
- * @see ZoneTemplate::setDefaultTemplate()
- * @see ZoneTemplate::unsetDefaultTemplate()
+ * @see ZoneTemplateService::getDefaultTemplateId()
+ * @see ZoneTemplateService::setDefaultTemplate()
+ * @see ZoneTemplateService::unsetDefaultTemplate()
  */
-class ZoneTemplateDefaultTest extends TestCase
+class ZoneTemplateServiceDefaultTest extends TestCase
 {
-    private function backend(): DnsBackendProviderInterface
+    private function service(PDO $db, ConfigurationInterface $config, LoggerInterface $logger): ZoneTemplateService
     {
-        return $this->createMock(DnsBackendProviderInterface::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        return new ZoneTemplateService(
+            new DbZoneTemplateRepository($db, $config, $backend),
+            $config,
+            $backend,
+            $this->createMock(PermissionService::class),
+            new UserContextService(),
+            $logger
+        );
     }
 
     private function makeConfig(?string $dbType = 'mysql', mixed $configured = null): ConfigurationInterface
@@ -106,7 +117,7 @@ class ZoneTemplateDefaultTest extends TestCase
         $db = $this->makeDb([
             ['sql' => 'WHERE is_default = TRUE AND owner = 0', 'fetchColumn' => 7],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 'should-be-ignored'), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig('mysql', 'should-be-ignored'), new NullLogger());
 
         $this->assertSame(7, $template->getDefaultTemplateId());
     }
@@ -117,7 +128,7 @@ class ZoneTemplateDefaultTest extends TestCase
             ['sql' => 'WHERE is_default', 'fetchColumn' => false],
             ['sql' => 'WHERE id = :id AND owner = 0', 'fetchColumn' => 1],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 12), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig('mysql', 12), new NullLogger());
 
         $this->assertSame(12, $template->getDefaultTemplateId());
     }
@@ -128,7 +139,7 @@ class ZoneTemplateDefaultTest extends TestCase
             ['sql' => 'WHERE is_default', 'fetchColumn' => false],
             ['sql' => 'WHERE name = :name AND owner = 0', 'fetchAllColumn' => [9]],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 'Standard'), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig('mysql', 'Standard'), new NullLogger());
 
         $this->assertSame(9, $template->getDefaultTemplateId());
     }
@@ -143,7 +154,7 @@ class ZoneTemplateDefaultTest extends TestCase
         $logger->expects($this->once())
             ->method('warning')
             ->with($this->stringContains('matches {count} global zone templates'));
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 'Standard'), $this->backend(), $this->createMock(PermissionService::class), $logger);
+        $template = $this->service($db, $this->makeConfig('mysql', 'Standard'), $logger);
 
         $this->assertNull($template->getDefaultTemplateId());
     }
@@ -158,7 +169,7 @@ class ZoneTemplateDefaultTest extends TestCase
         $logger->expects($this->once())
             ->method('warning')
             ->with($this->stringContains('does not match any global zone template'));
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 'Standard'), $this->backend(), $this->createMock(PermissionService::class), $logger);
+        $template = $this->service($db, $this->makeConfig('mysql', 'Standard'), $logger);
 
         $this->assertNull($template->getDefaultTemplateId());
     }
@@ -173,7 +184,7 @@ class ZoneTemplateDefaultTest extends TestCase
         $logger->expects($this->once())
             ->method('warning')
             ->with($this->stringContains('does not match any global zone template'));
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 999), $this->backend(), $this->createMock(PermissionService::class), $logger);
+        $template = $this->service($db, $this->makeConfig('mysql', 999), $logger);
 
         $this->assertNull($template->getDefaultTemplateId());
     }
@@ -183,7 +194,7 @@ class ZoneTemplateDefaultTest extends TestCase
         $db = $this->makeDb([
             ['sql' => 'WHERE is_default', 'fetchColumn' => false],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', null), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig('mysql', null), new NullLogger());
 
         $this->assertNull($template->getDefaultTemplateId());
     }
@@ -193,9 +204,9 @@ class ZoneTemplateDefaultTest extends TestCase
         $db = $this->makeDb([
             ['sql' => 'SELECT owner FROM zone_templ WHERE id = :id', 'fetchColumn' => 5],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig(), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig(), new NullLogger());
 
-        $this->assertFalse($template->setDefaultTemplate(42));
+        $this->assertFalse($template->setDefaultTemplate(42)->success);
     }
 
     public function testSetDefaultTemplateRejectsNonexistent(): void
@@ -203,9 +214,9 @@ class ZoneTemplateDefaultTest extends TestCase
         $db = $this->makeDb([
             ['sql' => 'SELECT owner FROM zone_templ WHERE id = :id', 'fetchColumn' => false],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig(), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig(), new NullLogger());
 
-        $this->assertFalse($template->setDefaultTemplate(999));
+        $this->assertFalse($template->setDefaultTemplate(999)->success);
     }
 
     public function testSetDefaultTemplateAcceptsGlobal(): void
@@ -214,9 +225,9 @@ class ZoneTemplateDefaultTest extends TestCase
             ['sql' => 'SELECT owner FROM zone_templ WHERE id = :id', 'fetchColumn' => 0],
             ['sql' => 'UPDATE zone_templ SET is_default = CASE WHEN id = :id', 'fetchColumn' => null],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig(), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig(), new NullLogger());
 
-        $this->assertTrue($template->setDefaultTemplate(7));
+        $this->assertTrue($template->setDefaultTemplate(7)->success);
     }
 
     public function testUnsetDefaultTemplateClearsFlag(): void
@@ -227,9 +238,9 @@ class ZoneTemplateDefaultTest extends TestCase
             ->with($this->stringContains('UPDATE zone_templ SET is_default'))
             ->willReturn(1);
 
-        $template = new ZoneTemplate($db, $this->makeConfig(), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig(), new NullLogger());
 
-        $this->assertTrue($template->unsetDefaultTemplate());
+        $this->assertTrue($template->unsetDefaultTemplate()->success);
     }
 
     public function testIsUserOwnerOfTemplateTrueWhenOwnerMatches(): void
@@ -237,7 +248,7 @@ class ZoneTemplateDefaultTest extends TestCase
         $db = $this->makeDb([
             ['sql' => 'SELECT owner FROM zone_templ WHERE id = :id', 'fetchColumn' => 5],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig(), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig(), new NullLogger());
 
         $this->assertTrue($template->isUserOwnerOfTemplate(42, 5));
     }
@@ -247,7 +258,7 @@ class ZoneTemplateDefaultTest extends TestCase
         $db = $this->makeDb([
             ['sql' => 'SELECT owner FROM zone_templ WHERE id = :id', 'fetchColumn' => 5],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig(), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig(), new NullLogger());
 
         $this->assertFalse($template->isUserOwnerOfTemplate(42, 9));
     }
@@ -257,7 +268,7 @@ class ZoneTemplateDefaultTest extends TestCase
         $db = $this->makeDb([
             ['sql' => 'SELECT owner FROM zone_templ WHERE id = :id', 'fetchColumn' => false],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig(), $this->backend(), $this->createMock(PermissionService::class));
+        $template = $this->service($db, $this->makeConfig(), new NullLogger());
 
         $this->assertFalse($template->isUserOwnerOfTemplate(999, 5));
     }

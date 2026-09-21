@@ -36,7 +36,6 @@ use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -56,6 +55,7 @@ use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DomainRecordCreator;
@@ -143,7 +143,7 @@ class ControllerServiceFactory
     private ?RepositoryFactory $repositoryFactory = null;
     private ?DomainManagerInterface $domainManager = null;
     private ?SupermasterManager $supermasterManager = null;
-    private ?ZoneTemplate $zoneTemplate = null;
+    private ?ZoneTemplateService $zoneTemplateService = null;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
     private ?DnsDataService $dnsDataService = null;
     private ?ZoneRepositoryInterface $zoneRepository = null;
@@ -302,15 +302,14 @@ class ControllerServiceFactory
             $this->config,
             $this->db,
             $this->repositoryFactory(),
-            $this->dnsBackendProvider(),
             $this->permissionService(),
             $this->recordChangeLogger(),
             fn(): DomainManagerInterface => $this->domainManager(),
+            $this->zoneTemplateService(),
             $this->logger,
             capabilities: $capabilities,
             signing: $this->zoneSigningService(),
-            domainRepository: $this->domainRepository(),
-            zoneTemplateRepository: $this->zoneTemplateRepository()
+            domainRepository: $this->domainRepository()
         );
     }
 
@@ -753,7 +752,8 @@ class ControllerServiceFactory
             $this->userRepository(),
             $this->recordChangeLogger(),
             $this->zoneTemplateApplier(),
-            zoneTemplateRepository: $this->zoneTemplateRepository()
+            $this->zoneTemplateRepository(),
+            new ZoneTemplatePlaceholders($this->config)
         );
     }
 
@@ -787,9 +787,16 @@ class ControllerServiceFactory
         return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db, $this->config, $this->dnsBackendProvider());
     }
 
-    public function zoneTemplate(): ZoneTemplate
+    public function zoneTemplateService(): ZoneTemplateService
     {
-        return $this->zoneTemplate ??= new ZoneTemplate($this->db, $this->config, $this->dnsBackendProvider(), $this->permissionService(), $this->logger, $this->zoneTemplateRepository());
+        return $this->zoneTemplateService ??= new ZoneTemplateService(
+            $this->zoneTemplateRepository(),
+            $this->config,
+            $this->dnsBackendProvider(),
+            $this->permissionService(),
+            new UserContextService(),
+            $this->logger
+        );
     }
 
     public function catalogZoneService(): CatalogZoneService

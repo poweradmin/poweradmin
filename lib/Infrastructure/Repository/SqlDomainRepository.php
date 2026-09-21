@@ -25,8 +25,8 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -48,6 +48,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TableNameService $tableNameService;
+    private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
 
     public function __construct(PDO $db, ConfigurationManager $config)
     {
@@ -56,6 +57,14 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->tableNameService = new TableNameService($config);
+    }
+
+    /**
+     * Template names for the zone listing; built on first use since most listings never show them.
+     */
+    private function zoneTemplateRepository(): ZoneTemplateRepositoryInterface
+    {
+        return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db);
     }
 
     public function zoneIdExists(int $zid): bool
@@ -485,7 +494,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
             }
 
             if ($iface_zonelist_template) {
-                $ret[$domainName]["template"] = ZoneTemplate::getZoneTemplName($this->db, $r["id"]);
+                $ret[$domainName]["template"] = $this->zoneTemplateRepository()->getTemplateNameForZone($r["id"]);
             }
         }
 

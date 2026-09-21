@@ -99,7 +99,7 @@ class SaveZoneAsTemplateController extends BaseController
     private function saveAsTemplate(int $zone_id, string $zone_name): void
     {
         $template_name = $this->httpRequest->getPostParam('templ_name') ?? '';
-        $zoneTemplate = $this->createZoneTemplateModel();
+        $zoneTemplate = $this->createZoneTemplateService();
 
         if ($zoneTemplate->zoneTemplNameExists($template_name)) {
             $this->setMessage('save-zone-template', 'error', _('Zone template with this name already exists, please choose another one.'));
@@ -129,10 +129,12 @@ class SaveZoneAsTemplateController extends BaseController
             $zone_name
         );
 
-        // addZoneTemplSaveAs() reports its own reason, so only the success claim and
-        // the audit entry need suppressing here.
-        if (!$saved) {
+        if (!$saved->success) {
+            $this->setMessage('save-zone-template', 'error', (string)$saved->message);
             return;
+        }
+        if ($saved->message !== null) {
+            $this->setMessage('list_zone_templ', 'warning', $saved->message);
         }
 
         $auditService = $this->createAuditService();

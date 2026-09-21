@@ -26,7 +26,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -101,7 +101,7 @@ abstract class ZoneCreateControllerTestCase extends SeamControllerTestCase
             });
         }
 
-        $templates = $this->createMock(ZoneTemplate::class);
+        $templates = $this->createMock(ZoneTemplateService::class);
         $templates->method('canCurrentUserUseTemplate')->willReturnCallback(fn(): bool => $this->templateUsable);
         $templates->method('getDefaultTemplateId')->willReturn(null);
         $templates->method('getListZoneTempl')->willReturn([]);
@@ -124,7 +124,7 @@ abstract class ZoneCreateControllerTestCase extends SeamControllerTestCase
         $this->factory->method('zoneCreateOwnershipResolver')->willReturn($ownershipResolver);
         $this->factory->method('zoneManagementService')->willReturn($this->zones);
         $this->factory->method('auditService')->willReturn($audit);
-        $this->factory->method('zoneTemplate')->willReturn($templates);
+        $this->factory->method('zoneTemplateService')->willReturn($templates);
         $this->factory->method('apiPermissionService')->willReturn($apiPermissions);
         $this->factory->method('dnssecProvider')->willReturn($this->dnssec);
         $this->factory->method('userRepository')->willReturn($users);

@@ -43,11 +43,11 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Application\Service\ZoneCreateService;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\Validator;
@@ -808,9 +808,9 @@ abstract class BaseController
         return $this->services()->supermasterManager();
     }
 
-    protected function createZoneTemplateModel(): ZoneTemplate
+    protected function createZoneTemplateService(): ZoneTemplateService
     {
-        return $this->services()->zoneTemplate();
+        return $this->services()->zoneTemplateService();
     }
 
     protected function getRepositoryFactory(?DnsBackendProviderInterface $backendProvider = null): RepositoryFactory

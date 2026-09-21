@@ -75,13 +75,14 @@ class AddZoneTemplController extends BaseController
             $this->showFirstValidationError($postParams);
         }
 
-        $zoneTemplate = $this->createZoneTemplateModel();
-        if ($zoneTemplate->addZoneTempl($postParams, (int)$this->getCurrentUserId())) {
+        $added = $this->createZoneTemplateService()->addZoneTempl($postParams, (int)$this->getCurrentUserId());
+        if ($added->success) {
             $auditService = $this->createAuditService();
             $auditService->logZoneTemplateAdd($postParams['templ_name'] ?? '');
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been added successfully.'));
             $this->redirect('/zones/templates');
         } else {
+            $this->addSystemMessage('error', (string)$added->message);
             $this->render('add_zone_templ.html', [
                 'user_name' => $this->createUserRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
                 'templ_name' => $postParams['templ_name'],

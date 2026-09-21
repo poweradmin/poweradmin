@@ -128,7 +128,7 @@ class AddZoneMasterController extends BaseController
         }
 
         $zone_template = $this->httpRequest->getPostParam('zone_template', 'none');
-        $zoneTemplateModel = $this->createZoneTemplateModel();
+        $zoneTemplateModel = $this->createZoneTemplateService();
         if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
             $this->showForm();
@@ -218,7 +218,7 @@ class AddZoneMasterController extends BaseController
 
     private function showForm(): void
     {
-        $zone_templates = $this->createZoneTemplateModel();
+        $zone_templates = $this->createZoneTemplateService();
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
 

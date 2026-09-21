@@ -25,13 +25,11 @@ namespace Poweradmin\Domain\Service;
 use Closure;
 use Exception;
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DomainUtility;
@@ -72,11 +70,10 @@ class ZoneManagementService
     /** @var PdnsCapabilities|Closure|null Resolved on first use so a lookup only happens for a catalog kind */
     private PdnsCapabilities|Closure|null $capabilities;
     private ?ZoneSigningService $signing;
-    private DnsBackendProviderInterface $backendProvider;
     private RepositoryFactoryInterface $repositoryFactory;
     private ?DomainRepositoryInterface $domainRepository;
     private PermissionService $permissions;
-    private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
+    private ZoneTemplateService $zoneTemplates;
     private DomainManagerInterface|Closure $domainManager;
     private ?ZoneOverlapService $overlapService = null;
     private ?HostnameValidator $hostnameValidator = null;
@@ -85,10 +82,10 @@ class ZoneManagementService
 
     /**
      * @param RepositoryFactoryInterface $repositoryFactory Builds the record and domain repositories
-     * @param DnsBackendProviderInterface $backendProvider Backend used by the zone template model and the domain manager
      * @param PermissionService $permissions Shares the request's permission cache
      * @param RecordChangeWriterInterface $changeLogger Receives the zone create and delete snapshots
      * @param DomainManagerInterface|Closure $domainManager Writes the zone, or a closure returning the writer, resolved on first use
+     * @param ZoneTemplateService $zoneTemplates Resolves and authorises the template a zone is created from
      * @param PdnsCapabilities|Closure|null $capabilities What the connected server supports, or a closure returning it; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
@@ -98,19 +95,17 @@ class ZoneManagementService
         ConfigurationInterface $config,
         object $db,
         RepositoryFactoryInterface $repositoryFactory,
-        DnsBackendProviderInterface $backendProvider,
         PermissionService $permissions,
         RecordChangeWriterInterface $changeLogger,
         DomainManagerInterface|Closure $domainManager,
+        ZoneTemplateService $zoneTemplates,
         ?LoggerInterface $logger = null,
         PdnsCapabilities|Closure|null $capabilities = null,
         ?ZoneSigningService $signing = null,
-        ?DomainRepositoryInterface $domainRepository = null,
-        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
+        ?DomainRepositoryInterface $domainRepository = null
     ) {
-        $this->zoneTemplateRepository = $zoneTemplateRepository;
+        $this->zoneTemplates = $zoneTemplates;
         $this->repositoryFactory = $repositoryFactory;
-        $this->backendProvider = $backendProvider;
         $this->zoneRepository = $zoneRepository;
         $this->domainRepository = $domainRepository;
         $this->permissions = $permissions;
@@ -144,15 +139,13 @@ class ZoneManagementService
      */
     private function lookUpZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
     {
-
-        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->permissions, $this->logger, $this->zoneTemplateRepository);
         if (is_numeric($zoneTemplate)) {
-            if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
+            if (!$this->zoneTemplates->zoneTemplIdExists((int)$zoneTemplate)) {
                 return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
             }
             $templateId = (int)$zoneTemplate;
         } else {
-            $matchingIds = $zoneTemplateModel->getZoneTemplIdsByName($zoneTemplate);
+            $matchingIds = $this->zoneTemplates->getZoneTemplIdsByName($zoneTemplate);
             if (count($matchingIds) === 0) {
                 return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
             } elseif (count($matchingIds) > 1) {
@@ -163,7 +156,7 @@ class ZoneManagementService
 
         if ($actingUserId !== null) {
             $isAdmin = $this->permissions->isAdmin($actingUserId);
-            if (!$zoneTemplateModel->canUseTemplate($templateId, $actingUserId, $isAdmin)) {
+            if (!$this->zoneTemplates->canUseTemplate($templateId, $actingUserId, $isAdmin)) {
                 return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'status' => 403, 'code' => self::ERR_TEMPLATE_FORBIDDEN];
             }
         }
