@@ -41,7 +41,7 @@ class WhoisController extends BaseController
         parent::__construct($request);
 
         $this->whoisService = new WhoisService();
-        $this->domainRepository = $this->services()->domainRepository();
+        $this->domainRepository = $this->moduleServices()->domainRepository();
 
         $timeout = $this->getModuleConfig('whois', 'socket_timeout', 10);
         $this->whoisService->setSocketTimeout($timeout);

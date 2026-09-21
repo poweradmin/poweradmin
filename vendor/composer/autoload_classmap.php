@@ -1161,6 +1161,7 @@ return array(
     'Poweradmin\\Application\\Http\\ZoneEditIntent' => $baseDir . '/lib/Application/Http/ZoneEditIntent.php',
     'Poweradmin\\Application\\Module\\ModuleManifest' => $baseDir . '/lib/Application/Module/ModuleManifest.php',
     'Poweradmin\\Application\\Module\\ModuleRegistry' => $baseDir . '/lib/Application/Module/ModuleRegistry.php',
+    'Poweradmin\\Application\\Module\\ModuleServices' => $baseDir . '/lib/Application/Module/ModuleServices.php',
     'Poweradmin\\Application\\Presenter\\ChangeRequestPresenter' => $baseDir . '/lib/Application/Presenter/ChangeRequestPresenter.php',
     'Poweradmin\\Application\\Presenter\\EditZonePresenter' => $baseDir . '/lib/Application/Presenter/EditZonePresenter.php',
     'Poweradmin\\Application\\Presenter\\OwnerGroupColumnPresenter' => $baseDir . '/lib/Application/Presenter/OwnerGroupColumnPresenter.php',

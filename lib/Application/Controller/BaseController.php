@@ -31,6 +31,7 @@ use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ChangeApprovalContext;
+use Poweradmin\Application\Module\ModuleServices;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
 use Poweradmin\Application\Service\CsrfTokenService;
@@ -385,6 +386,15 @@ abstract class BaseController
     protected function services(): ControllerServiceFactory
     {
         return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger);
+    }
+
+    /**
+     * The same factory narrowed to the module SDK contract; module controllers
+     * use this instead of services() so their core dependencies stay declared.
+     */
+    protected function moduleServices(): ModuleServices
+    {
+        return $this->services();
     }
 
     /**

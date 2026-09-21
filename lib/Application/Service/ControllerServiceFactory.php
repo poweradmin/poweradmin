@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service;
 use Closure;
 use PDO;
 use Poweradmin\Application\Http\ClientContext;
+use Poweradmin\Application\Module\ModuleServices;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ChangeRequestNotificationService;
@@ -122,7 +123,7 @@ use Psr\Log\LoggerInterface;
  * each memoize their per-request instances. The flat accessors below delegate
  * to them so call sites and test doubles keep one entry point.
  */
-class ControllerServiceFactory
+class ControllerServiceFactory implements ModuleServices
 {
     private BackendServices $backend;
     private UserServices $users;

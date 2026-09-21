@@ -73,7 +73,7 @@ class ZoneFileImportController extends BaseController
     private function checkImportPermission(): void
     {
         $canAdd = $this->hasPermission(Permission::PERM_ZONE_MASTER_ADD);
-        $perm_edit = $this->services()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
+        $perm_edit = $this->moduleServices()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $this->checkCondition(
             !$canAdd && $perm_edit === 'none',
             _('You do not have permission to import zones.')
@@ -89,10 +89,10 @@ class ZoneFileImportController extends BaseController
 
         $requestedZoneId = (int)$this->httpRequest->getQueryParam('zone_id', 0);
         if ($requestedZoneId > 0) {
-            $zoneName = $this->services()->domainRepository()->getDomainNameById($requestedZoneId);
+            $zoneName = $this->moduleServices()->domainRepository()->getDomainNameById($requestedZoneId);
             if ($zoneName) {
                 $userId = $this->userContextService->getLoggedInUserId();
-                $permissionService = $this->services()->permissionService();
+                $permissionService = $this->moduleServices()->permissionService();
                 $permEdit = $permissionService->getEditPermissionLevelForZone($userId, $requestedZoneId);
                 if ($permEdit !== 'none') {
                     $targetZoneId = $requestedZoneId;
@@ -162,7 +162,7 @@ class ZoneFileImportController extends BaseController
         $existingZoneId = (int)$this->httpRequest->getPostParam('existing_zone_id', 0);
 
         $userId = $this->userContextService->getLoggedInUserId();
-        $permissionService = $this->services()->permissionService();
+        $permissionService = $this->moduleServices()->permissionService();
 
         // Verify permission when importing into an existing zone via POST
         if ($importMode === 'existing' && $existingZoneId > 0) {
@@ -178,7 +178,7 @@ class ZoneFileImportController extends BaseController
         }
 
         // Auto-detect existing zone when importing from the menu
-        $domainRepository = $this->services()->domainRepository();
+        $domainRepository = $this->moduleServices()->domainRepository();
         if ($importMode === 'new' && $origin !== null && !(new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig())))->isValid($origin)) {
             $this->addSystemMessage('error', _('This is an invalid zone name.'));
         }
@@ -238,7 +238,7 @@ class ZoneFileImportController extends BaseController
             // memberships at execute time.
             $ownershipMode = new ZoneOwnershipModeService($this->config);
             $userId = $this->userContextService->getLoggedInUserId();
-            $userGroupRepo = $this->services()->userGroupRepository();
+            $userGroupRepo = $this->moduleServices()->userGroupRepository();
             $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
             $availableGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
@@ -290,9 +290,9 @@ class ZoneFileImportController extends BaseController
 
         $userId = $this->userContextService->getLoggedInUserId();
         $userLogin = $this->userContextService->getLoggedInUsername();
-        $audit = $this->services()->auditService();
+        $audit = $this->moduleServices()->auditService();
 
-        $domainRepository = $this->services()->domainRepository();
+        $domainRepository = $this->moduleServices()->domainRepository();
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
             // Verify the zone exists
@@ -307,7 +307,7 @@ class ZoneFileImportController extends BaseController
             }
 
             // Verify user has permission to edit this zone
-            $permissionService = $this->services()->permissionService();
+            $permissionService = $this->moduleServices()->permissionService();
             $permEdit = $permissionService->getEditPermissionLevelForZone($userId, $existingZoneId);
 
             if ($permEdit === 'none') {
@@ -354,7 +354,7 @@ class ZoneFileImportController extends BaseController
             $groupsForCreate = $ownershipMode->isGroupOwnerAllowed() && is_array($requestedGroups)
                 ? array_map('intval', $requestedGroups)
                 : [];
-            $ownership = $this->services()->zoneCreateOwnershipResolver()->resolveOwnership($ownerForCreate, $groupsForCreate, $userId);
+            $ownership = $this->moduleServices()->zoneCreateOwnershipResolver()->resolveOwnership($ownerForCreate, $groupsForCreate, $userId);
             if ($ownership->code === ZoneOwnershipResolution::NO_OWNER) {
                 $this->showError(_('Cannot create a new zone via import: select at least one group, or leave "No user owner" unchecked.'));
                 return;
@@ -377,9 +377,9 @@ class ZoneFileImportController extends BaseController
         }
 
         // Import records
-        $recordRepository = $this->services()->recordRepository();
-        $dnsRecordManager = $this->services()->recordManager();
-        $recordManager = $this->services()->recordManagerService();
+        $recordRepository = $this->moduleServices()->recordRepository();
+        $dnsRecordManager = $this->moduleServices()->recordManager();
+        $recordManager = $this->moduleServices()->recordManagerService();
 
         $successCount = 0;
         $failCount = 0;
