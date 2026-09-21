@@ -47,7 +47,7 @@ class SymfonyRouterIntegrationTest extends TestCase
 
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\LoginController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Auth\LoginController', $routeInfo['controller']);
         $this->assertEquals('login', $routeInfo['route']);
         $this->assertTrue($router->isRouteFound());
     }
@@ -59,7 +59,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $router = $this->createRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\LogoutController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Auth\LogoutController', $routeInfo['controller']);
         $this->assertEquals('logout', $routeInfo['route']);
         $this->assertTrue($router->isRouteFound());
     }
@@ -142,14 +142,14 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/mfa/setup';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\MfaSetupController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Auth\MfaSetupController', $routeInfo['controller']);
         $this->assertEquals('mfa_setup', $routeInfo['route']);
 
         // MFA verify
         $_SERVER['REQUEST_URI'] = '/mfa/verify';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\MfaVerifyController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Auth\MfaVerifyController', $routeInfo['controller']);
         $this->assertEquals('mfa_verify', $routeInfo['route']);
     }
 

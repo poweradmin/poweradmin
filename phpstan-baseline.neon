@@ -28,7 +28,7 @@ parameters:
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 1
-			path: lib/Application/Controller/ChangePasswordController.php
+			path: lib/Application/Controller/Auth/ChangePasswordController.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
@@ -40,7 +40,7 @@ parameters:
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 3
-			path: lib/Application/Controller/MfaSetupController.php
+			path: lib/Application/Controller/Auth/MfaSetupController.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'

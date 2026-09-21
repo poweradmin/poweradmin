@@ -43,7 +43,7 @@ class SymfonyRouterTest extends TestCase
         $router = new SymfonyRouter(new FakeConfiguration());
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\LoginController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Auth\LoginController', $routeInfo['controller']);
         $this->assertEquals('run', $routeInfo['method']);
         $this->assertEquals('login', $routeInfo['route']);
     }

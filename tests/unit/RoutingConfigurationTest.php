@@ -250,7 +250,7 @@ class RoutingConfigurationTest extends TestCase
 
         $loginRoute = $this->routes->get('login');
         $this->assertEquals(
-            'Poweradmin\Application\Controller\LoginController::run',
+            'Poweradmin\Application\Controller\Auth\LoginController::run',
             $loginRoute->getDefault('_controller')
         );
 

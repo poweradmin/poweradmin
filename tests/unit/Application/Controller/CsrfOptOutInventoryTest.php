@@ -42,13 +42,13 @@ class CsrfOptOutInventoryTest extends TestCase
      */
     private const ALLOWED_OPT_OUTS = [
         // Session-less or flow-token protected web controllers
-        'Poweradmin\Application\Controller\LoginController',
-        'Poweradmin\Application\Controller\MfaVerifyController',
-        'Poweradmin\Application\Controller\ForgotPasswordController',
-        'Poweradmin\Application\Controller\ForgotUsernameController',
-        'Poweradmin\Application\Controller\ResetPasswordController',
-        'Poweradmin\Application\Controller\OidcCallbackController',
-        'Poweradmin\Application\Controller\SamlCallbackController',
+        'Poweradmin\Application\Controller\Auth\LoginController',
+        'Poweradmin\Application\Controller\Auth\MfaVerifyController',
+        'Poweradmin\Application\Controller\Auth\ForgotPasswordController',
+        'Poweradmin\Application\Controller\Auth\ForgotUsernameController',
+        'Poweradmin\Application\Controller\Auth\ResetPasswordController',
+        'Poweradmin\Application\Controller\Auth\OidcCallbackController',
+        'Poweradmin\Application\Controller\Auth\SamlCallbackController',
         'Poweradmin\Application\Controller\NotFoundController',
         // API controllers authenticate per request (API key / Basic / X-CSRF-Token header)
         'Poweradmin\Application\Controller\Api\AbstractApiController',

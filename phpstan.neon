@@ -142,13 +142,13 @@ parameters:
         - lib/Application/Service/OidcService.php
         - lib/Application/Service/SamlService.php
         - lib/Application/Service/SqlAuthenticator.php
-        - lib/Application/Controller/LoginController.php
-        - lib/Application/Controller/LogoutController.php
-        - lib/Application/Controller/OidcCallbackController.php
-        - lib/Application/Controller/SamlCallbackController.php
-        - lib/Application/Controller/ForgotPasswordController.php
-        - lib/Application/Controller/ForgotUsernameController.php
-        - lib/Application/Controller/ResetPasswordController.php
+        - lib/Application/Controller/Auth/LoginController.php
+        - lib/Application/Controller/Auth/LogoutController.php
+        - lib/Application/Controller/Auth/OidcCallbackController.php
+        - lib/Application/Controller/Auth/SamlCallbackController.php
+        - lib/Application/Controller/Auth/ForgotPasswordController.php
+        - lib/Application/Controller/Auth/ForgotUsernameController.php
+        - lib/Application/Controller/Auth/ResetPasswordController.php
     # Controllers pass $_SERVER to IpAddressRetriever; Domain code takes the
     # resolved value instead.
     -

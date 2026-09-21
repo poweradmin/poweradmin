@@ -7,60 +7,60 @@ home:
 
 login:
   path: /login
-  controller: Poweradmin\Application\Controller\LoginController::run
+  controller: Poweradmin\Application\Controller\Auth\LoginController::run
   methods: [GET, POST]
 
 logout:
   path: /logout
-  controller: Poweradmin\Application\Controller\LogoutController::run
+  controller: Poweradmin\Application\Controller\Auth\LogoutController::run
 
 # OIDC Authentication
 oidc_login:
   path: /oidc/login
-  controller: Poweradmin\Application\Controller\OidcLoginController::run
+  controller: Poweradmin\Application\Controller\Auth\OidcLoginController::run
   methods: [GET]
 
 oidc_callback:
   path: /oidc/callback
-  controller: Poweradmin\Application\Controller\OidcCallbackController::run
+  controller: Poweradmin\Application\Controller\Auth\OidcCallbackController::run
   methods: [GET, POST]
 
 # SAML Authentication
 saml_login:
   path: /saml/login
-  controller: Poweradmin\Application\Controller\SamlLoginController::run
+  controller: Poweradmin\Application\Controller\Auth\SamlLoginController::run
   methods: [GET]
 
 saml_acs:
   path: /saml/acs
-  controller: Poweradmin\Application\Controller\SamlCallbackController::run
+  controller: Poweradmin\Application\Controller\Auth\SamlCallbackController::run
   methods: [POST]
 
 saml_sls:
   path: /saml/sls
-  controller: Poweradmin\Application\Controller\SamlCallbackController::run
+  controller: Poweradmin\Application\Controller\Auth\SamlCallbackController::run
   methods: [GET, POST]
 
 saml_metadata:
   path: /saml/metadata
-  controller: Poweradmin\Application\Controller\SamlMetadataController::run
+  controller: Poweradmin\Application\Controller\Auth\SamlMetadataController::run
   methods: [GET]
 
 # Multi-Factor Authentication
 mfa_setup:
   path: /mfa/setup
-  controller: Poweradmin\Application\Controller\MfaSetupController::run
+  controller: Poweradmin\Application\Controller\Auth\MfaSetupController::run
   methods: [GET, POST]
 
 mfa_verify:
   path: /mfa/verify
-  controller: Poweradmin\Application\Controller\MfaVerifyController::run
+  controller: Poweradmin\Application\Controller\Auth\MfaVerifyController::run
   methods: [GET, POST]
 
 # User Agreement
 user_agreement:
   path: /user-agreement
-  controller: Poweradmin\Application\Controller\UserAgreementController::run
+  controller: Poweradmin\Application\Controller\Auth\UserAgreementController::run
   methods: [GET, POST]
 
 # User Management
@@ -102,23 +102,23 @@ user_preferences:
 # Password Management
 change_password:
   path: /password/change
-  controller: Poweradmin\Application\Controller\ChangePasswordController::run
+  controller: Poweradmin\Application\Controller\Auth\ChangePasswordController::run
   methods: [GET, POST]
 
 forgot_password:
   path: /password/forgot
-  controller: Poweradmin\Application\Controller\ForgotPasswordController::run
+  controller: Poweradmin\Application\Controller\Auth\ForgotPasswordController::run
   methods: [GET, POST]
 
 reset_password:
   path: /password/reset
-  controller: Poweradmin\Application\Controller\ResetPasswordController::run
+  controller: Poweradmin\Application\Controller\Auth\ResetPasswordController::run
   methods: [GET, POST]
 
 # Username Recovery
 forgot_username:
   path: /username/forgot
-  controller: Poweradmin\Application\Controller\ForgotUsernameController::run
+  controller: Poweradmin\Application\Controller\Auth\ForgotUsernameController::run
   methods: [GET, POST]
 
 # Zone Management
