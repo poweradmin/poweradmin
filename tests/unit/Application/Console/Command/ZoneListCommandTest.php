@@ -22,8 +22,10 @@
 
 namespace Poweradmin\Tests\Unit\Application\Console\Command;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Console\Arguments;
 use Poweradmin\Application\Console\Command\ZoneListCommand;
 use Poweradmin\Application\Console\CommandLineActor;
 use Poweradmin\Domain\Model\Constants;
@@ -46,6 +48,13 @@ class ZoneListCommandTest extends TestCase
         $this->stderr = fopen('php://memory', 'w+');
     }
 
+    public function testMetadataNamesTheCommandAndItsOptions(): void
+    {
+        $this->assertSame('zone:list', ZoneListCommand::name());
+        $this->assertSame(['user', 'format'], ZoneListCommand::options());
+        $this->assertNotSame('', ZoneListCommand::description());
+    }
+
     public function testSystemActorSeesOnlyTheHeaderAndIsToldWhy(): void
     {
         $permissions = $this->createMock(PermissionService::class);
@@ -53,7 +62,7 @@ class ZoneListCommandTest extends TestCase
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->expects($this->never())->method('getZones');
 
-        $exit = (new ZoneListCommand($permissions, $domains))->run(CommandLineActor::system(), $this->stdout, $this->stderr);
+        $exit = $this->runCommand(new ZoneListCommand($permissions, $domains), [], CommandLineActor::system());
 
         $this->assertSame(0, $exit);
         $this->assertSame(ZoneListCommand::HEADER . "\n", $this->read($this->stdout));
@@ -67,7 +76,7 @@ class ZoneListCommandTest extends TestCase
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->expects($this->never())->method('getZones');
 
-        $exit = (new ZoneListCommand($permissions, $domains))->run(new CommandLineActor(3, 'guest'), $this->stdout, $this->stderr);
+        $exit = $this->runCommand(new ZoneListCommand($permissions, $domains), [], new CommandLineActor(3, 'guest'));
 
         $this->assertSame(0, $exit);
         $this->assertSame(ZoneListCommand::HEADER . "\n", $this->read($this->stdout));
@@ -75,8 +84,54 @@ class ZoneListCommandTest extends TestCase
 
     public function testViewLevelAndActorIdReachTheRepositoryAndRowsAreTabSeparated(): void
     {
+        $command = new ZoneListCommand($this->viewerPermissions(), $this->twoZones());
+
+        $exit = $this->runCommand($command, [], new CommandLineActor(2, 'viewer'));
+
+        $this->assertSame(0, $exit);
+        $this->assertSame(
+            ZoneListCommand::HEADER . "\n10\texample.com\tMASTER\t2\n11\texample.net\tNATIVE\t0\n",
+            $this->read($this->stdout)
+        );
+        $this->assertSame('', $this->read($this->stderr));
+    }
+
+    public function testJsonFormatWritesOneObjectPerZone(): void
+    {
+        $command = new ZoneListCommand($this->viewerPermissions(), $this->twoZones());
+
+        $exit = $this->runCommand($command, ['--format=json'], new CommandLineActor(2, 'viewer'));
+
+        $this->assertSame(0, $exit);
+        $this->assertSame(
+            '[{"id":10,"name":"example.com","type":"MASTER","records":2},{"id":11,"name":"example.net","type":"NATIVE","records":0}]' . "\n",
+            $this->read($this->stdout)
+        );
+    }
+
+    public function testStrayArgumentIsAUsageError(): void
+    {
+        $command = new ZoneListCommand(
+            $this->createMock(PermissionService::class),
+            $this->createMock(DomainRepositoryInterface::class)
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('zone:list takes no arguments');
+
+        $this->runCommand($command, ['example.com'], new CommandLineActor(2, 'viewer'));
+    }
+
+    private function viewerPermissions(): PermissionService
+    {
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('getViewPermissionLevel')->with(2)->willReturn('own');
+
+        return $permissions;
+    }
+
+    private function twoZones(): DomainRepositoryInterface
+    {
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->expects($this->once())->method('getZones')
             ->with('own', 2, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, false, false, false, true)
@@ -85,14 +140,13 @@ class ZoneListCommandTest extends TestCase
                 'example.net' => ['id' => 11, 'name' => 'example.net', 'type' => 'NATIVE'],
             ]);
 
-        $exit = (new ZoneListCommand($permissions, $domains))->run(new CommandLineActor(2, 'viewer'), $this->stdout, $this->stderr);
+        return $domains;
+    }
 
-        $this->assertSame(0, $exit);
-        $this->assertSame(
-            ZoneListCommand::HEADER . "\n10\texample.com\tMASTER\t2\n11\texample.net\tNATIVE\t0\n",
-            $this->read($this->stdout)
-        );
-        $this->assertSame('', $this->read($this->stderr));
+    /** @param list<string> $argv The words after the command name */
+    private function runCommand(ZoneListCommand $command, array $argv, CommandLineActor $actor): int
+    {
+        return $command->run(Arguments::parse(['zone:list', ...$argv]), $actor, $this->stdout, $this->stderr);
     }
 
     /** @param resource $stream */

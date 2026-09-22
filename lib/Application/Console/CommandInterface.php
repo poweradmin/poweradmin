@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
@@ -21,23 +20,32 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
- * Console entry point. Runs Poweradmin use cases without HTTP or a session:
- *
- *   bin/poweradmin --as-user=1 zone:list
- *   bin/poweradmin --as-user=1 zone:show example.com --format=json
+namespace Poweradmin\Application\Console;
+
+use InvalidArgumentException;
+use Poweradmin\Domain\Port\ActorInterface;
+
+/**
+ * One bin/poweradmin command. The metadata is static so the registry can
+ * print usage and validate options before the service graph is booted.
  */
+interface CommandInterface
+{
+    public static function name(): string;
 
-declare(strict_types=1);
+    public static function description(): string;
 
-use Poweradmin\Application\Console\CommandRegistry;
-use Poweradmin\Application\Console\ConsoleApplication;
+    /**
+     * The command-level option names accepted next to the global ones.
+     *
+     * @return list<string>
+     */
+    public static function options(): array;
 
-if (PHP_SAPI !== 'cli') {
-    fwrite(STDERR, "bin/poweradmin must be run from the command line\n");
-    exit(1);
+    /**
+     * @param resource $stdout
+     * @param resource $stderr
+     * @throws InvalidArgumentException on a usage error; the application prints it and exits 1
+     */
+    public function run(Arguments $arguments, ActorInterface $actor, $stdout, $stderr): int;
 }
-
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-exit((new ConsoleApplication(CommandRegistry::default(), STDOUT, STDERR))->run(array_slice($argv, 1)));

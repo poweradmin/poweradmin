@@ -22,19 +22,24 @@
 
 namespace Poweradmin\Application\Console\Command;
 
+use InvalidArgumentException;
+use Poweradmin\Application\Console\Arguments;
+use Poweradmin\Application\Console\CommandInterface;
+use Poweradmin\Application\Console\TableWriter;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 
 /**
- * zone:list - the zones the actor may view, one tab-separated row per zone.
+ * zone:list - the zones the actor may view, one row per zone.
  * Visibility follows the web zone list: the actor's view level narrows the
  * rows to owned zones (directly or through a group); an ueberuser sees all.
  */
-final class ZoneListCommand
+final class ZoneListCommand implements CommandInterface
 {
     public const NAME = 'zone:list';
+    public const COLUMNS = ['ID', 'NAME', 'TYPE', 'RECORDS'];
     public const HEADER = "ID\tNAME\tTYPE\tRECORDS";
 
     private PermissionService $permissionService;
@@ -46,17 +51,32 @@ final class ZoneListCommand
         $this->domainRepository = $domainRepository;
     }
 
-    /**
-     * @param resource $stdout
-     * @param resource $stderr
-     */
-    public function run(ActorInterface $actor, $stdout, $stderr): int
+    public static function name(): string
     {
-        fwrite($stdout, self::HEADER . "\n");
+        return self::NAME;
+    }
+
+    public static function description(): string
+    {
+        return 'List the zones the acting user may view (id, name, type, record count)';
+    }
+
+    public static function options(): array
+    {
+        return ['user', TableWriter::OPTION];
+    }
+
+    public function run(Arguments $arguments, ActorInterface $actor, $stdout, $stderr): int
+    {
+        if ($arguments->positionals() !== []) {
+            throw new InvalidArgumentException(self::NAME . ' takes no arguments');
+        }
+        $writer = TableWriter::fromArguments($arguments, $stdout);
 
         $userId = $actor->userId();
         $level = $userId === null ? 'none' : $this->permissionService->getViewPermissionLevel($userId);
         if ($level === 'none') {
+            $writer->write(self::COLUMNS, []);
             fwrite($stderr, "The acting user may not view any zones; pass --as-user=<id> to act as a user.\n");
             return 0;
         }
@@ -76,15 +96,16 @@ final class ZoneListCommand
             true
         );
 
+        $rows = [];
         foreach ($zones as $zone) {
-            fwrite($stdout, sprintf(
-                "%d\t%s\t%s\t%d\n",
+            $rows[] = [
                 (int) $zone['id'],
                 (string) $zone['name'],
                 (string) $zone['type'],
-                (int) ($zone['count_records'] ?? 0)
-            ));
+                (int) ($zone['count_records'] ?? 0),
+            ];
         }
+        $writer->write(self::COLUMNS, $rows);
 
         return 0;
     }
