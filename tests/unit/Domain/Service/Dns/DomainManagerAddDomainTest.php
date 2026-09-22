@@ -40,9 +40,12 @@ use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneAccountOwnerRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use TestHelpers\StubActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 
 /**
  * addDomain() drives zone creation end to end: refusal before any write,
@@ -592,7 +595,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
     private function manager(array $callerPermissions = [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD]): DomainManager
     {
         return new DomainManager(
-            $this->db,
+            new PdoTransaction($this->db),
             $this->config,
             $this->createMock(DomainRepositoryInterface::class),
             new RepositoryFactory($this->db, $this->config, $this->backend),
@@ -606,6 +609,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             new DbZoneTemplateSyncRepository($this->db, $this->config),
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
             new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
+            new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $this->backend->allocatesZoneIdsLocally()), $this->config, $this->backend),
             new StubActor(self::CALLER_ID),
             new NullLogger()
         );

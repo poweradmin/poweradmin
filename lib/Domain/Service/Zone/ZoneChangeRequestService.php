@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service\Zone;
 
 use Closure;
-use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
@@ -31,6 +30,7 @@ use Poweradmin\Domain\Model\ZoneChangeRequestRowCodec;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\ChangeRequestNotifierInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
@@ -90,7 +90,7 @@ class ZoneChangeRequestService
         private readonly SOARecordManagerInterface $soaRecords,
         private readonly ZoneManagementService $zoneManagement,
         private readonly BackendCapabilitiesInterface $backend,
-        private readonly PDO $db,
+        private readonly TransactionInterface $transaction,
         private readonly ConfigurationInterface $config,
         private readonly bool $recordCommentsEnabled,
         private readonly bool $zoneCommentsEnabled,
@@ -405,16 +405,16 @@ class ZoneChangeRequestService
     private function applyRecords(ZoneChangeRequest $request, int $reviewerId, string $reviewerName): ?array
     {
         $zoneId = $request->zoneId;
-        $transactional = $this->backend->supportsLocalWriteTransaction() && !$this->db->inTransaction();
+        $transactional = $this->backend->supportsLocalWriteTransaction() && !$this->transaction->inTransaction();
         if ($transactional) {
-            $this->db->beginTransaction();
+            $this->transaction->begin();
         }
 
         try {
             $failure = $this->replayActions($request, $reviewerId, $reviewerName, $transactional);
             if ($failure !== null) {
                 if ($transactional) {
-                    $this->db->rollBack();
+                    $this->transaction->rollBack();
                 }
 
                 return $failure;
@@ -423,7 +423,7 @@ class ZoneChangeRequestService
             if ($transactional) {
                 // The serial moves with the rows; rectify reads committed rows, so it follows the commit
                 $this->soaRecords->updateSOASerial($zoneId);
-                $this->db->commit();
+                $this->transaction->commit();
                 $this->recordManager->finalizeZone($zoneId, false);
             } else {
                 $this->recordManager->finalizeZone($zoneId);
@@ -469,8 +469,8 @@ class ZoneChangeRequestService
      */
     private function rollBackIfOpen(): void
     {
-        if ($this->db->inTransaction()) {
-            $this->db->rollBack();
+        if ($this->transaction->inTransaction()) {
+            $this->transaction->rollBack();
         }
     }
 

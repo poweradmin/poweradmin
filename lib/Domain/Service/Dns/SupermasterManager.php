@@ -22,13 +22,12 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use PDO;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Port\SupermasterBackendInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
@@ -36,8 +35,7 @@ use Poweradmin\Domain\Service\Validation\Refusal;
  */
 class SupermasterManager
 {
-    private PDO $db;
-    private ConfigurationInterface $config;
+    private UserLookupInterface $users;
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
     private SupermasterBackendInterface $backendProvider;
@@ -45,14 +43,13 @@ class SupermasterManager
     /**
      * Constructor
      *
-     * @param PDO $db Database connection
+     * @param UserLookupInterface $users Resolves the full name of the account a supermaster hands zones to
      * @param ConfigurationInterface $config Configuration manager
      * @param SupermasterBackendInterface $backendProvider DNS backend provider
      */
-    public function __construct(PDO $db, ConfigurationInterface $config, SupermasterBackendInterface $backendProvider)
+    public function __construct(UserLookupInterface $users, ConfigurationInterface $config, SupermasterBackendInterface $backendProvider)
     {
-        $this->db = $db;
-        $this->config = $config;
+        $this->users = $users;
         $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
         $this->ipAddressValidator = new IPAddressValidator();
         $this->backendProvider = $backendProvider;
@@ -107,9 +104,6 @@ class SupermasterManager
      */
     public function getSupermasters(): array
     {
-        $accountMatch = DbCompat::accentSensitiveEquals($this->config->get('database', 'type'), 'username', ':account');
-        $fullnameStmt = $this->db->prepare("SELECT fullname FROM users WHERE $accountMatch");
-
         $supermasters = [];
         foreach ($this->backendProvider->getSupermasters() as $sm) {
             $account = (string)($sm['account'] ?? '');
@@ -117,8 +111,7 @@ class SupermasterManager
             // The account names the Poweradmin user the zones will be handed to
             $fullname = '';
             if ($account !== '') {
-                $fullnameStmt->execute([':account' => $account]);
-                $fullname = $fullnameStmt->fetchColumn() ?: '';
+                $fullname = $this->users->getFullNameByUsername($account) ?? '';
             }
 
             $supermasters[] = [

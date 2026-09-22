@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use PDO;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
@@ -38,6 +37,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -53,7 +53,7 @@ use Poweradmin\Domain\Service\Validation\Refusal;
  */
 final class DomainManager implements DomainManagerInterface
 {
-    private PDO $db;
+    private TransactionInterface $transaction;
     private ConfigurationInterface $config;
     private DomainRepositoryInterface $domainRepository;
     private IPAddressValidator $ipAddressValidator;
@@ -70,11 +70,12 @@ final class DomainManager implements DomainManagerInterface
     private ZoneTemplateSyncRepositoryInterface $templateSync;
     private TemplateRecordLinkRepositoryInterface $templateLinks;
     private ZoneGroupRepositoryInterface $zoneGroups;
+    private ZoneAccountSyncService $accountSync;
 
     /**
      * Constructor
      *
-     * @param PDO $db Database connection, for the transaction around the native zone rows
+     * @param TransactionInterface $transaction Wraps the native zone rows of a creation
      * @param ConfigurationInterface $config Configuration manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param RepositoryFactoryInterface $repositoryFactory Builds the zone repository
@@ -88,10 +89,11 @@ final class DomainManager implements DomainManagerInterface
      * @param ZoneTemplateSyncRepositoryInterface $templateSync Records which template a new zone was seeded from
      * @param TemplateRecordLinkRepositoryInterface $templateLinks Links the seeded records back to their template
      * @param ZoneGroupRepositoryInterface $zoneGroups Group ownership of the new zone
+     * @param ZoneAccountSyncService $accountSync Mirrors the owner into the backend account field
      * @param ActorInterface $actor The user the ownership and permission checks are about
      */
     public function __construct(
-        PDO $db,
+        TransactionInterface $transaction,
         ConfigurationInterface $config,
         DomainRepositoryInterface $domainRepository,
         RepositoryFactoryInterface $repositoryFactory,
@@ -105,17 +107,19 @@ final class DomainManager implements DomainManagerInterface
         ZoneTemplateSyncRepositoryInterface $templateSync,
         TemplateRecordLinkRepositoryInterface $templateLinks,
         ZoneGroupRepositoryInterface $zoneGroups,
+        ZoneAccountSyncService $accountSync,
         ActorInterface $actor,
         ?LoggerInterface $logger = null
     ) {
         $this->templateLinks = $templateLinks;
         $this->zoneGroups = $zoneGroups;
+        $this->accountSync = $accountSync;
         $this->templateApplier = $templateApplier;
         $this->zoneTemplateRepository = $zoneTemplateRepository;
         $this->placeholders = $placeholders;
         $this->templateSync = $templateSync;
         $this->repositoryFactory = $repositoryFactory;
-        $this->db = $db;
+        $this->transaction = $transaction;
         $this->config = $config;
         $this->domainRepository = $domainRepository;
         $this->ipAddressValidator = new IPAddressValidator();
@@ -247,7 +251,7 @@ final class DomainManager implements DomainManagerInterface
             $this->applySerialPolicy($domain_id, $domain, $soaEditApi);
         }
 
-        $this->db->beginTransaction();
+        $this->transaction->begin();
         try {
             $zone_id = $this->createZoneShell($domain_id, $owner, $zone_template);
             $this->assignInitialOwnership($domain_id, $zone_id, $owner, $zone_template, $groupIds);
@@ -256,7 +260,7 @@ final class DomainManager implements DomainManagerInterface
             if ($replicates) {
                 // Records arrive by transfer, so skip the apex SOA and any template
                 // records. Master IP is already set by backendProvider->createZone().
-                $this->db->commit();
+                $this->transaction->commit();
                 $zoneLog['master'] = $slave_master;
             } else {
                 $zoneLog += $this->seedZoneRecords($domain_id, $domain, $zone_template);
@@ -298,8 +302,7 @@ final class DomainManager implements DomainManagerInterface
     {
         // Ownerless zones keep their default empty account; no push needed on create
         if ($owner !== null) {
-            $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
-            $accountSync->syncZoneAccount($domain_id);
+            $this->accountSync->syncZoneAccount($domain_id);
         }
 
         if ($zone_template != "none" && is_numeric($zone_template)) {
@@ -330,7 +333,7 @@ final class DomainManager implements DomainManagerInterface
         // first; on SQLite the open lock would otherwise block PowerDNS.
         $localTransaction = $this->backendProvider->supportsLocalWriteTransaction();
         if (!$localTransaction) {
-            $this->db->commit();
+            $this->transaction->commit();
         }
 
         if ($seedsDefaults) {
@@ -342,7 +345,7 @@ final class DomainManager implements DomainManagerInterface
         }
 
         if ($localTransaction) {
-            $this->db->commit();
+            $this->transaction->commit();
         }
 
         return $logFields;
@@ -415,8 +418,8 @@ final class DomainManager implements DomainManagerInterface
      */
     private function cleanupFailedCreation(int $domain_id, string $domain): void
     {
-        if ($this->db->inTransaction()) {
-            $this->db->rollBack();
+        if ($this->transaction->inTransaction()) {
+            $this->transaction->rollBack();
         }
         $this->cleanupZoneOnFailure($domain_id, $domain);
         $this->cleanupZoneMetadata($domain_id);

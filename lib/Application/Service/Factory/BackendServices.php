@@ -39,9 +39,11 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
@@ -62,6 +64,7 @@ final class BackendServices
     private LoggerInterface $logger;
     private ActorInterface $actor;
 
+    private ?TransactionInterface $transaction = null;
     private ?DnsBackendProviderInterface $dnsBackendProvider = null;
     private ?RepositoryFactory $repositoryFactory = null;
     private ?DnsDataService $dnsDataService = null;
@@ -81,6 +84,14 @@ final class BackendServices
         $this->config = $config;
         $this->logger = $logger;
         $this->actor = $actor;
+    }
+
+    /**
+     * The request's unit of work over the same connection the repositories write through.
+     */
+    public function transaction(): TransactionInterface
+    {
+        return $this->transaction ??= new PdoTransaction($this->db);
     }
 
     /**

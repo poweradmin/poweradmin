@@ -50,6 +50,7 @@ use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
 use TestHelpers\FakeConfiguration;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 
 /**
  * Filing stores only the rows that differ and refuses invalid or oversized
@@ -786,7 +787,7 @@ class ZoneChangeRequestServiceTest extends TestCase
             $this->soa,
             $this->zoneManagement,
             $this->backend,
-            $this->db,
+            new PdoTransaction($this->db),
             $config,
             $showComments,
             true,

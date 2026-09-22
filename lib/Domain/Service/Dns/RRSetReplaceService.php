@@ -22,11 +22,11 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Throwable;
@@ -40,7 +40,7 @@ class RRSetReplaceService
     private HostnameValidator $hostnameValidator;
 
     public function __construct(
-        private readonly PDO $db,
+        private readonly TransactionInterface $transaction,
         private readonly ConfigurationInterface $config,
         private readonly BackendCapabilitiesInterface $backend,
         private readonly DnsRecordValidationServiceInterface $validationService,
@@ -64,7 +64,7 @@ class RRSetReplaceService
     {
         $useTransaction = $this->backend->supportsLocalWriteTransaction();
         if ($useTransaction) {
-            $this->db->beginTransaction();
+            $this->transaction->begin();
         }
 
         try {
@@ -107,14 +107,14 @@ class RRSetReplaceService
                 $this->soaRecordManager->updateSOASerial($zoneId);
             }
             if ($useTransaction) {
-                $this->db->commit();
+                $this->transaction->commit();
             }
             $this->recordManager->finalizeZone($zoneId, false);
 
             $this->audit->logApiRrsetReplace($zoneId, $normalizedName, $type, $recordsCreated);
         } catch (Throwable $e) {
             if ($useTransaction) {
-                $this->db->rollBack();
+                $this->transaction->rollBack();
             }
             throw $e;
         }
@@ -157,7 +157,7 @@ class RRSetReplaceService
     private function rollBack(bool $useTransaction, array $failure): array
     {
         if ($useTransaction) {
-            $this->db->rollBack();
+            $this->transaction->rollBack();
         }
 
         return $failure;

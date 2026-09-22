@@ -1063,7 +1063,8 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     private function syncZoneAccount(int $cid): void
     {
-        $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $owners = new DbZoneAccountOwnerRepository($this->db, $this->backendProvider->allocatesZoneIdsLocally());
+        $accountSync = new ZoneAccountSyncService($owners, $this->config, $this->backendProvider);
         if (!$accountSync->isEnabled()) {
             return;
         }

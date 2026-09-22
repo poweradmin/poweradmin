@@ -38,6 +38,7 @@ use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 
 /**
  * editZoneComment() updates the zones row of the zone, and creates one for a
@@ -105,7 +106,7 @@ class RecordManagerEditZoneCommentTest extends PermissionServiceTestCase
         $backend->method('isApiBackend')->willReturn(false);
 
         return new RecordManager(
-            $this->db,
+            new PdoTransaction($this->db),
             $this->config,
             $this->createMock(DnsRecordValidationServiceInterface::class),
             $this->createMock(SOARecordManagerInterface::class),

@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use PDO;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\Dns\SupermasterWriteResult;
 use Poweradmin\Domain\Service\Validation\Refusal;
@@ -14,13 +14,13 @@ use TestHelpers\FakeConfiguration;
 #[CoversClass(SupermasterManager::class)]
 class SupermasterManagerDelegationTest extends TestCase
 {
-    private $mockDb;
+    private $mockUsers;
     private $mockConfig;
     private $mockBackendProvider;
 
     protected function setUp(): void
     {
-        $this->mockDb = $this->createMock(PDO::class);
+        $this->mockUsers = $this->createMock(UserLookupInterface::class);
         $this->mockConfig = new FakeConfiguration([
             'database' => ['pdns_db_name' => ''],
             'dns' => [
@@ -37,18 +37,12 @@ class SupermasterManagerDelegationTest extends TestCase
 
     public function testAddSupermasterDelegatesToBackendProvider(): void
     {
-        // Mock the DB query for supermasterIpNameExists check
-        $stmt = $this->createMock(\PDOStatement::class);
-        $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn(false);
-        $this->mockDb->method('prepare')->willReturn($stmt);
-
         $this->mockBackendProvider->expects($this->once())
             ->method('addSupermaster')
             ->with('192.168.1.1', 'ns1.example.com', 'admin')
             ->willReturn(true);
 
-        $manager = new SupermasterManager($this->mockDb, $this->mockConfig, $this->mockBackendProvider);
+        $manager = new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider);
 
         $result = $manager->addSupermaster('192.168.1.1', 'ns1.example.com', 'admin');
 
@@ -60,7 +54,7 @@ class SupermasterManagerDelegationTest extends TestCase
         $this->mockBackendProvider->expects($this->never())
             ->method('addSupermaster');
 
-        $manager = new SupermasterManager($this->mockDb, $this->mockConfig, $this->mockBackendProvider);
+        $manager = new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider);
 
         $result = $manager->addSupermaster('not-an-ip', 'ns1.example.com', 'admin');
 
@@ -73,7 +67,7 @@ class SupermasterManagerDelegationTest extends TestCase
         $this->mockBackendProvider->expects($this->never())
             ->method('addSupermaster');
 
-        $manager = new SupermasterManager($this->mockDb, $this->mockConfig, $this->mockBackendProvider);
+        $manager = new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider);
 
         $result = $manager->addSupermaster('192.168.1.1', '', 'admin');
 
@@ -86,7 +80,7 @@ class SupermasterManagerDelegationTest extends TestCase
         $this->mockBackendProvider->expects($this->never())
             ->method('addSupermaster');
 
-        $manager = new SupermasterManager($this->mockDb, $this->mockConfig, $this->mockBackendProvider);
+        $manager = new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider);
 
         $result = $manager->addSupermaster('192.168.1.1', 'ns1.example.com', 'invalid account!');
 
@@ -101,7 +95,7 @@ class SupermasterManagerDelegationTest extends TestCase
             ->with('192.168.1.1', 'ns1.example.com')
             ->willReturn(true);
 
-        $manager = new SupermasterManager($this->mockDb, $this->mockConfig, $this->mockBackendProvider);
+        $manager = new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider);
 
         $result = $manager->deleteSupermaster('192.168.1.1', 'ns1.example.com');
 
@@ -128,7 +122,7 @@ class SupermasterManagerDelegationTest extends TestCase
         $this->mockBackendProvider->method('getSupermasters')->willReturn([['master_ip' => '192.168.1.1', 'ns_name' => 'ns1.example.com', 'account' => 'admin']]);
         $this->mockBackendProvider->expects($this->never())->method('addSupermaster');
 
-        $result = (new SupermasterManager($this->mockDb, $this->mockConfig, $this->mockBackendProvider))
+        $result = (new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider))
             ->addSupermaster('192.168.1.1', 'ns1.example.com', 'admin');
 
         $this->assertSame(SupermasterWriteResult::ERR_EXISTS, $result->code);
@@ -140,7 +134,7 @@ class SupermasterManagerDelegationTest extends TestCase
         $this->mockBackendProvider->method('getSupermasters')->willReturn([]);
         $this->mockBackendProvider->expects($this->never())->method('updateSupermaster');
 
-        $result = (new SupermasterManager($this->mockDb, $this->mockConfig, $this->mockBackendProvider))
+        $result = (new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider))
             ->updateSupermaster('192.168.1.1', 'ns1.example.com', '192.168.1.2', 'ns2.example.com', 'admin');
 
         $this->assertSame(SupermasterWriteResult::ERR_NOT_FOUND, $result->code);
@@ -152,10 +146,28 @@ class SupermasterManagerDelegationTest extends TestCase
         $this->mockBackendProvider->method('getSupermasters')->willReturn([]);
         $this->mockBackendProvider->method('addSupermaster')->willReturn(false);
 
-        $result = (new SupermasterManager($this->mockDb, $this->mockConfig, $this->mockBackendProvider))
+        $result = (new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider))
             ->addSupermaster('192.168.1.1', 'ns1.example.com', 'admin');
 
         $this->assertSame(SupermasterWriteResult::ERR_BACKEND, $result->code);
         $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
+    }
+
+    public function testGetSupermastersResolvesTheAccountFullName(): void
+    {
+        $this->mockBackendProvider->method('getSupermasters')->willReturn([
+            ['master_ip' => '192.168.1.1', 'ns_name' => 'ns1.example.com', 'account' => 'admin'],
+            ['master_ip' => '192.168.1.2', 'ns_name' => 'ns2.example.com', 'account' => ''],
+            ['master_ip' => '192.168.1.3', 'ns_name' => 'ns3.example.com', 'account' => 'ghost'],
+        ]);
+        $this->mockUsers->method('getFullNameByUsername')->willReturnMap([['admin', 'Site Admin'], ['ghost', null]]);
+
+        $result = (new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider))->getSupermasters();
+
+        $this->assertSame([
+            ['master_ip' => '192.168.1.1', 'ns_name' => 'ns1.example.com', 'account' => 'admin', 'fullname' => 'Site Admin'],
+            ['master_ip' => '192.168.1.2', 'ns_name' => 'ns2.example.com', 'account' => '', 'fullname' => ''],
+            ['master_ip' => '192.168.1.3', 'ns_name' => 'ns3.example.com', 'account' => 'ghost', 'fullname' => ''],
+        ], $result);
     }
 }

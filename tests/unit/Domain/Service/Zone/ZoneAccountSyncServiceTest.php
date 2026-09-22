@@ -22,13 +22,12 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
 
-use PDO;
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Repository\ZoneAccountOwnerLookupInterface;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use TestHelpers\FakeConfiguration;
 
@@ -38,7 +37,7 @@ use TestHelpers\FakeConfiguration;
 #[CoversClass(ZoneAccountSyncService::class)]
 class ZoneAccountSyncServiceTest extends TestCase
 {
-    private PDO&MockObject $db;
+    private ZoneAccountOwnerLookupInterface&MockObject $owners;
     private FakeConfiguration $config;
     private DnsBackendProviderInterface&MockObject $backendProvider;
 
@@ -46,7 +45,7 @@ class ZoneAccountSyncServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->db = $this->createMock(PDO::class);
+        $this->owners = $this->createMock(ZoneAccountOwnerLookupInterface::class);
         $this->config = new FakeConfiguration();
         $this->backendProvider = $this->createMock(DnsBackendProviderInterface::class);
     }
@@ -56,22 +55,19 @@ class ZoneAccountSyncServiceTest extends TestCase
         $this->config = new FakeConfiguration(['dns' => ['sync_zone_owner_to_account' => $enabled]]);
     }
 
-    private function expectOwnerQueryReturning(mixed $username): void
+    private function expectOwnerQueryReturning(?string $username): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn($username);
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->owners->method('oldestOwnerUsername')->with(42)->willReturn($username);
     }
 
     #[Test]
     public function syncIsDisabledByDefault(): void
     {
         $this->setSyncEnabled(false);
-        $this->db->expects($this->never())->method('prepare');
+        $this->owners->expects($this->never())->method('oldestOwnerUsername');
         $this->backendProvider->expects($this->never())->method('updateZoneAccount');
 
-        $service = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $service = new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider);
         $service->syncZoneAccount(42);
     }
 
@@ -79,9 +75,9 @@ class ZoneAccountSyncServiceTest extends TestCase
     public function syncIsSkippedWithoutBackendProvider(): void
     {
         $this->setSyncEnabled(true);
-        $this->db->expects($this->never())->method('prepare');
+        $this->owners->expects($this->never())->method('oldestOwnerUsername');
 
-        $service = new ZoneAccountSyncService($this->db, $this->config, null);
+        $service = new ZoneAccountSyncService($this->owners, $this->config, null);
         $service->syncZoneAccount(42);
     }
 
@@ -95,7 +91,7 @@ class ZoneAccountSyncServiceTest extends TestCase
             ->with(42, 'alice')
             ->willReturn(true);
 
-        $service = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $service = new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider);
         $service->syncZoneAccount(42);
     }
 
@@ -103,13 +99,13 @@ class ZoneAccountSyncServiceTest extends TestCase
     public function syncClearsAccountWhenZoneHasNoDirectOwner(): void
     {
         $this->setSyncEnabled(true);
-        $this->expectOwnerQueryReturning(false);
+        $this->expectOwnerQueryReturning(null);
         $this->backendProvider->expects($this->once())
             ->method('updateZoneAccount')
             ->with(42, '')
             ->willReturn(true);
 
-        $service = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $service = new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider);
         $service->syncZoneAccount(42);
     }
 
@@ -122,7 +118,7 @@ class ZoneAccountSyncServiceTest extends TestCase
             ->with(7, '')
             ->willReturn(true);
 
-        $service = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $service = new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider);
         $service->pushZoneAccount(7, null);
     }
 
@@ -132,7 +128,7 @@ class ZoneAccountSyncServiceTest extends TestCase
         $this->setSyncEnabled(false);
         $this->backendProvider->expects($this->never())->method('updateZoneAccount');
 
-        $service = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $service = new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider);
         $service->pushZoneAccount(7, 'alice');
     }
 
@@ -141,10 +137,10 @@ class ZoneAccountSyncServiceTest extends TestCase
     {
         $this->setSyncEnabled(true);
 
-        $withProvider = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $withProvider = new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider);
         $this->assertTrue($withProvider->isEnabled());
 
-        $withoutProvider = new ZoneAccountSyncService($this->db, $this->config, null);
+        $withoutProvider = new ZoneAccountSyncService($this->owners, $this->config, null);
         $this->assertFalse($withoutProvider->isEnabled());
     }
 }

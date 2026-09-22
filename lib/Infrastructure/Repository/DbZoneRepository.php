@@ -1222,7 +1222,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     private function syncZoneAccount(int $domainId): void
     {
-        $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $owners = new DbZoneAccountOwnerRepository($this->db, $this->backendProvider?->allocatesZoneIdsLocally() ?? false);
+        $accountSync = new ZoneAccountSyncService($owners, $this->config, $this->backendProvider);
         $accountSync->syncZoneAccount($domainId);
     }
 }

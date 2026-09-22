@@ -36,8 +36,11 @@ use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneAccountOwnerRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 
 /**
  * DomainManager::addDomain materialises a zone template: every template record
@@ -241,7 +244,7 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
         $domainRepository->method('getDomainNameById')->willReturn('new.example');
 
         return new DomainManager(
-            $this->db,
+            new PdoTransaction($this->db),
             $config,
             $domainRepository,
             new RepositoryFactory($this->db, $config, $backend),
@@ -255,6 +258,7 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
             new DbZoneTemplateSyncRepository($this->db, $config),
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
             new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),
+            new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $backend->allocatesZoneIdsLocally()), $config, $backend),
             new SessionActor()
         );
     }

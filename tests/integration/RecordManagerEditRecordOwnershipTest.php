@@ -37,6 +37,7 @@ use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 
 /**
  * IDOR guard for RecordManager::editRecord(). The record's zone must be derived
@@ -173,7 +174,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
         $changeLogger = $this->createMock(RecordChangeLogger::class);
 
         return new RecordManager(
-            $this->db,
+            new PdoTransaction($this->db),
             $config,
             $validation,
             $soa,

@@ -36,6 +36,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneAccountOwnerRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Psr\Log\NullLogger;
@@ -44,6 +45,8 @@ use TestHelpers\PermissionServiceTestCase;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use TestHelpers\StubActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 
 /**
  * updateZoneRecords() re-applies a template to an existing zone: the records the
@@ -411,7 +414,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
 
         $templates = new DbZoneTemplateRepository($this->db, $this->config, $this->backend);
         $applier = new ZoneTemplateApplier(
-            $this->db,
+            new PdoTransaction($this->db),
             $this->backend,
             $this->soa,
             $domains,
@@ -424,7 +427,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         );
 
         return new DomainManager(
-            $this->db,
+            new PdoTransaction($this->db),
             $this->config,
             $domains,
             $this->createMock(RepositoryFactoryInterface::class),
@@ -438,6 +441,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             new DbZoneTemplateSyncRepository($this->db, $this->config),
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
             new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
+            new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $this->backend->allocatesZoneIdsLocally()), $this->config, $this->backend),
             new StubActor(self::CALLER_ID),
             new NullLogger()
         );

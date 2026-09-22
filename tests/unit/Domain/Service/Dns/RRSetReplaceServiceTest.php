@@ -22,13 +22,13 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
-use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
@@ -43,7 +43,7 @@ class RRSetReplaceServiceTest extends TestCase
     private const ZONE_ID = 42;
     private const ZONE_NAME = 'example.com';
 
-    private PDO&MockObject $db;
+    private TransactionInterface&MockObject $transaction;
     private BackendCapabilitiesInterface&MockObject $backend;
     private DnsRecordValidationServiceInterface&MockObject $validator;
     private RecordRepositoryInterface&MockObject $records;
@@ -58,11 +58,10 @@ class RRSetReplaceServiceTest extends TestCase
     {
         $this->calls = [];
 
-        $this->db = $this->createMock(PDO::class);
-        foreach (['beginTransaction', 'commit', 'rollBack'] as $method) {
-            $this->db->method($method)->willReturnCallback(function () use ($method) {
+        $this->transaction = $this->createMock(TransactionInterface::class);
+        foreach (['begin', 'commit', 'rollBack'] as $method) {
+            $this->transaction->method($method)->willReturnCallback(function () use ($method): void {
                 $this->calls[] = $method;
-                return true;
             });
         }
 
@@ -107,7 +106,7 @@ class RRSetReplaceServiceTest extends TestCase
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(fn($group, $key) => $key === 'hostmaster' ? 'hostmaster@example.com' : 86400);
 
-        return new RRSetReplaceService($this->db, $config, $this->backend, $this->validator, $this->records, $this->manager, $this->soa, $this->audit);
+        return new RRSetReplaceService($this->transaction, $config, $this->backend, $this->validator, $this->records, $this->manager, $this->soa, $this->audit);
     }
 
     /**
@@ -126,7 +125,7 @@ class RRSetReplaceServiceTest extends TestCase
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1', '192.0.2.2']));
 
         $this->assertSame([
-            'beginTransaction',
+            'begin',
             'validate:192.0.2.1',
             'validate:192.0.2.2',
             'delete:5',
@@ -178,7 +177,7 @@ class RRSetReplaceServiceTest extends TestCase
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1', 'nope']));
 
         $this->assertSame(['success' => false, 'message' => 'Invalid IPv4 address', 'refusal' => Refusal::INVALID_INPUT], $result);
-        $this->assertSame(['beginTransaction', 'rollBack'], $this->calls);
+        $this->assertSame(['begin', 'rollBack'], $this->calls);
     }
 
     public function testAnEmptySetIsRefused(): void
@@ -186,7 +185,7 @@ class RRSetReplaceServiceTest extends TestCase
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, []);
 
         $this->assertSame(['success' => false, 'message' => 'No valid records to create', 'refusal' => Refusal::INVALID_INPUT], $result);
-        $this->assertSame(['beginTransaction', 'rollBack'], $this->calls);
+        $this->assertSame(['begin', 'rollBack'], $this->calls);
     }
 
     public function testARepeatedContentIsRefusedAsADuplicateBeforeTheOldSetIsDeleted(): void
@@ -207,7 +206,7 @@ class RRSetReplaceServiceTest extends TestCase
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1']));
 
         $this->assertSame(['success' => false, 'message' => 'Failed to delete existing record with ID 5', 'refusal' => Refusal::BACKEND_FAILURE], $result);
-        $this->assertSame(['beginTransaction', 'validate:192.0.2.1', 'rollBack'], $this->calls);
+        $this->assertSame(['begin', 'validate:192.0.2.1', 'rollBack'], $this->calls);
     }
 
     public function testAFailedInsertRollsBackAndHandsBackTheWriteResult(): void
@@ -244,7 +243,7 @@ class RRSetReplaceServiceTest extends TestCase
             $this->assertSame('connection lost', $e->getMessage());
         }
 
-        $this->assertSame(['beginTransaction', 'validate:192.0.2.1', 'rollBack'], $this->calls);
+        $this->assertSame(['begin', 'validate:192.0.2.1', 'rollBack'], $this->calls);
     }
 
     public function testTheValidatorsNormalisedValuesWinOverTheInput(): void

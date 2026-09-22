@@ -108,6 +108,15 @@ class DbUserRepository implements UserRepositoryInterface
         return $fullname !== false ? (string)$fullname : null;
     }
 
+    public function getFullNameByUsername(string $username): ?string
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'username', ':username');
+        $stmt = $this->db->prepare("SELECT fullname FROM users WHERE $match");
+        $stmt->execute([':username' => $username]);
+        $fullname = $stmt->fetchColumn();
+        return $fullname !== false ? (string)$fullname : null;
+    }
+
     public function getZoneOwnerFullNames(int $domainId): string
     {
         // PARAM_INT: the canonical expression has no column affinity, so SQLite would compare as text

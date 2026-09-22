@@ -36,6 +36,7 @@ use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 
 /**
  * Every single write ends by bumping the serial; a batch caller (bulk operations,
@@ -163,7 +164,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
         }
 
         return new RecordManager(
-            $this->db,
+            new PdoTransaction($this->db),
             $config,
             $validation,
             $soa,

@@ -90,6 +90,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -206,6 +207,11 @@ class ControllerServiceFactory implements ModuleServices
     public function dnsBackendProvider(): DnsBackendProviderInterface
     {
         return $this->backend->dnsBackendProvider();
+    }
+
+    public function transaction(): TransactionInterface
+    {
+        return $this->backend->transaction();
     }
 
     public function apiClient(): ?PowerdnsApiClient

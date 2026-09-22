@@ -35,9 +35,12 @@ use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneAccountOwnerRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 
 /**
  * DomainManager write methods report refusals through the result (status and
@@ -163,7 +166,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $domainRepository->method('getDomainNameById')->willReturn('new.example');
 
         return new DomainManager(
-            $this->db,
+            new PdoTransaction($this->db),
             $config,
             $domainRepository,
             new RepositoryFactory($this->db, $config, $backend),
@@ -177,6 +180,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
             new DbZoneTemplateSyncRepository($this->db, $config),
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
             new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),
+            new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $backend->allocatesZoneIdsLocally()), $config, $backend),
             new SessionActor()
         );
     }

@@ -22,13 +22,13 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use PDO;
 use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Psr\Log\LoggerInterface;
@@ -49,7 +49,7 @@ class ZoneTemplateApplier
      */
     private const IPV4_REVERSE_TEMPLATE_TYPES = ['NS', 'SOA', 'PTR', 'LUA', 'CNAME', 'TXT'];
 
-    private PDO $db;
+    private TransactionInterface $transaction;
     private DnsBackendProviderInterface $backendProvider;
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
@@ -61,7 +61,7 @@ class ZoneTemplateApplier
     private LoggerInterface $logger;
 
     public function __construct(
-        PDO $db,
+        TransactionInterface $transaction,
         DnsBackendProviderInterface $backendProvider,
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
@@ -72,7 +72,7 @@ class ZoneTemplateApplier
         RecordChangeWriterInterface $changeLogger,
         LoggerInterface $logger
     ) {
-        $this->db = $db;
+        $this->transaction = $transaction;
         $this->backendProvider = $backendProvider;
         $this->soaRecordManager = $soaRecordManager;
         $this->domainRepository = $domainRepository;
@@ -104,7 +104,7 @@ class ZoneTemplateApplier
      */
     public function applyTemplate(int $zoneId, int $templateId, int $defaultTtl, bool $writeRecords): ZoneWriteResult
     {
-        $this->db->beginTransaction();
+        $this->transaction->begin();
         try {
             if ($templateId !== 0) {
                 $this->removeTemplateRecords($zoneId, $templateId);
@@ -129,13 +129,13 @@ class ZoneTemplateApplier
      */
     private function finishTransaction(bool $commit): void
     {
-        if (!$this->db->inTransaction()) {
+        if (!$this->transaction->inTransaction()) {
             return;
         }
         if ($commit) {
-            $this->db->commit();
+            $this->transaction->commit();
         } else {
-            $this->db->rollBack();
+            $this->transaction->rollBack();
         }
     }
 
@@ -196,7 +196,7 @@ class ZoneTemplateApplier
 
         // Backend writes outside this transaction would not see the rows above until it commits
         if (!$this->backendProvider->supportsLocalWriteTransaction()) {
-            $this->db->commit();
+            $this->transaction->commit();
         }
 
         foreach ($templateRecords as $record) {

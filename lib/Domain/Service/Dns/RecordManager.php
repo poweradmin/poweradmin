@@ -24,7 +24,6 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use Closure;
 use Exception;
-use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -39,6 +38,7 @@ use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\RecordWriteBackendInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -51,7 +51,7 @@ use Poweradmin\Domain\Service\Validation\Refusal;
  */
 class RecordManager implements RecordManagerInterface
 {
-    private PDO $db;
+    private TransactionInterface $transaction;
     private ConfigurationInterface $config;
     private DnsFormatter $dnsFormatter;
     private DnsRecordValidationServiceInterface $validationService;
@@ -70,7 +70,7 @@ class RecordManager implements RecordManagerInterface
     /**
      * Constructor
      *
-     * @param PDO $db Database connection, for the transaction around a record write and its serial bump
+     * @param TransactionInterface $transaction Wraps a record write and its serial bump
      * @param ConfigurationInterface $config Configuration manager
      * @param DnsRecordValidationServiceInterface $validationService DNS record validation service
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
@@ -84,7 +84,7 @@ class RecordManager implements RecordManagerInterface
      * @param ActorInterface $actor The user the edit gates are about
      */
     public function __construct(
-        PDO $db,
+        TransactionInterface $transaction,
         ConfigurationInterface $config,
         DnsRecordValidationServiceInterface $validationService,
         SOARecordManagerInterface $soaRecordManager,
@@ -98,7 +98,7 @@ class RecordManager implements RecordManagerInterface
         ActorInterface $actor,
         ?LoggerInterface $logger = null
     ) {
-        $this->db = $db;
+        $this->transaction = $transaction;
         $this->templateLinks = $templateLinks;
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
@@ -273,9 +273,9 @@ class RecordManager implements RecordManagerInterface
         }
 
         // The row and the serial bump land together; a batch caller already holds its own.
-        $ownTransaction = $finalizeZone && $this->backendProvider->supportsLocalWriteTransaction() && !$this->db->inTransaction();
+        $ownTransaction = $finalizeZone && $this->backendProvider->supportsLocalWriteTransaction() && !$this->transaction->inTransaction();
         if ($ownTransaction) {
-            $this->db->beginTransaction();
+            $this->transaction->begin();
         }
         try {
             // Disabled records need the disabled flag persisted atomically with the
@@ -285,7 +285,7 @@ class RecordManager implements RecordManagerInterface
                 : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $comment);
             if ($recordId === null) {
                 if ($ownTransaction) {
-                    $this->db->rollBack();
+                    $this->transaction->rollBack();
                 }
                 return RecordWriteResult::backendFailure(_('Failed to add record to DNS backend.'));
             }
@@ -308,11 +308,11 @@ class RecordManager implements RecordManagerInterface
                 $this->soaRecordManager->updateSOASerial($zone_id);
             }
             if ($ownTransaction) {
-                $this->db->commit();
+                $this->transaction->commit();
             }
         } catch (\Throwable $e) {
-            if ($ownTransaction && $this->db->inTransaction()) {
-                $this->db->rollBack();
+            if ($ownTransaction && $this->transaction->inTransaction()) {
+                $this->transaction->rollBack();
             }
             throw $e;
         }

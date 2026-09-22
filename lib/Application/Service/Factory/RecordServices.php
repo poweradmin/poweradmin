@@ -92,7 +92,7 @@ final class RecordServices
     public function recordManager(): RecordManagerInterface
     {
         return $this->recordManager ??= new RecordManager(
-            $this->db,
+            $this->services->transaction(),
             $this->config,
             $this->dnsRecordValidationService(),
             $this->services->soaRecordManager(),
@@ -147,7 +147,7 @@ final class RecordServices
     public function rrsetReplaceService(): RRSetReplaceService
     {
         return new RRSetReplaceService(
-            $this->db,
+            $this->services->transaction(),
             $this->config,
             $this->services->dnsBackendProvider(),
             $this->dnsRecordValidationService(),
@@ -223,7 +223,7 @@ final class RecordServices
             $this->services->soaRecordManager(),
             $this->services->zoneManagementService(),
             $this->services->dnsBackendProvider(),
-            $this->db,
+            $this->services->transaction(),
             $this->config,
             $this->recordCommentsEnabled(),
             $this->zoneCommentsEnabled(),

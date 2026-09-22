@@ -22,24 +22,23 @@
 
 namespace Poweradmin\Domain\Service\Zone;
 
-use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\ZoneWriteBackendInterface;
+use Poweradmin\Domain\Repository\ZoneAccountOwnerLookupInterface;
 
 /**
  * Mirrors zone ownership into the PowerDNS account field.
  */
 class ZoneAccountSyncService
 {
-    private PDO $db;
+    private ZoneAccountOwnerLookupInterface $owners;
     private ConfigurationInterface $config;
     private (ZoneWriteBackendInterface&BackendCapabilitiesInterface)|null $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, (ZoneWriteBackendInterface&BackendCapabilitiesInterface)|null $backendProvider = null)
+    public function __construct(ZoneAccountOwnerLookupInterface $owners, ConfigurationInterface $config, (ZoneWriteBackendInterface&BackendCapabilitiesInterface)|null $backendProvider = null)
     {
-        $this->db = $db;
+        $this->owners = $owners;
         $this->config = $config;
         $this->backendProvider = $backendProvider;
     }
@@ -63,22 +62,7 @@ class ZoneAccountSyncService
             return;
         }
 
-        // A miss here does not merely skip the sync, it pushes an empty account and wipes
-        // whatever PowerDNS held, so the lookup has to resolve the canonical id.
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally());
-        $stmt = $this->db->prepare("
-            SELECT u.username
-            FROM users u
-            INNER JOIN zones z ON z.owner = u.id
-            WHERE $canonicalId = ?
-            ORDER BY z.id
-            LIMIT 1
-        ");
-        $stmt->bindValue(1, $domainId, PDO::PARAM_INT);
-        $stmt->execute();
-        $account = $stmt->fetchColumn();
-
-        $this->pushZoneAccount($domainId, $account === false ? null : (string)$account);
+        $this->pushZoneAccount($domainId, $this->owners->oldestOwnerUsername($domainId));
     }
 
     /**

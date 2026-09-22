@@ -20,19 +20,17 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
+namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
-use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Infrastructure\Repository\DbZoneAccountOwnerRepository;
 
 /**
- * A missed ownership lookup here does not merely skip the sync: it pushes an empty account
- * and wipes whatever PowerDNS held for the zone.
+ * A missed ownership lookup here does not merely skip the account sync: the caller
+ * pushes an empty account and wipes whatever PowerDNS held for the zone.
  */
-class ZoneAccountSyncCanonicalZoneTest extends TestCase
+class DbZoneAccountOwnerRepositoryTest extends TestCase
 {
     private PDO $db;
 
@@ -44,57 +42,30 @@ class ZoneAccountSyncCanonicalZoneTest extends TestCase
         $this->db->exec("INSERT INTO users (id, username) VALUES (1, 'alice')");
     }
 
-    /**
-     * @param list<array{0: int, 1: string}> $pushed collects the domainId and account pairs
-     */
-    private function serviceExpecting(array &$pushed, bool $isApiBackend = true): ZoneAccountSyncService
+    private function repository(bool $isApiBackend = true): DbZoneAccountOwnerRepository
     {
-        $config = $this->createMock(ConfigurationInterface::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, mixed $default = null) => ($group === 'dns' && $key === 'sync_zone_owner_to_account') ? true : $default
-        );
-
-        $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->method('isApiBackend')->willReturn($isApiBackend);
-        $backend->method('allocatesZoneIdsLocally')->willReturn($isApiBackend);
-        $backend->method('updateZoneAccount')->willReturnCallback(
-            function (int $domainId, string $account) use (&$pushed): bool {
-                $pushed[] = [$domainId, $account];
-                return true;
-            }
-        );
-
-        return new ZoneAccountSyncService($this->db, $config, $backend);
+        return new DbZoneAccountOwnerRepository($this->db, $isApiBackend);
     }
 
-    public function testStrandedZoneKeepsItsAccountInsteadOfBeingWiped(): void
+    public function testStrandedZoneResolvesByItsRowId(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (55, 0, 1, 'example.com')");
 
-        $pushed = [];
-        $this->serviceExpecting($pushed)->syncZoneAccount(55);
-
-        $this->assertSame([[55, 'alice']], $pushed);
+        $this->assertSame('alice', $this->repository()->oldestOwnerUsername(55));
     }
 
     public function testNullDomainIdZoneAlsoResolves(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (56, NULL, 1, 'example.com')");
 
-        $pushed = [];
-        $this->serviceExpecting($pushed)->syncZoneAccount(56);
-
-        $this->assertSame([[56, 'alice']], $pushed);
+        $this->assertSame('alice', $this->repository()->oldestOwnerUsername(56));
     }
 
     public function testMigratedZoneStillResolvesByDomainId(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (7, 201, 1, 'example.com')");
 
-        $pushed = [];
-        $this->serviceExpecting($pushed)->syncZoneAccount(201);
-
-        $this->assertSame([[201, 'alice']], $pushed);
+        $this->assertSame('alice', $this->repository()->oldestOwnerUsername(201));
     }
 
     public function testSqlModeResolvesTheOwnerByDomainIdOnly(): void
@@ -104,20 +75,26 @@ class ZoneAccountSyncCanonicalZoneTest extends TestCase
         $this->db->exec("INSERT INTO users (id, username) VALUES (2, 'bob')");
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (55, 0, 1, 'stranded.example.com'), (9, 55, 2, 'example.com')");
 
-        $pushed = [];
-        $this->serviceExpecting($pushed, false)->syncZoneAccount(55);
-
-        $this->assertSame([[55, 'bob']], $pushed);
+        $this->assertSame('bob', $this->repository(false)->oldestOwnerUsername(55));
     }
 
-    public function testAZoneWithNoOwnerStillClearsTheAccount(): void
+    public function testOldestOwnerRowWins(): void
     {
-        // The wipe is intended when the zone genuinely has no direct owner.
+        $this->db->exec("INSERT INTO users (id, username) VALUES (2, 'bob')");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (3, 60, 2, 'example.com'), (4, 60, 1, 'example.com')");
+
+        $this->assertSame('bob', $this->repository(false)->oldestOwnerUsername(60));
+    }
+
+    public function testAZoneWithNoOwnerResolvesToNull(): void
+    {
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (60, 60, NULL, 'orphan.example.com')");
 
-        $pushed = [];
-        $this->serviceExpecting($pushed)->syncZoneAccount(60);
+        $this->assertNull($this->repository()->oldestOwnerUsername(60));
+    }
 
-        $this->assertSame([[60, '']], $pushed);
+    public function testAnUnknownZoneResolvesToNull(): void
+    {
+        $this->assertNull($this->repository()->oldestOwnerUsername(999));
     }
 }

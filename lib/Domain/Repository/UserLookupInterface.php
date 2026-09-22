@@ -89,4 +89,9 @@ interface UserLookupInterface
      * @return string|null Full name, or null if the user does not exist
      */
     public function getFullNameById(int $userId): ?string;
+
+    /**
+     * Full name of the user with exactly this username (accent-exact match), or null when there is none
+     */
+    public function getFullNameByUsername(string $username): ?string;
 }

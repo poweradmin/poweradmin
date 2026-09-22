@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
@@ -57,6 +58,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplateWriteService;
 use Poweradmin\Domain\Service\Zone\ZoneValidationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
+use Poweradmin\Infrastructure\Repository\DbZoneAccountOwnerRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -207,7 +209,7 @@ final class ZoneServices
     public function domainManager(): DomainManagerInterface
     {
         return $this->domainManager ??= new DomainManager(
-            $this->db,
+            $this->services->transaction(),
             $this->config,
             $this->services->domainRepository(),
             $this->services->repositoryFactory(),
@@ -221,6 +223,7 @@ final class ZoneServices
             $this->zoneTemplateSync(),
             $this->templateRecordLinkRepository(),
             $this->zoneGroupRepository(),
+            $this->zoneAccountSyncService(),
             $this->services->actor()
         );
     }
@@ -238,7 +241,7 @@ final class ZoneServices
     public function zoneTemplateApplier(): ZoneTemplateApplier
     {
         return new ZoneTemplateApplier(
-            $this->db,
+            $this->services->transaction(),
             $this->services->dnsBackendProvider(),
             $this->services->soaRecordManager(),
             $this->services->domainRepository(),
@@ -253,7 +256,13 @@ final class ZoneServices
 
     public function supermasterManager(): SupermasterManager
     {
-        return $this->supermasterManager ??= new SupermasterManager($this->db, $this->config, $this->services->dnsBackendProvider());
+        return $this->supermasterManager ??= new SupermasterManager($this->services->userRepository(), $this->config, $this->services->dnsBackendProvider());
+    }
+
+    public function zoneAccountSyncService(): ZoneAccountSyncService
+    {
+        $backend = $this->services->dnsBackendProvider();
+        return new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $backend->allocatesZoneIdsLocally()), $this->config, $backend);
     }
 
     /**
