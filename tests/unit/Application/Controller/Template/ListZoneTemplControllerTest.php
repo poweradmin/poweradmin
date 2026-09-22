@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -106,8 +106,8 @@ class ListZoneTemplControllerTest extends SeamControllerTestCase
         try {
             $controller->run();
             $this->fail('expected a halt');
-        } catch (ControllerHalt $halt) {
-            $this->assertSame(ControllerHalt::KIND_CONDITION, $halt->kind);
+        } catch (RequestHalted $halt) {
+            $this->assertSame(RequestHalted::KIND_CONDITION, $halt->kind);
             $this->assertSame('You do not have permission to view zone templates.', $halt->target);
         }
     }

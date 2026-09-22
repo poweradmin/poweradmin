@@ -27,7 +27,7 @@ use Poweradmin\Application\Controller\Zone\BulkRegistrationController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
@@ -62,7 +62,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
 
         $halt = $this->haltOf(fn() => $this->makeController()->run());
 
-        $this->assertSame(ControllerHalt::KIND_PERMISSION, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_PERMISSION, $halt->kind);
         $this->assertSame('You do not have the permission to add a master zone.', $halt->target);
     }
 
@@ -72,7 +72,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
 
         $halt = $this->haltOf(fn() => $this->makeController()->run());
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame($this->ownerBlocker, $halt->target);
     }
 
@@ -131,7 +131,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
 
         $halt = $this->haltOf(fn() => $this->makeController()->run());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertSame('/zones/forward', $halt->target);
         $this->assertSame([['success', 'Zones have been added successfully.']], $this->messagesFor('list_forward_zones'));
         $this->assertSame(

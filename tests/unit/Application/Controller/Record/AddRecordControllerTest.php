@@ -42,7 +42,7 @@ use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Session\FormStateService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
@@ -168,11 +168,11 @@ class AddRecordControllerTest extends SeamControllerTestCase
         return new TestableAddRecordController(array_merge($_GET, $_POST), $this->environment($this->configure($config)));
     }
 
-    private function haltOf(TestableAddRecordController $controller): ControllerHalt
+    private function haltOf(TestableAddRecordController $controller): RequestHalted
     {
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 
@@ -190,7 +190,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf(new TestableAddRecordController([], $this->environment($this->configure())));
 
-        $this->assertSame(ControllerHalt::KIND_CONDITION, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_CONDITION, $halt->kind);
         $this->assertSame('There is no zone with this ID.', $halt->target);
     }
 
@@ -200,7 +200,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_CONDITION, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_CONDITION, $halt->kind);
         $this->assertSame('There is no zone with this ID.', $halt->target);
     }
 
@@ -221,7 +221,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController(['approval' => ['enabled' => true]]));
 
-        $this->assertSame(ControllerHalt::KIND_CONDITION, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_CONDITION, $halt->kind);
         $this->assertStringContainsString('approval', strtolower($halt->target));
     }
 
@@ -253,7 +253,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
         }
 
         $halt = $this->haltOf($controller);
-        $this->assertSame(ControllerHalt::KIND_CONDITION, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_CONDITION, $halt->kind);
         $this->assertSame('You do not have the permission to add a record to this zone.', $halt->target);
     }
 
@@ -311,7 +311,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame($message, $halt->target);
         $this->assertCount(0, $this->addCalls);
     }
@@ -322,7 +322,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertSame('/zones/12/edit', $halt->target);
         $this->assertSame([['success', 'The record was successfully added.']], $this->messagesFor('edit'));
     }
@@ -402,7 +402,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertStringStartsWith('/zones/12/records/add?form_id=', $halt->target);
         $this->assertSame([], $this->messagesFor('edit'), 'the reason travels in the form state, not as a flash');
 

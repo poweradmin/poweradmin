@@ -23,6 +23,7 @@
 namespace Poweradmin\Application;
 
 use Closure;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Controller\System\NotFoundController;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -38,7 +39,11 @@ class Bootstrap
     public static function notFoundRenderer(): Closure
     {
         return static function (): void {
-            (new NotFoundController([]))->run();
+            try {
+                (new NotFoundController([]))->run();
+            } catch (RequestHalted) {
+                // The 404 page is out; nothing may follow it
+            }
         };
     }
 

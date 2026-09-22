@@ -35,7 +35,7 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -136,11 +136,11 @@ class DeleteRecordsControllerTest extends SeamControllerTestCase
         return new TestableDeleteRecordsController(array_merge($_GET, $_POST), $this->environment($this->configure($config)));
     }
 
-    private function haltOf(TestableDeleteRecordsController $controller): ControllerHalt
+    private function haltOf(TestableDeleteRecordsController $controller): RequestHalted
     {
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 

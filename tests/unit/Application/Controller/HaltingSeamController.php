@@ -22,24 +22,16 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
-use RuntimeException;
+use Poweradmin\Application\Controller\BaseController;
 
 /**
- * Stands in for the `exit` that ends a request in production.
- *
- * checkCondition(), checkPermission(), showError() and redirect() all render
- * and exit, so a test double has to abort the same way for the statements after
- * them to stay unreached. The kind and target record which exit it was.
+ * A controller with no overrides at all, so the base class's halting paths
+ * (checkCondition, checkPermission, showError, redirect, the CSRF guard) run
+ * exactly as they do in production, page chrome included.
  */
-class ControllerHalt extends RuntimeException
+class HaltingSeamController extends BaseController
 {
-    public const KIND_CONDITION = 'condition';
-    public const KIND_PERMISSION = 'permission';
-    public const KIND_ERROR = 'error';
-    public const KIND_REDIRECT = 'redirect';
-
-    public function __construct(public readonly string $kind, public readonly string $target)
+    public function run(): void
     {
-        parent::__construct($kind . ': ' . $target);
     }
 }

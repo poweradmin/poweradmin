@@ -26,14 +26,14 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\User\ManageGroupZonesController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\GroupService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
 /**
  * Builds the group zones controller through the ControllerEnvironment seam,
  * with its two services built over the seam's repositories. checkPermission(),
- * showError() and redirect() throw a ControllerHalt; render() only records.
+ * showError() and redirect() throw a RequestHalted; render() only records.
  */
 class TestableManageGroupZonesController extends ManageGroupZonesController
 {
@@ -62,18 +62,18 @@ class TestableManageGroupZonesController extends ManageGroupZonesController
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!$this->hasPermission($permission)) {
-            throw new ControllerHalt(ControllerHalt::KIND_PERMISSION, $errorMessage);
+            throw new RequestHalted(RequestHalted::KIND_PERMISSION, $errorMessage);
         }
     }
 
     public function redirect(string $url, array $args = []): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 
     protected function refreshPdnsCapabilities(): void

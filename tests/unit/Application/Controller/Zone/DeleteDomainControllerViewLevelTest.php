@@ -31,7 +31,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -82,14 +82,14 @@ class DeleteDomainControllerViewLevelTest extends SeamControllerTestCase
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function haltOfConfirmedPost(array $config = []): ControllerHalt
+    private function haltOfConfirmedPost(array $config = []): RequestHalted
     {
         $this->post(['id' => (string)self::ZONE_ID]);
         $controller = new TestableDeleteDomainController(['id' => (string)self::ZONE_ID], $this->environment($this->configure($config)));
 
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 

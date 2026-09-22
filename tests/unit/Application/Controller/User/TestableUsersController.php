@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\User;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\User\UsersController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 
 /**
@@ -57,6 +57,6 @@ class TestableUsersController extends UsersController
     public function redirect(string $url, array $args = []): void
     {
         $this->redirectedTo = $url;
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 }

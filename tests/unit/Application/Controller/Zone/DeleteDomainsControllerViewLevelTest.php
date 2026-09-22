@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -74,14 +74,14 @@ class DeleteDomainsControllerViewLevelTest extends SeamControllerTestCase
         $this->factory->method('auditService')->willReturn($this->audit);
     }
 
-    private function haltOfConfirmedPost(): ControllerHalt
+    private function haltOfConfirmedPost(): RequestHalted
     {
         $this->post(['zone_id' => ['12', '13'], 'confirm' => '1']);
         $controller = new TestableDeleteDomainsController($_POST, $this->environment($this->configure()));
 
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 

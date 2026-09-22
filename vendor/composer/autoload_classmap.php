@@ -1102,6 +1102,7 @@ return array(
     'Poweradmin\\Application\\Controller\\Record\\EditRecordController' => $baseDir . '/lib/Application/Controller/Record/EditRecordController.php',
     'Poweradmin\\Application\\Controller\\Record\\ListRecordChangesController' => $baseDir . '/lib/Application/Controller/Record/ListRecordChangesController.php',
     'Poweradmin\\Application\\Controller\\Record\\RecordTypeDefaultsController' => $baseDir . '/lib/Application/Controller/Record/RecordTypeDefaultsController.php',
+    'Poweradmin\\Application\\Controller\\RequestHalted' => $baseDir . '/lib/Application/Controller/RequestHalted.php',
     'Poweradmin\\Application\\Controller\\System\\AddSupermasterController' => $baseDir . '/lib/Application/Controller/System/AddSupermasterController.php',
     'Poweradmin\\Application\\Controller\\System\\DatabaseConsistencyController' => $baseDir . '/lib/Application/Controller/System/DatabaseConsistencyController.php',
     'Poweradmin\\Application\\Controller\\System\\DeleteSupermasterController' => $baseDir . '/lib/Application/Controller/System/DeleteSupermasterController.php',

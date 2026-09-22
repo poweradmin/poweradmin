@@ -33,7 +33,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipIndex;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -126,8 +126,8 @@ class SearchControllerTest extends SeamControllerTestCase
         try {
             $this->makeController()->run();
             $this->fail('Expected the permission check to end the request.');
-        } catch (ControllerHalt $halt) {
-            $this->assertSame(ControllerHalt::KIND_PERMISSION, $halt->kind);
+        } catch (RequestHalted $halt) {
+            $this->assertSame(RequestHalted::KIND_PERMISSION, $halt->kind);
             $this->assertSame('You do not have the permission to perform searches.', $halt->target);
         }
     }

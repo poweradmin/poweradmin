@@ -20,6 +20,7 @@ use ReflectionMethod;
  * - Configuration loading
  * - Router setup
  * - Bootstrap failures reaching the error responder
+ * - Halted requests (showError) sending a complete response and nothing more
  *
  * Error-response shaping itself is covered by BootstrapErrorResponderTest.
  */
@@ -54,6 +55,45 @@ class IndexEntryPointTest extends TestCase
      */
     public function testBootstrapFailureIsShapedInsteadOfEscapingAsAFatal(): void
     {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('throwing-settings.php', '/api/v2/zones', 'application/json');
+
+        $this->assertSame(0, $exitCode, 'A configuration failure must not exit as an uncaught fatal');
+        $this->assertSame('{"success":false,"data":null,"message":"Internal server error"}', $stdout);
+        $this->assertStringContainsString('Simulated configuration failure', $stderr);
+    }
+
+    /**
+     * showError() writes the whole error page and then ends the request; what
+     * follows in the controller must never reach the client, and neither must
+     * the error responder's own output.
+     */
+    public function testAHaltedRequestSendsTheErrorPageAndNothingElse(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/password/forgot', 'text/html');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertStringStartsWith('<!doctype html>', $stdout);
+        $this->assertStringEndsWith("</html>\n", $stdout);
+        $this->assertSame(1, substr_count($stdout, 'Password reset functionality is disabled.'));
+    }
+
+    public function testAHaltedJsonRequestSendsTheErrorBodyAndNothingElse(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/password/forgot', 'application/json');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"error":true,"message":"Password reset functionality is disabled."}', $stdout);
+    }
+
+    /**
+     * Drives index.php in a subprocess with the given settings fixture.
+     *
+     * @return array{0: int, 1: string, 2: string} Exit code, stdout, stderr
+     */
+    private function runFrontController(string $settingsFixture, string $uri, string $accept): array
+    {
         $repositoryRoot = dirname(__DIR__, 2);
 
         $process = proc_open(
@@ -63,10 +103,10 @@ class IndexEntryPointTest extends TestCase
             $repositoryRoot,
             [
                 'PATH' => getenv('PATH'),
-                'PA_CONFIG_PATH' => __DIR__ . '/fixtures/throwing-settings.php',
+                'PA_CONFIG_PATH' => __DIR__ . '/fixtures/' . $settingsFixture,
                 'REQUEST_METHOD' => 'GET',
-                'REQUEST_URI' => '/api/v2/zones',
-                'HTTP_ACCEPT' => 'application/json',
+                'REQUEST_URI' => $uri,
+                'HTTP_ACCEPT' => $accept,
                 'SERVER_NAME' => 'localhost',
                 'SERVER_PORT' => '80',
             ]
@@ -78,11 +118,8 @@ class IndexEntryPointTest extends TestCase
         $stderr = (string) stream_get_contents($pipes[2]);
         fclose($pipes[1]);
         fclose($pipes[2]);
-        $exitCode = proc_close($process);
 
-        $this->assertSame(0, $exitCode, 'A configuration failure must not exit as an uncaught fatal');
-        $this->assertSame('{"success":false,"data":null,"message":"Internal server error"}', $stdout);
-        $this->assertStringContainsString('Simulated configuration failure', $stderr);
+        return [proc_close($process), $stdout, $stderr];
     }
 
     /**

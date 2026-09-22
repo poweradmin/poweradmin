@@ -35,7 +35,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -109,7 +109,7 @@ class DeleteRecordsControllerViewLevelTest extends SeamControllerTestCase
         try {
             $this->makeController()->run();
             $this->fail('Expected a redirect.');
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             $this->assertSame('/zones/12/edit', $halt->target);
         }
 
@@ -126,7 +126,7 @@ class DeleteRecordsControllerViewLevelTest extends SeamControllerTestCase
         try {
             $this->makeController()->run();
             $this->fail('Expected a redirect.');
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             $this->assertSame('/search', $halt->target);
         }
 

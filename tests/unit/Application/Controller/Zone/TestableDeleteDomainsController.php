@@ -26,14 +26,14 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\Zone\DeleteDomainsController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
 /**
  * Builds the bulk delete-zones controller through the ControllerEnvironment
  * seam. checkCondition() and redirect() end the request in production, so each
- * throws a ControllerHalt; render() only records.
+ * throws a RequestHalted; render() only records.
  */
 class TestableDeleteDomainsController extends DeleteDomainsController
 {
@@ -54,13 +54,13 @@ class TestableDeleteDomainsController extends DeleteDomainsController
     public function checkCondition(bool $condition, string $errorMessage): void
     {
         if ($condition) {
-            throw new ControllerHalt(ControllerHalt::KIND_CONDITION, $errorMessage);
+            throw new RequestHalted(RequestHalted::KIND_CONDITION, $errorMessage);
         }
     }
 
     public function redirect(string $url, array $args = []): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 
     protected function refreshPdnsCapabilities(): void

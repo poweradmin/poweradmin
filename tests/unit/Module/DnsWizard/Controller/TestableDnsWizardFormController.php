@@ -27,7 +27,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Module\DnsWizard\Controller\DnsWizardFormController;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -35,7 +35,7 @@ use ReflectionProperty;
  * Builds the wizard form controller through the ControllerEnvironment seam,
  * wiring its private collaborators as its own constructor does but off the
  * seam's service factory. redirect() and showError() end the request in
- * production, so each throws a ControllerHalt at the same statement.
+ * production, so each throws a RequestHalted at the same statement.
  */
 class TestableDnsWizardFormController extends DnsWizardFormController
 {
@@ -63,12 +63,12 @@ class TestableDnsWizardFormController extends DnsWizardFormController
 
     public function redirect(string $url, array $args = []): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $args === [] ? $url : $url . '?' . http_build_query($args));
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $args === [] ? $url : $url . '?' . http_build_query($args));
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 
     protected function refreshPdnsCapabilities(): void

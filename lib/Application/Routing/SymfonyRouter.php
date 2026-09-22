@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Routing;
 
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Symfony\Component\Config\FileLocator;
@@ -189,19 +190,23 @@ final class SymfonyRouter
             $this->request->request->all()
         );
 
-        // Create controller instance
-        if ($this->isApiRoute()) {
-            $controller = new $controllerClass($requestData, $parameters);
-        } else {
-            // Web controllers get route parameters merged into the request data
-            $requestData = array_merge($requestData, $parameters);
-            // Add the route name as 'page' for template navigation
-            $requestData['page'] = $routeInfo['route'];
-            $controller = new $controllerClass($requestData);
-        }
+        try {
+            // Create controller instance
+            if ($this->isApiRoute()) {
+                $controller = new $controllerClass($requestData, $parameters);
+            } else {
+                // Web controllers get route parameters merged into the request data
+                $requestData = array_merge($requestData, $parameters);
+                // Add the route name as 'page' for template navigation
+                $requestData['page'] = $routeInfo['route'];
+                $controller = new $controllerClass($requestData);
+            }
 
-        $this->assertMethodExists($controller, $method, $controllerClass);
-        $controller->$method();
+            $this->assertMethodExists($controller, $method, $controllerClass);
+            $controller->$method();
+        } catch (RequestHalted) {
+            // The response is complete; the halt only unwinds the stack the way exit did
+        }
     }
 
     private function assertMethodExists(object $controller, string $method, string $controllerClass): void

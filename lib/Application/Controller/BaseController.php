@@ -305,7 +305,7 @@ abstract class BaseController
             $this->renderHeader();
             $this->messageService->addSystemError(_('Invalid CSRF token.'));
             $this->renderFooter();
-            exit;
+            $this->halt(RequestHalted::KIND_ERROR, _('Invalid CSRF token.'));
         }
     }
 
@@ -376,8 +376,16 @@ abstract class BaseController
             $systemMessages = $this->messageService->getMessages('system');
             $this->renderHeader($systemMessages);
             $this->renderFooter();
-            exit;
+            $this->halt(RequestHalted::KIND_CONDITION, $errorMessage);
         }
+    }
+
+    /**
+     * Ends the request after its response was written; see RequestHalted.
+     */
+    protected function halt(string $kind, string $target): never
+    {
+        throw new RequestHalted($kind, $target);
     }
 
     /**
@@ -693,7 +701,7 @@ abstract class BaseController
                     'error' => true,
                     'message' => $errorMessage
                 ]);
-                exit;
+                $this->halt(RequestHalted::KIND_PERMISSION, $errorMessage);
             }
 
             // Add as system message
@@ -703,7 +711,7 @@ abstract class BaseController
             $systemMessages = $this->messageService->getMessages('system');
             $this->renderHeader($systemMessages);
             $this->renderFooter();
-            exit;
+            $this->halt(RequestHalted::KIND_PERMISSION, $errorMessage);
         }
     }
 
@@ -751,7 +759,7 @@ abstract class BaseController
                 'error' => true,
                 'message' => $error
             ]);
-            exit;
+            $this->halt(RequestHalted::KIND_ERROR, $error);
         }
 
         // Add as system message
@@ -761,7 +769,7 @@ abstract class BaseController
         $systemMessages = $this->messageService->getMessages('system');
         $this->renderHeader($systemMessages);
         $this->renderFooter();
-        exit;
+        $this->halt(RequestHalted::KIND_ERROR, $error);
     }
 
     /**
@@ -910,6 +918,6 @@ abstract class BaseController
     {
         $sanitizeUrl = filter_var($url, FILTER_SANITIZE_URL);
         header("Location: $sanitizeUrl");
-        exit;
+        $this->halt(RequestHalted::KIND_REDIRECT, $url);
     }
 }

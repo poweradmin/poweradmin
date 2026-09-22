@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Zone\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -40,7 +40,7 @@ use ReflectionProperty;
  * constructor wires them, off the seam's service factory.
  *
  * The exiting methods are captured instead: showError() renders an error page
- * and exits, so it throws a ControllerHalt to stop the run at the same statement.
+ * and exits, so it throws a RequestHalted to stop the run at the same statement.
  */
 class TestableListReverseZonesController extends ListReverseZonesController
 {
@@ -78,18 +78,18 @@ class TestableListReverseZonesController extends ListReverseZonesController
     public function redirect(string $url, array $args = []): void
     {
         $this->redirectedTo = $url;
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 
     public function checkCondition(bool $condition, string $errorMessage): void
     {
         if ($condition) {
-            throw new ControllerHalt(ControllerHalt::KIND_CONDITION, $errorMessage);
+            throw new RequestHalted(RequestHalted::KIND_CONDITION, $errorMessage);
         }
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 }

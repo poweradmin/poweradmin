@@ -26,7 +26,7 @@ use Poweradmin\Application\Controller\Record\DeleteRecordController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -35,7 +35,7 @@ use ReflectionProperty;
  * wiring its private collaborators off the seam's service factory.
  *
  * redirect() and showError() end the request in production, so each throws a
- * ControllerHalt to stop the run at the same statement.
+ * RequestHalted to stop the run at the same statement.
  */
 class TestableDeleteRecordController extends DeleteRecordController
 {
@@ -62,12 +62,12 @@ class TestableDeleteRecordController extends DeleteRecordController
 
     public function redirect(string $url, array $args = []): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 
     protected function refreshPdnsCapabilities(): void

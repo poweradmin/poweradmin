@@ -34,7 +34,7 @@ use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Module\ZoneImportExport\Controller\ZoneFileImportController;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -139,11 +139,11 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         ];
     }
 
-    private function haltOf(callable $action): ControllerHalt
+    private function haltOf(callable $action): RequestHalted
     {
         try {
             $action();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 
@@ -270,7 +270,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $halt = $this->haltOf(fn() => $controller->run());
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame(_('Please select a valid zone file to upload.'), $halt->target);
     }
 

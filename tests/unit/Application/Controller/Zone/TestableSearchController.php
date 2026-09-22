@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -66,13 +66,13 @@ class TestableSearchController extends SearchController
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!$this->hasPermission($permission)) {
-            throw new ControllerHalt(ControllerHalt::KIND_PERMISSION, $errorMessage);
+            throw new RequestHalted(RequestHalted::KIND_PERMISSION, $errorMessage);
         }
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 
     protected function refreshPdnsCapabilities(): void

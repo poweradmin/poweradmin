@@ -39,7 +39,7 @@ use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Module\DnsWizard\Controller\DnsWizardFormController;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -128,11 +128,11 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
         return new TestableDnsWizardFormController($request, $this->environment($this->configure($config)));
     }
 
-    private function haltOf(TestableDnsWizardFormController $controller): ControllerHalt
+    private function haltOf(TestableDnsWizardFormController $controller): RequestHalted
     {
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 
@@ -151,7 +151,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
     {
         $halt = $this->haltOf($this->makeController(['dns_wizards' => ['enabled' => false]]));
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('DNS wizards are not enabled.', $halt->target);
     }
 
@@ -159,7 +159,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
     {
         $halt = $this->haltOf($this->makeController(id: 'abc'));
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('Invalid zone ID.', $halt->target);
     }
 
@@ -169,7 +169,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('Zone not found.', $halt->target);
     }
 
@@ -201,7 +201,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
         }
 
         $halt = $this->haltOf($controller);
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('You do not have permission to add records to this zone.', $halt->target);
     }
 
@@ -211,7 +211,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController(['approval' => ['enabled' => true, 'require_review_for_all' => true]]));
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('This zone requires approval for changes; use the zone editor to submit a change request.', $halt->target);
     }
 
@@ -219,7 +219,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
     {
         $halt = $this->haltOf($this->makeController(type: 'dmarc'));
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('Invalid wizard type.', $halt->target);
     }
 
@@ -267,7 +267,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertSame('/zones/12/edit', $halt->target);
         $this->assertSame([['success', 'The record was successfully added.']], $this->messagesFor('edit'));
         $this->assertSame(
@@ -283,7 +283,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertStringStartsWith('/zones/12/wizard/spf?form_id=', $halt->target);
         $this->assertSame(
             [['error', 'Validation failed: Invalid IPv4 address or network: not-an-ip']],
@@ -302,7 +302,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertStringContainsString('/zones/12/wizard/spf?form_id=', $halt->target);
         $this->assertStringEndsWith('&show_warnings=1', $halt->target);
         $this->assertSame([], $this->messagesFor('dns_wizard_form'));
@@ -326,7 +326,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertStringStartsWith('/zones/12/wizard/spf?form_id=', $halt->target);
         $this->assertSame(
             [['error', 'There is already a record with this name and content.']],

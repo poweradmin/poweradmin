@@ -25,14 +25,14 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 use Poweradmin\Application\Controller\Record\EditCommentController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 
 /**
  * Builds the zone comment controller through the ControllerEnvironment seam.
  *
  * redirect() and showError() end the request in production, so each throws a
- * ControllerHalt; the form render is recorded, and only rendered for real when
+ * RequestHalted; the form render is recorded, and only rendered for real when
  * a test opts in to inspect its template variables.
  */
 class TestableEditCommentController extends EditCommentController
@@ -67,12 +67,12 @@ class TestableEditCommentController extends EditCommentController
 
     public function redirect(string $url, array $args = []): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 
     protected function refreshPdnsCapabilities(): void

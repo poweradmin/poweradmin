@@ -1508,6 +1508,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Controller\\Record\\EditRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/Record/EditRecordController.php',
         'Poweradmin\\Application\\Controller\\Record\\ListRecordChangesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Record/ListRecordChangesController.php',
         'Poweradmin\\Application\\Controller\\Record\\RecordTypeDefaultsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Record/RecordTypeDefaultsController.php',
+        'Poweradmin\\Application\\Controller\\RequestHalted' => __DIR__ . '/../..' . '/lib/Application/Controller/RequestHalted.php',
         'Poweradmin\\Application\\Controller\\System\\AddSupermasterController' => __DIR__ . '/../..' . '/lib/Application/Controller/System/AddSupermasterController.php',
         'Poweradmin\\Application\\Controller\\System\\DatabaseConsistencyController' => __DIR__ . '/../..' . '/lib/Application/Controller/System/DatabaseConsistencyController.php',
         'Poweradmin\\Application\\Controller\\System\\DeleteSupermasterController' => __DIR__ . '/../..' . '/lib/Application/Controller/System/DeleteSupermasterController.php',

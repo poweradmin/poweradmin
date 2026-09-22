@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Module\SecondaryZoneImport\Controller\SecondaryZoneImportController;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\Zone\ZoneCreateControllerTestCase;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
@@ -72,7 +72,7 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
 
         $halt = $this->haltOf(fn() => $this->makeController()->run());
 
-        $this->assertSame(ControllerHalt::KIND_PERMISSION, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_PERMISSION, $halt->kind);
         $this->assertSame('You do not have the permission to import a secondary zone.', $halt->target);
     }
 

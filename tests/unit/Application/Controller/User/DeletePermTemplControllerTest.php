@@ -30,7 +30,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -65,7 +65,7 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
         $this->factory->method('auditService')->willReturn($this->audit);
     }
 
-    private function runConfirmedDelete(): ControllerHalt
+    private function runConfirmedDelete(): RequestHalted
     {
         $this->post(['confirm' => '1', 'id' => (string)self::TEMPLATE_ID]);
         $controller = new TestableDeletePermTemplController(
@@ -75,7 +75,7 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
 
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 
@@ -89,7 +89,7 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
 
         $halt = $this->runConfirmedDelete();
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertSame('/permissions/templates', $halt->target);
         $this->assertSame([['success', 'The permission template has been deleted successfully.']], $this->messagesFor('list_perm_templ'));
         $this->assertSame([], $this->messagesFor('system'));

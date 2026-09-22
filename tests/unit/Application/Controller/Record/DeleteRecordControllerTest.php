@@ -38,7 +38,7 @@ use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -153,11 +153,11 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         );
     }
 
-    private function haltOf(TestableDeleteRecordController $controller): ControllerHalt
+    private function haltOf(TestableDeleteRecordController $controller): RequestHalted
     {
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 
@@ -188,7 +188,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController([], $recordId));
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('Invalid or unexpected input given.', $halt->target);
     }
 
@@ -274,7 +274,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertSame('/zones/12/edit', $halt->target);
     }
 
@@ -335,7 +335,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController(['interface' => ['add_reverse_record' => $case['reverse']]]));
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertSame([['success', $expected]], $this->messagesFor('edit'));
     }
 

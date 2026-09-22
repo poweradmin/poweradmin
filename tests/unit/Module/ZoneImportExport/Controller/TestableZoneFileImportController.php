@@ -26,7 +26,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Module\ZoneImportExport\Controller\ZoneFileImportController;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -34,7 +34,7 @@ use ReflectionProperty;
  * Builds the zone file import controller through the ControllerEnvironment
  * seam, wiring its private collaborators as its own constructor does. showError()
  * and checkCondition() end the request in production, so each throws a
- * ControllerHalt at the same statement.
+ * RequestHalted at the same statement.
  */
 class TestableZoneFileImportController extends ZoneFileImportController
 {
@@ -62,13 +62,13 @@ class TestableZoneFileImportController extends ZoneFileImportController
     public function checkCondition(bool $condition, string $errorMessage): void
     {
         if ($condition) {
-            throw new ControllerHalt(ControllerHalt::KIND_CONDITION, $errorMessage);
+            throw new RequestHalted(RequestHalted::KIND_CONDITION, $errorMessage);
         }
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 
     protected function refreshPdnsCapabilities(): void

@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -109,7 +109,7 @@ class UsersControllerListTest extends SeamControllerTestCase
         try {
             $controller->run();
             $this->fail('expected a redirect');
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             $this->assertSame('/', $halt->target);
         }
         $this->assertSame([['error', 'You do not have permission to view the users list.']], $this->messagesFor('index'));

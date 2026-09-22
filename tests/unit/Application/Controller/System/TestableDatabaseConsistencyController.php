@@ -23,11 +23,11 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\System;
 
 use Poweradmin\Application\Controller\System\DatabaseConsistencyController;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 
 /**
  * Builds the database consistency controller through the ControllerEnvironment
- * seam. showError() ends the request in production, so it throws a ControllerHalt;
+ * seam. showError() ends the request in production, so it throws a RequestHalted;
  * redirect() only records its target, so a redirect issued inside a try block is
  * not mistaken for a failure.
  */
@@ -51,6 +51,6 @@ class TestableDatabaseConsistencyController extends DatabaseConsistencyControlle
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 }

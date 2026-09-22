@@ -25,13 +25,13 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 use Poweradmin\Application\Controller\Zone\AddZoneSlaveController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 
 /**
  * Builds the controller through the ControllerEnvironment seam. checkPermission(),
  * showError() and redirect() end the request in production, so each throws a
- * ControllerHalt to stop the run at the same statement; render() only records.
+ * RequestHalted to stop the run at the same statement; render() only records.
  */
 class TestableAddZoneSlaveController extends AddZoneSlaveController
 {
@@ -51,18 +51,18 @@ class TestableAddZoneSlaveController extends AddZoneSlaveController
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!$this->hasPermission($permission)) {
-            throw new ControllerHalt(ControllerHalt::KIND_PERMISSION, $errorMessage);
+            throw new RequestHalted(RequestHalted::KIND_PERMISSION, $errorMessage);
         }
     }
 
     public function redirect(string $url, array $args = []): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $args === [] ? $url : $url . '?' . http_build_query($args));
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $args === [] ? $url : $url . '?' . http_build_query($args));
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 
     protected function refreshPdnsCapabilities(): void

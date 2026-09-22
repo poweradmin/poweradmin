@@ -30,7 +30,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipIndex;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 
 /**
  * Characterizes the reverse zone listing next to its forward twin: the same
@@ -90,7 +90,7 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_CONDITION, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_CONDITION, $halt->kind);
         $this->assertSame('You do not have sufficient permissions to view this page.', $halt->target);
     }
 
@@ -103,7 +103,7 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('You do not have the permission to see any zones.', $halt->target);
     }
 
@@ -407,11 +407,11 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->factory->method('zoneRepository')->willReturn($this->zoneRepository);
     }
 
-    private function haltOf(TestableListReverseZonesController $controller): ControllerHalt
+    private function haltOf(TestableListReverseZonesController $controller): RequestHalted
     {
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 

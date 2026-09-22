@@ -26,7 +26,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\System\IndexController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -59,6 +59,6 @@ class TestableIndexController extends IndexController
 
     public function redirect(string $url, array $args = []): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 }

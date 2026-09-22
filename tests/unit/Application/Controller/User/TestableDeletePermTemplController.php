@@ -25,14 +25,14 @@ namespace Poweradmin\Tests\Unit\Application\Controller\User;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\User\DeletePermTemplController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
 /**
  * Builds the delete-permission-template controller through the
  * ControllerEnvironment seam. checkPermission(), showError() and redirect()
- * end the request in production, so each throws a ControllerHalt; render()
+ * end the request in production, so each throws a RequestHalted; render()
  * only records.
  */
 class TestableDeletePermTemplController extends DeletePermTemplController
@@ -55,18 +55,18 @@ class TestableDeletePermTemplController extends DeletePermTemplController
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!$this->hasPermission($permission)) {
-            throw new ControllerHalt(ControllerHalt::KIND_PERMISSION, $errorMessage);
+            throw new RequestHalted(RequestHalted::KIND_PERMISSION, $errorMessage);
         }
     }
 
     public function redirect(string $url, array $args = []): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 
     protected function refreshPdnsCapabilities(): void

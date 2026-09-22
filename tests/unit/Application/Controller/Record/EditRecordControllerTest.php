@@ -46,7 +46,7 @@ use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -207,11 +207,11 @@ class EditRecordControllerTest extends SeamControllerTestCase
         );
     }
 
-    private function haltOf(TestableEditRecordController $controller): ControllerHalt
+    private function haltOf(TestableEditRecordController $controller): RequestHalted
     {
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 
@@ -237,7 +237,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController([], $recordId));
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('Invalid record ID.', $halt->target);
     }
 
@@ -323,7 +323,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertSame('/zones/12/edit', $halt->target);
         $this->assertSame([['success', 'The record has been updated successfully.']], $this->messagesFor('edit'));
     }
@@ -399,7 +399,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $halt = $this->haltOf($controller);
 
-        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('Zone not found.', $halt->target);
         $this->assertNull($controller->redirectedTo);
         $this->assertSame([['error', 'Zone not found.']], $this->messagesFor('edit'));

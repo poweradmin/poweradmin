@@ -28,7 +28,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Session\FormStateService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -38,7 +38,7 @@ use ReflectionProperty;
  * the seam's service factory.
  *
  * redirect(), showError() and checkCondition() end the request in production,
- * so each throws a ControllerHalt to stop the run at the same statement.
+ * so each throws a RequestHalted to stop the run at the same statement.
  */
 class TestableAddRecordController extends AddRecordController
 {
@@ -76,19 +76,19 @@ class TestableAddRecordController extends AddRecordController
     public function redirect(string $url, array $args = []): void
     {
         $this->redirectedTo = $url;
-        throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 
     public function checkCondition(bool $condition, string $errorMessage): void
     {
         if ($condition) {
-            throw new ControllerHalt(ControllerHalt::KIND_CONDITION, $errorMessage);
+            throw new RequestHalted(RequestHalted::KIND_CONDITION, $errorMessage);
         }
     }
 
     public function showError(string $error, ?string $recordName = null): void
     {
-        throw new ControllerHalt(ControllerHalt::KIND_ERROR, $error);
+        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
     }
 
     protected function refreshPdnsCapabilities(): void

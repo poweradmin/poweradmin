@@ -31,7 +31,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -91,11 +91,11 @@ class EditCommentControllerTest extends SeamControllerTestCase
         );
     }
 
-    private function haltOf(TestableEditCommentController $controller): ControllerHalt
+    private function haltOf(TestableEditCommentController $controller): RequestHalted
     {
         try {
             $controller->run();
-        } catch (ControllerHalt $halt) {
+        } catch (RequestHalted $halt) {
             return $halt;
         }
 
@@ -134,7 +134,7 @@ class EditCommentControllerTest extends SeamControllerTestCase
 
         $halt = $this->haltOf($this->makeController());
 
-        $this->assertSame(ControllerHalt::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
         $this->assertSame('/zones/12/edit', $halt->target);
         $this->assertSame([['success', 'The comment has been updated successfully.']], $this->messagesFor('edit'));
         $this->assertSame([], $this->messagesFor('system'));
