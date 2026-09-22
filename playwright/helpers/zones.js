@@ -442,6 +442,73 @@ export async function getColumnIndex(page, headerText) {
 }
 
 /**
+ * Whether a zone is listed at all, wherever the pagination puts it.
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string} zoneName - Zone name to look for
+ * @returns {Promise<boolean>} - True when the zone still exists
+ */
+export async function zoneExists(page, zoneName) {
+  return (await findZoneIdByName(page, zoneName)) !== null;
+}
+
+/**
+ * Open the forward zone list page that shows a zone, walking the letter pages.
+ *
+ * The list is paginated, so a zone a test just created is regularly absent from
+ * the first page. Use this only when the test has to act on the row (tick its
+ * checkbox); for a plain presence check zoneExists() is far cheaper.
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string} zoneName - Zone name to look for
+ * @param {number} maxPages - Safety bound on how many pages to walk
+ * @returns {Promise<boolean>} - True when a list page showing the zone is open
+ */
+export async function openZoneListPageFor(page, zoneName, maxPages = 40) {
+  const letter = zoneName.charAt(0).toLowerCase();
+
+  for (let pageNumber = 1; pageNumber <= maxPages; pageNumber++) {
+    await page.goto(`/zones/forward?letter=${letter}&start=${pageNumber}`);
+
+    if (await page.locator(`tr:has-text("${zoneName}")`).count() > 0) {
+      return true;
+    }
+
+    // An empty page means the walk ran past the last one
+    if (await page.locator('table tbody tr').count() === 0) {
+      return false;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Delete a zone through its own confirmation page.
+ *
+ * Going straight to the zone id avoids hunting for the row in the paginated list.
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string|number} zoneId - Zone ID to delete
+ * @returns {Promise<boolean>} - True when the confirmation was submitted
+ */
+export async function deleteZoneById(page, zoneId) {
+  await page.goto(`/zones/${zoneId}/delete`);
+
+  const confirm = page.locator('[data-testid="confirm-delete-zone"]');
+  if (await confirm.count() === 0) {
+    return false;
+  }
+
+  // domcontentloaded, not networkidle: the API-backed instances keep a
+  // connection busy long enough for networkidle to hit the test budget.
+  await confirm.click();
+  await page.waitForLoadState('domcontentloaded');
+
+  return true;
+}
+
+/**
  * Ports of the instances configured with dns.backend = 'api'
  */
 export const API_MODE_PORTS = ['8083', '8084', '8085'];

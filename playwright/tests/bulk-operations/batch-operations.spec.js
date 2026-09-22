@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneById, findZoneIdByName, openZoneListPageFor, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Bulk and Batch Operations', () => {
@@ -54,15 +55,10 @@ test.describe('Bulk and Batch Operations', () => {
   });
 
   test('should verify bulk registered domains exist', async ({ page }) => {
-    await page.goto('/zones/forward?letter=all');
-
-    // Check that bulk test domains were created (use prefix pattern)
-    const bodyText = await page.locator('body').textContent();
-    // Look for any bulk-test domains, not specific timestamps
-    const hasBulkTestDomains = bodyText.includes('bulk-test-') ||
-                                bodyText.toLowerCase().includes('no zone') ||
-                                bodyText.toLowerCase().includes('zones');
-    expect(hasBulkTestDomains).toBeTruthy();
+    // The zones this suite registered must be findable in the list
+    for (const domain of testDomains) {
+      expect(await zoneExists(page, domain)).toBe(true);
+    }
   });
 
   test('should access batch PTR record generation', async ({ page }) => {
@@ -105,64 +101,45 @@ test.describe('Bulk and Batch Operations', () => {
   });
 
   test('should perform bulk zone deletion', async ({ page }) => {
-    // Use letter=all to ensure bulk-test domains (starting with "b") are visible
-    await page.goto('/zones/forward?letter=all');
+    // Walking the paginated list and confirming the deletion needs more than
+    // the default per-test budget on a busy instance.
+    test.slow();
+
+    // The list is paginated, so walk to the page that holds the test domains
+    const listed = await openZoneListPageFor(page, testDomains[0]);
 
     // Select multiple domains for deletion (if checkboxes exist)
-    const hasCheckboxes = await page.locator('input[type="checkbox"]').count() > 0;
+    const hasCheckboxes = listed && await page.locator('input[type="checkbox"]').count() > 0;
     if (hasCheckboxes) {
       // Select test domains for bulk deletion
-      let checkedCount = 0;
       for (const domain of testDomains) {
-        const domainRow = page.locator(`tr:has-text("${domain}")`);
-        const domainCheckbox = domainRow.locator('input[type="checkbox"]');
-        const checkboxCount = await domainCheckbox.count();
-        if (checkboxCount > 0) {
-          await domainCheckbox.check();
-          checkedCount++;
-        }
+        const domainCheckbox = page.locator(`tr:has-text("${domain}")`).locator('input[type="checkbox"]');
+        await expect(domainCheckbox).toBeVisible();
+        await domainCheckbox.check();
       }
 
-      if (checkedCount === 0) {
-        // No test domains found on the page, nothing to delete
-        return;
-      }
+      // The bulk submit is disabled until a row is ticked
+      const bulkDeleteBtn = page.locator('#delete-zones-btn');
+      await expect(bulkDeleteBtn).toBeEnabled();
+      await bulkDeleteBtn.click();
 
-      // Look for enabled bulk delete button
-      const bulkDeleteBtn = page.locator('button:not([disabled])').filter({ hasText: /Delete/i });
-      const hasBulkDelete = await bulkDeleteBtn.count();
-      if (hasBulkDelete > 0) {
-        await bulkDeleteBtn.click();
+      // Confirm bulk deletion on the confirmation page, which only exists once
+      // the navigation has landed
+      const confirmBtn = page.locator('button[type="submit"][name="confirm"]');
+      await expect(confirmBtn).toBeVisible();
+      await confirmBtn.click();
+      await page.waitForLoadState('networkidle');
 
-        // Confirm bulk deletion
-        const hasConfirm = await page.locator('button').filter({ hasText: /Yes|Confirm/i }).count();
-        if (hasConfirm > 0) {
-          await page.locator('button').filter({ hasText: /Yes|Confirm/i }).click();
-        }
-
-        // Verify domains were deleted. Auto-retrying so the confirmation page,
-        // which lists the very domains being checked, cannot be read mid-post.
-        for (const domain of testDomains) {
-          await expect(page.locator('body')).not.toContainText(domain);
-        }
+      // Verify the domains are really gone, not just off the current page
+      for (const domain of testDomains) {
+        expect(await zoneExists(page, domain)).toBe(false);
       }
     } else {
       // Manual deletion if no bulk option
       for (const domain of testDomains) {
-        await page.goto('/zones/forward?letter=all');
-        const bodyText = await page.locator('body').textContent();
-        if (bodyText.includes(domain)) {
-          const domainRow = page.locator(`tr:has-text("${domain}")`);
-          const deleteLink = await domainRow.locator('a[href*="/delete"]');
-
-          if (await deleteLink.count() > 0) {
-            await deleteLink.first().click();
-
-            const confirmButton = page.locator('button').filter({ hasText: /Yes|Confirm/i });
-            if (await confirmButton.count() > 0) {
-              await confirmButton.click();
-            }
-          }
+        const zoneId = await findZoneIdByName(page, domain);
+        if (zoneId) {
+          await deleteZoneById(page, zoneId);
         }
       }
     }

@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneById, findZoneIdByName, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -80,12 +81,9 @@ test.describe('Bulk Zone Registration', () => {
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
       // Clean up
-      await page.goto('/zones/forward?letter=all');
-      const row = page.locator(`tr:has-text("${singleDomain}")`);
-      if (await row.count() > 0) {
-        await row.locator('a[href*="/delete"]').first().click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) await yesBtn.click();
+      const singleZoneId = await findZoneIdByName(page, singleDomain);
+      if (singleZoneId) {
+        await deleteZoneById(page, singleZoneId);
       }
     });
 
@@ -103,11 +101,15 @@ test.describe('Bulk Zone Registration', () => {
 
     test('should show created zones in list', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
 
-      // Verify at least one test zone exists
-      const bodyText = await page.locator('body').textContent();
-      const hasTestZone = testDomains.some(domain => bodyText.includes(domain));
+      // Verify at least one test zone exists somewhere in the paginated list
+      let hasTestZone = false;
+      for (const domain of testDomains) {
+        if (await zoneExists(page, domain)) {
+          hasTestZone = true;
+          break;
+        }
+      }
       expect(hasTestZone).toBeTruthy();
     });
   });
@@ -145,18 +147,10 @@ test.describe('Bulk Zone Registration', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/zones/forward?letter=all');
-
     for (const domain of testDomains) {
-      const row = page.locator(`tr:has-text("${domain}")`);
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]').first();
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-          const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-          if (await yesBtn.count() > 0) await yesBtn.click();
-          await page.waitForTimeout(300);
-        }
+      const zoneId = await findZoneIdByName(page, domain);
+      if (zoneId) {
+        await deleteZoneById(page, zoneId);
       }
     }
 

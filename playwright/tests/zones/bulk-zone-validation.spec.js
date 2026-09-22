@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneById, findZoneIdByName, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Run serially to avoid race conditions with zone cleanup
@@ -12,18 +13,12 @@ test.describe('Bulk Zone Registration Validation', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
-  // Helper to clean up a zone
+  // Helper to clean up a zone. Resolving the id first covers zones that the
+  // paginated list does not show on its first page.
   async function cleanupZone(page, zoneName) {
-    try {
-      await page.goto('/zones/forward?letter=all');
-      const zoneRow = page.locator(`tr:has-text("${zoneName}")`);
-      if (await zoneRow.count() > 0) {
-        await zoneRow.locator('a[href*="/delete"]').first().click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) await yesBtn.click();
-      }
-    } catch (e) {
-      // Zone might not exist, continue
+    const zoneId = await findZoneIdByName(page, zoneName);
+    if (zoneId) {
+      await deleteZoneById(page, zoneId);
     }
   }
 
@@ -40,8 +35,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
 
     // Verify zone was created by checking zones list
-    await page.goto('/zones/forward?letter=all');
-    await expect(page.locator(`tr:has-text("${zoneName}")`)).toBeVisible();
+    expect(await zoneExists(page, zoneName)).toBe(true);
 
     // Cleanup
     await cleanupZone(page, zoneName);
@@ -60,9 +54,8 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
 
     // Verify zones were created
-    await page.goto('/zones/forward?letter=all');
     for (const zone of zones) {
-      await expect(page.locator(`tr:has-text("${zone}")`)).toBeVisible();
+      expect(await zoneExists(page, zone)).toBe(true);
     }
 
     // Cleanup
@@ -84,11 +77,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
 
     // Clean up if zone was created
-    await page.goto('/zones/forward?letter=all');
-    const zoneRow = page.locator(`tr:has-text("${zoneName}")`);
-    if (await zoneRow.count() > 0) {
-      await cleanupZone(page, zoneName);
-    }
+    await cleanupZone(page, zoneName);
   });
 
   test('should show error for malformed domain name', async ({ page }) => {

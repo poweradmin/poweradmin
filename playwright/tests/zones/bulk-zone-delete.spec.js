@@ -7,16 +7,19 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneById, findZoneIdByName, openZoneListPageFor, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Bulk Zone Deletion', () => {
+  // One timestamp for all three keeps the names adjacent in the zone list
+  const stamp = Date.now();
   const testZones = [
-    `bulk-del-1-${Date.now()}.example.com`,
-    `bulk-del-2-${Date.now()}.example.com`,
-    `bulk-del-3-${Date.now()}.example.com`
+    `bulk-del-${stamp}-1.example.com`,
+    `bulk-del-${stamp}-2.example.com`,
+    `bulk-del-${stamp}-3.example.com`
   ];
 
   test.beforeAll(async ({ browser }) => {
@@ -34,6 +37,22 @@ test.describe('Bulk Zone Deletion', () => {
     await page.close();
   });
 
+  // Without this the three zones pile up on every run and push later tests'
+  // zones off the first page of the list.
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+    for (const domain of testZones) {
+      const zoneId = await findZoneIdByName(page, domain);
+      if (zoneId) {
+        await deleteZoneById(page, zoneId);
+      }
+    }
+
+    await page.close();
+  });
+
   test.describe('Bulk Delete Page', () => {
     /**
      * Tick this spec's own zones and open the bulk confirmation page.
@@ -41,7 +60,7 @@ test.describe('Bulk Zone Deletion', () => {
      */
     async function openBulkDeleteConfirmation(page, zones) {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
+      expect(await openZoneListPageFor(page, zones[0])).toBe(true);
 
       for (const zone of zones) {
         const checkbox = page.locator(`tr:has-text("${zone}") input[type="checkbox"][name="zone_id[]"]`).first();
@@ -90,7 +109,7 @@ test.describe('Bulk Zone Deletion', () => {
       await page.locator('a:has-text("No")').first().click();
       await expect(page).toHaveURL(/.*zones\/forward/);
       // Cancelling must leave the zone in place
-      await expect(page.locator(`tr:has-text("${testZones[0]}")`).first()).toBeVisible();
+      expect(await zoneExists(page, testZones[0])).toBe(true);
     });
 
     test('should display breadcrumb navigation', async ({ page }) => {
@@ -101,23 +120,28 @@ test.describe('Bulk Zone Deletion', () => {
 
   test.describe('Bulk Delete Execution', () => {
     test('should delete multiple zones when confirmed', async ({ page }) => {
+      // Creating two zones, walking the paginated list and deleting them needs
+      // more than the default per-test budget.
+      test.slow();
+
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      // Create temporary zones for deletion test
-      const tempZone1 = `temp-bulk-1-${Date.now()}.example.com`;
-      const tempZone2 = `temp-bulk-2-${Date.now()}.example.com`;
+      // Create temporary zones for deletion test. One timestamp for both keeps
+      // the names adjacent in the list, so a single page holds them.
+      const stamp = Date.now();
+      const tempZone1 = `temp-bulk-${stamp}-1.example.com`;
+      const tempZone2 = `temp-bulk-${stamp}-2.example.com`;
 
       // Create zones
-      await page.goto('/zones/add/master');
-      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(tempZone1);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      for (const zone of [tempZone1, tempZone2]) {
+        await page.goto('/zones/add/master');
+        await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(zone);
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+        await page.waitForLoadState('networkidle');
+      }
 
-      await page.goto('/zones/add/master');
-      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(tempZone2);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Go to zones list and select for deletion
-      await page.goto('/zones/forward?letter=all');
+      // Go to the list page that holds both zones and select them for deletion
+      expect(await openZoneListPageFor(page, tempZone1)).toBe(true);
 
       for (const zone of [tempZone1, tempZone2]) {
         const checkbox = page.locator(`tr:has-text("${zone}") input[type="checkbox"][name="zone_id[]"]`).first();
@@ -133,9 +157,8 @@ test.describe('Bulk Zone Deletion', () => {
 
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       // Both zones must actually be gone
-      await page.goto('/zones/forward?letter=all');
-      await expect(page.locator(`tr:has-text("${tempZone1}")`)).toHaveCount(0);
-      await expect(page.locator(`tr:has-text("${tempZone2}")`)).toHaveCount(0);
+      expect(await zoneExists(page, tempZone1)).toBe(false);
+      expect(await zoneExists(page, tempZone2)).toBe(false);
     });
 
     test('should redirect to zones list with success message after deletion (issue #971)', async ({ page }) => {
@@ -151,8 +174,7 @@ test.describe('Bulk Zone Deletion', () => {
       await page.waitForLoadState('networkidle');
 
       // Go to zones list and select for deletion
-      await page.goto('/zones/forward?letter=all');
-      await page.waitForLoadState('networkidle');
+      expect(await openZoneListPageFor(page, tempZone)).toBe(true);
 
       const checkbox = page.locator(`tr:has-text("${tempZone}") input[type="checkbox"]`).first();
       expect(await checkbox.count()).toBeGreaterThan(0);
@@ -186,8 +208,7 @@ test.describe('Bulk Zone Deletion', () => {
       expect(await successAlert.count()).toBeGreaterThan(0);
 
       // Verify zone is deleted
-      const zoneRow = page.locator(`tr:has-text("${tempZone}")`);
-      expect(await zoneRow.count()).toBe(0);
+      expect(await zoneExists(page, tempZone)).toBe(false);
     });
   });
 

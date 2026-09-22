@@ -9,16 +9,19 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneById, findZoneIdByName, openZoneListPageFor, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
   const timestamp = Date.now();
+  // The shared timestamp comes first in the suffix so the three names stay
+  // adjacent in the zone list and one list page holds them all.
   const testZones = [
-    `bulk-confirm-1-${timestamp}.example.com`,
-    `bulk-confirm-2-${timestamp}.example.com`,
-    `bulk-confirm-3-${timestamp}.example.com`
+    `bulk-confirm-${timestamp}-1.example.com`,
+    `bulk-confirm-${timestamp}-2.example.com`,
+    `bulk-confirm-${timestamp}-3.example.com`
   ];
 
   test.describe('Setup Test Zones', () => {
@@ -33,30 +36,22 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       }
 
       // Verify zones were created
-      await page.goto('/zones/forward?letter=all');
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      for (const domain of testZones) {
+        expect(await zoneExists(page, domain)).toBe(true);
+      }
     });
   });
 
   test.describe('Bulk Delete Success Confirmation', () => {
     test('should show success message after bulk delete (regression #971)', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
+      expect(await openZoneListPageFor(page, testZones[0])).toBe(true);
 
       // Select test zones for deletion
-      let selectedCount = 0;
       for (const domain of testZones) {
         const checkbox = page.locator(`tr:has-text("${domain}") input[type="checkbox"]`).first();
-        if (await checkbox.count() > 0) {
-          await checkbox.check();
-          selectedCount++;
-        }
-      }
-
-      if (selectedCount === 0) {
-        test.skip('No test zones found to delete');
-        return;
+        await expect(checkbox).toBeVisible();
+        await checkbox.check();
       }
 
       // Click delete selected button
@@ -92,12 +87,9 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
         // If we see "error occurred" but deletion actually worked, that's the bug
         if (hasError) {
           // Verify zones were actually deleted
-          await page.goto('/zones/forward?letter=all');
-          const zonesText = await page.locator('body').textContent();
-
           let stillExists = false;
           for (const domain of testZones) {
-            if (zonesText.includes(domain)) {
+            if (await zoneExists(page, domain)) {
               stillExists = true;
               break;
             }
@@ -120,14 +112,9 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await page.waitForLoadState('networkidle');
 
       // Go to zones list and delete it
-      await page.goto('/zones/forward?letter=all');
+      expect(await openZoneListPageFor(page, singleZone)).toBe(true);
 
       const checkbox = page.locator(`tr:has-text("${singleZone}") input[type="checkbox"]`).first();
-      if (await checkbox.count() === 0) {
-        test.skip('Zone not found');
-        return;
-      }
-
       await checkbox.check();
 
       const deleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
@@ -140,13 +127,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
         await page.waitForLoadState('networkidle');
 
         // Verify the zone was actually deleted
-        await page.goto('/zones/forward?letter=all');
-        await page.waitForLoadState('networkidle');
-
-        const bodyText = await page.locator('body').textContent();
-
-        // Zone should not be in the list anymore
-        const zoneDeleted = !bodyText.includes(singleZone);
+        const zoneDeleted = !(await zoneExists(page, singleZone));
         expect(zoneDeleted, 'Zone should be deleted').toBeTruthy();
       }
     });
@@ -161,14 +142,9 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       await page.waitForLoadState('networkidle');
 
-      await page.goto('/zones/forward?letter=all');
+      expect(await openZoneListPageFor(page, redirectZone)).toBe(true);
 
       const checkbox = page.locator(`tr:has-text("${redirectZone}") input[type="checkbox"]`).first();
-      if (await checkbox.count() === 0) {
-        test.skip('Zone not found');
-        return;
-      }
-
       await checkbox.check();
 
       const deleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
@@ -194,6 +170,10 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
 
   test.describe('Verify Deletion Actually Works', () => {
     test('should actually delete zones after confirmation', async ({ page }) => {
+      // Creating a zone, walking the paginated list and deleting it needs more
+      // than the default per-test budget.
+      test.slow();
+
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
       // Create a verification zone
@@ -204,9 +184,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await page.waitForLoadState('networkidle');
 
       // Verify it exists
-      await page.goto('/zones/forward?letter=all');
-      let bodyText = await page.locator('body').textContent();
-      expect(bodyText).toContain(verifyZone);
+      expect(await openZoneListPageFor(page, verifyZone)).toBe(true);
 
       // Delete it
       const checkbox = page.locator(`tr:has-text("${verifyZone}") input[type="checkbox"]`).first();
@@ -223,9 +201,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       }
 
       // Verify it's gone (even if error message showed)
-      await page.goto('/zones/forward?letter=all');
-      bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toContain(verifyZone);
+      expect(await zoneExists(page, verifyZone)).toBe(false);
     });
   });
 
@@ -240,44 +216,28 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       await page.waitForLoadState('networkidle');
 
-      await page.goto('/zones/forward?letter=all');
+      expect(await openZoneListPageFor(page, cancelZone)).toBe(true);
 
       const checkbox = page.locator(`tr:has-text("${cancelZone}") input[type="checkbox"]`).first();
-      if (await checkbox.count() === 0) {
-        test.skip('Zone not found');
-        return;
-      }
-
       await checkbox.check();
 
       const deleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
       await deleteBtn.click();
       await page.waitForLoadState('networkidle');
 
-      // Cancel deletion
-      const noBtn = page.locator('input[value="No"], button:has-text("No")').first();
-      if (await noBtn.count() > 0) {
-        await noBtn.click();
-        await page.waitForLoadState('networkidle');
+      // Cancel deletion - the cancel control is a link, not a button
+      const noLink = page.locator('a:has-text("No")').first();
+      await expect(noLink).toBeVisible();
+      await noLink.click();
+      await page.waitForLoadState('networkidle');
 
-        // Verify zone still exists
-        await page.goto('/zones/forward?letter=all');
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).toContain(cancelZone);
-      }
+      // Verify zone still exists
+      expect(await zoneExists(page, cancelZone)).toBe(true);
 
       // Cleanup - delete the zone
-      await page.goto('/zones/forward?letter=all');
-      const cleanupCheckbox = page.locator(`tr:has-text("${cancelZone}") input[type="checkbox"]`).first();
-      if (await cleanupCheckbox.count() > 0) {
-        await cleanupCheckbox.check();
-        const cleanupDeleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        await cleanupDeleteBtn.click();
-        await page.waitForLoadState('networkidle');
-        const cleanupYesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await cleanupYesBtn.count() > 0) {
-          await cleanupYesBtn.click();
-        }
+      const cancelZoneId = await findZoneIdByName(page, cancelZone);
+      if (cancelZoneId) {
+        await deleteZoneById(page, cancelZoneId);
       }
     });
   });
