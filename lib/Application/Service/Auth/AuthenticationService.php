@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service\Auth;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Application\Service\Web\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 

@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Session\FlashMessage;
-use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Application\Service\Web\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use ReflectionMethod;
 use Symfony\Component\HttpFoundation\Response;

@@ -130,7 +130,7 @@ use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Application\Service\Auth\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Application\Service\Auth\BasicAuthenticationMiddleware;
-use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Application\Service\Web\RedirectService;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Infrastructure\Network\EnvironmentProxyContext;
 use Poweradmin\Infrastructure\Session\FormStateService;

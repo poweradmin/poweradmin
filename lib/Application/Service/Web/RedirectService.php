@@ -20,12 +20,16 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Service;
+namespace Poweradmin\Application\Service\Web;
 
+use Poweradmin\Application\Controller\RequestHalted;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Sends a Location header for the given URL, or a prepared response, and ends the request.
+ * Sends a Location header for the given URL, or a prepared response, and ends
+ * the request. The halt unwinds to the router the way the former exit ended the
+ * process, which keeps the redirect out of the way of anything that follows and
+ * leaves it observable to a test.
  */
 class RedirectService
 {
@@ -34,12 +38,14 @@ class RedirectService
         if (!headers_sent()) {
             header("Location: $url");
         }
-        exit;
+
+        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
     }
 
     public function send(Response $response): void
     {
         $response->send();
-        exit;
+
+        throw new RequestHalted(RequestHalted::KIND_RESPONSE, (string) $response->getStatusCode());
     }
 }

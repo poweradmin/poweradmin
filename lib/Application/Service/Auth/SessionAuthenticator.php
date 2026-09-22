@@ -39,7 +39,7 @@ use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
-use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Application\Service\Web\RedirectService;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\Web\AuditService;
