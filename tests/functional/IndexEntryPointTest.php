@@ -88,6 +88,65 @@ class IndexEntryPointTest extends TestCase
     }
 
     /**
+     * The probes and the retired v1 family answer from configuration alone; the
+     * fixture's in-memory database has no schema, so touching it would fail.
+     */
+    public function testDatabaseFreeControllersAnswerWithoutASchema(): void
+    {
+        $expected = [
+            '/ping' => 'Not Found',
+            '/api/health' => '{"error":true,"message":"Not Found"}',
+            '/api/v1/zones' => '{"error":true,"message":"API v1 was removed in Poweradmin 4.5.0. Use \/api\/v2 instead."}',
+        ];
+
+        foreach ($expected as $uri => $body) {
+            [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', $uri, 'application/json');
+
+            $this->assertSame(0, $exitCode, $uri);
+            $this->assertSame('', $stderr, $uri);
+            $this->assertSame($body, $stdout, $uri);
+        }
+    }
+
+    public function testADisabledApiRefusesBeforeAuthentication(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/api/v2/zones', 'application/json');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"success":false,"data":null,"message":"The API feature is disabled in the system configuration."}', $stdout);
+    }
+
+    public function testAnUnmatchedRouteRendersTheNotFoundPage(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/no-such-page', 'text/html');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertStringStartsWith('<!doctype html>', $stdout);
+        $this->assertStringContainsString('Page Not Found', $stdout);
+
+        [$exitCode, $json, $stderr] = $this->runFrontController('halting-settings.php', '/no-such-page', 'application/json');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"error":"Not Found","message":"The requested resource was not found","status":404}', $json);
+    }
+
+    public function testAStaticAssetIsServedFromTheTemplatesTree(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/templates/default/style/dark.css', 'text/css');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame(file_get_contents(dirname(__DIR__, 2) . '/templates/default/style/dark.css'), $stdout);
+
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/templates/default/nope.css', 'text/css');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('Not Found', $stdout);
+    }
+
+    /**
      * Drives index.php in a subprocess with the given settings fixture.
      *
      * @return array{0: int, 1: string, 2: string} Exit code, stdout, stderr
