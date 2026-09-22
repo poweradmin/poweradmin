@@ -24,7 +24,11 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\OidcConfigurationService;
+use League\OAuth2\Client\Provider\GenericProvider;
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+use League\OAuth2\Client\Token\AccessToken;
 use Poweradmin\Application\Service\OidcService;
+use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -65,6 +69,67 @@ class OidcServiceIdTokenTest extends TestCase
         $signature = rtrim(strtr(base64_encode('fake-signature'), '+/', '-_'), '=');
 
         return "$header.$body.$signature";
+    }
+
+    /**
+     * The userinfo endpoint and the ID token are both parts of the same
+     * authenticated exchange, so claims the endpoint omits are taken from the
+     * token. email_verified is the one that decides account linking.
+     */
+    public function testUserInfoIsFilledFromTheIdTokenWhereUserinfoIsSilent(): void
+    {
+        $userInfo = $this->resolveUserInfo(
+            ['sub' => 'user-123', 'email' => 'test@example.com'],
+            ['sub' => 'user-123', 'email_verified' => false, 'groups' => ['admins']]
+        );
+
+        $raw = $userInfo->getRawData();
+        $this->assertArrayHasKey('email_verified', $raw);
+        $this->assertFalse($raw['email_verified'], 'The claim the userinfo endpoint never sent must still be seen');
+        $this->assertSame(['admins'], $userInfo->getGroups());
+    }
+
+    public function testUserinfoWinsWhenBothSourcesCarryTheSameClaim(): void
+    {
+        $userInfo = $this->resolveUserInfo(
+            ['sub' => 'user-123', 'email' => 'test@example.com', 'email_verified' => false],
+            ['sub' => 'user-123', 'email_verified' => true]
+        );
+
+        $this->assertFalse($userInfo->getRawData()['email_verified']);
+    }
+
+    public function testUserInfoWithoutAnIdTokenKeepsTheUserinfoClaims(): void
+    {
+        $userInfo = $this->resolveUserInfo(['sub' => 'user-123', 'email' => 'test@example.com'], null);
+
+        $this->assertSame(['sub' => 'user-123', 'email' => 'test@example.com'], $userInfo->getRawData());
+        $this->assertSame([], $userInfo->getGroups());
+    }
+
+    /**
+     * @param array<string, mixed> $userData claims the userinfo endpoint returns
+     * @param array<string, mixed>|null $idTokenClaims claims carried by the ID token, or null for no token
+     */
+    private function resolveUserInfo(array $userData, ?array $idTokenClaims): OidcUserInfo
+    {
+        $resourceOwner = $this->createMock(ResourceOwnerInterface::class);
+        $resourceOwner->method('toArray')->willReturn($userData);
+
+        $provider = $this->createMock(GenericProvider::class);
+        $provider->method('getResourceOwner')->willReturn($resourceOwner);
+
+        // GenericProvider::getResourceOwner() takes the concrete token, not the interface
+        $options = ['access_token' => 'access-token'];
+        if ($idTokenClaims !== null) {
+            $options['id_token'] = $this->buildJwt($idTokenClaims);
+        }
+        $token = new AccessToken($options);
+
+        $method = new ReflectionMethod(OidcService::class, 'getUserInfo');
+        $method->setAccessible(true);
+
+        return $method->invoke($this->service, $provider, $token, 'test-provider');
     }
 
     public function testDecodeValidIdTokenWithGroups(): void

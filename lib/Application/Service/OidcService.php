@@ -500,24 +500,25 @@ class OidcService extends LoggingService
         $resourceOwner = $provider->getResourceOwner($token);
         $userData = $resourceOwner->toArray();
 
+        // Some providers (e.g. Microsoft Entra ID) put claims such as groups and
+        // email_verified in the ID token only. Its claims fill what the userinfo
+        // endpoint left out, so the userinfo response still wins on conflict.
+        $tokenValues = $token->getValues();
+        $idTokenClaims = isset($tokenValues['id_token'])
+            ? $this->decodeIdTokenPayload($tokenValues['id_token'])
+            : [];
+        $claims = $userData + $idTokenClaims;
+
         $config = $this->oidcConfigurationService->getProviderConfig($providerId);
         $mapping = $config['user_mapping'] ?? [];
 
         $groupsKey = $mapping['groups'] ?? 'groups';
         $groups = $userData[$groupsKey] ?? [];
 
-        // Some providers (e.g. Microsoft Entra ID) include groups only in the
-        // ID token, not in the userinfo endpoint response. Fall back to the
-        // ID token claims when the userinfo groups are empty.
-        if (empty($groups)) {
-            $tokenValues = $token->getValues();
-            if (isset($tokenValues['id_token'])) {
-                $idTokenClaims = $this->decodeIdTokenPayload($tokenValues['id_token']);
-                $groups = $idTokenClaims[$groupsKey] ?? [];
-                if (!empty($groups)) {
-                    $this->logInfo('Extracted groups from ID token: {groups}', ['groups' => $groups]);
-                }
-            }
+        // An empty groups list from userinfo is treated as absent, not as "no groups"
+        if (empty($groups) && !empty($idTokenClaims[$groupsKey])) {
+            $groups = $idTokenClaims[$groupsKey];
+            $this->logInfo('Extracted groups from ID token: {groups}', ['groups' => $groups]);
         }
 
         return new OidcUserInfo(
@@ -529,7 +530,7 @@ class OidcService extends LoggingService
             groups: $groups,
             providerId: $providerId,
             subject: $userData[$mapping['subject'] ?? 'sub'] ?? '',
-            rawData: $userData,
+            rawData: $claims,
             avatarUrl: $userData[$mapping['avatar'] ?? 'picture'] ?? null
         );
     }
