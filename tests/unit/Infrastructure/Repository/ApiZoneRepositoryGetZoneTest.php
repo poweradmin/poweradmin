@@ -26,8 +26,8 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * getZone() in API mode returns the same key set as the SQL repository, with
@@ -69,7 +69,7 @@ class ApiZoneRepositoryGetZoneTest extends TestCase
             $this->db,
             $provider,
             'sqlite',
-            $this->createMock(ConfigurationManager::class)
+            new FakeConfiguration()
         );
     }
 

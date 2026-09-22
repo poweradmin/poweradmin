@@ -10,7 +10,7 @@ use Poweradmin\Application\Service\Auth\SamlConfigurationService;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Service\Auth\MfaService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionClass;
@@ -19,7 +19,7 @@ use ReflectionMethod;
 class SamlResponseValidationTest extends TestCase
 {
     private SamlService $service;
-    private ConfigurationManager|MockObject $mockConfig;
+    private ConfigurationInterface&MockObject $mockConfig;
     private Logger|MockObject $mockLogger;
     private SamlConfigurationService|MockObject $mockSamlConfig;
     private UserProvisioningService|MockObject $mockUserProvisioning;
@@ -27,7 +27,7 @@ class SamlResponseValidationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mockConfig = $this->createMock(ConfigurationManager::class);
+        $this->mockConfig = $this->createMock(ConfigurationInterface::class);
         $this->mockLogger = $this->createMock(Logger::class);
         $this->mockSamlConfig = $this->createMock(SamlConfigurationService::class);
         $this->mockUserProvisioning = $this->createMock(UserProvisioningService::class);

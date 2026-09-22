@@ -18,9 +18,9 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\RecordSearch;
 use Poweradmin\Infrastructure\Repository\ZoneSearch;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * A user holding the `search` permission but no view permission resolves to
@@ -29,9 +29,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class SearchViewPermissionTest extends TestCase
 {
-    private function makeConfig(): ConfigurationManager
+    private function makeConfig(): ConfigurationInterface
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(function (string $group, string $key) {
             return $group === 'database' && $key === 'type' ? 'mysql' : '';
         });

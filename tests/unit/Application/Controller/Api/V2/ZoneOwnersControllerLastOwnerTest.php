@@ -27,6 +27,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\Api\V2\ZoneOwnersController;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
@@ -35,7 +36,6 @@ use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -134,7 +134,7 @@ class ZoneOwnersControllerLastOwnerTest extends V2ControllerTestCase
         $controller = $this->bareController(ZoneOwnersController::class);
         $this->injectBaseCollaborators($controller, 'DELETE');
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             static fn(string $group, string $key, $default = null) => ($group === 'dns' && $key === 'zone_ownership_mode') ? $mode : $default
         );
@@ -157,7 +157,7 @@ class ZoneOwnersControllerLastOwnerTest extends V2ControllerTestCase
         return $this->callHandler($controller, 'removeOwner');
     }
 
-    private function factory(ConfigurationManager $config): ControllerServiceFactory
+    private function factory(ConfigurationInterface $config): ControllerServiceFactory
     {
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('auditService')->willReturn($this->createMock(AuditService::class));

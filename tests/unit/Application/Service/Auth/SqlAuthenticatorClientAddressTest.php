@@ -35,10 +35,10 @@ use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\Auth\AuthOutcomeStatus;
 use Poweradmin\Application\Service\Auth\LoginCredentials;
 use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Pins that the lockout check and the audit line both see the client address
@@ -70,7 +70,7 @@ class SqlAuthenticatorClientAddressTest extends TestCase
 
         $authenticator = new SqlAuthenticator(
             $this->createMock(PDO::class),
-            $this->createMock(ConfigurationManager::class),
+            new FakeConfiguration(),
             $audit,
             $this->createMock(CsrfTokenService::class),
             new NullLogger(),

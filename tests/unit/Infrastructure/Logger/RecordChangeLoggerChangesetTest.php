@@ -25,7 +25,6 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\StubActor;
@@ -55,14 +54,7 @@ class RecordChangeLoggerChangesetTest extends TestCase
             before_state TEXT, after_state TEXT, client_ip VARCHAR(64),
             created_at timestamp DEFAULT current_timestamp NOT NULL)");
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')
-            ->willReturnCallback(function ($group, $key, $default = null) {
-                if ($group === 'logging' && $key === 'database_enabled') {
-                    return true;
-                }
-                return $default;
-            });
+        $config = new FakeConfiguration(['logging' => ['database_enabled' => true]]);
 
         $userContext = new StubActor(7, 'alice');
 
@@ -197,10 +189,7 @@ class RecordChangeLoggerChangesetTest extends TestCase
     {
         // RecordManager and the v2 controllers each build their own logger, so the
         // scope has to reach an instance the opener never saw.
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn($group, $key, $default = null) => ($group === 'logging' && $key === 'database_enabled') ? true : $default
-        );
+        $config = new FakeConfiguration(['logging' => ['database_enabled' => true]]);
         $userContext = new StubActor(7, 'alice');
         $other = new RecordChangeLogger($this->db, $config, $userContext);
 
@@ -328,8 +317,7 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testChangesetIsSkippedWhenDatabaseLoggingIsDisabled(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(fn($group, $key, $default = null) => $default);
+        $config = new FakeConfiguration();
         $userContext = new StubActor(7, 'alice');
         $logger = new RecordChangeLogger($this->db, $config, $userContext);
 

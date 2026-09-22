@@ -32,7 +32,7 @@ use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
@@ -47,13 +47,13 @@ use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 class ConsistencyChecksStatementTest extends TestCase
 {
     private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
+    private ConfigurationInterface&MockObject $config;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->db = $this->createMock(PDO::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
+        $this->config = $this->createMock(ConfigurationInterface::class);
         // TableNameService asks the config for pdns_db_name; default to no prefix.
         $this->config->method('get')->willReturnCallback(
             fn(string $section, string $key, mixed $default = null) => $default

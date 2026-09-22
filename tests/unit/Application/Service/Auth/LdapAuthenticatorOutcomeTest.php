@@ -40,7 +40,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
 
 /**
@@ -139,7 +139,7 @@ class LdapAuthenticatorOutcomeTest extends TestCase
         $db->method('getAttribute')->with(PDO::ATTR_DRIVER_NAME)->willReturn('sqlite');
         $db->expects($userRow === null ? $this->never() : $this->once())->method('prepare')->willReturn($statement);
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(fn(string $section, string $key, $default = null) => match ("$section.$key") {
             'ldap.session_cache_timeout' => 300,
             default => $default,

@@ -4,52 +4,47 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use PDOStatement;
+use TestHelpers\FakeConfiguration;
 
 class LoginAttemptServiceTest extends TestCase
 {
     private $pdoLayerMock;
-    private $configManagerMock;
-    private $loginAttemptService;
 
     protected function setUp(): void
     {
         $this->pdoLayerMock = $this->createMock(PDO::class);
-        $this->configManagerMock = $this->createMock(ConfigurationManager::class);
-        $this->loginAttemptService = new LoginAttemptService($this->pdoLayerMock, $this->configManagerMock);
+    }
+
+    private function service(array $security = [], array $database = []): LoginAttemptService
+    {
+        $config = new FakeConfiguration(['security' => $security, 'database' => $database]);
+
+        return new LoginAttemptService($this->pdoLayerMock, $config);
     }
 
     public function testIsAccountLockedReturnsFalseWhenAccountLockoutDisabled()
     {
-        // Configure ConfigurationManager to return false for enable_lockout
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, false]
-            ]);
+        $service = $this->service(['account_lockout' => ['enable_lockout' => false]]);
 
-        $result = $this->loginAttemptService->isAccountLocked('testuser', '192.168.1.1');
+        $result = $service->isAccountLocked('testuser', '192.168.1.1');
         $this->assertFalse($result);
     }
 
     public function testMfaStageIsThrottledWhenAccountLockoutDisabled()
     {
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, false],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], []],
-                ['security', 'mfa.max_verify_attempts', 5, 5],
-                ['security', 'mfa.verify_lockout_duration', 15, 15],
-                ['database', 'type', null, 'mysql'],
-            ]);
+        $service = $this->service([
+            'account_lockout' => ['enable_lockout' => false, 'blacklist_ip_addresses' => []],
+            'mfa' => ['max_verify_attempts' => 5, 'verify_lockout_duration' => 15],
+        ], ['type' => 'mysql']);
 
         $pdoStatementMock = $this->createMock(PDOStatement::class);
         $pdoStatementMock->method('execute')->willReturn(true);
         $pdoStatementMock->method('fetch')->willReturn(['id' => 1, 'attempts' => 5]);
         $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
 
-        $result = $this->loginAttemptService->isAccountLocked(
+        $result = $service->isAccountLocked(
             'testuser',
             '192.168.1.1',
             LoginAttemptService::STAGE_MFA
@@ -60,14 +55,10 @@ class LoginAttemptServiceTest extends TestCase
 
     public function testMfaStageLocksWhenUsernameDoesNotResolve()
     {
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, false],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], []],
-                ['security', 'mfa.max_verify_attempts', 5, 5],
-                ['security', 'mfa.verify_lockout_duration', 15, 15],
-                ['database', 'type', null, 'mysql'],
-            ]);
+        $service = $this->service([
+            'account_lockout' => ['enable_lockout' => false, 'blacklist_ip_addresses' => []],
+            'mfa' => ['max_verify_attempts' => 5, 'verify_lockout_duration' => 15],
+        ], ['type' => 'mysql']);
 
         // getUserId() finds nothing, so the attempt cannot be counted.
         $pdoStatementMock = $this->createMock(PDOStatement::class);
@@ -76,34 +67,33 @@ class LoginAttemptServiceTest extends TestCase
         $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
 
         $this->assertTrue(
-            $this->loginAttemptService->isAccountLocked('nosuchuser', '192.168.1.1', LoginAttemptService::STAGE_MFA),
+            $service->isAccountLocked('nosuchuser', '192.168.1.1', LoginAttemptService::STAGE_MFA),
             'An uncountable second-factor attempt must fail closed, not drop the limit'
         );
 
         $this->assertFalse(
-            $this->loginAttemptService->isAccountLocked('nosuchuser', '192.168.1.1'),
+            $service->isAccountLocked('nosuchuser', '192.168.1.1'),
             'The password stage must still let unknown usernames reach the authenticator'
         );
     }
 
     public function testMfaStageIgnoresWhitelistedIp()
     {
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, false],
-                ['security', 'account_lockout.whitelist_ip_addresses', [], ['192.168.1.1']],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], []],
-                ['security', 'mfa.max_verify_attempts', 5, 5],
-                ['security', 'mfa.verify_lockout_duration', 15, 15],
-                ['database', 'type', null, 'mysql'],
-            ]);
+        $service = $this->service([
+            'account_lockout' => [
+                'enable_lockout' => false,
+                'whitelist_ip_addresses' => ['192.168.1.1'],
+                'blacklist_ip_addresses' => [],
+            ],
+            'mfa' => ['max_verify_attempts' => 5, 'verify_lockout_duration' => 15],
+        ], ['type' => 'mysql']);
 
         $pdoStatementMock = $this->createMock(PDOStatement::class);
         $pdoStatementMock->method('execute')->willReturn(true);
         $pdoStatementMock->method('fetch')->willReturn(['id' => 1, 'attempts' => 5]);
         $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
 
-        $result = $this->loginAttemptService->isAccountLocked(
+        $result = $service->isAccountLocked(
             'testuser',
             '192.168.1.1',
             LoginAttemptService::STAGE_MFA
@@ -114,33 +104,33 @@ class LoginAttemptServiceTest extends TestCase
 
     public function testWhitelistedIpIsNeverLocked()
     {
-        // Configure ConfigurationManager to return necessary values
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, true],
-                ['security', 'account_lockout.whitelist_ip_addresses', [], ['192.168.1.1', '10.0.0.0/24']],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], ['192.168.1.1']] // Even if IP is also blacklisted
-            ]);
+        $service = $this->service([
+            'account_lockout' => [
+                'enable_lockout' => true,
+                'whitelist_ip_addresses' => ['192.168.1.1', '10.0.0.0/24'],
+                'blacklist_ip_addresses' => ['192.168.1.1'], // Even if IP is also blacklisted
+            ],
+        ]);
 
         // Ensure the method returns false (not locked) for a whitelisted IP
-        $result = $this->loginAttemptService->isAccountLocked('testuser', '192.168.1.1');
+        $result = $service->isAccountLocked('testuser', '192.168.1.1');
         $this->assertFalse($result);
     }
 
     public function testBlacklistedIpIsAlwaysLocked()
     {
+        $service = $this->service([
+            'account_lockout' => [
+                'enable_lockout' => true,
+                'whitelist_ip_addresses' => [],
+                'blacklist_ip_addresses' => ['192.168.1.2'],
+            ],
+        ]);
+
         // Test direct IP match in blacklist
         $blacklistedIps = ['192.168.1.2'];
-        $result = $this->loginAttemptService->isIpInList('192.168.1.2', $blacklistedIps);
+        $result = $service->isIpInList('192.168.1.2', $blacklistedIps);
         $this->assertTrue($result, "IP should match exact entry in blacklist");
-
-        // Configure ConfigurationManager to return necessary values
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, true],
-                ['security', 'account_lockout.whitelist_ip_addresses', [], []],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], ['192.168.1.2']]
-            ]);
 
         // Mock the getUserId method to return a valid ID
         $pdoStatementMock = $this->createMock(PDOStatement::class);
@@ -149,39 +139,39 @@ class LoginAttemptServiceTest extends TestCase
         $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
 
         // Ensure the method returns true (locked) for a blacklisted IP
-        $result = $this->loginAttemptService->isAccountLocked('testuser', '192.168.1.2');
+        $result = $service->isAccountLocked('testuser', '192.168.1.2');
         $this->assertTrue($result);
     }
 
     public function testCidrNotationInWhitelist()
     {
-        // Configure ConfigurationManager to return necessary values
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, true],
-                ['security', 'account_lockout.whitelist_ip_addresses', [], ['10.0.0.0/24']],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], []]
-            ]);
+        $service = $this->service([
+            'account_lockout' => [
+                'enable_lockout' => true,
+                'whitelist_ip_addresses' => ['10.0.0.0/24'],
+                'blacklist_ip_addresses' => [],
+            ],
+        ]);
 
         // Ensure the method returns false (not locked) for an IP in the whitelisted CIDR range
-        $result = $this->loginAttemptService->isAccountLocked('testuser', '10.0.0.15');
+        $result = $service->isAccountLocked('testuser', '10.0.0.15');
         $this->assertFalse($result);
     }
 
     public function testCidrNotationInBlacklist()
     {
+        $service = $this->service([
+            'account_lockout' => [
+                'enable_lockout' => true,
+                'whitelist_ip_addresses' => [],
+                'blacklist_ip_addresses' => ['172.16.0.0/16'],
+            ],
+        ]);
+
         // Test CIDR notation directly
         $blacklistedIps = ['172.16.0.0/16'];
-        $result = $this->loginAttemptService->isIpInList('172.16.10.5', $blacklistedIps);
+        $result = $service->isIpInList('172.16.10.5', $blacklistedIps);
         $this->assertTrue($result, "IP should match CIDR notation in blacklist");
-
-        // Configure ConfigurationManager to return necessary values
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, true],
-                ['security', 'account_lockout.whitelist_ip_addresses', [], []],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], ['172.16.0.0/16']]
-            ]);
 
         // Mock the getUserId method to return a valid ID
         $pdoStatementMock = $this->createMock(PDOStatement::class);
@@ -190,39 +180,39 @@ class LoginAttemptServiceTest extends TestCase
         $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
 
         // Ensure the method returns true (locked) for an IP in the blacklisted CIDR range
-        $result = $this->loginAttemptService->isAccountLocked('testuser', '172.16.10.5');
+        $result = $service->isAccountLocked('testuser', '172.16.10.5');
         $this->assertTrue($result);
     }
 
     public function testWildcardNotationInWhitelist()
     {
-        // Configure ConfigurationManager to return necessary values
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, true],
-                ['security', 'account_lockout.whitelist_ip_addresses', [], ['192.168.2.*']],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], []]
-            ]);
+        $service = $this->service([
+            'account_lockout' => [
+                'enable_lockout' => true,
+                'whitelist_ip_addresses' => ['192.168.2.*'],
+                'blacklist_ip_addresses' => [],
+            ],
+        ]);
 
         // Ensure the method returns false (not locked) for an IP matching the wildcard
-        $result = $this->loginAttemptService->isAccountLocked('testuser', '192.168.2.100');
+        $result = $service->isAccountLocked('testuser', '192.168.2.100');
         $this->assertFalse($result);
     }
 
     public function testWildcardNotationInBlacklist()
     {
+        $service = $this->service([
+            'account_lockout' => [
+                'enable_lockout' => true,
+                'whitelist_ip_addresses' => [],
+                'blacklist_ip_addresses' => ['192.168.3.*'],
+            ],
+        ]);
+
         // Test wildcard notation directly
         $blacklistedIps = ['192.168.3.*'];
-        $result = $this->loginAttemptService->isIpInList('192.168.3.200', $blacklistedIps);
+        $result = $service->isIpInList('192.168.3.200', $blacklistedIps);
         $this->assertTrue($result, "IP should match wildcard notation in blacklist");
-
-        // Configure ConfigurationManager to return necessary values
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, true],
-                ['security', 'account_lockout.whitelist_ip_addresses', [], []],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], ['192.168.3.*']]
-            ]);
 
         // Mock the getUserId method to return a valid ID
         $pdoStatementMock = $this->createMock(PDOStatement::class);
@@ -231,23 +221,23 @@ class LoginAttemptServiceTest extends TestCase
         $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
 
         // Ensure the method returns true (locked) for an IP matching the wildcard
-        $result = $this->loginAttemptService->isAccountLocked('testuser', '192.168.3.200');
+        $result = $service->isAccountLocked('testuser', '192.168.3.200');
         $this->assertTrue($result);
     }
 
     public function testWhitelistTakesPriorityOverBlacklist()
     {
-        // Configure ConfigurationManager to return necessary values
         // Both whitelist and blacklist contain the same IP/range
-        $this->configManagerMock->method('get')
-            ->willReturnMap([
-                ['security', 'account_lockout.enable_lockout', false, true],
-                ['security', 'account_lockout.whitelist_ip_addresses', [], ['192.168.5.0/24']],
-                ['security', 'account_lockout.blacklist_ip_addresses', [], ['192.168.5.0/24']]
-            ]);
+        $service = $this->service([
+            'account_lockout' => [
+                'enable_lockout' => true,
+                'whitelist_ip_addresses' => ['192.168.5.0/24'],
+                'blacklist_ip_addresses' => ['192.168.5.0/24'],
+            ],
+        ]);
 
         // Ensure the method returns false (not locked) because whitelist takes priority
-        $result = $this->loginAttemptService->isAccountLocked('testuser', '192.168.5.10');
+        $result = $service->isAccountLocked('testuser', '192.168.5.10');
         $this->assertFalse($result);
     }
 }

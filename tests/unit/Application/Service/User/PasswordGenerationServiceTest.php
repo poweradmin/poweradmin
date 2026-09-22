@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\User;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\User\PasswordGenerationService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 class PasswordGenerationServiceTest extends TestCase
 {
@@ -117,16 +117,9 @@ class PasswordGenerationServiceTest extends TestCase
      */
     private function serviceWithPolicy(array $policy): PasswordGenerationService
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            static function (string $group, string $key, mixed $default = null) use ($policy): mixed {
-                if ($key === 'password_policy.enable_password_rules') {
-                    return $policy !== [];
-                }
-
-                return $policy[$key] ?? $default;
-            }
-        );
+        $config = new FakeConfiguration([
+            'security' => $policy + ['password_policy.enable_password_rules' => $policy !== []],
+        ]);
 
         return new PasswordGenerationService($config);
     }

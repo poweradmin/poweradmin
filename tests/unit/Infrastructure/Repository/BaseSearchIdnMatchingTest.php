@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 /**
  * A partial IDN query cannot match through LIKE, because the punycode of a substring
@@ -44,7 +44,7 @@ class BaseSearchIdnMatchingTest extends TestCase
             $stmt->execute([$index + 1, $name]);
         }
 
-        $this->search = new TestableBaseSearch($db, $this->createMock(ConfigurationManager::class), 'sqlite');
+        $this->search = new TestableBaseSearch($db, new FakeConfiguration(), 'sqlite');
     }
 
     public function testPartialIdnQueryMatchesTheDecodedName(): void

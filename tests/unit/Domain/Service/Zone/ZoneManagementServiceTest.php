@@ -34,8 +34,8 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(ZoneManagementService::class)]
 class ZoneManagementServiceTest extends TestCase
@@ -43,7 +43,7 @@ class ZoneManagementServiceTest extends TestCase
     private ZoneManagementService $service;
     private ZoneRepositoryInterface&MockObject $zoneRepository;
     private DomainRepositoryInterface&MockObject $domainRepository;
-    private ConfigurationManager&MockObject $config;
+    private FakeConfiguration $config;
     private string $originalErrorLog;
 
     protected function setUp(): void
@@ -56,7 +56,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
         $this->domainRepository = $this->createMock(DomainRepositoryInterface::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
+        $this->config = new FakeConfiguration();
 
         $this->service = new ZoneManagementService(
             $this->zoneRepository,

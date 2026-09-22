@@ -24,8 +24,8 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Zone\AddZoneMasterController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 class AddZoneMasterControllerSoaEditApiTest extends TestCase
 {
@@ -40,10 +40,7 @@ class AddZoneMasterControllerSoaEditApiTest extends TestCase
     {
         $controller = $this->reflection->newInstanceWithoutConstructor();
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnMap([
-            ['dns', 'soa_edit_api_options', null, $configuredOptions],
-        ]);
+        $config = new FakeConfiguration(['dns' => ['soa_edit_api_options' => $configuredOptions]]);
 
         $baseReflection = $this->reflection->getParentClass();
         $property = $baseReflection->getProperty('config');

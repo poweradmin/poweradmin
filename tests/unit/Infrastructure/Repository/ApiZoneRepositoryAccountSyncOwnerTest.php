@@ -27,9 +27,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use ReflectionMethod;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The username pushed to the PowerDNS account field is the oldest owner of one zone.
@@ -64,7 +64,7 @@ class ApiZoneRepositoryAccountSyncOwnerTest extends TestCase
             $this->db,
             $this->createMock(DnsBackendProviderInterface::class),
             'sqlite',
-            $this->createMock(ConfigurationManager::class)
+            new FakeConfiguration()
         );
 
         $method = new ReflectionMethod($repository, 'getOldestOwnerUsername');

@@ -28,23 +28,23 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use RuntimeException;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(DbPermissionTemplateRepository::class)]
 class DbPermissionTemplateRepositoryTest extends TestCase
 {
     private DbPermissionTemplateRepository $repository;
     private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
+    private FakeConfiguration $config;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->db = $this->createMock(PDO::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
+        $this->config = new FakeConfiguration();
         $this->repository = new DbPermissionTemplateRepository($this->db, $this->config);
     }
 

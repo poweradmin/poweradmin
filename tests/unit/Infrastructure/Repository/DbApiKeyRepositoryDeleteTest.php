@@ -16,8 +16,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * delete() must remove an API key and its zone scopes atomically. If the key row
@@ -39,7 +39,7 @@ class DbApiKeyRepositoryDeleteTest extends TestCase
 
     private function repository(): DbApiKeyRepository
     {
-        return new DbApiKeyRepository($this->db, $this->createMock(ConfigurationManager::class));
+        return new DbApiKeyRepository($this->db, new FakeConfiguration());
     }
 
     private function scopeCount(): int

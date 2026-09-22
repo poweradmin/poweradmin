@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Repository\BaseSearch;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Tests\Unit\Infrastructure\Repository\TestableBaseSearch;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Test Search Pattern Handling and Wildcard Functionality
@@ -43,7 +43,7 @@ class BaseSearchPatternTest extends TestCase
     protected function setUp(): void
     {
         $this->mockDb = $this->createMock(\PDO::class);
-        $this->mockConfig = $this->createMock(ConfigurationManager::class);
+        $this->mockConfig = new FakeConfiguration();
 
         $this->baseSearch = new TestableBaseSearch($this->mockDb, $this->mockConfig, 'mysql');
     }

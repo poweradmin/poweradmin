@@ -39,7 +39,7 @@ use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -212,9 +212,9 @@ class ZonesChangeRequestsControllerTest extends TestCase
         return $zones;
     }
 
-    private function config(bool $enabled): ConfigurationManager&MockObject
+    private function config(bool $enabled): ConfigurationInterface&MockObject
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             fn(string $group, string $key, mixed $default = null): mixed => $group === 'approval' && $key === 'enabled' ? $enabled : $default
         );

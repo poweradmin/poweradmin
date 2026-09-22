@@ -34,15 +34,15 @@ use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use RuntimeException;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(MfaService::class)]
 class MfaServiceTest extends TestCase
 {
     private MfaService $service;
     private UserMfaRepositoryInterface&MockObject $userMfaRepository;
-    private ConfigurationManager&MockObject $configManager;
+    private FakeConfiguration $configManager;
     private MfaVerificationMailerInterface&MockObject $mailService;
 
     private string $originalErrorLog;
@@ -56,9 +56,13 @@ class MfaServiceTest extends TestCase
         ini_set('error_log', '/dev/null');
 
         $this->userMfaRepository = $this->createMock(UserMfaRepositoryInterface::class);
-        $this->configManager = $this->createMock(ConfigurationManager::class);
         $this->mailService = $this->createMock(MfaVerificationMailerInterface::class);
+        $this->configure([]);
+    }
 
+    private function configure(array $config): void
+    {
+        $this->configManager = new FakeConfiguration($config);
         $this->service = new MfaService(
             $this->userMfaRepository,
             $this->configManager,
@@ -461,10 +465,7 @@ class MfaServiceTest extends TestCase
         $userMfa->method('validateRecoveryCode')->willReturn(false);
         $userMfa->method('getVerificationData')->willReturn($metadata);
 
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['mail', 'enabled', false, true],
-            ]);
+        $this->configure(['mail' => ['enabled' => true]]);
 
         $this->userMfaRepository->method('findByUserId')
             ->with($userId)
@@ -495,10 +496,7 @@ class MfaServiceTest extends TestCase
         $userMfa->method('validateRecoveryCode')->willReturn(false);
         $userMfa->method('getVerificationData')->willReturn($metadata);
 
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['mail', 'enabled', false, true],
-            ]);
+        $this->configure(['mail' => ['enabled' => true]]);
 
         $this->userMfaRepository->method('findByUserId')
             ->with($userId)
@@ -524,10 +522,7 @@ class MfaServiceTest extends TestCase
         $userMfa->method('validateRecoveryCode')->willReturn(false);
         $userMfa->method('getVerificationData')->willReturn($metadata);
 
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['mail', 'enabled', false, true],
-            ]);
+        $this->configure(['mail' => ['enabled' => true]]);
 
         $this->userMfaRepository->method('findByUserId')
             ->with($userId)
@@ -540,9 +535,7 @@ class MfaServiceTest extends TestCase
     #[Test]
     public function testSendEmailVerificationCodeThrowsWhenMailDisabled(): void
     {
-        $this->configManager->method('get')
-            ->with('mail', 'enabled', false)
-            ->willReturn(false);
+        $this->configure(['mail' => ['enabled' => false]]);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Email verification is not available because mail service is disabled.');
@@ -553,9 +546,7 @@ class MfaServiceTest extends TestCase
     #[Test]
     public function testSendEmailVerificationCodeThrowsWhenEmailEmpty(): void
     {
-        $this->configManager->method('get')
-            ->with('mail', 'enabled', false)
-            ->willReturn(true);
+        $this->configure(['mail' => ['enabled' => true]]);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Email address is required for email verification.');
@@ -566,9 +557,7 @@ class MfaServiceTest extends TestCase
     #[Test]
     public function testRefreshEmailVerificationCodeIfNeededThrowsWhenMailDisabled(): void
     {
-        $this->configManager->method('get')
-            ->with('mail', 'enabled', false)
-            ->willReturn(false);
+        $this->configure(['mail' => ['enabled' => false]]);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Email verification is not available because mail service is disabled.');
@@ -583,9 +572,7 @@ class MfaServiceTest extends TestCase
         $userMfa = $this->createMock(UserMfa::class);
         $userMfa->method('getType')->willReturn(UserMfa::TYPE_APP);
 
-        $this->configManager->method('get')
-            ->with('mail', 'enabled', false)
-            ->willReturn(true);
+        $this->configure(['mail' => ['enabled' => true]]);
 
         // Mock isMailConfigurationValid to return true to bypass the validation check
         $this->mailService->method('isMailConfigurationValid')
@@ -602,9 +589,7 @@ class MfaServiceTest extends TestCase
     #[Test]
     public function testGenerateQrCodeSvgReturnsSvgString(): void
     {
-        $this->configManager->method('get')
-            ->with('interface', 'title', 'Poweradmin')
-            ->willReturn('TestApp');
+        $this->configure(['interface' => ['title' => 'TestApp']]);
 
         $email = 'test@example.com';
         $secret = $this->service->generateSecretKey();
@@ -632,10 +617,7 @@ class MfaServiceTest extends TestCase
         $userMfa->method('validateRecoveryCode')->willReturn(false);
         $userMfa->method('getVerificationData')->willReturn($metadata);
 
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['mail', 'enabled', false, true],
-            ]);
+        $this->configure(['mail' => ['enabled' => true]]);
 
         $this->userMfaRepository->method('findByUserId')
             ->with($userId)
@@ -662,10 +644,7 @@ class MfaServiceTest extends TestCase
         $userMfa->method('validateRecoveryCode')->willReturn(false);
         $userMfa->method('getVerificationData')->willReturn($metadata);
 
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['mail', 'enabled', false, true],
-            ]);
+        $this->configure(['mail' => ['enabled' => true]]);
 
         $this->userMfaRepository->method('findByUserId')
             ->with($userId)
@@ -697,11 +676,11 @@ class MfaServiceTest extends TestCase
 
     private function configureMfaEnforcementSettings(bool $enabled, bool $enforced, bool $skipForExternalAuth): void
     {
-        $this->configManager->method('get')->willReturnMap([
-            ['security', 'mfa.enabled', false, $enabled],
-            ['security', 'mfa.enforced', false, $enforced],
-            ['security', 'mfa.skip_for_external_auth', false, $skipForExternalAuth],
-        ]);
+        $this->configure(['security' => [
+            'mfa.enabled' => $enabled,
+            'mfa.enforced' => $enforced,
+            'mfa.skip_for_external_auth' => $skipForExternalAuth,
+        ]]);
     }
 
     private function createDbWithEnforcementPermission(bool $hasPermission): PDO

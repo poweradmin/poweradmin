@@ -5,8 +5,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Zones come from the backend, ownership from the local zones tables, and the
@@ -42,8 +42,7 @@ class ApiZoneRepositoryCountZonesTest extends TestCase
             ['id' => 3, 'name' => '1.168.192.in-addr.arpa'],
             ['id' => 4, 'name' => '42.example'],
         ]);
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturn(null);
+        $config = new FakeConfiguration();
 
         return new ApiZoneRepository($this->db, $backend, 'sqlite', $config);
     }

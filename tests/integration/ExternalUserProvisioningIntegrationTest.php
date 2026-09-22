@@ -28,13 +28,12 @@ use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbExternalIdentityRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Psr\Log\NullLogger;
-use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Pins the OIDC and SAML provisioning behaviour against the shipped SQLite
@@ -361,7 +360,7 @@ class ExternalUserProvisioningIntegrationTest extends TestCase
         );
     }
 
-    private function configManager(array $overrides): ConfigurationManager
+    private function configManager(array $overrides): FakeConfiguration
     {
         $section = array_merge([
             'sync_user_info' => true,
@@ -372,16 +371,11 @@ class ExternalUserProvisioningIntegrationTest extends TestCase
             'group_mapping' => ['dns-editors' => ['Editors', 'Viewers']],
         ], $overrides);
 
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $config = $reflection->newInstanceWithoutConstructor();
-        $reflection->getProperty('settings')->setValue($config, [
+        return new FakeConfiguration([
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
             'oidc' => $section,
             'saml' => $section,
         ]);
-        $reflection->getProperty('initialized')->setValue($config, true);
-
-        return $config;
     }
 
     private function oidcUser(

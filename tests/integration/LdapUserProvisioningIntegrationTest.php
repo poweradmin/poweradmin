@@ -26,13 +26,12 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbExternalIdentityRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Psr\Log\NullLogger;
-use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Exercises the LDAP identity-sync, auto-provisioning and group-mapping paths
@@ -220,7 +219,7 @@ class LdapUserProvisioningIntegrationTest extends TestCase
         );
     }
 
-    private function configManager(): ConfigurationManager
+    private function configManager(): FakeConfiguration
     {
         $settings = [
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
@@ -236,14 +235,7 @@ class LdapUserProvisioningIntegrationTest extends TestCase
             ],
         ];
 
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $config = $reflection->newInstanceWithoutConstructor();
-        $settingsProp = $reflection->getProperty('settings');
-        $settingsProp->setValue($config, $settings);
-        $initProp = $reflection->getProperty('initialized');
-        $initProp->setValue($config, true);
-
-        return $config;
+        return new FakeConfiguration($settings);
     }
 
     private function userInfo(string $uid): LdapUserInfo

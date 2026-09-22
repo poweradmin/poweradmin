@@ -27,16 +27,15 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(DomainManager::class)]
 class DomainManagerSerialPolicyTest extends TestCase
 {
     private DomainManager $manager;
     private MockObject $backendProvider;
-    private MockObject $config;
     private ReflectionClass $reflection;
 
     protected function setUp(): void
@@ -44,10 +43,9 @@ class DomainManagerSerialPolicyTest extends TestCase
         $this->reflection = new ReflectionClass(DomainManager::class);
         $this->manager = $this->reflection->newInstanceWithoutConstructor();
         $this->backendProvider = $this->createMock(DnsBackendProviderInterface::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
 
         $this->setProperty('backendProvider', $this->backendProvider);
-        $this->setProperty('config', $this->config);
+        $this->setProperty('config', new FakeConfiguration());
         $this->setProperty('logger', new NullLogger());
     }
 
@@ -67,10 +65,9 @@ class DomainManagerSerialPolicyTest extends TestCase
 
     private function configureDefaults(string $soaEditApi, string $soaEdit): void
     {
-        $this->config->method('get')->willReturnMap([
-            ['dns', 'soa_edit_api', '', $soaEditApi],
-            ['dns', 'soa_edit', '', $soaEdit],
-        ]);
+        $this->setProperty('config', new FakeConfiguration([
+            'dns' => ['soa_edit_api' => $soaEditApi, 'soa_edit' => $soaEdit],
+        ]));
     }
 
     public function testExplicitValueWinsOverConfigDefault(): void

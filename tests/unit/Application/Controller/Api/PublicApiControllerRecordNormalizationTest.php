@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use ReflectionClass;
 
 /**
@@ -59,7 +59,7 @@ class PublicApiControllerRecordNormalizationTest extends TestCase
             }
         };
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(fn($group, $key, $default = null) => $default);
         (new ReflectionClass(BaseController::class))->getProperty('config')->setValue($controller, $config);
 

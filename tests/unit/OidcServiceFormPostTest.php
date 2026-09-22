@@ -31,7 +31,7 @@ use Poweradmin\Application\Service\Auth\OidcService;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Auth\MfaService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionMethod;
@@ -66,7 +66,7 @@ class OidcServiceFormPostTest extends TestCase
             'security.session_key' => self::SESSION_KEY,
         ];
 
-        $configManager = $this->createMock(ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationInterface::class);
         $configManager->method('get')->willReturnCallback(
             fn($group, $key, $default = null) => $configValues["$group.$key"] ?? $default
         );

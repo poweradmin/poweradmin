@@ -28,10 +28,10 @@ use Poweradmin\Application\Service\Auth\OidcConfigurationService;
 use Poweradmin\Application\Service\Auth\OidcService;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\Service\Auth\MfaService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionMethod;
+use TestHelpers\FakeConfiguration;
 
 class OidcServiceIdTokenTest extends TestCase
 {
@@ -40,8 +40,7 @@ class OidcServiceIdTokenTest extends TestCase
 
     protected function setUp(): void
     {
-        $configManager = $this->createMock(ConfigurationManager::class);
-        $configManager->method('get')->willReturn(null);
+        $configManager = new FakeConfiguration();
 
         $oidcConfigService = $this->createMock(OidcConfigurationService::class);
         $userProvisioningService = $this->createMock(UserProvisioningService::class);

@@ -3,7 +3,7 @@
 namespace Poweradmin\Tests\Unit\Api;
 
 use Poweradmin\Application\Controller\Api\DocsController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use ReflectionClass;
 
 /**
@@ -21,7 +21,7 @@ class TestableDocsController extends DocsController
         // Empty implementation for testing
     }
 
-    public function setConfig(ConfigurationManager $config): void
+    public function setConfig(ConfigurationInterface $config): void
     {
         $this->config = $config;
     }

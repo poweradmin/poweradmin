@@ -26,8 +26,8 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Pins the id lookups; the master lookup answers for every zone kind.
@@ -50,7 +50,7 @@ class SqlDomainRepositoryLookupsTest extends TestCase
             (4, 'empty-master.example.com', '', 'MASTER'),
             (5, 'untyped.example.com', NULL, '')");
 
-        $this->repository = new SqlDomainRepository($db, $this->createMock(ConfigurationManager::class));
+        $this->repository = new SqlDomainRepository($db, new FakeConfiguration());
     }
 
     #[Test]

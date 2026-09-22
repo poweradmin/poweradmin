@@ -26,13 +26,13 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Tests for EditController::handleZoneMetadataPost(), which dispatches the
@@ -47,40 +47,17 @@ use Poweradmin\Domain\Service\Validation\Refusal;
 class EditControllerZoneMetadataPostTest extends TestCase
 {
     private ReflectionClass $controllerReflection;
-    private array $configBackup = [];
-    private bool $configInitializedBackup = false;
     private array $postBackup = [];
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->controllerReflection = new ReflectionClass(EditController::class);
-
-        $configReflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $configReflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $configReflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $config = ConfigurationManager::getInstance();
-        $this->configBackup = $settingsProperty->getValue($config);
-        $this->configInitializedBackup = $initializedProperty->getValue($config);
-
         $this->postBackup = $_POST;
     }
 
     protected function tearDown(): void
     {
-        $configReflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $configReflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $configReflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $config = ConfigurationManager::getInstance();
-        $settingsProperty->setValue($config, $this->configBackup);
-        $initializedProperty->setValue($config, $this->configInitializedBackup);
-
         $_POST = $this->postBackup;
         unset($_SESSION['userid']);
 
@@ -296,23 +273,13 @@ class EditControllerZoneMetadataPostTest extends TestCase
         return $messages->getMessages('edit') ?? [];
     }
 
-    private function primeConfig(array $overrides = []): ConfigurationManager
+    private function primeConfig(array $overrides = []): FakeConfiguration
     {
-        $config = ConfigurationManager::getInstance();
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $settingsProperty->setValue($config, array_replace_recursive([
+        return new FakeConfiguration(array_replace_recursive([
             'database' => ['type' => 'mysql'],
             'dns' => ['ttl' => 86400, 'backend' => 'sql'],
             'security' => ['global_token_validation' => false],
         ], $overrides));
-        $initializedProperty->setValue($config, true);
-
-        return $config;
     }
 
     private function setProperty(object $object, string $propertyName, mixed $value): void

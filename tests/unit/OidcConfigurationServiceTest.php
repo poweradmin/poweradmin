@@ -25,20 +25,26 @@ namespace Poweradmin\Tests\Unit;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\OidcConfigurationService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\Logger;
+use TestHelpers\FakeConfiguration;
 
 class OidcConfigurationServiceTest extends TestCase
 {
-    private ConfigurationManager|MockObject $configManager;
+    private ConfigurationInterface|MockObject $configManager;
     private Logger|MockObject $logger;
     private OidcConfigurationService $service;
 
     protected function setUp(): void
     {
-        $this->configManager = $this->createMock(ConfigurationManager::class);
+        $this->configManager = $this->createMock(ConfigurationInterface::class);
         $this->logger = $this->createMock(Logger::class);
         $this->service = new OidcConfigurationService($this->configManager, $this->logger);
+    }
+
+    private function service(array $oidc): OidcConfigurationService
+    {
+        return new OidcConfigurationService(new FakeConfiguration(['oidc' => $oidc]), $this->logger);
     }
 
     public function testUrlTemplatingWithTenantPlaceholder(): void
@@ -297,53 +303,44 @@ class OidcConfigurationServiceTest extends TestCase
 
     public function testDescribeProviderConfigErrorReportsMissingProvider(): void
     {
-        $this->configManager
-            ->method('get')
-            ->with('oidc', 'providers', [])
-            ->willReturn([]);
+        $service = $this->service(['providers' => []]);
 
         $this->assertSame(
             "provider 'azure' is not defined in oidc.providers",
-            $this->service->describeProviderConfigError('azure')
+            $service->describeProviderConfigError('azure')
         );
     }
 
     public function testDescribeProviderConfigErrorReportsMissingClientSecret(): void
     {
-        $this->configManager
-            ->method('get')
-            ->with('oidc', 'providers', [])
-            ->willReturn([
-                'azure' => [
-                    'client_id' => 'abc',
-                    'auto_discovery' => true,
-                    // client_secret missing
-                ],
-            ]);
+        $service = $this->service(['providers' => [
+            'azure' => [
+                'client_id' => 'abc',
+                'auto_discovery' => true,
+                // client_secret missing
+            ],
+        ]]);
 
         $this->assertSame(
             "missing required field 'client_secret'",
-            $this->service->describeProviderConfigError('azure')
+            $service->describeProviderConfigError('azure')
         );
     }
 
     public function testDescribeProviderConfigErrorReportsMissingEndpointWhenDiscoveryDisabled(): void
     {
-        $this->configManager
-            ->method('get')
-            ->with('oidc', 'providers', [])
-            ->willReturn([
-                'azure' => [
-                    'client_id' => 'abc',
-                    'client_secret' => 'shh',
-                    'auto_discovery' => false,
-                    // No endpoint URLs and no discovery to fill them in
-                ],
-            ]);
+        $service = $this->service(['providers' => [
+            'azure' => [
+                'client_id' => 'abc',
+                'client_secret' => 'shh',
+                'auto_discovery' => false,
+                // No endpoint URLs and no discovery to fill them in
+            ],
+        ]]);
 
         $this->assertSame(
             "missing required field 'authorize_url' (auto_discovery is disabled)",
-            $this->service->describeProviderConfigError('azure')
+            $service->describeProviderConfigError('azure')
         );
     }
 
@@ -351,18 +348,15 @@ class OidcConfigurationServiceTest extends TestCase
     {
         // With auto_discovery enabled the endpoint URLs are discovered at flow
         // time, so listing must not insist on them up-front.
-        $this->configManager
-            ->method('get')
-            ->with('oidc', 'providers', [])
-            ->willReturn([
-                'azure' => [
-                    'client_id' => 'abc',
-                    'client_secret' => 'shh',
-                    'auto_discovery' => true,
-                ],
-            ]);
+        $service = $this->service(['providers' => [
+            'azure' => [
+                'client_id' => 'abc',
+                'client_secret' => 'shh',
+                'auto_discovery' => true,
+            ],
+        ]]);
 
-        $this->assertNull($this->service->describeProviderConfigError('azure'));
+        $this->assertNull($service->describeProviderConfigError('azure'));
     }
 
     /**
@@ -372,32 +366,29 @@ class OidcConfigurationServiceTest extends TestCase
      */
     public function testNumericGroupKeysAreValid(): void
     {
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['oidc', 'permission_template_mapping', [], ['1001' => 'Editor', '1002' => 'Viewer']],
-            ]);
+        $service = $this->service([
+            'permission_template_mapping' => ['1001' => 'Editor', '1002' => 'Viewer'],
+        ]);
 
-        $this->assertSame([], $this->service->validatePermissionTemplateMapping());
+        $this->assertSame([], $service->validatePermissionTemplateMapping());
     }
 
     public function testZeroGroupKeyIsValid(): void
     {
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['oidc', 'permission_template_mapping', [], ['0' => 'Editor']],
-            ]);
+        $service = $this->service([
+            'permission_template_mapping' => ['0' => 'Editor'],
+        ]);
 
-        $this->assertSame([], $this->service->validatePermissionTemplateMapping());
+        $this->assertSame([], $service->validatePermissionTemplateMapping());
     }
 
     public function testEmptyTemplateNameIsRejectedOnce(): void
     {
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['oidc', 'permission_template_mapping', [], ['admins' => '']],
-            ]);
+        $service = $this->service([
+            'permission_template_mapping' => ['admins' => ''],
+        ]);
 
-        $errors = $this->service->validatePermissionTemplateMapping();
+        $errors = $service->validatePermissionTemplateMapping();
 
         $this->assertCount(1, $errors);
         $this->assertStringContainsString('admins', $errors[0]);
@@ -405,59 +396,54 @@ class OidcConfigurationServiceTest extends TestCase
 
     public function testNonArrayMappingIsRejected(): void
     {
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['oidc', 'permission_template_mapping', [], 'admins=Editor'],
-            ]);
+        $service = $this->service([
+            'permission_template_mapping' => 'admins=Editor',
+        ]);
 
-        $this->assertCount(1, $this->service->validatePermissionTemplateMapping());
+        $this->assertCount(1, $service->validatePermissionTemplateMapping());
     }
 
     public function testAutoProvisioningTemplateMissingWhenDefaultIsBlank(): void
     {
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['oidc', 'enabled', false, true],
-                ['oidc', 'auto_provision', true, true],
-                ['oidc', 'default_permission_template', '', ''],
-            ]);
+        $service = $this->service([
+            'enabled' => true,
+            'auto_provision' => true,
+            'default_permission_template' => '',
+        ]);
 
-        $this->assertTrue($this->service->isAutoProvisioningTemplateMissing());
+        $this->assertTrue($service->isAutoProvisioningTemplateMissing());
     }
 
     public function testAutoProvisioningTemplateNotMissingWhenDefaultIsSet(): void
     {
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['oidc', 'enabled', false, true],
-                ['oidc', 'auto_provision', true, true],
-                ['oidc', 'default_permission_template', '', 'Guest'],
-            ]);
+        $service = $this->service([
+            'enabled' => true,
+            'auto_provision' => true,
+            'default_permission_template' => 'Guest',
+        ]);
 
-        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+        $this->assertFalse($service->isAutoProvisioningTemplateMissing());
     }
 
     public function testAutoProvisioningTemplateNotMissingWhenProvisioningIsOff(): void
     {
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['oidc', 'enabled', false, true],
-                ['oidc', 'auto_provision', true, false],
-                ['oidc', 'default_permission_template', '', ''],
-            ]);
+        $service = $this->service([
+            'enabled' => true,
+            'auto_provision' => false,
+            'default_permission_template' => '',
+        ]);
 
-        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+        $this->assertFalse($service->isAutoProvisioningTemplateMissing());
     }
 
     public function testAutoProvisioningTemplateNotMissingWhenOidcDisabled(): void
     {
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['oidc', 'enabled', false, false],
-                ['oidc', 'auto_provision', true, true],
-                ['oidc', 'default_permission_template', '', ''],
-            ]);
+        $service = $this->service([
+            'enabled' => false,
+            'auto_provision' => true,
+            'default_permission_template' => '',
+        ]);
 
-        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+        $this->assertFalse($service->isAutoProvisioningTemplateMissing());
     }
 }

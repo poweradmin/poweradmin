@@ -33,7 +33,7 @@ use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\ApiKeyWriteResult;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
@@ -44,7 +44,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     private ApiKeyService $service;
     private ApiKeyRepositoryInterface&MockObject $apiKeyRepository;
     private UserLookupInterface&MockObject $users;
-    private ConfigurationManager&MockObject $config;
+    private FakeConfiguration $config;
 
     protected function setUp(): void
     {
@@ -52,16 +52,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
 
         $this->apiKeyRepository = $this->createMock(ApiKeyRepositoryInterface::class);
         $this->users = $this->createMock(UserLookupInterface::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
-
-        $this->service = new ApiKeyService(
-            $this->apiKeyRepository,
-            $this->users,
-            $this->config,
-            $this->createMock(PermissionService::class),
-            StubActor::nobody(),
-            new UserContextService()
-        );
+        $this->configureApi([]);
 
         // Initialize session
         if (!isset($_SESSION)) {
@@ -78,9 +69,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testAuthenticateReturnsFalseWhenApiDisabled(): void
     {
-        $this->config->method('get')
-            ->with('api', 'enabled', false)
-            ->willReturn(false);
+        $this->configureApi(['enabled' => false]);
 
         $result = $this->service->authenticate('pwa_test_key');
         $this->assertFalse($result);
@@ -89,10 +78,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testAuthenticateReturnsFalseWhenKeyNotFound(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $this->apiKeyRepository->method('findBySecretKey')->willReturn(null);
 
@@ -103,10 +89,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testAuthenticateReturnsFalseWhenKeyIsDisabled(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(false);
@@ -120,10 +103,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testAuthenticateReturnsFalseWhenKeyIsExpired(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(false);
@@ -137,10 +117,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testAuthenticateReturnsTrueForValidKey(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(true);
@@ -162,10 +139,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testAuthenticateReturnsTrueForValidKeyWithNoExpiration(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(true);
@@ -185,9 +159,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testGetUserIdFromApiKeyReturnsZeroWhenApiDisabled(): void
     {
-        $this->config->method('get')
-            ->with('api', 'enabled', false)
-            ->willReturn(false);
+        $this->configureApi(['enabled' => false]);
 
         $result = $this->service->getUserIdFromApiKey('pwa_test_key');
         $this->assertEquals(0, $result);
@@ -196,10 +168,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testGetUserIdFromApiKeyReturnsZeroWhenKeyNotFound(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $this->apiKeyRepository->method('findBySecretKey')->willReturn(null);
 
@@ -210,10 +179,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testGetUserIdFromApiKeyReturnsZeroWhenKeyIsDisabled(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(false);
@@ -227,10 +193,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testGetUserIdFromApiKeyReturnsZeroWhenKeyIsExpired(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(false);
@@ -244,10 +207,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testGetUserIdFromApiKeyReturnsUserIdForValidKey(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(true);
@@ -264,10 +224,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testGetUserIdFromApiKeyReturnsUserIdForKeyWithNoExpiration(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(true);
@@ -283,10 +240,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testAuthenticateWithNonPrefixedKey(): void
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(true);
@@ -315,10 +269,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
 
     private function validKeyOwnedBy(?int $ownerId): ApiKey&MockObject
     {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
+        $this->configureApi(['enabled' => true]);
 
         $apiKey = $this->createMock(ApiKey::class);
         $apiKey->method('isValid')->willReturn(true);
@@ -384,6 +335,19 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
         $this->mockOwnerRow(['active' => 0]);
 
         $this->assertNull($this->service->getIdFromApiKey('pwa_valid_key'));
+    }
+
+    private function configureApi(array $api): void
+    {
+        $this->config = new FakeConfiguration(['api' => $api]);
+        $this->service = new ApiKeyService(
+            $this->apiKeyRepository,
+            $this->users,
+            $this->config,
+            $this->createMock(PermissionService::class),
+            StubActor::nobody(),
+            new UserContextService()
+        );
     }
 
     /**
@@ -490,10 +454,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testCreateApiKeyDeniedWithoutPermission(): void
     {
-        $this->config->method('get')->willReturnMap([
-            ['api', 'enabled', false, true],
-            ['api', 'max_keys_per_user', 5, 5],
-        ]);
+        $this->configureApi(['enabled' => true, 'max_keys_per_user' => 5]);
 
         // User holds neither user_is_ueberuser nor api_manage_keys
         $this->grantPermissions([Permission::PERM_ZONE_CONTENT_VIEW_OWN]);
@@ -510,10 +471,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     #[Test]
     public function testCreateApiKeyAllowedForAdmin(): void
     {
-        $this->config->method('get')->willReturnMap([
-            ['api', 'enabled', false, true],
-            ['api', 'max_keys_per_user', 5, 5],
-        ]);
+        $this->configureApi(['enabled' => true, 'max_keys_per_user' => 5]);
 
         // Admins bypass both the permission gate and the per-user key limit
         $this->grantPermissions([Permission::PERM_USER_IS_UEBERUSER]);

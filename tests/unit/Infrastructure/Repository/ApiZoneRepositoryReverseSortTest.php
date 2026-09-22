@@ -27,8 +27,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The reverse zone list offers Type as a sortable column, so the API-mode
@@ -75,7 +75,7 @@ class ApiZoneRepositoryReverseSortTest extends TestCase
 
     private function repository(): ApiZoneRepository
     {
-        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', $this->createMock(ConfigurationManager::class));
+        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', new FakeConfiguration());
     }
 
     /** @return array<int, array<string, mixed>> */

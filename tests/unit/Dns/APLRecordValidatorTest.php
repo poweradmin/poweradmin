@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\APLRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Tests for the APLRecordValidator
@@ -39,13 +39,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class APLRecordValidatorTest extends TestCase
 {
     private APLRecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private FakeConfiguration $configMock;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->configMock = new FakeConfiguration(['dns' => ['domain' => 'example.com']]);
 
         $this->validator = new APLRecordValidator(new HostnameValidator(new HostnamePolicy(true, true)), $this->configMock);
     }

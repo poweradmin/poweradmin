@@ -30,15 +30,15 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ApiKey;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(DbApiKeyRepository::class)]
 class DbApiKeyRepositoryTest extends TestCase
 {
     private DbApiKeyRepository $repository;
     private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
+    private FakeConfiguration $config;
     private string $originalErrorLog;
 
     protected function setUp(): void
@@ -50,7 +50,7 @@ class DbApiKeyRepositoryTest extends TestCase
         ini_set('error_log', '/dev/null');
 
         $this->db = $this->createMock(PDO::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
+        $this->config = new FakeConfiguration();
         $this->repository = new DbApiKeyRepository($this->db, $this->config);
     }
 
@@ -259,9 +259,7 @@ class DbApiKeyRepositoryTest extends TestCase
         $stmt->method('execute')->willReturn(true);
         $stmt->method('rowCount')->willReturn(1);
 
-        $this->config->method('get')
-            ->with('database', 'type')
-            ->willReturn('mysql');
+        $this->repository = new DbApiKeyRepository($this->db, new FakeConfiguration(['database' => ['type' => 'mysql']]));
 
         $this->db->method('prepare')
             ->with($this->stringContains('UPDATE api_keys SET last_used_at'))
@@ -281,9 +279,7 @@ class DbApiKeyRepositoryTest extends TestCase
         $stmt->method('execute')->willReturn(true);
         $stmt->method('rowCount')->willReturn(1);
 
-        $this->config->method('get')
-            ->with('database', 'type')
-            ->willReturn('mysql');
+        $this->repository = new DbApiKeyRepository($this->db, new FakeConfiguration(['database' => ['type' => 'mysql']]));
 
         $this->db->method('prepare')
             ->with($this->stringContains('UPDATE api_keys SET disabled'))
@@ -301,9 +297,7 @@ class DbApiKeyRepositoryTest extends TestCase
         $stmt->method('execute')->willReturn(true);
         $stmt->method('rowCount')->willReturn(1);
 
-        $this->config->method('get')
-            ->with('database', 'type')
-            ->willReturn('mysql');
+        $this->repository = new DbApiKeyRepository($this->db, new FakeConfiguration(['database' => ['type' => 'mysql']]));
 
         $this->db->method('prepare')
             ->with($this->stringContains('UPDATE api_keys SET disabled'))
@@ -454,8 +448,7 @@ class DbApiKeyRepositoryTest extends TestCase
     {
         foreach (['mysql' => 'BINARY secret_key = :secretKey', 'pgsql' => 'WHERE secret_key = :secretKey', 'sqlite' => 'WHERE secret_key = :secretKey'] as $dbType => $expected) {
             $db = $this->createMock(PDO::class);
-            $config = $this->createMock(ConfigurationManager::class);
-            $config->method('get')->willReturnCallback(fn($group, $key, $default = null) => $group === 'database' && $key === 'type' ? $dbType : $default);
+            $config = new FakeConfiguration(['database' => ['type' => $dbType]]);
 
             $miss = $this->createMock(PDOStatement::class);
             $miss->method('execute')->willReturn(true);

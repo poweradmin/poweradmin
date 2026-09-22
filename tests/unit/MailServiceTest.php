@@ -4,35 +4,37 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Mail\MailService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
+use TestHelpers\FakeConfiguration;
 
 class MailServiceTest extends TestCase
 {
     private MailService $mailService;
-    private ConfigurationManager $config;
     private LoggerInterface $logger;
 
     protected function setUp(): void
     {
-        $this->config = $this->createMock(ConfigurationManager::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->mailService = new MailService($this->config, $this->logger);
+        $this->mailService = new MailService(new FakeConfiguration(), $this->logger);
+    }
+
+    private function service(array $mail): MailService
+    {
+        return new MailService(new FakeConfiguration(['mail' => $mail]), $this->logger);
     }
 
     public function testBoundaryGenerationConsistency(): void
     {
-        // Configure mock to enable mail and use PHP transport
-        $this->config->expects($this->any())->method('get')->willReturnMap([
-            ['mail', 'enabled', false, true],
-            ['mail', 'transport', 'php', 'php'],
-            ['mail', 'from', 'poweradmin@example.com', 'test@example.com'],
-            ['mail', 'from_name', '', 'Test Name'],
-            ['mail', 'return_path', 'poweradmin@example.com', 'test@example.com'],
+        $mailService = $this->service([
+            'enabled' => true,
+            'transport' => 'php',
+            'from' => 'test@example.com',
+            'from_name' => 'Test Name',
+            'return_path' => 'test@example.com',
         ]);
 
         // Use reflection to access private methods for testing
-        $reflection = new \ReflectionClass($this->mailService);
+        $reflection = new \ReflectionClass($mailService);
 
         $getBaseHeadersMethod = $reflection->getMethod('getBaseHeaders');
         $getBaseHeadersMethod->setAccessible(true);
@@ -48,10 +50,10 @@ class MailServiceTest extends TestCase
         $plainBody = 'Test plain text';
 
         // Get headers with boundary
-        $headers = $getBaseHeadersMethod->invoke($this->mailService, $fromEmail, $fromName, $boundary);
+        $headers = $getBaseHeadersMethod->invoke($mailService, $fromEmail, $fromName, $boundary);
 
         // Get message body with same boundary
-        $messageBody = $getMessageBodyMethod->invoke($this->mailService, $htmlBody, $plainBody, $boundary);
+        $messageBody = $getMessageBodyMethod->invoke($mailService, $htmlBody, $plainBody, $boundary);
 
         // Verify boundary is consistent in both headers and message body
         $this->assertStringContainsString("boundary=\"$boundary\"", $headers['Content-Type']);
@@ -61,16 +63,14 @@ class MailServiceTest extends TestCase
 
     private function buildDsn(string $encryption, int $port): string
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnMap([
-            ['mail', 'host', 'localhost', 'smtp.example.com'],
-            ['mail', 'port', 25, $port],
-            ['mail', 'encryption', '', $encryption],
-            ['mail', 'username', '', ''],
-            ['mail', 'password', '', ''],
-            ['mail', 'auth', false, false],
+        $service = $this->service([
+            'host' => 'smtp.example.com',
+            'port' => $port,
+            'encryption' => $encryption,
+            'username' => '',
+            'password' => '',
+            'auth' => false,
         ]);
-        $service = new MailService($config, $this->logger);
         $method = new \ReflectionMethod($service, 'buildSmtpDsn');
         $method->setAccessible(true);
         return $method->invoke($service);
@@ -78,7 +78,7 @@ class MailServiceTest extends TestCase
 
     public function testReplyToBecomesAnAddressHeaderOnSmtpMessages(): void
     {
-        $service = new MailService($this->config, $this->logger);
+        $service = new MailService(new FakeConfiguration(), $this->logger);
         $email = new \Symfony\Component\Mime\Email();
 
         $method = new \ReflectionMethod($service, 'applySmtpHeaders');
@@ -168,13 +168,11 @@ class MailServiceTest extends TestCase
         $reflection = new \ReflectionClass($this->mailService);
         $sendMailMethod = $reflection->getMethod('sendMail');
 
-        // Configure mock
-        $this->config->expects($this->any())->method('get')->willReturnMap([
-            ['mail', 'enabled', false, false], // Disable mail to avoid actual sending
-        ]);
+        // Disable mail to avoid actual sending
+        $mailService = $this->service(['enabled' => false]);
 
         // Test with multipart content - should generate boundary
-        $result = $this->mailService->sendMail('test@example.com', 'Test Subject', '<html>HTML</html>', 'Plain text');
+        $result = $mailService->sendMail('test@example.com', 'Test Subject', '<html>HTML</html>', 'Plain text');
 
         // Since mail is disabled, it should return false but we've tested the boundary logic
         $this->assertFalse($result);
@@ -182,13 +180,11 @@ class MailServiceTest extends TestCase
 
     public function testNoBoundaryForSinglePart(): void
     {
-        // Configure mock
-        $this->config->expects($this->any())->method('get')->willReturnMap([
-            ['mail', 'enabled', false, false], // Disable mail to avoid actual sending
-        ]);
+        // Disable mail to avoid actual sending
+        $mailService = $this->service(['enabled' => false]);
 
         // Test with single-part content - should not generate boundary
-        $result = $this->mailService->sendMail('test@example.com', 'Test Subject', '<html>HTML</html>', '');
+        $result = $mailService->sendMail('test@example.com', 'Test Subject', '<html>HTML</html>', '');
 
         // Since mail is disabled, it should return false
         $this->assertFalse($result);

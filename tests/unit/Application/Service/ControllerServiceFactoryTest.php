@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\Auth\RecaptchaService;
 use Poweradmin\Application\Service\Auth\SamlConfigurationService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Psr\Log\NullLogger;
 use ReflectionProperty;
@@ -42,7 +42,7 @@ class ControllerServiceFactoryTest extends TestCase
 {
     private function makeFactory(): ControllerServiceFactory
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             fn(string $group, string $key, $default = null) => ($group === 'database' && $key === 'type') ? 'mysql' : $default
         );

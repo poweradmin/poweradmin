@@ -2,28 +2,21 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Database;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
+use TestHelpers\FakeConfiguration;
 
 class TableNameServiceEnumTest extends TestCase
 {
-    private ConfigurationManager&MockObject $mockConfig;
-
-    protected function setUp(): void
+    private function service(?string $pdnsDbName): TableNameService
     {
-        $this->mockConfig = $this->createMock(ConfigurationManager::class);
+        return new TableNameService(new FakeConfiguration(['database' => ['pdns_db_name' => $pdnsDbName]]));
     }
 
     public function testGetTableWithoutPrefix(): void
     {
-        $this->mockConfig->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn(null);
-
-        $service = new TableNameService($this->mockConfig);
+        $service = $this->service(null);
 
         $this->assertEquals('domains', $service->getTable(PdnsTable::DOMAINS));
         $this->assertEquals('records', $service->getTable(PdnsTable::RECORDS));
@@ -32,11 +25,7 @@ class TableNameServiceEnumTest extends TestCase
 
     public function testGetTableWithPrefix(): void
     {
-        $this->mockConfig->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('pdns_test');
-
-        $service = new TableNameService($this->mockConfig);
+        $service = $this->service('pdns_test');
 
         $this->assertEquals('pdns_test.domains', $service->getTable(PdnsTable::DOMAINS));
         $this->assertEquals('pdns_test.records', $service->getTable(PdnsTable::RECORDS));
@@ -45,11 +34,7 @@ class TableNameServiceEnumTest extends TestCase
 
     public function testGetTablesMultiple(): void
     {
-        $this->mockConfig->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('test_db');
-
-        $service = new TableNameService($this->mockConfig);
+        $service = $this->service('test_db');
 
         $result = $service->getTables(
             PdnsTable::DOMAINS,
@@ -68,11 +53,7 @@ class TableNameServiceEnumTest extends TestCase
 
     public function testGetTablesSingleTable(): void
     {
-        $this->mockConfig->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn(null);
-
-        $service = new TableNameService($this->mockConfig);
+        $service = $this->service(null);
 
         $result = $service->getTables(PdnsTable::DOMAINS);
 
@@ -81,11 +62,7 @@ class TableNameServiceEnumTest extends TestCase
 
     public function testGetTablesEmptyArray(): void
     {
-        $this->mockConfig->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('test');
-
-        $service = new TableNameService($this->mockConfig);
+        $service = $this->service('test');
 
         $result = $service->getTables();
 
@@ -94,11 +71,7 @@ class TableNameServiceEnumTest extends TestCase
 
     public function testAllValidTablesWork(): void
     {
-        $this->mockConfig->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('full_test');
-
-        $service = new TableNameService($this->mockConfig);
+        $service = $this->service('full_test');
 
         $validTables = [
             ['enum' => PdnsTable::DOMAINS, 'expected' => 'full_test.domains'],
@@ -118,11 +91,7 @@ class TableNameServiceEnumTest extends TestCase
     public function testEnumPerformanceAndFunctionality(): void
     {
         // This test verifies enum-based method performance and functionality
-        $this->mockConfig->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('perf_test');
-
-        $service = new TableNameService($this->mockConfig);
+        $service = $this->service('perf_test');
 
         $testTables = [
             ['enum' => PdnsTable::DOMAINS, 'expected' => 'perf_test.domains'],

@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * getOwnerIdsByZoneIds() drives the owner column and the edit/delete controls of
@@ -56,7 +56,7 @@ class ApiZoneRepositoryOwnerLookupTest extends TestCase
             $this->db,
             $backend,
             'sqlite',
-            $this->createMock(ConfigurationManager::class)
+            new FakeConfiguration()
         );
     }
 

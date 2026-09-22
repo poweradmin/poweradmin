@@ -4,7 +4,6 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Zone\EditZoneMetadataController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use PDO;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
@@ -17,42 +16,17 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Application\Service\Web\AuditService;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 class EditZoneMetadataControllerTest extends TestCase
 {
     private ReflectionClass $controllerReflection;
-    private array $configBackup = [];
-    private bool $configInitializedBackup = false;
+    private FakeConfiguration $config;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->controllerReflection = new ReflectionClass(EditZoneMetadataController::class);
-
-        $configReflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $configReflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $configReflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $config = ConfigurationManager::getInstance();
-        $this->configBackup = $settingsProperty->getValue($config);
-        $this->configInitializedBackup = $initializedProperty->getValue($config);
-    }
-
-    protected function tearDown(): void
-    {
-        $configReflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $configReflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $configReflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $config = ConfigurationManager::getInstance();
-        $settingsProperty->setValue($config, $this->configBackup);
-        $initializedProperty->setValue($config, $this->configInitializedBackup);
-
-        parent::tearDown();
     }
 
     public function testMetadataDefinitionsIncludeAllKindsWhenApiIsNotConfigured(): void
@@ -178,6 +152,7 @@ class EditZoneMetadataControllerTest extends TestCase
     {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
         $config = $this->createRuntimeConfig($overrides);
+        $this->config = $config;
         $this->setProperty($controller, 'zoneRepository', $this->createMock(DbZoneRepository::class));
         $this->setProperty($controller, 'metadataService', $this->metadataService($config, new DbZoneMetadataStore($this->createMock(PDO::class), $config)));
         $this->setBaseControllerProperty($controller, 'config', $config);
@@ -188,10 +163,10 @@ class EditZoneMetadataControllerTest extends TestCase
     private function useApiBackend(EditZoneMetadataController $controller): void
     {
         $store = new ApiZoneMetadataStore($this->createMock(PowerdnsApiClient::class));
-        $this->setProperty($controller, 'metadataService', $this->metadataService(ConfigurationManager::getInstance(), $store));
+        $this->setProperty($controller, 'metadataService', $this->metadataService($this->config, $store));
     }
 
-    private function metadataService(ConfigurationManager $config, ZoneMetadataStoreInterface $store): ZoneMetadataService
+    private function metadataService(FakeConfiguration $config, ZoneMetadataStoreInterface $store): ZoneMetadataService
     {
         return new ZoneMetadataService(
             $store,
@@ -210,15 +185,8 @@ class EditZoneMetadataControllerTest extends TestCase
         return $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate', [true, fn(): PdnsCapabilities => $caps]);
     }
 
-    private function createRuntimeConfig(array $overrides = []): ConfigurationManager
+    private function createRuntimeConfig(array $overrides = []): FakeConfiguration
     {
-        $config = ConfigurationManager::getInstance();
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
         $settings = [
             'database' => [
                 'type' => 'mysql',
@@ -234,10 +202,7 @@ class EditZoneMetadataControllerTest extends TestCase
             $settings[$group] = array_merge($settings[$group] ?? [], $values);
         }
 
-        $settingsProperty->setValue($config, $settings);
-        $initializedProperty->setValue($config, true);
-
-        return $config;
+        return new FakeConfiguration($settings);
     }
 
     private function invokePrivateMethod(object $object, string $methodName, array $arguments = []): mixed

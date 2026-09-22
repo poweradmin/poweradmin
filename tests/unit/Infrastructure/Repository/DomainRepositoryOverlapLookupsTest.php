@@ -29,9 +29,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The overlap-guard lookups read the domains table in SQL mode and the local
@@ -53,7 +53,7 @@ class DomainRepositoryOverlapLookupsTest extends TestCase
             (18, 'other.com'),
             (19, 'xa.com')");
 
-        return new SqlDomainRepository($db, $this->createMock(ConfigurationManager::class));
+        return new SqlDomainRepository($db, new FakeConfiguration());
     }
 
     private function apiRepository(): DomainRepositoryInterface
@@ -72,7 +72,7 @@ class DomainRepositoryOverlapLookupsTest extends TestCase
         $provider = $this->createMock(DnsBackendProviderInterface::class);
         $provider->method('allocatesZoneIdsLocally')->willReturn(true);
 
-        return new ApiDomainRepository($db, $this->createMock(ConfigurationManager::class), $provider);
+        return new ApiDomainRepository($db, new FakeConfiguration(), $provider);
     }
 
     /** @return iterable<string, array{0: callable(self): DomainRepositoryInterface}> */

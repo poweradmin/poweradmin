@@ -4,9 +4,9 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 class IpListMatchingTest extends TestCase
 {
@@ -16,8 +16,7 @@ class IpListMatchingTest extends TestCase
     protected function setUp(): void
     {
         $pdoLayerMock = $this->createMock(PDO::class);
-        $configManagerMock = $this->createMock(ConfigurationManager::class);
-        $this->loginAttemptService = new LoginAttemptService($pdoLayerMock, $configManagerMock);
+        $this->loginAttemptService = new LoginAttemptService($pdoLayerMock, new FakeConfiguration());
 
         // Use reflection to access the private isIpInList method
         $reflection = new ReflectionClass(LoginAttemptService::class);

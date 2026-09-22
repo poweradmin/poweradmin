@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Auth\LoginController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use ReflectionClass;
 
 class LoginControllerOidcProvidersTest extends TestCase
@@ -44,7 +44,7 @@ class LoginControllerOidcProvidersTest extends TestCase
             ->onlyMethods(['run'])
             ->getMock();
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             fn(string $group, string $key, $default = null) =>
                 $group === 'oidc' && $key === 'providers' ? $providersConfig : $default

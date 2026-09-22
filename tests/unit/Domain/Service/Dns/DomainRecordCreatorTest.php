@@ -7,22 +7,13 @@ use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 class DomainRecordCreatorTest extends TestCase
 {
     private function createCreator(array $domainMap, ?string $reverseZoneName = '2.0.192.in-addr.arpa', bool $addRecordResult = true): DomainRecordCreator
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'interface' && $key === 'add_domain_record') {
-                return true;
-            }
-            if ($group === 'dns' && $key === 'ttl') {
-                return 3600;
-            }
-            return $default;
-        });
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
 
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $recordManager = $this->createMock(RecordManagerInterface::class);
@@ -210,13 +201,7 @@ class DomainRecordCreatorTest extends TestCase
 
     public function testFailsWhenFeatureDisabled(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'interface' && $key === 'add_domain_record') {
-                return false;  // Feature disabled
-            }
-            return $default;
-        });
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => false]]);
 
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $recordManager = $this->createMock(RecordManagerInterface::class);
@@ -250,13 +235,7 @@ class DomainRecordCreatorTest extends TestCase
             return RecordWriteResult::ok(1);
         });
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'interface' && $key === 'add_domain_record') {
-                return true;
-            }
-            return $default ?? 3600;
-        });
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
 
         $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
         $creator->addDomainRecord('55', 'PTR', 'host.example.com', 5);
@@ -282,13 +261,7 @@ class DomainRecordCreatorTest extends TestCase
             return RecordWriteResult::ok(1);
         });
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'interface' && $key === 'add_domain_record') {
-                return true;
-            }
-            return $default ?? 3600;
-        });
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
 
         $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
         $creator->addDomainRecord('55', 'PTR', 'test.manager-zone.example.com', 5);
@@ -312,13 +285,7 @@ class DomainRecordCreatorTest extends TestCase
             return RecordWriteResult::ok(1);
         });
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'interface' && $key === 'add_domain_record') {
-                return true;
-            }
-            return $default ?? 3600;
-        });
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
 
         $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
         $creator->addDomainRecord('55', 'PTR', 'host.example.com.', 5);

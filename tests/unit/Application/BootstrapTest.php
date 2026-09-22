@@ -7,8 +7,8 @@ namespace Poweradmin\Tests\Unit\Application;
 use Closure;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Bootstrap;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionFunction;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Unit tests for the startup helper functions shared by index.php and
@@ -26,10 +26,7 @@ class BootstrapTest extends TestCase
     {
         $originalTz = date_default_timezone_get();
 
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->with('misc', 'timezone')
-            ->willReturn('Asia/Shanghai');
+        $configMock = new FakeConfiguration(['misc' => ['timezone' => 'Asia/Shanghai']]);
 
         Bootstrap::initializeTimezone($configMock);
 
@@ -43,10 +40,7 @@ class BootstrapTest extends TestCase
         $originalTz = date_default_timezone_get();
         date_default_timezone_set('Asia/Tokyo');
 
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->with('misc', 'timezone')
-            ->willReturn(null);
+        $configMock = new FakeConfiguration();
 
         Bootstrap::initializeTimezone($configMock);
 

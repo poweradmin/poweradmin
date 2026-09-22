@@ -27,8 +27,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * `zones_groups.domain_id` stores the canonical zone id, COALESCE(zones.domain_id,
@@ -73,7 +73,7 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
 
     private function repository(): ApiZoneRepository
     {
-        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', $this->createMock(ConfigurationManager::class));
+        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', new FakeConfiguration());
     }
 
     /** @return string[] */

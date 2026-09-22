@@ -31,10 +31,9 @@ use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use Psr\Log\LoggerInterface;
-use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Security tests for password reset functionality
@@ -45,23 +44,20 @@ class PasswordResetSecurityTest extends TestCase
     private $tokenRepository;
     private $userRepository;
     private $mailService;
-    private ConfigurationManager $config;
+    private FakeConfiguration $config;
     private $authService;
     private $logger;
     private PasswordResetService $passwordResetService;
 
     protected function setUp(): void
     {
-        // Mock all dependencies except ConfigurationManager
         $this->tokenRepository = $this->createMock(PasswordResetTokenRepositoryInterface::class);
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->mailService = $this->createMock(MailService::class);
         $this->authService = $this->createMock(UserAuthenticationService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
-        // Setup ConfigurationManager with test data using reflection
-        $this->config = ConfigurationManager::getInstance();
-        $this->mockConfigurationManager([
+        $this->config = new FakeConfiguration([
             'security' => [
                 'password_reset' => [
                     'enabled' => true,
@@ -76,7 +72,6 @@ class PasswordResetSecurityTest extends TestCase
             ]
         ]);
 
-
         $this->passwordResetService = new PasswordResetService(
             $this->tokenRepository,
             $this->userRepository,
@@ -87,44 +82,6 @@ class PasswordResetSecurityTest extends TestCase
             $this->logger,
             new UrlService($this->config, new ProtocolDetector(), $this->logger)
         );
-    }
-
-    protected function tearDown(): void
-    {
-        $this->resetConfigurationManager();
-    }
-
-    /**
-     * Reset the ConfigurationManager singleton between tests
-     */
-    private function resetConfigurationManager(): void
-    {
-        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
-        $instanceProperty = $reflectionClass->getProperty('instance');
-        $instanceProperty->setAccessible(true);
-        $instanceProperty->setValue(null, null);
-
-        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
-        $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-        $initializedProperty->setValue(ConfigurationManager::getInstance(), false);
-    }
-
-    /**
-     * Mock the ConfigurationManager with specific settings
-     */
-    private function mockConfigurationManager(array $settings): void
-    {
-        $configManager = ConfigurationManager::getInstance();
-
-        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflectionClass->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $settingsProperty->setValue($configManager, $settings);
-
-        $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-        $initializedProperty->setValue($configManager, true);
     }
 
     /**

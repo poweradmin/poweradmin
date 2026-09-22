@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Tests for mirroring zone ownership into the PowerDNS account field (Issue #1358)
@@ -39,7 +39,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class ZoneAccountSyncServiceTest extends TestCase
 {
     private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
+    private FakeConfiguration $config;
     private DnsBackendProviderInterface&MockObject $backendProvider;
 
     protected function setUp(): void
@@ -47,19 +47,13 @@ class ZoneAccountSyncServiceTest extends TestCase
         parent::setUp();
 
         $this->db = $this->createMock(PDO::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
+        $this->config = new FakeConfiguration();
         $this->backendProvider = $this->createMock(DnsBackendProviderInterface::class);
     }
 
     private function setSyncEnabled(bool $enabled): void
     {
-        $this->config->method('get')
-            ->willReturnCallback(function ($group, $key, $default = null) use ($enabled) {
-                if ($group === 'dns' && $key === 'sync_zone_owner_to_account') {
-                    return $enabled;
-                }
-                return $default;
-            });
+        $this->config = new FakeConfiguration(['dns' => ['sync_zone_owner_to_account' => $enabled]]);
     }
 
     private function expectOwnerQueryReturning(mixed $username): void

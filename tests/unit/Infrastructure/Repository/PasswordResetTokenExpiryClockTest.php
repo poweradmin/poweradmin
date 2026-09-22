@@ -17,7 +17,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 
 /**
@@ -30,7 +30,7 @@ class PasswordResetTokenExpiryClockTest extends TestCase
 {
     private function makeRepository(PDO $db): DbPasswordResetTokenRepository
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             fn ($group, $key, $default = null) => ($group === 'database' && $key === 'type') ? 'sqlite' : $default
         );

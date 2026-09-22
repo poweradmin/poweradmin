@@ -41,7 +41,7 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
 
 /**
@@ -249,7 +249,7 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $db = $this->createMock(PDO::class);
         $db->expects($expectQuery ? $this->once() : $this->never())->method('prepare')->willReturn($statement);
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(fn(string $section, string $key, $default = null) => match ("$section.$key") {
             'security.session_key' => self::SESSION_KEY,
             'security.password_encryption' => 'bcrypt',

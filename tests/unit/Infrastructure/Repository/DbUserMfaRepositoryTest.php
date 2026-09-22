@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,15 +30,15 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\UserMfa;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(DbUserMfaRepository::class)]
 class DbUserMfaRepositoryTest extends TestCase
 {
     private DbUserMfaRepository $repository;
     private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
+    private FakeConfiguration $config;
     private string $originalErrorLog;
 
     protected function setUp(): void
@@ -50,7 +50,7 @@ class DbUserMfaRepositoryTest extends TestCase
         ini_set('error_log', '/dev/null');
 
         $this->db = $this->createMock(PDO::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
+        $this->config = new FakeConfiguration();
         $this->repository = new DbUserMfaRepository($this->db, $this->config);
     }
 
@@ -241,9 +241,7 @@ class DbUserMfaRepositoryTest extends TestCase
             $this->createMfaDbRow(['id' => 2, 'enabled' => 1])
         ]);
 
-        $this->config->method('get')
-            ->with('database', 'type')
-            ->willReturn('mysql');
+        $this->repository = new DbUserMfaRepository($this->db, new FakeConfiguration(['database' => ['type' => 'mysql']]));
 
         $this->db->method('prepare')->willReturn($stmt);
 
@@ -261,9 +259,7 @@ class DbUserMfaRepositoryTest extends TestCase
         $stmt->method('execute')->willReturn(true);
         $stmt->method('fetchAll')->willReturn([]);
 
-        $this->config->method('get')
-            ->with('database', 'type')
-            ->willReturn('mysql');
+        $this->repository = new DbUserMfaRepository($this->db, new FakeConfiguration(['database' => ['type' => 'mysql']]));
 
         $this->db->method('prepare')->willReturn($stmt);
 

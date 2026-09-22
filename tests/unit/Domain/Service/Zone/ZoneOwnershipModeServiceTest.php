@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(ZoneOwnershipModeService::class)]
 class ZoneOwnershipModeServiceTest extends TestCase
@@ -56,10 +56,7 @@ class ZoneOwnershipModeServiceTest extends TestCase
         bool $expectUserAllowed,
         bool $expectGroupAllowed
     ): void {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')
-            ->with('dns', 'zone_ownership_mode', 'both')
-            ->willReturn($configValue);
+        $config = new FakeConfiguration(['dns' => ['zone_ownership_mode' => $configValue]]);
 
         $service = new ZoneOwnershipModeService($config);
 

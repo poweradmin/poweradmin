@@ -5,15 +5,15 @@ namespace Poweradmin\Tests\Unit\Application\Module;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Module\ModuleManifest;
 use Poweradmin\Application\Module\ModuleRegistry;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Module\SecondaryZoneImport\SecondaryZoneImportModule;
 use Poweradmin\Tests\Unit\Module\StubModule;
 
 class ModuleRegistryTest extends TestCase
 {
-    private function createConfigMock(array $configMap): ConfigurationManager
+    private function createConfigMock(array $configMap): ConfigurationInterface
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             function (string $group, string $key, mixed $default = null) use ($configMap) {
                 return $configMap[$group][$key] ?? $default;

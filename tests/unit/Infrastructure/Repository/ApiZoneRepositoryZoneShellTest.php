@@ -26,8 +26,8 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * In API mode createZone() has already inserted the zones row, so the shell
@@ -46,7 +46,7 @@ class ApiZoneRepositoryZoneShellTest extends TestCase
 
         $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('allocatesZoneIdsLocally')->willReturn(true);
-        $this->repository = new ApiZoneRepository($this->db, $backend, 'sqlite', $this->createMock(ConfigurationManager::class));
+        $this->repository = new ApiZoneRepository($this->db, $backend, 'sqlite', new FakeConfiguration());
     }
 
     public function testCreateZoneShellFillsThePlaceholderRowAndReturnsTheDomainId(): void

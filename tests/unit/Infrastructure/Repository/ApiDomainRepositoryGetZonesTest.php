@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(ApiDomainRepository::class)]
 class ApiDomainRepositoryGetZonesTest extends TestCase
@@ -52,13 +53,9 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
      * Config stub where one group/key pair reads true and everything else
      * falls back to the caller's default.
      */
-    private function configWith(?string $trueGroup = null, ?string $trueKey = null): ConfigurationManager
+    private function configWith(?string $trueGroup = null, ?string $trueKey = null): FakeConfiguration
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, mixed $default = null) => ($group === $trueGroup && $key === $trueKey) ? true : $default
-        );
-        return $config;
+        return new FakeConfiguration($trueGroup === null ? [] : [$trueGroup => [$trueKey => true]]);
     }
 
     #[Test]

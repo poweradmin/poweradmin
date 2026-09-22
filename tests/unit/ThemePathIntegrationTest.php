@@ -3,9 +3,8 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\StyleManager;
-use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 /**
  * This test class verifies the integration between Configuration and StyleManager
@@ -35,18 +34,12 @@ class ThemePathIntegrationTest extends TestCase
         file_put_contents($this->tempDir . '/templates/default/style/dark.css', 'body { color: #fff; background: #000; }');
         file_put_contents($this->tempDir . '/templates/custom/style/light.css', 'body { color: #333; }');
         file_put_contents($this->tempDir . '/templates/custom/style/dark.css', 'body { color: #eee; background: #222; }');
-
-        // Reset the ConfigurationManager singleton
-        $this->resetConfigurationManager();
     }
 
     protected function tearDown(): void
     {
         // Clean up the temporary directory structure
         $this->removeDirectory($this->tempDir);
-
-        // Reset the ConfigurationManager singleton
-        $this->resetConfigurationManager();
     }
 
     /**
@@ -74,47 +67,13 @@ class ThemePathIntegrationTest extends TestCase
     }
 
     /**
-     * Reset the ConfigurationManager singleton between tests
-     */
-    private function resetConfigurationManager(): void
-    {
-        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
-        $instanceProperty = $reflectionClass->getProperty('instance');
-        $instanceProperty->setAccessible(true);
-        $instanceProperty->setValue(null, null);
-
-        $config = ConfigurationManager::getInstance();
-        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
-        $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-        $initializedProperty->setValue($config, false);
-    }
-
-    /**
-     * Mock the ConfigurationManager with specific settings
-     */
-    private function mockConfigurationManager(array $settings): void
-    {
-        $configManager = ConfigurationManager::getInstance();
-
-        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflectionClass->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $settingsProperty->setValue($configManager, $settings);
-
-        $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-        $initializedProperty->setValue($configManager, true);
-    }
-
-    /**
      * Test the issue reported in the bug: template path not being correctly constructed
      * This test specifically verifies if the templates/theme_name path is constructed correctly
      */
     public function testThemePathConstruction(): void
     {
         // Test case 1: Default configuration (will cause the issue)
-        $this->mockConfigurationManager([
+        $config = new FakeConfiguration([
             'interface' => [
                 'theme' => 'default',
                 'style' => 'light',
@@ -123,11 +82,7 @@ class ThemePathIntegrationTest extends TestCase
         ]);
 
         // Create StyleManager with the problematic configuration
-        $styleManager = new StyleManager(
-            'light',
-            $this->tempDir . '/templates',
-            'default'
-        );
+        $styleManager = $this->styleManagerFor($config);
 
         // Get the styleDir property to verify the path
         $reflection = new \ReflectionObject($styleManager);
@@ -151,7 +106,7 @@ class ThemePathIntegrationTest extends TestCase
     public function testCustomThemePath(): void
     {
         // Use a custom theme with the correct configuration
-        $this->mockConfigurationManager([
+        $config = new FakeConfiguration([
             'interface' => [
                 'theme' => 'custom',
                 'style' => 'dark',
@@ -160,11 +115,7 @@ class ThemePathIntegrationTest extends TestCase
         ]);
 
         // Create StyleManager with the custom theme
-        $styleManager = new StyleManager(
-            'dark',
-            $this->tempDir . '/templates',
-            'custom'
-        );
+        $styleManager = $this->styleManagerFor($config);
 
         // Get the styleDir property to verify the path
         $reflection = new \ReflectionObject($styleManager);
@@ -180,5 +131,14 @@ class ThemePathIntegrationTest extends TestCase
 
         // Verify that the style is still accessible
         $this->assertEquals('dark', $styleManager->getSelectedStyle());
+    }
+
+    private function styleManagerFor(FakeConfiguration $config): StyleManager
+    {
+        return new StyleManager(
+            $config->get('interface', 'style'),
+            $this->tempDir . '/' . $config->get('interface', 'theme_base_path'),
+            $config->get('interface', 'theme')
+        );
     }
 }

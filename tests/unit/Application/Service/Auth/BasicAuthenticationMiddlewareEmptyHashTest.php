@@ -16,11 +16,11 @@ namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\Auth\BasicAuthenticationMiddleware;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
+use TestHelpers\FakeConfiguration;
 
 /**
  * A provisioned user (LDAP/OIDC/SAML) has an empty local password hash. Basic SQL
@@ -32,10 +32,8 @@ class BasicAuthenticationMiddlewareEmptyHashTest extends TestCase
 {
     private function middleware(): BasicAuthenticationMiddleware
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnMap([
-            ['security', 'password_encryption', 'bcrypt', 'bcrypt'],
-            ['security', 'password_cost', 12, 12],
+        $config = new FakeConfiguration([
+            'security' => ['password_encryption' => 'bcrypt', 'password_cost' => 12],
         ]);
 
         $middleware = (new ReflectionClass(BasicAuthenticationMiddleware::class))->newInstanceWithoutConstructor();

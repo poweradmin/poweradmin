@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * getAdminUserIds() must agree with hasAdminPermission() for every user, so a
@@ -58,7 +58,7 @@ class DbUserRepositoryAdminUserIdsTest extends TestCase
         ) {
             $this->db->exec($sql);
         }
-        $this->repository = new DbUserRepository($this->db, $this->createMock(ConfigurationManager::class), false);
+        $this->repository = new DbUserRepository($this->db, new FakeConfiguration(), false);
     }
 
     public function testListsDirectAndGroupGrantedAdmins(): void

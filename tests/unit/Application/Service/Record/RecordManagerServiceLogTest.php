@@ -27,11 +27,11 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\Record\RecordCommentService;
 use Poweradmin\Application\Service\Record\RecordManagerService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
@@ -51,7 +51,7 @@ class RecordManagerServiceLogTest extends TestCase
         $domainRepository->method('getDomainNameById')->willReturn('example.com');
         $recordManager->method('addRecordGetId')->willReturn($write ?? RecordWriteResult::ok(1));
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturn(false);
 
         return new RecordManagerService(

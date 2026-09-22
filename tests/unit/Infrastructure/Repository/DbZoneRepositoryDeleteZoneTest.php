@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
 /**
@@ -67,7 +67,7 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
             $this->db->exec($sql);
         }
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             fn($group, $key, $default = null) => $group === 'database' && $key === 'type' ? 'sqlite' : $default
         );

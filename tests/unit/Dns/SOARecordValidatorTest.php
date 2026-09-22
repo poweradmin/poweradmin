@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 use PDO;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +38,7 @@ class SOARecordValidatorTest extends TestCase
     protected function setUp(): void
     {
         $this->dbMock = $this->createMock(PDO::class);
-        $this->configMock = $this->createMock(ConfigurationManager::class);
+        $this->configMock = new FakeConfiguration();
 
         // Configure the database mock for Validator class queries
         $stmtMock = $this->createMock(\PDOStatement::class);

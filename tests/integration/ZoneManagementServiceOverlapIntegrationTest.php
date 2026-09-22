@@ -30,7 +30,7 @@ use Poweradmin\Application\Service\Backend\RepositoryFactory;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
@@ -102,7 +102,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
 
     private function makeService(): ZoneManagementService
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             function (string $group, string $key, $default = null) {
                 if ($group === 'dns' && $key === 'parent_zone_ownership_check') {

@@ -21,9 +21,9 @@ use Poweradmin\Application\Boot\AppManager;
 use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Module\ModuleRegistry;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Covers the language-selector and branding-asset logic of PageRenderer.
@@ -43,12 +43,7 @@ class PageRendererTest extends TestCase
         $app->method('getSupportedLocales')->willReturn($supportedLocales);
         $app->method('getInterfaceLocale')->willReturn($interfaceLocale);
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, mixed $default = null): mixed => $group === 'interface'
-                ? ($interfaceConfig[$key] ?? $default)
-                : $default
-        );
+        $config = new FakeConfiguration(['interface' => $interfaceConfig]);
 
         return new PageRenderer(
             $app,
@@ -84,8 +79,7 @@ class PageRendererTest extends TestCase
                 $bodyParams = $params;
             }
         });
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $default);
+        $config = new FakeConfiguration();
 
         $renderer = new PageRenderer(
             $app,

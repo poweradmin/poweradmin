@@ -32,15 +32,15 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\User\CreateUserCommand;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(DbUserRepository::class)]
 class DbUserRepositoryTest extends TestCase
 {
     private DbUserRepository $repository;
     private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
+    private FakeConfiguration $config;
 
     protected function setUp(): void
     {
@@ -48,7 +48,7 @@ class DbUserRepositoryTest extends TestCase
 
         $this->db = $this->createMock(PDO::class);
         $this->db->method('getAttribute')->willReturn('mysql');
-        $this->config = $this->createMock(ConfigurationManager::class);
+        $this->config = new FakeConfiguration();
         $this->repository = new DbUserRepository($this->db, $this->config, false);
     }
 

@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipInput;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
@@ -44,11 +44,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 
     private function buildMode(string $mode): ZoneOwnershipModeService
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')
-            ->with('dns', 'zone_ownership_mode', 'both')
-            ->willReturn($mode);
-        return new ZoneOwnershipModeService($config);
+        return new ZoneOwnershipModeService(new FakeConfiguration(['dns' => ['zone_ownership_mode' => $mode]]));
     }
 
     /**

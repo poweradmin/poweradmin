@@ -5,16 +5,16 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\DynamicDnsValidationService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 class DynamicDnsValidationServiceTest extends TestCase
 {
     private DynamicDnsValidationService $validationService;
-    private ConfigurationManager $config;
+    private FakeConfiguration $config;
 
     protected function setUp(): void
     {
-        $this->config = $this->createMock(ConfigurationManager::class);
+        $this->config = new FakeConfiguration();
         $this->validationService = new DynamicDnsValidationService($this->config);
     }
 

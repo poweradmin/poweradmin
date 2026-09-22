@@ -4,9 +4,9 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\StubActor;
+use TestHelpers\FakeConfiguration;
 
 class RecordChangeLoggerTest extends TestCase
 {
@@ -47,13 +47,7 @@ class RecordChangeLoggerTest extends TestCase
 
         $userContext = new StubActor(7, 'alice');
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'logging' && $key === 'database_enabled') {
-                return true;
-            }
-            return $default;
-        });
+        $config = new FakeConfiguration(['logging' => ['database_enabled' => true]]);
 
         $this->logger = new RecordChangeLogger($this->db, $config, $userContext);
     }
@@ -297,13 +291,7 @@ class RecordChangeLoggerTest extends TestCase
     {
         $userContext = new StubActor(7, 'alice');
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'logging' && $key === 'database_enabled') {
-                return false;
-            }
-            return $default;
-        });
+        $config = new FakeConfiguration(['logging' => ['database_enabled' => false]]);
 
         $logger = new RecordChangeLogger($this->db, $config, $userContext);
         $logger->logRecordCreate(

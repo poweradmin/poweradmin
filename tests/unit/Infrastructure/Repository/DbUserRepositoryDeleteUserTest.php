@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Deleting a user removes every row keyed on the user, so the web UI and the
@@ -73,10 +73,7 @@ class DbUserRepositoryDeleteUserTest extends TestCase
             $this->db->exec($sql);
         }
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn($group, $key, $default = null) => $group === 'database' && $key === 'type' ? 'sqlite' : $default
-        );
+        $config = new FakeConfiguration(['database' => ['type' => 'sqlite']]);
         $this->repository = new DbUserRepository($this->db, $config, false);
     }
 

@@ -11,31 +11,24 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Application\Service\Web\AuditService;
+use TestHelpers\FakeConfiguration;
 
 class BatchReverseRecordCreatorTest extends TestCase
 {
     private function createService(
         ?DomainRepositoryInterface $domainRepository = null,
         ?RecordManagerInterface $recordManager = null,
-        ?ConfigurationManager $config = null,
+        ?ConfigurationInterface $config = null,
         ?RecordRepositoryInterface $recordRepository = null,
         ?Closure $dnssecProvider = null,
         bool $reverseHandling = true
     ): BatchReverseRecordCreator {
         $audit = $this->createMock(AuditService::class);
 
-        if ($config === null) {
-            $config = $this->createMock(ConfigurationManager::class);
-            $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-                if ($group === 'dns' && $key === 'prevent_duplicate_ptr') {
-                    return RecordWriteResult::ok(1);
-                }
-                return $default;
-            });
-        }
+        $config ??= new FakeConfiguration(['dns' => ['prevent_duplicate_ptr' => RecordWriteResult::ok(1)]]);
 
         if ($domainRepository === null) {
             $domainRepository = $this->createMock(DomainRepositoryInterface::class);
@@ -52,16 +45,9 @@ class BatchReverseRecordCreatorTest extends TestCase
         return new BatchReverseRecordCreator($config, $audit, $domainRepository, $recordRepository ?? $this->createMock(RecordRepositoryInterface::class), $recordManager, $dnssecProvider, $reverseHandling, $ipValidator);
     }
 
-    private function dnssecConfig(bool $enabled): ConfigurationManager
+    private function dnssecConfig(bool $enabled): FakeConfiguration
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) use ($enabled) {
-            if ($group === 'dnssec' && $key === 'enabled') {
-                return $enabled;
-            }
-            return $default;
-        });
-        return $config;
+        return new FakeConfiguration(['dnssec' => ['enabled' => $enabled]]);
     }
 
     private function createDnssecService(bool $enabled, int &$builds): BatchReverseRecordCreator
@@ -599,13 +585,7 @@ class BatchReverseRecordCreatorTest extends TestCase
 
     public function testCreateIPv4NetworkReportsExactDuplicateSkipsWhenDuplicatePtrAllowed(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'dns' && $key === 'prevent_duplicate_ptr') {
-                return false;
-            }
-            return $default;
-        });
+        $config = new FakeConfiguration(['dns' => ['prevent_duplicate_ptr' => false]]);
 
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);

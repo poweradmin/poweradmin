@@ -30,16 +30,16 @@ use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\KXRecordValidator;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 class DnsValidatorRegistryTest extends TestCase
 {
     private DnsValidatorRegistry $registry;
-    private ConfigurationManager $configMock;
+    private FakeConfiguration $configMock;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
+        $this->configMock = new FakeConfiguration();
         // Only the CNAME validator reads the backend, and no test here validates a record
         $this->registry = new DnsValidatorRegistry($this->configMock, $this->createMock(DnsBackendProviderInterface::class));
     }

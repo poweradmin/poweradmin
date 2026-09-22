@@ -26,8 +26,8 @@ use InvalidArgumentException;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The users reads and writes that external provisioning (LDAP, OIDC, SAML) relies on.
@@ -55,7 +55,7 @@ class DbUserRepositoryProvisioningTest extends TestCase
         ) {
             $this->db->exec($sql);
         }
-        $this->repository = new DbUserRepository($this->db, $this->createMock(ConfigurationManager::class), false);
+        $this->repository = new DbUserRepository($this->db, new FakeConfiguration(), false);
     }
 
     public function testCreateProvisionedUserWritesEveryProvisioningColumn(): void

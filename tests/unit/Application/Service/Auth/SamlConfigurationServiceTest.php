@@ -5,31 +5,31 @@ namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Service\Auth\SamlConfigurationService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use RuntimeException;
+use TestHelpers\FakeConfiguration;
 
 class SamlConfigurationServiceTest extends TestCase
 {
     private SamlConfigurationService $service;
-    private ConfigurationManager|MockObject $mockConfig;
     private Logger|MockObject $mockLogger;
 
     protected function setUp(): void
     {
-        $this->mockConfig = $this->createMock(ConfigurationManager::class);
         $this->mockLogger = $this->createMock(Logger::class);
-        $this->service = new SamlConfigurationService($this->mockConfig, $this->mockLogger);
+    }
+
+    private function configure(array $config): void
+    {
+        $this->service = new SamlConfigurationService(new FakeConfiguration($config), $this->mockLogger);
     }
 
     public function testGenerateOneLoginSettingsWithInvalidProvider(): void
     {
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'sp', [], []],
-                ['saml', 'providers', [], []],
-                ['interface', 'application_url', '', 'https://localhost'],
-            ]);
+        $this->configure([
+            'saml' => ['sp' => [], 'providers' => []],
+            'interface' => ['application_url' => 'https://localhost'],
+        ]);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Provider invalid_provider not found or invalid');
@@ -42,18 +42,21 @@ class SamlConfigurationServiceTest extends TestCase
         // Both keys set: application_url is the canonical setting and must win
         // so the SP metadata advertised to the IdP cannot be quietly diverted
         // through the undocumented base_url path.
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'sp', [], ['x509cert' => 'cert', 'private_key' => 'key']],
-                ['saml', 'providers', [], [
+        $this->configure([
+            'saml' => [
+                'sp' => ['x509cert' => 'cert', 'private_key' => 'key'],
+                'providers' => [
                     'azure' => [
                         'entity_id' => 'https://login.microsoftonline.com/tenant/',
                         'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
                     ],
-                ]],
-                ['interface', 'application_url', '', 'https://canonical.example/poweradmin'],
-                ['interface', 'base_url', '', 'https://legacy.example'],
-            ]);
+                ],
+            ],
+            'interface' => [
+                'application_url' => 'https://canonical.example/poweradmin',
+                'base_url' => 'https://legacy.example',
+            ],
+        ]);
 
         $settings = $this->service->generateOneLoginSettings('azure');
 
@@ -68,18 +71,18 @@ class SamlConfigurationServiceTest extends TestCase
         $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
         $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
 
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'sp', [], ['x509cert' => 'cert', 'private_key' => 'key']],
-                ['saml', 'providers', [], [
+        $this->configure([
+            'saml' => [
+                'sp' => ['x509cert' => 'cert', 'private_key' => 'key'],
+                'providers' => [
                     'azure' => [
                         'entity_id' => 'https://login.microsoftonline.com/tenant/',
                         'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
                     ],
-                ]],
-                ['interface', 'application_url', '', ''],
-                ['interface', 'base_url', '', ''],
-            ]);
+                ],
+            ],
+            'interface' => ['application_url' => '', 'base_url' => ''],
+        ]);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('interface.application_url must be configured');
@@ -91,16 +94,16 @@ class SamlConfigurationServiceTest extends TestCase
     {
         // Explicit sp URLs need no derivation, so they must not be forced to
         // configure application_url just to read the SP config back
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'sp', [], [
+        $this->configure([
+            'saml' => [
+                'sp' => [
                     'entity_id' => 'https://sp.example.com/saml/metadata',
                     'assertion_consumer_service_url' => 'https://sp.example.com/saml/acs',
                     'single_logout_service_url' => 'https://sp.example.com/saml/sls',
-                ]],
-                ['interface', 'application_url', '', ''],
-                ['interface', 'base_url', '', ''],
-            ]);
+                ],
+            ],
+            'interface' => ['application_url' => '', 'base_url' => ''],
+        ]);
 
         $config = $this->service->getServiceProviderConfig();
 
@@ -112,18 +115,18 @@ class SamlConfigurationServiceTest extends TestCase
     {
         // settings.defaults.php ships the three sp URLs as '', and the defaults
         // are merged into the settings tree, so the keys are always present
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'sp', [], [
+        $this->configure([
+            'saml' => [
+                'sp' => [
                     'entity_id' => '',
                     'assertion_consumer_service_url' => '',
                     'single_logout_service_url' => '',
                     'x509cert' => '',
                     'private_key' => '',
-                ]],
-                ['interface', 'application_url', '', 'https://sp.example.com/poweradmin'],
-                ['interface', 'base_url', '', ''],
-            ]);
+                ],
+            ],
+            'interface' => ['application_url' => 'https://sp.example.com/poweradmin', 'base_url' => ''],
+        ]);
 
         $config = $this->service->getServiceProviderConfig();
 
@@ -134,9 +137,7 @@ class SamlConfigurationServiceTest extends TestCase
 
     public function testGetProviderConfigReturnsNullForMissingProvider(): void
     {
-        $this->mockConfig->method('get')
-            ->with('saml', 'providers', [])
-            ->willReturn([]);
+        $this->configure(['saml' => ['providers' => []]]);
 
         $result = $this->service->getProviderConfig('missing_provider');
 
@@ -151,9 +152,7 @@ class SamlConfigurationServiceTest extends TestCase
             'sso_url' => 'https://idp.example.com/sso',
         ];
 
-        $this->mockConfig->method('get')
-            ->with('saml', 'providers', [])
-            ->willReturn(['test_provider' => $expectedConfig]);
+        $this->configure(['saml' => ['providers' => ['test_provider' => $expectedConfig]]]);
 
         $result = $this->service->getProviderConfig('test_provider');
 
@@ -162,9 +161,7 @@ class SamlConfigurationServiceTest extends TestCase
 
     public function testDescribeProviderConfigErrorReportsMissingProvider(): void
     {
-        $this->mockConfig->method('get')
-            ->with('saml', 'providers', [])
-            ->willReturn([]);
+        $this->configure(['saml' => ['providers' => []]]);
 
         $error = $this->service->describeProviderConfigError('azure');
 
@@ -173,14 +170,16 @@ class SamlConfigurationServiceTest extends TestCase
 
     public function testDescribeProviderConfigErrorReportsMissingRequiredField(): void
     {
-        $this->mockConfig->method('get')
-            ->with('saml', 'providers', [])
-            ->willReturn([
-                'azure' => [
-                    'entity_id' => 'https://login.microsoftonline.com/tenant/',
-                    // sso_url intentionally missing
+        $this->configure([
+            'saml' => [
+                'providers' => [
+                    'azure' => [
+                        'entity_id' => 'https://login.microsoftonline.com/tenant/',
+                        // sso_url intentionally missing
+                    ],
                 ],
-            ]);
+            ],
+        ]);
 
         $this->assertSame(
             "missing required field 'sso_url'",
@@ -190,15 +189,17 @@ class SamlConfigurationServiceTest extends TestCase
 
     public function testDescribeProviderConfigErrorReportsMalformedX509Certificate(): void
     {
-        $this->mockConfig->method('get')
-            ->with('saml', 'providers', [])
-            ->willReturn([
-                'azure' => [
-                    'entity_id' => 'https://login.microsoftonline.com/tenant/',
-                    'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
-                    'x509cert' => 'not-a-real-cert',
+        $this->configure([
+            'saml' => [
+                'providers' => [
+                    'azure' => [
+                        'entity_id' => 'https://login.microsoftonline.com/tenant/',
+                        'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
+                        'x509cert' => 'not-a-real-cert',
+                    ],
                 ],
-            ]);
+            ],
+        ]);
 
         $this->assertSame(
             'x509cert is not a valid X.509 certificate',
@@ -208,14 +209,16 @@ class SamlConfigurationServiceTest extends TestCase
 
     public function testDescribeProviderConfigErrorReturnsNullForValidConfig(): void
     {
-        $this->mockConfig->method('get')
-            ->with('saml', 'providers', [])
-            ->willReturn([
-                'azure' => [
-                    'entity_id' => 'https://login.microsoftonline.com/tenant/',
-                    'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
+        $this->configure([
+            'saml' => [
+                'providers' => [
+                    'azure' => [
+                        'entity_id' => 'https://login.microsoftonline.com/tenant/',
+                        'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
+                    ],
                 ],
-            ]);
+            ],
+        ]);
 
         $this->assertNull($this->service->describeProviderConfigError('azure'));
     }
@@ -226,15 +229,17 @@ class SamlConfigurationServiceTest extends TestCase
         // configured, but the x509cert paste fails openssl_x509_read. The old
         // behaviour returned null silently; now it is also surfaced via
         // describeProviderConfigError above.
-        $this->mockConfig->method('get')
-            ->with('saml', 'providers', [])
-            ->willReturn([
-                'azure' => [
-                    'entity_id' => 'https://login.microsoftonline.com/tenant/',
-                    'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
-                    'x509cert' => 'definitely-not-a-cert',
+        $this->configure([
+            'saml' => [
+                'providers' => [
+                    'azure' => [
+                        'entity_id' => 'https://login.microsoftonline.com/tenant/',
+                        'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
+                        'x509cert' => 'definitely-not-a-cert',
+                    ],
                 ],
-            ]);
+            ],
+        ]);
 
         $this->assertNull($this->service->getProviderConfig('azure'));
     }
@@ -250,15 +255,17 @@ class SamlConfigurationServiceTest extends TestCase
         // with malformed lines; the fix normalises whitespace first.
         $body = preg_replace('/-----(?:BEGIN|END) CERTIFICATE-----/', '', $cert);
 
-        $this->mockConfig->method('get')
-            ->with('saml', 'providers', [])
-            ->willReturn([
-                'azure' => [
-                    'entity_id' => 'https://login.microsoftonline.com/tenant/',
-                    'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
-                    'x509cert' => trim($body),
+        $this->configure([
+            'saml' => [
+                'providers' => [
+                    'azure' => [
+                        'entity_id' => 'https://login.microsoftonline.com/tenant/',
+                        'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
+                        'x509cert' => trim($body),
+                    ],
                 ],
-            ]);
+            ],
+        ]);
 
         $this->assertNull($this->service->describeProviderConfigError('azure'));
         $this->assertNotNull($this->service->getProviderConfig('azure'));
@@ -270,15 +277,17 @@ class SamlConfigurationServiceTest extends TestCase
         $body = preg_replace('/-----(?:BEGIN|END) CERTIFICATE-----/', '', $cert);
         $crlfBody = str_replace("\n", "\r\n", trim($body));
 
-        $this->mockConfig->method('get')
-            ->with('saml', 'providers', [])
-            ->willReturn([
-                'azure' => [
-                    'entity_id' => 'https://login.microsoftonline.com/tenant/',
-                    'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
-                    'x509cert' => $crlfBody,
+        $this->configure([
+            'saml' => [
+                'providers' => [
+                    'azure' => [
+                        'entity_id' => 'https://login.microsoftonline.com/tenant/',
+                        'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
+                        'x509cert' => $crlfBody,
+                    ],
                 ],
-            ]);
+            ],
+        ]);
 
         $this->assertNotNull($this->service->getProviderConfig('azure'));
     }
@@ -306,30 +315,27 @@ class SamlConfigurationServiceTest extends TestCase
      */
     public function testNumericGroupKeysAreValid(): void
     {
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'permission_template_mapping', [], ['1001' => 'Editor', '1002' => 'Viewer']],
-            ]);
+        $this->configure([
+            'saml' => ['permission_template_mapping' => ['1001' => 'Editor', '1002' => 'Viewer']],
+        ]);
 
         $this->assertSame([], $this->service->validatePermissionTemplateMapping());
     }
 
     public function testZeroGroupKeyIsValid(): void
     {
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'permission_template_mapping', [], ['0' => 'Editor']],
-            ]);
+        $this->configure([
+            'saml' => ['permission_template_mapping' => ['0' => 'Editor']],
+        ]);
 
         $this->assertSame([], $this->service->validatePermissionTemplateMapping());
     }
 
     public function testEmptyTemplateNameIsRejectedOnce(): void
     {
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'permission_template_mapping', [], ['admins' => '']],
-            ]);
+        $this->configure([
+            'saml' => ['permission_template_mapping' => ['admins' => '']],
+        ]);
 
         $errors = $this->service->validatePermissionTemplateMapping();
 
@@ -339,36 +345,27 @@ class SamlConfigurationServiceTest extends TestCase
 
     public function testAutoProvisioningTemplateMissingWhenDefaultIsBlank(): void
     {
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'enabled', false, true],
-                ['saml', 'auto_provision', true, true],
-                ['saml', 'default_permission_template', '', ''],
-            ]);
+        $this->configure([
+            'saml' => ['enabled' => true, 'auto_provision' => true, 'default_permission_template' => ''],
+        ]);
 
         $this->assertTrue($this->service->isAutoProvisioningTemplateMissing());
     }
 
     public function testAutoProvisioningTemplateNotMissingWhenDefaultIsSet(): void
     {
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'enabled', false, true],
-                ['saml', 'auto_provision', true, true],
-                ['saml', 'default_permission_template', '', 'Guest'],
-            ]);
+        $this->configure([
+            'saml' => ['enabled' => true, 'auto_provision' => true, 'default_permission_template' => 'Guest'],
+        ]);
 
         $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
     }
 
     public function testAutoProvisioningTemplateNotMissingWhenSamlDisabled(): void
     {
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['saml', 'enabled', false, false],
-                ['saml', 'auto_provision', true, true],
-                ['saml', 'default_permission_template', '', ''],
-            ]);
+        $this->configure([
+            'saml' => ['enabled' => false, 'auto_provision' => true, 'default_permission_template' => ''],
+        ]);
 
         $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
     }

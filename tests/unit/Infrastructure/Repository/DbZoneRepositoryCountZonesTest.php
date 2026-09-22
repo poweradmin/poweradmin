@@ -4,7 +4,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
 /**
@@ -36,7 +36,7 @@ class DbZoneRepositoryCountZonesTest extends TestCase
 
     private function createRepository(string $prefix = ''): DbZoneRepository
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(function ($group, $key, $default = null) use ($prefix) {
             if ($group === 'database' && $key === 'type') {
                 return 'sqlite';

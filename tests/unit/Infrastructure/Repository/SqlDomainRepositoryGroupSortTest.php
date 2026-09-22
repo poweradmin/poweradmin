@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 
 /**
@@ -38,14 +38,14 @@ use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 class SqlDomainRepositoryGroupSortTest extends TestCase
 {
     private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
+    private ConfigurationInterface&MockObject $config;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->db = $this->createMock(PDO::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
+        $this->config = $this->createMock(ConfigurationInterface::class);
         $this->config->method('get')
             ->willReturnCallback(function ($group, $key, $default = null) {
                 if ($group === 'database' && $key === 'type') {

@@ -5,11 +5,11 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\Dns\SupermasterWriteResult;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(SupermasterManager::class)]
 class SupermasterManagerDelegationTest extends TestCase
@@ -21,15 +21,16 @@ class SupermasterManagerDelegationTest extends TestCase
     protected function setUp(): void
     {
         $this->mockDb = $this->createMock(PDO::class);
-        $this->mockConfig = $this->createMock(ConfigurationManager::class);
-        $this->mockConfig->method('get')->willReturnMap([
-            ['database', 'pdns_db_name', null, ''],
-            ['dns', 'hostmaster', null, 'hostmaster.example.com'],
-            ['dns', 'ns1', null, 'ns1.example.com'],
-            ['dns', 'ns2', null, 'ns2.example.com'],
-            ['dns', 'ns3', null, ''],
-            ['dns', 'ns4', null, ''],
-            ['idn', 'idn_enabled', null, false],
+        $this->mockConfig = new FakeConfiguration([
+            'database' => ['pdns_db_name' => ''],
+            'dns' => [
+                'hostmaster' => 'hostmaster.example.com',
+                'ns1' => 'ns1.example.com',
+                'ns2' => 'ns2.example.com',
+                'ns3' => '',
+                'ns4' => '',
+            ],
+            'idn' => ['idn_enabled' => false],
         ]);
         $this->mockBackendProvider = $this->createMock(DnsBackendProviderInterface::class);
     }

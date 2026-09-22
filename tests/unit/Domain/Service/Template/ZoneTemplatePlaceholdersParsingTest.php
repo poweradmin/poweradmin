@@ -4,7 +4,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Template;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 class ZoneTemplatePlaceholdersParsingTest extends TestCase
 {
@@ -13,22 +13,20 @@ class ZoneTemplatePlaceholdersParsingTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mockConfig = $this->createMock(ConfigurationManager::class);
-
-        // Configure the mock to return expected values for the DNS settings
-        $this->mockConfig->method('get')
-            ->willReturnMap([
-                ['dns', 'ns1', null, 'ns1.example.com'],
-                ['dns', 'ns2', null, 'ns2.example.com'],
-                ['dns', 'ns3', null, 'ns3.example.com'],
-                ['dns', 'ns4', null, 'ns4.example.com'],
-                ['dns', 'hostmaster', null, 'hostmaster.example.com'],
-                ['dns', 'soa_refresh', null, 28800],
-                ['dns', 'soa_retry', null, 7200],
-                ['dns', 'soa_expire', null, 604800],
-                ['dns', 'soa_minimum', null, 86400],
-                ['database', 'pdns_db_name', null, null],
-            ]);
+        $this->mockConfig = new FakeConfiguration([
+            'dns' => [
+                'ns1' => 'ns1.example.com',
+                'ns2' => 'ns2.example.com',
+                'ns3' => 'ns3.example.com',
+                'ns4' => 'ns4.example.com',
+                'hostmaster' => 'hostmaster.example.com',
+                'soa_refresh' => 28800,
+                'soa_retry' => 7200,
+                'soa_expire' => 604800,
+                'soa_minimum' => 86400,
+            ],
+            'database' => ['pdns_db_name' => null],
+        ]);
 
         $this->zoneTemplate = new ZoneTemplatePlaceholders($this->mockConfig);
     }

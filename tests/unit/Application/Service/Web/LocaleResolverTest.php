@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\Web\LocaleResolver;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Covers the shared locale precedence (GET lang override > session user
@@ -42,12 +42,7 @@ class LocaleResolverTest extends TestCase
 
     private function makeResolver(array $interfaceConfig, ?string $userLanguage = null): LocaleResolver
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            function (string $group, string $key, $default = null) use ($interfaceConfig) {
-                return $interfaceConfig[$group][$key] ?? $default;
-            }
-        );
+        $config = new FakeConfiguration($interfaceConfig);
 
         $userContext = $this->createMock(UserContextService::class);
         $userContext->method('getUserLanguage')->willReturn($userLanguage);

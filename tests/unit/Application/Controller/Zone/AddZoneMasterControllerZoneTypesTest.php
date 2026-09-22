@@ -24,9 +24,9 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Zone\AddZoneMasterController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 class AddZoneMasterControllerZoneTypesTest extends TestCase
 {
@@ -50,10 +50,7 @@ class AddZoneMasterControllerZoneTypesTest extends TestCase
     {
         $controller = $this->reflection->newInstanceWithoutConstructor();
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnMap([
-            ['dns', 'backend', null, $backend],
-        ]);
+        $config = new FakeConfiguration(['dns' => ['backend' => $backend]]);
 
         $property = $this->reflection->getParentClass()->getProperty('config');
         $property->setAccessible(true);

@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\RecordSearch;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Verifies the ORDER BY clause RecordSearch builds for record searches.
@@ -51,7 +51,7 @@ class RecordSearchSortTest extends TestCase
             return $stmt;
         });
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(function (string $group, string $key) {
             return $group === 'database' && $key === 'type' ? 'mysql' : '';
         });

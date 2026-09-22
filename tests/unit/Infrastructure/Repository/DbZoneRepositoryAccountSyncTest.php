@@ -29,8 +29,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Tests that zone ownership changes propagate to the PowerDNS account field (Issue #1358)
@@ -39,7 +39,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 class DbZoneRepositoryAccountSyncTest extends TestCase
 {
     private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
+    private FakeConfiguration $config;
     private DnsBackendProviderInterface&MockObject $backendProvider;
 
     protected function setUp(): void
@@ -47,25 +47,15 @@ class DbZoneRepositoryAccountSyncTest extends TestCase
         parent::setUp();
 
         $this->db = $this->createMock(PDO::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
         $this->backendProvider = $this->createMock(DnsBackendProviderInterface::class);
     }
 
     private function setupConfig(bool $syncEnabled): void
     {
-        $this->config->method('get')
-            ->willReturnCallback(function ($group, $key, $default = null) use ($syncEnabled) {
-                if ($group === 'database' && $key === 'type') {
-                    return 'mysql';
-                }
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return null;
-                }
-                if ($group === 'dns' && $key === 'sync_zone_owner_to_account') {
-                    return $syncEnabled;
-                }
-                return $default;
-            });
+        $this->config = new FakeConfiguration([
+            'database' => ['type' => 'mysql'],
+            'dns' => ['sync_zone_owner_to_account' => $syncEnabled],
+        ]);
     }
 
     private function setupStatements(string $ownerUsername): void

@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOverlapService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 
 #[CoversClass(ZoneOverlapService::class)]
@@ -54,15 +54,7 @@ class ZoneOverlapServiceTest extends PermissionServiceTestCase
         $this->ancestorLookups = [];
         $this->descendantLookups = [];
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            function (string $group, string $key, $default = null) use ($checkEnabled) {
-                if ($group === 'dns' && $key === 'parent_zone_ownership_check') {
-                    return $checkEnabled;
-                }
-                return $default;
-            }
-        );
+        $config = new FakeConfiguration(['dns' => ['parent_zone_ownership_check' => $checkEnabled]]);
 
         $permission = $this->buildPermissionService(
             adminUserIds: $isAdmin ? [self::USER_ID] : [],

@@ -26,7 +26,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\RecordSearch;
 
 /**
@@ -58,7 +58,7 @@ class RecordSearchRowShapeTest extends TestCase
 
     private function search(): RecordSearch
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             fn(string $group, string $key, $default = null) => $group === 'database' && $key === 'type' ? 'sqlite' : $default
         );

@@ -7,12 +7,12 @@ namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 use PDOException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\ExternalIdentityRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use ReflectionClass;
 
@@ -114,9 +114,9 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
         return $repository;
     }
 
-    private function configurationWithDefaultTemplate(string $authMethod): ConfigurationManager
+    private function configurationWithDefaultTemplate(string $authMethod): ConfigurationInterface
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             fn(string $group, string $key, $default = null) => match (true) {
                 $group !== $authMethod => $default,

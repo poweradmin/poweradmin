@@ -36,10 +36,10 @@ use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\Auth\AuthOutcomeStatus;
 use Poweradmin\Application\Service\Auth\LoginCredentials;
 use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Pins that the lockout check and the audit line both see the client address
@@ -71,7 +71,7 @@ class LdapAuthenticatorClientAddressTest extends TestCase
 
         $authenticator = new LdapAuthenticator(
             $this->createMock(PDO::class),
-            $this->createMock(ConfigurationManager::class),
+            new FakeConfiguration(),
             $audit,
             $this->createMock(CsrfTokenService::class),
             new NullLogger(),

@@ -32,11 +32,12 @@ use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
 use Poweradmin\Domain\Service\Validation\Refusal;
@@ -76,16 +77,10 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
 
     private function service(?PdnsCapabilities $capabilities = null, ?DomainRepositoryInterface $domains = null): ZoneManagementService
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function (string $group, string $key, $default = null) {
-            if ($group === 'dns' && $key === 'third_level_check') {
-                return $this->thirdLevelCheck;
-            }
-            if ($group === 'database' && $key === 'type') {
-                return 'sqlite';
-            }
-            return $default;
-        });
+        $config = new FakeConfiguration([
+            'dns' => ['third_level_check' => $this->thirdLevelCheck],
+            'database' => ['type' => 'sqlite'],
+        ]);
 
         $backend = DnsBackendProviderFactory::create($this->db, $config);
 
@@ -104,7 +99,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         );
     }
 
-    private function zoneTemplateService(ConfigurationManager $config, DnsBackendProviderInterface $backend): ZoneTemplateService
+    private function zoneTemplateService(ConfigurationInterface $config, DnsBackendProviderInterface $backend): ZoneTemplateService
     {
         return ZoneTemplateServiceBuilder::build(
             new DbZoneTemplateRepository($this->db, $config, $backend),
@@ -164,8 +159,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             $lookups++;
             return PdnsCapabilities::fromVersion('4.7.0');
         };
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(fn(string $group, string $key, $default = null) => $group === 'database' && $key === 'type' ? 'sqlite' : $default);
+        $config = new FakeConfiguration(['database' => ['type' => 'sqlite']]);
         $backend = DnsBackendProviderFactory::create($this->db, $config);
         $service = new ZoneManagementService(
             $this->createMock(ZoneRepositoryInterface::class),

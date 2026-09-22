@@ -29,9 +29,9 @@ use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Base DNS test class with common setup for all DNS-related tests
@@ -45,7 +45,10 @@ class BaseDnsTest extends SqliteDnsBackendTestCase
     protected function setUp(): void
     {
         $dbMock = $this->createMock(PDO::class);
-        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock = new FakeConfiguration([
+            'dns' => ['strict_tld_check' => true, 'top_level_tld_check' => true],
+            'database' => ['pdns_db_name' => 'pdns'],
+        ]);
         $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
 
         // Records the CNAME conflict checks see: two existing CNAMEs and one NS target
@@ -54,26 +57,6 @@ class BaseDnsTest extends SqliteDnsBackendTestCase
             [456, 1, 'alias.example.com', 'CNAME', 'target.example.com'],
             [789, 1, 'example.com', 'NS', 'invalid.cname.target'],
         ]);
-
-        // Configure the mock to return expected values
-        $configMock->method('get')
-            ->willReturnCallback(function ($group, $key) {
-                // For DNS tests
-                if ($group === 'dns' && $key === 'strict_tld_check') {
-                    return true;
-                }
-                if ($group === 'dns' && $key === 'top_level_tld_check') {
-                    return true;
-                }
-
-                // For database tests
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return 'pdns';  // Mock database name for tests
-                }
-
-                // Default return value
-                return null;
-            });
 
         // Mock database queries for DNS record validation tests
         $dbMock->method('quote')

@@ -26,7 +26,7 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 
 /**
@@ -42,7 +42,7 @@ class RecordRepositoryFilteredSortingTest extends TestCase
             fn($attr) => $attr === PDO::ATTR_DRIVER_NAME ? $driver : null
         );
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             fn($section, $key, $default = null) => $default
         );

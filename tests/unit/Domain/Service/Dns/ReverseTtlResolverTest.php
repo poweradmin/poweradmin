@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 class ReverseTtlResolverTest extends TestCase
 {
@@ -34,16 +34,7 @@ class ReverseTtlResolverTest extends TestCase
      */
     private function createResolver(mixed $reverseTtl, int $defaultTtl = 86400, array $typeDefaults = []): ReverseTtlResolver
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function (string $group, string $key, mixed $default = null) use ($reverseTtl, $defaultTtl) {
-            if ($group === 'dns' && $key === 'ttl_reverse') {
-                return $reverseTtl;
-            }
-            if ($group === 'dns' && $key === 'ttl') {
-                return $defaultTtl;
-            }
-            return $default;
-        });
+        $config = new FakeConfiguration(['dns' => ['ttl_reverse' => $reverseTtl, 'ttl' => $defaultTtl]]);
 
         $repo = $this->createMock(RecordTypeDefaultRepositoryInterface::class);
         $repo->method('find')->willReturnCallback(fn(string $type) => $typeDefaults[strtoupper($type)] ?? null);

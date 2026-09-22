@@ -29,11 +29,11 @@ use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Covers BaseController::getRecordTypeCapabilities(), which decides whether
@@ -43,21 +43,14 @@ use ReflectionClass;
  */
 class BaseControllerRecordTypeCapabilitiesTest extends TestCase
 {
-    private array $configBackup = [];
-    private bool $configInitializedBackup = false;
-
     protected function setUp(): void
     {
         parent::setUp();
-        [$settings, $initialized] = $this->readConfigState();
-        $this->configBackup = $settings;
-        $this->configInitializedBackup = $initialized;
         unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
     }
 
     protected function tearDown(): void
     {
-        $this->writeConfigState($this->configBackup, $this->configInitializedBackup);
         unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
         parent::tearDown();
     }
@@ -150,41 +143,12 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         ];
     }
 
-    private function buildConfig(array $overrides): ConfigurationManager
+    private function buildConfig(array $overrides): FakeConfiguration
     {
         $settings = ['database' => ['type' => 'mysql']];
         foreach ($overrides as $group => $values) {
             $settings[$group] = array_merge($settings[$group] ?? [], $values);
         }
-        $this->writeConfigState($settings, true);
-        return ConfigurationManager::getInstance();
-    }
-
-    /**
-     * @return array{0: array, 1: bool}
-     */
-    private function readConfigState(): array
-    {
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $config = ConfigurationManager::getInstance();
-        return [$settingsProperty->getValue($config), $initializedProperty->getValue($config)];
-    }
-
-    private function writeConfigState(array $settings, bool $initialized): void
-    {
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $config = ConfigurationManager::getInstance();
-        $settingsProperty->setValue($config, $settings);
-        $initializedProperty->setValue($config, $initialized);
+        return new FakeConfiguration($settings);
     }
 }

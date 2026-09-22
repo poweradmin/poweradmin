@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\User;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\User\AvatarService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 class AvatarServiceTest extends TestCase
 {
@@ -79,7 +79,7 @@ class AvatarServiceTest extends TestCase
 
     private function serviceWithPriority(string $priority, bool $providersEnabled = true): AvatarService
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             static fn(string $group, string $key, mixed $default = null): mixed => match ($key) {
                 'avatar_oauth_enabled', 'avatar_gravatar_enabled' => $providersEnabled,
