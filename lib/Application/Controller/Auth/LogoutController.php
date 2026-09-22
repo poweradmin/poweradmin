@@ -26,9 +26,9 @@ use Exception;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Web\FlashMessage;
+use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
-use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
+use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**

@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service\Auth;
 
 use Poweradmin\Application\Http\RequestContext;
-use Poweradmin\Application\Web\FlashMessage;
+use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;

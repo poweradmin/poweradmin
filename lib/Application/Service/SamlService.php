@@ -27,7 +27,7 @@ use OneLogin\Saml2\Settings;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Enum\AuthMethod;
-use Poweradmin\Application\Web\FlashMessage;
+use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;

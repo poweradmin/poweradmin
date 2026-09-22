@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
+use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 
 /**
  * Handles the forgot-password form: takes an email address and sends the password reset link.

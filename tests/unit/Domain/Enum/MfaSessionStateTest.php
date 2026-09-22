@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Domain\Enum;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Enum\MfaSessionState;
-use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
+use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 

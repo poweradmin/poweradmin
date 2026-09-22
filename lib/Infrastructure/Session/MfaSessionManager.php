@@ -25,7 +25,6 @@ namespace Poweradmin\Infrastructure\Session;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Poweradmin\Domain\Enum\MfaSessionState;
-use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**

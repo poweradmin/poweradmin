@@ -17,7 +17,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Application\Web\FlashMessage;
+use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use ReflectionMethod;

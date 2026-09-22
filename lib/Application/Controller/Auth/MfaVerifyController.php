@@ -30,7 +30,7 @@ use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
-use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
+use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionPromotionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;

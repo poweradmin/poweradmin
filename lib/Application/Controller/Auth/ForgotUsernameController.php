@@ -28,7 +28,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
+use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 
 /**
  * Handles the forgot-username form: sends the username to the submitted email address if it is on file.

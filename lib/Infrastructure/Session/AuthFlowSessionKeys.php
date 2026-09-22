@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Service\Auth;
+namespace Poweradmin\Infrastructure\Session;
 
 /**
  * $_SESSION keys owned by the authentication flows: MFA, the OIDC and SAML

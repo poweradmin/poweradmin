@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
+use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 
 /**
  * Handles the password reset form reached from the emailed token link and sets the new password.

@@ -26,7 +26,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\OidcCallbackController;
-use Poweradmin\Application\Web\FlashMessage;
+use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 

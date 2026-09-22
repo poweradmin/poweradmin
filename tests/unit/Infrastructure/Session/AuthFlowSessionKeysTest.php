@@ -20,11 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Service\Auth;
+namespace Poweradmin\Tests\Unit\Infrastructure\Session;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
+use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use ReflectionClass;
 

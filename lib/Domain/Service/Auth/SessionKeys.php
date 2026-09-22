@@ -26,7 +26,7 @@ namespace Poweradmin\Domain\Service\Auth;
  * Catalogue of the login and user identity $_SESSION keys.
  *
  * The MFA, logout round-trip and recovery flow keys live in
- * Application\Service\Auth\AuthFlowSessionKeys next to the flows that use them.
+ * Infrastructure\Session\AuthFlowSessionKeys next to the flows that use them.
  *
  * Search and list views deliberately use different sort buckets so a column
  * picked in one view cannot leak into a query that does not support it.

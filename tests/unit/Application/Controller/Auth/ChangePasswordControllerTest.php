@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\ChangePasswordController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\PasswordChangeService;
-use Poweradmin\Application\Web\FlashMessage;
+use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 

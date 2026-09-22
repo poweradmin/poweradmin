@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Web;
+namespace Poweradmin\Infrastructure\Session;
 
 /**
  * A flash message (text plus Bootstrap alert type) kept in the session across a redirect.
