@@ -23,6 +23,10 @@
     "pdns-sqlite:8183",
     "pdns-sqlite-api:1057",
     "pdns-sqlite-api:8185",
+    "pdns-mysql-api:1058",
+    "pdns-mysql-api:8186",
+    "pdns-pgsql-api:1059",
+    "pdns-pgsql-api:8187",
     "ldap:389",
     "ldap:636",
     "ldapadmin:8443"
@@ -92,6 +96,18 @@
     },
     "pdns-sqlite-api:8185": {
       "label": "PowerDNS SQLite, API instance (API)"
+    },
+    "pdns-mysql-api:1058": {
+      "label": "PowerDNS MySQL, API instance (DNS)"
+    },
+    "pdns-mysql-api:8186": {
+      "label": "PowerDNS MySQL, API instance (API)"
+    },
+    "pdns-pgsql-api:1059": {
+      "label": "PowerDNS PostgreSQL, API instance (DNS)"
+    },
+    "pdns-pgsql-api:8187": {
+      "label": "PowerDNS PostgreSQL, API instance (API)"
     },
     "ldap:389": {
       "label": "LDAP"

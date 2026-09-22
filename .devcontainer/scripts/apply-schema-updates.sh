@@ -22,11 +22,14 @@ MYSQL_USER="${MYSQL_USER:-pdns}"
 MYSQL_PASSWORD="${MYSQL_PASSWORD:-poweradmin}"
 MYSQL_DATABASE="${MYSQL_DATABASE:-poweradmin}"
 MYSQL_CONTAINER="${MYSQL_CONTAINER:-mariadb}"
+# The API-backend instance has its own databases; both get the same updates
+MYSQL_API_DATABASE="${MYSQL_API_DATABASE:-poweradmin_api}"
 
 PGSQL_USER="${PGSQL_USER:-pdns}"
 PGSQL_PASSWORD="${PGSQL_PASSWORD:-poweradmin}"
 PGSQL_DATABASE="${PGSQL_DATABASE:-pdns}"
 PGSQL_CONTAINER="${PGSQL_CONTAINER:-postgres}"
+PGSQL_API_DATABASE="${PGSQL_API_DATABASE:-pdns_api}"
 
 SQLITE_CONTAINER="${SQLITE_CONTAINER:-sqlite}"
 SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/pdns.db}"
@@ -56,9 +59,11 @@ apply_script() { # $1=db $2=file -> prints "errors:N"
     errfile=$(mktemp)
     case "$db" in
         mysql)
-            docker exec -i "$MYSQL_CONTAINER" mysql --force -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$file" 2>"$errfile" ;;
+            docker exec -i "$MYSQL_CONTAINER" mysql --force -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$file" 2>"$errfile"
+            docker exec -i "$MYSQL_CONTAINER" mysql --force -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_API_DATABASE" < "$file" 2>>"$errfile" ;;
         pgsql)
-            docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$file" >/dev/null 2>"$errfile" ;;
+            docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$file" >/dev/null 2>"$errfile"
+            docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_API_DATABASE" < "$file" >/dev/null 2>>"$errfile" ;;
         sqlite)
             docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$file" 2>"$errfile"
             docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_API_DB_PATH" < "$file" 2>>"$errfile" ;;

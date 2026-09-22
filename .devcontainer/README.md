@@ -38,7 +38,7 @@ other machines on your network.
 
 ## Architecture
 
-Each database has two Poweradmin instances - one using direct SQL and one using the PowerDNS REST API backend (experimental). MySQL and PostgreSQL instances share a PowerDNS server per database (DNSSEC enabled); SQLite has one per instance, because a SQLite file takes a single writer and the two instances have to run at the same time.
+Each database has two Poweradmin instances - one using direct SQL and one using the PowerDNS REST API backend (experimental). Every instance has its own database and its own PowerDNS server (DNSSEC enabled), so the two instances of a family can run at the same time without writing to the same zones, domains or records rows.
 
 ### SQL Backend (default - direct database access)
 
@@ -52,9 +52,9 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 
 | Port | Web Server | Database | PowerDNS DNS | PowerDNS API |
 |------|------------|----------|--------------|--------------|
-| 8083 | Nginx | MySQL/MariaDB | 1053 | 8181 |
-| 8084 | Nginx | PostgreSQL | 1054 | 8182 |
-| 8085 | Nginx | SQLite | 1057 | 8185 |
+| 8083 | Nginx | MySQL/MariaDB (`poweradmin_api` + `pdns_api`) | 1058 | 8186 |
+| 8084 | Nginx | PostgreSQL (`pdns_api`) | 1059 | 8187 |
+| 8085 | Nginx | SQLite (`/data/pdns-api.db`) | 1057 | 8185 |
 
 ### Special-purpose instances (MySQL/MariaDB, SQL backend)
 
@@ -85,8 +85,10 @@ the installation is skipped. Browsers cache 301 redirects, so if `/install` once
 the site data for that origin.
 
 ### PowerDNS Servers (with DNSSEC)
-- **MySQL backend**: DNS port 1053, API port 8181
-- **PostgreSQL backend**: DNS port 1054, API port 8182
+- **MySQL backend** (SQL instance, `pdns`): DNS port 1053, API port 8181
+- **MySQL backend** (API instance, `pdns_api`): DNS port 1058, API port 8186
+- **PostgreSQL backend** (SQL instance, `pdns`): DNS port 1054, API port 8182
+- **PostgreSQL backend** (API instance, `pdns_api`): DNS port 1059, API port 8187
 - **SQLite backend** (SQL instance, `/data/pdns.db`): DNS port 1055, API port 8183
 - **SQLite backend** (API instance, `/data/pdns-api.db`): DNS port 1057, API port 8185
 - **LMDB backend** (opt-in, the only backend with views and network mappings): DNS port 1056, API port 8184.
@@ -110,8 +112,10 @@ the site data for that origin.
 - `conf/Caddyfile` - Caddy configuration (SQLite + SQL)
 
 ### PowerDNS Configs (DNSSEC enabled)
-- `conf/pdns-mysql.conf` - PowerDNS for MySQL
-- `conf/pdns-pgsql.conf` - PowerDNS for PostgreSQL
+- `conf/pdns-mysql.conf` - PowerDNS for MySQL (SQL instance)
+- `conf/pdns-mysql-api.conf` - PowerDNS for MySQL (API instance)
+- `conf/pdns-pgsql.conf` - PowerDNS for PostgreSQL (SQL instance)
+- `conf/pdns-pgsql-api.conf` - PowerDNS for PostgreSQL (API instance)
 - `conf/pdns-sqlite.conf` - PowerDNS for SQLite (SQL instance)
 - `conf/pdns-sqlite-api.conf` - PowerDNS for SQLite (API instance)
 
@@ -136,8 +140,8 @@ the site data for that origin.
 Access Adminer at http://localhost:8090
 
 ### Direct Connection
-- **MariaDB**: user: `pdns`, pass: `poweradmin`, db: `pdns` (app tables in `poweradmin` db); root password `uberuser`
-- **PostgreSQL**: user: `pdns`, pass: `poweradmin`, db: `pdns`
+- **MariaDB**: user: `pdns`, pass: `poweradmin`, db: `pdns` (app tables in `poweradmin` db); the API instance uses `pdns_api` and `poweradmin_api`; root password `uberuser`
+- **PostgreSQL**: user: `pdns`, pass: `poweradmin`, db: `pdns`; the API instance uses `pdns_api`
 - **SQLite**: `/data/pdns.db` for the SQL instance, `/data/pdns-api.db` for the API instance (both mounted in containers)
 
 ## Test Credentials

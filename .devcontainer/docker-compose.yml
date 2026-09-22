@@ -324,6 +324,7 @@ services:
     volumes:
       - pgsql_data:/var/lib/postgresql/data
       - ../sql/pdns/${PDNS_BRANCH}/schema.pgsql.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./scripts/pgsql-init-api-db.sh:/docker-entrypoint-initdb.d/02-api-db.sh
     ports:
       - "127.0.0.1:5432:5432"
     healthcheck:
@@ -378,6 +379,23 @@ services:
       mysql:
         condition: service_healthy
 
+  # Serves the API-backend instance's own database, so it never writes to pdns
+  pdns-mysql-api:
+    image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    container_name: pdns-mysql-api
+    restart: unless-stopped
+    networks:
+      - internal
+    volumes:
+      - ./conf/pdns-mysql-api.conf:/etc/powerdns/pdns.conf
+    ports:
+      - "127.0.0.1:1058:53"
+      - "127.0.0.1:1058:53/udp"
+      - "127.0.0.1:8186:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
   pdns-pgsql:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
     container_name: pdns-pgsql
@@ -390,6 +408,23 @@ services:
       - "127.0.0.1:1054:53"
       - "127.0.0.1:1054:53/udp"
       - "127.0.0.1:8182:8081"
+    depends_on:
+      pgsql:
+        condition: service_healthy
+
+  # Serves the API-backend instance's own database, so it never writes to pdns
+  pdns-pgsql-api:
+    image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    container_name: pdns-pgsql-api
+    restart: unless-stopped
+    networks:
+      - internal
+    volumes:
+      - ./conf/pdns-pgsql-api.conf:/etc/powerdns/pdns.conf
+    ports:
+      - "127.0.0.1:1059:53"
+      - "127.0.0.1:1059:53/udp"
+      - "127.0.0.1:8187:8081"
     depends_on:
       pgsql:
         condition: service_healthy

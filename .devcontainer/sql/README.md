@@ -25,7 +25,7 @@ SQLite version of test data. Use with SQLite 3.8+.
 ### `test-users-permissions-mysql-combined.sql`
 MySQL/MariaDB version for **devcontainer multi-database setup**. This script handles both the `poweradmin` database (users, permissions, zones) and the `pdns` database (domains, records) using `USE` statements and cross-database joins.
 
-**Recommended for devcontainer**: This is the version used by the import script since the devcontainer keeps PowerDNS tables in a separate `pdns` database.
+**Recommended for devcontainer**: This is the version used by the import script since the devcontainer keeps PowerDNS tables in a separate `pdns` database. The API-backend instance uses `poweradmin_api` and `pdns_api` instead, and the import script rewrites those names on its way in.
 
 ### `test-dns-records-mysql.sql`
 MySQL/MariaDB comprehensive DNS records for UI testing. Adds ~26 diverse record types to `manager-zone.example.com` and `client-zone.example.com` zones.
@@ -56,12 +56,21 @@ SQLite comprehensive DNS records for UI testing. Adds ~26 diverse record types t
 ```bash
 # Use the combined script that handles both poweradmin and pdns databases
 docker exec -i mariadb mysql -u root -puberuser < .devcontainer/sql/test-users-permissions-mysql-combined.sql
+
+# The API-backend instance has its own pair, so rewrite the database names
+sed -e 's/^USE poweradmin;/USE poweradmin_api;/' -e 's/^USE pdns;/USE pdns_api;/' \
+    -e 's/ poweradmin\./ poweradmin_api./g' -e 's/ pdns\./ pdns_api./g' \
+    .devcontainer/sql/test-users-permissions-mysql-combined.sql \
+  | docker exec -i mariadb mysql -u root -puberuser
 ```
 
 #### PostgreSQL
 ```bash
 # Pass PGPASSWORD into the container environment
 docker exec -i -e PGPASSWORD=poweradmin postgres psql -U pdns -d pdns < .devcontainer/sql/test-users-permissions-pgsql.sql
+
+# The API-backend instance has its own database
+docker exec -i -e PGPASSWORD=poweradmin postgres psql -U pdns -d pdns_api < .devcontainer/sql/test-users-permissions-pgsql.sql
 ```
 
 #### SQLite

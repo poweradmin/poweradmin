@@ -34,6 +34,16 @@ MYSQL_SCHEMA="$ROOT_SQL_DIR/poweradmin-mysql-db-structure.sql"
 PGSQL_SCHEMA="$ROOT_SQL_DIR/poweradmin-pgsql-db-structure.sql"
 SQLITE_SCHEMA="$ROOT_SQL_DIR/poweradmin-sqlite-db-structure.sql"
 
+# PowerDNS schema for the API instances' own databases; the branch is the one the
+# containers run, from .devcontainer/.env
+PDNS_BRANCH="${PDNS_BRANCH:-}"
+if [ -z "$PDNS_BRANCH" ] && [ -f "$DEVCONTAINER_DIR/.env" ]; then
+    PDNS_BRANCH=$(grep -E '^PDNS_BRANCH=' "$DEVCONTAINER_DIR/.env" | tail -1 | cut -d= -f2)
+fi
+PDNS_BRANCH="${PDNS_BRANCH:-51}"
+PDNS_MYSQL_SCHEMA="$ROOT_SQL_DIR/pdns/$PDNS_BRANCH/schema.mysql.sql"
+PDNS_PGSQL_SCHEMA="$ROOT_SQL_DIR/pdns/$PDNS_BRANCH/schema.pgsql.sql"
+
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -48,11 +58,18 @@ MYSQL_PASSWORD="${MYSQL_PASSWORD:-poweradmin}"
 MYSQL_DATABASE="${MYSQL_DATABASE:-poweradmin}"
 MYSQL_PDNS_DATABASE="${MYSQL_PDNS_DATABASE:-pdns}"
 MYSQL_CONTAINER="${MYSQL_CONTAINER:-mariadb}"
+MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-uberuser}"
+# The API-backend instance has its own pair of databases so both MySQL instances
+# can run at once without writing to the same zones, domains or records rows
+MYSQL_API_DATABASE="${MYSQL_API_DATABASE:-poweradmin_api}"
+MYSQL_API_PDNS_DATABASE="${MYSQL_API_PDNS_DATABASE:-pdns_api}"
 
 PGSQL_USER="${PGSQL_USER:-pdns}"
 PGSQL_PASSWORD="${PGSQL_PASSWORD:-poweradmin}"
 PGSQL_DATABASE="${PGSQL_DATABASE:-pdns}"
 PGSQL_CONTAINER="${PGSQL_CONTAINER:-postgres}"
+# Same split for PostgreSQL, where one database holds both schemas
+PGSQL_API_DATABASE="${PGSQL_API_DATABASE:-pdns_api}"
 
 SQLITE_CONTAINER="${SQLITE_CONTAINER:-sqlite}"
 SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/pdns.db}"
@@ -92,12 +109,45 @@ parse_poweradmin_sequences() {
         | awk '{print $NF}'
 }
 
-# Function to clean MySQL/MariaDB test data
+# Rewrites the fixture database names so the same files seed either MySQL pair.
+mysql_fixture() { # $1=poweradmin db $2=pdns db $3=file
+    sed -e "s/^USE poweradmin;/USE $1;/" \
+        -e "s/^USE pdns;/USE $2;/" \
+        -e "s/ poweradmin\./ $1./g" \
+        -e "s/ pdns\./ $2./g" "$3"
+}
+
+# Creates the API instance's databases in devcontainers that predate them, and
+# loads the PowerDNS schema into the new one.
+ensure_mysql_api_databases() {
+    docker exec -i "$MYSQL_CONTAINER" mysql -uroot -p"$MYSQL_ROOT_PASSWORD" 2>/dev/null << EOSQL || return 1
+CREATE DATABASE IF NOT EXISTS \`$MYSQL_API_DATABASE\`;
+CREATE DATABASE IF NOT EXISTS \`$MYSQL_API_PDNS_DATABASE\`;
+GRANT ALL PRIVILEGES ON \`$MYSQL_API_DATABASE\`.* TO '$MYSQL_USER'@'%';
+GRANT ALL PRIVILEGES ON \`$MYSQL_API_PDNS_DATABASE\`.* TO '$MYSQL_USER'@'%';
+FLUSH PRIVILEGES;
+EOSQL
+
+    local has_domains
+    has_domains=$(docker exec "$MYSQL_CONTAINER" mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$MYSQL_API_PDNS_DATABASE' AND table_name='domains';" 2>/dev/null || echo "0")
+    if [ "$has_domains" = "0" ]; then
+        echo -e "${YELLOW}📦 PowerDNS schema not found in $MYSQL_API_PDNS_DATABASE, importing...${NC}"
+        if [ ! -f "$PDNS_MYSQL_SCHEMA" ]; then
+            echo -e "${RED}❌ PowerDNS schema file not found at $PDNS_MYSQL_SCHEMA${NC}"
+            return 1
+        fi
+        docker exec -i "$MYSQL_CONTAINER" mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_API_PDNS_DATABASE" < "$PDNS_MYSQL_SCHEMA" 2>/dev/null
+    fi
+}
+
+# Function to clean MySQL/MariaDB test data in one pair of databases
 # Drops and recreates the poweradmin-native tables from the current schema so
 # the devcontainer never drifts behind the checked-out branch, then clears the
 # PowerDNS-owned data rows (those tables are never dropped).
-clean_mysql() {
-    echo -e "${YELLOW}🧹 Cleaning MySQL/MariaDB test data...${NC}"
+clean_mysql_db() {
+    local native_db=$1
+    local pdns_db=$2
+    echo -e "${YELLOW}🧹 Cleaning MySQL/MariaDB test data in ${native_db}/${pdns_db}...${NC}"
 
     if ! check_container "$MYSQL_CONTAINER"; then
         echo -e "${RED}❌ Container '$MYSQL_CONTAINER' is not running${NC}"
@@ -116,9 +166,9 @@ clean_mysql() {
             [ -n "$table" ] && echo "DROP TABLE IF EXISTS \`$table\`;"
         done < <(parse_poweradmin_tables "$MYSQL_SCHEMA")
         echo "SET FOREIGN_KEY_CHECKS=1;"
-    } | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" 2>/dev/null
+    } | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$native_db" 2>/dev/null
 
-    if docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$MYSQL_SCHEMA" 2>/dev/null; then
+    if docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$native_db" < "$MYSQL_SCHEMA" 2>/dev/null; then
         echo -e "${GREEN}✅ Poweradmin schema recreated${NC}"
     else
         echo -e "${RED}❌ Poweradmin schema recreation failed${NC}"
@@ -126,22 +176,55 @@ clean_mysql() {
     fi
 
     # Clear PowerDNS-owned data (tables stay in place, never dropped)
-    docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_PDNS_DATABASE" 2>/dev/null << 'EOSQL'
+    docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$pdns_db" 2>/dev/null << 'EOSQL'
 DELETE FROM records;
 DELETE FROM domains;
 DELETE FROM supermasters;
 EOSQL
 
-    echo -e "${GREEN}✅ MySQL/MariaDB cleaned${NC}"
+    echo -e "${GREEN}✅ MySQL/MariaDB ${native_db}/${pdns_db} cleaned${NC}"
 }
 
-# Function to clean PostgreSQL test data
+# Clean both MySQL instance pairs
+clean_mysql() {
+    if ! check_container "$MYSQL_CONTAINER"; then
+        echo -e "${RED}❌ Container '$MYSQL_CONTAINER' is not running${NC}"
+        return 1
+    fi
+    ensure_mysql_api_databases || return 1
+    clean_mysql_db "$MYSQL_DATABASE" "$MYSQL_PDNS_DATABASE" || return 1
+    clean_mysql_db "$MYSQL_API_DATABASE" "$MYSQL_API_PDNS_DATABASE" || return 1
+}
+
+# Creates the API instance's database in devcontainers that predate it, and
+# loads the PowerDNS schema into it.
+ensure_pgsql_api_database() {
+    local exists
+    exists=$(docker exec -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" -tAc "SELECT 1 FROM pg_database WHERE datname='$PGSQL_API_DATABASE';" 2>/dev/null || echo "")
+    if [ "$exists" != "1" ]; then
+        docker exec -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" -c "CREATE DATABASE \"$PGSQL_API_DATABASE\" OWNER \"$PGSQL_USER\";" > /dev/null 2>&1
+    fi
+
+    local has_domains
+    has_domains=$(docker exec -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_API_DATABASE" -tAc "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_name='domains';" 2>/dev/null || echo "0")
+    if [ "$has_domains" = "0" ]; then
+        echo -e "${YELLOW}📦 PowerDNS schema not found in $PGSQL_API_DATABASE, importing...${NC}"
+        if [ ! -f "$PDNS_PGSQL_SCHEMA" ]; then
+            echo -e "${RED}❌ PowerDNS schema file not found at $PDNS_PGSQL_SCHEMA${NC}"
+            return 1
+        fi
+        docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_API_DATABASE" < "$PDNS_PGSQL_SCHEMA" > /dev/null 2>&1
+    fi
+}
+
+# Function to clean PostgreSQL test data in one database
 # Drops and recreates the poweradmin-native tables (and their standalone
 # sequences) from the current schema, then clears the PowerDNS-owned data rows.
-# Poweradmin and PowerDNS tables share the pdns database's public schema, so the
+# Poweradmin and PowerDNS tables share the database's public schema, so the
 # drop is scoped to the parsed poweradmin table/sequence names only.
-clean_pgsql() {
-    echo -e "${YELLOW}🧹 Cleaning PostgreSQL test data...${NC}"
+clean_pgsql_db() {
+    local target_db=$1
+    echo -e "${YELLOW}🧹 Cleaning PostgreSQL test data in ${target_db}...${NC}"
 
     if ! check_container "$PGSQL_CONTAINER"; then
         echo -e "${RED}❌ Container '$PGSQL_CONTAINER' is not running${NC}"
@@ -162,9 +245,9 @@ clean_pgsql() {
         while IFS= read -r seq; do
             [ -n "$seq" ] && echo "DROP SEQUENCE IF EXISTS \"$seq\" CASCADE;"
         done < <(parse_poweradmin_sequences "$PGSQL_SCHEMA")
-    } | docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" > /dev/null 2>&1
+    } | docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" > /dev/null 2>&1
 
-    if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$PGSQL_SCHEMA" > /dev/null 2>&1; then
+    if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" < "$PGSQL_SCHEMA" > /dev/null 2>&1; then
         echo -e "${GREEN}✅ Poweradmin schema recreated${NC}"
     else
         echo -e "${RED}❌ Poweradmin schema recreation failed${NC}"
@@ -173,7 +256,7 @@ clean_pgsql() {
 
     # Clear PowerDNS-owned data (tables stay in place); reset their sequences
     # so fixture domain/record ids stay deterministic.
-    docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" > /dev/null 2>&1 << 'EOSQL'
+    docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" > /dev/null 2>&1 << 'EOSQL'
 DELETE FROM records;
 DELETE FROM domains;
 DELETE FROM supermasters;
@@ -181,7 +264,18 @@ SELECT setval('domains_id_seq', 1);
 SELECT setval('records_id_seq', 1);
 EOSQL
 
-    echo -e "${GREEN}✅ PostgreSQL cleaned${NC}"
+    echo -e "${GREEN}✅ PostgreSQL ${target_db} cleaned${NC}"
+}
+
+# Clean both PostgreSQL instance databases
+clean_pgsql() {
+    if ! check_container "$PGSQL_CONTAINER"; then
+        echo -e "${RED}❌ Container '$PGSQL_CONTAINER' is not running${NC}"
+        return 1
+    fi
+    ensure_pgsql_api_database || return 1
+    clean_pgsql_db "$PGSQL_DATABASE" || return 1
+    clean_pgsql_db "$PGSQL_API_DATABASE" || return 1
 }
 
 # Run a .sql file against one SQLite database file.
@@ -245,9 +339,11 @@ clean_sqlite() {
     done
 }
 
-# Function to import MySQL/MariaDB data
-import_mysql() {
-    echo -e "${YELLOW}📦 Importing to MySQL/MariaDB...${NC}"
+# Function to import MySQL/MariaDB data into one pair of databases
+import_mysql_db() {
+    local native_db=$1
+    local pdns_db=$2
+    echo -e "${YELLOW}📦 Importing to MySQL/MariaDB ${native_db}/${pdns_db}...${NC}"
 
     if ! check_container "$MYSQL_CONTAINER"; then
         echo -e "${RED}❌ Container '$MYSQL_CONTAINER' is not running${NC}"
@@ -261,13 +357,13 @@ import_mysql() {
     fi
 
     # Check if Poweradmin schema exists, import if needed
-    local has_users_table=$(docker exec "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$MYSQL_DATABASE' AND table_name='users';" 2>/dev/null || echo "0")
+    local has_users_table=$(docker exec "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$native_db' AND table_name='users';" 2>/dev/null || echo "0")
 
     if [ "$has_users_table" = "0" ]; then
         echo -e "${YELLOW}📦 Poweradmin schema not found, importing...${NC}"
         local poweradmin_schema="$MYSQL_SCHEMA"
         if [ -f "$poweradmin_schema" ]; then
-            if docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$poweradmin_schema" 2>/dev/null; then
+            if docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$native_db" < "$poweradmin_schema" 2>/dev/null; then
                 echo -e "${GREEN}✅ Poweradmin schema imported${NC}"
             else
                 echo -e "${RED}❌ Poweradmin schema import failed${NC}"
@@ -283,7 +379,7 @@ import_mysql() {
     # Note: We connect without specifying a database since the SQL uses USE statements
     local output
     local exit_code
-    output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/test-users-permissions-mysql-combined.sql" 2>&1)
+    output=$(mysql_fixture "$native_db" "$pdns_db" "$SQL_DIR/test-users-permissions-mysql-combined.sql" | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" 2>&1)
     exit_code=$?
 
     if [ $exit_code -eq 0 ]; then
@@ -292,7 +388,7 @@ import_mysql() {
         # Import comprehensive DNS records if the file exists
         if [ -f "$SQL_DIR/test-dns-records-mysql.sql" ]; then
             echo -e "${YELLOW}📦 Importing comprehensive DNS records...${NC}"
-            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_PDNS_DATABASE" < "$SQL_DIR/test-dns-records-mysql.sql" 2>&1)
+            output=$(mysql_fixture "$native_db" "$pdns_db" "$SQL_DIR/test-dns-records-mysql.sql" | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$pdns_db" 2>&1)
             exit_code=$?
 
             if [ $exit_code -eq 0 ]; then
@@ -305,7 +401,7 @@ import_mysql() {
         # Import reverse zones and zone templates if the file exists
         if [ -f "$SQL_DIR/test-reverse-zones-templates-mysql.sql" ]; then
             echo -e "${YELLOW}📦 Importing reverse zones and zone templates...${NC}"
-            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/test-reverse-zones-templates-mysql.sql" 2>&1)
+            output=$(mysql_fixture "$native_db" "$pdns_db" "$SQL_DIR/test-reverse-zones-templates-mysql.sql" | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" 2>&1)
             exit_code=$?
 
             if [ $exit_code -eq 0 ]; then
@@ -318,7 +414,7 @@ import_mysql() {
         # Import extra comprehensive data (zones, supermasters, etc.)
         if [ -f "$SQL_DIR/test-extra-data-mysql.sql" ]; then
             echo -e "${YELLOW}📦 Importing extra test data (zones, supermasters, API keys)...${NC}"
-            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/test-extra-data-mysql.sql" 2>&1)
+            output=$(mysql_fixture "$native_db" "$pdns_db" "$SQL_DIR/test-extra-data-mysql.sql" | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" 2>&1)
             exit_code=$?
 
             if [ $exit_code -eq 0 ]; then
@@ -331,7 +427,7 @@ import_mysql() {
         # LDAP-linked users (testuser, testuser2) match the entries the ldap container bootstraps
         if [ -f "$SQL_DIR/add-ldap-test-users.sql" ]; then
             echo -e "${YELLOW}📦 Importing LDAP test users...${NC}"
-            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/add-ldap-test-users.sql" 2>&1)
+            output=$(mysql_fixture "$native_db" "$pdns_db" "$SQL_DIR/add-ldap-test-users.sql" | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" 2>&1)
             exit_code=$?
 
             if [ $exit_code -eq 0 ]; then
@@ -344,7 +440,7 @@ import_mysql() {
         # Import group test data (memberships, zone-group assignments)
         if [ -f "$SQL_DIR/test-groups-mysql.sql" ]; then
             echo -e "${YELLOW}📦 Importing group memberships and zone-group assignments...${NC}"
-            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/test-groups-mysql.sql" 2>&1)
+            output=$(mysql_fixture "$native_db" "$pdns_db" "$SQL_DIR/test-groups-mysql.sql" | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" 2>&1)
             exit_code=$?
 
             if [ $exit_code -eq 0 ]; then
@@ -363,9 +459,21 @@ import_mysql() {
     fi
 }
 
-# Function to import PostgreSQL data
-import_pgsql() {
-    echo -e "${YELLOW}📦 Importing to PostgreSQL...${NC}"
+# Import into both MySQL instance pairs
+import_mysql() {
+    if ! check_container "$MYSQL_CONTAINER"; then
+        echo -e "${RED}❌ Container '$MYSQL_CONTAINER' is not running${NC}"
+        return 1
+    fi
+    ensure_mysql_api_databases || return 1
+    import_mysql_db "$MYSQL_DATABASE" "$MYSQL_PDNS_DATABASE" || return 1
+    import_mysql_db "$MYSQL_API_DATABASE" "$MYSQL_API_PDNS_DATABASE" || return 1
+}
+
+# Function to import PostgreSQL data into one database
+import_pgsql_db() {
+    local target_db=$1
+    echo -e "${YELLOW}📦 Importing to PostgreSQL ${target_db}...${NC}"
 
     if ! check_container "$PGSQL_CONTAINER"; then
         echo -e "${RED}❌ Container '$PGSQL_CONTAINER' is not running${NC}"
@@ -378,13 +486,13 @@ import_pgsql() {
     fi
 
     # Check if Poweradmin schema exists, import if needed
-    local has_users_table=$(docker exec -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" -tAc "SELECT COUNT(*) FROM information_schema.tables WHERE table_name='users';" 2>/dev/null || echo "0")
+    local has_users_table=$(docker exec -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" -tAc "SELECT COUNT(*) FROM information_schema.tables WHERE table_name='users';" 2>/dev/null || echo "0")
 
     if [ "$has_users_table" = "0" ]; then
         echo -e "${YELLOW}📦 Poweradmin schema not found, importing...${NC}"
         local poweradmin_schema="$PGSQL_SCHEMA"
         if [ -f "$poweradmin_schema" ]; then
-            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$poweradmin_schema" > /dev/null 2>&1; then
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" < "$poweradmin_schema" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ Poweradmin schema imported${NC}"
             else
                 echo -e "${RED}❌ Poweradmin schema import failed${NC}"
@@ -397,13 +505,13 @@ import_pgsql() {
     fi
 
     # Pass PGPASSWORD into the container environment
-    if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-users-permissions-pgsql.sql" > /dev/null 2>&1; then
+    if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" < "$SQL_DIR/test-users-permissions-pgsql.sql" > /dev/null 2>&1; then
         echo -e "${GREEN}✅ PostgreSQL users and zones imported${NC}"
 
         # Import comprehensive DNS records if the file exists
         if [ -f "$SQL_DIR/test-dns-records-pgsql.sql" ]; then
             echo -e "${YELLOW}📦 Importing comprehensive DNS records...${NC}"
-            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-dns-records-pgsql.sql" > /dev/null 2>&1; then
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" < "$SQL_DIR/test-dns-records-pgsql.sql" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ PostgreSQL DNS records imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  DNS records import had issues (may already exist)${NC}"
@@ -413,7 +521,7 @@ import_pgsql() {
         # Import reverse zones and zone templates if the file exists
         if [ -f "$SQL_DIR/test-reverse-zones-templates-pgsql.sql" ]; then
             echo -e "${YELLOW}📦 Importing reverse zones and zone templates...${NC}"
-            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-reverse-zones-templates-pgsql.sql" > /dev/null 2>&1; then
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" < "$SQL_DIR/test-reverse-zones-templates-pgsql.sql" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ PostgreSQL reverse zones and templates imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  Reverse zones/templates import had issues (may already exist)${NC}"
@@ -423,7 +531,7 @@ import_pgsql() {
         # Import extra comprehensive data (zones, supermasters, etc.)
         if [ -f "$SQL_DIR/test-extra-data-pgsql.sql" ]; then
             echo -e "${YELLOW}📦 Importing extra test data (zones, supermasters, API keys)...${NC}"
-            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-extra-data-pgsql.sql" > /dev/null 2>&1; then
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" < "$SQL_DIR/test-extra-data-pgsql.sql" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ PostgreSQL extra test data imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  Extra test data import had issues (may already exist)${NC}"
@@ -433,7 +541,7 @@ import_pgsql() {
         # Import group test data (memberships, zone-group assignments)
         if [ -f "$SQL_DIR/test-groups-pgsql.sql" ]; then
             echo -e "${YELLOW}📦 Importing group memberships and zone-group assignments...${NC}"
-            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-groups-pgsql.sql" > /dev/null 2>&1; then
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" < "$SQL_DIR/test-groups-pgsql.sql" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ PostgreSQL group test data imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  Group test data import had issues (may already exist)${NC}"
@@ -445,6 +553,17 @@ import_pgsql() {
         echo -e "${RED}❌ PostgreSQL import failed${NC}"
         return 1
     fi
+}
+
+# Import into both PostgreSQL instance databases
+import_pgsql() {
+    if ! check_container "$PGSQL_CONTAINER"; then
+        echo -e "${RED}❌ Container '$PGSQL_CONTAINER' is not running${NC}"
+        return 1
+    fi
+    ensure_pgsql_api_database || return 1
+    import_pgsql_db "$PGSQL_DATABASE" || return 1
+    import_pgsql_db "$PGSQL_API_DATABASE" || return 1
 }
 
 # Function to import SQLite data into one database file
@@ -597,10 +716,14 @@ main() {
                 echo "  MYSQL_DATABASE      Poweradmin database (default: poweradmin)"
                 echo "  MYSQL_PDNS_DATABASE PowerDNS database (default: pdns)"
                 echo "  MYSQL_CONTAINER     MySQL container name (default: mariadb)"
+                echo "  MYSQL_ROOT_PASSWORD MySQL root password (default: uberuser)"
+                echo "  MYSQL_API_DATABASE  Poweradmin database, API backend (default: poweradmin_api)"
+                echo "  MYSQL_API_PDNS_DATABASE PowerDNS database, API backend (default: pdns_api)"
                 echo "  PGSQL_USER          PostgreSQL username (default: pdns)"
                 echo "  PGSQL_PASSWORD      PostgreSQL password (default: poweradmin)"
                 echo "  PGSQL_DATABASE      PostgreSQL database (default: pdns)"
                 echo "  PGSQL_CONTAINER     PostgreSQL container name (default: postgres)"
+                echo "  PGSQL_API_DATABASE  PostgreSQL database, API backend (default: pdns_api)"
                 echo "  SQLITE_CONTAINER    SQLite container name (default: sqlite)"
                 echo "  SQLITE_DB_PATH      SQLite database path, SQL backend (default: /data/pdns.db)"
                 echo "  SQLITE_API_DB_PATH  SQLite database path, API backend (default: /data/pdns-api.db)"
