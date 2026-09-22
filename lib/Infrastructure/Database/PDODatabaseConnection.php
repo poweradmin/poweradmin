@@ -57,6 +57,9 @@ class PDODatabaseConnection implements DatabaseConnection
             // Enable foreign key constraints for SQLite
             if ($credentials['db_type'] === 'sqlite') {
                 $pdo->exec('PRAGMA foreign_keys = ON');
+                // PowerDNS reads the same file, so a write can meet a reader.
+                // Wait for it instead of failing with "database is locked".
+                $pdo->exec('PRAGMA busy_timeout = 5000');
             }
 
             return $pdo;
