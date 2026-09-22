@@ -241,7 +241,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
             $useTransaction = $this->backendProvider->supportsLocalWriteTransaction();
             if ($useTransaction) {
-                $this->db->beginTransaction();
+                $this->services()->transaction()->begin();
             }
 
             $results = [
@@ -315,7 +315,7 @@ class ZonesRecordsBulkController extends PublicApiController
                 $this->services()->soaRecordManager()->updateSOASerial($zoneId);
             }
             if ($useTransaction) {
-                $this->db->commit();
+                $this->services()->transaction()->commit();
             }
             $this->recordManager->finalizeZone($zoneId, false);
 
@@ -325,7 +325,7 @@ class ZonesRecordsBulkController extends PublicApiController
             return $this->returnApiResponse($results, true, 'Bulk operations completed successfully', 200);
         } catch (\Throwable $e) {
             if ($useTransaction) {
-                $this->db->rollBack();
+                $this->services()->transaction()->rollBack();
 
                 // Reset counters - rollback means no changes were persisted
                 $results['created'] = 0;

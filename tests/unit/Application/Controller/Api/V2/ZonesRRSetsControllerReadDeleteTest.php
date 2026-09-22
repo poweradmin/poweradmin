@@ -32,6 +32,7 @@ use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -403,9 +404,10 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $backend = $this->createMock(BackendCapabilitiesInterface::class);
         $backend->method('supportsLocalWriteTransaction')->willReturnCallback(fn(): bool => $this->localTransactions);
 
-        if ($this->db !== null) {
-            $this->inject($controller, 'db', $this->db);
-        }
+        $db = $this->db ?? $this->stubDb();
+        $this->inject($controller, 'db', $db);
+        $factory->method('transaction')->willReturn(new PdoTransaction($db));
+
         $this->inject($controller, 'serviceFactory', $factory);
         $this->inject($controller, 'backendProvider', $backend);
         $this->inject($controller, 'zoneRepository', $this->zones);

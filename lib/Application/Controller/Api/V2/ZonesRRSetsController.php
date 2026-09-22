@@ -644,7 +644,7 @@ class ZonesRRSetsController extends PublicApiController
             // transaction could roll back, so it is only opened where it can undo them
             $useTransaction = $this->backendProvider->supportsLocalWriteTransaction();
             if ($useTransaction) {
-                $this->db->beginTransaction();
+                $this->services()->transaction()->begin();
             }
 
             try {
@@ -654,7 +654,7 @@ class ZonesRRSetsController extends PublicApiController
                 foreach ($records as $record) {
                     if (!$this->recordManager->deleteRecord($record['id'], false)->success) {
                         if ($useTransaction) {
-                            $this->db->rollBack();
+                            $this->services()->transaction()->rollBack();
                         }
                         return $this->returnApiError(
                             'Failed to delete record with ID ' . $record['id'] . ' (name: ' . $record['name'] . ', type: ' . $type . ')',
@@ -667,7 +667,7 @@ class ZonesRRSetsController extends PublicApiController
                 // Verify all records were deleted
                 if ($recordsDeleted !== $totalRecords) {
                     if ($useTransaction) {
-                        $this->db->rollBack();
+                        $this->services()->transaction()->rollBack();
                     }
                     return $this->returnApiError(
                         'RRSet deletion incomplete: deleted ' . $recordsDeleted . ' of ' . $totalRecords . ' records',
@@ -679,7 +679,7 @@ class ZonesRRSetsController extends PublicApiController
                     $this->services()->soaRecordManager()->updateSOASerial($zoneId);
                 }
                 if ($useTransaction) {
-                    $this->db->commit();
+                    $this->services()->transaction()->commit();
                 }
                 $this->recordManager->finalizeZone($zoneId, false);
 
@@ -693,7 +693,7 @@ class ZonesRRSetsController extends PublicApiController
                 );
             } catch (\Throwable $e) {
                 if ($useTransaction) {
-                    $this->db->rollBack();
+                    $this->services()->transaction()->rollBack();
                 }
                 throw $e;
             }

@@ -1,7 +1,7 @@
 includes:
-  # Grandfathered layering violations: 26 files, 68 counts ($_SESSION reads in
-  # UserContextService and four controllers, PDO calls in 17 services and API
-  # controllers, module imports of Infrastructure and Application services).
+  # Grandfathered layering violations: 5 files, 21 counts, all of them $_SESSION
+  # reads in UserContextService and four controllers. The PDO rule no longer has
+  # a single grandfathered hit.
   # reportUnmatchedIgnoredErrors fails the run on a stale entry, so regenerate
   # with --generate-baseline after removing one; never add to it.
   - phpstan-baseline.neon

@@ -7,18 +7,6 @@ parameters:
 			path: lib/Application/Controller/Api/InternalApiController.php
 
 		-
-			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesRRSetsController.php
-
-		-
-			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php
-
-		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 1

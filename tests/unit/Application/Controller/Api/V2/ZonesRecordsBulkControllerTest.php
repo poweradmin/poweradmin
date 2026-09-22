@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
@@ -416,6 +417,8 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $factory->method('auditService')->willReturn($this->audit);
         $factory->method('soaRecordManager')->willReturn($soaManager ?? $this->createMock(SOARecordManagerInterface::class));
         $factory->method('recordChangeLog')->willReturn(new RecordChangeLogger($this->createMock(PDO::class), new FakeConfiguration(), StubActor::nobody()));
+
+        $factory->method('transaction')->willReturn(new PdoTransaction($this->stubDb()));
 
         $backend = $this->createMock(BackendCapabilitiesInterface::class);
         $backend->method('supportsLocalWriteTransaction')->willReturn($this->localTransactions);
