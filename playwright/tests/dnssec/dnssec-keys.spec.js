@@ -7,7 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { listDnssecKeyIds, pruneDnssecKeys } from '../../helpers/dnssec.js';
+import { ensureDnssecKey, listDnssecKeyIds, pruneDnssecKeys } from '../../helpers/dnssec.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -288,6 +288,15 @@ test.describe('DNSSEC Key Management', () => {
   });
 
   test.describe('Delete DNSSEC Key', () => {
+    // These tests consume keys, so every one of them starts from a zone that has at least one
+    test.beforeEach(async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (zoneId) {
+        await ensureDnssecKey(page, zoneId);
+      }
+    });
+
     test('should display delete key links', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = await getTestZoneId(page);
@@ -324,8 +333,9 @@ test.describe('DNSSEC Key Management', () => {
       await deleteLink.click();
       await expect(page).toHaveURL(/.*dnssec.*delete/);
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/delete|confirm|sure/i);
+      // The URL commits before the body is parsed, so a one-shot textContent()
+      // read here sees the navigation header and nothing else.
+      await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
     });
 
     test('should cancel delete and return to DNSSEC page', async ({ page }) => {

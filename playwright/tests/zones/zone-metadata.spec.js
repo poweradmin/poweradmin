@@ -24,6 +24,28 @@ async function getTestZoneId(page) {
   return null;
 }
 
+/**
+ * Drop every metadata row of one kind from the open editor, newest row first.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} kind - Metadata kind, e.g. SOA-EDIT-API
+ * @returns {Promise<void>}
+ */
+async function removeMetadataRowsOfKind(page, kind) {
+  const rows = page.locator('#metadata-rows tr');
+
+  for (let i = await rows.count() - 1; i >= 0; i--) {
+    const row = rows.nth(i);
+    const kindSelect = row.locator('.metadata-kind-select');
+    if (await kindSelect.count() === 0) {
+      continue;
+    }
+    if (await kindSelect.inputValue() === kind) {
+      await row.locator('.metadata-remove-row').click();
+    }
+  }
+}
+
 test.describe('Zone Metadata Editor', () => {
   test('should show metadata button on zone edit page', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -31,8 +53,9 @@ test.describe('Zone Metadata Editor', () => {
     if (!zoneId) return;
 
     await page.goto(`/zones/${zoneId}/edit`);
+    // Auto-retrying: a one-shot count() here races the edit page render
     const metadataLink = page.locator('a[href*="/metadata"]');
-    expect(await metadataLink.count()).toBeGreaterThan(0);
+    await expect(metadataLink.first()).toBeVisible();
     await expect(metadataLink.first()).toContainText('Metadata');
   });
 
@@ -157,6 +180,10 @@ test.describe('Zone Metadata Editor', () => {
 
     await page.goto(`/zones/${zoneId}/metadata`);
 
+    // A SOA-EDIT-API row left by an earlier run would make this a second one,
+    // and the kind takes a single value only.
+    await removeMetadataRowsOfKind(page, 'SOA-EDIT-API');
+
     // Add new row
     await page.locator('#add-metadata-row').click();
 
@@ -184,6 +211,9 @@ test.describe('Zone Metadata Editor', () => {
     if (!zoneId) return;
 
     await page.goto(`/zones/${zoneId}/metadata`);
+
+    // Start from a clean slate so reruns do not pile rows onto the shared zone
+    await removeMetadataRowsOfKind(page, 'TSIG-ALLOW-DNSUPDATE');
 
     // PowerDNS reads every TSIG-ALLOW-DNSUPDATE row, so a zone may carry more
     // than one update key.

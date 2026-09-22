@@ -26,6 +26,26 @@ export async function listDnssecKeyIds(page, zoneId) {
 }
 
 /**
+ * Add a DNSSEC key to a zone when it has none.
+ *
+ * The delete tests consume keys, so a rerun of the same file can find the zone
+ * empty and fail on a missing delete link rather than on the behaviour it covers.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string|number} zoneId
+ * @returns {Promise<void>}
+ */
+export async function ensureDnssecKey(page, zoneId) {
+  if ((await listDnssecKeyIds(page, zoneId)).length > 0) {
+    return;
+  }
+
+  await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
+  await page.locator('button[type="submit"], input[type="submit"]').first().click();
+  await page.waitForLoadState('networkidle');
+}
+
+/**
  * Delete every key of a zone that is not in keepIds.
  *
  * @param {import('@playwright/test').Page} page

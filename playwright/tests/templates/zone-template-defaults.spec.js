@@ -91,6 +91,18 @@ test.describe('Zone Template Defaults (issue #973)', () => {
     test.skip(!templateId, 'template setup did not produce an id');
 
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+    // The default flag is a single system-wide value, so claim it here instead
+    // of relying on what the previous test left behind.
+    await page.goto('/zones/templates');
+    await page.waitForLoadState('networkidle');
+    const row = page.locator(`tr:has-text("${templateName}")`).first();
+    const setBtn = row.locator('form[action*="set-default"] button[title*="Set as default"]');
+    if (await setBtn.count() > 0) {
+      await setBtn.click();
+      await page.waitForLoadState('networkidle');
+    }
+
     await page.goto('/zones/add/master');
     await page.waitForLoadState('networkidle');
 
