@@ -1,6 +1,8 @@
 includes:
-  # Grandfathered layering violations (superglobals, the config singleton, Twig in
-  # Domain). Regenerate with --generate-baseline after removing one; never add to it.
+  # Grandfathered layering violations: 7 files, 23 counts ($_SESSION reads in
+  # UserContextService and four controllers, PDO::beginTransaction() in two API
+  # controllers). reportUnmatchedIgnoredErrors fails the run on a stale entry, so
+  # regenerate with --generate-baseline after removing one; never add to it.
   - phpstan-baseline.neon
   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
   - vendor/spaze/phpstan-disallowed-calls/extension.neon
@@ -11,7 +13,7 @@ parameters:
   tmpDir: .phpstan-cache
   excludePaths:
     - vendor
-  reportUnmatchedIgnoredErrors: false
+  reportUnmatchedIgnoredErrors: true
   ignoreErrors:
     # Ignore errors in test files related to mocking
     -
@@ -25,28 +27,11 @@ parameters:
     -
       identifier: deadCode.unreachable
       path: lib/Application/Service/Auth/SamlService.php
-    # LdapAuthenticator writes its cache keys into $_SESSION from a private method
-    # the test reaches by reflection, so PHPStan still sees them as unset from the
-    # test's own unset() and reports every later read as a missing offset.
-    -
-      identifier: offsetAccess.notFound
-      path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
     # PHPStan treats a repeated identical call as pure and reuses the first
     # result's narrowing, so every "did the mutation take effect?" check below
     # looks dead. The state genuinely changed in between and removing any of
     # these would drop a verification or, worse, a rollback. Each is scoped to
     # its file for want of a narrower hook.
-    #   EditController      - isZoneSecured() after secureZone()/unsecureZone()
-    -
-      identifier: if.alwaysFalse
-      path: lib/Application/Controller/Zone/EditController.php
-    -
-      identifier: booleanNot.alwaysFalse
-      path: lib/Application/Controller/Zone/EditController.php
-    #   DnssecDeleteKeyController - keyExists() after removeZoneKey()
-    -
-      identifier: booleanAnd.rightAlwaysTrue
-      path: lib/Application/Controller/Dnssec/DnssecDeleteKeyController.php
     #   SqlDnsBackendProvider, ZoneSyncService - inTransaction() in the catch,
     #   narrowed from the call made before beginTransaction(). Deleting either
     #   skips the rollback.
@@ -98,9 +83,6 @@ parameters:
     -
       identifier: booleanAnd.rightAlwaysTrue
       path: lib/Infrastructure/Logger/RecordChangeLogger.php
-    -
-      identifier: nullCoalesce.offset
-      path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
     # The match arms are deliberately parallel and self-documenting; the second
     # GET arm restates $hasKind that the first arm already excluded.
     -
@@ -122,9 +104,8 @@ parameters:
         - lib/Application/Http/Request.php
         - tests/*
     # Layering. Session state is read by the auth layer and BaseController and
-    # handed down; lib/Domain never touches it. Every entry under "not yet
-    # migrated" is debt - delete it when the file takes the value as a
-    # parameter (docs/ui-business-separation-plan.md, phase 5).
+    # handed down; lib/Domain never touches it. The remaining readers are in
+    # phpstan-baseline.neon (docs/ui-business-separation-plan.md, phase 5).
     -
       superglobal: ['$_SESSION']
       message: 'read the session in the auth layer or BaseController and pass the value down (UserContextService for the current user)'
@@ -242,7 +223,7 @@ parameters:
   # Layering. lib/Domain reaches Application and Infrastructure only through the
   # interfaces under lib/Domain/Repository and ConfigurationInterface (the concrete
   # manager, validator and theme resolver are listed by name for that reason).
-  # Grandfathered files are in phpstan-baseline.neon.
+  # No Domain file is grandfathered for these rules.
     -
       namespace: 'Poweradmin\Application\*'
       message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
@@ -468,12 +449,9 @@ parameters:
         - lib/Application/Boot/AppManager.php
         - lib/Application/Controller/BaseController.php
         - lib/Application/Boot/LocaleManager.php
-        - lib/Pages.php
         - lib/Application/Service/*
-        - lib/Application/Helpers/*
         - lib/Application/Http/*
         - lib/Application/Presenter/*
-        - lib/Application/Query/*
         - lib/Application/Routing/*
         - lib/Application/Config/*
         - lib/Domain/*
