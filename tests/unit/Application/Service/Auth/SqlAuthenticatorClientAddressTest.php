@@ -69,7 +69,6 @@ class SqlAuthenticatorClientAddressTest extends TestCase
         $audit->expects($this->once())->method('logLoginLocked')->with(AuthMethod::SQL);
 
         $authenticator = new SqlAuthenticator(
-            $this->createMock(PDO::class),
             new FakeConfiguration(),
             $audit,
             $this->createMock(CsrfTokenService::class),

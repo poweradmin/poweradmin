@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Service\Auth;
 
-use PDO;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
@@ -42,7 +41,6 @@ use Poweradmin\Application\Service\Web\AuditService;
 final class SqlAuthenticator
 {
     private LoggerInterface $logger;
-    private PDO $connection;
     private ConfigurationInterface $configManager;
     private AuditService $auditService;
     private CsrfTokenService $csrfTokenService;
@@ -52,7 +50,6 @@ final class SqlAuthenticator
     private UserRepositoryInterface $userRepository;
 
     public function __construct(
-        PDO $connection,
         ConfigurationInterface $configManager,
         AuditService $auditService,
         CsrfTokenService $csrfTokenService,
@@ -64,7 +61,6 @@ final class SqlAuthenticator
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
-        $this->connection = $connection;
         $this->configManager = $configManager;
         $this->auditService = $auditService;
         $this->csrfTokenService = $csrfTokenService;
@@ -108,10 +104,7 @@ final class SqlAuthenticator
 
         $userAuthService = UserAuthenticationService::fromConfig($this->configManager);
 
-        $stmt = $this->connection->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");
-        $stmt->bindValue(':username', $username, PDO::PARAM_STR);
-        $stmt->execute();
-        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+        $rowObj = $this->userRepository->findSqlLoginUser($username);
 
         if (!$rowObj) {
             // A missing user answered in ~6ms where a real one took ~212ms, telling

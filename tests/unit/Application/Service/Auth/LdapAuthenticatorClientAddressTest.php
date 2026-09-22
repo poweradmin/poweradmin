@@ -31,6 +31,7 @@ use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Application\Service\Auth\LdapAuthenticator;
+use Poweradmin\Domain\Repository\AuthUserLookupInterface;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -70,7 +71,7 @@ class LdapAuthenticatorClientAddressTest extends TestCase
         $audit->expects($this->once())->method('logLoginLocked')->with(AuthMethod::LDAP);
 
         $authenticator = new LdapAuthenticator(
-            $this->createMock(PDO::class),
+            $this->createMock(AuthUserLookupInterface::class),
             new FakeConfiguration(),
             $audit,
             $this->createMock(CsrfTokenService::class),

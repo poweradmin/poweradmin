@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Service\Auth;
 
-use PDO;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
@@ -33,7 +32,7 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Repository\AuthUserLookupInterface;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Application\Service\Web\AuditService;
@@ -44,7 +43,7 @@ use Poweradmin\Application\Service\Web\AuditService;
 final class LdapAuthenticator
 {
     private LoggerInterface $logger;
-    private PDO $db;
+    private AuthUserLookupInterface $userLookup;
     private ConfigurationInterface $configManager;
     private AuditService $auditService;
     private CsrfTokenService $csrfTokenService;
@@ -54,11 +53,8 @@ final class LdapAuthenticator
     private MfaService $mfaService;
     private UserProvisioningService $provisioningService;
 
-    /** Database driver name, used to build the LDAP username-match predicate. */
-    private string $dbType = '';
-
     public function __construct(
-        PDO $connection,
+        AuthUserLookupInterface $userLookup,
         ConfigurationInterface $configManager,
         AuditService $auditService,
         CsrfTokenService $csrfTokenService,
@@ -71,7 +67,7 @@ final class LdapAuthenticator
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
-        $this->db = $connection;
+        $this->userLookup = $userLookup;
         $this->configManager = $configManager;
         $this->auditService = $auditService;
         $this->csrfTokenService = $csrfTokenService;
@@ -80,7 +76,6 @@ final class LdapAuthenticator
         $this->client = $client;
         $this->mfaService = $mfaService;
         $this->provisioningService = $provisioningService;
-        $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
     }
 
 
@@ -237,17 +232,10 @@ final class LdapAuthenticator
 
         $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute, $ldap_groups_attribute);
 
-        // Accent-exact match, so a look-alike username cannot resolve to another account.
-        $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
-        $stmt = $this->db->prepare("SELECT id, fullname, email FROM users WHERE $match AND active = 1 AND use_ldap = 1");
-        $stmt->execute([
-            'username' => $username
-        ]);
-        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+        $rowObj = $this->userLookup->findActiveLdapUser($username);
 
         if (!$rowObj && $ldap_auto_provision && $this->provisioningService->provisionUser($userInfo, 'ldap')) {
-            $stmt->execute(['username' => $username]);
-            $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+            $rowObj = $this->userLookup->findActiveLdapUser($username);
             $this->logger->info('Auto-provisioned LDAP user {username}', ['username' => $username]);
         } elseif ($rowObj && ($ldap_sync_user_info || $ldap_group_sync)) {
             $this->provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo);
@@ -455,12 +443,7 @@ final class LdapAuthenticator
      */
     private function validateUserActiveStatus(string $username): bool
     {
-        $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
-        $stmt->execute(['username' => $username]);
-        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$rowObj) {
+        if (!$this->userLookup->hasActiveLdapUser($username)) {
             $this->logger->debug('User {username} is not active or use_ldap is disabled', ['username' => $username]);
             return false;
         }

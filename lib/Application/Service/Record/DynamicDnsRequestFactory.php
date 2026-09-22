@@ -35,6 +35,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
+use Poweradmin\Infrastructure\Repository\DbLoginAttemptRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Symfony\Component\HttpFoundation\Request;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
@@ -66,7 +67,7 @@ class DynamicDnsRequestFactory
             new DynamicDnsAuthenticationService(
                 $repository,
                 UserAuthenticationService::fromConfig($config),
-                new LoginAttemptService($db, $config)
+                new LoginAttemptService(new DbLoginAttemptRepository($db, $config), $config)
             ),
             $repository,
             $auditService ?? new AuditService(new AuditLogWriter($db, $config), $client, new SessionActor()),

@@ -71,6 +71,59 @@ class DbUserRepository implements UserRepositoryInterface
         return new User($data['id'], $data['password'], (bool)$data['use_ldap']);
     }
 
+    public function findSqlLoginUser(string $username): ?array
+    {
+        $stmt = $this->db->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");
+        $stmt->bindValue(':username', $username, PDO::PARAM_STR);
+        $stmt->execute();
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $rowObj ?: null;
+    }
+
+    public function findActiveLdapUser(string $username): ?array
+    {
+        // Accent-exact match, so a look-alike username cannot resolve to another account.
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname, email FROM users WHERE $match AND active = 1 AND use_ldap = 1");
+        $stmt->execute([
+            'username' => $username
+        ]);
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $rowObj ?: null;
+    }
+
+    public function hasActiveLdapUser(string $username): bool
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
+        $stmt->execute(['username' => $username]);
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return (bool)$rowObj;
+    }
+
+    public function findBasicAuthUser(string $username): ?array
+    {
+        $query = $this->db->prepare("SELECT id, password, use_ldap FROM users WHERE username = :username AND active = 1");
+        $query->execute(['username' => $username]);
+        $user = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $user ?: null;
+    }
+
+    public function findAuthMethodRow(string $username): ?array
+    {
+        $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE username = :username");
+        $stmt->execute([
+            'username' => $username
+        ]);
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $rowObj === false ? null : $rowObj;
+    }
+
     public function updatePassword(int $userId, string $hashedPassword): bool
     {
         $stmt = $this->db->prepare('UPDATE users SET password = ? WHERE id = ?');

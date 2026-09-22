@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\Auth\LdapAuthenticator;
+use Poweradmin\Domain\Repository\AuthUserLookupInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use ReflectionClass;
 use ReflectionMethod;
@@ -431,27 +432,7 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testValidateUserActiveStatusReturnsTrueForActiveUser(): void
     {
-        // Mock PDO and statement
-        $mockStmt = $this->createMock(\PDOStatement::class);
-        $mockStmt->expects($this->once())
-            ->method('execute')
-            ->with(['username' => 'testuser'])
-            ->willReturn(true);
-        $mockStmt->expects($this->once())
-            ->method('fetch')
-            ->with(\PDO::FETCH_ASSOC)
-            ->willReturn(['id' => 1, 'fullname' => 'Test User']);
-
-        $mockDb = $this->createMock(\PDO::class);
-        $mockDb->expects($this->once())
-            ->method('prepare')
-            ->with("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1")
-            ->willReturn($mockStmt);
-
-        // Inject mock database
-        $dbProperty = $this->reflection->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($this->authenticator, $mockDb);
+        $this->injectUserLookup('testuser', true);
 
         // Call private method
         $method = $this->getPrivateMethod('validateUserActiveStatus');
@@ -465,26 +446,8 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testValidateUserActiveStatusReturnsFalseForInactiveUser(): void
     {
-        // Mock PDO and statement - returns no rows (user inactive or not found)
-        $mockStmt = $this->createMock(\PDOStatement::class);
-        $mockStmt->expects($this->once())
-            ->method('execute')
-            ->with(['username' => 'inactiveuser'])
-            ->willReturn(true);
-        $mockStmt->expects($this->once())
-            ->method('fetch')
-            ->with(\PDO::FETCH_ASSOC)
-            ->willReturn(false); // No user found
-
-        $mockDb = $this->createMock(\PDO::class);
-        $mockDb->expects($this->once())
-            ->method('prepare')
-            ->willReturn($mockStmt);
-
-        // Inject mock database
-        $dbProperty = $this->reflection->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($this->authenticator, $mockDb);
+        // No row comes back: the user is inactive or does not exist
+        $this->injectUserLookup('inactiveuser', false);
 
         // Call private method
         $method = $this->getPrivateMethod('validateUserActiveStatus');
@@ -498,32 +461,27 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testValidateUserActiveStatusReturnsFalseForNonLdapUser(): void
     {
-        // Mock PDO and statement - returns no rows (use_ldap=0 filtered out by query)
-        $mockStmt = $this->createMock(\PDOStatement::class);
-        $mockStmt->expects($this->once())
-            ->method('execute')
-            ->with(['username' => 'localuser'])
-            ->willReturn(true);
-        $mockStmt->expects($this->once())
-            ->method('fetch')
-            ->with(\PDO::FETCH_ASSOC)
-            ->willReturn(false); // No user found (filtered by use_ldap=1)
-
-        $mockDb = $this->createMock(\PDO::class);
-        $mockDb->expects($this->once())
-            ->method('prepare')
-            ->willReturn($mockStmt);
-
-        // Inject mock database
-        $dbProperty = $this->reflection->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($this->authenticator, $mockDb);
+        // No row comes back: the use_ldap=1 filter excludes local accounts
+        $this->injectUserLookup('localuser', false);
 
         // Call private method
         $method = $this->getPrivateMethod('validateUserActiveStatus');
         $result = $method->invoke($this->authenticator, 'localuser');
 
         $this->assertFalse($result, 'Should return false for user with use_ldap=0');
+    }
+
+    private function injectUserLookup(string $username, bool $active): void
+    {
+        $userLookup = $this->createMock(AuthUserLookupInterface::class);
+        $userLookup->expects($this->once())
+            ->method('hasActiveLdapUser')
+            ->with($username)
+            ->willReturn($active);
+
+        $property = $this->reflection->getProperty('userLookup');
+        $property->setAccessible(true);
+        $property->setValue($this->authenticator, $userLookup);
     }
 
     /**

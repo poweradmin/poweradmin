@@ -40,42 +40,6 @@ parameters:
 			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
 			identifier: disallowed.method
 			count: 1
-			path: lib/Application/Service/Auth/BasicAuthenticationMiddleware.php
-
-		-
-			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 2
-			path: lib/Application/Service/Auth/LdapAuthenticator.php
-
-		-
-			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 5
-			path: lib/Application/Service/Auth/LoginAttemptService.php
-
-		-
-			message: '#^Calling PDO\:\:query\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Service/Auth/LoginAttemptService.php
-
-		-
-			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Service/Auth/SessionAuthenticator.php
-
-		-
-			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Service/Auth/SqlAuthenticator.php
-
-		-
-			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 1
 			path: lib/Application/Service/User/UsernameRecoveryService.php
 
 		-

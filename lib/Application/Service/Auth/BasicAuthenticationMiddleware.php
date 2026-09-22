@@ -27,6 +27,8 @@ use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Infrastructure\Repository\DbLoginAttemptRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,6 +43,7 @@ class BasicAuthenticationMiddleware
     private PDO $db;
     private ConfigurationInterface $config;
     private LoginAttemptService $loginAttemptService;
+    private ?UserRepositoryInterface $userRepository = null;
 
     /**
      * Constructor
@@ -52,7 +55,7 @@ class BasicAuthenticationMiddleware
     {
         $this->db = $db;
         $this->config = $config;
-        $this->loginAttemptService = new LoginAttemptService($db, $this->config);
+        $this->loginAttemptService = new LoginAttemptService(new DbLoginAttemptRepository($db, $this->config), $this->config);
     }
 
     /**
@@ -109,6 +112,15 @@ class BasicAuthenticationMiddleware
         return $credentials;
     }
 
+    private function userRepository(): UserRepositoryInterface
+    {
+        return $this->userRepository ??= new DbUserRepository(
+            $this->db,
+            $this->config,
+            DnsBackendProviderFactory::isApiBackend($this->config)
+        );
+    }
+
     /**
      * Authenticate a user with username and password
      *
@@ -118,7 +130,7 @@ class BasicAuthenticationMiddleware
      */
     private function authenticateAndGetUserId(string $username, #[\SensitiveParameter] string $password): int
     {
-        if ((new DbUserRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config)))->findByUsername($username) === null) {
+        if ($this->userRepository()->findByUsername($username) === null) {
             return 0;
         }
 
@@ -131,9 +143,7 @@ class BasicAuthenticationMiddleware
         }
 
         // Get user ID and auth method
-        $query = $this->db->prepare("SELECT id, password, use_ldap FROM users WHERE username = :username AND active = 1");
-        $query->execute(['username' => $username]);
-        $user = $query->fetch(PDO::FETCH_ASSOC);
+        $user = $this->userRepository()->findBasicAuthUser($username);
 
         if (!$user) {
             // Disabled account: still record so probing inactive users contributes to lockout.

@@ -22,11 +22,10 @@
 
 namespace Poweradmin\Application\Service\Auth;
 
-use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Enum\LoginAttemptStage;
 use Poweradmin\Domain\Port\LoginThrottleInterface;
+use Poweradmin\Domain\Repository\LoginAttemptRepositoryInterface;
 
 /**
  * Records attempts in login_attempts and enforces the password- and MFA-stage lockouts per user and IP.
@@ -38,16 +37,11 @@ class LoginAttemptService implements LoginThrottleInterface
     public const STAGE_MFA = 'mfa';
 
     private ConfigurationInterface $configManager;
-    private PDO $connection;
+    private LoginAttemptRepositoryInterface $attempts;
 
-    // Cached per-connection so the introspection cost is paid once per request.
-    // Lets login keep working in the upgrade window between code deploy and the
-    // 4.5.0 SQL update (when `attempt_type` does not exist yet).
-    private ?bool $attemptTypeColumnExists = null;
-
-    public function __construct(PDO $connection, ConfigurationInterface $configManager)
+    public function __construct(LoginAttemptRepositoryInterface $attempts, ConfigurationInterface $configManager)
     {
-        $this->connection = $connection;
+        $this->attempts = $attempts;
         $this->configManager = $configManager;
     }
 
@@ -69,8 +63,8 @@ class LoginAttemptService implements LoginThrottleInterface
             return;
         }
 
-        $userId ??= $this->getUserId($username);
-        $hasAttemptType = $this->hasAttemptTypeColumn();
+        $userId ??= $this->attempts->findUserIdByUsername($username);
+        $hasAttemptType = $this->attempts->hasAttemptTypeColumn();
 
         // A clean second factor always clears its own counter; the opt-in
         // clear_attempts_on_success only governs the password stage.
@@ -81,28 +75,16 @@ class LoginAttemptService implements LoginThrottleInterface
             $this->clearFailedAttempts($userId, $ipAddress, $attemptType, $hasAttemptType);
         }
 
-        $columns = 'user_id, ip_address, timestamp, successful';
-        $placeholders = ':user_id, :ip_address, :timestamp, :successful';
-        $params = [
-            'user_id' => $userId,
-            'ip_address' => $ipAddress,
-            'timestamp' => time(),
-            'successful' => DbCompat::boolValue($successful),
-        ];
-
         // Pre-4.5.0 schema lacks attempt_type; the upgrade-window fallback omits
         // the column so MFA failures temporarily mix with password failures
         // until the SQL update runs.
-        if ($hasAttemptType) {
-            $columns .= ', attempt_type';
-            $placeholders .= ', :attempt_type';
-            $params['attempt_type'] = $attemptType;
-        }
-
-        $stmt = $this->connection->prepare(
-            "INSERT INTO login_attempts ($columns) VALUES ($placeholders)"
+        $this->attempts->record(
+            $userId,
+            $ipAddress,
+            time(),
+            $successful,
+            $hasAttemptType ? $attemptType : null
         );
-        $stmt->execute($params);
 
         $this->cleanupOldAttempts();
     }
@@ -140,7 +122,7 @@ class LoginAttemptService implements LoginThrottleInterface
             return true;
         }
 
-        $userId ??= $this->getUserId($username);
+        $userId ??= $this->attempts->findUserIdByUsername($username);
         if ($userId === null) {
             // An unattributable attempt cannot be counted. The password stage
             // stays open so unknown usernames still reach the authenticator,
@@ -156,33 +138,14 @@ class LoginAttemptService implements LoginThrottleInterface
         $trackIpAddress = $attemptType !== self::STAGE_MFA
             && $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
-        $db_type = $this->configManager->get('database', 'type');
-        $sql = "SELECT COUNT(*) as attempts
-            FROM login_attempts
-            WHERE user_id = :user_id
-            AND successful = " . DbCompat::boolFalse($db_type) . "
-            AND timestamp > :cutoff_time";
+        $attempts = $this->attempts->countFailedAttempts(
+            $userId,
+            $cutoffTime,
+            $this->attempts->hasAttemptTypeColumn() ? $attemptType : null,
+            $trackIpAddress ? $ipAddress : null
+        );
 
-        $params = [
-            'user_id' => $userId,
-            'cutoff_time' => $cutoffTime
-        ];
-
-        if ($this->hasAttemptTypeColumn()) {
-            $sql .= " AND attempt_type = :attempt_type";
-            $params['attempt_type'] = $attemptType;
-        }
-
-        if ($trackIpAddress) {
-            $sql .= " AND ip_address = :ip_address";
-            $params['ip_address'] = $ipAddress;
-        }
-
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute($params);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return (int)$result['attempts'] >= $maxAttempts;
+        return $attempts >= $maxAttempts;
     }
 
     /**
@@ -275,19 +238,6 @@ class LoginAttemptService implements LoginThrottleInterface
         return (bool)preg_match($regex, $ipAddress);
     }
 
-    private function getUserId(string $username): ?int
-    {
-        $stmt = $this->connection->prepare("
-            SELECT id FROM users 
-            WHERE username = :username
-        ");
-
-        $stmt->execute(['username' => $username]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result ? (int)$result['id'] : null;
-    }
-
     private function cleanupOldAttempts(): void
     {
         // Retain until the longest stage window has passed, read from the same
@@ -298,14 +248,7 @@ class LoginAttemptService implements LoginThrottleInterface
             $this->stageLimits(self::STAGE_PASSWORD)['duration'] ?? 0,
             $this->stageLimits(self::STAGE_MFA)['duration'] ?? 0
         );
-        $cutoffTime = time() - $retention;
-
-        $stmt = $this->connection->prepare("
-            DELETE FROM login_attempts
-            WHERE timestamp < :cutoff_time
-        ");
-
-        $stmt->execute(['cutoff_time' => $cutoffTime]);
+        $this->attempts->deleteOlderThan(time() - $retention);
     }
 
     private function clearFailedAttempts(?int $userId, string $ipAddress, string $attemptType, bool $hasAttemptType): void
@@ -314,34 +257,22 @@ class LoginAttemptService implements LoginThrottleInterface
             return;
         }
 
-        $sql = "DELETE FROM login_attempts WHERE user_id = :user_id";
-        $params = ['user_id' => $userId];
-
-        // Scope clearing to the matching stage so a fresh first-factor success
-        // cannot reset MFA failures. Before the 4.5.0 SQL update the column is
-        // absent and the stages are indistinguishable, so clearing stays
-        // all-for-user: password success also clears MFA failures until the
-        // update runs. Keeping clear_attempts_on_success working for password
-        // logins wins over closing that window, which needs account lockout
-        // switched on to reach at all.
-        if ($hasAttemptType) {
-            $sql .= " AND attempt_type = :attempt_type";
-            $params['attempt_type'] = $attemptType;
-        }
-
         // Clearing must match how the stage counts. MFA counts every address, so
         // filtering the clear by IP would strand failures from an earlier address
         // and lock a roaming user who just verified correctly.
         $clearPerIp = $attemptType !== self::STAGE_MFA
             && $this->configManager->get('security', 'account_lockout.track_ip_address');
 
-        if ($clearPerIp) {
-            $sql .= " AND ip_address = :ip_address";
-            $params['ip_address'] = $ipAddress;
-        }
-
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute($params);
+        // Scope clearing to the matching stage so a fresh first-factor success
+        // cannot reset MFA failures. Before the 4.5.0 SQL update the column is
+        // absent and the stages are indistinguishable, so clearing stays
+        // all-for-user: password success also clears MFA failures until the
+        // update runs.
+        $this->attempts->clearFailedAttempts(
+            $userId,
+            $hasAttemptType ? $attemptType : null,
+            $clearPerIp ? $ipAddress : null
+        );
     }
 
     /**
@@ -378,25 +309,5 @@ class LoginAttemptService implements LoginThrottleInterface
             'attempts' => (int)$this->configManager->get('security', 'account_lockout.lockout_attempts', 5),
             'duration' => (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 15) * 60,
         ];
-    }
-
-    /**
-     * Detects whether the `attempt_type` column exists. Cached per instance so
-     * the introspection cost is paid once per request, not per attempt.
-     */
-    private function hasAttemptTypeColumn(): bool
-    {
-        if ($this->attemptTypeColumnExists !== null) {
-            return $this->attemptTypeColumnExists;
-        }
-
-        try {
-            $this->connection->query("SELECT attempt_type FROM login_attempts WHERE 1 = 0");
-            $this->attemptTypeColumnExists = true;
-        } catch (\PDOException) {
-            $this->attemptTypeColumnExists = false;
-        }
-
-        return $this->attemptTypeColumnExists;
     }
 }

@@ -244,10 +244,9 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
     private function authenticator(array|false $row, bool $expectQuery = true): SqlAuthenticator
     {
-        $statement = $this->createMock(PDOStatement::class);
-        $statement->method('fetch')->willReturn($row);
-        $db = $this->createMock(PDO::class);
-        $db->expects($expectQuery ? $this->once() : $this->never())->method('prepare')->willReturn($statement);
+        $this->users->expects($expectQuery ? $this->once() : $this->never())
+            ->method('findSqlLoginUser')
+            ->willReturn($row ?: null);
 
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(fn(string $section, string $key, $default = null) => match ("$section.$key") {
@@ -259,7 +258,6 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         });
 
         return new SqlAuthenticator(
-            $db,
             $config,
             $this->audit,
             $this->csrf,

@@ -34,6 +34,7 @@ use Poweradmin\Application\Service\Auth\RecaptchaService;
 use Poweradmin\Application\Service\Auth\SamlConfigurationService;
 use Poweradmin\Application\Service\Web\UrlService;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
+use Poweradmin\Domain\Repository\LoginAttemptRepositoryInterface;
 use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
@@ -44,6 +45,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use Poweradmin\Infrastructure\Repository\DbLoginAttemptRepository;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
@@ -82,6 +84,7 @@ final class AuthServices
     private ?OidcConfigurationService $oidcConfigurationService = null;
     private ?RecaptchaService $recaptchaService = null;
     private ?LoginAttemptService $loginAttemptService = null;
+    private ?LoginAttemptRepositoryInterface $loginAttemptRepository = null;
 
     public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ControllerServiceFactory $services)
     {
@@ -175,7 +178,12 @@ final class AuthServices
 
     public function loginAttemptService(): LoginAttemptService
     {
-        return $this->loginAttemptService ??= new LoginAttemptService($this->db, $this->config);
+        return $this->loginAttemptService ??= new LoginAttemptService($this->loginAttemptRepository(), $this->config);
+    }
+
+    public function loginAttemptRepository(): LoginAttemptRepositoryInterface
+    {
+        return $this->loginAttemptRepository ??= new DbLoginAttemptRepository($this->db, $this->config);
     }
 
     public function apiKeyRepository(): ApiKeyRepositoryInterface

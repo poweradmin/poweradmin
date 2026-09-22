@@ -29,6 +29,7 @@ namespace Poweradmin\Domain\Repository;
  */
 interface UserRepositoryInterface extends
     UserLookupInterface,
+    AuthUserLookupInterface,
     UserPermissionReadInterface,
     UserCredentialWriterInterface,
     UserAdminInterface

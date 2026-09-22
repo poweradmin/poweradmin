@@ -34,6 +34,7 @@ use Poweradmin\Application\Service\Auth\AuthOutcomeStatus;
 use Poweradmin\Application\Service\Auth\LoginCredentials;
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Application\Service\Auth\LdapAuthenticator;
+use Poweradmin\Domain\Repository\AuthUserLookupInterface;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -133,11 +134,10 @@ class LdapAuthenticatorOutcomeTest extends TestCase
      */
     private function authenticator(array|false|null $userRow): LdapAuthenticator
     {
-        $statement = $this->createMock(PDOStatement::class);
-        $statement->method('fetch')->willReturn($userRow ?? false);
-        $db = $this->createMock(PDO::class);
-        $db->method('getAttribute')->with(PDO::ATTR_DRIVER_NAME)->willReturn('sqlite');
-        $db->expects($userRow === null ? $this->never() : $this->once())->method('prepare')->willReturn($statement);
+        $userLookup = $this->createMock(AuthUserLookupInterface::class);
+        $userLookup->expects($userRow === null ? $this->never() : $this->once())
+            ->method('hasActiveLdapUser')
+            ->willReturn((bool)$userRow);
 
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(fn(string $section, string $key, $default = null) => match ("$section.$key") {
@@ -146,7 +146,7 @@ class LdapAuthenticatorOutcomeTest extends TestCase
         });
 
         return new LdapAuthenticator(
-            $db,
+            $userLookup,
             $config,
             $this->audit,
             $this->createMock(CsrfTokenService::class),

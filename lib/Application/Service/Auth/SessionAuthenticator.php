@@ -74,7 +74,7 @@ final class SessionAuthenticator
         $this->authService = $this->services->authenticationService();
         $this->csrfTokenService = new CsrfTokenService();
 
-        $this->loginAttemptService = new LoginAttemptService($connection, $this->configManager);
+        $this->loginAttemptService = $this->services->loginAttemptService();
         $this->recaptchaService = new RecaptchaService($configManager);
     }
 
@@ -90,7 +90,7 @@ final class SessionAuthenticator
     private function ldapAuthenticator(): LdapAuthenticator
     {
         return $this->ldapAuthenticator ??= new LdapAuthenticator(
-            $this->db,
+            $this->services->userRepository(),
             $this->configManager,
             $this->auditService(),
             $this->csrfTokenService,
@@ -110,7 +110,6 @@ final class SessionAuthenticator
     private function sqlAuthenticator(): SqlAuthenticator
     {
         return $this->sqlAuthenticator ??= new SqlAuthenticator(
-            $this->db,
             $this->configManager,
             $this->auditService(),
             $this->csrfTokenService,
@@ -475,13 +474,9 @@ final class SessionAuthenticator
 
         // Fall back to database auth_method (for existing SQL/LDAP sessions)
         try {
-            $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE username = :username");
-            $stmt->execute([
-                'username' => $_SESSION[SessionKeys::USERLOGIN]
-            ]);
-            $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+            $rowObj = $this->services->userRepository()->findAuthMethodRow($_SESSION[SessionKeys::USERLOGIN]);
 
-            if ($rowObj === false) {
+            if ($rowObj === null) {
                 $this->logger->warning('User {username} not found in database', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                 return 'sql'; // Default to SQL if user not found
             }

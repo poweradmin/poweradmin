@@ -4,24 +4,24 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
-use PDO;
-use PDOStatement;
+use Poweradmin\Domain\Repository\LoginAttemptRepositoryInterface;
 use TestHelpers\FakeConfiguration;
 
 class LoginAttemptServiceTest extends TestCase
 {
-    private $pdoLayerMock;
+    private $attemptsMock;
 
     protected function setUp(): void
     {
-        $this->pdoLayerMock = $this->createMock(PDO::class);
+        $this->attemptsMock = $this->createMock(LoginAttemptRepositoryInterface::class);
+        $this->attemptsMock->method('hasAttemptTypeColumn')->willReturn(true);
     }
 
     private function service(array $security = [], array $database = []): LoginAttemptService
     {
         $config = new FakeConfiguration(['security' => $security, 'database' => $database]);
 
-        return new LoginAttemptService($this->pdoLayerMock, $config);
+        return new LoginAttemptService($this->attemptsMock, $config);
     }
 
     public function testIsAccountLockedReturnsFalseWhenAccountLockoutDisabled()
@@ -39,10 +39,8 @@ class LoginAttemptServiceTest extends TestCase
             'mfa' => ['max_verify_attempts' => 5, 'verify_lockout_duration' => 15],
         ], ['type' => 'mysql']);
 
-        $pdoStatementMock = $this->createMock(PDOStatement::class);
-        $pdoStatementMock->method('execute')->willReturn(true);
-        $pdoStatementMock->method('fetch')->willReturn(['id' => 1, 'attempts' => 5]);
-        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+        $this->attemptsMock->method('findUserIdByUsername')->willReturn(1);
+        $this->attemptsMock->method('countFailedAttempts')->willReturn(5);
 
         $result = $service->isAccountLocked(
             'testuser',
@@ -60,11 +58,8 @@ class LoginAttemptServiceTest extends TestCase
             'mfa' => ['max_verify_attempts' => 5, 'verify_lockout_duration' => 15],
         ], ['type' => 'mysql']);
 
-        // getUserId() finds nothing, so the attempt cannot be counted.
-        $pdoStatementMock = $this->createMock(PDOStatement::class);
-        $pdoStatementMock->method('execute')->willReturn(true);
-        $pdoStatementMock->method('fetch')->willReturn(false);
-        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+        // The username resolves to no account, so the attempt cannot be counted.
+        $this->attemptsMock->method('findUserIdByUsername')->willReturn(null);
 
         $this->assertTrue(
             $service->isAccountLocked('nosuchuser', '192.168.1.1', LoginAttemptService::STAGE_MFA),
@@ -88,10 +83,8 @@ class LoginAttemptServiceTest extends TestCase
             'mfa' => ['max_verify_attempts' => 5, 'verify_lockout_duration' => 15],
         ], ['type' => 'mysql']);
 
-        $pdoStatementMock = $this->createMock(PDOStatement::class);
-        $pdoStatementMock->method('execute')->willReturn(true);
-        $pdoStatementMock->method('fetch')->willReturn(['id' => 1, 'attempts' => 5]);
-        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+        $this->attemptsMock->method('findUserIdByUsername')->willReturn(1);
+        $this->attemptsMock->method('countFailedAttempts')->willReturn(5);
 
         $result = $service->isAccountLocked(
             'testuser',
@@ -132,11 +125,7 @@ class LoginAttemptServiceTest extends TestCase
         $result = $service->isIpInList('192.168.1.2', $blacklistedIps);
         $this->assertTrue($result, "IP should match exact entry in blacklist");
 
-        // Mock the getUserId method to return a valid ID
-        $pdoStatementMock = $this->createMock(PDOStatement::class);
-        $pdoStatementMock->method('fetch')->willReturn(['id' => 1]);
-        $pdoStatementMock->method('execute')->willReturn(true);
-        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+        $this->attemptsMock->method('findUserIdByUsername')->willReturn(1);
 
         // Ensure the method returns true (locked) for a blacklisted IP
         $result = $service->isAccountLocked('testuser', '192.168.1.2');
@@ -173,11 +162,7 @@ class LoginAttemptServiceTest extends TestCase
         $result = $service->isIpInList('172.16.10.5', $blacklistedIps);
         $this->assertTrue($result, "IP should match CIDR notation in blacklist");
 
-        // Mock the getUserId method to return a valid ID
-        $pdoStatementMock = $this->createMock(PDOStatement::class);
-        $pdoStatementMock->method('fetch')->willReturn(['id' => 1]);
-        $pdoStatementMock->method('execute')->willReturn(true);
-        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+        $this->attemptsMock->method('findUserIdByUsername')->willReturn(1);
 
         // Ensure the method returns true (locked) for an IP in the blacklisted CIDR range
         $result = $service->isAccountLocked('testuser', '172.16.10.5');
@@ -214,11 +199,7 @@ class LoginAttemptServiceTest extends TestCase
         $result = $service->isIpInList('192.168.3.200', $blacklistedIps);
         $this->assertTrue($result, "IP should match wildcard notation in blacklist");
 
-        // Mock the getUserId method to return a valid ID
-        $pdoStatementMock = $this->createMock(PDOStatement::class);
-        $pdoStatementMock->method('fetch')->willReturn(['id' => 1]);
-        $pdoStatementMock->method('execute')->willReturn(true);
-        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+        $this->attemptsMock->method('findUserIdByUsername')->willReturn(1);
 
         // Ensure the method returns true (locked) for an IP matching the wildcard
         $result = $service->isAccountLocked('testuser', '192.168.3.200');
