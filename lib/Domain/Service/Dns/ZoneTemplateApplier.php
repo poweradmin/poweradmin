@@ -30,6 +30,7 @@ use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -214,7 +215,8 @@ class ZoneTemplateApplier
                 $content = $this->placeholders->parseTemplateValue((string) $record['content'], $domain, $type);
             }
 
-            $name = $this->placeholders->parseTemplateValue((string) $record['name'], $domain);
+            // A template name without [ZONE] is relative to the zone, like a form entry
+            $name = DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue((string) $record['name'], $domain), $domain);
             $ttl = (int) ($record['ttl'] ?: $defaultTtl);
             $prio = intval($record['prio']);
 

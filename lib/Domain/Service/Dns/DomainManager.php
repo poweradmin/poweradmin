@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Error\ZoneCreationFailedException;
 use Psr\Log\LoggerInterface;
@@ -390,7 +391,8 @@ final class DomainManager implements DomainManagerInterface
                 continue;
             }
 
-            $name = $this->placeholders->parseTemplateValue($r["name"], $domain);
+            // A template name without [ZONE] is relative to the zone, like a form entry
+            $name = DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue($r["name"], $domain), $domain);
             $recordType = $r["type"];
             $content = $this->placeholders->parseTemplateValue($r["content"], $domain, $recordType);
             $ttl = $r["ttl"] ?: $dns_ttl;

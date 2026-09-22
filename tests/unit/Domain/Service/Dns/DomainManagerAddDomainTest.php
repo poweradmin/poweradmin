@@ -293,6 +293,31 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         );
     }
 
+    public function testBareTemplateNamesAreQualifiedWithTheZone(): void
+    {
+        $this->seedTemplateRecords([
+            ['www', 'A', '192.0.2.10', 300, 0],
+            ['@', 'TXT', '"v=spf1 -all"', 300, 0],
+            ['ftp.new.example', 'CNAME', 'www.[ZONE]', 300, 0],
+        ]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('createZone')->willReturn(self::DOMAIN_ID);
+        $written = [];
+        $this->backend->method('addRecordGetId')->willReturnCallback(function (int $domainId, string $name, string $type) use (&$written) {
+            $written[] = [$name, $type];
+            return 600 + count($written);
+        });
+
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID);
+
+        $this->assertTrue($result->success);
+        $this->assertSame([
+            ['new.example', 'TXT'],
+            ['ftp.new.example', 'CNAME'],
+            ['www.new.example', 'A'],
+        ], $written);
+    }
+
     public function testTemplateWithGroupOwnersWritesExactLinkAndGroupRows(): void
     {
         $this->seedTemplateRecords([
