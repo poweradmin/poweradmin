@@ -107,6 +107,7 @@
     "lint:e2e-routes": "php playwright/tools/check-route-paths.php",
     "lint:e2e-urls": "php playwright/tools/check-url-literals.php",
     "lint:no-traits": "! grep -rnE '^\\s*trait ' lib/ --include='*.php' || (echo 'ERROR: lib/ does not use traits; share behaviour through a service or an abstract class instead (the installer keeps its five legacy ones)' && false)",
+    "lint:domain-imports": "! grep -rnE '^use (function |const )?\\\\?[A-Za-z0-9_]+\\\\' lib/Domain/ --include='*.php' | grep -vE ':[0-9]+:use (function |const )?\\\\?(Poweradmin|Psr)\\\\' || (echo 'ERROR: lib/Domain must not import a third-party library. Put it behind a port in lib/Domain/Port with an adapter in lib/Infrastructure, the way TotpInterface and PublicSuffixInterface are wired. Psr interfaces are the only exception.' && false)",
     "lint:permission-literals": [
         "! grep -rnE \"(hasPermission|userHasPermission|checkPermission|canPerformZoneAction|requirePermission|logAccessDenied)\\([^)]*'(zone_master_add|zone_slave_add|zone_content_view_own|zone_content_edit_own|zone_meta_edit_own|zone_content_view_others|zone_content_edit_others|zone_meta_edit_others|search|supermaster_view|supermaster_add|supermaster_edit|user_is_ueberuser|user_view_others|user_add_new|user_edit_own|user_edit_others|user_passwd_edit_others|user_edit_templ_perm|templ_perm_add|templ_perm_edit|zone_content_edit_own_as_client|zone_templ_add|zone_templ_edit|api_manage_keys|zone_delete_own|zone_delete_others|user_enforce_mfa|zone_dnssec_manage_own|zone_logs_view_own|zone_logs_view_others|user_logs_view|group_logs_view|zone_content_edit_ns_subzone|zone_metadata_view_own|zone_metadata_view_others|zone_ownership_view_own|zone_ownership_view_others)'\" lib/ --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*(\\*|//)' || (echo 'ERROR: pass a Permission::PERM_* constant instead of a raw permission-name string literal, see lib/Domain/Model/Permission.php' && false)"
     ],
@@ -129,7 +130,8 @@
         "@lint:e2e-urls",
         "@lint:docblocks",
         "@lint:no-traits",
-        "@lint:permission-literals"
+        "@lint:permission-literals",
+        "@lint:domain-imports"
     ],
     "analyse:all": [
         "@check:all",
