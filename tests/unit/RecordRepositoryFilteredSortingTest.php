@@ -24,109 +24,129 @@ namespace Poweradmin\Tests\Unit;
 
 use PDO;
 use PDOStatement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Config\ConfigurationInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
+use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * Trac #460: PTR records must sort numerically by leading octet, not lexicographically,
- * including when search/type/content filters are applied (getFilteredRecords path).
+ * Trac #460: PTR records must sort numerically by leading octet, not
+ * lexicographically, including when a search filter is applied
+ * (getFilteredRecords path).
+ *
+ * The ordering itself is exercised against real SQLite; the MySQL and
+ * PostgreSQL natural-sort expressions differ per driver and no in-memory
+ * database can run them, so those two branches are still pinned by their SQL.
  */
-class RecordRepositoryFilteredSortingTest extends TestCase
+#[CoversClass(SqlRecordRepository::class)]
+class RecordRepositoryFilteredSortingTest extends SqliteIntegrationTestCase
 {
-    private function makeRepository(string $driver): array
+    private const ZONE = 1;
+
+    private SqlRecordRepository $repository;
+
+    protected function setUp(): void
     {
+        parent::setUp();
+
+        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL)");
+        $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT,
+            content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0, auth INTEGER DEFAULT 1)");
+
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES (" . self::ZONE . ", '0.192.in-addr.arpa', 'MASTER')");
+        $this->db->exec("INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES
+            (" . self::ZONE . ", '10.0.192.in-addr.arpa', 'PTR', 'ten.example.com', 3600, 0),
+            (" . self::ZONE . ", '2.0.192.in-addr.arpa', 'PTR', 'two.example.com', 3600, 0),
+            (" . self::ZONE . ", '1.0.192.in-addr.arpa', 'PTR', 'one.example.com', 3600, 0)");
+
+        $this->repository = new SqlRecordRepository($this->db, $this->config);
+    }
+
+    /**
+     * @param list<array<string, mixed>> $records
+     * @return list<string>
+     */
+    private function names(array $records): array
+    {
+        return array_map(fn(array $record): string => $record['name'], $records);
+    }
+
+    #[Test]
+    public function aFilteredListingSortsPtrNamesByLeadingOctet(): void
+    {
+        $records = $this->repository->getFilteredRecords(self::ZONE, 0, 100, 'name', 'ASC', false, 'in-addr');
+
+        $this->assertSame(
+            ['1.0.192.in-addr.arpa', '2.0.192.in-addr.arpa', '10.0.192.in-addr.arpa'],
+            $this->names($records)
+        );
+    }
+
+    #[Test]
+    public function theNumericOrderIsReversedForDescendingSorts(): void
+    {
+        $records = $this->repository->getFilteredRecords(self::ZONE, 0, 100, 'name', 'DESC', false, 'in-addr');
+
+        $this->assertSame(
+            ['10.0.192.in-addr.arpa', '2.0.192.in-addr.arpa', '1.0.192.in-addr.arpa'],
+            $this->names($records)
+        );
+    }
+
+    #[Test]
+    public function otherColumnsKeepTheirPlainOrder(): void
+    {
+        $records = $this->repository->getFilteredRecords(self::ZONE, 0, 100, 'content', 'ASC', false, 'in-addr');
+
+        $this->assertSame(
+            ['1.0.192.in-addr.arpa', '10.0.192.in-addr.arpa', '2.0.192.in-addr.arpa'],
+            $this->names($records)
+        );
+    }
+
+    #[Test]
+    #[DataProvider('driverSortExpressions')]
+    public function eachDriverGetsItsOwnNaturalSortExpression(string $driver, string $expression): void
+    {
+        $sql = $this->captureFilteredRecordsSql($driver);
+
+        $this->assertStringContainsString($expression, $sql);
+    }
+
+    /** @return array<string, array{string, string}> */
+    public static function driverSortExpressions(): array
+    {
+        return [
+            'mysql' => ['mysql', 'records.name+0'],
+            'pgsql' => ['pgsql', "SUBSTRING(records.name FROM '^[0-9]+')"],
+        ];
+    }
+
+    /**
+     * The driver decides the natural-sort expression, so the two branches SQLite
+     * cannot run are pinned by the SQL the repository prepares.
+     */
+    private function captureFilteredRecordsSql(string $driver): string
+    {
+        $statement = $this->createMock(PDOStatement::class);
+        $statement->method('execute')->willReturn(true);
+        $statement->method('bindValue')->willReturn(true);
+        $statement->method('fetch')->willReturn(false);
+
+        $captured = '';
         $db = $this->createMock(PDO::class);
         $db->method('getAttribute')->willReturnCallback(
-            fn($attr) => $attr === PDO::ATTR_DRIVER_NAME ? $driver : null
+            fn(int $attribute): ?string => $attribute === PDO::ATTR_DRIVER_NAME ? $driver : null
         );
-
-        $config = $this->createMock(ConfigurationInterface::class);
-        $config->method('get')->willReturnCallback(
-            fn($section, $key, $default = null) => $default
-        );
-
-        return [$db, new SqlRecordRepository($db, $config)];
-    }
-
-    private function captureQuery(MockObject $db): \Closure
-    {
-        $captured = new \stdClass();
-        $captured->sql = null;
-
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('bindValue')->willReturn(true);
-        $stmt->method('fetch')->willReturn(false);
-
-        $db->method('prepare')->willReturnCallback(function ($sql) use ($stmt, $captured) {
-            $captured->sql = $sql;
-            return $stmt;
+        $db->method('prepare')->willReturnCallback(function (string $sql) use ($statement, &$captured): PDOStatement {
+            $captured = $sql;
+            return $statement;
         });
 
-        return fn() => $captured->sql;
-    }
+        (new SqlRecordRepository($db, $this->sqliteConfiguration()))
+            ->getFilteredRecords(self::ZONE, 0, 100, 'name', 'ASC', false, 'search-term');
 
-    public function testFilteredRecordsUseNaturalSortOnMySql(): void
-    {
-        [$db, $repo] = $this->makeRepository('mysql');
-        $getSql = $this->captureQuery($db);
-
-        $repo->getFilteredRecords(1, 0, 100, 'name', 'ASC', false, 'search-term');
-
-        $sql = $getSql();
-        $this->assertNotNull($sql);
-        $this->assertStringContainsString('records.name+0', $sql, 'MySQL natural sort expression missing');
-    }
-
-    public function testFilteredRecordsUseNaturalSortOnSqlite(): void
-    {
-        [$db, $repo] = $this->makeRepository('sqlite');
-        $getSql = $this->captureQuery($db);
-
-        $repo->getFilteredRecords(1, 0, 100, 'name', 'ASC', false, 'search-term');
-
-        $sql = $getSql();
-        $this->assertNotNull($sql);
-        $this->assertStringContainsString('records.name+0', $sql, 'SQLite natural sort expression missing');
-    }
-
-    public function testFilteredRecordsUseNaturalSortOnPgSql(): void
-    {
-        [$db, $repo] = $this->makeRepository('pgsql');
-        $getSql = $this->captureQuery($db);
-
-        $repo->getFilteredRecords(1, 0, 100, 'name', 'ASC', false, 'search-term');
-
-        $sql = $getSql();
-        $this->assertNotNull($sql);
-        $this->assertStringContainsString("SUBSTRING(records.name FROM '^[0-9]+')", $sql, 'PgSQL natural sort expression missing');
-    }
-
-    public function testFilteredRecordsNaturalSortRespectsDescDirection(): void
-    {
-        [$db, $repo] = $this->makeRepository('mysql');
-        $getSql = $this->captureQuery($db);
-
-        $repo->getFilteredRecords(1, 0, 100, 'name', 'DESC', false, 'search-term');
-
-        $sql = $getSql();
-        $this->assertNotNull($sql);
-        $this->assertStringContainsString('records.name+0', $sql);
-        $this->assertStringContainsString('DESC', $sql);
-    }
-
-    public function testFilteredRecordsKeepPlainOrderForNonNameColumns(): void
-    {
-        [$db, $repo] = $this->makeRepository('mysql');
-        $getSql = $this->captureQuery($db);
-
-        $repo->getFilteredRecords(1, 0, 100, 'type', 'ASC', false, 'search-term');
-
-        $sql = $getSql();
-        $this->assertNotNull($sql);
-        $this->assertStringNotContainsString('records.name+0', $sql, 'natural sort must only apply to name column');
-        $this->assertStringContainsString('records.type ASC', $sql);
+        return $captured;
     }
 }
