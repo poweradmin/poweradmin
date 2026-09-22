@@ -52,6 +52,14 @@ interface ZoneOwnershipRepositoryInterface
     public function getOwnedZoneIds(int $userId): array;
 
     /**
+     * Lock the zone's owner rows for the rest of the open transaction, so a
+     * concurrent removal waits instead of deciding on stale owner counts.
+     *
+     * @param int $zoneId The zone ID
+     */
+    public function lockZoneOwners(int $zoneId): void;
+
+    /**
      * Add owner to zone
      *
      * @param int $zoneId The zone ID

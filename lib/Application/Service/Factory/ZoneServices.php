@@ -157,7 +157,7 @@ final class ZoneServices
 
     public function zoneOwnershipGuard(): ZoneOwnershipGuard
     {
-        return new ZoneOwnershipGuard($this->services->zoneRepository(), $this->zoneGroupRepository(), $this->zoneOwnershipModeService());
+        return new ZoneOwnershipGuard($this->services->zoneRepository(), $this->zoneGroupRepository(), $this->zoneOwnershipModeService(), $this->services->transaction());
     }
 
     public function zoneGroupService(): ZoneGroupService

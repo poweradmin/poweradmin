@@ -36,6 +36,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -169,6 +170,6 @@ class GroupZonesControllerLastOwnerTest extends V2ControllerTestCase
 
     private function guard(ConfigurationInterface $config): ZoneOwnershipGuard
     {
-        return new ZoneOwnershipGuard($this->zoneRepository, $this->zoneGroupRepository, new ZoneOwnershipModeService($config));
+        return new ZoneOwnershipGuard($this->zoneRepository, $this->zoneGroupRepository, new ZoneOwnershipModeService($config), $this->createMock(TransactionInterface::class));
     }
 }

@@ -31,6 +31,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -140,7 +141,8 @@ class GroupsControllerDeleteLastOwnerTest extends V2ControllerTestCase
         $guard = new ZoneOwnershipGuard(
             $this->zones,
             $this->zoneGroups,
-            new ZoneOwnershipModeService(new FakeConfiguration())
+            new ZoneOwnershipModeService(new FakeConfiguration()),
+            $this->createMock(TransactionInterface::class)
         );
         $this->inject($controller, 'groupService', new GroupService($this->groups, $guard));
         $this->inject($controller, 'pathParameters', ['id' => self::GROUP_ID]);

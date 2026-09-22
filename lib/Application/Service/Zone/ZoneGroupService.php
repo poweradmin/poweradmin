@@ -96,7 +96,9 @@ class ZoneGroupService
             throw new GroupNotFoundException('Group not found');
         }
 
-        return $this->zoneGroupRepository->remove($domainId, $groupId);
+        // The guard decides again under its own lock; the check above only fixes
+        // the order in which a refusal and a missing group are reported.
+        return $this->ownershipGuard->removeGroup($domainId, $groupId);
     }
 
     /**
@@ -187,10 +189,10 @@ class ZoneGroupService
 
         foreach ($domainIds as $domainId) {
             try {
-                $refusal = $this->ownershipGuard->refuseGroupRemoval($domainId, $groupId);
-                if ($refusal !== null) {
-                    $results['failed'][$domainId] = self::refusalReason($refusal);
-                } elseif ($this->zoneGroupRepository->remove($domainId, $groupId)) {
+                $outcome = $this->ownershipGuard->removeGroup($domainId, $groupId);
+                if ($outcome instanceof ZoneOwnershipRefusal) {
+                    $results['failed'][$domainId] = self::refusalReason($outcome);
+                } elseif ($outcome) {
                     $results['success'][] = $domainId;
                 } else {
                     $results['failed'][$domainId] = 'Group does not own this zone';

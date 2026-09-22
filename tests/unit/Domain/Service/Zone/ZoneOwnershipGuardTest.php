@@ -25,9 +25,11 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use TestHelpers\FakeConfiguration;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
@@ -105,11 +107,96 @@ class ZoneOwnershipGuardTest extends TestCase
         }
     }
 
+
+    public function testARefusedRemovalRollsBackTheTransaction(): void
+    {
+        $transaction = $this->createMock(TransactionInterface::class);
+        $transaction->expects($this->once())->method('begin');
+        $transaction->expects($this->once())->method('rollBack');
+        $transaction->expects($this->never())->method('commit');
+
+        $outcome = $this->guard('both', [5], [], $transaction)->removeUserOwner(self::ZONE_ID, 5);
+
+        $this->assertInstanceOf(ZoneOwnershipRefusal::class, $outcome);
+        $this->assertSame(ZoneOwnershipRefusal::LAST_OWNER, $outcome->code);
+    }
+
+    public function testAnAllowedRemovalCommitsTheTransaction(): void
+    {
+        $transaction = $this->createMock(TransactionInterface::class);
+        $transaction->expects($this->once())->method('begin');
+        $transaction->expects($this->once())->method('commit');
+        $transaction->expects($this->never())->method('rollBack');
+
+        $this->assertNotInstanceOf(
+            ZoneOwnershipRefusal::class,
+            $this->guard('both', [5, 6], [], $transaction)->removeUserOwner(self::ZONE_ID, 5)
+        );
+    }
+
+    public function testARefusedGroupRemovalRollsBackTheTransaction(): void
+    {
+        $transaction = $this->createMock(TransactionInterface::class);
+        $transaction->expects($this->once())->method('begin');
+        $transaction->expects($this->once())->method('rollBack');
+
+        $outcome = $this->guard('both', [], [3], $transaction)->removeGroup(self::ZONE_ID, 3);
+
+        $this->assertInstanceOf(ZoneOwnershipRefusal::class, $outcome);
+    }
+
+    public function testAnOpenTransactionIsJoinedRatherThanNested(): void
+    {
+        $transaction = $this->createMock(TransactionInterface::class);
+        $transaction->method('inTransaction')->willReturn(true);
+        $transaction->expects($this->never())->method('begin');
+        $transaction->expects($this->never())->method('commit');
+        $transaction->expects($this->never())->method('rollBack');
+
+        $this->assertNotInstanceOf(
+            ZoneOwnershipRefusal::class,
+            $this->guard('both', [5, 6], [], $transaction)->removeUserOwner(self::ZONE_ID, 5)
+        );
+    }
+
+    public function testTheOwnershipRowsAreLockedBeforeTheDecision(): void
+    {
+        $calls = [];
+        $zoneRepository = $this->createMock(ZoneOwnershipRepositoryInterface::class);
+        $zoneRepository->method('lockZoneOwners')->willReturnCallback(function () use (&$calls): void {
+            $calls[] = 'lock owners';
+        });
+        $zoneRepository->method('getZoneOwners')->willReturnCallback(function () use (&$calls): array {
+            $calls[] = 'read owners';
+            return [['id' => 5], ['id' => 6]];
+        });
+        $zoneRepository->method('removeOwnerFromZone')->willReturnCallback(function () use (&$calls): bool {
+            $calls[] = 'delete';
+            return true;
+        });
+        $zoneGroupRepository = $this->createMock(ZoneGroupRepositoryInterface::class);
+        $zoneGroupRepository->method('lockZoneGroups')->willReturnCallback(function () use (&$calls): void {
+            $calls[] = 'lock groups';
+        });
+        $zoneGroupRepository->method('findByDomainId')->willReturn([]);
+        $config = new FakeConfiguration(['dns' => ['zone_ownership_mode' => 'both']]);
+
+        $guard = new ZoneOwnershipGuard(
+            $zoneRepository,
+            $zoneGroupRepository,
+            new ZoneOwnershipModeService($config),
+            $this->createMock(TransactionInterface::class)
+        );
+        $guard->removeUserOwner(self::ZONE_ID, 5);
+
+        $this->assertSame(['lock owners', 'lock groups', 'read owners', 'delete'], $calls);
+    }
+
     /**
      * @param list<int> $owners
      * @param list<int> $groups
      */
-    private function guard(string $mode, array $owners, array $groups): ZoneOwnershipGuard
+    private function guard(string $mode, array $owners, array $groups, ?TransactionInterface $transaction = null): ZoneOwnershipGuard
     {
         $zoneRepository = $this->createMock(ZoneOwnershipRepositoryInterface::class);
         $zoneRepository->method('getZoneOwners')->with(self::ZONE_ID)->willReturn(
@@ -122,6 +209,6 @@ class ZoneOwnershipGuardTest extends TestCase
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->with('dns', 'zone_ownership_mode')->willReturn($mode);
 
-        return new ZoneOwnershipGuard($zoneRepository, $zoneGroupRepository, new ZoneOwnershipModeService($config));
+        return new ZoneOwnershipGuard($zoneRepository, $zoneGroupRepository, new ZoneOwnershipModeService($config), $transaction ?? $this->createMock(TransactionInterface::class));
     }
 }

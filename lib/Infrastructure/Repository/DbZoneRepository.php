@@ -809,6 +809,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function lockZoneOwners(int $zoneId): void
+    {
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id" . DbCompat::rowLock($this->db_type));
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getOwnerIdsByZoneIds(array $zoneIds): array
     {
         if ($zoneIds === []) {

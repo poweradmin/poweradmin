@@ -30,6 +30,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Application\Controller\Zone\ZoneOwnershipController;
@@ -171,7 +172,7 @@ class ZoneOwnershipControllerLastOwnerTest extends SeamControllerTestCase
     {
         $config = $this->configure(['dns' => ['zone_ownership_mode' => $mode]]);
         $this->factory->method('zoneOwnershipGuard')->willReturn(
-            new ZoneOwnershipGuard($this->zoneRepository, $this->zoneGroupRepository, new ZoneOwnershipModeService($config))
+            new ZoneOwnershipGuard($this->zoneRepository, $this->zoneGroupRepository, new ZoneOwnershipModeService($config), $this->createMock(TransactionInterface::class))
         );
         $this->post($fields);
 

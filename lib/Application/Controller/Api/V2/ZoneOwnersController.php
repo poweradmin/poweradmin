@@ -426,14 +426,12 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('Invalid user_id', 400);
             }
 
-            $refusal = $this->services()->zoneOwnershipGuard()->refuseUserOwnerRemoval($zoneId, $userId);
-            if ($refusal !== null) {
-                return $this->returnApiError(self::refusalMessage($refusal), 400);
+            $outcome = $this->services()->zoneOwnershipGuard()->removeUserOwner($zoneId, $userId);
+            if ($outcome instanceof ZoneOwnershipRefusal) {
+                return $this->returnApiError(self::refusalMessage($outcome), 400);
             }
 
-            $success = $this->zoneRepository->removeOwnerFromZone($zoneId, $userId);
-
-            if (!$success) {
+            if (!$outcome) {
                 return $this->returnApiError('Owner not found for this zone', 404);
             }
 

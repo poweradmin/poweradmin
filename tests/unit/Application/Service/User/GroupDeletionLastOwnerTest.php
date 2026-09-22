@@ -32,6 +32,7 @@ use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use TestHelpers\FakeConfiguration;
@@ -154,7 +155,8 @@ class GroupDeletionLastOwnerTest extends TestCase
         $guard = new ZoneOwnershipGuard(
             $this->zones,
             $this->zoneGroups,
-            new ZoneOwnershipModeService(new FakeConfiguration())
+            new ZoneOwnershipModeService(new FakeConfiguration()),
+            $this->createMock(TransactionInterface::class)
         );
 
         return new GroupService($this->groups, $guard);

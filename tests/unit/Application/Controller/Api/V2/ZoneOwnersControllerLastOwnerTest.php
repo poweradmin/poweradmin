@@ -34,6 +34,7 @@ use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -163,7 +164,7 @@ class ZoneOwnersControllerLastOwnerTest extends V2ControllerTestCase
         $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
         $factory->method('userRepository')->willReturn($this->stubUsers());
         $factory->method('zoneOwnershipGuard')->willReturn(
-            new ZoneOwnershipGuard($this->zoneRepository, $this->zoneGroupRepository, new ZoneOwnershipModeService($config))
+            new ZoneOwnershipGuard($this->zoneRepository, $this->zoneGroupRepository, new ZoneOwnershipModeService($config), $this->createMock(TransactionInterface::class))
         );
         $factory->method('permissionService')->willReturn($this->createMock(PermissionService::class));
 

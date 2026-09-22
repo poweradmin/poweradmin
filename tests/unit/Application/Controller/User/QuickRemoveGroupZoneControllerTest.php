@@ -34,6 +34,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
@@ -73,7 +74,7 @@ class QuickRemoveGroupZoneControllerTest extends SeamControllerTestCase
         $this->audit = $this->createMock(AuditService::class);
 
         $config = $this->configure(['permissions' => ['show_group_access_templates' => true]]);
-        $guard = new ZoneOwnershipGuard($this->zones, $this->zoneGroups, new ZoneOwnershipModeService($config));
+        $guard = new ZoneOwnershipGuard($this->zones, $this->zoneGroups, new ZoneOwnershipModeService($config), $this->createMock(TransactionInterface::class));
 
         $this->factory->method('permissionService')->willReturn($permissions);
         $this->factory->method('zoneGroupService')->willReturn(new ZoneGroupService($this->zoneGroups, $groups, $guard));

@@ -775,6 +775,24 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function lockZoneOwners(int $zoneId): void
+    {
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return;
+        }
+
+        $stmt = $this->db->prepare(
+            "SELECT z.id FROM zones z
+             WHERE z.id = :cid
+                OR (z.zone_name IS NULL AND z.domain_id = :cid_e)" . DbCompat::rowLock($this->dbType)
+        );
+        $stmt->bindValue(':cid', (int)$canonical['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', self::canonicalIdOf($canonical), PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
         $canonical = $this->resolveCanonicalRow($zoneId);

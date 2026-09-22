@@ -22,20 +22,90 @@
 
 namespace Poweradmin\Domain\Service\Zone;
 
+use Throwable;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 
 /**
  * The last-owner rule: a zone keeps at least one owner of a kind the ownership
- * mode allows. Every writer that removes a user owner or a group asks here first.
+ * mode allows. Every writer removes owners through here, so the check and the
+ * delete share one transaction and two concurrent removals cannot both pass.
  */
 class ZoneOwnershipGuard
 {
     public function __construct(
         private readonly ZoneOwnershipRepositoryInterface $zoneRepository,
         private readonly ZoneGroupRepositoryInterface $zoneGroupRepository,
-        private readonly ZoneOwnershipModeService $ownershipMode
+        private readonly ZoneOwnershipModeService $ownershipMode,
+        private readonly TransactionInterface $transaction
     ) {
+    }
+
+    /**
+     * Removes a user owner, deciding and deleting inside one transaction.
+     * Returns the refusal when the rule forbids it, otherwise whether a row went.
+     */
+    public function removeUserOwner(int $zoneId, int $userId): ZoneOwnershipRefusal|bool
+    {
+        return $this->applyRemoval(
+            $zoneId,
+            fn(): ?ZoneOwnershipRefusal => $this->refuseUserOwnerRemoval($zoneId, $userId),
+            fn(): bool => $this->zoneRepository->removeOwnerFromZone($zoneId, $userId)
+        );
+    }
+
+    /**
+     * Removes a group owner, deciding and deleting inside one transaction.
+     * Returns the refusal when the rule forbids it, otherwise whether a row went.
+     */
+    public function removeGroup(int $zoneId, int $groupId): ZoneOwnershipRefusal|bool
+    {
+        return $this->applyRemoval(
+            $zoneId,
+            fn(): ?ZoneOwnershipRefusal => $this->refuseGroupRemoval($zoneId, $groupId),
+            fn(): bool => $this->zoneGroupRepository->remove($zoneId, $groupId)
+        );
+    }
+
+    /**
+     * Locks the zone's ownership rows, re-reads the decision under that lock and
+     * writes, so two removals cannot both pass and leave the zone unowned.
+     *
+     * @param callable $decide Returns a refusal, or null when the removal may proceed
+     * @param callable $write Deletes the row and reports whether one went
+     */
+    private function applyRemoval(int $zoneId, callable $decide, callable $write): ZoneOwnershipRefusal|bool
+    {
+        // An outer transaction owns its own commit; this one only joins it.
+        $owned = !$this->transaction->inTransaction();
+        if ($owned) {
+            $this->transaction->begin();
+        }
+
+        try {
+            $this->zoneRepository->lockZoneOwners($zoneId);
+            $this->zoneGroupRepository->lockZoneGroups($zoneId);
+
+            $refusal = $decide();
+            if ($refusal !== null) {
+                if ($owned) {
+                    $this->transaction->rollBack();
+                }
+                return $refusal;
+            }
+
+            $written = $write();
+            if ($owned) {
+                $this->transaction->commit();
+            }
+            return $written;
+        } catch (Throwable $e) {
+            if ($owned && $this->transaction->inTransaction()) {
+                $this->transaction->rollBack();
+            }
+            throw $e;
+        }
     }
 
     /**

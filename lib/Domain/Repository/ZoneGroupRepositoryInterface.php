@@ -54,6 +54,14 @@ interface ZoneGroupRepositoryInterface
     public function findByGroupId(int $groupId): array;
 
     /**
+     * Lock the zone's group rows for the rest of the open transaction, so a
+     * concurrent removal waits instead of deciding on stale group counts.
+     *
+     * @param int $domainId
+     */
+    public function lockZoneGroups(int $domainId): void;
+
+    /**
      * Add a group as zone owner
      *
      * @param int $domainId

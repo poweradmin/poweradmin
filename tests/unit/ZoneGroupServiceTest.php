@@ -77,7 +77,7 @@ class ZoneGroupServiceTest extends TestCase
     public function removeGroupFromZoneHappyPath(): void
     {
         $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
-        $this->zoneGroupRepo->expects($this->once())->method('remove')->with(100, 1)->willReturn(true);
+        $this->ownershipGuard->expects($this->once())->method('removeGroup')->with(100, 1)->willReturn(true);
 
         $this->assertTrue($this->service->removeGroupFromZone(100, 1));
     }
@@ -88,7 +88,7 @@ class ZoneGroupServiceTest extends TestCase
         $refusal = new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_OWNER, ZoneOwnershipModeService::MODE_BOTH);
         $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
         $this->ownershipGuard->method('refuseGroupRemoval')->with(100, 1)->willReturn($refusal);
-        $this->zoneGroupRepo->expects($this->never())->method('remove');
+        $this->ownershipGuard->expects($this->never())->method('removeGroup');
 
         $this->assertSame($refusal, $this->service->removeGroupFromZone(100, 1));
     }
@@ -197,7 +197,7 @@ class ZoneGroupServiceTest extends TestCase
     public function bulkRemoveZonesPartialSuccess(): void
     {
         $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
-        $this->zoneGroupRepo->method('remove')->willReturnMap([
+        $this->ownershipGuard->method('removeGroup')->willReturnMap([
             [100, 1, true],
             [101, 1, false],
         ]);
@@ -212,13 +212,12 @@ class ZoneGroupServiceTest extends TestCase
     public function bulkRemoveZonesKeepsAZoneWhoseLastOwnerIsTheGroup(): void
     {
         $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
-        $this->ownershipGuard->method('refuseGroupRemoval')->willReturnMap([
+        $this->ownershipGuard->method('removeGroup')->willReturnMap([
             [100, 1, new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_OWNER, ZoneOwnershipModeService::MODE_BOTH)],
-            [101, 1, null],
+            [101, 1, true],
             [102, 1, new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_GROUP_GROUPS_ONLY, ZoneOwnershipModeService::MODE_GROUPS_ONLY)],
             [103, 1, new ZoneOwnershipRefusal(ZoneOwnershipRefusal::USERS_ONLY_NO_USER_OWNERS, ZoneOwnershipModeService::MODE_USERS_ONLY)],
         ]);
-        $this->zoneGroupRepo->expects($this->once())->method('remove')->with(101, 1)->willReturn(true);
 
         $results = $this->service->bulkRemoveZones(1, [100, 101, 102, 103]);
 

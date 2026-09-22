@@ -29,6 +29,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\DbCompat;
 
 /**
  * SQL persistence for zone-to-group links in zones_groups; joins domains, or the zones table under the API backend.
@@ -38,12 +39,24 @@ final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
     private PDO $db;
     private ?TableNameService $tableNameService;
     private bool $isApiBackend;
+    private string $dbType;
 
     public function __construct(PDO $db, ?ConfigurationInterface $config = null, bool $isApiBackend = false)
     {
         $this->db = $db;
         $this->tableNameService = $config !== null ? new TableNameService($config) : null;
         $this->isApiBackend = $isApiBackend;
+        $this->dbType = (string)($config?->get('database', 'type') ?? '');
+    }
+
+    public function lockZoneGroups(int $domainId): void
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id FROM zones_groups WHERE domain_id = :domain_id" . DbCompat::rowLock($this->dbType)
+        );
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function findByDomainId(int $domainId): array

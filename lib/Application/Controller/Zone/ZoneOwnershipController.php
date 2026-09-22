@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
 
 /**
  * Handles the zone ownership page: adds and removes user and group owners of a zone.
@@ -191,12 +192,12 @@ class ZoneOwnershipController extends BaseController
         $delete_owner = $this->httpRequest->getPostParam('delete_owner');
         if ($delete_owner !== null && is_numeric($delete_owner) && $meta_edit) {
             $deleteUserId = (int)$delete_owner;
-            $refusal = $this->services()->zoneOwnershipGuard()->refuseUserOwnerRemoval($zone_id, $deleteUserId);
-            if ($refusal !== null) {
-                $this->setMessage('zone-ownership', 'error', ZoneOwnershipMessages::userOwnerRefusal($refusal));
+            $outcome = $this->services()->zoneOwnershipGuard()->removeUserOwner($zone_id, $deleteUserId);
+            if ($outcome instanceof ZoneOwnershipRefusal) {
+                $this->setMessage('zone-ownership', 'error', ZoneOwnershipMessages::userOwnerRefusal($outcome));
                 return;
             }
-            $ownerRemoved = $this->zoneRepository()->removeOwnerFromZone($zone_id, $deleteUserId);
+            $ownerRemoved = $outcome;
 
             if ($ownerRemoved) {
                 $this->permissionService()->forgetZone($zone_id);
@@ -243,12 +244,11 @@ class ZoneOwnershipController extends BaseController
         $delete_group = $this->httpRequest->getPostParam('delete_group');
         if ($delete_group !== null && is_numeric($delete_group) && $meta_edit) {
             $deleteGroupId = (int)$delete_group;
-            $refusal = $this->services()->zoneOwnershipGuard()->refuseGroupRemoval($zone_id, $deleteGroupId);
-            if ($refusal !== null) {
-                $this->setMessage('zone-ownership', 'error', ZoneOwnershipMessages::groupRefusal($refusal));
+            $outcome = $this->services()->zoneOwnershipGuard()->removeGroup($zone_id, $deleteGroupId);
+            if ($outcome instanceof ZoneOwnershipRefusal) {
+                $this->setMessage('zone-ownership', 'error', ZoneOwnershipMessages::groupRefusal($outcome));
                 return;
             }
-            $this->services()->zoneGroupRepository()->remove($zone_id, $deleteGroupId);
             $this->permissionService()->forgetZone($zone_id);
             $auditService->logZoneGroupRemove($zone_id, $zone_name, $deleteGroupId);
             $this->setMessage('zone-ownership', 'success', _('Group has been removed successfully.'));
