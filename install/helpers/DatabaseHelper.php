@@ -24,8 +24,8 @@ namespace PoweradminInstall;
 
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DatabaseSchemaService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\SeedRepository;
 
 class DatabaseHelper
@@ -34,11 +34,13 @@ class DatabaseHelper
     private DatabaseSchemaService $schemaService;
     private SeedRepository $seedRepository;
     private array $databaseCredentials;
+    private ConfigurationInterface $config;
     private const REQUIRED_PDNS_TABLES = ['domains', 'records', 'supermasters', 'domainmetadata', 'comments'];
 
-    public function __construct(PDO $db, array $databaseCredentials)
+    public function __construct(PDO $db, array $databaseCredentials, ConfigurationInterface $config)
     {
         $this->db = $db;
+        $this->config = $config;
         $this->schemaService = new DatabaseSchemaService($db);
         $this->seedRepository = new SeedRepository($db, (string)($databaseCredentials['db_type'] ?? ''));
         $this->databaseCredentials = $databaseCredentials;
@@ -202,9 +204,7 @@ class DatabaseHelper
     {
         $templateIds = $this->seedRepository->seedDefaultTemplates();
 
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
-        $userAuthService = UserAuthenticationService::fromConfig($config);
+        $userAuthService = UserAuthenticationService::fromConfig($this->config);
         $this->seedRepository->createAdminUser($userAuthService->hashPassword($pa_pass), (int)$templateIds['Administrator']);
     }
 

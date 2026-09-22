@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -45,12 +44,8 @@ abstract class AbstractApiController extends BaseController
      */
     public function __construct(array $requestParams, bool $authenticate = true)
     {
-        // Initialize config early
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
-
-        // Check if API is enabled in the system
-        if (!$config->get('api', 'enabled', false)) {
+        // Refused before the parent boots the request, so a disabled API never opens the database
+        if (!self::requestContext()->config->get('api', 'enabled', false)) {
             // v2 wraps errors as {success:false,data,message}; the internal API keeps {error:true}.
             $message = 'The API feature is disabled in the system configuration.';
             $body = str_contains(static::class, '\\V2\\')

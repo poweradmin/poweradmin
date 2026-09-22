@@ -23,6 +23,7 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use PoweradminInstall\Validators\AbstractStepValidator;
 use PoweradminInstall\Validators\CheckRequirementsValidator;
@@ -52,9 +53,14 @@ class Installer
     private const NEW_CONFIG_FILE_PATH = '/config/settings.php'; // New format
     private const INSTALL_CONFIG_PATH = '/config.php';
     private array $config;
+    private ConfigurationInterface $settings;
 
-    public function __construct(Request $input)
+    /**
+     * @param ConfigurationInterface $settings The booted application settings (the shipped defaults until the file is written)
+     */
+    public function __construct(Request $input, ConfigurationInterface $settings)
     {
+        $this->settings = $settings;
         $this->newConfigFile = dirname(__DIR__, 2) . self::NEW_CONFIG_FILE_PATH;
         $this->defaultConfigFile = dirname(__DIR__, 2) . self::DEFAULT_CONFIG_FILE_PATH;
         $this->installConfigFile = dirname(__DIR__) . self::INSTALL_CONFIG_PATH;
@@ -118,7 +124,8 @@ class Installer
             $this->input,
             $twigEnvironment,
             $currentStep,
-            $currentLanguage
+            $currentLanguage,
+            $this->settings
         );
 
         $this->handleStep($currentStep, $errors);

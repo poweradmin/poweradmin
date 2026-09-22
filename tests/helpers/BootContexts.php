@@ -20,17 +20,29 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace PoweradminInstall;
+namespace TestHelpers;
 
-use Poweradmin\Application\Boot\BootOptions;
-use Poweradmin\Application\Boot\Kernel;
-use Symfony\Component\HttpFoundation\Request;
+use PDO;
+use Poweradmin\Application\Boot\BootContext;
+use Poweradmin\Application\Module\ModuleRegistry;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Psr\Log\NullLogger;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+/**
+ * Boot contexts for tests: what Kernel::boot() returns, built from an
+ * in-memory configuration instead of the settings file.
+ */
+final class BootContexts
+{
+    /**
+     * A context over the given configuration with its modules loaded and, when
+     * given, a database that the context hands out instead of connecting.
+     */
+    public static function over(ConfigurationInterface $config, ?PDO $db = null): BootContext
+    {
+        $registry = new ModuleRegistry($config);
+        $registry->loadModules();
 
-// The shipped defaults are the configuration until step 7 writes settings.php
-$context = Kernel::boot(BootOptions::Installer);
-
-$request = Request::createFromGlobals();
-$installer = new Installer($request, $context->config);
-$installer->initialize();
+        return new BootContext($config, new NullLogger(), $registry, $db);
+    }
+}

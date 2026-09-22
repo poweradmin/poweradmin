@@ -133,7 +133,6 @@ parameters:
         - tests/*
         - install/*
         - lib/Infrastructure/*
-        - lib/Application/Boot/AppInitializer.php
         - lib/Application/Boot/AppManager.php
         - lib/Application/Controller/BaseController.php
         - lib/Application/Bootstrap.php
@@ -180,13 +179,7 @@ parameters:
         - dynamic_update.php
         - bin/*
         - lib/Infrastructure/*
-        - lib/Application/Boot/AppInitializer.php
-        - lib/Application/Boot/AppManager.php
-        - lib/Application/Console/ConsoleApplication.php
-        - lib/Application/Controller/BaseController.php
-        - lib/Application/Controller/Api/AbstractApiController.php
-        - lib/Application/Controller/Api/HealthController.php
-        - lib/Application/Controller/System/PingController.php
+        - lib/Application/Boot/Kernel.php
   # lib/Domain has no HTTP or template dependency. Same allowIn list for each
   # namespace; the extension takes one namespace per entry.
   disallowedNamespaces:
@@ -472,7 +465,6 @@ parameters:
         - index.php
         - dynamic_update.php
         - bin/*
-        - lib/Application/Boot/AppInitializer.php
         - lib/Application/Boot/AppManager.php
         - lib/Application/Controller/BaseController.php
         - lib/Application/Boot/LocaleManager.php

@@ -32,14 +32,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 
 /**
- * Pre-built collaborators for a controller, bypassing the eager bootstrap
- * (config file, database connection, session authentication) that
- * BaseController::__construct() otherwise performs.
- *
- * This is a test seam: the router never passes one, so production behaviour is
- * untouched. Tests construct a controller directly with stubbed services, most
- * usefully a stub ControllerServiceFactory, which the create*() accessors on
- * BaseController all route through.
+ * The collaborators a controller is built from. In production
+ * Kernel::controllerEnvironment() derives one from the booted context (config
+ * file check, database connection, session authentication); a test passes one
+ * straight to the constructor with stubbed services, most usefully a stub
+ * ControllerServiceFactory, which the create*() accessors on BaseController
+ * all route through. Both paths construct the controller the same way.
  *
  * The request carries the method and the query and post parameters the
  * controller reads (isPost(), the request helpers); without one the controller

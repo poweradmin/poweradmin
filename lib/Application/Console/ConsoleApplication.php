@@ -23,14 +23,10 @@
 namespace Poweradmin\Application\Console;
 
 use InvalidArgumentException;
-use Poweradmin\Application\Bootstrap;
+use Poweradmin\Application\Boot\BootOptions;
+use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Application\Console\Command\ZoneListCommand;
 use Poweradmin\Application\Service\ControllerServiceFactory;
-use Poweradmin\Application\Service\DatabaseService;
-use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Psr\Log\NullLogger;
 use Throwable;
 
 /**
@@ -145,17 +141,11 @@ final class ConsoleApplication
     }
 
     /**
-     * The same wiring as dynamic_update.php: configuration, database, then the
+     * The same boot as dynamic_update.php: configuration and database, then the
      * per-request service graph, here bound to the system actor until a user is named.
      */
     private function bootServices(): ControllerServiceFactory
     {
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
-        Bootstrap::initializeTimezone($config);
-
-        $db = (new DatabaseService(new PDODatabaseConnection()))->connect(DatabaseCredentialMapper::mapCredentials($config));
-
-        return new ControllerServiceFactory($db, $config, new NullLogger(), CommandLineActor::system());
+        return Kernel::boot(BootOptions::Script)->services(CommandLineActor::system());
     }
 }

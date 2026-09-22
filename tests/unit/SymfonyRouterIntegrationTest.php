@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Routing\SymfonyRouter;
+use TestHelpers\BootContexts;
 use TestHelpers\FakeConfiguration;
 
 /**
@@ -25,7 +26,7 @@ class SymfonyRouterIntegrationTest extends TestCase
 
     private function createRouter(): SymfonyRouter
     {
-        return new SymfonyRouter(new FakeConfiguration());
+        return new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
     }
 
     public function testHomePageRouting(): void
@@ -355,7 +356,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $startTime = microtime(true);
 
         for ($i = 0; $i < $iterations; $i++) {
-            $router = new SymfonyRouter(new FakeConfiguration());
+            $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
             $router->match();
         }
 

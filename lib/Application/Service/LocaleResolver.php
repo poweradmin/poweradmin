@@ -30,7 +30,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
  * Resolves the interface language for the current request.
  *
  * Single source of truth for the locale precedence used by the gettext
- * chain (AppInitializer), the Twig translator (AppManager), and the page
+ * chain (Kernel), the Twig translator (AppManager), and the page
  * chrome (PageRenderer) - they must all agree on the active locale.
  */
 final readonly class LocaleResolver

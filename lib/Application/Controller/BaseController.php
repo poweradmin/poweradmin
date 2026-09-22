@@ -24,7 +24,8 @@ namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use LogicException;
-use Poweradmin\Application\Boot\AppInitializer;
+use Poweradmin\Application\Boot\BootContext;
+use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
@@ -48,9 +49,8 @@ use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use PDO;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
+use Poweradmin\Infrastructure\Database\DebugPDO;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Application\Web\PageOutputInterface;
@@ -65,7 +65,6 @@ use Psr\Log\LoggerInterface;
  */
 abstract class BaseController
 {
-    private ?AppInitializer $init = null;
     protected PDO $db;
     protected array $requestData;
     protected HttpRequest $httpRequest;
@@ -80,8 +79,8 @@ abstract class BaseController
     private ?ChangeApprovalContext $changeApprovalContext = null;
     private ModuleRegistry $moduleRegistry;
 
-    /** The registry the router loaded for this request; see bindModuleRegistry() */
-    private static ?ModuleRegistry $requestModuleRegistry = null;
+    /** What the kernel booted for this request; see bindContext() */
+    private static ?BootContext $requestContext = null;
     private ?PageOutputInterface $pageOutput = null;
 
     /**
@@ -94,53 +93,27 @@ abstract class BaseController
      *
      * @param array $request The request data.
      * @param bool $authenticate Whether to authenticate the user.
-     * @param ControllerEnvironment|null $environment Pre-built collaborators; a test
-     *        seam that skips the config/database/session bootstrap. The router
-     *        never passes one, so production construction is unchanged.
+     * @param ControllerEnvironment|null $environment The collaborators to use; without
+     *        one they come from the kernel context the router bound for this request,
+     *        which also checks the extensions, the locale and the session.
      */
     public function __construct(array $request, bool $authenticate = true, ?ControllerEnvironment $environment = null)
     {
-        if ($environment !== null) {
-            $this->config = $environment->config;
-            $this->logger = $environment->logger;
-            $this->db = $environment->db;
-            $this->moduleRegistry = $environment->moduleRegistry;
-            $this->serviceFactory = $environment->serviceFactory;
-            $this->pageOutput = $environment->pageOutput;
+        $environment ??= Kernel::controllerEnvironment(self::requestContext(), $authenticate);
 
-            $this->requestData = $request;
-            $this->httpRequest = $environment->httpRequest ?? new HttpRequest();
+        $this->config = $environment->config;
+        $this->logger = $environment->logger;
+        $this->db = $environment->db;
+        $this->moduleRegistry = $environment->moduleRegistry;
+        $this->serviceFactory = $environment->serviceFactory;
+        $this->pageOutput = $environment->pageOutput;
 
-            $this->csrfTokenService = $environment->csrfTokenService ?? new CsrfTokenService();
-            $this->messageService = $environment->messageService ?? new MessageService();
-            $this->userContextService = $environment->userContextService ?? new UserContextService();
-        } else {
-            // Create logger early so AppManager and ConfigurationManager can use it
-            $manager = ConfigurationManager::getInstance();
-            $manager->initialize();
+        $this->requestData = $request;
+        $this->httpRequest = $environment->httpRequest ?? new HttpRequest();
 
-            $this->logger = Logger::fromConfig($manager);
-
-            $manager->setLogger($this->logger);
-            $this->config = $manager;
-
-            // Kept eager: the template stack below is lazy, and a broken configuration
-            // should still stop the request rather than surface deep in a handler
-            AppManager::assertConfigurationUsable($manager);
-
-            $this->moduleRegistry = self::$requestModuleRegistry
-                ?? throw new LogicException('No module registry is bound for this request; SymfonyRouter binds one before dispatching');
-
-            $this->init = new AppInitializer($authenticate);
-            $this->db = $this->init->getDb();
-
-            $this->requestData = $request;
-            $this->httpRequest = new HttpRequest();
-
-            $this->csrfTokenService = new CsrfTokenService();
-            $this->messageService = new MessageService();
-            $this->userContextService = new UserContextService();
-        }
+        $this->csrfTokenService = $environment->csrfTokenService ?? new CsrfTokenService();
+        $this->messageService = $environment->messageService ?? new MessageService();
+        $this->userContextService = $environment->userContextService ?? new UserContextService();
 
         // Every state-changing web request is token-checked here rather than in each
         // controller, so a handler cannot be written without the guard
@@ -150,13 +123,19 @@ abstract class BaseController
     }
 
     /**
-     * Hands the request's loaded module registry to every controller the router
-     * builds. Controllers are constructed by class name with request data only,
-     * so the router cannot pass it through their constructors.
+     * Hands the booted context to every controller the router builds.
+     * Controllers are constructed by class name with request data only, so
+     * the router cannot pass it through their constructors.
      */
-    public static function bindModuleRegistry(ModuleRegistry $registry): void
+    public static function bindContext(BootContext $context): void
     {
-        self::$requestModuleRegistry = $registry;
+        self::$requestContext = $context;
+    }
+
+    protected static function requestContext(): BootContext
+    {
+        return self::$requestContext
+            ?? throw new LogicException('No kernel context is bound for this request; SymfonyRouter binds one before dispatching');
     }
 
     /**
@@ -759,7 +738,7 @@ abstract class BaseController
         $userId = $this->userContextService->getLoggedInUserId();
 
         return $this->pageOutput = new PageRenderer(
-            new AppManager($this->moduleRegistry, $this->logger),
+            new AppManager($this->config, $this->moduleRegistry, $this->logger),
             $this->config,
             $this->csrfTokenService,
             $this->userContextService,
@@ -767,7 +746,7 @@ abstract class BaseController
             $this->isApiBackend(),
             $this->hasPermission(...),
             static fn(): ?array => PdnsVersionService::getCachedInfo($_SESSION ?? []),
-            fn(): array => $this->init?->getDebugQueries() ?? [],
+            fn(): array => $this->db instanceof DebugPDO ? $this->db->getQueries() : [],
             $userId !== null && $this->services()->userPreferenceService()->getWideLayout($userId),
             fn(): int => $this->pendingChangeRequestCount()
         );

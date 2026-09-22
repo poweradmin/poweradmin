@@ -22,10 +22,9 @@
 
 namespace PoweradminInstall;
 
-use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
@@ -39,14 +38,16 @@ class InstallStepHandler
     private Environment $twig;
     private int $currentStep;
     private string $language;
+    private ConfigurationInterface $config;
     private const SESSION_KEY_LENGTH = 46;
 
-    public function __construct(Request $input, Environment $twig, int $currentStep, string $language)
+    public function __construct(Request $input, Environment $twig, int $currentStep, string $language, ConfigurationInterface $config)
     {
         $this->input = $input;
         $this->twig = $twig;
         $this->currentStep = $currentStep;
         $this->language = $language;
+        $this->config = $config;
     }
 
     private function renderTemplate(string $templateName, array $data): void
@@ -176,11 +177,9 @@ class InstallStepHandler
         ];
 
         try {
-            $databaseConnection = new PDODatabaseConnection();
-            $databaseService = new DatabaseService($databaseConnection);
-            $db = $databaseService->connect($credentials);
+            $db = Kernel::connect($credentials);
 
-            $databaseHelper = new DatabaseHelper($db, $credentials);
+            $databaseHelper = new DatabaseHelper($db, $credentials, $this->config);
 
             // Check for PowerDNS tables before proceeding
             // Skip this check if using API backend or a separate PowerDNS database (already validated)
@@ -290,10 +289,8 @@ class InstallStepHandler
         $dns_ns3 = $this->input->request->get('dns_ns3');
         $dns_ns4 = $this->input->request->get('dns_ns4');
 
-        $databaseConnection = new PDODatabaseConnection();
-        $databaseService = new DatabaseService($databaseConnection);
-        $db = $databaseService->connect($credentials);
-        $databaseHelper = new DatabaseHelper($db, $credentials);
+        $db = Kernel::connect($credentials);
+        $databaseHelper = new DatabaseHelper($db, $credentials, $this->config);
         $instructionBlocks = $databaseHelper->generateDatabaseUserInstructions($this->input->request->get('pdns_db_name'));
 
         $this->renderTemplate('step6.html.twig', array(
@@ -334,9 +331,6 @@ class InstallStepHandler
         // For SQLite we should provide path to db file
         $db_file = $this->input->request->get('db_type') == 'sqlite' ? $this->input->request->get('db_name') : '';
 
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
-
         $dns_hostmaster = $this->input->request->get('dns_hostmaster');
         $dns_ns1 = $this->input->request->get('dns_ns1');
         $dns_ns2 = $this->input->request->get('dns_ns2');
@@ -350,7 +344,7 @@ class InstallStepHandler
         $db_charset = $this->input->request->get('db_charset');
         $db_collation = $this->input->request->get('db_collation');
 
-        $userAuthService = UserAuthenticationService::fromConfig($config);
+        $userAuthService = UserAuthenticationService::fromConfig($this->config);
 
         $sessionKey = $userAuthService->generateSalt(self::SESSION_KEY_LENGTH);
 

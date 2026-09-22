@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Application\Controller\System;
 
+use Poweradmin\Application\Boot\BootContext;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -34,26 +34,24 @@ use Symfony\Component\HttpFoundation\Response;
  * Deliberately does not extend BaseController, whose constructor connects to the
  * database unconditionally - that would make this fail exactly when a liveness
  * probe is most useful. Use /api/health for dependency status.
- *
- * There is no constructor: the router passes request data (SymfonyRouter::process())
- * and PHP discards it, which suits an endpoint that reads nothing from the request.
  */
 class PingController
 {
-    private ?ConfigurationInterface $config = null;
+    private ConfigurationInterface $config;
 
     /**
-     * Resolved lazily so tests can substitute settings without a constructor
-     * argument the router would have to supply.
+     * @param BootContext $context The booted context; the router passes it to every controller outside BaseController
+     */
+    public function __construct(BootContext $context)
+    {
+        $this->config = $context->config;
+    }
+
+    /**
+     * Overridable so tests can substitute settings without a boot context.
      */
     protected function config(): ConfigurationInterface
     {
-        if ($this->config === null) {
-            $manager = ConfigurationManager::getInstance();
-            $manager->initialize();
-            $this->config = $manager;
-        }
-
         return $this->config;
     }
 

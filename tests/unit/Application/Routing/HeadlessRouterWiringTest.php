@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit\Application\Routing;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Routing\SymfonyRouter;
+use TestHelpers\BootContexts;
 use TestHelpers\FakeConfiguration;
 
 /**
@@ -64,7 +65,7 @@ class HeadlessRouterWiringTest extends TestCase
         $_SERVER['SCRIPT_NAME'] = '/index.php';
         $_SERVER['HTTP_HOST'] = 'localhost';
 
-        $router = new SymfonyRouter(new FakeConfiguration(['interface' => ['base_url_prefix' => '/dns']]));
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration(['interface' => ['base_url_prefix' => '/dns']])));
 
         $this->assertSame('/dns/login', $router->generateUrl('login'));
     }
@@ -82,6 +83,6 @@ class HeadlessRouterWiringTest extends TestCase
 
         $config = new FakeConfiguration(['interface' => ['web_enabled' => $webEnabled]]);
 
-        return (new SymfonyRouter($config))->match()['controller'];
+        return (new SymfonyRouter(BootContexts::over($config)))->match()['controller'];
     }
 }

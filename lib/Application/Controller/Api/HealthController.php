@@ -22,12 +22,11 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Application\Boot\BootContext;
+use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,8 +37,8 @@ use Throwable;
  * own dependencies. Disabled by default.
  *
  * Deliberately does not extend BaseController: that constructor connects to the
- * database unconditionally (AppInitializer), so a dead database would escape as
- * a generic 500 instead of being reported here as a failed check.
+ * database unconditionally (Kernel::controllerEnvironment()), so a dead database
+ * would escape as a generic 500 instead of being reported here as a failed check.
  *
  * The body carries no version, host, driver or error text. Anyone can call this,
  * so a check either passed or it did not.
@@ -53,34 +52,35 @@ class HealthController
 
     private const NO_STORE = ['Cache-Control' => 'no-store'];
 
-    private ?ConfigurationInterface $config = null;
+    private ConfigurationInterface $config;
 
     private ?LoggerInterface $logger = null;
 
     /**
-     * Resolved lazily so tests can substitute settings without a constructor
-     * argument the router would have to supply.
+     * @param BootContext $context The booted context; the router passes it to every controller outside BaseController
+     */
+    public function __construct(BootContext $context)
+    {
+        $this->config = $context->config;
+        $this->logger = $context->logger;
+    }
+
+    /**
+     * Overridable so tests can substitute settings without a boot context.
      */
     protected function config(): ConfigurationInterface
     {
-        if ($this->config === null) {
-            $manager = ConfigurationManager::getInstance();
-            $manager->initialize();
-            $this->config = $manager;
-        }
-
         return $this->config;
     }
 
     /**
-     * Built from configuration alone, so it still works while the database is down.
-     * Honours logging.type, which is 'null' by default: an operator who turned
-     * diagnostic logging off does not get a line per scrape.
+     * The kernel's logger, built from configuration alone so it works while the
+     * database is down. Honours logging.type, which is 'null' by default: an
+     * operator who turned diagnostic logging off does not get a line per scrape.
      */
     protected function logger(): LoggerInterface
     {
-        // Memoised so a request where both checks fail does not emit Logger's
-        // unrecognised-level warning twice.
+        // A test double that skipped the constructor gets the same logger built once
         return $this->logger ??= Logger::fromConfig($this->config());
     }
 
@@ -123,7 +123,7 @@ class HealthController
             // unauthenticated request for the OS TCP timeout, around 30 seconds.
             $credentials['db_connect_timeout'] = (int) $this->config()->get('health', 'db_timeout', 2);
 
-            $db = (new DatabaseService(new PDODatabaseConnection()))->connect($credentials);
+            $db = Kernel::connect($credentials);
             $db->query('SELECT 1');
 
             return self::STATUS_OK;

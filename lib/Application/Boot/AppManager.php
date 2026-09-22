@@ -26,10 +26,9 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\LocaleResolver;
 use Poweradmin\Application\Service\StatsDisplayService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\TemplateCacheResolver;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Configuration\ConfigValidator;
 use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 use Poweradmin\Application\Module\ModuleRegistry;
@@ -37,7 +36,6 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Twig\Environment;
 use Twig\Error\Error;
 use Twig\Extension\DebugExtension;
@@ -53,8 +51,8 @@ class AppManager
     /** @var Environment $templateRenderer The Twig template renderer */
     protected Environment $templateRenderer;
 
-    /** @var ConfigurationManager $configuration The application configuration */
-    protected ConfigurationManager $configuration;
+    /** @var ConfigurationInterface $configuration The application configuration */
+    protected ConfigurationInterface $configuration;
 
     /** @var StatsDisplayService|null $statsDisplayService The service for displaying statistics */
     protected ?StatsDisplayService $statsDisplayService = null;
@@ -77,15 +75,14 @@ class AppManager
     private array $supportedLocales;
 
     /**
-     * Initializes the template renderer, configuration, and optional statistics display service.
+     * Initializes the template renderer and the optional statistics display service.
      *
      * @param ModuleRegistry $registry The request's loaded registry; its enabled modules become template namespaces
      */
-    public function __construct(ModuleRegistry $registry, ?LoggerInterface $logger = null)
+    public function __construct(ConfigurationInterface $configuration, ModuleRegistry $registry, LoggerInterface $logger)
     {
-        $this->logger = $logger ?? new NullLogger();
-        $this->configuration = ConfigurationManager::getInstance();
-        $this->configuration->initialize();
+        $this->configuration = $configuration;
+        $this->logger = $logger;
 
         $this->resolveTheme();
         $loader = $this->createTemplateLoader($registry);
@@ -100,30 +97,6 @@ class AppManager
         if ($this->templateRenderer->isDebug()) {
             $this->templateRenderer->addExtension(new DebugExtension());
         }
-    }
-
-    /**
-     * Fails fast on broken configuration. Static and free of template setup so
-     * callers can check before, or without, building the Twig stack.
-     */
-    public static function assertConfigurationUsable(ConfigurationManager $configuration): void
-    {
-        if (!$configuration->isDefaultsFileLoaded()) {
-            (new MessageService())->displayDirectSystemError(sprintf(
-                'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
-                $configuration->getDefaultsFilePath()
-            ));
-        }
-
-        $validator = new ConfigValidator($configuration->getAll());
-        if ($validator->validate()) {
-            return;
-        }
-
-        // MessageService escapes the message itself, so pass plain text only
-        (new MessageService())->displayDirectSystemError(
-            'Invalid configuration: ' . implode('; ', $validator->getErrors())
-        );
     }
 
     /**

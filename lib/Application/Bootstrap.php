@@ -29,7 +29,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
- * Process-level setup the entry points run before routing: timezone and session cookie.
+ * Process-level setup Kernel::boot() runs before routing: timezone and session cookie.
  */
 class Bootstrap
 {
@@ -77,6 +77,11 @@ class Bootstrap
         $sessionTimeout = (int)$config->get('interface', 'session_timeout', 1800);
         if ($sessionTimeout > 0) {
             ini_set('session.gc_maxlifetime', (string)($sessionTimeout + 300));
+        }
+
+        // session.auto_start or an embedding script may have opened the session already
+        if (session_status() !== PHP_SESSION_NONE) {
+            return;
         }
 
         $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');

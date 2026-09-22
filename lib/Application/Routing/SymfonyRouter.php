@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Routing;
 
 use Exception;
+use Poweradmin\Application\Boot\BootContext;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -49,24 +50,24 @@ final class SymfonyRouter
     private ?string $matchedRoute = null;
     private bool $routeFound = true;
     private bool $webEnabled = true;
-    private ModuleRegistry $moduleRegistry;
+    private BootContext $context;
 
-    public function __construct(ConfigurationInterface $config)
+    /**
+     * @param BootContext $context What the kernel booted: module routes come from
+     *        its registry, and every controller built here works from it
+     */
+    public function __construct(BootContext $context)
     {
         $this->request = Request::createFromGlobals();
+        $this->context = $context;
+        BaseController::bindContext($context);
 
-        // The one registry of the request: routes come from it here, and the
-        // controllers and the template loader read the same instance
-        $this->moduleRegistry = new ModuleRegistry($config);
-        $this->moduleRegistry->loadModules();
-        BaseController::bindModuleRegistry($this->moduleRegistry);
-
-        $this->initializeRouter($config);
+        $this->initializeRouter($context->config);
     }
 
     public function getModuleRegistry(): ModuleRegistry
     {
-        return $this->moduleRegistry;
+        return $this->context->moduleRegistry;
     }
 
     /**
@@ -82,7 +83,7 @@ final class SymfonyRouter
         // Load YAML routes into a RouteCollection
         $routes = $loader->load('routes.yaml');
 
-        foreach ($this->moduleRegistry->getRoutes() as $routeDef) {
+        foreach ($this->context->moduleRegistry->getRoutes() as $routeDef) {
             $defaults = ['_controller' => $routeDef['controller']];
             $requirements = $routeDef['requirements'] ?? [];
 
@@ -191,8 +192,10 @@ final class SymfonyRouter
         );
 
         try {
-            // Create controller instance
-            if ($this->isApiRoute()) {
+            if (self::takesBootContext($controllerClass)) {
+                // The database-free responders (ping, health) are built from the boot context
+                $controller = new $controllerClass($this->context);
+            } elseif ($this->isApiRoute()) {
                 $controller = new $controllerClass($requestData, $parameters);
             } else {
                 // Web controllers get route parameters merged into the request data
@@ -207,6 +210,16 @@ final class SymfonyRouter
         } catch (RequestHalted) {
             // The response is complete; the halt only unwinds the stack the way exit did
         }
+    }
+
+    /** Whether the controller's constructor asks for the BootContext rather than request data. */
+    private static function takesBootContext(string $controllerClass): bool
+    {
+        $constructor = (new \ReflectionClass($controllerClass))->getConstructor();
+        $first = $constructor?->getParameters()[0] ?? null;
+        $type = $first?->getType();
+
+        return $type instanceof \ReflectionNamedType && $type->getName() === BootContext::class;
     }
 
     private function assertMethodExists(object $controller, string $method, string $controllerClass): void

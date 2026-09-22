@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Boot\AppInitializer;
+use Poweradmin\Application\Boot\BootOptions;
+use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 
@@ -185,9 +185,9 @@ class EditZoneMetadataEndpointTest extends TestCase
     {
         $this->createTestZone($zoneName);
 
-        $initializer = new AppInitializer(false);
-        $db = $initializer->getDb();
-        $config = ConfigurationManager::getInstance();
+        $context = Kernel::boot(BootOptions::Script);
+        $db = $context->database();
+        $config = $context->config;
         $metadataStore = new DbZoneMetadataStore($db, $config);
 
         $zoneId = (new SqlDomainRepository($db, $config))->getDomainIdByName($zoneName);
@@ -261,7 +261,7 @@ if ({$encodedMethod} === 'POST') {
     \$_GET = \$payload;
     \$_REQUEST = \$payload;
 }
-\$router = new \Poweradmin\Application\Routing\SymfonyRouter();
+\$router = new \Poweradmin\Application\Routing\SymfonyRouter(\Poweradmin\Application\Boot\Kernel::boot(true));
 ob_start();
 \$router->process();
 echo ob_get_clean();

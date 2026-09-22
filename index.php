@@ -20,6 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Application\Boot\BootContext;
+use Poweradmin\Application\Boot\BootOptions;
+use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Application\Bootstrap;
 use Poweradmin\Application\Http\BootstrapErrorResponder;
 use Poweradmin\Application\Http\RequestContext;
@@ -28,22 +31,10 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 require __DIR__ . '/vendor/autoload.php';
 
-// getInstance() only allocates; initialize() is what can fail, so it goes inside
-// the guarded region. The responder tolerates a half-built configuration.
-$configManager = ConfigurationManager::getInstance();
+$context = null;
 
 try {
-    $configManager->initialize();
-    Bootstrap::initializeTimezone($configManager);
-
-    // Neither a headless install nor the monitoring probes have any use for a session,
-    // and starting one per scrape would leave a session file behind on every request.
-    if (
-        $configManager->get('interface', 'web_enabled', true)
-        && !RequestContext::isHealthProbeRequest((string) $configManager->get('interface', 'base_url_prefix', ''))
-    ) {
-        Bootstrap::initializeSession($configManager);
-    }
+    $context = Kernel::boot(BootOptions::Web);
 
     // A v2 HEAD request is dispatched through the GET handler (see PublicApiController),
     // so buffer the response and drop its body: HEAD must return headers only. The
@@ -52,13 +43,15 @@ try {
         ob_start(static fn(): string => '');
     }
 
-    // Constructing the router parses routes.yaml and loads the module registry, so
-    // it belongs inside the guarded region rather than ahead of it.
-    $router = new SymfonyRouter($configManager);
+    // Constructing the router parses routes.yaml, so it belongs inside the guarded
+    // region rather than ahead of it.
+    $router = new SymfonyRouter($context);
     $router->process();
 } catch (Throwable $e) {
     // Throwable, not Exception: a TypeError from mistyped-but-valid JSON (e.g. an
     // array where a string is expected) is an Error, and must still be shaped into
-    // a JSON 500 instead of escaping as a blank/HTML fatal.
-    (new BootstrapErrorResponder($configManager, Bootstrap::notFoundRenderer()))->handle($e);
+    // a JSON 500 instead of escaping as a blank/HTML fatal. When boot itself failed
+    // the singleton is whatever initialize() left behind; the responder tolerates that.
+    $config = $context instanceof BootContext ? $context->config : ConfigurationManager::getInstance();
+    (new BootstrapErrorResponder($config, Bootstrap::notFoundRenderer()))->handle($e);
 }
