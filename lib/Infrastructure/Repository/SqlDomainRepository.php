@@ -253,7 +253,7 @@ final class SqlDomainRepository implements DomainRepositoryInterface
         if ($sortby == 'owner') {
             $sortby = 'users.username';
         } elseif ($sortby == 'count_records') {
-            $sortby = "COUNT($records_table.id)";
+            $sortby = "COUNT(DISTINCT $records_table.id)";
         } elseif ($sortby == 'group') {
             $sortby = "MIN(user_groups.name)";
         } else {
@@ -406,14 +406,13 @@ final class SqlDomainRepository implements DomainRepositoryInterface
             $originalSqlMode = DbCompat::handleSqlMode($this->db, $db_type);
 
             $sortByGroup = strpos($sql_sortby, 'user_groups.name') !== false;
-            // Group join multiplies record rows per group, so DISTINCT keeps the count accurate
-            $recordCountExpr = $sortByGroup ? "COUNT(DISTINCT $records_table.id)" : "COUNT($records_table.id)";
+            // The group, owner and DNSSEC joins repeat each record row, so DISTINCT keeps the count accurate
             $needsRecordsJoin = $includeRecordCount || $includeHealth;
 
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
                             $domains_table.type,
-                            " . ($includeRecordCount ? "$recordCountExpr AS count_records," : "") . "
+                            " . ($includeRecordCount ? "COUNT(DISTINCT $records_table.id) AS count_records," : "") . "
                             " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                             users.username,
                             users.fullname
@@ -464,7 +463,11 @@ final class SqlDomainRepository implements DomainRepositoryInterface
                 'is_disabled' => !empty($r["is_disabled"] ?? null),
                 'is_missing_soa' => !empty($r["is_missing_soa"] ?? null),
             ])->toZoneFields());
-            $ret[$domainName]["comment"] = $r["comment"] ?? '';
+            // A zone with several owners yields one row per owner and only one of them
+            // carries the comment, so the first non-empty one wins
+            if (empty($ret[$domainName]["comment"])) {
+                $ret[$domainName]["comment"] = $r["comment"] ?? '';
+            }
 
             if ($r["username"] !== null) {
                 $ret[$domainName]["owners"][] = $r["username"];

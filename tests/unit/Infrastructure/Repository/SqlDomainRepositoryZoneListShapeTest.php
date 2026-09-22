@@ -128,8 +128,8 @@ class SqlDomainRepositoryZoneListShapeTest extends TestCase
                 'is_disabled' => false,
                 'is_missing_soa' => false,
                 'soa_health' => 'ok',
-                // Two owner rows, the second with a NULL comment; the last row wins
-                'comment' => '',
+                // Two owner rows, the second with a NULL comment
+                'comment' => 'signed zone',
                 'secured' => true,
                 'owners' => ['alice', 'bob'],
                 'full_names' => ['Alice A', ''],
@@ -154,7 +154,7 @@ class SqlDomainRepositoryZoneListShapeTest extends TestCase
             'is_disabled' => false,
             'is_missing_soa' => false,
             'soa_health' => 'ok',
-            'comment' => '',
+            'comment' => 'signed zone',
             'secured' => false,
             'owners' => ['alice', 'bob'],
             'full_names' => ['Alice A', ''],
