@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\RecordRow;
 
 /**
  * Zone-wide record listing, filtering, counting and RRset reads.
@@ -50,7 +51,7 @@ interface RecordListingInterface
      * @param string $sortDirection Sort direction [default='ASC']
      * @param bool $fetchComments Whether to fetch record comments [default=false]
      *
-     * @return array array of record details (empty array if nothing found); disabled and auth are bools
+     * @return list<RecordRow> One read model per record, empty when the zone has none
      */
     public function getRecordsFromDomainId(int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array;
 

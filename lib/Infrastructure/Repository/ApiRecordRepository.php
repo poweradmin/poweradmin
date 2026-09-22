@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 
@@ -40,8 +41,12 @@ final class ApiRecordRepository implements RecordRepositoryInterface
     }
 
     /**
-     * Enrich records with comments from API RRset data.
-     * The API is the sole source of truth for comments in API mode.
+     * Rename the API's RRset comment keys to the column names the filtered
+     * listing returns. getRecordsFromDomainId no longer needs this: RecordRow
+     * reads either naming.
+     *
+     * @param list<array<string, mixed>> $records
+     * @return list<array<string, mixed>>
      */
     private function enrichRecordsWithComments(array $records): array
     {
@@ -112,12 +117,16 @@ final class ApiRecordRepository implements RecordRepositoryInterface
             $records = ResultPaginator::paginate($records, $rowstart, $rowamount);
         }
 
-        // Enrich with comments if requested
-        if ($fetchComments && !empty($records)) {
-            $records = $this->enrichRecordsWithComments($records);
+        // The API always carries RRset comments; drop them unless asked, so the
+        // two backends agree about what an unfetched comment looks like
+        if (!$fetchComments) {
+            $records = array_map(static function (array $record): array {
+                unset($record['api_comment'], $record['api_comment_account'], $record['api_comment_modified_at']);
+                return $record;
+            }, $records);
         }
 
-        return $records;
+        return array_map(RecordRow::fromRow(...), $records);
     }
 
     public function recidToDomid(int|string $id): int

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use Poweradmin\Domain\Model\RecordRow;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
@@ -59,12 +60,18 @@ class RecordRepositoryApexSortingTest extends SqliteIntegrationTestCase
     }
 
     /**
-     * @param list<array<string, mixed>> $records
+     * getRecordsFromDomainId returns read models and getFilteredRecords still
+     * returns rows, so the label is read the one way both understand.
+     *
+     * @param list<RecordRow|array<string, mixed>> $records
      * @return list<string>
      */
     private function labels(array $records): array
     {
-        return array_map(fn(array $record): string => $record['name'] . '/' . $record['type'], $records);
+        return array_map(
+            static fn(RecordRow|array $record): string => $record['name'] . '/' . $record['type'],
+            $records
+        );
     }
 
     #[Test]

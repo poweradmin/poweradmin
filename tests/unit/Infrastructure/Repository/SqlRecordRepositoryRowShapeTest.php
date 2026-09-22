@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
+use Poweradmin\Domain\Model\RecordRow;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -83,10 +84,15 @@ class SqlRecordRepositoryRowShapeTest extends TestCase
         $this->assertFalse($fromId['disabled']);
         $this->assertTrue($fromId['auth']);
 
+        // The listing crosses the boundary as a read model, so it is the one
+        // read whose shape is defined by RecordRow rather than by the columns
         $listing = $this->repository->getRecordsFromDomainId(1);
-        $this->assertSame([...self::ROW_KEYS, 'comment', 'comment_account', 'comment_modified_at'], array_keys($listing[0]));
-        $this->assertSame([false, true, true], array_column($listing, 'disabled'));
-        $this->assertSame([true, false, false], array_column($listing, 'auth'));
+        $this->assertContainsOnlyInstancesOf(RecordRow::class, $listing);
+        foreach (['id', 'domain_id', 'name', 'type', 'content', 'ttl', 'prio', 'disabled', 'comment', 'comment_account', 'comment_modified_at'] as $key) {
+            $this->assertArrayHasKey($key, $listing[0]->toArray());
+        }
+        $this->assertSame([false, true, true], array_map(static fn(RecordRow $r): bool => $r->disabled, $listing));
+        $this->assertSame([true, false, false], array_map(static fn(RecordRow $r): ?bool => $r->auth, $listing));
 
         $byDomain = $this->repository->getRecordsByDomainId(1, 'A');
         $this->assertSame(self::ROW_KEYS, array_keys($byDomain[0]));

@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
@@ -141,7 +142,10 @@ final class SqlRecordRepository implements RecordRepositoryInterface
         $params = [':domain_id' => $id, ':domain_id_apex' => $id];
         $stmt->execute($params);
 
-        return array_map(self::decodeFlags(...), $stmt->fetchAll() ?: []);
+        return array_map(
+            static fn(array $row): RecordRow => RecordRow::fromRow(self::decodeFlags($row)),
+            $stmt->fetchAll() ?: []
+        );
     }
 
     /**

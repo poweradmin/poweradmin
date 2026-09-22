@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Template;
 
+use ArrayAccess;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Dns\DomainParsingService;
@@ -44,11 +45,11 @@ class ZoneTemplatePlaceholders
      * Replace the zone name and site-specific values in a zone's records with
      * template placeholders, for saving a zone as a template.
      *
-     * @param array $record Record with name, content and optionally type
+     * @param array<string, mixed>|ArrayAccess<string, mixed> $record Record with name, content and optionally type
      * @param array $options NS1 and HOSTMASTER values to recognise in an SOA
      * @return array [name, content] with placeholders
      */
-    public function replaceWithTemplatePlaceholders(string $domain, array $record, array $options = []): array
+    public function replaceWithTemplatePlaceholders(string $domain, array|ArrayAccess $record, array $options = []): array
     {
         if (empty($domain)) {
             return [$record['name'], $record['content']];

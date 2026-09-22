@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Domain\Service\Dns\RecordDisplayService;
 
 class RecordDisplayServiceTest extends TestCase
@@ -156,5 +157,48 @@ class RecordDisplayServiceTest extends TestCase
 
         $restored = $service->restoreFqdn('www', $zoneName);
         $this->assertEquals('www.example.com', $restored);
+    }
+
+    /**
+     * The zone listing hands over read models, not rows. Display used to take
+     * only arrays, so the edit page fataled on every unfiltered load.
+     */
+    public function testAReadModelFromTheListingIsTransformedLikeARow(): void
+    {
+        $service = new RecordDisplayService(false);
+
+        $record = RecordRow::fromRow([
+            'id' => 5,
+            'domain_id' => 1,
+            'name' => 'www.example.com',
+            'type' => 'AAAA',
+            'content' => '2001:0db8:0000:0000:0000:0000:0000:0001',
+            'ttl' => 3600,
+            'prio' => 0,
+            'disabled' => false,
+        ]);
+
+        $result = $service->transformRecord($record, 'example.com');
+
+        $this->assertSame('www.example.com', $result['display_name']);
+        $this->assertSame('www.example.com', $result['editable_name']);
+        $this->assertSame('2001:db8::1', $result['content'], 'The AAAA content is still shortened for display');
+        $this->assertSame(5, $result['id']);
+        $this->assertFalse($result['is_hostname_only']);
+    }
+
+    public function testAListingOfReadModelsIsTransformed(): void
+    {
+        $service = new RecordDisplayService(true);
+
+        $records = [
+            RecordRow::fromRow(['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1']),
+            RecordRow::fromRow(['id' => 2, 'name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1 hostmaster 1']),
+        ];
+
+        $result = $service->transformRecords($records, 'example.com');
+
+        $this->assertSame('www', $result[0]['display_name']);
+        $this->assertSame('@', $result[1]['display_name']);
     }
 }

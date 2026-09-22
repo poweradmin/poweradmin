@@ -1720,6 +1720,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Model\\Permission' => __DIR__ . '/../..' . '/lib/Domain/Model/Permission.php',
         'Poweradmin\\Domain\\Model\\PermissionCatalogue' => __DIR__ . '/../..' . '/lib/Domain/Model/PermissionCatalogue.php',
         'Poweradmin\\Domain\\Model\\RecordComment' => __DIR__ . '/../..' . '/lib/Domain/Model/RecordComment.php',
+        'Poweradmin\\Domain\\Model\\RecordRow' => __DIR__ . '/../..' . '/lib/Domain/Model/RecordRow.php',
         'Poweradmin\\Domain\\Model\\RecordType' => __DIR__ . '/../..' . '/lib/Domain/Model/RecordType.php',
         'Poweradmin\\Domain\\Model\\ReverseNetwork' => __DIR__ . '/../..' . '/lib/Domain/Model/ReverseNetwork.php',
         'Poweradmin\\Domain\\Model\\User' => __DIR__ . '/../..' . '/lib/Domain/Model/User.php',

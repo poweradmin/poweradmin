@@ -124,10 +124,11 @@ class ApiRecordRepositorySortingTest extends TestCase
         $this->assertSame('web', $byName['www.example.com']['comment']);
         $this->assertSame('ops', $byName['www.example.com']['comment_account']);
         $this->assertSame(1700000000, $byName['www.example.com']['comment_modified_at']);
-        $this->assertArrayNotHasKey('api_comment', $byName['www.example.com']);
+        $this->assertNull($byName['www.example.com']['api_comment'], 'The API naming is not part of the read model');
         $this->assertNull($byName['example.com']['comment']);
 
+        // Both backends now report an unfetched comment the same way: present and null
         $plain = $repo->getRecordsFromDomainId(1, 0, 100, 'name', 'ASC');
-        $this->assertArrayNotHasKey('comment', array_column($plain, null, 'name')['www.example.com']);
+        $this->assertNull(array_column($plain, null, 'name')['www.example.com']['comment']);
     }
 }
