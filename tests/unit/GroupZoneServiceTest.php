@@ -12,6 +12,7 @@ use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
 #[CoversClass(GroupZoneService::class)]
 class GroupZoneServiceTest extends TestCase
@@ -19,6 +20,7 @@ class GroupZoneServiceTest extends TestCase
     private MockObject&ZoneGroupRepositoryInterface $zoneRepo;
     private MockObject&UserGroupRepositoryInterface $groupRepo;
     private GroupZoneService $service;
+    private MockObject&ZoneRepositoryInterface $zoneOwnerRepo;
 
     protected function setUp(): void
     {
@@ -85,6 +87,41 @@ class GroupZoneServiceTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->service->removeZoneFromGroup(999, 100);
+    }
+
+    #[Test]
+    public function removeZoneFromGroupKeepsTheLastGroupOfAnUnownedZone(): void
+    {
+        $service = $this->guardedService();
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->zoneRepo->method('findByDomainId')->with(100)->willReturn([ZoneGroup::create(100, 1)]);
+        $this->zoneOwnerRepo->method('getZoneOwners')->with(100)->willReturn([]);
+        $this->zoneRepo->expects($this->never())->method('remove');
+
+        $this->assertFalse($service->removeZoneFromGroup(1, 100));
+        $this->assertSame(
+            GroupZoneService::REFUSAL_LAST_OWNER,
+            $service->getZoneRemovalRefusal(1, 100)
+        );
+    }
+
+    #[Test]
+    public function removeZoneFromGroupStillRemovesAGroupWhenAUserOwnerRemains(): void
+    {
+        $service = $this->guardedService();
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->zoneRepo->method('findByDomainId')->with(100)->willReturn([ZoneGroup::create(100, 1)]);
+        $this->zoneOwnerRepo->method('getZoneOwners')->with(100)->willReturn([['id' => 5]]);
+        $this->zoneRepo->expects($this->once())->method('remove')->with(100, 1)->willReturn(true);
+
+        $this->assertTrue($service->removeZoneFromGroup(1, 100));
+    }
+
+    private function guardedService(): GroupZoneService
+    {
+        $this->zoneOwnerRepo = $this->createMock(ZoneRepositoryInterface::class);
+
+        return new GroupZoneService($this->zoneRepo, $this->groupRepo, $this->zoneOwnerRepo);
     }
 
     // --- listGroupZones ---

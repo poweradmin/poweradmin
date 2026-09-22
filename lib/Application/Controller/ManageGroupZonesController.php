@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Utility\IpHelper;
 
 class ManageGroupZonesController extends BaseController
@@ -58,7 +59,11 @@ class ManageGroupZonesController extends BaseController
         $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config);
 
         $this->groupService = new GroupService($groupRepository);
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
+        $this->zoneGroupService = new ZoneGroupService(
+            $zoneGroupRepository,
+            $groupRepository,
+            new DbZoneRepository($this->db, $this->getConfig())
+        );
         $this->request = new Request();
     }
 
