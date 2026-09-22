@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { deleteZoneById, openZoneListPageFor, zoneExists } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Run tests serially as they depend on shared zone
 test.describe.configure({ mode: 'serial' });

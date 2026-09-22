@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Use serial mode since tests depend on created supermaster
 test.describe.configure({ mode: 'serial' });

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
  * Test for GitHub issue #958: Editing a DNS record removes "Zone" from Name field

@@ -17,7 +17,7 @@
 
 import { test as base, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../helpers/auth.js';
-import users from './users.json' assert { type: 'json' };
+import users from './users.json' with { type: 'json' };
 
 /**
  * Extended test object with authenticated page fixtures

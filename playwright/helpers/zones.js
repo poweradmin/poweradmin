@@ -5,7 +5,7 @@
  * Adapted for master branch modern URLs.
  */
 
-import zones from '../fixtures/zones.json' assert { type: 'json' };
+import zones from '../fixtures/zones.json' with { type: 'json' };
 
 /**
  * Check if a zone name is a reverse DNS zone

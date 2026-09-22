@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
  * Tests for limited language configuration.

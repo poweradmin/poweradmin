@@ -6,7 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Footer render checks (visible + poweradmin link + version + copyright) live
 // in playwright/tests/layout/footer.spec.js - the footer is one shared partial,

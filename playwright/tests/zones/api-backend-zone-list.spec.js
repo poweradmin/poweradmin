@@ -13,7 +13,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { getColumnIndex, isApiModeInstance } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Zone list in API backend mode', () => {
   test.beforeEach(async ({ page, baseURL }) => {

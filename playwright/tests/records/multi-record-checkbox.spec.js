@@ -6,7 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Multi-Record Add Form Checkbox Handling', () => {
   // Helper to get a zone ID for testing

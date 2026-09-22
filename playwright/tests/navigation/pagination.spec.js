@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { deleteZoneById, findZoneIdByName } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
  * Helper to create zones via UI if pagination is not already present.

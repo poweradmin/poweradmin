@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
  * Subfolder deployment navigation tests.

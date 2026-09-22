@@ -10,8 +10,8 @@
 import { chromium } from '@playwright/test';
 import { loginAndWaitForDashboard } from './helpers/auth.js';
 import { ensureZoneExists } from './helpers/zones.js';
-import users from './fixtures/users.json' assert { type: 'json' };
-import zones from './fixtures/zones.json' assert { type: 'json' };
+import users from './fixtures/users.json' with { type: 'json' };
+import zones from './fixtures/zones.json' with { type: 'json' };
 
 async function globalSetup(config) {
   const baseURL = config.projects[0]?.use?.baseURL || 'http://localhost:8080';

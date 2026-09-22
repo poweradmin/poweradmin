@@ -8,7 +8,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Reverse Zone Ownership Display (Issue #1180)', () => {
   test('reverse zone row never shows a user icon without an owner name', async ({ page }) => {

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { deleteZoneById, findZoneIdByName, zoneExists } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Run serially to avoid race conditions with zone cleanup
 test.describe.configure({ mode: 'serial' });

@@ -7,7 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Patterns rendered by PHP/PDO when a query, type assertion, or FK constraint
 // blows up inside the template update path. Issue #1210 surfaces as

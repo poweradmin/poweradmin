@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Soft-asserts each expected nav link so one run names every missing href.
 // mode 'visible' requires the link rendered in the nav; 'present' allows it

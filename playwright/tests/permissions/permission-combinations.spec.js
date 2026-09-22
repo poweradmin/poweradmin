@@ -7,7 +7,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensurePermTemplateExists } from '../../helpers/templates.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Run sequentially within file
 test.describe.configure({ mode: 'serial', retries: 1 });

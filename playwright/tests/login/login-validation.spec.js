@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { login, loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Login Form Validation', () => {
   test.beforeEach(async ({ page }) => {

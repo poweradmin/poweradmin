@@ -7,7 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Group Visibility Filtering', () => {
   // Compare the exact set of offered groups. data-groupname carries the name on its

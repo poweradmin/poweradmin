@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard, logout } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Verifies parent_zone_ownership_check: a non-admin cannot create a zone that
 // overlaps an existing zone owned by another user, but may nest under its own.

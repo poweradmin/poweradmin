@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { findZoneIdByName } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Issue #1032 - dns.ttl_reverse pre-fills the TTL field for PTR records in
 // reverse zones. The behavioral matrix is covered by ReverseTtlResolverTest;

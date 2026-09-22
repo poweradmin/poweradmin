@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../helpers/auth.js';
-import users from '../fixtures/users.json' assert { type: 'json' };
+import users from '../fixtures/users.json' with { type: 'json' };
 
 /**
  * Cleanup script to remove any leftover test zones

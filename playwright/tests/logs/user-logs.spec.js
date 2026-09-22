@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('User Logs', () => {
   test.describe('Admin User', () => {
