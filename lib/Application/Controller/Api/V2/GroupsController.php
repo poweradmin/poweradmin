@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Domain\Error\GroupNotFoundException;
+use Poweradmin\Domain\Error\LastZoneOwnerException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\User\GroupService;
@@ -51,7 +52,7 @@ class GroupsController extends PublicApiController
         $groupRepository = $this->services()->userGroupRepository();
         $memberRepository = $this->services()->userGroupMemberRepository();
 
-        $this->groupService = new GroupService($groupRepository);
+        $this->groupService = new GroupService($groupRepository, $this->services()->zoneOwnershipGuard());
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->zoneGroupService = $this->services()->zoneGroupService();
         $this->apiPermissionService = $this->services()->apiPermissionService();
@@ -500,7 +501,7 @@ class GroupsController extends PublicApiController
         )
     )]
     #[OA\Response(response: 404, description: 'Group not found')]
-    #[OA\Response(response: 409, description: 'Group still owns zones and confirm was not supplied')]
+    #[OA\Response(response: 409, description: 'Group still owns zones and confirm was not supplied, or is the last owner of a zone')]
     private function deleteGroup(): JsonResponse
     {
         if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
@@ -511,9 +512,8 @@ class GroupsController extends PublicApiController
             $groupId = (int)$this->pathParameters['id'];
             $details = $this->groupService->getGroupDetails($groupId);
 
-            // Deleting a group cascades away its zone ownerships, leaving those zones
-            // without an owner. Memberships are not guarded: dropping them removes the
-            // association only, and the users themselves survive.
+            // Deleting a group drops its zone ownerships. A zone that would be left with
+            // no owner at all is refused below; confirm covers the zones that keep one.
             $confirmed = filter_var($this->request->query->get('confirm', 'false'), FILTER_VALIDATE_BOOLEAN);
             if (!$confirmed && $details['zoneCount'] > 0) {
                 return $this->returnApiError(sprintf(
@@ -529,6 +529,11 @@ class GroupsController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Group deleted successfully');
+        } catch (LastZoneOwnerException $e) {
+            return $this->returnApiError(sprintf(
+                'Cannot delete this group: it is the last owner of %s. Add another owner to those zones first.',
+                $e->getZoneList()
+            ), 409);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {

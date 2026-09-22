@@ -26,6 +26,8 @@ use InvalidArgumentException;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\User\GroupService;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Application\Service\Zone\ZoneOwnershipMessages;
+use Poweradmin\Domain\Error\LastZoneOwnerException;
 use Poweradmin\Domain\Model\Permission;
 
 /**
@@ -38,7 +40,7 @@ class DeleteGroupController extends BaseController
 
     private function groupService(): GroupService
     {
-        return $this->groupService ??= new GroupService($this->services()->userGroupRepository());
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard());
     }
 
     private function zoneGroupService(): ZoneGroupService
@@ -103,6 +105,9 @@ class DeleteGroupController extends BaseController
 
             $this->setMessage('list_groups', 'success', _('Group has been deleted successfully.'));
             $this->redirect('/groups');
+        } catch (LastZoneOwnerException $e) {
+            $this->setMessage('delete_group', 'error', ZoneOwnershipMessages::groupDeletionRefusal($e->getZoneList()));
+            $this->showDeleteConfirmation($groupId);
         } catch (InvalidArgumentException $e) {
             $this->setMessage('delete_group', 'error', $e->getMessage());
             $this->showDeleteConfirmation($groupId);

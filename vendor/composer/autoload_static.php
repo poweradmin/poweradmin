@@ -1704,6 +1704,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Enum\\ZoneSoaHealth' => __DIR__ . '/../..' . '/lib/Domain/Enum/ZoneSoaHealth.php',
         'Poweradmin\\Domain\\Error\\ApiErrorException' => __DIR__ . '/../..' . '/lib/Domain/Error/ApiErrorException.php',
         'Poweradmin\\Domain\\Error\\GroupNotFoundException' => __DIR__ . '/../..' . '/lib/Domain/Error/GroupNotFoundException.php',
+        'Poweradmin\\Domain\\Error\\LastZoneOwnerException' => __DIR__ . '/../..' . '/lib/Domain/Error/LastZoneOwnerException.php',
         'Poweradmin\\Domain\\Error\\ZoneCreationFailedException' => __DIR__ . '/../..' . '/lib/Domain/Error/ZoneCreationFailedException.php',
         'Poweradmin\\Domain\\Model\\ApiKey' => __DIR__ . '/../..' . '/lib/Domain/Model/ApiKey.php',
         'Poweradmin\\Domain\\Model\\ApiKeyScope' => __DIR__ . '/../..' . '/lib/Domain/Model/ApiKeyScope.php',

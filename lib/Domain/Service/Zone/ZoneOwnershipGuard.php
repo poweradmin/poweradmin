@@ -100,6 +100,25 @@ class ZoneOwnershipGuard
         return null;
     }
 
+    /**
+     * Zones that would be left without an allowed owner if the group were
+     * deleted, because deleting it drops its zones_groups rows.
+     *
+     * @return array<int, string> Zone id => zone name, empty when the group may go
+     */
+    public function zonesOrphanedByGroupDeletion(int $groupId): array
+    {
+        $orphaned = [];
+        foreach ($this->zoneGroupRepository->findByGroupId($groupId) as $zoneGroup) {
+            $domainId = $zoneGroup->getDomainId();
+            if ($this->refuseGroupRemoval($domainId, $groupId) !== null) {
+                $orphaned[$domainId] = $zoneGroup->getName() ?? ('#' . $domainId);
+            }
+        }
+
+        return $orphaned;
+    }
+
     private function refusal(string $code): ZoneOwnershipRefusal
     {
         return new ZoneOwnershipRefusal($code, $this->ownershipMode->getMode());

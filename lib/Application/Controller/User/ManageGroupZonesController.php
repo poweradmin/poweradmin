@@ -40,7 +40,7 @@ class ManageGroupZonesController extends BaseController
 
     private function groupService(): GroupService
     {
-        return $this->groupService ??= new GroupService($this->services()->userGroupRepository());
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard());
     }
 
     private function zoneGroupService(): ZoneGroupService

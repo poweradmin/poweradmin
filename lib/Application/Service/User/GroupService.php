@@ -24,8 +24,10 @@ namespace Poweradmin\Application\Service\User;
 
 use InvalidArgumentException;
 use Poweradmin\Domain\Error\GroupNotFoundException;
+use Poweradmin\Domain\Error\LastZoneOwnerException;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 
 /**
  * Creates, updates, deletes and lists user groups, with the view checks the group pages need.
@@ -35,10 +37,12 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 class GroupService
 {
     private UserGroupRepositoryInterface $groupRepository;
+    private ZoneOwnershipGuard $ownershipGuard;
 
-    public function __construct(UserGroupRepositoryInterface $groupRepository)
+    public function __construct(UserGroupRepositoryInterface $groupRepository, ZoneOwnershipGuard $ownershipGuard)
     {
         $this->groupRepository = $groupRepository;
+        $this->ownershipGuard = $ownershipGuard;
     }
 
     /**
@@ -186,13 +190,19 @@ class GroupService
      *
      * @param int $groupId Group ID
      * @return bool
-     * @throws InvalidArgumentException If group not found
+     * @throws GroupNotFoundException If group not found
+     * @throws LastZoneOwnerException If the group is the last owner of a zone
      */
     public function deleteGroup(int $groupId): bool
     {
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
             throw new GroupNotFoundException('Group not found');
+        }
+
+        $orphaned = $this->ownershipGuard->zonesOrphanedByGroupDeletion($groupId);
+        if ($orphaned !== []) {
+            throw new LastZoneOwnerException($orphaned, 'Cannot delete the last owner of a zone');
         }
 
         return $this->groupRepository->delete($groupId);

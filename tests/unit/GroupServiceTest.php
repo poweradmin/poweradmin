@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\User\GroupService;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 
 #[CoversClass(GroupService::class)]
 class GroupServiceTest extends TestCase
@@ -21,7 +22,7 @@ class GroupServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->groupRepo = $this->createMock(UserGroupRepositoryInterface::class);
-        $this->service = new GroupService($this->groupRepo);
+        $this->service = new GroupService($this->groupRepo, $this->createMock(ZoneOwnershipGuard::class));
     }
 
     // --- listGroups ---

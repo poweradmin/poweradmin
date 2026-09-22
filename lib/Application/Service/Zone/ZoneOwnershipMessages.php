@@ -48,6 +48,18 @@ final class ZoneOwnershipMessages
         };
     }
 
+    /**
+     * The refusal shown when a group cannot go because zones would be left
+     * without an owner.
+     */
+    public static function groupDeletionRefusal(string $zoneList): string
+    {
+        return sprintf(
+            _('Cannot delete this group: it is the last owner of %s. Add another owner to those zones first.'),
+            $zoneList
+        );
+    }
+
     private static function lastOwner(string $mode): string
     {
         $hint = match ($mode) {
