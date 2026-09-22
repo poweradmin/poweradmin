@@ -1,8 +1,9 @@
 <?php
 
 /**
- * SQLite family: one file holds both schemas. A short language list keeps the
- * language-selector tests deterministic on this instance.
+ * SQLite family: one file holds both schemas, and each instance gets its own file
+ * so they can run side by side (SQLite allows one writer per file). A short
+ * language list keeps the language-selector tests deterministic on this instance.
  */
 
 return [

@@ -21,6 +21,8 @@
     "pdns-pgsql:8182",
     "pdns-sqlite:1055",
     "pdns-sqlite:8183",
+    "pdns-sqlite-api:1057",
+    "pdns-sqlite-api:8185",
     "ldap:389",
     "ldap:636",
     "ldapadmin:8443"
@@ -84,6 +86,12 @@
     },
     "pdns-sqlite:8183": {
       "label": "PowerDNS SQLite (API)"
+    },
+    "pdns-sqlite-api:1057": {
+      "label": "PowerDNS SQLite, API instance (DNS)"
+    },
+    "pdns-sqlite-api:8185": {
+      "label": "PowerDNS SQLite, API instance (API)"
     },
     "ldap:389": {
       "label": "LDAP"

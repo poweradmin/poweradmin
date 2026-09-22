@@ -20,7 +20,7 @@ PostgreSQL version of test data. Use with PostgreSQL 12+.
 ### `test-users-permissions-sqlite.sql`
 SQLite version of test data. Use with SQLite 3.8+.
 
-**Important**: This script automatically attaches the PowerDNS database at `/data/pdns.db` as `pdns` since the `domains` and `records` tables are in a separate database file. All PowerDNS table references use the `pdns.` prefix.
+**Important**: This script automatically attaches the PowerDNS database at `/data/pdns.db` as `pdns` since the `domains` and `records` tables are in a separate database file. All PowerDNS table references use the `pdns.` prefix. The API-backend instance uses `/data/pdns-api.db` instead, and the import script rewrites that path on its way in.
 
 ### `test-users-permissions-mysql-combined.sql`
 MySQL/MariaDB version for **devcontainer multi-database setup**. This script handles both the `poweradmin` database (users, permissions, zones) and the `pdns` database (domains, records) using `USE` statements and cross-database joins.
@@ -68,6 +68,10 @@ docker exec -i -e PGPASSWORD=poweradmin postgres psql -U pdns -d pdns < .devcont
 ```bash
 # Note: the fixtures ATTACH /data/pdns.db themselves; both schemas live in that one file
 docker exec -i sqlite sqlite3 /data/pdns.db < .devcontainer/sql/test-users-permissions-sqlite.sql
+
+# The API-backend instance has its own file, so rewrite the attached path
+sed 's#/data/pdns.db#/data/pdns-api.db#g' .devcontainer/sql/test-users-permissions-sqlite.sql \
+  | docker exec -i sqlite sqlite3 /data/pdns-api.db
 ```
 
 ### Using Adminer Web UI
@@ -248,7 +252,7 @@ docker exec postgres psql -U pdns -d pdns -c "SELECT 1"
 ### SQLite Database Path
 If SQLite import fails, verify the database file exists (created by `scripts/create-sqlite-db.sh`):
 ```bash
-docker exec sqlite ls -la /data/pdns.db
+docker exec sqlite ls -la /data/pdns.db /data/pdns-api.db
 ```
 
 ## Contributing

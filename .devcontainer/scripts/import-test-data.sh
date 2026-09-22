@@ -56,6 +56,8 @@ PGSQL_CONTAINER="${PGSQL_CONTAINER:-postgres}"
 
 SQLITE_CONTAINER="${SQLITE_CONTAINER:-sqlite}"
 SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/pdns.db}"
+# The API-backend instance has its own file so both SQLite instances can run at once
+SQLITE_API_DB_PATH="${SQLITE_API_DB_PATH:-/data/pdns-api.db}"
 
 echo -e "${BLUE}================================================${NC}"
 echo -e "${BLUE}  Poweradmin Test Data Import${NC}"
@@ -182,12 +184,22 @@ EOSQL
     echo -e "${GREEN}✅ PostgreSQL cleaned${NC}"
 }
 
-# Function to clean SQLite test data
-# Poweradmin and PowerDNS tables share the single /data/pdns.db file. Drops and
-# recreates only the parsed poweradmin-native tables from the current schema,
-# then clears the PowerDNS-owned data rows (those tables are never dropped).
-clean_sqlite() {
-    echo -e "${YELLOW}🧹 Cleaning SQLite test data...${NC}"
+# Run a .sql file against one SQLite database file.
+# The fixtures ATTACH '/data/pdns.db' by name, so rewrite that path for any other file.
+sqlite_exec_file() {
+    local db_path=$1
+    local sql_file=$2
+    sed "s#/data/pdns.db#${db_path}#g" "$sql_file" \
+        | docker exec -i "$SQLITE_CONTAINER" sqlite3 "$db_path"
+}
+
+# Function to clean SQLite test data in one database file
+# Poweradmin and PowerDNS tables share that one file. Drops and recreates only the
+# parsed poweradmin-native tables from the current schema, then clears the
+# PowerDNS-owned data rows (those tables are never dropped).
+clean_sqlite_db() {
+    local db_path=$1
+    echo -e "${YELLOW}🧹 Cleaning SQLite test data in ${db_path}...${NC}"
 
     if ! check_container "$SQLITE_CONTAINER"; then
         echo -e "${RED}❌ Container '$SQLITE_CONTAINER' is not running${NC}"
@@ -206,9 +218,9 @@ clean_sqlite() {
         while IFS= read -r table; do
             [ -n "$table" ] && echo "DROP TABLE IF EXISTS \"$table\";"
         done < <(parse_poweradmin_tables "$SQLITE_SCHEMA")
-    } | docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" > /dev/null 2>&1
+    } | docker exec -i "$SQLITE_CONTAINER" sqlite3 "$db_path" > /dev/null 2>&1
 
-    if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQLITE_SCHEMA" > /dev/null 2>&1; then
+    if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$db_path" < "$SQLITE_SCHEMA" > /dev/null 2>&1; then
         echo -e "${GREEN}✅ Poweradmin schema recreated${NC}"
     else
         echo -e "${RED}❌ Poweradmin schema recreation failed${NC}"
@@ -216,13 +228,21 @@ clean_sqlite() {
     fi
 
     # Clear PowerDNS-owned data (same file, tables stay in place)
-    docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" > /dev/null 2>&1 << 'EOSQL'
+    docker exec -i "$SQLITE_CONTAINER" sqlite3 "$db_path" > /dev/null 2>&1 << 'EOSQL'
 DELETE FROM records;
 DELETE FROM domains;
 DELETE FROM supermasters;
 EOSQL
 
-    echo -e "${GREEN}✅ SQLite cleaned${NC}"
+    echo -e "${GREEN}✅ SQLite ${db_path} cleaned${NC}"
+}
+
+# Clean both SQLite instance files
+clean_sqlite() {
+    local db_path
+    for db_path in "$SQLITE_DB_PATH" "$SQLITE_API_DB_PATH"; do
+        clean_sqlite_db "$db_path" || return 1
+    done
 }
 
 # Function to import MySQL/MariaDB data
@@ -427,9 +447,10 @@ import_pgsql() {
     fi
 }
 
-# Function to import SQLite data
-import_sqlite() {
-    echo -e "${YELLOW}📦 Importing to SQLite...${NC}"
+# Function to import SQLite data into one database file
+import_sqlite_db() {
+    local db_path=$1
+    echo -e "${YELLOW}📦 Importing to SQLite ${db_path}...${NC}"
 
     if ! check_container "$SQLITE_CONTAINER"; then
         echo -e "${RED}❌ Container '$SQLITE_CONTAINER' is not running${NC}"
@@ -442,13 +463,13 @@ import_sqlite() {
     fi
 
     # Check if Poweradmin schema exists, import if needed
-    local has_users_table=$(docker exec "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" "SELECT name FROM sqlite_master WHERE type='table' AND name='users';" 2>/dev/null || echo "")
+    local has_users_table=$(docker exec "$SQLITE_CONTAINER" sqlite3 "$db_path" "SELECT name FROM sqlite_master WHERE type='table' AND name='users';" 2>/dev/null || echo "")
 
     if [ -z "$has_users_table" ]; then
         echo -e "${YELLOW}📦 Poweradmin schema not found, importing...${NC}"
         local poweradmin_schema="$SQLITE_SCHEMA"
         if [ -f "$poweradmin_schema" ]; then
-            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$poweradmin_schema" > /dev/null 2>&1; then
+            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$db_path" < "$poweradmin_schema" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ Poweradmin schema imported${NC}"
             else
                 echo -e "${RED}❌ Poweradmin schema import failed${NC}"
@@ -460,15 +481,14 @@ import_sqlite() {
         fi
     fi
 
-    # Execute SQL file directly (the ATTACH command is in the SQL file)
-    # The script attaches /data/db/powerdns.db as 'pdns' to access domains/records tables
-    if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-users-permissions-sqlite.sql" > /dev/null 2>&1; then
+    # The fixtures ATTACH the same file as 'pdns' to reach the domains/records tables
+    if sqlite_exec_file "$db_path" "$SQL_DIR/test-users-permissions-sqlite.sql" > /dev/null 2>&1; then
         echo -e "${GREEN}✅ SQLite users and zones imported${NC}"
 
         # Import comprehensive DNS records if the file exists
         if [ -f "$SQL_DIR/test-dns-records-sqlite.sql" ]; then
             echo -e "${YELLOW}📦 Importing comprehensive DNS records...${NC}"
-            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-dns-records-sqlite.sql" > /dev/null 2>&1; then
+            if sqlite_exec_file "$db_path" "$SQL_DIR/test-dns-records-sqlite.sql" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ SQLite DNS records imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  DNS records import had issues (may already exist)${NC}"
@@ -478,7 +498,7 @@ import_sqlite() {
         # Import reverse zones and zone templates if the file exists
         if [ -f "$SQL_DIR/test-reverse-zones-templates-sqlite.sql" ]; then
             echo -e "${YELLOW}📦 Importing reverse zones and zone templates...${NC}"
-            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-reverse-zones-templates-sqlite.sql" > /dev/null 2>&1; then
+            if sqlite_exec_file "$db_path" "$SQL_DIR/test-reverse-zones-templates-sqlite.sql" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ SQLite reverse zones and templates imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  Reverse zones/templates import had issues (may already exist)${NC}"
@@ -488,7 +508,7 @@ import_sqlite() {
         # Import extra comprehensive data (zones, supermasters, etc.)
         if [ -f "$SQL_DIR/test-extra-data-sqlite.sql" ]; then
             echo -e "${YELLOW}📦 Importing extra test data (zones, supermasters, API keys)...${NC}"
-            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-extra-data-sqlite.sql" > /dev/null 2>&1; then
+            if sqlite_exec_file "$db_path" "$SQL_DIR/test-extra-data-sqlite.sql" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ SQLite extra test data imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  Extra test data import had issues (may already exist)${NC}"
@@ -498,7 +518,7 @@ import_sqlite() {
         # Import group test data (memberships, zone-group assignments)
         if [ -f "$SQL_DIR/test-groups-sqlite.sql" ]; then
             echo -e "${YELLOW}📦 Importing group memberships and zone-group assignments...${NC}"
-            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-groups-sqlite.sql" > /dev/null 2>&1; then
+            if sqlite_exec_file "$db_path" "$SQL_DIR/test-groups-sqlite.sql" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ SQLite group test data imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  Group test data import had issues (may already exist)${NC}"
@@ -508,9 +528,17 @@ import_sqlite() {
         return 0
     else
         echo -e "${RED}❌ SQLite import failed${NC}"
-        echo -e "${YELLOW}Note: Ensure PowerDNS database exists at /data/pdns.db in the container${NC}"
+        echo -e "${YELLOW}Note: Ensure PowerDNS database exists at ${db_path} in the container${NC}"
         return 1
     fi
+}
+
+# Import into both SQLite instance files
+import_sqlite() {
+    local db_path
+    for db_path in "$SQLITE_DB_PATH" "$SQLITE_API_DB_PATH"; do
+        import_sqlite_db "$db_path" || return 1
+    done
 }
 
 # Main import logic
@@ -574,7 +602,8 @@ main() {
                 echo "  PGSQL_DATABASE      PostgreSQL database (default: pdns)"
                 echo "  PGSQL_CONTAINER     PostgreSQL container name (default: postgres)"
                 echo "  SQLITE_CONTAINER    SQLite container name (default: sqlite)"
-                echo "  SQLITE_DB_PATH      SQLite database path (default: /data/pdns.db)"
+                echo "  SQLITE_DB_PATH      SQLite database path, SQL backend (default: /data/pdns.db)"
+                echo "  SQLITE_API_DB_PATH  SQLite database path, API backend (default: /data/pdns-api.db)"
                 exit 0
                 ;;
             *)

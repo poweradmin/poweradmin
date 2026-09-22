@@ -30,6 +30,8 @@ PGSQL_CONTAINER="${PGSQL_CONTAINER:-postgres}"
 
 SQLITE_CONTAINER="${SQLITE_CONTAINER:-sqlite}"
 SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/pdns.db}"
+# The API-backend instance has its own file; both get the same updates
+SQLITE_API_DB_PATH="${SQLITE_API_DB_PATH:-/data/pdns-api.db}"
 
 DBS="mysql,pgsql,sqlite"
 FROM_VERSION="4.0.0"
@@ -58,7 +60,8 @@ apply_script() { # $1=db $2=file -> prints "errors:N"
         pgsql)
             docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$file" >/dev/null 2>"$errfile" ;;
         sqlite)
-            docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$file" 2>"$errfile" ;;
+            docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$file" 2>"$errfile"
+            docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_API_DB_PATH" < "$file" 2>>"$errfile" ;;
     esac
     local errors
     errors=$(grep -ci 'error' "$errfile" || true)

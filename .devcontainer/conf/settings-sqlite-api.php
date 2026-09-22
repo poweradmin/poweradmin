@@ -12,6 +12,10 @@ $settings = devcontainer_settings('sqlite');
 $settings = devcontainer_api_backend($settings);
 
 $settings['interface']['title'] = 'Poweradmin (SQLite + API)';
+// Own database file and own PowerDNS server, so this instance and the SQL one
+// never contend for the same SQLite writer lock.
+$settings['database']['file'] = '/data/pdns-api.db';
+$settings['pdns_api']['url'] = 'http://pdns-sqlite-api:8081';
 // The sweep runs the full suite here, and the layout specs assert the default
 // chrome; the modern theme is exercised by the mysql-sql-de instance instead.
 

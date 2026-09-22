@@ -351,7 +351,7 @@ services:
     restart: unless-stopped
     healthcheck:
       # The image's own check only runs sqlite3 --version; this waits for the schema
-      test: [ "CMD-SHELL", "sqlite3 /data/pdns.db 'SELECT 1 FROM domains LIMIT 1'" ]
+      test: [ "CMD-SHELL", "sqlite3 /data/pdns.db 'SELECT 1 FROM domains LIMIT 1' && sqlite3 /data/pdns-api.db 'SELECT 1 FROM domains LIMIT 1'" ]
       start_period: 30s
       start_interval: 2s
       interval: 30s
@@ -407,6 +407,24 @@ services:
       - "127.0.0.1:1055:53"
       - "127.0.0.1:1055:53/udp"
       - "127.0.0.1:8183:8081"
+    depends_on:
+      sqlite:
+        condition: service_healthy
+
+  # Serves the API-backend instance's own file, so it never writes to pdns.db
+  pdns-sqlite-api:
+    image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    container_name: pdns-sqlite-api
+    restart: unless-stopped
+    networks:
+      - internal
+    volumes:
+      - ./conf/pdns-sqlite-api.conf:/etc/powerdns/pdns.conf
+      - sqlite_data:/data
+    ports:
+      - "127.0.0.1:1057:53"
+      - "127.0.0.1:1057:53/udp"
+      - "127.0.0.1:8185:8081"
     depends_on:
       sqlite:
         condition: service_healthy

@@ -38,7 +38,7 @@ other machines on your network.
 
 ## Architecture
 
-Each database has two Poweradmin instances - one using direct SQL and one using the PowerDNS REST API backend (experimental). All share the same PowerDNS servers (DNSSEC enabled):
+Each database has two Poweradmin instances - one using direct SQL and one using the PowerDNS REST API backend (experimental). MySQL and PostgreSQL instances share a PowerDNS server per database (DNSSEC enabled); SQLite has one per instance, because a SQLite file takes a single writer and the two instances have to run at the same time.
 
 ### SQL Backend (default - direct database access)
 
@@ -54,7 +54,7 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 |------|------------|----------|--------------|--------------|
 | 8083 | Nginx | MySQL/MariaDB | 1053 | 8181 |
 | 8084 | Nginx | PostgreSQL | 1054 | 8182 |
-| 8085 | Nginx | SQLite | 1055 | 8183 |
+| 8085 | Nginx | SQLite | 1057 | 8185 |
 
 ### Special-purpose instances (MySQL/MariaDB, SQL backend)
 
@@ -87,7 +87,8 @@ the site data for that origin.
 ### PowerDNS Servers (with DNSSEC)
 - **MySQL backend**: DNS port 1053, API port 8181
 - **PostgreSQL backend**: DNS port 1054, API port 8182
-- **SQLite backend**: DNS port 1055, API port 8183
+- **SQLite backend** (SQL instance, `/data/pdns.db`): DNS port 1055, API port 8183
+- **SQLite backend** (API instance, `/data/pdns-api.db`): DNS port 1057, API port 8185
 - **LMDB backend** (opt-in, the only backend with views and network mappings): DNS port 1056, API port 8184.
   Start it with `docker compose --profile lmdb up -d pdns-lmdb` (same `-f`/`--project-name` flags as above).
 
@@ -111,7 +112,8 @@ the site data for that origin.
 ### PowerDNS Configs (DNSSEC enabled)
 - `conf/pdns-mysql.conf` - PowerDNS for MySQL
 - `conf/pdns-pgsql.conf` - PowerDNS for PostgreSQL
-- `conf/pdns-sqlite.conf` - PowerDNS for SQLite
+- `conf/pdns-sqlite.conf` - PowerDNS for SQLite (SQL instance)
+- `conf/pdns-sqlite-api.conf` - PowerDNS for SQLite (API instance)
 
 ### Poweradmin Settings (SQL backend)
 - `conf/settings-mysql-sql.php` - MySQL + SQL backend
@@ -136,7 +138,7 @@ Access Adminer at http://localhost:8090
 ### Direct Connection
 - **MariaDB**: user: `pdns`, pass: `poweradmin`, db: `pdns` (app tables in `poweradmin` db); root password `uberuser`
 - **PostgreSQL**: user: `pdns`, pass: `poweradmin`, db: `pdns`
-- **SQLite**: `/data/pdns.db` (mounted in containers)
+- **SQLite**: `/data/pdns.db` for the SQL instance, `/data/pdns-api.db` for the API instance (both mounted in containers)
 
 ## Test Credentials
 
