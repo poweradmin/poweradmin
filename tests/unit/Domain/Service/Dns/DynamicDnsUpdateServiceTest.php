@@ -4,7 +4,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\DynamicDnsAuthenticationService;

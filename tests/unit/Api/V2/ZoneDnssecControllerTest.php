@@ -31,7 +31,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\ZoneValidationService;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;

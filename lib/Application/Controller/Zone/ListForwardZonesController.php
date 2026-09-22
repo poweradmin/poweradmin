@@ -25,11 +25,11 @@ namespace Poweradmin\Application\Controller\Zone;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
-use Poweradmin\Application\Service\DnsDataService;
+use Poweradmin\Application\Service\Backend\DnsDataService;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
-use Poweradmin\Application\Service\ZoneSortingService;
+use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**

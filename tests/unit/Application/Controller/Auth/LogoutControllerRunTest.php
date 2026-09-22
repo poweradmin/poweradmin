@@ -26,7 +26,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\LogoutController;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;

@@ -4,7 +4,7 @@ namespace Poweradmin\Tests\Unit;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 
 class UserAuthenticationServiceTest extends TestCase
 {

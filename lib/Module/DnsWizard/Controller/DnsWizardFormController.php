@@ -22,9 +22,9 @@
 
 namespace Poweradmin\Module\DnsWizard\Controller;
 
-use Poweradmin\Application\Service\ChangeRequestMessages;
-use Poweradmin\Application\Service\RecordAddAccess;
-use Poweradmin\Application\Service\RecordAddService;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
+use Poweradmin\Application\Service\Record\RecordAddAccess;
+use Poweradmin\Application\Service\Record\RecordAddService;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Session\FormStateService;

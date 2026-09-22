@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**

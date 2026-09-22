@@ -23,8 +23,8 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use Poweradmin\Application\Service\DnsDataService;
-use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\Backend\DnsDataService;
+use Poweradmin\Application\Service\Web\PaginationService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;

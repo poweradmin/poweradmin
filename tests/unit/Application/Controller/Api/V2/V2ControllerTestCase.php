@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 use PHPUnit\Framework\TestCase;
 use PDO;
 use PDOStatement;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;

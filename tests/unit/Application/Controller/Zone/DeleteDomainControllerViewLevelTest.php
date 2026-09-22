@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\Zone\DeleteDomainController;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;

@@ -3,7 +3,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use ReflectionClass;

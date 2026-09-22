@@ -4,7 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Boot\BootOptions;
 use Poweradmin\Application\Boot\Kernel;
-use Poweradmin\Application\Service\DynamicDnsRequestFactory;
+use Poweradmin\Application\Service\Record\DynamicDnsRequestFactory;
 use Poweradmin\Domain\Service\Dns\DynamicDnsHelper;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Symfony\Component\HttpFoundation\Request;

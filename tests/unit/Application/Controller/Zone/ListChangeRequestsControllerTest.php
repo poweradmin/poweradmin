@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Controller\Zone\ListChangeRequestsController;
-use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\Web\PaginationService;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 

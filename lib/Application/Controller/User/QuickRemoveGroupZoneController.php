@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\User;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Domain\Model\Permission;
 
 /**

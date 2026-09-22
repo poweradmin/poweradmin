@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\ChangeRequestMessages;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Utility\DnsIdnService;

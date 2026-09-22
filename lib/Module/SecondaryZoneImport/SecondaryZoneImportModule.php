@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\SecondaryZoneImport;
 
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Module\ModuleInterface;

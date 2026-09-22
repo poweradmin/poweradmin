@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\Api\V2\ZoneOwnersController;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;

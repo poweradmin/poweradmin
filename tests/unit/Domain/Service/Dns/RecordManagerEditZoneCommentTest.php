@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Application\Service\Backend\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;

@@ -123,7 +123,7 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
     public function testCountsAreTakenForReverseZonesOnlyAndNeverPerLetter(): void
     {
         $seen = [];
-        $this->dnsData = $this->createMock(\Poweradmin\Application\Service\DnsDataService::class);
+        $this->dnsData = $this->createMock(\Poweradmin\Application\Service\Backend\DnsDataService::class);
         $this->dnsData->method('countZones')->willReturnCallback(
             function (string $perm, string $letter = 'all', string $type = 'forward') use (&$seen): int {
                 $seen[] = [$perm, $letter, $type];
@@ -418,7 +418,7 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->factory->method('permissionService')->willReturn($this->permissions);
         $this->factory->method('userPreferenceService')->willReturn($this->preferences);
         $this->factory->method('paginationService')
-            ->willReturn(new \Poweradmin\Application\Service\PaginationService($this->preferences));
+            ->willReturn(new \Poweradmin\Application\Service\Web\PaginationService($this->preferences));
         $this->factory->method('dnsDataService')->willReturn($this->dnsData);
         $this->factory->method('zoneListPermissionService')->willReturn($this->zoneListPermissions);
         $this->factory->method('userGroupRepository')->willReturn($this->userGroups);

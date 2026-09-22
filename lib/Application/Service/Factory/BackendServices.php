@@ -24,11 +24,11 @@ namespace Poweradmin\Application\Service\Factory;
 
 use PDO;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnsDataService;
-use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\Application\Service\PowerdnsStatusService;
-use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\Backend\DnsDataService;
+use Poweradmin\Application\Service\Backend\DnssecProviderFactory;
+use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
+use Poweradmin\Application\Service\Backend\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;

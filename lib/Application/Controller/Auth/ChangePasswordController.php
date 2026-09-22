@@ -23,9 +23,9 @@
 namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\PasswordChangeService;
-use Poweradmin\Application\Service\PasswordPolicyService;
-use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\User\PasswordChangeService;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;

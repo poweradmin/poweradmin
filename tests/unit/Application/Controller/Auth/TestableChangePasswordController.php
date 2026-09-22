@@ -25,7 +25,7 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\Auth\ChangePasswordController;
-use Poweradmin\Application\Service\PasswordChangeService;
+use Poweradmin\Application\Service\User\PasswordChangeService;
 use ReflectionProperty;
 
 /**

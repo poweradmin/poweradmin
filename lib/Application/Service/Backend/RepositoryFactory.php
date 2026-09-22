@@ -1,0 +1,162 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Service\Backend;
+
+use PDO;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\RecordSearchInterface;
+use Poweradmin\Domain\Port\ZoneSearchInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
+use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
+use Poweradmin\Infrastructure\Repository\ApiRecordRepository;
+use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use Poweradmin\Infrastructure\Repository\ApiRecordCommentRepository;
+use Poweradmin\Infrastructure\Repository\ApiRecordSearch;
+use Poweradmin\Infrastructure\Repository\ApiZoneSearch;
+use Poweradmin\Infrastructure\Repository\RecordSearch;
+use Poweradmin\Infrastructure\Repository\ZoneSearch;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
+use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
+use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
+use Psr\Log\LoggerInterface;
+
+/**
+ * Centralized factory for creating repository instances.
+ *
+ * Selects between SQL and API backend implementations based on
+ * the configured DnsBackendProviderInterface.
+ */
+class RepositoryFactory implements RepositoryFactoryInterface
+{
+    private PDO $db;
+    private ConfigurationInterface $config;
+    private DnsBackendProviderInterface $backendProvider;
+    private ?LoggerInterface $logger;
+
+    public function __construct(
+        PDO $db,
+        ConfigurationInterface $config,
+        DnsBackendProviderInterface $backendProvider,
+        ?LoggerInterface $logger = null
+    ) {
+        $this->db = $db;
+        $this->config = $config;
+        $this->backendProvider = $backendProvider;
+        $this->logger = $logger;
+    }
+
+    public function createRecordRepository(): RecordRepositoryInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return new ApiRecordRepository($this->backendProvider);
+        }
+        return new SqlRecordRepository($this->db, $this->config);
+    }
+
+    public function createZoneRepository(): ZoneRepositoryInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            $dbType = $this->config->get('database', 'type');
+            return new ApiZoneRepository($this->db, $this->backendProvider, $dbType, $this->config);
+        }
+        return new DbZoneRepository($this->db, $this->config, $this->backendProvider);
+    }
+
+    public function createRecordCommentRepository(): RecordCommentRepositoryInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            // Reuse the provider's client so comment reads share its caches; the
+            // fallback covers a test double that reports API mode without being one
+            $apiClient = DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
+                ?? DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+            if ($apiClient !== null) {
+                return new ApiRecordCommentRepository($apiClient, $this->backendProvider);
+            }
+        }
+        return new DbRecordCommentRepository($this->db, $this->config, $this->backendProvider);
+    }
+
+    public function createRecordLinkedCommentRepository(): ?RecordLinkedCommentRepositoryInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return null;
+        }
+        return new DbRecordCommentRepository($this->db, $this->config, $this->backendProvider);
+    }
+
+    public function createDomainRepository(): DomainRepositoryInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return new ApiDomainRepository($this->db, $this->config, $this->backendProvider);
+        }
+        return new SqlDomainRepository($this->db, $this->config);
+    }
+
+    public function createDynamicDnsRepository(SOARecordManagerInterface $soaRecordManager): DynamicDnsRepositoryInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return new ApiDynamicDnsRepository($this->db, $soaRecordManager, $this->backendProvider);
+        }
+        $tableNameService = new TableNameService($this->config);
+        return new SqlDynamicDnsRepository(
+            $this->db,
+            $soaRecordManager,
+            $tableNameService->getTable(PdnsTable::RECORDS),
+            $tableNameService->getTable(PdnsTable::DOMAINS)
+        );
+    }
+
+    public function createZoneSearch(): ZoneSearchInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return new ApiZoneSearch($this->db, $this->backendProvider, $this->createZoneRepository());
+        }
+        return new ZoneSearch($this->db, $this->config, $this->config->get('database', 'type', 'mysql'));
+    }
+
+    public function createRecordSearch(): RecordSearchInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return new ApiRecordSearch($this->db, $this->backendProvider, $this->createZoneRepository());
+        }
+        return new RecordSearch($this->db, $this->config, $this->config->get('database', 'type', 'mysql'));
+    }
+
+    public function getBackendProvider(): DnsBackendProviderInterface
+    {
+        return $this->backendProvider;
+    }
+}

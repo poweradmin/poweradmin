@@ -24,8 +24,8 @@ namespace Poweradmin\Application\Controller\User;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\GroupService;
-use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\IpHelper;

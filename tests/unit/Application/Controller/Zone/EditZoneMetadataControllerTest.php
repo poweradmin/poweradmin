@@ -15,7 +15,7 @@ use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use ReflectionClass;
 
 class EditZoneMetadataControllerTest extends TestCase

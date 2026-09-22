@@ -24,8 +24,8 @@ namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Application\Service\SamlService;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
+use Poweradmin\Application\Service\Auth\SamlService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**

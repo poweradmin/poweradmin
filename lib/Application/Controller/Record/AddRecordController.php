@@ -24,11 +24,11 @@ namespace Poweradmin\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Presenter\RecordFormFieldPresenter;
-use Poweradmin\Application\Service\ChangeRequestMessages;
-use Poweradmin\Application\Service\RecordAddAccess;
-use Poweradmin\Application\Service\RecordAddMessages;
-use Poweradmin\Application\Service\RecordAddResult;
-use Poweradmin\Application\Service\RecordAddService;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
+use Poweradmin\Application\Service\Record\RecordAddAccess;
+use Poweradmin\Application\Service\Record\RecordAddMessages;
+use Poweradmin\Application\Service\Record\RecordAddResult;
+use Poweradmin\Application\Service\Record\RecordAddService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;

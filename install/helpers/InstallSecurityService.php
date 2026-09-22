@@ -22,7 +22,7 @@
 
 namespace PoweradminInstall;
 
-use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;

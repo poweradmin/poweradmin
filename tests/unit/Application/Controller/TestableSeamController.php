@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
-use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\Web\PaginationService;
 use Poweradmin\Application\Controller\BaseController;
 
 /**

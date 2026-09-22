@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;

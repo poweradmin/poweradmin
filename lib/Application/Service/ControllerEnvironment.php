@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
 
 /**
  * The collaborators a controller is built from. In production

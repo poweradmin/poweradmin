@@ -27,7 +27,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\MfaVerifyController;
 use Poweradmin\Application\Http\ClientContext;
-use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;

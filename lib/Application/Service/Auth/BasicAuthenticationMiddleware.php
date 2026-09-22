@@ -23,9 +23,7 @@
 namespace Poweradmin\Application\Service\Auth;
 
 use PDO;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\LoginAttemptService;
-use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Config\ConfigurationInterface;

@@ -25,15 +25,15 @@ namespace Poweradmin\Application\Controller\Zone;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Presenter\SearchResultPresenter;
-use Poweradmin\Application\Service\PaginationService;
-use Poweradmin\Application\Service\SearchCriteria;
+use Poweradmin\Application\Service\Web\PaginationService;
+use Poweradmin\Application\Service\Web\SearchCriteria;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Module\ModuleInterface;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Application\Service\ZoneSortingService;
+use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
 
 /**

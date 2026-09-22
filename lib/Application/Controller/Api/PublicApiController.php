@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
 use Poweradmin\Application\Service\Auth\ApiKeyActor;
-use Poweradmin\Application\Service\PdnsVersionService;
+use Poweradmin\Application\Service\Backend\PdnsVersionService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;

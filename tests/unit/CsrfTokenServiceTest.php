@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
 
 #[CoversClass(CsrfTokenService::class)]
 class CsrfTokenServiceTest extends TestCase

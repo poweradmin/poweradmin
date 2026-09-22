@@ -24,9 +24,9 @@ namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use Poweradmin\Application\Service\PasswordPolicyService;
-use Poweradmin\Application\Service\RepositoryFactory;
-use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
+use Poweradmin\Application\Service\Backend\RepositoryFactory;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;

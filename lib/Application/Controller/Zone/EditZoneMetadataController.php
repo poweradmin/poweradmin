@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\ZoneMetadataFormMessages;
+use Poweradmin\Application\Service\Zone\ZoneMetadataFormMessages;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneDetail;

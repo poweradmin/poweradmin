@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\GroupMembershipService;
+use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Symfony\Component\HttpFoundation\JsonResponse;

@@ -24,8 +24,8 @@ namespace Poweradmin\Module\DnsWizard\Controller\Api;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Application\Service\ChangeRequestMessages;
-use Poweradmin\Application\Service\RecordAddAccess;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
+use Poweradmin\Application\Service\Record\RecordAddAccess;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;

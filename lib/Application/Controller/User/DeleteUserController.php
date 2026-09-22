@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\UserFormMessages;
+use Poweradmin\Application\Service\User\UserFormMessages;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
 

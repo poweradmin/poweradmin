@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Boot\BootContext;
 use Poweradmin\Application\Boot\Kernel;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\Logger;

@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller\User;
 use InvalidArgumentException;
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\Web\PaginationService;
 use Poweradmin\Domain\Model\UserPreference;
 
 /**

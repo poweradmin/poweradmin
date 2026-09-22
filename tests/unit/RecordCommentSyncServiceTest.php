@@ -3,8 +3,8 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Application\Service\Record\RecordCommentService;
+use Poweradmin\Application\Service\Record\RecordCommentSyncService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 
 class RecordCommentSyncServiceTest extends TestCase

@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller\Dnssec;
 use Exception;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Utility\DnsIdnService;
-use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\Backend\DnssecProviderFactory;
 use Poweradmin\Domain\Enum\DnssecKeyType;
 
 /**

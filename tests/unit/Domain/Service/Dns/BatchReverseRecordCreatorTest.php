@@ -13,7 +13,7 @@ use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 
 class BatchReverseRecordCreatorTest extends TestCase
 {

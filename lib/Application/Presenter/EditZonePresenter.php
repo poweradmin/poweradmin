@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Presenter;
 
-use Poweradmin\Application\Service\RejectedZoneEditPresenter;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Utility\DnsIdnService;

@@ -1,0 +1,73 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Service\User;
+
+use Poweradmin\Domain\Repository\UserCredentialWriterInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
+
+/**
+ * Changes the logged-in user's own password after verifying the current one; LDAP users are refused.
+ */
+readonly class PasswordChangeService
+{
+    private const ERROR_MESSAGES = [
+        'user_not_found' => 'User not found',
+        'ldap_user' => 'You can not change your password as LDAP user.',
+        'invalid_password' => 'You did not enter the correct current password.',
+        'password_changed' => 'Password has been changed, please login.',
+    ];
+
+    public function __construct(
+        private UserLookupInterface&UserCredentialWriterInterface $userRepository,
+        private UserAuthenticationService $authService,
+        private UserContextService $userContextService,
+    ) {
+    }
+
+    public function changePassword(#[\SensitiveParameter] string $oldPassword, #[\SensitiveParameter] string $newPassword): array
+    {
+        $username = $this->userContextService->getLoggedInUsername();
+        $user = $this->userRepository->findByUsername($username);
+
+        if ($user === null) {
+            return [false, _(self::ERROR_MESSAGES['user_not_found'])];
+        }
+
+        if ($user->isLdapUser()) {
+            return [false, _(self::ERROR_MESSAGES['ldap_user'])];
+        }
+
+        if (!$this->authService->verifyPassword($oldPassword, $user->getPassword())) {
+            return [false, _(self::ERROR_MESSAGES['invalid_password'])];
+        }
+
+        $hashedPassword = $this->authService->hashPassword($newPassword);
+        $updated = $this->userRepository->updatePassword($user->getId(), $hashedPassword);
+
+        return $updated
+            ? [true, _(self::ERROR_MESSAGES['password_changed'])]
+            : [false, _('Failed to update password')];
+    }
+}

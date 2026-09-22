@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;

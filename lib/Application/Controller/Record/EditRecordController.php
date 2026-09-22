@@ -23,9 +23,9 @@
 namespace Poweradmin\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\ChangeRequestMessages;
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordEditRequest;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
+use Poweradmin\Application\Service\Record\RecordCommentService;
+use Poweradmin\Application\Service\Record\RecordEditRequest;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Utility\DnsHelper;

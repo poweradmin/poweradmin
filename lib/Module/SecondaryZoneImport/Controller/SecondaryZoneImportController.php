@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\SecondaryZoneImport\Controller;
 
-use Poweradmin\Application\Service\ZoneCreateRequest;
+use Poweradmin\Application\Service\Zone\ZoneCreateRequest;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;

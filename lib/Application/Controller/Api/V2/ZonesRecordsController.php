@@ -24,8 +24,8 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
-use Poweradmin\Application\Service\RecordAddResult;
-use Poweradmin\Application\Service\RecordEditRequest;
+use Poweradmin\Application\Service\Record\RecordAddResult;
+use Poweradmin\Application\Service\Record\RecordEditRequest;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;

@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsBulkController;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsController;
 use Poweradmin\Application\Controller\Api\V2\ZonesRRSetsController;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;

@@ -24,9 +24,9 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Http\Request as HttpRequest;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 

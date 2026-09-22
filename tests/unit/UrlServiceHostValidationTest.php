@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\UrlService;
+use Poweradmin\Application\Service\Web\UrlService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 

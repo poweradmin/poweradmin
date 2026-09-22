@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\Auth;
 
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\SamlService;
+use Poweradmin\Application\Service\Auth\SamlService;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;

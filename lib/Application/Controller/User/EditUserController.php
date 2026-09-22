@@ -23,13 +23,13 @@
 namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\GroupMembershipService;
-use Poweradmin\Application\Service\PasswordPolicyService;
-use Poweradmin\Application\Service\UserCommandFactory;
-use Poweradmin\Application\Service\UserFormMessages;
+use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
+use Poweradmin\Application\Service\User\UserCommandFactory;
+use Poweradmin\Application\Service\User\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\AuthMethod;

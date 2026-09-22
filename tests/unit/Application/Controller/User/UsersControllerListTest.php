@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\User;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\User\UsersController;
-use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\Web\PaginationService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;

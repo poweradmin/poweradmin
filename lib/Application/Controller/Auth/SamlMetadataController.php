@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Service\SamlService;
+use Poweradmin\Application\Service\Auth\SamlService;
 
 /**
  * Serves the SAML service provider metadata XML at /saml/metadata.

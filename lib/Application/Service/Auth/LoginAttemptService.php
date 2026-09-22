@@ -1,0 +1,402 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Service\Auth;
+
+use PDO;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Enum\LoginAttemptStage;
+use Poweradmin\Domain\Port\LoginThrottleInterface;
+
+/**
+ * Records attempts in login_attempts and enforces the password- and MFA-stage lockouts per user and IP.
+ */
+class LoginAttemptService implements LoginThrottleInterface
+{
+    /** Kept as string constants for callers; {@see LoginAttemptStage} owns the vocabulary. */
+    public const STAGE_PASSWORD = 'password';
+    public const STAGE_MFA = 'mfa';
+
+    private ConfigurationInterface $configManager;
+    private PDO $connection;
+
+    // Cached per-connection so the introspection cost is paid once per request.
+    // Lets login keep working in the upgrade window between code deploy and the
+    // 4.5.0 SQL update (when `attempt_type` does not exist yet).
+    private ?bool $attemptTypeColumnExists = null;
+
+    public function __construct(PDO $connection, ConfigurationInterface $configManager)
+    {
+        $this->connection = $connection;
+        $this->configManager = $configManager;
+    }
+
+    /**
+     * @param string $attemptType Lockout stage identifier; defaults to "password"
+     *                            so existing callers (SQL/LDAP/DDNS) are unchanged.
+     *                            Pass STAGE_MFA from the MFA verify path to keep
+     *                            second-factor failures from polluting the
+     *                            first-factor counter.
+     * @param int|null $userId Account the attempt belongs to. Pass it whenever the
+     *                         caller already knows it, rather than relying on the
+     *                         username to resolve: the MFA stage verifies against
+     *                         the pending user id, and keying the counter on a
+     *                         separately held session name would let the two drift.
+     */
+    public function recordAttempt(string $username, string $ipAddress, bool $successful, string $attemptType = self::STAGE_PASSWORD, ?int $userId = null): void
+    {
+        if ($this->stageLimits($attemptType) === null) {
+            return;
+        }
+
+        $userId ??= $this->getUserId($username);
+        $hasAttemptType = $this->hasAttemptTypeColumn();
+
+        // A clean second factor always clears its own counter; the opt-in
+        // clear_attempts_on_success only governs the password stage.
+        $clearOnSuccess = $attemptType === self::STAGE_MFA
+            || $this->configManager->get('security', 'account_lockout.clear_attempts_on_success');
+
+        if ($successful && $clearOnSuccess) {
+            $this->clearFailedAttempts($userId, $ipAddress, $attemptType, $hasAttemptType);
+        }
+
+        $columns = 'user_id, ip_address, timestamp, successful';
+        $placeholders = ':user_id, :ip_address, :timestamp, :successful';
+        $params = [
+            'user_id' => $userId,
+            'ip_address' => $ipAddress,
+            'timestamp' => time(),
+            'successful' => DbCompat::boolValue($successful),
+        ];
+
+        // Pre-4.5.0 schema lacks attempt_type; the upgrade-window fallback omits
+        // the column so MFA failures temporarily mix with password failures
+        // until the SQL update runs.
+        if ($hasAttemptType) {
+            $columns .= ', attempt_type';
+            $placeholders .= ', :attempt_type';
+            $params['attempt_type'] = $attemptType;
+        }
+
+        $stmt = $this->connection->prepare(
+            "INSERT INTO login_attempts ($columns) VALUES ($placeholders)"
+        );
+        $stmt->execute($params);
+
+        $this->cleanupOldAttempts();
+    }
+
+    /**
+     * Whether the address is on the configured lockout blacklist.
+     */
+    public function isIpBlacklisted(string $ipAddress): bool
+    {
+        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses', []);
+
+        return !empty($blacklistedIps) && $this->isIpInList($ipAddress, $blacklistedIps);
+    }
+
+    public function isAccountLocked(string $username, string $ipAddress, string $attemptType = self::STAGE_PASSWORD, ?int $userId = null): bool
+    {
+        $limits = $this->stageLimits($attemptType);
+        if ($limits === null) {
+            return false;
+        }
+
+        // The whitelist exempts trusted networks from password lockout so a bot
+        // cannot lock staff out, and it takes priority over the blacklist. It is
+        // skipped for the second factor, where the counter is the only barrier
+        // left once the password is known.
+        if ($attemptType !== self::STAGE_MFA) {
+            $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
+            if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
+                return false; // This IP is whitelisted, never lock it
+            }
+        }
+
+        // Check IP blacklist next - if blacklisted, ALWAYS return locked (true)
+        if ($this->isIpBlacklisted($ipAddress)) {
+            return true;
+        }
+
+        $userId ??= $this->getUserId($username);
+        if ($userId === null) {
+            // An unattributable attempt cannot be counted. The password stage
+            // stays open so unknown usernames still reach the authenticator,
+            // but the second factor refuses rather than dropping its only limit.
+            return $attemptType === self::STAGE_MFA;
+        }
+
+        $cutoffTime = time() - $limits['duration'];
+        $maxAttempts = $limits['attempts'];
+
+        // MFA failures count per user across every source address: an attacker
+        // rotating IPs would otherwise reset the counter on each request.
+        $trackIpAddress = $attemptType !== self::STAGE_MFA
+            && $this->configManager->get('security', 'account_lockout.track_ip_address', true);
+
+        $db_type = $this->configManager->get('database', 'type');
+        $sql = "SELECT COUNT(*) as attempts
+            FROM login_attempts
+            WHERE user_id = :user_id
+            AND successful = " . DbCompat::boolFalse($db_type) . "
+            AND timestamp > :cutoff_time";
+
+        $params = [
+            'user_id' => $userId,
+            'cutoff_time' => $cutoffTime
+        ];
+
+        if ($this->hasAttemptTypeColumn()) {
+            $sql .= " AND attempt_type = :attempt_type";
+            $params['attempt_type'] = $attemptType;
+        }
+
+        if ($trackIpAddress) {
+            $sql .= " AND ip_address = :ip_address";
+            $params['ip_address'] = $ipAddress;
+        }
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute($params);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return (int)$result['attempts'] >= $maxAttempts;
+    }
+
+    /**
+     * Check if an IP address is in the given list.
+     * Supports individual IPs, CIDRs (e.g., 192.168.1.0/24), and wildcards (e.g., 192.168.1.*)
+     *
+     * @param string $ipAddress The IP address to check
+     * @param array $ipList List of IPs/CIDRs/wildcards to match against
+     * @return bool True if the IP is in the list
+     */
+    public function isIpInList(string $ipAddress, array $ipList): bool
+    {
+        if (empty($ipAddress) || empty($ipList)) {
+            return false;
+        }
+
+        // inet_pton accepts both IPv4 and IPv6; the packed form lets CIDR ranges
+        // match either family (ip2long alone silently dropped every IPv6 address).
+        $binaryIp = @inet_pton($ipAddress);
+        if ($binaryIp === false) {
+            return false; // Invalid IP address
+        }
+
+        foreach ($ipList as $listItem) {
+            // Exact match - compare packed forms so equivalent IPv6 spellings still
+            // match (e.g. 2001:db8::1 vs 2001:0db8:0000:0000:0000:0000:0000:0001).
+            $listBinary = @inet_pton($listItem);
+            if ($listItem === $ipAddress || ($listBinary !== false && $listBinary === $binaryIp)) {
+                return true;
+            }
+
+            // CIDR notation (e.g., 192.168.1.0/24 or 2001:db8::/32)
+            if (str_contains($listItem, '/') && $this->ipMatchesCidr($binaryIp, $listItem)) {
+                return true;
+            }
+
+            // Wildcard notation (e.g., 192.168.1.*)
+            if (str_contains($listItem, '*') && $this->ipMatchesWildcard($ipAddress, $listItem)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Match a packed IP against a CIDR range, comparing only the network-prefix bits.
+     * Works for both IPv4 and IPv6; a family mismatch between the two never matches.
+     *
+     * @param string $binaryIp The candidate IP already packed via inet_pton()
+     * @param string $cidr CIDR string such as 192.168.1.0/24 or 2001:db8::/32
+     */
+    private function ipMatchesCidr(string $binaryIp, string $cidr): bool
+    {
+        [$subnet, $bits] = explode('/', $cidr, 2);
+
+        $binarySubnet = @inet_pton($subnet);
+        if ($binarySubnet === false || strlen($binaryIp) !== strlen($binarySubnet)) {
+            return false;
+        }
+
+        if (!ctype_digit($bits)) {
+            return false;
+        }
+        $prefixBits = (int)$bits;
+        if ($prefixBits > strlen($binaryIp) * 8) {
+            return false;
+        }
+
+        $wholeBytes = intdiv($prefixBits, 8);
+        if ($wholeBytes > 0 && substr($binaryIp, 0, $wholeBytes) !== substr($binarySubnet, 0, $wholeBytes)) {
+            return false;
+        }
+
+        $remainingBits = $prefixBits % 8;
+        if ($remainingBits === 0) {
+            return true;
+        }
+
+        $mask = 0xff << (8 - $remainingBits) & 0xff;
+        return (ord($binaryIp[$wholeBytes]) & $mask) === (ord($binarySubnet[$wholeBytes]) & $mask);
+    }
+
+    /**
+     * Match an IPv4 address against a dotted wildcard pattern such as 192.168.1.*.
+     */
+    private function ipMatchesWildcard(string $ipAddress, string $pattern): bool
+    {
+        $regex = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $pattern) . '$/';
+        return (bool)preg_match($regex, $ipAddress);
+    }
+
+    private function getUserId(string $username): ?int
+    {
+        $stmt = $this->connection->prepare("
+            SELECT id FROM users 
+            WHERE username = :username
+        ");
+
+        $stmt->execute(['username' => $username]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
+    }
+
+    private function cleanupOldAttempts(): void
+    {
+        // Retain until the longest stage window has passed, read from the same
+        // resolver the windows use. Pruning on the password window alone would
+        // drop MFA rows still inside the MFA window and reset that counter
+        // mid-attack; computing it separately let the two silently diverge.
+        $retention = max(
+            $this->stageLimits(self::STAGE_PASSWORD)['duration'] ?? 0,
+            $this->stageLimits(self::STAGE_MFA)['duration'] ?? 0
+        );
+        $cutoffTime = time() - $retention;
+
+        $stmt = $this->connection->prepare("
+            DELETE FROM login_attempts
+            WHERE timestamp < :cutoff_time
+        ");
+
+        $stmt->execute(['cutoff_time' => $cutoffTime]);
+    }
+
+    private function clearFailedAttempts(?int $userId, string $ipAddress, string $attemptType, bool $hasAttemptType): void
+    {
+        if ($userId === null) {
+            return;
+        }
+
+        $sql = "DELETE FROM login_attempts WHERE user_id = :user_id";
+        $params = ['user_id' => $userId];
+
+        // Scope clearing to the matching stage so a fresh first-factor success
+        // cannot reset MFA failures. Before the 4.5.0 SQL update the column is
+        // absent and the stages are indistinguishable, so clearing stays
+        // all-for-user: password success also clears MFA failures until the
+        // update runs. Keeping clear_attempts_on_success working for password
+        // logins wins over closing that window, which needs account lockout
+        // switched on to reach at all.
+        if ($hasAttemptType) {
+            $sql .= " AND attempt_type = :attempt_type";
+            $params['attempt_type'] = $attemptType;
+        }
+
+        // Clearing must match how the stage counts. MFA counts every address, so
+        // filtering the clear by IP would strand failures from an earlier address
+        // and lock a roaming user who just verified correctly.
+        $clearPerIp = $attemptType !== self::STAGE_MFA
+            && $this->configManager->get('security', 'account_lockout.track_ip_address');
+
+        if ($clearPerIp) {
+            $sql .= " AND ip_address = :ip_address";
+            $params['ip_address'] = $ipAddress;
+        }
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute($params);
+    }
+
+    /**
+     * Resolves the attempt ceiling and window for an authentication stage, or
+     * null when that stage is not throttled at all.
+     *
+     * The second factor is always throttled. It is the last barrier once the
+     * password is known, so it cannot depend on account_lockout.enable_lockout,
+     * which ships disabled.
+     *
+     * @return array{attempts:int,duration:int}|null Duration is in seconds
+     */
+    private function stageLimits(string $attemptType): ?array
+    {
+        // An unrecognised stage is treated as the password stage, matching the
+        // default this method has always fallen through to.
+        $stage = LoginAttemptStage::tryFrom($attemptType) ?? LoginAttemptStage::PASSWORD;
+
+        if ($stage === LoginAttemptStage::MFA) {
+            // Floors, not "off" switches. A misconfigured 0 must not read as
+            // "unlimited guesses" on the one control standing between a known
+            // password and the account.
+            return [
+                'attempts' => max(1, (int)$this->configManager->get('security', 'mfa.max_verify_attempts', 5)),
+                'duration' => max(1, (int)$this->configManager->get('security', 'mfa.verify_lockout_duration', 15)) * 60,
+            ];
+        }
+
+        if (!$this->configManager->get('security', 'account_lockout.enable_lockout', false)) {
+            return null;
+        }
+
+        return [
+            'attempts' => (int)$this->configManager->get('security', 'account_lockout.lockout_attempts', 5),
+            'duration' => (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 15) * 60,
+        ];
+    }
+
+    /**
+     * Detects whether the `attempt_type` column exists. Cached per instance so
+     * the introspection cost is paid once per request, not per attempt.
+     */
+    private function hasAttemptTypeColumn(): bool
+    {
+        if ($this->attemptTypeColumnExists !== null) {
+            return $this->attemptTypeColumnExists;
+        }
+
+        try {
+            $this->connection->query("SELECT attempt_type FROM login_attempts WHERE 1 = 0");
+            $this->attemptTypeColumnExists = true;
+        } catch (\PDOException) {
+            $this->attemptTypeColumnExists = false;
+        }
+
+        return $this->attemptTypeColumnExists;
+    }
+}

@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\SamlService;
+use Poweradmin\Application\Service\Auth\SamlService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Infrastructure\Session\FlashMessage;

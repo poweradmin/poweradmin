@@ -23,8 +23,8 @@
 namespace Poweradmin\Application\Boot;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\LocaleResolver;
-use Poweradmin\Application\Service\StatsDisplayService;
+use Poweradmin\Application\Service\Web\LocaleResolver;
+use Poweradmin\Application\Service\Web\StatsDisplayService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;

@@ -23,15 +23,15 @@
 namespace Poweradmin\Application\Service\Factory;
 
 use PDO;
-use Poweradmin\Application\Service\ChangeApprovalContext;
-use Poweradmin\Application\Service\ChangeRequestNotificationService;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
+use Poweradmin\Application\Service\Zone\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
-use Poweradmin\Application\Service\EmailTemplateService;
-use Poweradmin\Application\Service\RecordAddService;
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
-use Poweradmin\Application\Service\RecordEditService;
-use Poweradmin\Application\Service\RecordManagerService;
+use Poweradmin\Application\Service\Mail\EmailTemplateService;
+use Poweradmin\Application\Service\Record\RecordAddService;
+use Poweradmin\Application\Service\Record\RecordCommentService;
+use Poweradmin\Application\Service\Record\RecordCommentSyncService;
+use Poweradmin\Application\Service\Record\RecordEditService;
+use Poweradmin\Application\Service\Record\RecordManagerService;
 use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;

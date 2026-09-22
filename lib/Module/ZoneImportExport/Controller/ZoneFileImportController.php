@@ -29,12 +29,12 @@ use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
-use Poweradmin\Application\Service\ZoneCreateFormMessages;
-use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
+use Poweradmin\Application\Service\Zone\ZoneCreateFormMessages;
+use Poweradmin\Application\Service\Zone\ZoneOwnershipFormResolver;
 use Poweradmin\Module\ZoneImportExport\ImportSessionKeys;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 use Poweradmin\Domain\Enum\ZoneKind;
-use Poweradmin\Application\Service\ChangeRequestMessages;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 
 /**

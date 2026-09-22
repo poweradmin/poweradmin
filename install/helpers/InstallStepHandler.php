@@ -23,7 +23,7 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Boot\Kernel;
-use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Symfony\Component\HttpFoundation\Request;

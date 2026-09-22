@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 
 /**

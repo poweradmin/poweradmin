@@ -23,9 +23,9 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\User;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\PasswordPolicyService;
-use Poweradmin\Application\Service\UserCommandFactory;
-use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
+use Poweradmin\Application\Service\User\UserCommandFactory;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;

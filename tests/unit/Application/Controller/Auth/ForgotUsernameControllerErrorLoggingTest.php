@@ -6,8 +6,8 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Controller\Auth\ForgotUsernameController;
-use Poweradmin\Application\Service\RecaptchaService;
-use Poweradmin\Application\Service\UsernameRecoveryService;
+use Poweradmin\Application\Service\Auth\RecaptchaService;
+use Poweradmin\Application\Service\User\UsernameRecoveryService;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use ReflectionMethod;

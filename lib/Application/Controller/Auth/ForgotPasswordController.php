@@ -25,10 +25,10 @@ namespace Poweradmin\Application\Controller\Auth;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Http\ClientContext;
-use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Application\Service\PasswordResetService;
-use Poweradmin\Application\Service\RecaptchaService;
-use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
+use Poweradmin\Application\Service\User\PasswordResetService;
+use Poweradmin\Application\Service\Auth\RecaptchaService;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 
 /**

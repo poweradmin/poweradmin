@@ -10,7 +10,7 @@ auth:
       - 'lib/**/Middleware/*Authentication*.php'
       - 'lib/Infrastructure/Session/*.php'
       - 'lib/Application/Service/MfaService.php'
-      - 'lib/Application/Service/LoginAttemptService.php'
+      - 'lib/Application/Service/Auth/LoginAttemptService.php'
       - 'tests/**/*Authentication*.php'
       - 'tests/**/*Authenticator*.php'
 

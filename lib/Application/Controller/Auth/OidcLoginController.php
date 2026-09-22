@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\OidcService;
+use Poweradmin\Application\Service\Auth\OidcService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;

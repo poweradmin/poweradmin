@@ -24,8 +24,8 @@
 namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\ZoneAccessNotificationService;
-use Poweradmin\Application\Service\ZoneOwnershipMessages;
+use Poweradmin\Application\Service\Zone\ZoneAccessNotificationService;
+use Poweradmin\Application\Service\Zone\ZoneOwnershipMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;

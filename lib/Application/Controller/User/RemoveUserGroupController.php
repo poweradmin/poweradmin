@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\User;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\GroupMembershipService;
+use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Domain\Model\Permission;
 
 /**

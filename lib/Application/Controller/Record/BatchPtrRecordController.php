@@ -35,7 +35,7 @@ use Poweradmin\Domain\Utility\IpHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Model\Constants;
-use Poweradmin\Application\Service\ChangeRequestMessages;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 
 /**

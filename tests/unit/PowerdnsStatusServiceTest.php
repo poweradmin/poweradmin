@@ -4,7 +4,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\PowerdnsStatusService;
+use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
 use ReflectionClass;
 use TestHelpers\FakeConfiguration;
 

@@ -23,12 +23,12 @@
 namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\GroupMembershipService;
-use Poweradmin\Application\Service\UserCommandFactory;
-use Poweradmin\Application\Service\MailService;
-use Poweradmin\Application\Service\PasswordGenerationService;
-use Poweradmin\Application\Service\PasswordPolicyService;
-use Poweradmin\Application\Service\UserFormMessages;
+use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Application\Service\User\UserCommandFactory;
+use Poweradmin\Application\Service\Mail\MailService;
+use Poweradmin\Application\Service\User\PasswordGenerationService;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
+use Poweradmin\Application\Service\User\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;

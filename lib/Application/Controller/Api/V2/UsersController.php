@@ -23,8 +23,8 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\GroupMembershipService;
-use Poweradmin\Application\Service\UserCommandFactory;
+use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Application\Service\User\UserCommandFactory;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;

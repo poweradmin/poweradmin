@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\Record\EditRecordController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Service\RecordCommentService;
+use Poweradmin\Application\Service\Record\RecordCommentService;
 use ReflectionProperty;
 
 /**

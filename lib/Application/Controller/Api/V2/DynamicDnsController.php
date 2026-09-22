@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\DynamicDnsRequestFactory;
+use Poweradmin\Application\Service\Record\DynamicDnsRequestFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;

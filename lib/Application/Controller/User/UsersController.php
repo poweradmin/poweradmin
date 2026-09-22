@@ -23,8 +23,8 @@
 namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\UserCommandFactory;
-use Poweradmin\Application\Service\UserFormMessages;
+use Poweradmin\Application\Service\User\UserCommandFactory;
+use Poweradmin\Application\Service\User\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\Auth\SelfEditFieldGuard;

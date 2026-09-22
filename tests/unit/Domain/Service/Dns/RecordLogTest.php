@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Service\Dns\RecordLog;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 

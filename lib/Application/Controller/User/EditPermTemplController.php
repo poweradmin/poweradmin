@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\PermissionTemplateWriteService;
+use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateContentGuard;

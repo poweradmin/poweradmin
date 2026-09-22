@@ -6,8 +6,8 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Controller\Auth\ForgotPasswordController;
-use Poweradmin\Application\Service\PasswordResetService;
-use Poweradmin\Application\Service\RecaptchaService;
+use Poweradmin\Application\Service\User\PasswordResetService;
+use Poweradmin\Application\Service\Auth\RecaptchaService;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use ReflectionMethod;

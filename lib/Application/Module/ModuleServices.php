@@ -22,10 +22,10 @@
 
 namespace Poweradmin\Application\Module;
 
-use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Application\Service\EmailTemplateService;
-use Poweradmin\Application\Service\RecordAddService;
-use Poweradmin\Application\Service\RecordManagerService;
+use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Application\Service\Mail\EmailTemplateService;
+use Poweradmin\Application\Service\Record\RecordAddService;
+use Poweradmin\Application\Service\Record\RecordManagerService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;

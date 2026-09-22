@@ -24,7 +24,7 @@ parameters:
     # that records the logout errors read on the next line.
     -
       identifier: deadCode.unreachable
-      path: lib/Application/Service/SamlService.php
+      path: lib/Application/Service/Auth/SamlService.php
     # LdapAuthenticator writes its cache keys into $_SESSION from a private method
     # the test reaches by reflection, so PHPStan still sees them as unset from the
     # test's own unset() and reports every later read as a missing offset.
@@ -137,10 +137,10 @@ parameters:
         - lib/Application/Controller/BaseController.php
         - lib/Application/Bootstrap.php
         - lib/Application/Service/Auth/*
-        - lib/Application/Service/CsrfTokenService.php
-        - lib/Application/Service/OidcService.php
-        - lib/Application/Service/SamlService.php
-        - lib/Application/Service/SqlAuthenticator.php
+        - lib/Application/Service/Auth/CsrfTokenService.php
+        - lib/Application/Service/Auth/OidcService.php
+        - lib/Application/Service/Auth/SamlService.php
+        - lib/Application/Service/Auth/SqlAuthenticator.php
         - lib/Application/Controller/Auth/LoginController.php
         - lib/Application/Controller/Auth/LogoutController.php
         - lib/Application/Controller/Auth/OidcCallbackController.php

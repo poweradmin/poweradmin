@@ -23,13 +23,7 @@
 namespace Poweradmin\Application\Service\Auth;
 
 use PDO;
-use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
-use Poweradmin\Application\Service\LdapAuthenticator;
-use Poweradmin\Application\Service\LoginAttemptService;
-use Poweradmin\Application\Service\SqlAuthenticator;
-use Poweradmin\Application\Service\RecaptchaService;
-use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 use Poweradmin\Infrastructure\Session\FlashMessage;
@@ -46,7 +40,7 @@ use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Http\RequestContext;
-use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\Web\AuditService;
 
 /**
  * Per-request login pipeline: CSRF and reCAPTCHA on the form, session expiry, then the SQL or LDAP authenticator.

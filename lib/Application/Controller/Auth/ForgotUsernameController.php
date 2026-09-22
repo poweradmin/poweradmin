@@ -25,9 +25,9 @@ namespace Poweradmin\Application\Controller\Auth;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Http\ClientContext;
-use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Application\Service\UsernameRecoveryService;
-use Poweradmin\Application\Service\RecaptchaService;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
+use Poweradmin\Application\Service\User\UsernameRecoveryService;
+use Poweradmin\Application\Service\Auth\RecaptchaService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 
 /**

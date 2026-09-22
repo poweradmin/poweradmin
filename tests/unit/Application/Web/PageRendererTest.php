@@ -19,7 +19,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Boot\AppManager;
 use Poweradmin\Application\Web\PageRenderer;
-use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Module\ModuleRegistry;

@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\User;
 
 use Poweradmin\Application\Controller\User\EditPermTemplController;
-use Poweradmin\Application\Service\PermissionTemplateWriteService;
+use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;

@@ -23,10 +23,10 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Application\Service\OidcConfigurationService;
-use Poweradmin\Application\Service\OidcService;
-use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Application\Service\Auth\OidcConfigurationService;
+use Poweradmin\Application\Service\Auth\OidcService;
+use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;

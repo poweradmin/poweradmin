@@ -23,9 +23,9 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Application\Service\ZoneCreateService;
-use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
+use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Application\Service\Zone\ZoneCreateService;
+use Poweradmin\Application\Service\Zone\ZoneOwnershipFormResolver;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;

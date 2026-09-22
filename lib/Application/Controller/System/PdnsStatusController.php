@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller\System;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\PowerdnsStatusService;
+use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 
