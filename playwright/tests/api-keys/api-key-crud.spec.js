@@ -564,38 +564,44 @@ test.describe('API Keys Security', () => {
 
 // Cleanup created test API keys
 test.afterAll(async ({ browser }) => {
+  // The cleanup walks every leftover key, so it needs more than a test's budget
+  test.setTimeout(120000);
+
   const context = await browser.newContext();
   const page = await context.newPage();
 
   await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-  await page.goto('/settings/api-keys');
-
   const testKeyNames = ['test-key', 'test-delete', 'test-key-view', 'test-key-copy', 'test-key-return'];
 
-  for (const prefix of testKeyNames) {
-    let found = true;
-    while (found) {
-      await page.goto('/settings/api-keys');
+  // Collect the delete links once per pass instead of re-reading the list per key
+  for (let pass = 0; pass < 20; pass++) {
+    await page.goto('/settings/api-keys');
 
-      const row = page.locator(`tr:has-text("${prefix}")`).first();
-
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]');
-
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-
-          const confirmBtn = page.locator('button[type="submit"]').first();
-
-          if (await confirmBtn.count() > 0) {
-            await confirmBtn.click();
+    const deleteHrefs = [];
+    for (const prefix of testKeyNames) {
+      const rows = await page.locator(`tr:has-text("${prefix}")`).all();
+      for (const row of rows) {
+        const link = row.locator('a[href*="/delete"]').first();
+        if (await link.count() > 0) {
+          const href = await link.getAttribute('href');
+          if (href && !deleteHrefs.includes(href)) {
+            deleteHrefs.push(href);
           }
-        } else {
-          found = false;
         }
-      } else {
-        found = false;
+      }
+    }
+
+    if (deleteHrefs.length === 0) {
+      break;
+    }
+
+    for (const href of deleteHrefs) {
+      await page.goto(href);
+      const confirmBtn = page.locator('button[type="submit"]').first();
+      if (await confirmBtn.count() > 0) {
+        await confirmBtn.click();
+        await page.waitForLoadState('domcontentloaded');
       }
     }
   }
