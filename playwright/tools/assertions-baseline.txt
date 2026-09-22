@@ -1,0 +1,173 @@
+playwright/tests/admin/email-previews.spec.js::should have target=
+playwright/tests/admin/email-previews.spec.js::should load dark mode preview
+playwright/tests/admin/email-previews.spec.js::should load light mode preview
+playwright/tests/api-keys/api-key-crud.spec.js::should access delete confirmation page
+playwright/tests/api-keys/api-key-crud.spec.js::should display API key value one time
+playwright/tests/api-keys/api-key-crud.spec.js::should display success message after creation
+playwright/tests/api-keys/api-key-crud.spec.js::should display warning message
+playwright/tests/api-keys/api-key-crud.spec.js::should have cancel button
+playwright/tests/api-keys/api-key-crud.spec.js::should have cancel option on delete page
+playwright/tests/api-keys/api-key-crud.spec.js::should have confirm delete button
+playwright/tests/api-keys/api-key-crud.spec.js::should have copy button for API key
+playwright/tests/api-keys/api-key-crud.spec.js::should have name field with maxlength attribute
+playwright/tests/api-keys/api-key-crud.spec.js::should have return to API keys link
+playwright/tests/api-keys/api-key-crud.spec.js::should include CSRF token in add form
+playwright/tests/api-keys/api-key-crud.spec.js::should include CSRF token in delete form
+playwright/tests/api-keys/api-key-crud.spec.js::should reject empty name
+playwright/tests/corner-cases/error-handling.spec.js::should properly escape HTML in user input display
+playwright/tests/dashboard/dashboard-views.spec.js::should navigate to add master zone
+playwright/tests/dashboard/dashboard-views.spec.js::should navigate to search
+playwright/tests/dashboard/dashboard-views.spec.js::should navigate to zones list
+playwright/tests/dnssec/dnssec-key-lifecycle.spec.js::manager should access DNSSEC for own zones
+playwright/tests/errors/error-pages.spec.js::decline should link to logout
+playwright/tests/errors/error-pages.spec.js::should require checkbox to be checked
+playwright/tests/errors/error-pages.spec.js::should show validation error when checkbox not checked
+playwright/tests/groups/group-logs.spec.js::should clear search and show all logs
+playwright/tests/groups/group-members.spec.js::should display search functionality for available users
+playwright/tests/groups/group-members.spec.js::should display selection count badge
+playwright/tests/groups/group-members.spec.js::should have select all checkbox
+playwright/tests/groups/group-zones.spec.js::should display search for available zones
+playwright/tests/groups/group-zones.spec.js::should display selection count badge
+playwright/tests/groups/group-zones.spec.js::should have select all checkbox for owned zones
+playwright/tests/layout/footer.spec.js::should display theme switcher button
+playwright/tests/layout/footer.spec.js::should have clickable theme switcher if present
+playwright/tests/layout/layout-comprehensive.spec.js::should display breadcrumbs on add record page
+playwright/tests/layout/layout-comprehensive.spec.js::should display breadcrumbs on zone edit page
+playwright/tests/layout/layout-comprehensive.spec.js::should highlight current page in menu
+playwright/tests/layout/layout-comprehensive.spec.js::should logout successfully
+playwright/tests/layout/layout-comprehensive.spec.js::should navigate to users page
+playwright/tests/layout/layout-comprehensive.spec.js::should navigate to zones page
+playwright/tests/layout/layout-comprehensive.spec.js::should show supermasters link
+playwright/tests/layout/navigation.spec.js::should have access to list zones
+playwright/tests/logs/api-logs.spec.js::should delete the API key (api_key_delete)
+playwright/tests/logs/api-logs.spec.js::should display clear button
+playwright/tests/logs/api-logs.spec.js::should display export button when logs exist
+playwright/tests/logs/api-logs.spec.js::should display log entries from API key creation
+playwright/tests/logs/api-logs.spec.js::should display logs table or no logs message
+playwright/tests/logs/api-logs.spec.js::should display operation badges with colors
+playwright/tests/logs/api-logs.spec.js::should edit the API key (api_key_edit)
+playwright/tests/logs/api-logs.spec.js::should have details button for log entries
+playwright/tests/logs/api-logs.spec.js::should navigate to API logs from Tools dropdown
+playwright/tests/logs/api-logs.spec.js::should open details modal when clicking details button
+playwright/tests/logs/api-logs.spec.js::should open export modal
+playwright/tests/logs/api-logs.spec.js::should regenerate the API key (api_key_regenerate)
+playwright/tests/logs/audit-events.spec.js::should show auth_method in login events
+playwright/tests/logs/audit-events.spec.js::should show client_ip in log entries
+playwright/tests/logs/user-logs.spec.js::should display clear button
+playwright/tests/logs/user-logs.spec.js::should display log entries when available
+playwright/tests/logs/user-logs.spec.js::should display logs table or no logs message
+playwright/tests/logs/zone-logs.spec.js::should display clear button
+playwright/tests/logs/zone-logs.spec.js::should display color-coded operation badges
+playwright/tests/logs/zone-logs.spec.js::should display details button when logs exist
+playwright/tests/logs/zone-logs.spec.js::should display log entries when available
+playwright/tests/logs/zone-logs.spec.js::should display logs table or no logs message
+playwright/tests/mfa/mfa-management.spec.js::should handle MFA verification form
+playwright/tests/mfa/mfa-setup.spec.js::should display QR code when setting up app
+playwright/tests/mfa/mfa-setup.spec.js::should display manual entry key
+playwright/tests/mfa/mfa-setup.spec.js::should display recommended authenticator apps
+playwright/tests/mfa/mfa-setup.spec.js::should display user email address
+playwright/tests/mfa/mfa-setup.spec.js::should enforce 6-digit code length
+playwright/tests/mfa/mfa-setup.spec.js::should enforce numeric input for verification code
+playwright/tests/mfa/mfa-setup.spec.js::should have cancel button
+playwright/tests/mfa/mfa-setup.spec.js::should have copy secret button
+playwright/tests/mfa/mfa-setup.spec.js::should have verification code input
+playwright/tests/mfa/mfa-setup.spec.js::should have verify and enable MFA button
+playwright/tests/mfa/mfa-setup.spec.js::should navigate to app setup after clicking setup button
+playwright/tests/mfa/mfa-setup.spec.js::should navigate to email setup when available
+playwright/tests/mfa/mfa-setup.spec.js::should reject empty verification code
+playwright/tests/mfa/mfa-setup.spec.js::should reject invalid verification code
+playwright/tests/mfa/mfa-setup.spec.js::should use POST for MFA actions
+playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on RDAP page from zone ID
+playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on WHOIS page from zone ID
+playwright/tests/modules/zone-file-export.spec.js::should show Zone File option in Export dropdown when module is enabled
+playwright/tests/navigation/dashboard-navigation.spec.js::should have functional zone navigation links
+playwright/tests/navigation/pagination.spec.js::should display correct page numbers in pagination
+playwright/tests/navigation/pagination.spec.js::should display items per page selector if available
+playwright/tests/navigation/pagination.spec.js::should maintain pagination when filtering zones
+playwright/tests/navigation/pagination.spec.js::should navigate to next page of zones
+playwright/tests/navigation/pagination.spec.js::should navigate to previous page of zones
+playwright/tests/navigation/pagination.spec.js::should preserve sort order across pages
+playwright/tests/password-recovery/forgot-password.spec.js::should navigate to login page
+playwright/tests/password-recovery/forgot-username.spec.js::should navigate back to login page
+playwright/tests/password-recovery/reset-password.spec.js::should have autofocus on password input
+playwright/tests/password-recovery/reset-password.spec.js::should have password type for confirm input
+playwright/tests/password-recovery/reset-password.spec.js::should have password type for inputs
+playwright/tests/password-recovery/reset-password.spec.js::should mark confirm password as required
+playwright/tests/password-recovery/reset-password.spec.js::should mark password as required
+playwright/tests/password-recovery/reset-password.spec.js::should reject empty password
+playwright/tests/password-recovery/reset-password.spec.js::should reject mismatched passwords
+playwright/tests/records/batch-ptr-records.spec.js::should handle empty batch PTR submission
+playwright/tests/records/batch-ptr-records.spec.js::should return to zone list from batch PTR page
+playwright/tests/records/batch-ptr-records.spec.js::should submit batch PTR form without 404 error
+playwright/tests/records/bulk-records.spec.js::should reject empty record content
+playwright/tests/records/bulk-records.spec.js::should submit multiple records at once
+playwright/tests/records/bulk-records.spec.js::should validate IP address for A records
+playwright/tests/records/bulk-records.spec.js::viewer should not add records
+playwright/tests/records/dns-record-types.spec.js::should hide deprecation warning when switching to non-deprecated type
+playwright/tests/records/dns-record-types.spec.js::should show deprecation warning when selecting SPF type
+playwright/tests/records/multi-record-checkbox.spec.js::new record row should have unchecked disabled checkbox
+playwright/tests/records/multi-record-checkbox.spec.js::should handle checkbox toggle correctly
+playwright/tests/records/record-comments.spec.js::should clear record comment
+playwright/tests/records/record-comments.spec.js::should display comment column in edit record form when enabled
+playwright/tests/records/record-comments.spec.js::should edit existing record comment
+playwright/tests/records/record-comments.spec.js::should not show warning for non-root CNAME
+playwright/tests/records/record-comments.spec.js::should preserve comment on record update
+playwright/tests/records/record-comments.spec.js::should show warning when editing CNAME to root
+playwright/tests/records/record-validation.spec.js::should reject negative priority
+playwright/tests/search/empty-search.spec.js::clear button should reload the page
+playwright/tests/search/empty-search.spec.js::empty search should not submit form
+playwright/tests/search/search-comments.spec.js::should find records by comment text
+playwright/tests/search/search-comments.spec.js::should persist comments checkbox state after search
+playwright/tests/search/search-comments.spec.js::should toggle comments search option
+playwright/tests/search/search-comprehensive.spec.js::should have type filter dropdown
+playwright/tests/search/search-comprehensive.spec.js::should navigate to zone from search results
+playwright/tests/search/search-comprehensive.spec.js::should search by record type
+playwright/tests/search/search-edge-cases.spec.js::should handle clicking search result link
+playwright/tests/search/whois-rdap.spec.js::should accept domain input when enabled
+playwright/tests/search/whois-rdap.spec.js::should accept internationalized domain names when enabled
+playwright/tests/search/whois-rdap.spec.js::should display results section after lookup when enabled
+playwright/tests/search/whois-rdap.spec.js::should handle empty domain submission when enabled
+playwright/tests/search/whois-rdap.spec.js::should handle invalid domain when enabled
+playwright/tests/search/whois-rdap.spec.js::should have placeholder text or disabled message
+playwright/tests/search/whois-rdap.spec.js::should show results or alert when enabled
+playwright/tests/search/whois-rdap.spec.js::should submit lookup request when enabled
+playwright/tests/templates/zone-template-management.spec.js::should add records to a zone template
+playwright/tests/templates/zone-template-records.spec.js::manager should access template records for own templates
+playwright/tests/templates/zone-template-unlink.spec.js::template should have proper structure for unlink warning
+playwright/tests/templates/zone-template-unlink.spec.js::template zones page should show zones in table
+playwright/tests/templates/zone-template-unlink.spec.js::zones table should have type column
+playwright/tests/templates/zone-template-unlink.spec.js::zones table should have zone name column
+playwright/tests/templates/zone-template-update-zones.spec.js::should handle template with no linked zones gracefully
+playwright/tests/templates/zone-template-update-zones.spec.js::should handle update with multiple zones linked to template
+playwright/tests/templates/zone-template-update-zones.spec.js::should update zones from template without fatal error (issue #944/#945)
+playwright/tests/templates/zone-templates.spec.js::should add records to zone template
+playwright/tests/templates/zone-templates.spec.js::should show action buttons on single line
+playwright/tests/templates/zone-templates.spec.js::should verify template records applied to new zone
+playwright/tests/users/user-form-autofill.spec.js::edit user form should prevent password autofill
+playwright/tests/users/user-form-autofill.spec.js::form should have autocomplete=
+playwright/tests/users/user-form-autofill.spec.js::password field should have autocomplete=
+playwright/tests/users/user-form-autofill.spec.js::password fields should be type=
+playwright/tests/users/user-form-autofill.spec.js::username field should have autocomplete=
+playwright/tests/users/user-form-autofill.spec.js::username should be required
+playwright/tests/utilities/search-and-tools.spec.js::should show WHOIS form fields
+playwright/tests/workflows/complete-domain-management.spec.js::should verify domain resolution and records
+playwright/tests/zones/dns-wizard.spec.js::should access SPF wizard form
+playwright/tests/zones/dns-wizard.spec.js::should display CSRF token
+playwright/tests/zones/dns-wizard.spec.js::should display back/cancel links
+playwright/tests/zones/dns-wizard.spec.js::should display submit button
+playwright/tests/zones/dns-wizard.spec.js::should display wizard form fields
+playwright/tests/zones/zone-crud.spec.js::should cancel delete and return to previous page
+playwright/tests/zones/zone-crud.spec.js::should display delete confirmation message
+playwright/tests/zones/zone-metadata-readonly.spec.js::should have disabled kind dropdowns
+playwright/tests/zones/zone-metadata-readonly.spec.js::should have readonly value inputs
+playwright/tests/zones/zone-metadata-readonly.spec.js::should see Metadata button (not View Metadata)
+playwright/tests/zones/zone-metadata-readonly.spec.js::should see View Metadata button on zone edit page
+playwright/tests/zones/zone-operations.spec.js::should access SOA edit page
+playwright/tests/zones/zone-operations.spec.js::should add multiple owners
+playwright/tests/zones/zone-operations.spec.js::should change zone owner
+playwright/tests/zones/zone-operations.spec.js::should display record count for zones
+playwright/tests/zones/zone-operations.spec.js::should display slave zone master IP
+playwright/tests/zones/zone-operations.spec.js::should display zone comment
+playwright/tests/zones/zone-operations.spec.js::should update SOA serial on record change
+playwright/tests/zones/zone-operations.spec.js::should update zone comment
+playwright/tests/zones/zone-sorting.spec.js::should toggle sort direction on header click

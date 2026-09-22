@@ -144,6 +144,40 @@ function main() {
     }
   }
 
+  // The known cases are frozen in a baseline so the backlog can be worked down
+  // without blocking, while anything new fails the run.
+  const baselinePath = path.join(__dirname, 'assertions-baseline.txt');
+  const baseline = fs.existsSync(baselinePath)
+    ? new Set(fs.readFileSync(baselinePath, 'utf8').split('\n').map(l => l.trim()).filter(Boolean))
+    : new Set();
+
+  const seen = new Set();
+  const added = [];
+  for (const { file, flagged } of results) {
+    for (const t of flagged) {
+      const key = `${file}::${t.name}`;
+      seen.add(key);
+      if (!baseline.has(key)) {
+        added.push(`${file}:${t.line}  ${t.name}`);
+      }
+    }
+  }
+  const stale = [...baseline].filter(key => !seen.has(key));
+
+  if (added.length > 0) {
+    console.log(`New Playwright tests whose assertions can never run: ${added.length}`);
+    console.log('Give the test an assertion that runs when the element is absent, or');
+    console.log('add it to playwright/tools/assertions-baseline.txt with a reason in the commit.\n');
+    added.forEach(line => console.log(`  ${line}`));
+    process.exit(1);
+  }
+
+  if (stale.length > 0) {
+    console.log(`These baseline entries no longer flag; remove them from playwright/tools/assertions-baseline.txt:\n`);
+    stale.forEach(key => console.log(`  ${key}`));
+    process.exit(1);
+  }
+
   if (total === 0) {
     console.log('No Playwright tests with unreachable assertions.');
     process.exit(0);
@@ -153,7 +187,7 @@ function main() {
   results.sort((a, b) => b.flagged.length - a.flagged.length);
 
   console.log(`Playwright tests whose assertions can never run: ${total} in ${results.length} files`);
-  console.log('(advisory - these pass when the element under test is absent)\n');
+  console.log('(all are in the baseline; these pass when the element under test is absent)\n');
 
   for (const { file, flagged } of results) {
     console.log(`${String(flagged.length).padStart(3)}  ${file}`);
