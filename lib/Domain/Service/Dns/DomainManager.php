@@ -35,6 +35,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -240,7 +241,9 @@ class DomainManager implements DomainManagerInterface
                                 foreach ($templ_records as $r) {
                                     if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
                                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-                                        $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
+                                        // A template name without a [ZONE] placeholder is a bare
+                                        // label and has to be qualified with the zone
+                                        $name = DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue($r["name"], $domain), $domain);
                                         $recordType = $r["type"];
                                         $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
                                         $ttl = $r["ttl"];
@@ -780,7 +783,9 @@ class DomainManager implements DomainManagerInterface
                     // Process each template record
                     foreach ($templ_records as $r) {
                         if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
-                            $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
+                            // A template name without a [ZONE] placeholder is a bare
+                            // label and has to be qualified with the zone
+                            $name = DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue($r["name"], $domain), $domain);
                             $recordType = $r["type"];
 
                             if ($recordType == "SOA") {
