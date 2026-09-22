@@ -193,7 +193,7 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
 
         $this->assertSame('all', $params['letter_start']);
         // A short listing never even reads or stores the letter
-        $this->assertArrayNotHasKey(SessionKeys::LETTER, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::LETTER));
     }
 
     public function testALongListingDefaultsToTheLetterA(): void
@@ -211,13 +211,13 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
 
         $this->runController();
         $this->assertSame('q', $this->renderedParams()['letter_start']);
-        $this->assertSame('q', $_SESSION[SessionKeys::LETTER]);
+        $this->assertSame('q', $this->session->get(SessionKeys::LETTER));
     }
 
     public function testTheRememberedLetterIsUsedWhenNoneIsSubmitted(): void
     {
         $this->zoneCount = 11;
-        $_SESSION[SessionKeys::LETTER] = 'z';
+        $this->session->set(SessionKeys::LETTER, 'z');
 
         $this->runController();
         $this->assertSame('z', $this->renderedParams()['letter_start']);
@@ -231,7 +231,7 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
 
         $this->runController();
         $this->assertSame('1 OR 1', $this->renderedParams()['letter_start']);
-        $this->assertSame('1 OR 1', $_SESSION[SessionKeys::LETTER]);
+        $this->assertSame('1 OR 1', $this->session->get(SessionKeys::LETTER));
     }
 
     public function testTheAllLetterFetchesEveryZone(): void

@@ -26,32 +26,31 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 
 #[CoversClass(MessageService::class)]
 class MessageServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     private MessageService $service;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Initialize session
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
+        $this->session = new ArraySession();
 
         // Clear any existing messages
-        $_SESSION['messages'] = [];
+        $this->session->set('messages', []);
 
-        $this->service = new MessageService(new UserContextService(new PhpSession()));
+        $this->service = new MessageService(new UserContextService($this->session));
     }
 
     protected function tearDown(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
         parent::tearDown();
     }
 
@@ -62,10 +61,10 @@ class MessageServiceTest extends TestCase
     {
         $this->service->addMessage('test_script', 'info', 'Test message');
 
-        $this->assertArrayHasKey('test_script', $_SESSION['messages']);
-        $this->assertCount(1, $_SESSION['messages']['test_script']);
-        $this->assertEquals('info', $_SESSION['messages']['test_script'][0]['type']);
-        $this->assertEquals('Test message', $_SESSION['messages']['test_script'][0]['content']);
+        $this->assertArrayHasKey('test_script', $this->session->get('messages'));
+        $this->assertCount(1, $this->session->get('messages')['test_script']);
+        $this->assertEquals('info', $this->session->get('messages')['test_script'][0]['type']);
+        $this->assertEquals('Test message', $this->session->get('messages')['test_script'][0]['content']);
     }
 
     #[Test]
@@ -73,7 +72,7 @@ class MessageServiceTest extends TestCase
     {
         $this->service->addMessage('test_script', 'error', 'Error occurred', 'record123');
 
-        $this->assertStringContainsString('record123', $_SESSION['messages']['test_script'][0]['content']);
+        $this->assertStringContainsString('record123', $this->session->get('messages')['test_script'][0]['content']);
     }
 
     #[Test]
@@ -83,7 +82,7 @@ class MessageServiceTest extends TestCase
         $this->service->addMessage('test_script', 'info', 'Same message');
         $this->service->addMessage('test_script', 'info', 'Same message');
 
-        $this->assertCount(1, $_SESSION['messages']['test_script']);
+        $this->assertCount(1, $this->session->get('messages')['test_script']);
     }
 
     #[Test]
@@ -92,7 +91,7 @@ class MessageServiceTest extends TestCase
         $this->service->addMessage('test_script', 'info', 'Same message');
         $this->service->addMessage('test_script', 'error', 'Same message');
 
-        $this->assertCount(2, $_SESSION['messages']['test_script']);
+        $this->assertCount(2, $this->session->get('messages')['test_script']);
     }
 
     #[Test]
@@ -101,7 +100,7 @@ class MessageServiceTest extends TestCase
         $this->service->addMessage('test_script', 'info', 'Message 1');
         $this->service->addMessage('test_script', 'info', 'Message 2');
 
-        $this->assertCount(2, $_SESSION['messages']['test_script']);
+        $this->assertCount(2, $this->session->get('messages')['test_script']);
     }
 
     // ========== getMessages tests ==========
@@ -115,7 +114,7 @@ class MessageServiceTest extends TestCase
         $messages = $this->service->getMessages('test_script');
 
         $this->assertCount(2, $messages);
-        $this->assertArrayNotHasKey('test_script', $_SESSION['messages']);
+        $this->assertArrayNotHasKey('test_script', $this->session->get('messages'));
     }
 
     #[Test]
@@ -133,8 +132,8 @@ class MessageServiceTest extends TestCase
     {
         $this->service->addSystemError('System error occurred');
 
-        $this->assertArrayHasKey('system', $_SESSION['messages']);
-        $this->assertEquals('error', $_SESSION['messages']['system'][0]['type']);
+        $this->assertArrayHasKey('system', $this->session->get('messages'));
+        $this->assertEquals('error', $this->session->get('messages')['system'][0]['type']);
     }
 
     // ========== Multiple scripts tests ==========

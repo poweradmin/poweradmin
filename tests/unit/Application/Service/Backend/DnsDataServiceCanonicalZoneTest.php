@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\Backend\RepositoryFactory;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use TestHelpers\FakeConfiguration;
 use Poweradmin\Infrastructure\Session\SessionActor;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The API-mode search enriches zones and records with owners from the zones table, keyed
@@ -62,7 +62,7 @@ class DnsDataServiceCanonicalZoneTest extends TestCase
 
         $config = new FakeConfiguration(['database' => ['type' => 'sqlite']]);
 
-        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend), $backend, $this->db, new SessionActor(new PhpSession()));
+        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend), $backend, $this->db, new SessionActor(new ArraySession()));
     }
 
     public function testStrandedZoneKeepsItsOwnerWhenTheRowIdIsCanonical(): void

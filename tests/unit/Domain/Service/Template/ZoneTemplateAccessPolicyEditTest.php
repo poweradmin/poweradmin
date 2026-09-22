@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The list page's edit/delete decision follows the edit and delete pages:
@@ -39,23 +39,19 @@ use Poweradmin\Infrastructure\Session\PhpSession;
  */
 class ZoneTemplateAccessPolicyEditTest extends TestCase
 {
+    private ArraySession $session;
+
     private const USER_ID = 5;
 
     /** @var list<string> */
     private array $granted = [];
 
-    private array $sessionBackup = [];
 
     protected function setUp(): void
     {
-        $this->sessionBackup = $_SESSION ?? [];
-        $_SESSION = [SessionKeys::USERID => self::USER_ID];
+        $this->session = new ArraySession([SessionKeys::USERID => self::USER_ID]);
     }
 
-    protected function tearDown(): void
-    {
-        $_SESSION = $this->sessionBackup;
-    }
 
     private function policy(): ZoneTemplateAccessPolicy
     {
@@ -63,7 +59,7 @@ class ZoneTemplateAccessPolicyEditTest extends TestCase
         $permissions->method('hasPermission')
             ->willReturnCallback(fn(int $userId, string $permission): bool => in_array($permission, $this->granted, true));
 
-        return new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new SessionActor(new PhpSession()));
+        return new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new SessionActor($this->session));
     }
 
     public function testUeberuserMayEditAnyTemplate(): void
@@ -94,7 +90,7 @@ class ZoneTemplateAccessPolicyEditTest extends TestCase
     public function testAnonymousMayNotEdit(): void
     {
         $this->granted = [Permission::PERM_ZONE_TEMPL_EDIT];
-        $_SESSION = [];
+        $this->session = new ArraySession();
 
         $this->assertFalse($this->policy()->canCurrentUserEditTemplate(0));
     }

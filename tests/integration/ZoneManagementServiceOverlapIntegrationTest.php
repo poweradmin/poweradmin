@@ -39,7 +39,7 @@ use Poweradmin\Application\Service\ControllerServiceFactory;
 use Psr\Log\NullLogger;
 use TestHelpers\ZoneTemplateServiceBuilder;
 use Poweradmin\Domain\Service\Validation\Refusal;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Integration test for the API zone-creation path. Confirms that the
@@ -126,14 +126,14 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             $config,
             new RepositoryFactory($this->db, $config, $backend),
             new PermissionService(new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally())),
-            new RecordChangeLogger($this->db, $config, new SessionActor(new PhpSession())),
-            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor(new PhpSession()), new PhpSession()))->domainManager(),
+            new RecordChangeLogger($this->db, $config, new SessionActor(new ArraySession())),
+            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor(new ArraySession()), new ArraySession()))->domainManager(),
             ZoneTemplateServiceBuilder::build(
                 new DbZoneTemplateRepository($this->db, $config, $backend),
                 $config,
                 $backend,
                 new PermissionService(new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally())),
-                new SessionActor(new PhpSession()),
+                new SessionActor(new ArraySession()),
                 new NullLogger()
             )
         );

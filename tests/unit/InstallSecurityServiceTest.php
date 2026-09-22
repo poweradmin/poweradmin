@@ -27,31 +27,26 @@ use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use PoweradminInstall\InstallSecurityService;
 use Symfony\Component\HttpFoundation\Request;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class InstallSecurityServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     protected function setUp(): void
     {
         if (!class_exists('PoweradminInstall\InstallSecurityService')) {
             $this->markTestSkipped('Install folder not present - InstallSecurityService class not available');
         }
 
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
-    }
-
-    protected function tearDown(): void
-    {
-        $_SESSION = [];
+        $this->session = new ArraySession();
     }
 
     private function buildService(array $config, array $server): InstallSecurityService
     {
         return new InstallSecurityService(
             $config,
-            new CsrfTokenService(new PhpSession()),
+            new CsrfTokenService($this->session),
             $server
         );
     }
@@ -441,7 +436,7 @@ class InstallSecurityServiceTest extends TestCase
 
     public function testCsrfReportsInvalidTokenOnPost(): void
     {
-        $_SESSION[SessionKeys::INSTALL_TOKEN] = 'correct-token';
+        $this->session->set(SessionKeys::INSTALL_TOKEN, 'correct-token');
 
         $service = $this->buildService(
             $this->baseConfig(['csrf' => ['enabled' => true]]),
@@ -455,7 +450,7 @@ class InstallSecurityServiceTest extends TestCase
 
     public function testCsrfAcceptsValidTokenOnPost(): void
     {
-        $_SESSION[SessionKeys::INSTALL_TOKEN] = 'correct-token';
+        $this->session->set(SessionKeys::INSTALL_TOKEN, 'correct-token');
 
         $service = $this->buildService(
             $this->baseConfig(['csrf' => ['enabled' => true]]),
@@ -469,7 +464,7 @@ class InstallSecurityServiceTest extends TestCase
 
     public function testCsrfNotEnforcedOnGet(): void
     {
-        $_SESSION[SessionKeys::INSTALL_TOKEN] = 'correct-token';
+        $this->session->set(SessionKeys::INSTALL_TOKEN, 'correct-token');
 
         $service = $this->buildService(
             $this->baseConfig(['csrf' => ['enabled' => true]]),

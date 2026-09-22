@@ -771,6 +771,7 @@ abstract class BaseController
             fn(): ?array => PdnsVersionService::getCachedInfo($this->session),
             fn(): array => $this->db instanceof DebugPDO ? $this->db->getQueries() : [],
             $userId !== null && $this->services()->userPreferenceService()->getWideLayout($userId),
+            $this->session,
             fn(): int => $this->pendingChangeRequestCount()
         );
     }

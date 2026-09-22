@@ -35,7 +35,7 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use TestHelpers\ZoneTemplateServiceBuilder;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Coverage for the default-template resolver and writers.
@@ -54,7 +54,7 @@ class ZoneTemplateServiceDefaultTest extends TestCase
             $config,
             $backend,
             $this->createMock(PermissionService::class),
-            new SessionActor(new PhpSession()),
+            new SessionActor(new ArraySession()),
             $logger
         );
     }

@@ -29,20 +29,24 @@ use Poweradmin\Domain\Repository\AuthUserLookupInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use ReflectionClass;
 use ReflectionMethod;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class LdapAuthenticatorCacheTest extends TestCase
 {
+    private ArraySession $session;
+
     private LdapAuthenticator $authenticator;
     private ReflectionClass $reflection;
     private UserContextService $userContextService;
 
     protected function setUp(): void
     {
+        $this->session = new ArraySession();
+
         // Mock dependencies without full construction
         $this->reflection = new ReflectionClass(LdapAuthenticator::class);
         $this->authenticator = $this->reflection->newInstanceWithoutConstructor();
-        $this->userContextService = new UserContextService(new PhpSession());
+        $this->userContextService = new UserContextService($this->session);
 
         // Mock logger to avoid initialization errors
         $mockLogger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
@@ -50,14 +54,16 @@ class LdapAuthenticatorCacheTest extends TestCase
         $loggerProperty->setAccessible(true);
         $loggerProperty->setValue($this->authenticator, $mockLogger);
 
-        // Clear session data before each test
-        $_SESSION = [];
+        // The authenticator is built by reflection, so plant the session it reads
+        $sessionProperty = $this->reflection->getProperty('session');
+        $sessionProperty->setAccessible(true);
+        $sessionProperty->setValue($this->authenticator, $this->session);
     }
 
     protected function tearDown(): void
     {
         // Clean up session after each test
-        $_SESSION = [];
+        $this->session = new ArraySession();
     }
 
     /**
@@ -139,8 +145,8 @@ class LdapAuthenticatorCacheTest extends TestCase
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Set user as authenticated but no timestamp
-        $_SESSION['userid'] = 1;
-        $_SESSION['authenticated'] = true;
+        $this->session->set('userid', 1);
+        $this->session->set('authenticated', true);
 
         $method = $this->getPrivateMethod('isCachedAuthenticationValid');
         $result = $method->invoke($this->authenticator);
@@ -167,10 +173,10 @@ class LdapAuthenticatorCacheTest extends TestCase
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Set expired timestamp (10 minutes ago)
-        $_SESSION['userid'] = 1;
-        $_SESSION['authenticated'] = true;
-        $_SESSION['ldap_auth_timestamp'] = time() - 600;
-        $_SESSION['ldap_auth_ip'] = '192.168.1.1';
+        $this->session->set('userid', 1);
+        $this->session->set('authenticated', true);
+        $this->session->set('ldap_auth_timestamp', time() - 600);
+        $this->session->set('ldap_auth_ip', '192.168.1.1');
 
         $method = $this->getPrivateMethod('isCachedAuthenticationValid');
         $result = $method->invoke($this->authenticator);
@@ -202,12 +208,12 @@ class LdapAuthenticatorCacheTest extends TestCase
         $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // Set valid cache (2 minutes ago)
-        $_SESSION['userid'] = 1;
-        $_SESSION['authenticated'] = true;
-        $_SESSION['userlogin'] = 'testuser';
-        $_SESSION['ldap_auth_timestamp'] = time() - 120;
-        $_SESSION['ldap_auth_ip'] = '192.168.1.1';
-        $_SESSION['ldap_auth_username'] = 'testuser';
+        $this->session->set('userid', 1);
+        $this->session->set('authenticated', true);
+        $this->session->set('userlogin', 'testuser');
+        $this->session->set('ldap_auth_timestamp', time() - 120);
+        $this->session->set('ldap_auth_ip', '192.168.1.1');
+        $this->session->set('ldap_auth_username', 'testuser');
 
         $method = $this->getPrivateMethod('isCachedAuthenticationValid');
         $result = $method->invoke($this->authenticator);
@@ -239,12 +245,12 @@ class LdapAuthenticatorCacheTest extends TestCase
         $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.2', 'phpunit', 'Unknown', false));
 
         // Set cache with different IP
-        $_SESSION['userid'] = 1;
-        $_SESSION['authenticated'] = true;
-        $_SESSION['userlogin'] = 'testuser';
-        $_SESSION['ldap_auth_timestamp'] = time() - 120;
-        $_SESSION['ldap_auth_ip'] = '192.168.1.1'; // Different IP
-        $_SESSION['ldap_auth_username'] = 'testuser';
+        $this->session->set('userid', 1);
+        $this->session->set('authenticated', true);
+        $this->session->set('userlogin', 'testuser');
+        $this->session->set('ldap_auth_timestamp', time() - 120);
+        $this->session->set('ldap_auth_ip', '192.168.1.1'); // Different IP
+        $this->session->set('ldap_auth_username', 'testuser');
 
         $method = $this->getPrivateMethod('isCachedAuthenticationValid');
         $result = $method->invoke($this->authenticator);
@@ -276,12 +282,12 @@ class LdapAuthenticatorCacheTest extends TestCase
         $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // Set cache with user A, but current session has user B (account switching scenario)
-        $_SESSION['userid'] = 1;
-        $_SESSION['authenticated'] = true;
-        $_SESSION['userlogin'] = 'userB'; // Current login attempt
-        $_SESSION['ldap_auth_timestamp'] = time() - 120;
-        $_SESSION['ldap_auth_ip'] = '192.168.1.1';
-        $_SESSION['ldap_auth_username'] = 'userA'; // Cached username
+        $this->session->set('userid', 1);
+        $this->session->set('authenticated', true);
+        $this->session->set('userlogin', 'userB'); // Current login attempt
+        $this->session->set('ldap_auth_timestamp', time() - 120);
+        $this->session->set('ldap_auth_ip', '192.168.1.1');
+        $this->session->set('ldap_auth_username', 'userA'); // Cached username
 
         $method = $this->getPrivateMethod('isCachedAuthenticationValid');
         $result = $method->invoke($this->authenticator);
@@ -314,12 +320,12 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Simulate MFA pending state: userid set but authenticated=false
         // This happens when MfaSessionManager::setMfaRequired() is called
-        $_SESSION['userid'] = 1;
-        $_SESSION['authenticated'] = false;  // MFA pending!
-        $_SESSION['userlogin'] = 'testuser';
-        $_SESSION['ldap_auth_timestamp'] = time() - 120;
-        $_SESSION['ldap_auth_ip'] = '192.168.1.1';
-        $_SESSION['ldap_auth_username'] = 'testuser';
+        $this->session->set('userid', 1);
+        $this->session->set('authenticated', false);  // MFA pending!
+        $this->session->set('userlogin', 'testuser');
+        $this->session->set('ldap_auth_timestamp', time() - 120);
+        $this->session->set('ldap_auth_ip', '192.168.1.1');
+        $this->session->set('ldap_auth_username', 'testuser');
 
         $method = $this->getPrivateMethod('isCachedAuthenticationValid');
         $result = $method->invoke($this->authenticator);
@@ -351,12 +357,12 @@ class LdapAuthenticatorCacheTest extends TestCase
         $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // authenticated not set at all (edge case)
-        $_SESSION['userid'] = 1;
-        // $_SESSION['authenticated'] not set
-        $_SESSION['userlogin'] = 'testuser';
-        $_SESSION['ldap_auth_timestamp'] = time() - 120;
-        $_SESSION['ldap_auth_ip'] = '192.168.1.1';
-        $_SESSION['ldap_auth_username'] = 'testuser';
+        $this->session->set('userid', 1);
+        // $this->session->get('authenticated') not set
+        $this->session->set('userlogin', 'testuser');
+        $this->session->set('ldap_auth_timestamp', time() - 120);
+        $this->session->set('ldap_auth_ip', '192.168.1.1');
+        $this->session->set('ldap_auth_username', 'testuser');
 
         $method = $this->getPrivateMethod('isCachedAuthenticationValid');
         $result = $method->invoke($this->authenticator);
@@ -386,20 +392,22 @@ class LdapAuthenticatorCacheTest extends TestCase
         $ipAddress = '192.168.1.1';
 
         // Set username in session
-        $_SESSION['userlogin'] = 'testuser';
+        $this->session->set('userlogin', 'testuser');
 
         // Clear cache first
-        unset($_SESSION['ldap_auth_timestamp'], $_SESSION['ldap_auth_ip'], $_SESSION['ldap_auth_username']);
+        $this->session->remove('ldap_auth_timestamp');
+        $this->session->remove('ldap_auth_ip');
+        $this->session->remove('ldap_auth_username');
 
         $method->invoke($this->authenticator, $ipAddress);
 
-        $this->assertArrayHasKey('ldap_auth_timestamp', $_SESSION, 'Timestamp should be set in session');
-        $this->assertArrayHasKey('ldap_auth_ip', $_SESSION, 'IP address should be set in session');
-        $this->assertArrayHasKey('ldap_auth_username', $_SESSION, 'Username should be set in session');
+        $this->assertTrue($this->session->has('ldap_auth_timestamp'), 'Timestamp should be set in session');
+        $this->assertTrue($this->session->has('ldap_auth_ip'), 'IP address should be set in session');
+        $this->assertTrue($this->session->has('ldap_auth_username'), 'Username should be set in session');
 
-        $this->assertEquals($ipAddress, $_SESSION['ldap_auth_ip'], 'IP address should match');
-        $this->assertEquals('testuser', $_SESSION['ldap_auth_username'], 'Username should match');
-        $this->assertGreaterThan(time() - 5, $_SESSION['ldap_auth_timestamp'], 'Timestamp should be recent');
+        $this->assertEquals($ipAddress, $this->session->get('ldap_auth_ip'), 'IP address should match');
+        $this->assertEquals('testuser', $this->session->get('ldap_auth_username'), 'Username should match');
+        $this->assertGreaterThan(time() - 5, $this->session->get('ldap_auth_timestamp'), 'Timestamp should be recent');
     }
 
     /**
@@ -408,9 +416,9 @@ class LdapAuthenticatorCacheTest extends TestCase
     public function testInvalidateAuthenticationCache(): void
     {
         // Set cache data
-        $_SESSION['ldap_auth_timestamp'] = time();
-        $_SESSION['ldap_auth_ip'] = '192.168.1.1';
-        $_SESSION['ldap_auth_username'] = 'testuser';
+        $this->session->set('ldap_auth_timestamp', time());
+        $this->session->set('ldap_auth_ip', '192.168.1.1');
+        $this->session->set('ldap_auth_username', 'testuser');
 
         // Inject UserContextService
         $userContextProperty = $this->reflection->getProperty('userContextService');
@@ -420,9 +428,7 @@ class LdapAuthenticatorCacheTest extends TestCase
         // Call public method
         $this->authenticator->invalidateAuthenticationCache();
 
-        // Cast to array to satisfy static analyzers (keys may or may not exist after invalidation)
-        /** @var array<string, mixed> $session */
-        $session = $_SESSION;
+        $session = $this->session->all();
         $this->assertArrayNotHasKey('ldap_auth_timestamp', $session, 'Timestamp should be cleared');
         $this->assertArrayNotHasKey('ldap_auth_ip', $session, 'IP address should be cleared');
         $this->assertArrayNotHasKey('ldap_auth_username', $session, 'Username should be cleared');

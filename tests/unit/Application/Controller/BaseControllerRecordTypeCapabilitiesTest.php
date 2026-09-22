@@ -34,7 +34,7 @@ use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use TestHelpers\FakeConfiguration;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Covers BaseController::getRecordTypeCapabilities(), which decides whether
@@ -44,15 +44,17 @@ use Poweradmin\Infrastructure\Session\PhpSession;
  */
 class BaseControllerRecordTypeCapabilitiesTest extends TestCase
 {
+    private ArraySession $session;
+
     protected function setUp(): void
     {
         parent::setUp();
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
     }
 
     protected function tearDown(): void
     {
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
         parent::tearDown();
     }
 
@@ -132,7 +134,7 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
 
         $sessionProperty = (new ReflectionClass(BaseController::class))->getProperty('session');
         $sessionProperty->setAccessible(true);
-        $sessionProperty->setValue($controller, new PhpSession());
+        $sessionProperty->setValue($controller, $this->session);
 
         $method = (new ReflectionClass(BaseController::class))->getMethod('getRecordTypeCapabilities');
         $method->setAccessible(true);
@@ -142,10 +144,10 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
 
     private function cacheVersion(string $version): void
     {
-        $_SESSION['pdns_server_info'] = [
+        $this->session->set('pdns_server_info', [
             'fetched_at' => time(),
             'info' => ['version' => $version, 'daemon_type' => 'authoritative', 'id' => 'localhost'],
-        ];
+        ]);
     }
 
     private function buildConfig(array $overrides): FakeConfiguration

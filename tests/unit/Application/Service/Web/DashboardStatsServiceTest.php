@@ -33,20 +33,23 @@ use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class DashboardStatsServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     private PDO $db;
 
     protected function setUp(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     }
 
     protected function tearDown(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
     }
 
     public function testSqlModeCountsThePowerdnsTables(): void
@@ -95,7 +98,7 @@ class DashboardStatsServiceTest extends TestCase
 
     public function testSwallowedApiErrorWithNoZonesFallsBackToTheCachedZones(): void
     {
-        $_SESSION['pdns_api_last_error'] = ['message' => 'timeout', 'context' => [], 'timestamp' => 0];
+        $this->session->set('pdns_api_last_error', ['message' => 'timeout', 'context' => [], 'timestamp' => 0]);
         $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('countZones')->willReturn(0);
 
@@ -123,7 +126,8 @@ class DashboardStatsServiceTest extends TestCase
             $users,
             $groups,
             $zones,
-            $backend
+            $backend,
+            $this->session
         );
     }
 }

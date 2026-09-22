@@ -147,7 +147,7 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         // The letter filter of the forward list has no counterpart here
         $this->assertArrayNotHasKey('letter_start', $params);
         $this->assertArrayNotHasKey('letters', $params);
-        $this->assertArrayNotHasKey(SessionKeys::LETTER, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::LETTER));
     }
 
     // --------------------------------------------------------- paging / rows
@@ -248,7 +248,7 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
 
     public function testAnUnknownReverseTypeLeavesTheRememberedOneAlone(): void
     {
-        $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'ipv6';
+        $this->session->set(SessionKeys::REVERSE_ZONE_TYPE, 'ipv6');
         $this->query(['reverse_type' => 'nonsense']);
 
         $this->runController();

@@ -41,7 +41,7 @@ use Poweradmin\Application\Service\Auth\AuthOutcomeStatus;
 use Poweradmin\Application\Service\Auth\LoginCredentials;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Pins that the lockout check and the audit line both see the client address
@@ -50,18 +50,14 @@ use Poweradmin\Infrastructure\Session\PhpSession;
 #[CoversClass(LdapAuthenticator::class)]
 class LdapAuthenticatorClientAddressTest extends TestCase
 {
-    private array $sessionBackup = [];
+    private ArraySession $session;
+
 
     protected function setUp(): void
     {
-        $this->sessionBackup = $_SESSION ?? [];
-        $_SESSION = [];
+        $this->session = new ArraySession();
     }
 
-    protected function tearDown(): void
-    {
-        $_SESSION = $this->sessionBackup;
-    }
 
     public function testLockedAccountIsCheckedAndAuditedAgainstTheInjectedClientAddress(): void
     {
@@ -78,11 +74,11 @@ class LdapAuthenticatorClientAddressTest extends TestCase
             $this->createMock(CsrfTokenService::class),
             new NullLogger(),
             $attempts,
-            new UserContextService(new PhpSession()),
+            new UserContextService($this->session),
             new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
             $this->createMock(MfaService::class),
             $this->createMock(UserProvisioningService::class),
-            new PhpSession()
+            $this->session
         );
 
         $outcome = $authenticator->authenticate(new LoginCredentials('', 'secret'));

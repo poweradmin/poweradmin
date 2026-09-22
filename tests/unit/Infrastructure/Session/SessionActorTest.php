@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Session\SessionActor;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The session actor answers exactly what UserContextService reads from the
@@ -35,19 +35,21 @@ use Poweradmin\Infrastructure\Session\PhpSession;
 #[CoversClass(SessionActor::class)]
 class SessionActorTest extends TestCase
 {
+    private ArraySession $session;
+
     protected function setUp(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
     }
 
     protected function tearDown(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
     }
 
     public function testNobodyWhenTheSessionIsEmpty(): void
     {
-        $actor = new SessionActor(new PhpSession());
+        $actor = new SessionActor($this->session);
 
         $this->assertNull($actor->userId());
         $this->assertNull($actor->username());
@@ -55,10 +57,10 @@ class SessionActorTest extends TestCase
 
     public function testMatchesUserContextServiceForTheSessionUser(): void
     {
-        $_SESSION['userid'] = 7;
-        $_SESSION['userlogin'] = 'web-alice';
-        $actor = new SessionActor(new PhpSession());
-        $context = new UserContextService(new PhpSession());
+        $this->session->set('userid', 7);
+        $this->session->set('userlogin', 'web-alice');
+        $actor = new SessionActor($this->session);
+        $context = new UserContextService($this->session);
 
         $this->assertSame($context->getLoggedInUserId(), $actor->userId());
         $this->assertSame($context->getLoggedInUsername(), $actor->username());

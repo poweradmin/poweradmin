@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Base test case for integration tests that need a throwaway in-memory SQLite
@@ -56,6 +57,9 @@ abstract class SqliteIntegrationTestCase extends TestCase
     protected PDO $db;
     protected FakeConfiguration $config;
 
+    /** The session the services under test read the acting user from */
+    protected ArraySession $session;
+
     protected function setUp(): void
     {
         $this->db = new PDO('sqlite::memory:', null, null, [
@@ -70,12 +74,7 @@ abstract class SqliteIntegrationTestCase extends TestCase
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
         ]);
 
-        $_SESSION['userid'] = static::ADMIN_USER_ID;
-    }
-
-    protected function tearDown(): void
-    {
-        unset($_SESSION['userid']);
+        $this->session = new ArraySession(['userid' => static::ADMIN_USER_ID]);
     }
 
     /**

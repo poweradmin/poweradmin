@@ -33,7 +33,7 @@ use Psr\Log\NullLogger;
 use ReflectionClass;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use TestHelpers\FakeConfiguration;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Tests for EditController::handleZoneMetadataPost(), which dispatches the
@@ -49,18 +49,19 @@ class EditControllerZoneMetadataPostTest extends TestCase
 {
     private ReflectionClass $controllerReflection;
     private array $postBackup = [];
+    private ArraySession $session;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->controllerReflection = new ReflectionClass(EditController::class);
         $this->postBackup = $_POST;
+        $this->session = new ArraySession();
     }
 
     protected function tearDown(): void
     {
         $_POST = $this->postBackup;
-        unset($_SESSION['userid']);
 
         parent::tearDown();
     }
@@ -251,8 +252,8 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $permissionService = $this->createMock(PermissionService::class);
         $permissionService->method('canCreateZone')->willReturn($canCreateZone);
         $this->setProperty($controller, 'permissionService', $permissionService);
-        $_SESSION['userid'] = 7;
-        $this->setBaseProperty($controller, 'userContextService', new UserContextService(new PhpSession()));
+        $this->session->set('userid', 7);
+        $this->setBaseProperty($controller, 'userContextService', new UserContextService($this->session));
 
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('zoneManagementService')->willReturn($zoneService ?? $this->createMock(ZoneManagementService::class));
@@ -264,7 +265,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $this->setBaseProperty($controller, 'serviceFactory', $factory);
 
         $this->setBaseProperty($controller, 'config', $config);
-        $messages = new MessageService(new UserContextService(new PhpSession()));
+        $messages = new MessageService(new UserContextService($this->session));
         $this->setBaseProperty($controller, 'messageService', $messages);
 
         $method = $this->controllerReflection->getMethod('handleZoneMetadataPost');

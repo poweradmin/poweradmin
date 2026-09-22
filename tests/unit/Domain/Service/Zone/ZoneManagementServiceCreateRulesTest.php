@@ -41,7 +41,7 @@ use TestHelpers\FakeConfiguration;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
 use Poweradmin\Domain\Service\Validation\Refusal;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * API zone creation must apply the same name and template rules as the web UI:
@@ -91,7 +91,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             new RepositoryFactory($this->db, $config, $backend),
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
-            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor(new PhpSession()), new PhpSession()))->domainManager(),
+            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor($this->session), new ArraySession()))->domainManager(),
             $this->zoneTemplateService($config, $backend),
             null,
             $capabilities,
@@ -107,7 +107,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             $config,
             $backend,
             $this->permissionService($config),
-            new SessionActor(new PhpSession()),
+            new SessionActor($this->session),
             new NullLogger()
         );
     }
@@ -168,7 +168,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             new RepositoryFactory($this->db, $config, $backend),
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
-            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor(new PhpSession()), new PhpSession()))->domainManager(),
+            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor($this->session), new ArraySession()))->domainManager(),
             $this->zoneTemplateService($config, $backend),
             null,
             $lazy

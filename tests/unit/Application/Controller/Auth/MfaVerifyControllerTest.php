@@ -43,8 +43,8 @@ class MfaVerifyControllerTest extends SeamControllerTestCase
     public function testStaleFlowTokenRerendersTheFormThroughTheSharedMfaService(): void
     {
         $config = $this->configure(['security' => ['mfa' => ['enabled' => true]]]);
-        $_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] = true;
-        $_SESSION[AuthFlowSessionKeys::MFA_TOKEN] = 'issued';
+        $this->session->set(AuthFlowSessionKeys::MFA_REQUIRED, true);
+        $this->session->set(AuthFlowSessionKeys::MFA_TOKEN, 'issued');
 
         $mfa = $this->createMock(MfaService::class);
         $mfa->expects($this->never())->method('verifyCode');

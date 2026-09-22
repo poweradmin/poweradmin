@@ -43,7 +43,7 @@ use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Pins what SqlAuthenticator decides for good, wrong, unknown, disabled, locked
@@ -52,10 +52,11 @@ use Poweradmin\Infrastructure\Session\PhpSession;
 #[CoversClass(SqlAuthenticator::class)]
 class SqlAuthenticatorOutcomeTest extends TestCase
 {
+    private ArraySession $session;
+
     private const SESSION_KEY = 'characterization-session-key';
     private const PASSWORD = 'correct horse';
 
-    private array $sessionBackup = [];
     private MockObject&AuditService $audit;
     private MockObject&LoginAttemptService $attempts;
     private MockObject&MfaService $mfa;
@@ -65,12 +66,7 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
     protected function setUp(): void
     {
-        // MfaSessionManager closes and reopens the session; without one open, $_SESSION is dropped
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            @session_start();
-        }
-        $this->sessionBackup = $_SESSION ?? [];
-        $_SESSION = [];
+        $this->session = new ArraySession();
 
         $this->audit = $this->createMock(AuditService::class);
         $this->attempts = $this->createMock(LoginAttemptService::class);
@@ -79,10 +75,6 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $this->csrf = $this->createMock(CsrfTokenService::class);
     }
 
-    protected function tearDown(): void
-    {
-        $_SESSION = $this->sessionBackup;
-    }
 
     public function testValidCredentialsOnALaterRequestKeepTheSessionWithoutRedirecting(): void
     {
@@ -94,9 +86,9 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
         $this->assertSame(AuthOutcomeStatus::Success, $outcome->status);
         $this->assertNull($outcome->redirectPath);
-        $this->assertSame(7, $_SESSION[SessionKeys::USERID]);
-        $this->assertTrue($_SESSION[SessionKeys::AUTHENTICATED]);
-        $this->assertSame('internal', $_SESSION[SessionKeys::AUTH_USED]);
+        $this->assertSame(7, $this->session->get(SessionKeys::USERID));
+        $this->assertTrue($this->session->get(SessionKeys::AUTHENTICATED));
+        $this->assertSame('internal', $this->session->get(SessionKeys::AUTH_USED));
     }
 
     public function testValidCredentialsOnTheLoginPostRecordTheLoginAndSendToIndex(): void
@@ -110,8 +102,8 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
         $this->assertSame(AuthOutcomeStatus::Success, $outcome->status);
         $this->assertSame('/', $outcome->redirectPath);
-        $this->assertSame(7, $_SESSION[SessionKeys::USERID]);
-        $this->assertTrue($_SESSION[SessionKeys::AUTHENTICATED]);
+        $this->assertSame(7, $this->session->get(SessionKeys::USERID));
+        $this->assertTrue($this->session->get(SessionKeys::AUTHENTICATED));
     }
 
     public function testWrongPasswordOnTheLoginPostFailsAndCountsTheAttempt(): void
@@ -123,8 +115,8 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $outcome = $this->authenticator($this->userRow())->authenticate($this->login('alice', 'not it'));
 
         $this->assertFailure($outcome, 'Authentication failed!');
-        $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
-        $this->assertSame('alice', $_SESSION[SessionKeys::USERLOGIN]);
+        $this->assertFalse($this->session->has(SessionKeys::USERID));
+        $this->assertSame('alice', $this->session->get(SessionKeys::USERLOGIN));
     }
 
     public function testWrongPasswordOnALaterRequestExpiresTheSession(): void
@@ -135,8 +127,8 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $outcome = $this->authenticator($this->userRow())->authenticate();
 
         $this->assertFailure($outcome, 'Session expired, please login again.');
-        $this->assertArrayNotHasKey(SessionKeys::USERLOGIN, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::USERPWD, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::USERLOGIN));
+        $this->assertFalse($this->session->has(SessionKeys::USERPWD));
     }
 
     public function testUnknownUserOnTheLoginPostFailsLikeAWrongPassword(): void
@@ -147,7 +139,7 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $outcome = $this->authenticator(false)->authenticate($this->login('nobody', self::PASSWORD));
 
         $this->assertFailure($outcome, 'Authentication failed!');
-        $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::USERID));
     }
 
     public function testDisabledAccountOnTheLoginPostIsRefused(): void
@@ -158,7 +150,7 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $outcome = $this->authenticator($this->userRow(['active' => 0]))->authenticate($this->login('alice', self::PASSWORD));
 
         $this->assertFailure($outcome, 'The user account is disabled.');
-        $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::USERID));
     }
 
     public function testLockedAccountIsRefusedBeforeThePasswordIsChecked(): void
@@ -170,7 +162,7 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $outcome = $this->authenticator($this->userRow(), expectQuery: false)->authenticate($this->login('alice', self::PASSWORD));
 
         $this->assertFailure($outcome, 'Account is temporarily locked. Please try again later.');
-        $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::USERID));
     }
 
     public function testMissingSessionCredentialsFailWithoutAMessage(): void
@@ -191,10 +183,10 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
         $this->assertSame(AuthOutcomeStatus::MfaRequired, $outcome->status);
         $this->assertNull($outcome->redirectPath);
-        $this->assertSame(7, $_SESSION[SessionKeys::PENDING_USERID]);
-        $this->assertSame('internal', $_SESSION[SessionKeys::PENDING_AUTH_USED]);
-        $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
-        $this->assertFalse($_SESSION[SessionKeys::AUTHENTICATED]);
+        $this->assertSame(7, $this->session->get(SessionKeys::PENDING_USERID));
+        $this->assertSame('internal', $this->session->get(SessionKeys::PENDING_AUTH_USED));
+        $this->assertFalse($this->session->has(SessionKeys::USERID));
+        $this->assertFalse($this->session->get(SessionKeys::AUTHENTICATED));
     }
 
     public function testMfaEnrolledUserOnTheLoginPostIsSentToTheVerificationForm(): void
@@ -209,8 +201,8 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
         $this->assertSame(AuthOutcomeStatus::MfaRequired, $outcome->status);
         $this->assertSame('/mfa/verify', $outcome->redirectPath);
-        $this->assertSame(7, $_SESSION[SessionKeys::PENDING_USERID]);
-        $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
+        $this->assertSame(7, $this->session->get(SessionKeys::PENDING_USERID));
+        $this->assertFalse($this->session->has(SessionKeys::USERID));
     }
 
     private function assertFailure(AuthOutcome $outcome, string $message): void
@@ -228,8 +220,8 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
     private function storeCredentials(string $username, string $password): void
     {
-        $_SESSION[SessionKeys::USERLOGIN] = $username;
-        $_SESSION[SessionKeys::USERPWD] = (new PasswordEncryptionService(self::SESSION_KEY))->encrypt($password);
+        $this->session->set(SessionKeys::USERLOGIN, $username);
+        $this->session->set(SessionKeys::USERPWD, (new PasswordEncryptionService(self::SESSION_KEY))->encrypt($password));
     }
 
     private function userRow(array $overrides = []): array
@@ -267,7 +259,7 @@ class SqlAuthenticatorOutcomeTest extends TestCase
             new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
             $this->mfa,
             $this->users,
-            new PhpSession()
+            $this->session
         );
     }
 }

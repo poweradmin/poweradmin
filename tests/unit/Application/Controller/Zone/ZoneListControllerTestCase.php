@@ -127,9 +127,8 @@ abstract class ZoneListControllerTestCase extends SeamControllerTestCase
      */
     protected function resetSession(): void
     {
-        $_SESSION = [
-            SessionKeys::USERID => self::USER_ID,
-            SessionKeys::USERLOGIN => self::USERNAME,
-        ];
+        $this->session->clear();
+        $this->session->set(SessionKeys::USERID, self::USER_ID);
+        $this->session->set(SessionKeys::USERLOGIN, self::USERNAME);
     }
 }

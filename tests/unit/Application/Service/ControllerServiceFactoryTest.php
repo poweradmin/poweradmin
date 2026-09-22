@@ -33,7 +33,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Psr\Log\NullLogger;
 use ReflectionProperty;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The factory must hand out per-request shared instances where state matters
@@ -53,7 +53,7 @@ class ControllerServiceFactoryTest extends TestCase
             $config,
             new NullLogger(),
             new ApiKeyActor(0, null),
-            new PhpSession()
+            new ArraySession()
         );
     }
 

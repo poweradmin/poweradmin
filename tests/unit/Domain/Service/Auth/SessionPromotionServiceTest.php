@@ -18,38 +18,32 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionPromotionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Tests for SessionPromotionService, which converts the half-authenticated
  * pending_* session written during MFA verification into a fully
  * authenticated session after the second factor succeeds.
  *
- * Uses the real UserContextService (a thin $_SESSION wrapper); $_SESSION is
- * backed up in setUp() and restored in tearDown().
+ * Uses the real UserContextService over an in-memory session, so the keys it
+ * promotes and drops are the ones the authenticators write.
  */
 class SessionPromotionServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     private SessionPromotionService $service;
-    private array $sessionBackup = [];
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->sessionBackup = $_SESSION ?? [];
-        $_SESSION = [];
-        $this->service = new SessionPromotionService(new UserContextService(new PhpSession()));
-    }
-
-    protected function tearDown(): void
-    {
-        $_SESSION = $this->sessionBackup;
-        parent::tearDown();
+        $this->session = new ArraySession();
+        $this->service = new SessionPromotionService(new UserContextService($this->session));
     }
 
     public function testAllPendingKeysArePromotedAndRemoved(): void
     {
-        $_SESSION = [
+        $this->session = new ArraySession([
             SessionKeys::PENDING_USERID => 42,
             SessionKeys::PENDING_NAME => 'Jane Doe',
             SessionKeys::PENDING_EMAIL => 'jane@example.com',
@@ -61,71 +55,73 @@ class SessionPromotionServiceTest extends TestCase
             SessionKeys::PENDING_SAML_PROVIDER => 'okta',
             SessionKeys::PENDING_SAML_NAME_ID => 'name-id-value',
             SessionKeys::PENDING_SAML_SESSION_INDEX => 'session-index-value',
-        ];
+        ]);
+        $this->service = new SessionPromotionService(new UserContextService($this->session));
 
         $this->service->promotePendingSession();
 
-        $this->assertSame(42, $_SESSION[SessionKeys::USERID]);
-        $this->assertSame('Jane Doe', $_SESSION[SessionKeys::NAME]);
-        $this->assertSame('jane@example.com', $_SESSION[SessionKeys::EMAIL]);
-        $this->assertSame('ldap', $_SESSION[SessionKeys::AUTH_USED]);
-        $this->assertSame('ldap', $_SESSION[SessionKeys::AUTH_METHOD_USED]);
-        $this->assertSame('keycloak', $_SESSION[SessionKeys::OIDC_PROVIDER]);
-        $this->assertTrue($_SESSION[SessionKeys::OIDC_AUTHENTICATED]);
-        $this->assertSame('id-token-value', $_SESSION[SessionKeys::OIDC_ID_TOKEN]);
-        $this->assertSame('https://example.com/avatar.png', $_SESSION[SessionKeys::OAUTH_AVATAR_URL]);
-        $this->assertSame('okta', $_SESSION[SessionKeys::SAML_PROVIDER]);
-        $this->assertTrue($_SESSION[SessionKeys::SAML_AUTHENTICATED]);
-        $this->assertSame('name-id-value', $_SESSION[SessionKeys::SAML_NAME_ID]);
-        $this->assertSame('session-index-value', $_SESSION[SessionKeys::SAML_SESSION_INDEX]);
+        $this->assertSame(42, $this->session->get(SessionKeys::USERID));
+        $this->assertSame('Jane Doe', $this->session->get(SessionKeys::NAME));
+        $this->assertSame('jane@example.com', $this->session->get(SessionKeys::EMAIL));
+        $this->assertSame('ldap', $this->session->get(SessionKeys::AUTH_USED));
+        $this->assertSame('ldap', $this->session->get(SessionKeys::AUTH_METHOD_USED));
+        $this->assertSame('keycloak', $this->session->get(SessionKeys::OIDC_PROVIDER));
+        $this->assertTrue($this->session->get(SessionKeys::OIDC_AUTHENTICATED));
+        $this->assertSame('id-token-value', $this->session->get(SessionKeys::OIDC_ID_TOKEN));
+        $this->assertSame('https://example.com/avatar.png', $this->session->get(SessionKeys::OAUTH_AVATAR_URL));
+        $this->assertSame('okta', $this->session->get(SessionKeys::SAML_PROVIDER));
+        $this->assertTrue($this->session->get(SessionKeys::SAML_AUTHENTICATED));
+        $this->assertSame('name-id-value', $this->session->get(SessionKeys::SAML_NAME_ID));
+        $this->assertSame('session-index-value', $this->session->get(SessionKeys::SAML_SESSION_INDEX));
 
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_USERID, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_NAME, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_EMAIL, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_AUTH_USED, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_AUTH_METHOD_USED, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_OIDC_PROVIDER, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_OIDC_ID_TOKEN, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_OAUTH_AVATAR_URL, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_SAML_PROVIDER, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_SAML_NAME_ID, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_SAML_SESSION_INDEX, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_USERID));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_NAME));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_EMAIL));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_AUTH_USED));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_AUTH_METHOD_USED));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_OIDC_PROVIDER));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_OIDC_ID_TOKEN));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_OAUTH_AVATAR_URL));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_SAML_PROVIDER));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_SAML_NAME_ID));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_SAML_SESSION_INDEX));
     }
 
     public function testAbsentPendingKeysStayAbsent(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
 
         $this->service->promotePendingSession();
 
-        $this->assertSame([], $_SESSION, 'No session keys may be written when nothing is pending');
+        $this->assertSame([], $this->session->all(), 'No session keys may be written when nothing is pending');
     }
 
     public function testPartialPromotionPromotesOnlyPresentKeys(): void
     {
-        $_SESSION = [
+        $this->session = new ArraySession([
             SessionKeys::PENDING_USERID => 7,
             SessionKeys::PENDING_AUTH_USED => 'sql',
-        ];
+        ]);
+        $this->service = new SessionPromotionService(new UserContextService($this->session));
 
         $this->service->promotePendingSession();
 
-        $this->assertSame(7, $_SESSION[SessionKeys::USERID]);
-        $this->assertSame('sql', $_SESSION[SessionKeys::AUTH_USED]);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_USERID, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::PENDING_AUTH_USED, $_SESSION);
+        $this->assertSame(7, $this->session->get(SessionKeys::USERID));
+        $this->assertSame('sql', $this->session->get(SessionKeys::AUTH_USED));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_USERID));
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_AUTH_USED));
 
         // Untouched keys stay absent - no null writes, no provider flags
-        $this->assertArrayNotHasKey(SessionKeys::NAME, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::EMAIL, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::AUTH_METHOD_USED, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::OIDC_PROVIDER, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::OIDC_AUTHENTICATED, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::OIDC_ID_TOKEN, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::OAUTH_AVATAR_URL, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::SAML_PROVIDER, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::SAML_AUTHENTICATED, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::SAML_NAME_ID, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::SAML_SESSION_INDEX, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::NAME));
+        $this->assertFalse($this->session->has(SessionKeys::EMAIL));
+        $this->assertFalse($this->session->has(SessionKeys::AUTH_METHOD_USED));
+        $this->assertFalse($this->session->has(SessionKeys::OIDC_PROVIDER));
+        $this->assertFalse($this->session->has(SessionKeys::OIDC_AUTHENTICATED));
+        $this->assertFalse($this->session->has(SessionKeys::OIDC_ID_TOKEN));
+        $this->assertFalse($this->session->has(SessionKeys::OAUTH_AVATAR_URL));
+        $this->assertFalse($this->session->has(SessionKeys::SAML_PROVIDER));
+        $this->assertFalse($this->session->has(SessionKeys::SAML_AUTHENTICATED));
+        $this->assertFalse($this->session->has(SessionKeys::SAML_NAME_ID));
+        $this->assertFalse($this->session->has(SessionKeys::SAML_SESSION_INDEX));
     }
 }

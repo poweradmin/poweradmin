@@ -210,7 +210,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertTrue($params['group_owner_allowed']);
         $this->assertSame([['id' => 1, 'name' => 'ops']], $params['available_groups']);
 
-        $stash = $_SESSION[self::SESSION_KEY];
+        $stash = $this->session->get(self::SESSION_KEY);
         $this->assertSame(['origin', 'records', 'warnings', 'filename'], array_keys($stash));
         $this->assertSame('example.com', $stash['origin']);
         $this->assertSame('example.com.zone', $stash['filename']);
@@ -247,7 +247,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame('existing', $params['import_mode']);
         $this->assertSame(self::ZONE_ID, $params['existing_zone_id']);
         $this->assertSame('example.com', $params['existing_zone_name']);
-        $this->assertSame('example.com', $_SESSION[self::SESSION_KEY]['origin']);
+        $this->assertSame('example.com', $this->session->get(self::SESSION_KEY)['origin']);
     }
 
     public function testUploadIntoExistingZoneWithoutEditRightsIsRefused(): void
@@ -260,7 +260,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $halt = $this->haltOf(fn() => $controller->run());
 
         $this->assertSame(_('You do not have permission to modify this zone.'), $halt->target);
-        $this->assertArrayNotHasKey(self::SESSION_KEY, $_SESSION);
+        $this->assertFalse($this->session->has(self::SESSION_KEY));
     }
 
     public function testUploadWithoutAFileIsRefused(): void
@@ -286,7 +286,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
 
     public function testConfirmWithACorruptStashIsRefused(): void
     {
-        $_SESSION[self::SESSION_KEY] = ['origin' => 'example.com', 'records' => 'not json', 'warnings' => [], 'filename' => 'x'];
+        $this->session->set(self::SESSION_KEY, ['origin' => 'example.com', 'records' => 'not json', 'warnings' => [], 'filename' => 'x']);
         $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
 
         $controller = $this->makeController();
@@ -300,7 +300,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
         $this->upload(self::ZONE_FILE);
         $this->makeController()->run();
-        $this->assertArrayHasKey(self::SESSION_KEY, $_SESSION);
+        $this->assertTrue($this->session->has(self::SESSION_KEY));
 
         $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'add_all']);
         $_FILES = [];
@@ -319,7 +319,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame(0, $params['skip_count']);
         $this->assertSame(self::ZONE_ID, $params['zone_id']);
         $this->assertSame('example.com', $params['zone_name']);
-        $this->assertArrayNotHasKey(self::SESSION_KEY, $_SESSION);
+        $this->assertFalse($this->session->has(self::SESSION_KEY));
     }
 
     public function testConfirmAsNewZoneCreatesTheZoneFromTheSubmittedNameTypeAndGroups(): void
@@ -338,12 +338,12 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         });
         $this->factory->method('zoneManagementService')->willReturn($zones);
 
-        $_SESSION[self::SESSION_KEY] = [
+        $this->session->set(self::SESSION_KEY, [
             'origin' => 'example.com',
             'records' => json_encode([['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'priority' => 0]]),
             'warnings' => [],
             'filename' => 'example.com.zone',
-        ];
+        ]);
         $this->post(['import_mode' => 'new', 'zone_name' => 'Example.com', 'zone_type' => 'native', 'groups' => ['1', '2'], 'no_user_owner' => '1']);
 
         $controller = $this->makeController();
@@ -359,12 +359,12 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame(31, $params['zone_id']);
         $this->assertSame('example.com', $params['zone_name']);
         $this->assertSame(1, $params['success_count']);
-        $this->assertArrayNotHasKey(self::SESSION_KEY, $_SESSION);
+        $this->assertFalse($this->session->has(self::SESSION_KEY));
     }
 
     public function testConfirmAsNewZoneWithAnUnknownTypeIsRefused(): void
     {
-        $_SESSION[self::SESSION_KEY] = ['origin' => 'example.com', 'records' => '[]', 'warnings' => [], 'filename' => 'x'];
+        $this->session->set(self::SESSION_KEY, ['origin' => 'example.com', 'records' => '[]', 'warnings' => [], 'filename' => 'x']);
         $this->post(['import_mode' => 'new', 'zone_type' => 'bogus']);
 
         $controller = $this->makeController();
@@ -376,12 +376,12 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
     public function testConfirmIntoAReadOnlyZoneIsRefusedAndKeepsTheStash(): void
     {
         $this->zoneType = 'SLAVE';
-        $_SESSION[self::SESSION_KEY] = [
+        $this->session->set(self::SESSION_KEY, [
             'origin' => 'example.com',
             'records' => json_encode([['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'priority' => 0]]),
             'warnings' => [],
             'filename' => 'example.com.zone',
-        ];
+        ]);
         $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
 
         $controller = $this->makeController();
@@ -389,6 +389,6 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
 
         $this->assertSame(_('You cannot import records into a read-only zone.'), $halt->target);
         $this->assertSame([], $this->writes);
-        $this->assertArrayHasKey(self::SESSION_KEY, $_SESSION);
+        $this->assertTrue($this->session->has(self::SESSION_KEY));
     }
 }

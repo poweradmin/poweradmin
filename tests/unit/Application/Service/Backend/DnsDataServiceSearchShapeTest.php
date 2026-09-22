@@ -30,7 +30,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use TestHelpers\FakeConfiguration;
 use Poweradmin\Infrastructure\Session\SessionActor;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Pins the exact search result rows DnsDataService hands the search page in each
@@ -39,12 +39,13 @@ use Poweradmin\Infrastructure\Session\PhpSession;
  */
 class DnsDataServiceSearchShapeTest extends TestCase
 {
+    private ArraySession $session;
+
     private PDO $db;
-    private array $sessionBackup;
 
     protected function setUp(): void
     {
-        $this->sessionBackup = $_SESSION ?? [];
+                $this->session = new ArraySession();
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
         foreach (
             [
@@ -64,10 +65,6 @@ class DnsDataServiceSearchShapeTest extends TestCase
         }
     }
 
-    protected function tearDown(): void
-    {
-        $_SESSION = $this->sessionBackup;
-    }
 
     private function parameters(bool $zones, bool $records): array
     {
@@ -87,7 +84,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
     {
         $config = new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]);
 
-        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend), $backend, $this->db, new SessionActor(new PhpSession()));
+        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend), $backend, $this->db, new SessionActor($this->session));
     }
 
     private function sqlService(): DnsDataService
@@ -159,7 +156,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
 
     public function testSqlOwnViewFiltersByTheSessionUser(): void
     {
-        $_SESSION[SessionKeys::USERID] = 8;
+        $this->session->set(SessionKeys::USERID, 8);
 
         $rows = $this->sqlService()->searchZones($this->parameters(true, false), 'own', 'name', 'ASC', 10, false, 1);
         $records = $this->sqlService()->searchRecords($this->parameters(false, true), 'own', 'name', 'ASC', false, 10, false, 1);
@@ -225,7 +222,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
 
     public function testApiOwnViewFiltersByTheSessionUser(): void
     {
-        $_SESSION[SessionKeys::USERID] = 8;
+        $this->session->set(SessionKeys::USERID, 8);
 
         $rows = $this->apiService()->searchZones($this->parameters(true, false), 'own', 'name', 'ASC', 10, false, 1);
         $records = $this->apiService()->searchRecords($this->parameters(false, true), 'own', 'name', 'ASC', false, 10, false, 1);
@@ -238,7 +235,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
 
     public function testApiOwnViewWithoutASessionUserIsEmpty(): void
     {
-        unset($_SESSION[SessionKeys::USERID]);
+        $this->session->remove(SessionKeys::USERID);
 
         $this->assertSame([], $this->apiService()->searchZones($this->parameters(true, false), 'own', 'name', 'ASC', 10, false, 1));
         $this->assertSame([], $this->apiService()->searchRecords($this->parameters(false, true), 'own', 'name', 'ASC', false, 10, false, 1));

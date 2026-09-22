@@ -31,7 +31,7 @@ use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Pins every check and fix of the API backend strategy: zone and record state
@@ -41,6 +41,8 @@ use Poweradmin\Infrastructure\Session\PhpSession;
 #[CoversClass(ApiConsistencyChecks::class)]
 class ApiConsistencyChecksTest extends TestCase
 {
+    private ArraySession $session;
+
     private PDO $db;
 
     /** @var DnsBackendProviderInterface&MockObject */
@@ -54,6 +56,7 @@ class ApiConsistencyChecksTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->session = new ArraySession();
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, zone_templ_id INTEGER DEFAULT 0, zone_name TEXT NULL)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
@@ -70,17 +73,17 @@ class ApiConsistencyChecksTest extends TestCase
             return true;
         });
 
-        (new ApiStatusService(new PhpSession()))->clearError();
+        (new ApiStatusService($this->session))->clearError();
     }
 
     protected function tearDown(): void
     {
-        (new ApiStatusService(new PhpSession()))->clearError();
+        (new ApiStatusService($this->session))->clearError();
     }
 
     private function checker(?ApiStatusInterface $apiStatus = null): ApiConsistencyChecks
     {
-        return new ApiConsistencyChecks($this->db, $this->provider, $apiStatus ?? new ApiStatusService(new PhpSession()), new ZoneOwnerRepair($this->db));
+        return new ApiConsistencyChecks($this->db, $this->provider, $apiStatus ?? new ApiStatusService($this->session), new ZoneOwnerRepair($this->db));
     }
 
     /** @param list<array<string, mixed>> $zones */
@@ -321,7 +324,7 @@ class ApiConsistencyChecksTest extends TestCase
     public function testRunAllChecksReturnsNullWhenTheZoneListIsUnavailable(): void
     {
         $this->zones([]);
-        (new ApiStatusService(new PhpSession()))->recordError('connection refused', ['endpoint' => 'zones']);
+        (new ApiStatusService($this->session))->recordError('connection refused', ['endpoint' => 'zones']);
 
         $this->assertNull($this->checker()->runAllChecks());
     }

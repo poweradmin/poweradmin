@@ -35,27 +35,26 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionMethod;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class OidcServiceFormPostTest extends TestCase
 {
+    private ArraySession $session;
+
     private const SESSION_KEY = 'unit-test-session-key';
 
-    private array $originalSession;
     private array $originalCookie;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->originalSession = $_SESSION ?? [];
         $this->originalCookie = $_COOKIE;
-        $_SESSION = [];
+        $this->session = new ArraySession();
         $_COOKIE = [];
     }
 
     protected function tearDown(): void
     {
-        $_SESSION = $this->originalSession;
         $_COOKIE = $this->originalCookie;
         parent::tearDown();
     }
@@ -80,7 +79,7 @@ class OidcServiceFormPostTest extends TestCase
             $this->createMock(AuthenticationService::class),
             $this->createMock(AuditService::class),
             $this->createMock(MfaService::class),
-            new PhpSession()
+            $this->session
         );
     }
 
@@ -146,9 +145,9 @@ class OidcServiceFormPostTest extends TestCase
 
         $this->invoke($service, 'restoreFlowFromCookie');
 
-        $this->assertSame('state-123', $_SESSION['oidc_state']);
-        $this->assertSame('keycloak', $_SESSION['oidc_provider']);
-        $this->assertSame('pkce-verifier-456', $_SESSION['oidc_code_verifier']);
+        $this->assertSame('state-123', $this->session->get('oidc_state'));
+        $this->assertSame('keycloak', $this->session->get('oidc_provider'));
+        $this->assertSame('pkce-verifier-456', $this->session->get('oidc_code_verifier'));
     }
 
     public function testRestoreFlowIgnoresGarbageCookie(): void
@@ -158,7 +157,7 @@ class OidcServiceFormPostTest extends TestCase
 
         $this->invoke($service, 'restoreFlowFromCookie');
 
-        $session = $_SESSION ?? [];
+        $session = $this->session->all();
         $this->assertArrayNotHasKey('oidc_state', $session);
         $this->assertArrayNotHasKey('oidc_provider', $session);
         $this->assertArrayNotHasKey('oidc_code_verifier', $session);
@@ -175,7 +174,7 @@ class OidcServiceFormPostTest extends TestCase
 
         $this->invoke($service, 'restoreFlowFromCookie');
 
-        $session = $_SESSION ?? [];
+        $session = $this->session->all();
         $this->assertArrayNotHasKey('oidc_state', $session);
         $this->assertArrayNotHasKey('oidc_code_verifier', $session);
     }
@@ -192,7 +191,7 @@ class OidcServiceFormPostTest extends TestCase
 
         $this->invoke($service, 'restoreFlowFromCookie');
 
-        $session = $_SESSION ?? [];
+        $session = $this->session->all();
         $this->assertArrayNotHasKey('oidc_state', $session);
     }
 }

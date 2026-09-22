@@ -32,7 +32,6 @@ use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Defense-in-depth coverage for DomainManager::changeZoneType() and
@@ -71,7 +70,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testChangeZoneTypeRefusedWithoutMetaEditPermissions(): void
     {
-        $_SESSION['userid'] = self::NON_PRIVILEGED_USER_ID;
+        $this->session->set('userid', self::NON_PRIVILEGED_USER_ID);
 
         $domainManager = $this->makeDomainManager();
 
@@ -84,7 +83,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testChangeZoneTypeAllowedForOwnerWithMetaEditOwn(): void
     {
-        $_SESSION['userid'] = self::META_EDIT_OWN_USER_ID;
+        $this->session->set('userid', self::META_EDIT_OWN_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -102,7 +101,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testChangeZoneTypeAllowedForNonOwnerWithMetaEditOthers(): void
     {
-        $_SESSION['userid'] = self::META_EDIT_OTHERS_USER_ID;
+        $this->session->set('userid', self::META_EDIT_OTHERS_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -120,7 +119,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testChangeZoneSlaveMasterRefusedWithoutMetaEditPermissions(): void
     {
-        $_SESSION['userid'] = self::NON_PRIVILEGED_USER_ID;
+        $this->session->set('userid', self::NON_PRIVILEGED_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->never())->method('updateZoneMaster');
@@ -135,7 +134,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testChangeZoneSlaveMasterAllowedForOwnerWithMetaEditOwn(): void
     {
-        $_SESSION['userid'] = self::META_EDIT_OWN_USER_ID;
+        $this->session->set('userid', self::META_EDIT_OWN_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -153,7 +152,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testChangeZoneSlaveMasterNormalizesTheListBeforeStoringIt(): void
     {
-        $_SESSION['userid'] = self::META_EDIT_OWN_USER_ID;
+        $this->session->set('userid', self::META_EDIT_OWN_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -177,7 +176,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (103, 'ZoneAdder')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (103, 203)");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (103, 'adder', 103)");
-        $_SESSION['userid'] = 103;
+        $this->session->set('userid', 103);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -253,7 +252,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
             new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),
             new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $backend->allocatesZoneIdsLocally()), $config, $backend),
-            new SessionActor(new PhpSession())
+            new SessionActor($this->session)
         );
     }
 }

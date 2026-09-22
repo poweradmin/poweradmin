@@ -36,7 +36,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Every handler of /api/internal/user-preferences answers with a returned
@@ -50,18 +50,12 @@ class UserPreferencesControllerTest extends TestCase
     /** @var UserPreferenceService&MockObject */
     private UserPreferenceService $preferences;
 
-    private array $sessionBackup = [];
+    private ArraySession $session;
 
     protected function setUp(): void
     {
-        $this->sessionBackup = $_SESSION ?? [];
-        $_SESSION = [SessionKeys::USERID => self::USER_ID];
+        $this->session = new ArraySession([SessionKeys::USERID => self::USER_ID]);
         $this->preferences = $this->createMock(UserPreferenceService::class);
-    }
-
-    protected function tearDown(): void
-    {
-        $_SESSION = $this->sessionBackup;
     }
 
     /** @param array<string, mixed> $json */
@@ -72,7 +66,7 @@ class UserPreferencesControllerTest extends TestCase
 
         (new ReflectionProperty($controller, 'request'))->setValue($controller, $request);
         (new ReflectionProperty($controller, 'userPreferenceService'))->setValue($controller, $this->preferences);
-        (new ReflectionProperty($controller, 'userContextService'))->setValue($controller, new UserContextService(new PhpSession()));
+        (new ReflectionProperty($controller, 'userContextService'))->setValue($controller, new UserContextService($this->session));
 
         return (new ReflectionMethod($controller, 'respond'))->invoke($controller);
     }
@@ -85,7 +79,7 @@ class UserPreferencesControllerTest extends TestCase
 
     public function testWithoutASessionUserEveryVerbIs401(): void
     {
-        $_SESSION = [];
+        $this->session->clear();
 
         $response = $this->respond('GET', '/api/internal/user-preferences');
 

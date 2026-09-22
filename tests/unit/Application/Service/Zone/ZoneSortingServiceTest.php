@@ -29,28 +29,27 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[CoversClass(ZoneSortingService::class)]
 class ZoneSortingServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     private ZoneSortingService $service;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
-        $_SESSION = [];
+        $this->session = new ArraySession();
 
-        $this->service = new ZoneSortingService(new ReverseZoneSorting(), new UserContextService(new PhpSession()));
+        $this->service = new ZoneSortingService(new ReverseZoneSorting(), new UserContextService($this->session));
     }
 
     protected function tearDown(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
         parent::tearDown();
     }
 
@@ -74,15 +73,15 @@ class ZoneSortingServiceTest extends TestCase
 
         $this->assertSame('type', $sortBy);
         $this->assertSame('DESC', $sortDirection);
-        $this->assertSame('type', $_SESSION[SessionKeys::LIST_ZONE_SORT_BY]);
-        $this->assertSame('DESC', $_SESSION[SessionKeys::LIST_ZONE_SORT_BY . '_direction']);
+        $this->assertSame('type', $this->session->get(SessionKeys::LIST_ZONE_SORT_BY));
+        $this->assertSame('DESC', $this->session->get(SessionKeys::LIST_ZONE_SORT_BY . '_direction'));
     }
 
     #[Test]
     public function getZoneSortOrderFallsBackToSessionWhenNoSubmittedValue(): void
     {
-        $_SESSION[SessionKeys::LIST_ZONE_SORT_BY] = 'type';
-        $_SESSION[SessionKeys::LIST_ZONE_SORT_BY . '_direction'] = 'DESC';
+        $this->session->set(SessionKeys::LIST_ZONE_SORT_BY, 'type');
+        $this->session->set(SessionKeys::LIST_ZONE_SORT_BY . '_direction', 'DESC');
 
         [$sortBy, $sortDirection] = $this->service->getZoneSortOrder(['name', 'type']);
 
@@ -126,20 +125,20 @@ class ZoneSortingServiceTest extends TestCase
 
         $this->assertSame('type', $sortBy);
         $this->assertSame('DESC', $direction);
-        $this->assertSame('type', $_SESSION[SessionKeys::SEARCH_ZONE_SORT_BY]);
-        $this->assertSame('DESC', $_SESSION[SessionKeys::SEARCH_ZONE_SORT_BY . '_direction']);
+        $this->assertSame('type', $this->session->get(SessionKeys::SEARCH_ZONE_SORT_BY));
+        $this->assertSame('DESC', $this->session->get(SessionKeys::SEARCH_ZONE_SORT_BY . '_direction'));
         // Search bucket must not leak into the list-zones bucket - that isolation
         // is what prevents the historical "ORDER BY domains.owner" crash.
-        $this->assertFalse(isset($_SESSION[SessionKeys::LIST_ZONE_SORT_BY]));
+        $this->assertFalse($this->session->has(SessionKeys::LIST_ZONE_SORT_BY));
     }
 
     #[Test]
     public function getZoneSortOrderReadsSessionFromCustomKey(): void
     {
-        $_SESSION[SessionKeys::SEARCH_RECORD_SORT_BY] = 'prio';
-        $_SESSION[SessionKeys::SEARCH_RECORD_SORT_BY . '_direction'] = 'DESC';
+        $this->session->set(SessionKeys::SEARCH_RECORD_SORT_BY, 'prio');
+        $this->session->set(SessionKeys::SEARCH_RECORD_SORT_BY . '_direction', 'DESC');
         // Stale list-zones value must be ignored when reading the search bucket.
-        $_SESSION[SessionKeys::LIST_ZONE_SORT_BY] = 'type';
+        $this->session->set(SessionKeys::LIST_ZONE_SORT_BY, 'type');
 
         [$sortBy, $direction] = $this->service->getZoneSortOrder(
             ['name', 'type', 'prio'],
@@ -154,7 +153,7 @@ class ZoneSortingServiceTest extends TestCase
     public function getZoneSortOrderFallsBackToDefaultWhenSessionValueDisallowed(): void
     {
         // Stored sort column is no longer in allowedValues (e.g. column hidden).
-        $_SESSION[SessionKeys::LIST_ZONE_SORT_BY] = 'count_records';
+        $this->session->set(SessionKeys::LIST_ZONE_SORT_BY, 'count_records');
 
         [$sortBy] = $this->service->getZoneSortOrder(
             ['name', 'type']
@@ -181,13 +180,13 @@ class ZoneSortingServiceTest extends TestCase
         $filter = $this->service->getReverseZoneTypeFilter('ipv4');
 
         $this->assertSame('ipv4', $filter);
-        $this->assertSame('ipv4', $_SESSION[SessionKeys::REVERSE_ZONE_TYPE]);
+        $this->assertSame('ipv4', $this->session->get(SessionKeys::REVERSE_ZONE_TYPE));
     }
 
     #[Test]
     public function getReverseZoneTypeFilterReadsFromSessionWhenNoSubmittedValue(): void
     {
-        $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'ipv6';
+        $this->session->set(SessionKeys::REVERSE_ZONE_TYPE, 'ipv6');
 
         $this->assertSame('ipv6', $this->service->getReverseZoneTypeFilter());
     }
@@ -202,13 +201,13 @@ class ZoneSortingServiceTest extends TestCase
     public function getReverseZoneTypeFilterRejectsUnknownSubmittedValue(): void
     {
         $this->assertSame('all', $this->service->getReverseZoneTypeFilter('bogus'));
-        $this->assertArrayNotHasKey(SessionKeys::REVERSE_ZONE_TYPE, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::REVERSE_ZONE_TYPE));
     }
 
     #[Test]
     public function getReverseZoneTypeFilterKeepsStoredValueWhenSubmittedValueIsInvalid(): void
     {
-        $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'ipv6';
+        $this->session->set(SessionKeys::REVERSE_ZONE_TYPE, 'ipv6');
 
         $this->assertSame('ipv6', $this->service->getReverseZoneTypeFilter('bogus'));
     }
@@ -216,7 +215,7 @@ class ZoneSortingServiceTest extends TestCase
     #[Test]
     public function getReverseZoneTypeFilterDiscardsUnknownStoredValue(): void
     {
-        $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'bogus';
+        $this->session->set(SessionKeys::REVERSE_ZONE_TYPE, 'bogus');
 
         $this->assertSame('all', $this->service->getReverseZoneTypeFilter());
     }

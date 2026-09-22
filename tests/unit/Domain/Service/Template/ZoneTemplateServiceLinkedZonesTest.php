@@ -31,7 +31,7 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Characterizes the four zone-listing queries on the zone template service: which
@@ -57,7 +57,6 @@ class ZoneTemplateServiceLinkedZonesTest extends SqliteIntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT)");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, owner INTEGER)");
@@ -95,12 +94,12 @@ class ZoneTemplateServiceLinkedZonesTest extends SqliteIntegrationTestCase
 
     private function model(DnsBackendProviderInterface $backend): ZoneTemplateService
     {
-        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor(new PhpSession()), new NullLogger());
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor($this->session), new NullLogger());
     }
 
     private function actingAs(int $userId): void
     {
-        $_SESSION['userid'] = $userId;
+        $this->session->set('userid', $userId);
     }
 
     /**

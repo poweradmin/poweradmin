@@ -27,7 +27,6 @@ use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use TestHelpers\SqliteIntegrationTestCase;
-use Poweradmin\Infrastructure\Session\PhpSession;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
@@ -54,7 +53,7 @@ class DbPermissionTemplateRepositoryDeleteTest extends SqliteIntegrationTestCase
 
     protected function tearDown(): void
     {
-        unset($_SESSION['messages']);
+        $this->session->remove('messages');
         parent::tearDown();
     }
 
@@ -76,7 +75,7 @@ class DbPermissionTemplateRepositoryDeleteTest extends SqliteIntegrationTestCase
     /** @return list<string> */
     private function systemErrors(): array
     {
-        return array_column((new MessageService(new UserContextService(new PhpSession())))->getMessages('system') ?? [], 'content');
+        return array_column((new MessageService(new UserContextService($this->session)))->getMessages('system') ?? [], 'content');
     }
 
     public function testAnUnassignedTemplateIsDeletedWithItsItems(): void

@@ -15,10 +15,12 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionClass;
 use ReflectionMethod;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class SamlResponseValidationTest extends TestCase
 {
+    private ArraySession $session;
+
     private SamlService $service;
     private ConfigurationInterface&MockObject $mockConfig;
     private Logger|MockObject $mockLogger;
@@ -28,6 +30,7 @@ class SamlResponseValidationTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->session = new ArraySession();
         $this->mockConfig = $this->createMock(ConfigurationInterface::class);
         $this->mockLogger = $this->createMock(Logger::class);
         $this->mockSamlConfig = $this->createMock(SamlConfigurationService::class);
@@ -42,20 +45,15 @@ class SamlResponseValidationTest extends TestCase
             $this->createMock(AuthenticationService::class),
             $this->createMock(AuditService::class),
             $this->createMock(MfaService::class),
-            new PhpSession(),
+            $this->session,
             $this->mockRequest
         );
-
-        // Initialize session for testing
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
     }
 
     protected function tearDown(): void
     {
         // Clean up session after each test
-        $_SESSION = [];
+        $this->session = new ArraySession();
         $_POST = [];
         $_SERVER = [];
     }

@@ -37,7 +37,7 @@ use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Pins the statements each strategy issues against a mocked PDO: the SQL owner
@@ -47,11 +47,14 @@ use Poweradmin\Infrastructure\Session\PhpSession;
 #[CoversClass(ApiConsistencyChecks::class)]
 class ConsistencyChecksStatementTest extends TestCase
 {
+    private ArraySession $session;
+
     private PDO&MockObject $db;
     private ConfigurationInterface&MockObject $config;
 
     protected function setUp(): void
     {
+        $this->session = new ArraySession();
         parent::setUp();
         $this->db = $this->createMock(PDO::class);
         $this->config = $this->createMock(ConfigurationInterface::class);
@@ -60,12 +63,12 @@ class ConsistencyChecksStatementTest extends TestCase
             fn(string $section, string $key, mixed $default = null) => $default
         );
         // ApiStatusService is session-backed; start each test with a clean slate.
-        (new ApiStatusService(new PhpSession()))->clearError();
+        (new ApiStatusService($this->session))->clearError();
     }
 
     protected function tearDown(): void
     {
-        (new ApiStatusService(new PhpSession()))->clearError();
+        (new ApiStatusService($this->session))->clearError();
         parent::tearDown();
     }
 
@@ -83,7 +86,7 @@ class ConsistencyChecksStatementTest extends TestCase
 
     private function apiChecks(DnsBackendProviderInterface $backend, ?ApiStatusInterface $apiStatus = null): ConsistencyCheckerInterface
     {
-        return new ApiConsistencyChecks($this->db, $backend, $apiStatus ?? new ApiStatusService(new PhpSession()), new ZoneOwnerRepair($this->db));
+        return new ApiConsistencyChecks($this->db, $backend, $apiStatus ?? new ApiStatusService($this->session), new ZoneOwnerRepair($this->db));
     }
 
     #[Test]
@@ -238,7 +241,7 @@ class ConsistencyChecksStatementTest extends TestCase
     {
         // getZones() swallows an API outage into an empty list but records the error.
         $backend = $this->apiBackend([]);
-        (new ApiStatusService(new PhpSession()))->recordError('connection refused', ['endpoint' => 'zones']);
+        (new ApiStatusService($this->session))->recordError('connection refused', ['endpoint' => 'zones']);
 
         $service = $this->apiChecks($backend);
 
@@ -261,7 +264,7 @@ class ConsistencyChecksStatementTest extends TestCase
 
         // ...but the per-zone SOA read fails and is swallowed into an empty list.
         $backend->method('getRecordsByZoneId')->willReturnCallback(function () {
-            (new ApiStatusService(new PhpSession()))->recordError('502 Bad Gateway', ['endpoint' => 'zone']);
+            (new ApiStatusService($this->session))->recordError('502 Bad Gateway', ['endpoint' => 'zone']);
             return [];
         });
 

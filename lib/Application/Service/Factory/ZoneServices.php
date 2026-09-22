@@ -202,7 +202,8 @@ final class ZoneServices
             $this->services->userRepository(),
             $this->services->userGroupRepository(),
             $this->services->zoneRepository(),
-            $this->services->dnsBackendProvider()
+            $this->services->dnsBackendProvider(),
+            $this->services->session()
         );
     }
 

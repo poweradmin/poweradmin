@@ -6,28 +6,21 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[CoversClass(CsrfTokenService::class)]
 class CsrfTokenServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     private CsrfTokenService $service;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
-
-        $this->service = new CsrfTokenService(new PhpSession());
-    }
-
-    protected function tearDown(): void
-    {
-        $_SESSION = [];
-        parent::tearDown();
+        $this->session = new ArraySession();
+        $this->service = new CsrfTokenService($this->session);
     }
 
     #[Test]
@@ -67,7 +60,7 @@ class CsrfTokenServiceTest extends TestCase
     #[Test]
     public function testGetTokenReturnsStoredValue(): void
     {
-        $_SESSION['csrf_token'] = 'test_token_value';
+        $this->session->set('csrf_token', 'test_token_value');
 
         $token = $this->service->getToken();
 
@@ -77,7 +70,7 @@ class CsrfTokenServiceTest extends TestCase
     #[Test]
     public function testGetTokenWithCustomSessionVar(): void
     {
-        $_SESSION['custom_token'] = 'custom_value';
+        $this->session->set('custom_token', 'custom_value');
 
         $token = $this->service->getToken('custom_token');
 
@@ -87,7 +80,7 @@ class CsrfTokenServiceTest extends TestCase
     #[Test]
     public function testValidateTokenReturnsTrueForValidToken(): void
     {
-        $_SESSION['csrf_token'] = 'valid_token';
+        $this->session->set('csrf_token', 'valid_token');
 
         $result = $this->service->validateToken('valid_token');
 
@@ -97,7 +90,7 @@ class CsrfTokenServiceTest extends TestCase
     #[Test]
     public function testValidateTokenReturnsFalseForInvalidToken(): void
     {
-        $_SESSION['csrf_token'] = 'valid_token';
+        $this->session->set('csrf_token', 'valid_token');
 
         $result = $this->service->validateToken('invalid_token');
 
@@ -115,7 +108,7 @@ class CsrfTokenServiceTest extends TestCase
     #[Test]
     public function testValidateTokenWithCustomSessionVar(): void
     {
-        $_SESSION['login_token'] = 'login_token_value';
+        $this->session->set('login_token', 'login_token_value');
 
         $result = $this->service->validateToken('login_token_value', 'login_token');
 
@@ -126,7 +119,7 @@ class CsrfTokenServiceTest extends TestCase
     public function testValidateTokenIsTimingSafe(): void
     {
         // This test verifies hash_equals behavior (timing-safe comparison)
-        $_SESSION['csrf_token'] = 'secret_token_value';
+        $this->session->set('csrf_token', 'secret_token_value');
 
         // Both should complete in similar time regardless of match position
         $this->assertFalse($this->service->validateToken('Xecret_token_value'));

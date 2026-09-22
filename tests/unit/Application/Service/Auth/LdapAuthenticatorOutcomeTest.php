@@ -43,7 +43,7 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Pins what LdapAuthenticator decides on the paths that never reach the
@@ -52,27 +52,23 @@ use Poweradmin\Infrastructure\Session\PhpSession;
 #[CoversClass(LdapAuthenticator::class)]
 class LdapAuthenticatorOutcomeTest extends TestCase
 {
-    private array $sessionBackup = [];
+    private ArraySession $session;
+
     private MockObject&AuditService $audit;
     private MockObject&LoginAttemptService $attempts;
 
     protected function setUp(): void
     {
-        $this->sessionBackup = $_SESSION ?? [];
-        $_SESSION = [];
+        $this->session = new ArraySession();
 
         $this->audit = $this->createMock(AuditService::class);
         $this->attempts = $this->createMock(LoginAttemptService::class);
     }
 
-    protected function tearDown(): void
-    {
-        $_SESSION = $this->sessionBackup;
-    }
 
     public function testLockedAccountOnTheLoginPostIsRefusedAndAudited(): void
     {
-        $_SESSION[SessionKeys::USERLOGIN] = 'alice';
+        $this->session->set(SessionKeys::USERLOGIN, 'alice');
         $this->attempts->method('isAccountLocked')->with('alice', '203.0.113.9')->willReturn(true);
         $this->audit->expects($this->once())->method('logLoginLocked')->with(AuthMethod::LDAP);
 
@@ -96,8 +92,8 @@ class LdapAuthenticatorOutcomeTest extends TestCase
 
         $this->assertSame(AuthOutcomeStatus::Success, $outcome->status);
         $this->assertNull($outcome->redirectPath);
-        $this->assertSame(7, $_SESSION[SessionKeys::USERID]);
-        $this->assertTrue($_SESSION[SessionKeys::AUTHENTICATED]);
+        $this->assertSame(7, $this->session->get(SessionKeys::USERID));
+        $this->assertTrue($this->session->get(SessionKeys::AUTHENTICATED));
     }
 
     public function testCachedBindForADeactivatedUserEndsTheSession(): void
@@ -107,19 +103,19 @@ class LdapAuthenticatorOutcomeTest extends TestCase
         $outcome = $this->authenticator(userRow: false)->authenticate();
 
         $this->assertFailure($outcome, 'LDAP Authentication failed!', endSession: true);
-        $this->assertArrayNotHasKey(SessionKeys::LDAP_AUTH_TIMESTAMP, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::LDAP_AUTH_USERNAME, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::LDAP_AUTH_TIMESTAMP));
+        $this->assertFalse($this->session->has(SessionKeys::LDAP_AUTH_USERNAME));
     }
 
     private function cacheBind(string $username): void
     {
-        $_SESSION[SessionKeys::USERLOGIN] = $username;
-        $_SESSION[SessionKeys::USERPWD] = 'irrelevant:ciphertext';
-        $_SESSION[SessionKeys::USERID] = 7;
-        $_SESSION[SessionKeys::AUTHENTICATED] = true;
-        $_SESSION[SessionKeys::LDAP_AUTH_TIMESTAMP] = time();
-        $_SESSION[SessionKeys::LDAP_AUTH_USERNAME] = $username;
-        $_SESSION[SessionKeys::LDAP_AUTH_IP] = '203.0.113.9';
+        $this->session->set(SessionKeys::USERLOGIN, $username);
+        $this->session->set(SessionKeys::USERPWD, 'irrelevant:ciphertext');
+        $this->session->set(SessionKeys::USERID, 7);
+        $this->session->set(SessionKeys::AUTHENTICATED, true);
+        $this->session->set(SessionKeys::LDAP_AUTH_TIMESTAMP, time());
+        $this->session->set(SessionKeys::LDAP_AUTH_USERNAME, $username);
+        $this->session->set(SessionKeys::LDAP_AUTH_IP, '203.0.113.9');
     }
 
     private function assertFailure(AuthOutcome $outcome, string $message, bool $endSession): void
@@ -153,11 +149,11 @@ class LdapAuthenticatorOutcomeTest extends TestCase
             $this->createMock(CsrfTokenService::class),
             new NullLogger(),
             $this->attempts,
-            new UserContextService(new PhpSession()),
+            new UserContextService($this->session),
             new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
             $this->createMock(MfaService::class),
             $this->createMock(UserProvisioningService::class),
-            new PhpSession()
+            $this->session
         );
     }
 }

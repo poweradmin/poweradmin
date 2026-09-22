@@ -4,23 +4,25 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class UserContextServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     protected function setUp(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
     }
 
     protected function tearDown(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
     }
 
     public function testReturnsNullWhenTheSessionHasNoUser(): void
     {
-        $service = new UserContextService(new PhpSession());
+        $service = new UserContextService($this->session);
         $this->assertNull($service->getLoggedInUserId());
         $this->assertNull($service->getLoggedInUsername());
         $this->assertFalse($service->isAuthenticated());
@@ -28,10 +30,10 @@ class UserContextServiceTest extends TestCase
 
     public function testReadsTheSessionUser(): void
     {
-        $_SESSION['userid'] = 7;
-        $_SESSION['userlogin'] = 'web-alice';
+        $this->session->set('userid', 7);
+        $this->session->set('userlogin', 'web-alice');
 
-        $service = new UserContextService(new PhpSession());
+        $service = new UserContextService($this->session);
         $this->assertSame(7, $service->getLoggedInUserId());
         $this->assertSame('web-alice', $service->getLoggedInUsername());
         $this->assertTrue($service->isAuthenticated());
@@ -39,8 +41,8 @@ class UserContextServiceTest extends TestCase
 
     public function testUserIdZeroDoesNotCountAsAuthenticated(): void
     {
-        $_SESSION['userid'] = 0;
+        $this->session->set('userid', 0);
 
-        $this->assertFalse((new UserContextService(new PhpSession()))->isAuthenticated());
+        $this->assertFalse((new UserContextService($this->session))->isAuthenticated());
     }
 }

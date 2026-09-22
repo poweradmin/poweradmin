@@ -32,7 +32,7 @@ use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The repair points a stranded zones row's domain_id at its own id. That is only valid in
@@ -41,10 +41,13 @@ use Poweradmin\Infrastructure\Session\PhpSession;
  */
 class CanonicalIdRepairTest extends TestCase
 {
+    private ArraySession $session;
+
     private PDO $db;
 
     protected function setUp(): void
     {
+        $this->session = new ArraySession();
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER, zone_templ_id INTEGER DEFAULT 0, zone_name TEXT)");
     }
@@ -53,7 +56,7 @@ class CanonicalIdRepairTest extends TestCase
     {
         $ownerRepair = new ZoneOwnerRepair($this->db);
         if ($apiBackend) {
-            return new ApiConsistencyChecks($this->db, $this->createMock(DnsBackendProviderInterface::class), new ApiStatusService(new PhpSession()), $ownerRepair);
+            return new ApiConsistencyChecks($this->db, $this->createMock(DnsBackendProviderInterface::class), new ApiStatusService($this->session), $ownerRepair);
         }
 
         $config = ConfigurationManager::getInstance();

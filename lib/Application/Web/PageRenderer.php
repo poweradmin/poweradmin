@@ -40,7 +40,7 @@ use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Version;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Domain\Port\SessionInterface;
 
 /**
  * Renders the shared page chrome (header, footer, Twig globals) around
@@ -58,6 +58,7 @@ final class PageRenderer implements PageOutputInterface
     private AppManager $app;
     private ConfigurationInterface $config;
     private CsrfTokenService $csrfTokenService;
+    private SessionInterface $session;
     private UserContextService $userContextService;
     private ModuleRegistry $moduleRegistry;
     private bool $isApiBackend;
@@ -89,10 +90,12 @@ final class PageRenderer implements PageOutputInterface
         Closure $getPdnsServerInfo,
         Closure $getDebugQueries,
         bool $wideLayout,
+        SessionInterface $session,
         ?Closure $pendingChangeRequestCount = null
     ) {
         $this->app = $app;
         $this->config = $config;
+        $this->session = $session;
         $this->csrfTokenService = $csrfTokenService;
         $this->userContextService = $userContextService;
         $this->moduleRegistry = $moduleRegistry;
@@ -373,7 +376,7 @@ final class PageRenderer implements PageOutputInterface
 
             // Surface PowerDNS API errors on every page, not just the dashboard.
             if ($perm_is_godlike && $this->isApiBackend) {
-                $vars['api_error'] = (new ApiStatusService(new PhpSession()))->getLastError();
+                $vars['api_error'] = (new ApiStatusService($this->session))->getLastError();
             }
         }
 

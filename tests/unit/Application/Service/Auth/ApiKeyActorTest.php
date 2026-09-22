@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\ApiKeyActor;
 use Poweradmin\Application\Service\Auth\RequestActor;
 use Poweradmin\Infrastructure\Session\SessionActor;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The API actor normalises what the key lookup hands it the way the old
@@ -37,9 +37,12 @@ use Poweradmin\Infrastructure\Session\PhpSession;
 #[CoversClass(RequestActor::class)]
 class ApiKeyActorTest extends TestCase
 {
-    protected function tearDown(): void
+    private ArraySession $session;
+
+    protected function setUp(): void
     {
-        $_SESSION = [];
+        parent::setUp();
+        $this->session = new ArraySession();
     }
 
     public function testNamesTheKeyOwner(): void
@@ -65,8 +68,8 @@ class ApiKeyActorTest extends TestCase
 
     public function testTheApiActorIgnoresABrowserSessionRidingAlong(): void
     {
-        $_SESSION['userid'] = 7;
-        $_SESSION['userlogin'] = 'web-alice';
+        $this->session->set('userid', 7);
+        $this->session->set('userlogin', 'web-alice');
 
         $actor = new ApiKeyActor(99, 'api-bob');
 
@@ -76,9 +79,9 @@ class ApiKeyActorTest extends TestCase
 
     public function testRequestActorFollowsTheLatestBinding(): void
     {
-        $_SESSION['userid'] = 7;
-        $_SESSION['userlogin'] = 'web-alice';
-        $actor = new RequestActor(new SessionActor(new PhpSession()));
+        $this->session->set('userid', 7);
+        $this->session->set('userlogin', 'web-alice');
+        $actor = new RequestActor(new SessionActor($this->session));
         $this->assertSame(7, $actor->userId());
         $this->assertSame('web-alice', $actor->username());
 

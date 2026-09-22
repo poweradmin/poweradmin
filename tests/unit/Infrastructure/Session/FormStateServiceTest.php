@@ -7,11 +7,13 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\FormStateService;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[CoversClass(FormStateService::class)]
 class FormStateServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     /**
      * @var FormStateService
      */
@@ -24,12 +26,9 @@ class FormStateServiceTest extends TestCase
     {
         parent::setUp();
 
-        // Initialize the session array if it's not already set
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
+        $this->session = new ArraySession();
 
-        $this->service = new FormStateService(new PhpSession());
+        $this->service = new FormStateService($this->session);
     }
 
     /**
@@ -38,7 +37,7 @@ class FormStateServiceTest extends TestCase
     protected function tearDown(): void
     {
         // Clear session data after each test
-        $_SESSION = [];
+        $this->session = new ArraySession();
 
         parent::tearDown();
     }
@@ -70,17 +69,17 @@ class FormStateServiceTest extends TestCase
         $this->service->saveFormData($formId, $testData);
 
         // Verify data was saved to session
-        $this->assertArrayHasKey('form_state', $_SESSION, 'Session should have form_state key');
-        $this->assertArrayHasKey($formId, $_SESSION['form_state'], 'Session should have the form ID key');
-        $this->assertArrayHasKey('data', $_SESSION['form_state'][$formId], 'Form state should have data key');
-        $this->assertArrayHasKey('expires', $_SESSION['form_state'][$formId], 'Form state should have expires key');
+        $this->assertTrue($this->session->has('form_state'), 'Session should have form_state key');
+        $this->assertArrayHasKey($formId, $this->session->get('form_state'), 'Session should have the form ID key');
+        $this->assertArrayHasKey('data', $this->session->get('form_state')[$formId], 'Form state should have data key');
+        $this->assertArrayHasKey('expires', $this->session->get('form_state')[$formId], 'Form state should have expires key');
 
         // Retrieve and verify the data
         $retrievedData = $this->service->getFormData($formId);
         $this->assertEquals($testData, $retrievedData, 'Retrieved data should match saved data');
 
         // Check that data is still in session after retrieval (not removed)
-        $this->assertArrayHasKey($formId, $_SESSION['form_state'], 'Form data should remain in session after retrieval');
+        $this->assertArrayHasKey($formId, $this->session->get('form_state'), 'Form data should remain in session after retrieval');
     }
 
     #[Test]
@@ -93,13 +92,13 @@ class FormStateServiceTest extends TestCase
         $this->service->saveFormData($formId, $testData);
 
         // Verify data was saved
-        $this->assertArrayHasKey($formId, $_SESSION['form_state']);
+        $this->assertArrayHasKey($formId, $this->session->get('form_state'));
 
         // Clear the data
         $this->service->clearFormData($formId);
 
         // Verify data was removed
-        $this->assertArrayNotHasKey($formId, $_SESSION['form_state'], 'Form data should be removed after clearFormData');
+        $this->assertArrayNotHasKey($formId, $this->session->get('form_state'), 'Form data should be removed after clearFormData');
 
         // Verify getFormData returns null after clearing
         $retrievedData = $this->service->getFormData($formId);
@@ -114,10 +113,10 @@ class FormStateServiceTest extends TestCase
         $testData = ['field' => 'value'];
 
         // Manual setup of expired data in session
-        $_SESSION['form_state'][$expiredFormId] = [
+        $this->session->set('form_state', [$expiredFormId => [
             'data' => $testData,
             'expires' => time() - 10 // 10 seconds in the past
-        ];
+        ]]);
 
         // Set up valid data
         $this->service->saveFormData($validFormId, $testData);
@@ -127,7 +126,7 @@ class FormStateServiceTest extends TestCase
 
         // Verify expired data is removed and returns null
         $this->assertNull($retrievedExpiredData, 'Expired data should not be retrievable');
-        $this->assertArrayNotHasKey($expiredFormId, $_SESSION['form_state'], 'Expired data should be removed from session');
+        $this->assertArrayNotHasKey($expiredFormId, $this->session->get('form_state'), 'Expired data should be removed from session');
 
         // Verify valid data is still accessible
         $retrievedValidData = $this->service->getFormData($validFormId);
@@ -141,10 +140,10 @@ class FormStateServiceTest extends TestCase
         $testData = ['field' => 'test_value'];
 
         // Save data with a specific expiry time
-        $_SESSION['form_state'][$formId] = [
+        $this->session->set('form_state', [$formId => [
             'data' => $testData,
             'expires' => $originalExpiry = time() + 100 // 100 seconds in the future
-        ];
+        ]]);
 
         // Small delay to ensure time difference
         usleep(1000); // 1 millisecond
@@ -155,7 +154,7 @@ class FormStateServiceTest extends TestCase
         // Verify expiry time was updated
         $this->assertGreaterThan(
             $originalExpiry,
-            $_SESSION['form_state'][$formId]['expires'],
+            $this->session->get('form_state')[$formId]['expires'],
             'Expiry time should be refreshed after retrieval'
         );
     }
@@ -176,7 +175,7 @@ class FormStateServiceTest extends TestCase
     public function testEmptySession(): void
     {
         // Ensure SESSION is empty
-        $_SESSION = [];
+        $this->session = new ArraySession();
 
         // Try to get data with empty session
         $result = $this->service->getFormData('any_form_id');
@@ -220,8 +219,8 @@ class FormStateServiceTest extends TestCase
         $this->service->rememberAddRecordForm(['name' => 'www', 'type' => 'A']);
         $this->service->rememberAddRecordError(['error' => true, 'errorMessage' => 'nope']);
 
-        $this->assertSame(['name' => 'www', 'type' => 'A'], $_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
-        $this->assertSame(['error' => true, 'errorMessage' => 'nope'], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+        $this->assertSame(['name' => 'www', 'type' => 'A'], $this->session->get(SessionKeys::ADD_RECORD_LAST_DATA));
+        $this->assertSame(['error' => true, 'errorMessage' => 'nope'], $this->session->get(SessionKeys::ADD_RECORD_ERROR));
     }
 
     #[Test]
@@ -247,8 +246,8 @@ class FormStateServiceTest extends TestCase
 
         $this->service->forgetAddRecordForm();
 
-        $this->assertArrayNotHasKey(SessionKeys::ADD_RECORD_LAST_DATA, $_SESSION);
-        $this->assertArrayNotHasKey(SessionKeys::ADD_RECORD_ERROR, $_SESSION);
+        $this->assertFalse($this->session->has(SessionKeys::ADD_RECORD_LAST_DATA));
+        $this->assertFalse($this->session->has(SessionKeys::ADD_RECORD_ERROR));
     }
 
     #[Test]
@@ -265,6 +264,6 @@ class FormStateServiceTest extends TestCase
         // A different zone drops it so values never leak across zones
         $this->service->trackAddRecordZone(6);
         $this->assertNull($this->service->addRecordFormWithError());
-        $this->assertSame(6, $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]);
+        $this->assertSame(6, $this->session->get(SessionKeys::ADD_RECORD_ZONE_ID));
     }
 }

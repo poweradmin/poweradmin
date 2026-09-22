@@ -30,7 +30,6 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * A global template (owner 0) is reserved for ueberusers. A user holding only
@@ -133,13 +132,13 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
 
     private function actAsClient(): void
     {
-        $_SESSION['userid'] = self::CLIENT_USER_ID;
+        $this->session->set('userid', self::CLIENT_USER_ID);
     }
 
     private function zoneTemplate(): ZoneTemplateService
     {
         $backend = $this->dnsBackendStub(false);
-        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor(new PhpSession()), new NullLogger());
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor($this->session), new NullLogger());
     }
 
     private function ownerOfTemplateNamed(string $name): int

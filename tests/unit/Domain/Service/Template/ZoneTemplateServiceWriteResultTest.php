@@ -32,7 +32,7 @@ use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
 use Poweradmin\Domain\Service\Validation\Refusal;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The template writes used to flash their reason into the session; now they
@@ -51,7 +51,6 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '', owner INTEGER NOT NULL, created_by INTEGER, is_default INTEGER NOT NULL DEFAULT 0)");
         $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, content TEXT NOT NULL, ttl INTEGER NOT NULL, prio INTEGER NOT NULL)");
         $this->db->exec("INSERT INTO zone_templ (id, name, owner) VALUES (" . self::GLOBAL_TEMPLATE . ", 'global', 0), (" . self::PRIVATE_TEMPLATE . ", 'private', " . self::ADMIN_USER_ID . ")");
@@ -65,7 +64,7 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
 
     public function testMissingTemplateGrantIsForbidden(): void
     {
-        $_SESSION['userid'] = self::CLIENT_USER_ID;
+        $this->session->set('userid', self::CLIENT_USER_ID);
         $service = $this->service();
 
         $added = $service->addZoneTempl(['templ_name' => 'new', 'templ_descr' => ''], self::CLIENT_USER_ID);
@@ -137,7 +136,7 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
         // own_as_client may not author SOA or NS records, so those are left out with a warning.
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, '" . Permission::PERM_ZONE_TEMPL_ADD . "')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . self::CLIENT_PERM_TEMPL_ID . ", 60)");
-        $_SESSION['userid'] = self::CLIENT_USER_ID;
+        $this->session->set('userid', self::CLIENT_USER_ID);
 
         $saved = $this->service()->addZoneTemplSaveAs('copy', '', self::CLIENT_USER_ID, [
             ['name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 1 2 3 4', 'ttl' => 3600, 'prio' => 0],
@@ -163,7 +162,7 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
             $this->config,
             $backend,
             $this->permissionService(),
-            new SessionActor(new PhpSession()),
+            new SessionActor($this->session),
             new NullLogger()
         );
     }

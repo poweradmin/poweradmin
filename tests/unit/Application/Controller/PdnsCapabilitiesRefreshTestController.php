@@ -41,10 +41,10 @@ class PdnsCapabilitiesRefreshTestController extends BaseController
     {
         $this->refreshCalls++;
         if ($this->versionToCache !== null) {
-            $_SESSION['pdns_server_info'] = [
+            $this->session()->set('pdns_server_info', [
                 'fetched_at' => time(),
                 'info' => ['version' => $this->versionToCache, 'daemon_type' => 'authoritative', 'id' => 'localhost'],
-            ];
+            ]);
         }
     }
 }

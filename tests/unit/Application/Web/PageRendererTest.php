@@ -24,6 +24,7 @@ use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Module\ModuleRegistry;
 use ReflectionClass;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Covers the language-selector and branding-asset logic of PageRenderer.
@@ -55,7 +56,8 @@ class PageRendererTest extends TestCase
             $hasPermission ?? fn(string $permission): bool => false,
             fn(): ?array => null,
             fn() => [],
-            false
+            false,
+            new ArraySession()
         );
     }
 
@@ -91,7 +93,8 @@ class PageRendererTest extends TestCase
             fn(string $permission): bool => false,
             fn(): ?array => null,
             fn() => [],
-            false
+            false,
+            new ArraySession()
         );
 
         ob_start();

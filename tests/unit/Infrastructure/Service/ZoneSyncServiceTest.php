@@ -9,11 +9,13 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Psr\Log\LoggerInterface;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[CoversClass(ZoneSyncService::class)]
 class ZoneSyncServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     private $mockDb;
     private $mockBackend;
     private $mockLogger;
@@ -21,10 +23,11 @@ class ZoneSyncServiceTest extends TestCase
 
     protected function setUp(): void
     {
+                $this->session = new ArraySession();
         $this->mockDb = $this->createMock(PDO::class);
         $this->mockBackend = $this->createMock(DnsBackendProviderInterface::class);
         $this->mockLogger = $this->createMock(LoggerInterface::class);
-        $this->service = new ZoneSyncService($this->mockDb, $this->mockBackend, new PhpSession(), 300, $this->mockLogger);
+        $this->service = new ZoneSyncService($this->mockDb, $this->mockBackend, $this->session, 300, $this->mockLogger);
     }
 
     public function testSyncAddsZonesMissingLocally(): void
@@ -178,10 +181,10 @@ class ZoneSyncServiceTest extends TestCase
 
     public function testSyncIfStaleSkipsWhenRecent(): void
     {
-        $_SESSION = [];
-        $_SESSION['zone_sync_last'] = time();
+        $this->session->clear();
+        $this->session->set('zone_sync_last', time());
 
-        $service = new ZoneSyncService($this->mockDb, $this->mockBackend, new PhpSession(), 300, $this->mockLogger);
+        $service = new ZoneSyncService($this->mockDb, $this->mockBackend, $this->session, 300, $this->mockLogger);
 
         // Backend should never be called
         $this->mockBackend->expects($this->never())->method('getZones');
@@ -192,8 +195,8 @@ class ZoneSyncServiceTest extends TestCase
 
     public function testSyncIfStaleRunsWhenExpired(): void
     {
-        $_SESSION = [];
-        $_SESSION['zone_sync_last'] = time() - 600;
+        $this->session->clear();
+        $this->session->set('zone_sync_last', time() - 600);
 
         $this->mockBackend->method('getZones')->willReturn([]);
 
@@ -201,7 +204,7 @@ class ZoneSyncServiceTest extends TestCase
         $localStmt->method('fetch')->willReturn(false);
         $this->mockDb->method('query')->willReturn($localStmt);
 
-        $service = new ZoneSyncService($this->mockDb, $this->mockBackend, new PhpSession(), 300, $this->mockLogger);
+        $service = new ZoneSyncService($this->mockDb, $this->mockBackend, $this->session, 300, $this->mockLogger);
         $result = $service->syncIfStale();
 
         $this->assertIsArray($result);
@@ -209,7 +212,7 @@ class ZoneSyncServiceTest extends TestCase
 
     public function testSyncIfStaleReturnsNullAndLogsOnException(): void
     {
-        $_SESSION = [];
+        $this->session->clear();
 
         $this->mockBackend->method('getZones')
             ->willThrowException(new \RuntimeException('API unreachable'));
@@ -224,7 +227,7 @@ class ZoneSyncServiceTest extends TestCase
                 })
             );
 
-        $service = new ZoneSyncService($this->mockDb, $this->mockBackend, new PhpSession(), 0, $this->mockLogger);
+        $service = new ZoneSyncService($this->mockDb, $this->mockBackend, $this->session, 0, $this->mockLogger);
         $result = $service->syncIfStale();
 
         $this->assertNull($result);
@@ -237,12 +240,12 @@ class ZoneSyncServiceTest extends TestCase
      */
     public function testSyncThrowsWhenApiFailedDuringThisCall(): void
     {
-        $_SESSION = [];
+        $this->session->clear();
 
         // Simulate the backend recording an error mid-call, which is what
         // ApiDnsBackendProvider::getZones() does when it catches ApiErrorException.
         $this->mockBackend->method('getZones')->willReturnCallback(function () {
-            (new \Poweradmin\Infrastructure\Session\ApiStatusService(new PhpSession()))
+            (new \Poweradmin\Infrastructure\Session\ApiStatusService($this->session))
                 ->recordError('An API request failed', ['endpoint' => 'zones', 'http_code' => 500]);
             return [];
         });
@@ -258,13 +261,13 @@ class ZoneSyncServiceTest extends TestCase
      */
     public function testSyncIgnoresStaleApiStatusError(): void
     {
-        $_SESSION = [];
+        $this->session->clear();
         // Previous error recorded well before this sync starts.
-        $_SESSION['pdns_api_last_error'] = [
+        $this->session->set('pdns_api_last_error', [
             'message' => 'old boom',
             'context' => ['endpoint' => 'zones', 'http_code' => 500],
             'timestamp' => time() - 60,
-        ];
+        ]);
 
         $this->mockBackend->method('getZones')->willReturn([]);
 

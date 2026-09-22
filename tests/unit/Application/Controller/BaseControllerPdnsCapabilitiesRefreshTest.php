@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use ReflectionClass;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Covers BaseController::getPdnsCapabilities() re-detecting the PowerDNS
@@ -35,15 +35,17 @@ use Poweradmin\Infrastructure\Session\PhpSession;
  */
 class BaseControllerPdnsCapabilitiesRefreshTest extends TestCase
 {
+    private ArraySession $session;
+
     protected function setUp(): void
     {
         parent::setUp();
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
     }
 
     protected function tearDown(): void
     {
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
         parent::tearDown();
     }
 
@@ -119,16 +121,16 @@ class BaseControllerPdnsCapabilitiesRefreshTest extends TestCase
         $controller = (new ReflectionClass(PdnsCapabilitiesRefreshTestController::class))->newInstanceWithoutConstructor();
         $session = (new ReflectionClass(BaseController::class))->getProperty('session');
         $session->setAccessible(true);
-        $session->setValue($controller, new PhpSession());
+        $session->setValue($controller, $this->session);
         $controller->versionToCache = $version;
         return $controller;
     }
 
     private function cacheVersion(string $version, int $fetchedAt): void
     {
-        $_SESSION['pdns_server_info'] = [
+        $this->session->set('pdns_server_info', [
             'fetched_at' => $fetchedAt,
             'info' => ['version' => $version, 'daemon_type' => 'authoritative', 'id' => 'localhost'],
-        ];
+        ]);
     }
 }

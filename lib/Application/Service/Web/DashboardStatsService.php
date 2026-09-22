@@ -29,7 +29,7 @@ use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Psr\Log\LoggerInterface;
 use Throwable;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Domain\Port\SessionInterface;
 
 /**
  * The totals on the admin dashboard. Zone and record counts are null when
@@ -42,7 +42,8 @@ class DashboardStatsService
         private readonly UserAdminInterface $users,
         private readonly UserGroupLookupInterface $groups,
         private readonly ZoneReadRepositoryInterface $zones,
-        private readonly ZoneReadBackendInterface $backend
+        private readonly ZoneReadBackendInterface $backend,
+        private readonly SessionInterface $session
     ) {
     }
 
@@ -68,7 +69,7 @@ class DashboardStatsService
     {
         try {
             $count = $this->backend->countZones();
-            if ($count > 0 || (new ApiStatusService(new PhpSession()))->getLastError() === null) {
+            if ($count > 0 || (new ApiStatusService($this->session))->getLastError() === null) {
                 return $count;
             }
         } catch (Throwable $e) {

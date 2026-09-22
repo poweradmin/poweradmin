@@ -12,7 +12,7 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[CoversClass(ApiDomainRepository::class)]
 class ApiDomainRepositoryZoneInfoTest extends TestCase
@@ -49,7 +49,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
         $this->config = ConfigurationManager::getInstance();
         $this->config->initialize();
 
-        $this->userContext = new UserContextService(new PhpSession());
+        $this->userContext = new UserContextService(new ArraySession());
         $this->userContext->setSessionData(SessionKeys::USERID, 1);
     }
 

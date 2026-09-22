@@ -38,7 +38,6 @@ use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * IDOR guard for RecordManager::editRecord(). The record's zone must be derived
@@ -92,7 +91,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testDeleteOfForeignRecordIsForbidden(): void
     {
-        $_SESSION['userid'] = self::ATTACKER_USER_ID;
+        $this->session->set('userid', self::ATTACKER_USER_ID);
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->never())->method('deleteRecord');
 
@@ -105,7 +104,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testDeleteOfUnknownRecordIsNotFound(): void
     {
-        $_SESSION['userid'] = self::ATTACKER_USER_ID;
+        $this->session->set('userid', self::ATTACKER_USER_ID);
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->never())->method('deleteRecord');
 
@@ -121,7 +120,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
      */
     private function assertForgedEditRejected(int $rid, string $name, Refusal $expected, string $message = ''): void
     {
-        $_SESSION['userid'] = self::ATTACKER_USER_ID;
+        $this->session->set('userid', self::ATTACKER_USER_ID);
 
         $record = [
             'rid' => $rid,
@@ -186,7 +185,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
             $this->permissionService($config),
             $changeLogger,
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
-            new SessionActor(new PhpSession())
+            new SessionActor($this->session)
         );
     }
 }

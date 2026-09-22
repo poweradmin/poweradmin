@@ -40,7 +40,6 @@ use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Module\DnsWizard\Controller\DnsWizardFormController;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Characterizes the wizard form page: the gates in front of it, what a
@@ -244,7 +243,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
 
     public function testSavedFormDataAndWarningsAreRestoredOnce(): void
     {
-        $formState = new FormStateService(new PhpSession());
+        $formState = new FormStateService($this->session);
         $formState->saveFormData('dns_wizard_form_x', ['ip4' => '192.0.2.0/24', '_warnings' => ['careful']]);
         $this->query(['form_id' => 'dns_wizard_form_x', 'show_warnings' => '1']);
 
@@ -291,7 +290,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
         );
 
         $formId = substr($halt->target, strlen('/zones/12/wizard/spf?form_id='));
-        $this->assertSame(['use_mx' => '1', 'ip4' => 'not-an-ip'], (new FormStateService(new PhpSession()))->getFormData($formId));
+        $this->assertSame(['use_mx' => '1', 'ip4' => 'not-an-ip'], (new FormStateService($this->session))->getFormData($formId));
     }
 
     public function testWarningsAreShownBeforeWritingUnlessAcknowledged(): void

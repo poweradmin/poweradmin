@@ -41,7 +41,6 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * DomainManager write methods report refusals through the result (status and
@@ -79,7 +78,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testCreatingWithoutTheAddGrantIsForbidden(): void
     {
-        $_SESSION['userid'] = self::CLIENT_USER_ID;
+        $this->session->set('userid', self::CLIENT_USER_ID);
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->never())->method('createZone');
 
@@ -133,7 +132,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testAddingAnOwnerWithoutTheMetaGrantIsForbidden(): void
     {
-        $_SESSION['userid'] = self::CLIENT_USER_ID;
+        $this->session->set('userid', self::CLIENT_USER_ID);
         $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ")");
 
         $result = $this->makeDomainManager($this->dnsBackendStub(false))->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID);
@@ -182,7 +181,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
             new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),
             new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $backend->allocatesZoneIdsLocally()), $config, $backend),
-            new SessionActor(new PhpSession())
+            new SessionActor($this->session)
         );
     }
 }

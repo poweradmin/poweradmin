@@ -27,23 +27,23 @@ use Poweradmin\Application\Controller\Zone\AddZoneMasterController;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use TestHelpers\FakeConfiguration;
-use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class AddZoneMasterControllerZoneTypesTest extends TestCase
 {
+    private ArraySession $session;
+
     private ReflectionClass $reflection;
 
     protected function setUp(): void
     {
         $this->reflection = new ReflectionClass(AddZoneMasterController::class);
-        // The version refresh takes $_SESSION by reference, so it must exist.
-        $_SESSION ??= [];
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
     }
 
     protected function tearDown(): void
     {
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
         parent::tearDown();
     }
 
@@ -64,7 +64,7 @@ class AddZoneMasterControllerZoneTypesTest extends TestCase
 
         $session = $this->reflection->getParentClass()->getProperty('session');
         $session->setAccessible(true);
-        $session->setValue($controller, new PhpSession());
+        $session->setValue($controller, $this->session);
 
         return $controller;
     }
@@ -78,10 +78,10 @@ class AddZoneMasterControllerZoneTypesTest extends TestCase
 
     private function seedServerVersion(string $version): void
     {
-        $_SESSION['pdns_server_info'] = [
+        $this->session->set('pdns_server_info', [
             'fetched_at' => time(),
             'info' => ['version' => $version],
-        ];
+        ]);
     }
 
     // ---- supportsCatalogKinds: the capability gate ----

@@ -41,11 +41,11 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use Poweradmin\Infrastructure\Session\ArraySession;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Psr\Log\NullLogger;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Shared fixture for controllers built through the ControllerEnvironment seam:
@@ -53,10 +53,9 @@ use Poweradmin\Infrastructure\Session\PhpSession;
  * output that records instead of rendering, and a stub service factory that
  * every create*() accessor on BaseController routes through.
  *
- * The logged-in user is a plain $_SESSION entry, so UserContextService,
- * MessageService and ZoneSortingService all work against real (in-memory) state;
- * the session is the one superglobal the seam still swaps, since those services
- * read it directly.
+ * The logged-in user lives in the environment's in-memory session, which
+ * UserContextService, MessageService and ZoneSortingService all read through,
+ * so a test sees and seeds real session state without touching a superglobal.
  */
 abstract class SeamControllerTestCase extends TestCase
 {
@@ -85,30 +84,23 @@ abstract class SeamControllerTestCase extends TestCase
 
     private string $method = 'GET';
 
-    private array $sessionBackup = [];
+    /** The session every controller of the test reads and writes */
+    protected ArraySession $session;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->sessionBackup = $_SESSION ?? [];
-        $_SESSION = [
+        $this->session = new ArraySession([
             SessionKeys::USERID => self::USER_ID,
             SessionKeys::USERLOGIN => self::USERNAME,
-        ];
+        ]);
 
         $this->factory = $this->createMock(ControllerServiceFactory::class);
-        $this->messageService = new MessageService(new UserContextService(new PhpSession()));
+        $this->messageService = new MessageService(new UserContextService($this->session));
         $this->config = new SeamConfiguration();
         $this->configure();
         $this->output = $this->outputs[] = new RecordingPageOutput();
-    }
-
-    protected function tearDown(): void
-    {
-        $_SESSION = $this->sessionBackup;
-
-        parent::tearDown();
     }
 
     /**
@@ -161,7 +153,7 @@ abstract class SeamControllerTestCase extends TestCase
         );
         // Dependency-free helpers as shipped: the escaper is final and the form stash is read back by tests
         $this->factory->method('csvFormulaEscaper')->willReturn(new CsvFormulaEscaper());
-        $this->factory->method('formStateService')->willReturn(new FormStateService(new PhpSession()));
+        $this->factory->method('formStateService')->willReturn(new FormStateService($this->session));
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 
@@ -177,8 +169,9 @@ abstract class SeamControllerTestCase extends TestCase
             $this->request(),
             $csrf,
             $this->messageService,
-            new UserContextService(new PhpSession()),
-            $this->output
+            new UserContextService($this->session),
+            $this->output,
+            $this->session
         );
     }
 

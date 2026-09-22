@@ -65,7 +65,7 @@ class BaseControllerCanViewZonesTest extends SeamControllerTestCase
 
     public function testWithoutALoggedInUserTheGateIsClosed(): void
     {
-        unset($_SESSION[SessionKeys::USERID]);
+        $this->session->remove(SessionKeys::USERID);
 
         $this->assertFalse($this->controllerWithViewLevel('all')->canViewZonesForTest());
         $this->assertSame([['error', 'You do not have permission to view this zone.']], $this->messagesFor('system'));

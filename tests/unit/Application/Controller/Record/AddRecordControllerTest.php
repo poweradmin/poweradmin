@@ -44,7 +44,6 @@ use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use Poweradmin\Domain\Service\Validation\Refusal;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Characterizes the add-record page: the order of its gates, what a refused
@@ -407,7 +406,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $this->assertSame([], $this->messagesFor('edit'), 'the reason travels in the form state, not as a flash');
 
         $formId = substr($halt->target, strlen('/zones/12/records/add?form_id='));
-        $formData = (new FormStateService(new PhpSession()))->getFormData($formId);
+        $formData = (new FormStateService($this->session))->getFormData($formId);
         $this->assertSame([
             'name' => 'www',
             'content' => 'nope',
@@ -445,7 +444,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $formId = substr($halt->target, strlen('/zones/12/records/add?form_id='));
         $this->assertSame(
             ['error' => true, 'errorMessage' => 'No records were provided.'],
-            (new FormStateService(new PhpSession()))->getFormData($formId)
+            (new FormStateService($this->session))->getFormData($formId)
         );
     }
 
@@ -516,7 +515,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
         );
 
         $formId = substr($halt->target, strlen('/zones/12/edit?form_id='));
-        $formData = (new FormStateService(new PhpSession()))->getFormData($formId);
+        $formData = (new FormStateService($this->session))->getFormData($formId);
         $this->assertTrue($formData['multi_record_error']);
         $this->assertSame(1, $formData['failure_count']);
         $this->assertSame('Invalid IPv4 address.', $formData['errorMessage']);
@@ -537,7 +536,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $this->assertSame([], $this->messagesFor('edit'), 'a total failure is reported only through the form');
 
         $formId = substr($halt->target, strlen('/zones/12/records/add?form_id='));
-        $formData = (new FormStateService(new PhpSession()))->getFormData($formId);
+        $formData = (new FormStateService($this->session))->getFormData($formId);
         // The last reason wins, and the first row repopulates the single-record fields
         $this->assertSame('Last reason.', $formData['errorMessage']);
         $this->assertSame(2, $formData['failure_count']);
@@ -548,7 +547,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
     public function testASubmittedFormTokenClearsTheRememberedFormState(): void
     {
-        $formState = new FormStateService(new PhpSession());
+        $formState = new FormStateService($this->session);
         $formState->saveFormData('add_record_old', ['name' => 'stale']);
         $this->post(['type' => 'A', 'content' => '192.0.2.1', 'form_token' => 'add_record_old']);
 
@@ -559,7 +558,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
     public function testTheFormIsRepopulatedFromASavedFormId(): void
     {
-        $formState = new FormStateService(new PhpSession());
+        $formState = new FormStateService($this->session);
         $formState->saveFormData('add_record_saved', [
             'name' => 'www',
             'type' => 'AAAA',
