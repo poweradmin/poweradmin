@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { findZoneIdByName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -24,18 +25,10 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
     }
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
-    await page.goto('/zones/forward?letter=all');
-    const row = page.locator('tr', { hasText: zoneName }).first();
-    // Auto-retrying: on the API backend the new zone can take a moment to show
-    // up in the list, and a one-shot count() read races it under load.
-    await expect(row).toBeVisible({ timeout: 15000 });
-    const editLink = row.locator('a[href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)\/edit/);
-      return match ? match[1] : null;
-    }
-    return null;
+
+    // The zone list is paginated, so resolve the id by name (with the search
+    // fallback) instead of expecting the new zone on the first page.
+    return await findZoneIdByName(page, zoneName);
   }
 
   test('inline add record should increment SOA serial by exactly 1', async ({ page }) => {

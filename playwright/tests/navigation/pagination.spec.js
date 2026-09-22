@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneById, findZoneIdByName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 /**
@@ -28,18 +29,15 @@ async function ensurePaginationZones(page, prefix, count) {
 
 /**
  * Helper to cleanup zones created during test.
+ *
+ * Resolving each zone by name covers the paginated list, which the previous
+ * row lookup did not - it left every created zone behind on each run.
  */
 async function cleanupZones(page, zones) {
   for (const zone of zones) {
-    try {
-      await page.goto('/zones/forward');
-      const zoneRow = page.locator(`tr:has-text("${zone}")`);
-      if (await zoneRow.count() > 0) {
-        await zoneRow.locator('[data-testid^="delete-zone-"]').click();
-        await page.locator('[data-testid="confirm-delete-zone"]').click();
-      }
-    } catch (e) {
-      // Continue if zone not found
+    const zoneId = await findZoneIdByName(page, zone);
+    if (zoneId) {
+      await deleteZoneById(page, zoneId);
     }
   }
 }
@@ -50,6 +48,10 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should display pagination controls when zone list exceeds page size', async ({ page }) => {
+    // Creating and removing the filler zones one page load at a time does not
+    // fit the default per-test budget.
+    test.slow();
+
     const zones = await ensurePaginationZones(page, 'pagination-test', 25);
 
     await page.goto('/zones/forward');
@@ -57,13 +59,16 @@ test.describe('Pagination Functionality', () => {
     const paginationExists = await page.locator('.pagination, [data-testid*="pagination"], nav[aria-label*="pagination"]').count() > 0;
 
     if (paginationExists) {
-      await expect(page.locator('.pagination, [data-testid*="pagination"]')).toBeVisible();
+      // The letter strip is a .pagination list too, so scope to the first match
+      await expect(page.locator('.pagination, [data-testid*="pagination"]').first()).toBeVisible();
     }
 
     await cleanupZones(page, zones);
   });
 
   test('should navigate to next page of zones', async ({ page }) => {
+    test.slow();
+
     const zones = await ensurePaginationZones(page, 'page-test', 15);
 
     await page.goto('/zones/forward');
@@ -73,14 +78,17 @@ test.describe('Pagination Functionality', () => {
     if (await nextButton.count() > 0 && await nextButton.isEnabled()) {
       await nextButton.click();
 
+      // The zone list paginates with ?start=<page number>
       const currentUrl = page.url();
-      expect(currentUrl).toMatch(/page=2|offset=/i);
+      expect(currentUrl).toMatch(/[?&]start=2\b/);
     }
 
     await cleanupZones(page, zones);
   });
 
   test('should navigate to previous page of zones', async ({ page }) => {
+    test.slow();
+
     const zones = await ensurePaginationZones(page, 'prev-test', 15);
 
     await page.goto('/zones/forward');
@@ -94,8 +102,7 @@ test.describe('Pagination Functionality', () => {
         await prevButton.click();
 
         const currentUrl = page.url();
-        const isPage1 = !currentUrl.includes('page=2') || currentUrl.includes('page=1');
-        expect(isPage1).toBeTruthy();
+        expect(currentUrl).not.toMatch(/[?&]start=2\b/);
       }
     }
 
@@ -103,6 +110,8 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should display correct page numbers in pagination', async ({ page }) => {
+    test.slow();
+
     const zones = await ensurePaginationZones(page, 'num-test', 20);
 
     await page.goto('/zones/forward');
@@ -175,16 +184,11 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should handle pagination with records list', async ({ page }) => {
-    const zoneName = `records-page-test-${Date.now()}.com`;
+    // Creating a zone and 15 records one full page load at a time needs more
+    // than the default per-test budget.
+    test.slow();
 
-    // First clean up any existing test zone
-    await page.goto('/zones/forward');
-    const existingZone = page.locator('tr:has-text("records-page-test")');
-    if (await existingZone.count() > 0) {
-      await existingZone.first().locator('[data-testid^="delete-zone-"]').click();
-      await page.locator('[data-testid="confirm-delete-zone"]').click();
-      await page.waitForLoadState('networkidle');
-    }
+    const zoneName = `records-page-test-${Date.now()}.com`;
 
     // Create a zone and add many records
     await page.goto('/zones/add/master');
@@ -198,15 +202,11 @@ test.describe('Pagination Functionality', () => {
       return;
     }
 
-    await page.goto('/zones/forward');
-    await page.waitForLoadState('networkidle');
+    // The list is paginated, so resolve the zone by name rather than by row
+    const zoneId = await findZoneIdByName(page, zoneName);
+    expect(zoneId).not.toBeNull();
 
-    const zoneRow = page.locator(`tr:has-text("${zoneName}")`);
-    if (await zoneRow.count() === 0) {
-      return;
-    }
-
-    await zoneRow.locator('[data-testid^="edit-zone-"]').click();
+    await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
 
     for (let i = 1; i <= 15; i++) {
@@ -224,12 +224,7 @@ test.describe('Pagination Functionality', () => {
     expect(hasPagination !== undefined).toBeTruthy();
 
     // Cleanup
-    await page.goto('/zones/forward');
-    const cleanupRow = page.locator(`tr:has-text("${zoneName}")`);
-    if (await cleanupRow.count() > 0) {
-      await cleanupRow.locator('[data-testid^="delete-zone-"]').click();
-      await page.locator('[data-testid="confirm-delete-zone"]').click();
-    }
+    await deleteZoneById(page, zoneId);
   });
 
   test('should preserve sort order across pages', async ({ page }) => {
@@ -239,13 +234,25 @@ test.describe('Pagination Functionality', () => {
 
     if (await sortableHeader.count() > 0) {
       await sortableHeader.click();
+      await page.waitForLoadState('domcontentloaded');
+
+      const firstColumn = () => page.locator('table tbody tr td:first-child')
+        .evaluateAll(cells => cells.map(c => c.innerText.trim().toLowerCase()));
+
+      const firstPage = await firstColumn();
 
       const nextButton = page.locator('a:has-text("Next"), button:has-text("Next")').first();
-      if (await nextButton.count() > 0 && await nextButton.isEnabled()) {
+      if (firstPage.length > 0 && await nextButton.count() > 0 && await nextButton.isEnabled()) {
         await nextButton.click();
+        await page.waitForLoadState('domcontentloaded');
 
-        const currentUrl = page.url();
-        expect(currentUrl).toMatch(/sort|order/i);
+        // The chosen sort lives in the session, not in the pagination link, so
+        // assert the data order rather than the query string.
+        const secondPage = await firstColumn();
+        const ascending = [...firstPage].sort().join('|') === firstPage.join('|');
+        const expected = ascending ? [...secondPage].sort() : [...secondPage].sort().reverse();
+
+        expect(secondPage.join('|')).toBe(expected.join('|'));
       }
     }
   });

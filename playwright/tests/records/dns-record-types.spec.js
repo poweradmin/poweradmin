@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneById, openZoneListPageFor, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Run tests serially as they depend on shared zone
@@ -21,23 +22,15 @@ test.describe('DNS Record Types Management', () => {
     await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
-    // After zone creation, page redirects to zone list
-    // Find the zone by searching all pages via letter filter
-    const letter = testDomain.charAt(0);
-    let found = false;
-    for (let page_num = 1; page_num <= 20 && !found; page_num++) {
-      await page.goto(`/zones/forward?letter=${letter}&start=${page_num}`);
-      const zoneRow = page.locator(`tr:has-text("${testDomain}")`);
-      if (await zoneRow.count() > 0) {
-        const editLink = await zoneRow.locator('a[href*="/edit"]').first().getAttribute('href');
-        const match = editLink.match(/\/zones\/(\d+)/);
-        if (match) {
-          zoneId = match[1];
-        }
-        found = true;
-      }
-    }
+    // After zone creation the page redirects to the paginated zone list
+    const found = await openZoneListPageFor(page, testDomain);
     expect(found).toBeTruthy();
+
+    const editLink = await page.locator(`tr:has-text("${testDomain}")`)
+      .locator('a[href*="/edit"]').first().getAttribute('href');
+    const match = editLink.match(/\/zones\/(\d+)/);
+    zoneId = match ? match[1] : null;
+    expect(zoneId).not.toBeNull();
     zoneCreated = true;
   });
 
@@ -183,16 +176,13 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should cleanup test zone', async ({ page }) => {
-    test.skip(!zoneCreated, 'Zone not created');
+    test.skip(!zoneCreated || !zoneId, 'Zone not created');
 
-    await page.goto('/zones/forward?letter=all');
-    await page.locator(`tr:has-text("${testDomain}")`).locator('a[href*="/delete"]').first().click();
-
-    const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-    await yesBtn.click();
-    await page.waitForLoadState('networkidle');
+    // Going straight to the zone id avoids hunting the row in the paginated list
+    expect(await deleteZoneById(page, zoneId)).toBe(true);
 
     const bodyText = await page.locator('body').textContent();
     expect(bodyText).not.toMatch(/fatal|exception/i);
+    expect(await zoneExists(page, testDomain)).toBe(false);
   });
 });
