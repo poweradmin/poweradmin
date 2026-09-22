@@ -64,8 +64,7 @@ class ZoneMetadataController extends PublicApiController
             default => $this->methodNotAllowed(['GET', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     #[OA\Get(

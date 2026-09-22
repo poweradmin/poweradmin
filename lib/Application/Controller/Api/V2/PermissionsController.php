@@ -56,8 +56,7 @@ class PermissionsController extends PublicApiController
             default => $this->methodNotAllowed(['GET']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**

@@ -64,16 +64,11 @@ class ValidationController extends InternalApiController
     {
         $action = $this->request->query->get('action', '');
 
-        switch ($action) {
-            case 'validate_record':
-                $response = $this->validateRecord();
-                $response->send();
-                exit;
-            default:
-                $response = $this->returnErrorResponse('Unknown action', 400);
-                $response->send();
-                exit;
-        }
+        $response = $action === 'validate_record'
+            ? $this->validateRecord()
+            : $this->returnErrorResponse('Unknown action', 400);
+
+        $this->sendAndHalt($response);
     }
 
     /**

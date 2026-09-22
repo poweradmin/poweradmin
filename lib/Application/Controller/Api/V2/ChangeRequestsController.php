@@ -131,8 +131,7 @@ class ChangeRequestsController extends PublicApiController
             default => $this->methodNotAllowed($decision === null ? ['GET', 'DELETE'] : ['POST']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**

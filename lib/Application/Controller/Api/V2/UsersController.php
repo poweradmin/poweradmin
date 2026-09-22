@@ -83,8 +83,7 @@ class UsersController extends PublicApiController
             default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**

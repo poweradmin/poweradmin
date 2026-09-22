@@ -57,6 +57,7 @@ use Poweradmin\Application\Web\PageOutputInterface;
 use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Base for every web controller: config, database, session, permissions, CSRF, validation and Twig rendering.
@@ -346,6 +347,16 @@ abstract class BaseController
     protected function halt(string $kind, string $target): never
     {
         throw new RequestHalted($kind, $target);
+    }
+
+    /**
+     * Sends a prepared response and ends the request; the API controllers
+     * answer every request this way.
+     */
+    protected function sendAndHalt(Response $response): never
+    {
+        $response->send();
+        $this->halt(RequestHalted::KIND_RESPONSE, (string) $response->getStatusCode());
     }
 
     /**

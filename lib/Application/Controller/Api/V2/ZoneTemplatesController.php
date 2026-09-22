@@ -59,8 +59,7 @@ class ZoneTemplatesController extends PublicApiController
             default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     #[OA\Get(

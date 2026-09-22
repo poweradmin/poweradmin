@@ -64,8 +64,7 @@ abstract class InternalApiController extends AbstractApiController
         $token = (string) $this->request->headers->get('X-CSRF-Token', '');
         if (!(new CsrfTokenService())->validateToken($token)) {
             $response = $this->returnApiError('Invalid CSRF token', 403);
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
     }
 
@@ -76,8 +75,7 @@ abstract class InternalApiController extends AbstractApiController
     {
         if (!isset($_SESSION[SessionKeys::USERID])) {
             $response = $this->returnErrorResponse('Unauthorized access', 401);
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
     }
 
@@ -90,8 +88,7 @@ abstract class InternalApiController extends AbstractApiController
     {
         if (!$this->hasPermission($permission)) {
             $response = $this->returnErrorResponse('Forbidden: insufficient permissions', 403);
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
     }
 }

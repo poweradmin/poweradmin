@@ -58,8 +58,7 @@ class DocsController extends BaseController
             $response->setStatusCode(404);
             $response->headers->set('Content-Type', 'text/html');
             $response->setContent('<html><body><h1>404 Not Found</h1><p>API documentation is disabled.</p></body></html>');
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
 
         // Generate Swagger UI HTML
@@ -69,9 +68,7 @@ class DocsController extends BaseController
         $response = new Response();
         $response->headers->set('Content-Type', 'text/html');
         $response->setContent($html);
-        $response->send();
-
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**

@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service\Auth;
 
 use PDO;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
@@ -323,7 +324,7 @@ final class SessionAuthenticator
             http_response_code(403);
             header('Content-Type: application/json');
             echo json_encode(['error' => true, 'message' => 'Multi-factor authentication required']);
-            exit;
+            throw new RequestHalted(RequestHalted::KIND_RESPONSE, '403');
         }
 
         // Ensure session is written before redirecting

@@ -65,4 +65,9 @@ class TestableAbstractApiHelpersController extends AbstractApiController
     {
         return $this->inputIntFromBool($input, $key, $default);
     }
+
+    public function callSendAndHalt(JsonResponse $response): never
+    {
+        $this->sendAndHalt($response);
+    }
 }

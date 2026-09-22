@@ -78,8 +78,7 @@ class ZonesRecordsBulkController extends PublicApiController
             default => $this->methodNotAllowed(['POST']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     // Each bulk item carries its own action, so the operation scope is enforced

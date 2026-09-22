@@ -67,8 +67,7 @@ class GroupZonesController extends PublicApiController
             default => $this->methodNotAllowed(['GET', 'POST', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**

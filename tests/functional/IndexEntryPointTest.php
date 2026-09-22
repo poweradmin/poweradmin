@@ -118,6 +118,73 @@ class IndexEntryPointTest extends TestCase
         $this->assertSame('{"success":false,"data":null,"message":"The API feature is disabled in the system configuration."}', $stdout);
     }
 
+    /**
+     * The disabled-API refusal is shaped per family: v2 wraps it, the internal
+     * API keeps the {error:true} form.
+     */
+    public function testADisabledApiRefusesInternalCallsBeforeAuthentication(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/api/internal/zone', 'application/json');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"error":true,"message":"The API feature is disabled in the system configuration."}', $stdout);
+    }
+
+    /**
+     * Each API family ends an unauthenticated request with its own 401 body and
+     * nothing after it: the session-bound internal API from the authenticator,
+     * the public v2 API from its own key check.
+     */
+    public function testAnUnauthenticatedApiCallSendsTheErrorBodyAndNothingElse(): void
+    {
+        $expected = [
+            '/api/internal/zone' => '{"error":true,"message":"Unauthorized"}',
+            '/api/internal/user-preferences' => '{"error":true,"message":"Unauthorized"}',
+            '/api/v2/zones' => '{"success":false,"data":null,"message":"Unauthorized: Invalid credentials"}',
+            '/api/v2/users' => '{"success":false,"data":null,"message":"Unauthorized: Invalid credentials"}',
+        ];
+
+        foreach ($expected as $uri => $body) {
+            [$exitCode, $stdout, $stderr] = $this->runFrontController('api-settings.php', $uri, 'application/json');
+
+            $this->assertSame(0, $exitCode, $uri);
+            $this->assertSame('', $stderr, $uri);
+            $this->assertSame($body, $stdout, $uri);
+        }
+    }
+
+    public function testDisabledDocsAnswer404InTheirOwnFormat(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/api/docs', 'text/html');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('<html><body><h1>404 Not Found</h1><p>API documentation is disabled.</p></body></html>', $stdout);
+
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/api/docs/json', 'application/json');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"error":"Not Found","message":"API documentation is disabled","status":404}', $stdout);
+    }
+
+    public function testEnabledDocsSendTheirDocumentAndNothingElse(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('api-settings.php', '/api/docs', 'text/html');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertStringStartsWith('<!DOCTYPE html>', $stdout);
+        $this->assertSame(1, substr_count($stdout, '</html>'));
+        $this->assertStringEndsWith('</html>', rtrim($stdout));
+
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('api-settings.php', '/api/docs/json', 'application/json');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $spec = json_decode($stdout, true);
+        $this->assertIsArray($spec, 'The spec must be the whole output');
+        $this->assertSame('3.0.0', $spec['openapi']);
+        $this->assertSame('Poweradmin API V2', $spec['info']['title']);
+    }
+
     public function testAnUnmatchedRouteRendersTheNotFoundPage(): void
     {
         [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/no-such-page', 'text/html');

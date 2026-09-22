@@ -68,8 +68,7 @@ class JsonController extends BaseController
                 'message' => 'API documentation is disabled',
                 'status' => 404
             ]));
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
 
         // Get version from path parameters, default to v2
@@ -105,7 +104,6 @@ class JsonController extends BaseController
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($decoded, JSON_PRETTY_PRINT));
-            $response->send();
         } catch (Exception $e) {
             // Log the actual error for debugging
             $this->logger->error('OpenAPI generation failed: {error}', ['error' => $e->getMessage()]);
@@ -142,9 +140,8 @@ class JsonController extends BaseController
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($fallbackSpec, JSON_PRETTY_PRINT));
-            $response->send();
         }
 
-        exit;
+        $this->sendAndHalt($response);
     }
 }

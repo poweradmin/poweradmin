@@ -126,8 +126,7 @@ abstract class PublicApiController extends AbstractApiController
             // back to an unrestricted scope and grant more than the key allows.
             if ($this->apiKeyScope === null) {
                 $response = $this->returnApiError('Unable to verify API key permissions', 403);
-                $response->send();
-                exit;
+                $this->sendAndHalt($response);
             }
         }
 
@@ -145,8 +144,7 @@ abstract class PublicApiController extends AbstractApiController
                 $realm = addcslashes((string)$config->get('api', 'basic_auth_realm', 'Poweradmin API'), '\\"');
                 $response->headers->set('WWW-Authenticate', 'Basic realm="' . $realm . '"');
             }
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
 
         // The request's services act as the key owner from here on, so the change
@@ -297,17 +295,14 @@ abstract class PublicApiController extends AbstractApiController
 
     /**
      * Send a 403 for an operation the API key may not perform, and stop.
-     *
-     * @return never
      */
-    protected function sendApiKeyOperationForbidden(): void
+    protected function sendApiKeyOperationForbidden(): never
     {
         $response = $this->returnApiError(
             'Forbidden: this API key is not permitted to perform this operation',
             403
         );
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**

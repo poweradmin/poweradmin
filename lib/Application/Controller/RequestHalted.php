@@ -41,6 +41,7 @@ final class RequestHalted extends Error
     public const KIND_PERMISSION = 'permission';
     public const KIND_ERROR = 'error';
     public const KIND_REDIRECT = 'redirect';
+    public const KIND_RESPONSE = 'response';
 
     public function __construct(public readonly string $kind, public readonly string $target)
     {

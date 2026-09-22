@@ -85,8 +85,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     private function canViewTemplate(int $userId, int $templateId): bool

@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\AbstractApiController;
+use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -113,5 +114,26 @@ class AbstractApiControllerHelpersTest extends TestCase
         $body = json_decode((string)$response->getContent(), true);
         $this->assertFalse($body['success']);
         $this->assertSame('Method not allowed', $body['message']);
+    }
+
+    /**
+     * The response goes out exactly once and the run ends through the same
+     * halt the router catches for web controllers, not through exit.
+     */
+    public function testSendAndHaltWritesTheBodyOnceAndHaltsWithTheStatus(): void
+    {
+        $controller = $this->makeController(new Request());
+        $response = new JsonResponse(['success' => false, 'data' => null, 'message' => 'Unauthorized'], 401);
+
+        ob_start();
+        try {
+            $controller->callSendAndHalt($response);
+        } catch (RequestHalted $halt) {
+            $body = ob_get_clean();
+        }
+
+        $this->assertSame(RequestHalted::KIND_RESPONSE, $halt->kind);
+        $this->assertSame('401', $halt->target);
+        $this->assertSame('{"success":false,"data":null,"message":"Unauthorized"}', $body);
     }
 }

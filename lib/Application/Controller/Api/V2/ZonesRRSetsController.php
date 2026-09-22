@@ -80,8 +80,7 @@ class ZonesRRSetsController extends PublicApiController
             default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     // POST/PUT/PATCH all replace an RRSet (an upsert that may create or update),

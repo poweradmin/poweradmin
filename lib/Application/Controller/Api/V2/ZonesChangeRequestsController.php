@@ -83,8 +83,7 @@ class ZonesChangeRequestsController extends PublicApiController
             default => $this->methodNotAllowed(['POST']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     #[OA\Post(

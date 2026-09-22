@@ -63,8 +63,7 @@ class PermissionTemplatesController extends PublicApiController
             default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**

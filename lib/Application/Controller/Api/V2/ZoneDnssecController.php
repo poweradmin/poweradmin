@@ -69,8 +69,7 @@ class ZoneDnssecController extends PublicApiController
             default => $this->methodNotAllowed(['GET', 'POST']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     // Enabling/disabling DNSSEC on an existing zone is an update, not a create,

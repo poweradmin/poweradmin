@@ -62,8 +62,7 @@ class DynamicDnsController extends PublicApiController
             default => $this->methodNotAllowed(['POST']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     // A dynamic DNS update is an upsert that may create and/or update records, so

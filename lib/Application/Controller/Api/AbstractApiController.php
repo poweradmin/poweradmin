@@ -51,9 +51,7 @@ abstract class AbstractApiController extends BaseController
             $body = str_contains(static::class, '\\V2\\')
                 ? ['success' => false, 'data' => null, 'message' => $message]
                 : ['error' => true, 'message' => $message];
-            $response = new JsonResponse($body, 403);
-            $response->send();
-            exit;
+            $this->sendAndHalt(new JsonResponse($body, 403));
         }
 
         // Call parent constructor with authenticate param for session handling if needed
