@@ -3,7 +3,9 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\Template;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
 use TestHelpers\FakeConfiguration;
 
 class ZoneTemplatePlaceholdersParsingTest extends TestCase
@@ -28,7 +30,7 @@ class ZoneTemplatePlaceholdersParsingTest extends TestCase
             'database' => ['pdns_db_name' => null],
         ]);
 
-        $this->zoneTemplate = new ZoneTemplatePlaceholders($this->mockConfig);
+        $this->zoneTemplate = new ZoneTemplatePlaceholders($this->mockConfig, new DomainParsingService(new PdpPublicSuffixList()));
     }
 
     /**

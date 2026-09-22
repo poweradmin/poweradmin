@@ -18,102 +18,62 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 namespace Poweradmin\Domain\Service\Dns;
+
+use Poweradmin\Domain\Port\PublicSuffixInterface;
 
 /**
  * Splits a domain name into subdomain, domain and TLD parts.
  */
 final class DomainParsingService
 {
+    private PublicSuffixInterface $publicSuffix;
+
+    public function __construct(PublicSuffixInterface $publicSuffix)
+    {
+        $this->publicSuffix = $publicSuffix;
+    }
+
     /**
      * Parse a domain into its components (domain name and TLD)
      *
      * @param string $domain The domain to parse
      * @return array Array with 'domain' and 'tld' keys
      */
-    public static function parseDomain(string $domain): array
+    public function parseDomain(string $domain): array
     {
-        $domainName = '';
-        $tld = '';
-
-        // First check if this is an IP address or special domain (e.g., in-addr.arpa)
+        // Reverse zones and IPs have no registrable part to split off
         if (preg_match('/in-addr\.arpa$/i', $domain) || filter_var($domain, FILTER_VALIDATE_IP)) {
-            // For reverse zones or IPs, return the whole domain as domain name
             return [
                 'domain' => $domain,
                 'tld' => ''
             ];
         }
 
-        // Simple parsing logic that handles most common cases
-        $parts = explode('.', $domain);
-
-        if (count($parts) >= 2) {
-            // Check for compound TLDs (e.g., co.uk, co.jp, etc.)
-            $lastPart = $parts[count($parts) - 1];
-            $secondLastPart = $parts[count($parts) - 2];
-
-            // Common compound TLDs
-            $compoundTldPatterns = [
-                'co' => ['uk', 'jp', 'kr', 'nz', 'za', 'in'],
-                'com' => ['au', 'br', 'cn', 'eg', 'hk', 'mx', 'sg', 'tr', 'tw', 'ua'],
-                'net' => ['au', 'br', 'cn', 'in', 'nz', 'ua'],
-                'org' => ['au', 'cn', 'in', 'nz', 'uk', 'ua'],
-                'ac' => ['uk', 'jp', 'kr', 'nz', 'za'],
-                'gov' => ['au', 'br', 'cn', 'in', 'uk', 'ua'],
-                'edu' => ['au', 'cn', 'in', 'ua'],
-                'ne' => ['jp'],
-                'or' => ['jp', 'kr'],
-                'go' => ['jp', 'kr'],
-                'mil' => ['kr'],
-                'nic' => ['in'],
-                'res' => ['in'],
-                'ltd' => ['uk'],
-                'plc' => ['uk'],
-                'me' => ['uk'],
-                'sch' => ['uk'],
-                'nhs' => ['uk'],
-                'police' => ['uk'],
-                'mod' => ['uk']
+        $split = $this->publicSuffix->split($domain);
+        if ($split['name'] !== '' && $split['suffix'] !== '') {
+            return [
+                'domain' => $split['name'],
+                'tld' => $split['suffix']
             ];
-
-            // Check if this is a compound TLD
-            if (
-                isset($compoundTldPatterns[$secondLastPart]) &&
-                in_array($lastPart, $compoundTldPatterns[$secondLastPart])
-            ) {
-                // It's a compound TLD like co.uk
-                $tld = $secondLastPart . '.' . $lastPart;
-
-                // Remove the compound TLD parts to get the domain
-                array_pop($parts); // Remove last part (e.g., 'uk')
-                array_pop($parts); // Remove second last part (e.g., 'co')
-                $domainName = implode('.', $parts);
-
-                // If we have subdomains, we need just the main domain
-                if (count($parts) > 1) {
-                    $domainName = $parts[count($parts) - 1];
-                }
-            } else {
-                // Simple TLD
-                $tld = array_pop($parts);
-                $domainName = implode('.', $parts);
-
-                // If we have subdomains, we need just the main domain
-                if (count($parts) > 1) {
-                    $domainName = $parts[count($parts) - 1];
-                }
-            }
-        } else {
-            // Single part domain (e.g., 'localhost')
-            $domainName = $domain;
-            $tld = '';
         }
 
+        // Names the suffix list cannot place, such as a single label
+        $parts = explode('.', $domain);
+        if (count($parts) < 2) {
+            return [
+                'domain' => $domain,
+                'tld' => ''
+            ];
+        }
+
+        $tld = array_pop($parts);
+
         return [
-            'domain' => $domainName,
+            'domain' => $parts[count($parts) - 1],
             'tld' => $tld
         ];
     }

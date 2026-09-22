@@ -52,6 +52,8 @@ use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
+use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
 use Poweradmin\Domain\Service\Template\ZoneTemplateRecordService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateWriteService;
@@ -86,6 +88,7 @@ final class ZoneServices
     private ?ZoneTemplateService $zoneTemplateService = null;
     private ?ZoneTemplateAccessPolicy $zoneTemplateAccessPolicy = null;
     private ?ZoneTemplateWriteService $zoneTemplateWriteService = null;
+    private ?ZoneTemplatePlaceholders $zoneTemplatePlaceholders = null;
     private ?ZoneTemplateRecordService $zoneTemplateRecordService = null;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
 
@@ -220,7 +223,7 @@ final class ZoneServices
             $this->services->recordChangeLogger(),
             $this->zoneTemplateApplier(),
             $this->zoneTemplateRepository(),
-            new ZoneTemplatePlaceholders($this->config),
+            $this->zoneTemplatePlaceholders(),
             $this->zoneTemplateSync(),
             $this->templateRecordLinkRepository(),
             $this->zoneGroupRepository(),
@@ -249,7 +252,7 @@ final class ZoneServices
             $this->zoneTemplateRepository(),
             $this->templateRecordLinkRepository(),
             $this->zoneTemplateSync(),
-            new ZoneTemplatePlaceholders($this->config),
+            $this->zoneTemplatePlaceholders(),
             $this->services->recordChangeLogger(),
             $this->logger
         );
@@ -290,7 +293,16 @@ final class ZoneServices
             $this->zoneTemplateRepository(),
             $this->zoneTemplateAccessPolicy(),
             $this->config,
-            $this->logger
+            $this->logger,
+            $this->zoneTemplatePlaceholders()
+        );
+    }
+
+    public function zoneTemplatePlaceholders(): ZoneTemplatePlaceholders
+    {
+        return $this->zoneTemplatePlaceholders ??= new ZoneTemplatePlaceholders(
+            $this->config,
+            new DomainParsingService(new PdpPublicSuffixList())
         );
     }
 

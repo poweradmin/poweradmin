@@ -20,7 +20,9 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
@@ -247,7 +249,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
             $changeLogger,
             $this->createMock(ZoneTemplateApplier::class),
             new DbZoneTemplateRepository($this->db, $config, $backend),
-            new ZoneTemplatePlaceholders($config),
+            new ZoneTemplatePlaceholders($config, new DomainParsingService(new PdpPublicSuffixList())),
             new DbZoneTemplateSyncRepository($this->db, $config),
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
             new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),

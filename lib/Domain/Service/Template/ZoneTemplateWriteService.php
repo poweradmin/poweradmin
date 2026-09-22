@@ -40,17 +40,20 @@ class ZoneTemplateWriteService
     private ZoneTemplateAccessPolicy $access;
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
+    private ZoneTemplatePlaceholders $placeholders;
 
     public function __construct(
         ZoneTemplateRepositoryInterface $repository,
         ZoneTemplateAccessPolicy $access,
         ConfigurationInterface $config,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        ZoneTemplatePlaceholders $placeholders
     ) {
         $this->repository = $repository;
         $this->access = $access;
         $this->config = $config;
         $this->logger = $logger;
+        $this->placeholders = $placeholders;
     }
 
     /**
@@ -261,7 +264,7 @@ class ZoneTemplateWriteService
                     continue;
                 }
 
-                [$name, $content] = ZoneTemplatePlaceholders::replaceWithTemplatePlaceholders($domain, $record, $options);
+                [$name, $content] = $this->placeholders->replaceWithTemplatePlaceholders($domain, $record, $options);
 
                 $templateRecords[] = [
                     'name' => $name,

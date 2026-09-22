@@ -22,6 +22,9 @@
 
 namespace TestHelpers;
 
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
+use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
@@ -49,10 +52,12 @@ final class ZoneTemplateServiceBuilder
     ): ZoneTemplateService {
         $access = new ZoneTemplateAccessPolicy($repository, $permissionService, $actor);
 
+        $placeholders = new ZoneTemplatePlaceholders($config, new DomainParsingService(new PdpPublicSuffixList()));
+
         return new ZoneTemplateService(
             $repository,
             $access,
-            new ZoneTemplateWriteService($repository, $access, $config, $logger),
+            new ZoneTemplateWriteService($repository, $access, $config, $logger, $placeholders),
             new ZoneTemplateRecordService($repository, $access, $config, $backend)
         );
     }

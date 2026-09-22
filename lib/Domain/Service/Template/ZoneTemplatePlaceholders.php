@@ -32,10 +32,12 @@ use Poweradmin\Domain\Service\Dns\DomainParsingService;
 class ZoneTemplatePlaceholders
 {
     private ConfigurationInterface $config;
+    private DomainParsingService $domainParser;
 
-    public function __construct(ConfigurationInterface $config)
+    public function __construct(ConfigurationInterface $config, DomainParsingService $domainParser)
     {
         $this->config = $config;
+        $this->domainParser = $domainParser;
     }
 
     /**
@@ -46,13 +48,13 @@ class ZoneTemplatePlaceholders
      * @param array $options NS1 and HOSTMASTER values to recognise in an SOA
      * @return array [name, content] with placeholders
      */
-    public static function replaceWithTemplatePlaceholders(string $domain, array $record, array $options = []): array
+    public function replaceWithTemplatePlaceholders(string $domain, array $record, array $options = []): array
     {
         if (empty($domain)) {
             return [$record['name'], $record['content']];
         }
 
-        $domainComponents = DomainParsingService::parseDomain($domain);
+        $domainComponents = $this->domainParser->parseDomain($domain);
         $domainName = $domainComponents['domain'];
         $tld = $domainComponents['tld'];
 
@@ -115,7 +117,7 @@ class ZoneTemplatePlaceholders
 
         $serial = date("Ymd") . "00";
 
-        $domainComponents = DomainParsingService::parseDomain($domain);
+        $domainComponents = $this->domainParser->parseDomain($domain);
         $domainName = $domainComponents['domain'];
         $tld = $domainComponents['tld'];
 

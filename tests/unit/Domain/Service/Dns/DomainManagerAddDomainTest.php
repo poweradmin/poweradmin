@@ -33,7 +33,9 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use Psr\Log\NullLogger;
@@ -605,7 +607,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             $this->changeLogger,
             $this->createMock(ZoneTemplateApplier::class),
             new DbZoneTemplateRepository($this->db, $this->config, $this->backend),
-            new ZoneTemplatePlaceholders($this->config),
+            new ZoneTemplatePlaceholders($this->config, new DomainParsingService(new PdpPublicSuffixList())),
             new DbZoneTemplateSyncRepository($this->db, $this->config),
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
             new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),

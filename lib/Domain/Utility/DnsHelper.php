@@ -23,10 +23,6 @@
 
 namespace Poweradmin\Domain\Utility;
 
-use Pdp\CannotProcessHost;
-use Pdp\Rules;
-use Pdp\Domain;
-
 /**
  * Static name helpers: reverse-zone detection, apex and in-zone tests, and stripping or restoring a zone suffix.
  */
@@ -142,19 +138,6 @@ class DnsHelper
         }
 
         return IpHelper::networkToReverseZone($input);
-    }
-
-    /**
-     * @throws CannotProcessHost
-     */
-    public static function getRegisteredDomain(string $domain): string
-    {
-        $rules = Rules::fromPath(__DIR__ . '/../../../data/public_suffix_list.dat');
-
-        $domain = Domain::fromIDNA2008($domain);
-        $result = $rules->resolve($domain);
-
-        return $result->registrableDomain()->toString();
     }
 
     public static function getSubDomainName(string $domain): string

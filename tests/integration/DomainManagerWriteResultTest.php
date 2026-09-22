@@ -29,7 +29,9 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
@@ -176,7 +178,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
             $this->createMock(RecordChangeWriterInterface::class),
             $this->createMock(ZoneTemplateApplier::class),
             new DbZoneTemplateRepository($this->db, $config, $backend),
-            new ZoneTemplatePlaceholders($config),
+            new ZoneTemplatePlaceholders($config, new DomainParsingService(new PdpPublicSuffixList())),
             new DbZoneTemplateSyncRepository($this->db, $config),
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
             new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),

@@ -64,31 +64,6 @@ class DnsHelperTest extends TestCase
         $this->assertTrue(DnsHelper::isReverseZoneName($classless), 'Namespace check accepts the classless name.');
     }
 
-    public function testGetRegisteredDomainWithSimpleDomain()
-    {
-        $this->assertEquals('example.com', DnsHelper::getRegisteredDomain('example.com'));
-    }
-
-    public function testGetRegisteredDomainWithSubdomain()
-    {
-        $this->assertEquals('example.com', DnsHelper::getRegisteredDomain('sub.example.com'));
-    }
-
-    public function testGetRegisteredDomainWithMultipleSubdomains()
-    {
-        $this->assertEquals('example.com', DnsHelper::getRegisteredDomain('sub.sub2.example.com'));
-    }
-
-    public function testGetRegisteredDomainWithCountryCodeTLD()
-    {
-        $this->assertEquals('example.co.uk', DnsHelper::getRegisteredDomain('sub.example.co.uk'));
-    }
-
-//    public function testGetRegisteredDomainWithSinglePartDomain()
-//    {
-//        $this->assertEquals('localhost', DnsHelper::getRegisteredDomain('localhost'));
-//    }
-
     public function testGetDomainNameWithSubdomain()
     {
         $this->assertEquals('sub', DnsHelper::getSubDomainName('sub.example.com'));

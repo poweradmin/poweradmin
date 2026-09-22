@@ -34,7 +34,9 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneAccountOwnerRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
@@ -421,7 +423,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             $templates,
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
             new DbZoneTemplateSyncRepository($this->db, $this->config),
-            new ZoneTemplatePlaceholders($this->config),
+            new ZoneTemplatePlaceholders($this->config, new DomainParsingService(new PdpPublicSuffixList())),
             $this->changeLogger,
             new NullLogger()
         );
@@ -437,7 +439,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             $this->changeLogger,
             $applier,
             $templates,
-            new ZoneTemplatePlaceholders($this->config),
+            new ZoneTemplatePlaceholders($this->config, new DomainParsingService(new PdpPublicSuffixList())),
             new DbZoneTemplateSyncRepository($this->db, $this->config),
             new DbTemplateRecordLinkRepository($this->db, $this->config, $this->backend),
             new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
