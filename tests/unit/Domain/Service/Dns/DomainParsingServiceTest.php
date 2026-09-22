@@ -162,4 +162,12 @@ class DomainParsingServiceTest extends TestCase
         $this->assertEquals('example', $result['domain']);
         $this->assertEquals('internal', $result['tld']);
     }
+
+    public function testIpv6ReverseZoneIsLeftWhole(): void
+    {
+        $result = $this->service->parseDomain('1.0.0.0.ip6.arpa');
+
+        $this->assertEquals('1.0.0.0.ip6.arpa', $result['domain']);
+        $this->assertEquals('', $result['tld']);
+    }
 }

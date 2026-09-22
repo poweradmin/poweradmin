@@ -46,7 +46,7 @@ final class DomainParsingService
     public function parseDomain(string $domain): array
     {
         // Reverse zones and IPs have no registrable part to split off
-        if (preg_match('/in-addr\.arpa$/i', $domain) || filter_var($domain, FILTER_VALIDATE_IP)) {
+        if (preg_match('/\.(in-addr|ip6)\.arpa$/i', $domain) || filter_var($domain, FILTER_VALIDATE_IP)) {
             return [
                 'domain' => $domain,
                 'tld' => ''
