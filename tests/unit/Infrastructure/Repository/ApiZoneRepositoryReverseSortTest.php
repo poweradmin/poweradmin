@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
 
@@ -78,7 +79,7 @@ class ApiZoneRepositoryReverseSortTest extends TestCase
         return new ApiZoneRepository($this->db, $this->backend, 'sqlite', new FakeConfiguration());
     }
 
-    /** @return array<int, array<string, mixed>> */
+    /** @return list<ZoneSummary> */
     private function reverseZones(string $sortBy, string $direction): array
     {
         return array_values($this->repository()->getReverseZones('all', 1, 'all', 0, 25, $sortBy, $direction));
@@ -87,13 +88,13 @@ class ApiZoneRepositoryReverseSortTest extends TestCase
     /** @return string[] */
     private function typesInOrder(string $sortBy, string $direction): array
     {
-        return array_map(static fn(array $zone): string => $zone['type'], $this->reverseZones($sortBy, $direction));
+        return array_map(static fn(ZoneSummary $zone): string => $zone->type, $this->reverseZones($sortBy, $direction));
     }
 
     /** @return string[] */
     private function namesInOrder(string $sortBy, string $direction): array
     {
-        return array_map(static fn(array $zone): string => $zone['name'], $this->reverseZones($sortBy, $direction));
+        return array_map(static fn(ZoneSummary $zone): string => $zone->name, $this->reverseZones($sortBy, $direction));
     }
 
     #[Test]

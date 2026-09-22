@@ -25,12 +25,15 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 use TestHelpers\FakeConfiguration;
 
 /**
- * The exact rows the forward zone list receives from the SQL backend, keys in
- * order and values typed as the sqlite driver returns them.
+ * The rows the forward zone list receives from the SQL backend. ZoneSummary::toArray()
+ * reproduces the column-keyed rows with two deliberate differences from the raw
+ * driver rows: secured is always present as a bool (false when DNSSEC is off, where
+ * the key used to be absent) and it precedes the owner lists as on every other list.
  */
 #[CoversClass(SqlDomainRepository::class)]
 class SqlDomainRepositoryZoneListShapeTest extends TestCase
@@ -90,7 +93,10 @@ class SqlDomainRepositoryZoneListShapeTest extends TestCase
      */
     private function rows(bool $dnssec, bool $serial, bool $template, bool $health = true, bool $recordCount = true): array
     {
-        return $this->repository($dnssec)->getZones('all', 0, 'all', 0, 9999, 'name', 'ASC', true, $serial, $template, $health, $recordCount);
+        return array_map(
+            fn(ZoneSummary $zone): array => $zone->toArray(),
+            $this->repository($dnssec)->getZones('all', 0, 'all', 0, 9999, 'name', 'ASC', true, $serial, $template, $health, $recordCount)
+        );
     }
 
     public function testForwardListWithEveryColumnEnabled(): void
@@ -106,10 +112,10 @@ class SqlDomainRepositoryZoneListShapeTest extends TestCase
                 'is_missing_soa' => false,
                 'soa_health' => 'ok',
                 'comment' => '',
+                'secured' => false,
                 'owners' => [],
                 'full_names' => [],
                 'users' => [],
-                'secured' => 0,
                 'serial' => '5',
                 'template' => '',
             ],
@@ -124,10 +130,10 @@ class SqlDomainRepositoryZoneListShapeTest extends TestCase
                 'soa_health' => 'ok',
                 // Two owner rows, the second with a NULL comment; the last row wins
                 'comment' => '',
+                'secured' => true,
                 'owners' => ['alice', 'bob'],
                 'full_names' => ['Alice A', ''],
                 'users' => ['alice', 'bob'],
-                'secured' => 1,
                 'serial' => '2024010101',
                 'template' => 'Basic',
             ],
@@ -149,6 +155,7 @@ class SqlDomainRepositoryZoneListShapeTest extends TestCase
             'is_missing_soa' => false,
             'soa_health' => 'ok',
             'comment' => '',
+            'secured' => false,
             'owners' => ['alice', 'bob'],
             'full_names' => ['Alice A', ''],
             'users' => ['alice', 'bob'],

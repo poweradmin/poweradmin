@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service\Backend;
 
 use PDO;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Zone\ZoneCountService;
@@ -89,7 +90,7 @@ class DnsDataService
      * @param string $sortDirection 'ASC' or 'DESC'
      * @param bool $showSerial Include SOA serial
      * @param bool $showTemplate Include zone template name
-     * @return array Keyed by domain name, matching DomainRepository::getZones() shape
+     * @return array<string, ZoneSummary> Keyed by domain name
      */
     public function getForwardZones(
         string $perm,
@@ -139,7 +140,7 @@ class DnsDataService
      * @param string $sortDirection 'ASC' or 'DESC'
      * @param bool $showSerial Include SOA serial
      * @param bool $showTemplate Include zone template name
-     * @return array Keyed by domain name, matching DbZoneRepository::getReverseZones() shape
+     * @return array<string, ZoneSummary> Keyed by domain name
      */
     public function getReverseZones(
         string $perm,

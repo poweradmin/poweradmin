@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
@@ -495,7 +496,7 @@ final class SqlDomainRepository implements DomainRepositoryInterface
             }
         }
 
-        return $ret;
+        return array_map(ZoneSummary::fromRow(...), $ret);
     }
 
     public function getZoneInfoFromId(int $zid): array

@@ -29,6 +29,7 @@ use Poweradmin\Application\Console\Arguments;
 use Poweradmin\Application\Console\Command\ZoneListCommand;
 use Poweradmin\Application\Console\CommandLineActor;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 
@@ -136,8 +137,8 @@ class ZoneListCommandTest extends TestCase
         $domains->expects($this->once())->method('getZones')
             ->with('own', 2, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, false, false, false, true)
             ->willReturn([
-                'example.com' => ['id' => '10', 'name' => 'example.com', 'type' => 'MASTER', 'count_records' => '2'],
-                'example.net' => ['id' => 11, 'name' => 'example.net', 'type' => 'NATIVE'],
+                'example.com' => ZoneSummary::fromRow(['id' => '10', 'name' => 'example.com', 'type' => 'MASTER', 'count_records' => '2']),
+                'example.net' => ZoneSummary::fromRow(['id' => 11, 'name' => 'example.net', 'type' => 'NATIVE']),
             ]);
 
         return $domains;

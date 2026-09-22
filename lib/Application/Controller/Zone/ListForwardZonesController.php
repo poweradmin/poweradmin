@@ -28,6 +28,7 @@ use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 use Poweradmin\Application\Service\Backend\DnsDataService;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
@@ -186,7 +187,9 @@ class ListForwardZonesController extends BaseController
         );
 
         $effectiveLetterStart = ($count_zones_view <= $iface_rowamount || $letter_start == 'all') ? 'all' : $letter_start;
-        $zones = $dnsDataService->getForwardZones(
+        // The page decorates each row with ownership and display fields, so it
+        // works on the column-keyed form of the read model
+        $zones = array_map(fn(ZoneSummary $zone): array => $zone->toArray(), $dnsDataService->getForwardZones(
             $perm_view,
             (int)$this->getCurrentUserId(),
             $effectiveLetterStart,
@@ -197,7 +200,7 @@ class ListForwardZonesController extends BaseController
             $iface_zonelist_serial,
             $iface_zonelist_template,
             $iface_zonelist_record_count
-        );
+        ));
 
         // Ownership is resolved once for the page: the per-row delete control must
         // mirror the check the delete endpoint runs (ownership direct or via any group).

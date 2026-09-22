@@ -28,6 +28,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
@@ -415,10 +416,10 @@ class ApiKeysController extends BaseController
 
         $zones = $this->zoneRepository()->listZones($userId, $viewOthers, [], 0, 100000);
 
-        return array_map(static fn(array $zone): array => [
-            'id' => (int) $zone['id'],
-            'name' => $zone['name'],
-            'utf8_name' => $zone['utf8_name'],
+        return array_map(static fn(ZoneSummary $zone): array => [
+            'id' => $zone->id,
+            'name' => $zone->name,
+            'utf8_name' => $zone->utf8Name,
         ], $zones);
     }
 }

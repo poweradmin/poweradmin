@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\ZoneSummary;
 
 /**
  * Lookups on the domains table; implemented for SQL and for the API backend mode.
@@ -97,7 +98,7 @@ interface DomainRepositoryInterface
      * @param string $sortby Column to sort results by [default='name']
      * @param string $sortDirection Sort direction [default='ASC']
      *
-     * @return array array of zone details [id,name,type,count_records] (empty array if none found)
+     * @return array<string, ZoneSummary> Keyed by zone name (empty array if none found)
      */
     public function getZones(
         string $perm,

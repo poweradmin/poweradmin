@@ -27,6 +27,7 @@ use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Service\Backend\DnsDataService;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Service\Zone\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
@@ -156,8 +157,9 @@ class ListReverseZonesController extends BaseController
         $count_ipv4_zones = $zoneCounts['count_ipv4'];
         $count_ipv6_zones = $zoneCounts['count_ipv6'];
 
-        // Get the actual zones for the current page
-        $reverse_zones = $this->dnsDataService()->getReverseZones(
+        // The page decorates each row with ownership and display fields, so it
+        // works on the column-keyed form of the read model
+        $reverse_zones = array_map(fn(ZoneSummary $zone): array => $zone->toArray(), $this->dnsDataService()->getReverseZones(
             $perm_view,
             $loggedInUserId,
             $reverse_zone_type,
@@ -168,7 +170,7 @@ class ListReverseZonesController extends BaseController
             $iface_zonelist_serial,
             $iface_zonelist_template,
             $iface_zonelist_record_count
-        );
+        ));
 
         // Apply client-side sorting when sorting by name for additional flexibility
         if ($zone_sort_by === 'name' && !empty($reverse_zones)) {

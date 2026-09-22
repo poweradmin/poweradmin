@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Model\ZoneDetail;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
@@ -141,7 +142,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param string $sortBy Column to sort by
      * @param string $sortDirection Sort direction ('ASC' or 'DESC')
      * @param bool $countOnly If true, returns only the count of matching zones
-     * @return array|int Array of reverse zones or count if countOnly is true
+     * @return array<string, ZoneSummary>|int Reverse zones keyed by name, or the count if countOnly is true
      */
     public function getReverseZones(
         string $permType,
@@ -360,7 +361,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             unset($zone); // Break reference
         }
 
-        return $zones;
+        return array_map(ZoneSummary::fromRow(...), $zones);
     }
 
     public function countZones(string $permType, ?int $userId, string $letterStart = 'all', string $zoneType = 'forward'): int
@@ -484,7 +485,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param array $filters Optional filters for zones
      * @param int $offset Pagination offset
      * @param int $limit Maximum number of records to return
-     * @return array List of zones
+     * @return list<ZoneSummary> Zones ordered by name
      */
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
     {
@@ -583,7 +584,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         // Convert associative array to indexed array for consistent API response
-        return array_values($zones);
+        return array_values(array_map(ZoneSummary::fromRow(...), $zones));
     }
 
     public function getZone(int $zoneId): ?ZoneDetail

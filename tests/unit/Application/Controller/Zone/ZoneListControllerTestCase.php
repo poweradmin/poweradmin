@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\Backend\DnsDataService;
 use Poweradmin\Application\Service\Web\PaginationService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
@@ -100,8 +101,8 @@ abstract class ZoneListControllerTestCase extends SeamControllerTestCase
 
         $this->dnsData = $this->createMock(DnsDataService::class);
         $this->dnsData->method('countZones')->willReturnCallback(fn(): int => $this->zoneCount);
-        $this->dnsData->method('getForwardZones')->willReturnCallback(fn(): array => $this->zones);
-        $this->dnsData->method('getReverseZones')->willReturnCallback(fn(): array => $this->zones);
+        $this->dnsData->method('getForwardZones')->willReturnCallback(fn(): array => array_map(ZoneSummary::fromRow(...), $this->zones));
+        $this->dnsData->method('getReverseZones')->willReturnCallback(fn(): array => array_map(ZoneSummary::fromRow(...), $this->zones));
         $this->dnsData->method('getReverseZoneCounts')->willReturnCallback(fn(): array => $this->reverseZoneCounts);
         $this->dnsData->method('getDistinctStartingLetters')->willReturn(['a', 'e']);
 

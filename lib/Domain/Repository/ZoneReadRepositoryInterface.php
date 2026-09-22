@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\ZoneDetail;
+use Poweradmin\Domain\Model\ZoneSummary;
 
 /**
  * Zone lookups, lists and counts; one of the three roles ZoneRepositoryInterface combines.
@@ -64,7 +65,7 @@ interface ZoneReadRepositoryInterface
      * @param array $filters Optional filters
      * @param int $offset Pagination offset
      * @param int $limit Maximum number of records
-     * @return array Array of zones
+     * @return list<ZoneSummary> Zones ordered by name
      */
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array;
 
@@ -110,7 +111,7 @@ interface ZoneReadRepositoryInterface
      * @param string $sortBy Column to sort by
      * @param string $sortDirection Sort direction ('ASC' or 'DESC')
      * @param bool $countOnly If true, returns only the count of matching zones
-     * @return array|int Array of reverse zones or count if countOnly is true
+     * @return array<string, ZoneSummary>|int Reverse zones keyed by name, or the count if countOnly is true
      */
     public function getReverseZones(
         string $permType,

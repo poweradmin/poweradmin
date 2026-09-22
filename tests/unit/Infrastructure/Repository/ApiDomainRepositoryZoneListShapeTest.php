@@ -25,13 +25,15 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use TestHelpers\FakeConfiguration;
 
 /**
  * The exact rows the forward zone list receives from the API backend, keys in
- * order and values typed as the repository assembles them.
+ * order and values typed as the repository assembles them; ZoneSummary::toArray()
+ * must reproduce them.
  */
 #[CoversClass(ApiDomainRepository::class)]
 class ApiDomainRepositoryZoneListShapeTest extends TestCase
@@ -109,7 +111,8 @@ class ApiDomainRepositoryZoneListShapeTest extends TestCase
 
     public function testForwardListWithEveryColumnEnabled(): void
     {
-        $rows = $this->repository(true)->getZones('all', 0, 'all', 0, 9999, 'name', 'ASC', true, true, true);
+        $zones = $this->repository(true)->getZones('all', 0, 'all', 0, 9999, 'name', 'ASC', true, true, true);
+        $rows = array_map(fn(ZoneSummary $zone): array => $zone->toArray(), $zones);
 
         $this->assertSame([
             'plain.example' => [
@@ -151,11 +154,21 @@ class ApiDomainRepositoryZoneListShapeTest extends TestCase
                 'notify_pending' => true,
             ],
         ], $rows);
+
+        $signed = $zones['signed.example'];
+        $this->assertSame(7, $signed->id);
+        $this->assertSame('2024010105', $signed->signedSerial);
+        $this->assertSame(2024010100, $signed->notifiedSerial);
+        $this->assertTrue($signed->notifyPending);
+        $this->assertNull($zones['plain.example']->notifiedSerial);
     }
 
     public function testForwardListWithoutOptionalColumns(): void
     {
-        $rows = $this->repository(false)->getZones('all', 0, 'all', 0, 9999, 'name', 'ASC', true, false, false, false, false);
+        $rows = array_map(
+            fn(ZoneSummary $zone): array => $zone->toArray(),
+            $this->repository(false)->getZones('all', 0, 'all', 0, 9999, 'name', 'ASC', true, false, false, false, false)
+        );
 
         $this->assertSame([
             'id' => 7,

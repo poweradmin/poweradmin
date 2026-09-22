@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Controller\Api\V2\Resource;
 
+use Poweradmin\Domain\Model\ZoneSummary;
+
 /**
  * The JSON shape of a zone on /api/v2: the listing carries a summary, the
  * single-zone endpoints the full detail.
@@ -31,11 +33,15 @@ final class ZoneResource
     /**
      * A zone as GET /zones lists it.
      *
-     * @param array<string, mixed> $zone
+     * @param array<string, mixed>|ZoneSummary $zone
      * @return array<string, mixed>
      */
-    public static function summary(array $zone): array
+    public static function summary(array|ZoneSummary $zone): array
     {
+        if ($zone instanceof ZoneSummary) {
+            $zone = $zone->toArray();
+        }
+
         return [
             'id' => (int)$zone['id'],
             // Equal to id except for API-backend zones migrated from SQL mode; the

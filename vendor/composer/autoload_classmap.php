@@ -1324,6 +1324,7 @@ return array(
     'Poweradmin\\Domain\\Model\\ZoneChangeRequestRowCodec' => $baseDir . '/lib/Domain/Model/ZoneChangeRequestRowCodec.php',
     'Poweradmin\\Domain\\Model\\ZoneDetail' => $baseDir . '/lib/Domain/Model/ZoneDetail.php',
     'Poweradmin\\Domain\\Model\\ZoneGroup' => $baseDir . '/lib/Domain/Model/ZoneGroup.php',
+    'Poweradmin\\Domain\\Model\\ZoneSummary' => $baseDir . '/lib/Domain/Model/ZoneSummary.php',
     'Poweradmin\\Domain\\Model\\ZoneType' => $baseDir . '/lib/Domain/Model/ZoneType.php',
     'Poweradmin\\Domain\\Module\\ModuleInterface' => $baseDir . '/lib/Domain/Module/ModuleInterface.php',
     'Poweradmin\\Domain\\Port\\ActorInterface' => $baseDir . '/lib/Domain/Port/ActorInterface.php',

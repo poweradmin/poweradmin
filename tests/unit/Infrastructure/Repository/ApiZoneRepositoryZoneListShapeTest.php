@@ -25,13 +25,15 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
 
 /**
  * The exact rows the reverse zone list and the internal zone list receive from
- * the API backend, keys in order and values typed as the repository assembles them.
+ * the API backend, keys in order and values typed as the repository assembles them;
+ * ZoneSummary::toArray() must reproduce them.
  */
 #[CoversClass(ApiZoneRepository::class)]
 class ApiZoneRepositoryZoneListShapeTest extends TestCase
@@ -117,12 +119,12 @@ class ApiZoneRepositoryZoneListShapeTest extends TestCase
                 'notified_serial' => 7,
                 'notify_pending' => false,
             ],
-        ], $this->repository(true)->getReverseZones('all', 5, 'all', 0, 25, 'name', 'ASC', false, true, true));
+        ], $this->toRows($this->repository(true)->getReverseZones('all', 5, 'all', 0, 25, 'name', 'ASC', false, true, true)));
     }
 
     public function testReverseListWithoutOptionalColumns(): void
     {
-        $rows = $this->repository(false)->getReverseZones('all', 5, 'all', 0, 25, 'name', 'ASC', false, false, false, false, false);
+        $rows = $this->toRows($this->repository(false)->getReverseZones('all', 5, 'all', 0, 25, 'name', 'ASC', false, false, false, false, false));
 
         $this->assertSame([
             'id' => 10,
@@ -150,7 +152,20 @@ class ApiZoneRepositoryZoneListShapeTest extends TestCase
 
     public function testInternalListZones(): void
     {
-        $this->assertSame(self::internalRows(), $this->repository(false)->listZones(5, true));
+        $zones = $this->repository(false)->listZones(5, true);
+
+        $this->assertSame(self::internalRows(), $this->toRows($zones));
+        $this->assertSame(10, $zones[0]->canonicalId);
+        $this->assertNull($zones[0]->soaHealth);
+    }
+
+    /**
+     * @param array<ZoneSummary> $zones
+     * @return array<array<string, mixed>>
+     */
+    private function toRows(array $zones): array
+    {
+        return array_map(fn(ZoneSummary $zone): array => $zone->toArray(), $zones);
     }
 
     /**

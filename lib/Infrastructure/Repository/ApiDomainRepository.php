@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
@@ -241,7 +242,7 @@ final class ApiDomainRepository implements DomainRepositoryInterface
             }
         }
 
-        return $result;
+        return array_map(ZoneSummary::fromRow(...), $result);
     }
 
     /**

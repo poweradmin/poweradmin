@@ -116,7 +116,7 @@ class DbZoneRepositoryListZoneProbesTest extends TestCase
 
         $this->assertSame(
             ['id', 'name', 'utf8_name', 'type', 'count_records', 'comment', 'secured', 'owners', 'full_names', 'users'],
-            array_keys($zone)
+            array_keys($zone->toArray())
         );
     }
 

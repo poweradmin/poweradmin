@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
 
@@ -80,7 +81,7 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
     private function visibleTo(int $userId): array
     {
         $zones = $this->repository()->getReverseZones('own', $userId, 'all', 0, 25, 'name', 'ASC');
-        return array_map(static fn(array $zone): string => $zone['name'], array_values($zones));
+        return array_map(static fn(ZoneSummary $zone): string => $zone->name, array_values($zones));
     }
 
     #[Test]

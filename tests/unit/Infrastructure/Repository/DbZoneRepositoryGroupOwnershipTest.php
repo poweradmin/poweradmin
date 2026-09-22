@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 
@@ -229,6 +230,6 @@ class DbZoneRepositoryGroupOwnershipTest extends SqliteIntegrationTestCase
      */
     private function directlyOwnedZoneNames(array $zones): array
     {
-        return array_values(array_keys(array_filter($zones, fn(array $zone) => $zone['owners'] !== [])));
+        return array_values(array_keys(array_filter($zones, fn(ZoneSummary $zone) => $zone->owners !== [])));
     }
 }

@@ -25,12 +25,17 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Enum\ZoneSoaHealth;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use TestHelpers\FakeConfiguration;
 
 /**
- * The exact rows the reverse zone list and the internal zone list receive from
- * the SQL backend, keys in order and values typed as the sqlite driver returns them.
+ * The rows the reverse zone list and the internal zone list receive from the SQL
+ * backend. ZoneSummary::toArray() reproduces the column-keyed rows with two
+ * deliberate differences from the raw driver rows: secured is a bool rather than
+ * the probe's 0/1, and the optional serial and template keys follow the shared
+ * order (serial before template).
  */
 #[CoversClass(DbZoneRepository::class)]
 class DbZoneRepositoryZoneListShapeTest extends TestCase
@@ -81,6 +86,8 @@ class DbZoneRepositoryZoneListShapeTest extends TestCase
 
     public function testReverseListWithSerialAndTemplate(): void
     {
+        $zones = $this->repository->getReverseZones('all', 5, 'all', 0, 25, 'name', 'ASC', false, true, true);
+
         $this->assertSame([
             '2.0.192.in-addr.arpa' => [
                 'id' => 3,
@@ -92,19 +99,27 @@ class DbZoneRepositoryZoneListShapeTest extends TestCase
                 'is_missing_soa' => false,
                 'soa_health' => 'ok',
                 'comment' => 'reverse',
-                'secured' => 0,
+                'secured' => false,
                 'owners' => ['alice'],
                 'full_names' => ['Alice A'],
                 'users' => ['alice'],
-                'template' => 'Basic',
                 'serial' => '7',
+                'template' => 'Basic',
             ],
-        ], $this->repository->getReverseZones('all', 5, 'all', 0, 25, 'name', 'ASC', false, true, true));
+        ], $this->toRows($zones));
+
+        $zone = $zones['2.0.192.in-addr.arpa'];
+        $this->assertSame(3, $zone->id);
+        $this->assertSame(2, $zone->recordCount);
+        $this->assertSame(ZoneSoaHealth::OK, $zone->soaHealth);
+        $this->assertSame('7', $zone->serial);
+        $this->assertSame('Basic', $zone->template);
+        $this->assertNull($zone->signedSerial);
     }
 
     public function testReverseListWithoutOptionalColumns(): void
     {
-        $rows = $this->repository->getReverseZones('all', 5, 'all', 0, 25, 'name', 'ASC', false, false, false, false, false);
+        $rows = $this->toRows($this->repository->getReverseZones('all', 5, 'all', 0, 25, 'name', 'ASC', false, false, false, false, false));
 
         $this->assertSame([
             'id' => 3,
@@ -116,7 +131,7 @@ class DbZoneRepositoryZoneListShapeTest extends TestCase
             'is_missing_soa' => false,
             'soa_health' => 'ok',
             'comment' => 'reverse',
-            'secured' => 0,
+            'secured' => false,
             'owners' => ['alice'],
             'full_names' => ['Alice A'],
             'users' => ['alice'],
@@ -130,7 +145,16 @@ class DbZoneRepositoryZoneListShapeTest extends TestCase
 
     public function testInternalListZones(): void
     {
-        $this->assertSame(self::internalRows(), $this->repository->listZones(5, true));
+        $this->assertSame(self::internalRows(), $this->toRows($this->repository->listZones(5, true)));
+    }
+
+    /**
+     * @param array<ZoneSummary> $zones
+     * @return array<array<string, mixed>>
+     */
+    private function toRows(array $zones): array
+    {
+        return array_map(fn(ZoneSummary $zone): array => $zone->toArray(), $zones);
     }
 
     /**
@@ -154,7 +178,7 @@ class DbZoneRepositoryZoneListShapeTest extends TestCase
                 'type' => 'NATIVE',
                 'count_records' => 2,
                 'comment' => 'reverse',
-                'secured' => 0,
+                'secured' => false,
                 'owners' => ['alice'],
                 'full_names' => ['Alice A'],
                 'users' => ['alice'],
@@ -166,7 +190,7 @@ class DbZoneRepositoryZoneListShapeTest extends TestCase
                 'type' => 'NATIVE',
                 'count_records' => 1,
                 'comment' => '',
-                'secured' => 0,
+                'secured' => false,
                 'owners' => [],
                 'full_names' => [],
                 'users' => [],
@@ -178,7 +202,7 @@ class DbZoneRepositoryZoneListShapeTest extends TestCase
                 'type' => 'MASTER',
                 'count_records' => 3,
                 'comment' => 'signed zone',
-                'secured' => 1,
+                'secured' => true,
                 'owners' => ['alice', 'bob'],
                 'full_names' => ['Alice A', ''],
                 'users' => ['alice', 'bob'],

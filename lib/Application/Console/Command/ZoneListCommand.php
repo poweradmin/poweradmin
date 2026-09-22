@@ -99,10 +99,10 @@ final class ZoneListCommand implements CommandInterface
         $rows = [];
         foreach ($zones as $zone) {
             $rows[] = [
-                (int) $zone['id'],
-                (string) $zone['name'],
-                (string) $zone['type'],
-                (int) ($zone['count_records'] ?? 0),
+                $zone->id,
+                $zone->name,
+                $zone->type,
+                $zone->recordCount,
             ];
         }
         $writer->write(self::COLUMNS, $rows);

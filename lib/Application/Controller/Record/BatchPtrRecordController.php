@@ -308,8 +308,8 @@ class BatchPtrRecordController extends BaseController
         $reverseZones = [];
         foreach ($reverseZonesResult as $zone) {
             // For IPv4 reverse zones, convert to network notation
-            if (str_ends_with($zone['name'], '.in-addr.arpa')) {
-                $parts = explode('.', str_replace('.in-addr.arpa', '', $zone['name']));
+            if (str_ends_with($zone->name, '.in-addr.arpa')) {
+                $parts = explode('.', str_replace('.in-addr.arpa', '', $zone->name));
                 $octets = array_reverse($parts);
 
                 // Determine CIDR based on number of octets
@@ -321,18 +321,18 @@ class BatchPtrRecordController extends BaseController
                     $network = $octets[0] . '.' . $octets[1] . '.' . $octets[2] . '.0/24';
                 } else {
                     // For more specific zones, just show the zone name
-                    $network = $zone['name'];
+                    $network = $zone->name;
                 }
 
                 $reverseZones[] = [
-                    'name' => $zone['name'],
+                    'name' => $zone->name,
                     'network' => $network,
                     'type' => 'ipv4'
                 ];
-            } elseif (str_ends_with($zone['name'], '.ip6.arpa')) {
+            } elseif (str_ends_with($zone->name, '.ip6.arpa')) {
                 // Convert ip6.arpa zone to /64 prefix (4 hextets)
                 // The form validation expects exactly 4 colon-separated groups
-                $shortened = IpHelper::shortenIPv6ReverseZone($zone['name']);
+                $shortened = IpHelper::shortenIPv6ReverseZone($zone->name);
                 if ($shortened !== null) {
                     $binary = inet_pton($shortened);
                     $expanded = implode(':', str_split(bin2hex($binary), 4));
@@ -343,11 +343,11 @@ class BatchPtrRecordController extends BaseController
                         return ltrim($h, '0') ?: '0';
                     }, $prefix));
                 } else {
-                    $network = $zone['name'];
+                    $network = $zone->name;
                 }
 
                 $reverseZones[] = [
-                    'name' => $zone['name'],
+                    'name' => $zone->name,
                     'network' => $network,
                     'type' => 'ipv6'
                 ];

@@ -1730,6 +1730,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Model\\ZoneChangeRequestRowCodec' => __DIR__ . '/../..' . '/lib/Domain/Model/ZoneChangeRequestRowCodec.php',
         'Poweradmin\\Domain\\Model\\ZoneDetail' => __DIR__ . '/../..' . '/lib/Domain/Model/ZoneDetail.php',
         'Poweradmin\\Domain\\Model\\ZoneGroup' => __DIR__ . '/../..' . '/lib/Domain/Model/ZoneGroup.php',
+        'Poweradmin\\Domain\\Model\\ZoneSummary' => __DIR__ . '/../..' . '/lib/Domain/Model/ZoneSummary.php',
         'Poweradmin\\Domain\\Model\\ZoneType' => __DIR__ . '/../..' . '/lib/Domain/Model/ZoneType.php',
         'Poweradmin\\Domain\\Module\\ModuleInterface' => __DIR__ . '/../..' . '/lib/Domain/Module/ModuleInterface.php',
         'Poweradmin\\Domain\\Port\\ActorInterface' => __DIR__ . '/../..' . '/lib/Domain/Port/ActorInterface.php',

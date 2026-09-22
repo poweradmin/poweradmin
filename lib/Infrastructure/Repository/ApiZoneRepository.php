@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\ZoneDetail;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
@@ -279,7 +280,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
         $zones = $this->enrichZonesWithOwnership($zones, true);
 
-        return $zones;
+        return array_map(ZoneSummary::fromRow(...), $zones);
     }
 
     /**
@@ -545,7 +546,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
         $zones = $this->enrichZonesWithOwnership($zones);
 
-        return array_values($zones);
+        return array_values(array_map(ZoneSummary::fromRow(...), $zones));
     }
 
     public function getZone(int $zoneId): ?ZoneDetail
