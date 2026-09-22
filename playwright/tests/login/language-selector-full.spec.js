@@ -23,7 +23,8 @@ const SUPPORTED_LOCALES = [
 
 test.describe('Language Selector - Full Configuration', () => {
   const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
-  test.skip(baseUrl.includes('8082'), 'This test requires a non-SQLite instance with all languages enabled');
+  // Both SQLite instances (8082 SQL mode, 8085 API mode) ship a reduced language list
+  test.skip(baseUrl.includes('8082') || baseUrl.includes('8085'), 'This test requires a non-SQLite instance with all languages enabled');
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');
