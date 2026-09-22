@@ -51,7 +51,7 @@ readonly class StaticAssetController
         }
 
         // Build the absolute file path
-        $rootPath = dirname(dirname(dirname(__DIR__)));
+        $rootPath = dirname(__DIR__, 4);
         $filePath = $rootPath . '/' . $path;
 
         // Check if file exists and is readable
