@@ -49,6 +49,7 @@ use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Filing stores only the rows that differ and refuses invalid or oversized
@@ -182,7 +183,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $result = $this->makeService()->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'x', 'type' => 'A', 'content' => '192.0.2.5', 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
 
         $this->assertSame(ZoneChangeRequestResult::CODE_READ_ONLY_ZONE, $result->code);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
     }
 
     public function testATruncatedSubmissionFilesNothing(): void
@@ -205,7 +206,7 @@ class ZoneChangeRequestServiceTest extends TestCase
 
         $this->assertFalse($result->success);
         $this->assertSame(ZoneChangeRequestResult::CODE_PAYLOAD_TOO_LARGE, $result->code);
-        $this->assertSame(413, $result->status);
+        $this->assertSame(Refusal::PAYLOAD_TOO_LARGE, $result->refusal);
         $this->assertSame(0, $this->repository->count([]));
     }
 
@@ -221,7 +222,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->records->method('recordExists')->willReturn(true);
         $duplicate = $this->makeService()->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'new', 'type' => 'A', 'content' => '192.0.2.5', 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
         $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $duplicate->code);
-        $this->assertSame(409, $duplicate->status);
+        $this->assertSame(Refusal::CONFLICT, $duplicate->refusal);
     }
 
     public function testFilingADeleteSnapshotsTheStoredRowAndRefusesOtherZones(): void
@@ -236,7 +237,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->stored['8'] = ['id' => '8', 'domain_id' => 99, 'name' => 'x.other.test', 'type' => 'A', 'content' => '192.0.2.8', 'ttl' => 60, 'prio' => 0, 'disabled' => 0];
         $foreign = $this->makeService()->fileRecordDelete(self::ZONE_ID, 8, self::REQUESTER, 'alice');
         $this->assertSame(ZoneChangeRequestResult::CODE_RECORD_NOT_FOUND, $foreign->code);
-        $this->assertSame(404, $foreign->status);
+        $this->assertSame(Refusal::NOT_FOUND, $foreign->refusal);
     }
 
     public function testApproveReplaysAddEditAndDeleteInOrderAndFinalizesOnce(): void
@@ -324,7 +325,7 @@ class ZoneChangeRequestServiceTest extends TestCase
 
         $this->assertFalse($result->success);
         $this->assertSame(ZoneChangeRequestResult::CODE_APPLY_FAILED, $result->code);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame($id, $result->requestId);
         $request = $this->repository->find($id);
         $this->assertSame(ZoneChangeRequest::STATUS_FAILED, $request->status);
@@ -345,7 +346,7 @@ class ZoneChangeRequestServiceTest extends TestCase
 
         $this->assertFalse($result->success);
         $this->assertSame(ZoneChangeRequestResult::CODE_APPLY_FAILED, $result->code);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame(
             'Action 4 (zone_comment) failed: You do not have the permission to edit this comment. Applied before the failure: 1, 2, 3.',
             $this->repository->find($id)->error
@@ -377,7 +378,7 @@ class ZoneChangeRequestServiceTest extends TestCase
 
         $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
 
-        $this->assertSame(404, $result->status);
+        $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
         $this->assertStringStartsWith('Action 2 (edit) failed: Record not found.', $this->repository->find($id)->error);
 
         $deleteOnly = $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', null, null, [
@@ -430,12 +431,12 @@ class ZoneChangeRequestServiceTest extends TestCase
 
     public function testAFailedZoneDeleteMarksTheRequestFailed(): void
     {
-        $this->zoneManagement->method('deleteZone')->willReturn(['success' => false, 'message' => 'Zone not found', 'status' => 404]);
+        $this->zoneManagement->method('deleteZone')->willReturn(['success' => false, 'message' => 'Zone not found', 'refusal' => Refusal::NOT_FOUND]);
         $id = $this->makeService()->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice')->requestId;
 
         $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
 
-        $this->assertSame(404, $result->status);
+        $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
         $this->assertSame('Zone not found', $this->repository->find($id)->error);
         $this->assertSame(ZoneChangeRequest::STATUS_FAILED, $this->repository->find($id)->status);
     }
@@ -451,7 +452,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $result = $this->makeService(null, $permissions)->approve($id, self::REVIEWER, 'bob');
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame(ZoneChangeRequest::STATUS_FAILED, $this->repository->find($id)->status);
     }
 
@@ -508,7 +509,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $service->approve($approved, self::REVIEWER, 'bob');
         $rejected = $service->fileRecordEdits($this->submission([$this->row('6', 'mail', '192.0.2.3')]))->requestId;
         $service->reject($rejected, self::REVIEWER, 'bob', 'no');
-        $this->zoneManagement->method('deleteZone')->willReturn(['success' => false, 'message' => 'Zone not found', 'status' => 404]);
+        $this->zoneManagement->method('deleteZone')->willReturn(['success' => false, 'message' => 'Zone not found', 'refusal' => Refusal::NOT_FOUND]);
         $failed = $service->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice')->requestId;
         $service->approve($failed, self::REVIEWER, 'bob');
 
@@ -680,7 +681,7 @@ class ZoneChangeRequestServiceTest extends TestCase
 
         $refused = $this->makeService()->cancel($id, self::REVIEWER);
         $this->assertSame(ZoneChangeRequestResult::CODE_NOT_REQUESTER, $refused->code);
-        $this->assertSame(403, $refused->status);
+        $this->assertSame(Refusal::FORBIDDEN, $refused->refusal);
         $this->assertSame(ZoneChangeRequest::STATUS_PENDING, $this->repository->find($id)->status);
 
         $this->assertTrue($this->makeService()->cancel($id, self::REQUESTER)->success);

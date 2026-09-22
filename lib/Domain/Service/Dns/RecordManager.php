@@ -44,6 +44,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Creates, updates and deletes records for the web UI, with validation, logging and serial updates.
@@ -255,7 +256,7 @@ class RecordManager implements RecordManagerInterface
             (int)$dns_ttl
         );
         if (!$validationResult->isValid()) {
-            return RecordWriteResult::failure($validationResult->getFirstError(), 400, $validationResult->getField());
+            return RecordWriteResult::failure($validationResult->getFirstError(), Refusal::INVALID_INPUT, $validationResult->getField());
         }
 
         // Extract validated values
@@ -268,7 +269,7 @@ class RecordManager implements RecordManagerInterface
         // Create RecordRepository to check if record exists
         $recordRepository = $this->repositoryFactory->createRecordRepository();
         if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
-            return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), 409, RecordField::DUPLICATE);
+            return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), Refusal::CONFLICT, RecordField::DUPLICATE);
         }
 
         // The row and the serial bump land together; a batch caller already holds its own.
@@ -405,7 +406,7 @@ class RecordManager implements RecordManagerInterface
             (int)$dns_ttl
         );
         if (!$validationResult->isValid()) {
-            return RecordWriteResult::failure($validationResult->getFirstError(), 400, $validationResult->getField());
+            return RecordWriteResult::failure($validationResult->getFirstError(), Refusal::INVALID_INPUT, $validationResult->getField());
         }
 
         // Extract validated values

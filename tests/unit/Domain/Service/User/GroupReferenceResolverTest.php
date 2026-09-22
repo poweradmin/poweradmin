@@ -29,6 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\User\GroupReferenceResolver;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 #[CoversClass(GroupReferenceResolver::class)]
 class GroupReferenceResolverTest extends TestCase
@@ -86,7 +87,7 @@ class GroupReferenceResolverTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertSame('Group not found: DNS-Operators', $result['message']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
     }
 
     #[Test]

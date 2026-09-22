@@ -37,6 +37,7 @@ use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * DomainManager write methods report refusals through the result (status and
@@ -68,7 +69,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $result = $this->makeDomainManager($backend)->addDomain('new.example', self::ADMIN_USER_ID, 'BOGUS', '', 'none');
 
         $this->assertFalse($result->success);
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
     }
 
     #[RunInSeparateProcess]
@@ -81,7 +82,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $result = $this->makeDomainManager($backend)->addDomain('new.example', self::CLIENT_USER_ID, 'MASTER', '', 'none');
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
     }
 
     #[RunInSeparateProcess]
@@ -93,7 +94,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $result = $this->makeDomainManager($backend)->addDomain('new.example', null, 'SLAVE', '192.0.2.1', 'none', [5]);
 
         $this->assertFalse($result->success);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM zones')->fetchColumn());
     }
 
@@ -121,7 +122,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $result = $this->makeDomainManager($backend)->changeZoneSlaveMaster(self::NEW_DOMAIN_ID, 'not-an-ip');
 
         $this->assertFalse($result->success);
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertStringContainsString('not-an-ip', (string)$result->message);
     }
 
@@ -134,7 +135,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $result = $this->makeDomainManager($this->dnsBackendStub(false))->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID);
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM zones WHERE domain_id = ' . self::NEW_DOMAIN_ID)->fetchColumn());
     }
 

@@ -45,6 +45,7 @@ use Poweradmin\Domain\Error\ZoneCreationFailedException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Creates, updates and deletes zones for the web UI, including template records and DNSSEC setup.
@@ -620,7 +621,7 @@ class DomainManager implements DomainManagerInterface
             return ZoneWriteResult::forbidden(_('You do not have the permission to edit zone metadata.'));
         }
         if ($this->userRepository->getUserById($user_id) === null) {
-            return ZoneWriteResult::failure(sprintf(_('Unknown user ID: %s'), $user_id), 404);
+            return ZoneWriteResult::failure(sprintf(_('Unknown user ID: %s'), $user_id), Refusal::NOT_FOUND);
         }
 
         $zoneRepository = $this->repositoryFactory->createZoneRepository();

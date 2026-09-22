@@ -36,6 +36,7 @@ use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * IDOR guard for RecordManager::editRecord(). The record's zone must be derived
@@ -75,7 +76,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
         $this->assertForgedEditRejected(
             self::VICTIM_RECORD_ID,
             'pwned.attacker.example',
-            403,
+            Refusal::FORBIDDEN,
             'editRecord must reject a record whose real zone the caller does not own, even when the request carries an owned zid.'
         );
     }
@@ -83,7 +84,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testEditRejectsUnknownRecordId(): void
     {
-        $this->assertForgedEditRejected(9999, 'ghost.attacker.example', 404);
+        $this->assertForgedEditRejected(9999, 'ghost.attacker.example', Refusal::NOT_FOUND);
     }
 
     #[RunInSeparateProcess]
@@ -96,7 +97,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
         $result = $this->makeRecordManager($backend)->deleteRecord(self::VICTIM_RECORD_ID);
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
     }
 
     #[RunInSeparateProcess]
@@ -109,14 +110,14 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
         $result = $this->makeRecordManager($backend)->deleteRecord(9999);
 
         $this->assertFalse($result->success);
-        $this->assertSame(404, $result->status);
+        $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
     }
 
     /**
      * Drive editRecord() as the attacker with a request that always claims the
      * attacker's own zone id, and assert the write never reaches the backend.
      */
-    private function assertForgedEditRejected(int $rid, string $name, int $expectedStatus, string $message = ''): void
+    private function assertForgedEditRejected(int $rid, string $name, Refusal $expected, string $message = ''): void
     {
         $_SESSION['userid'] = self::ATTACKER_USER_ID;
 
@@ -138,7 +139,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
 
         $result = $manager->editRecord($record);
         $this->assertFalse($result->success, $message);
-        $this->assertSame($expectedStatus, $result->status, $message);
+        $this->assertSame($expected, $result->refusal, $message);
     }
 
     private function seedAttackerAsClient(): void

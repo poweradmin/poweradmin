@@ -30,6 +30,7 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * addOwnerToZone() is the guarded write behind the change-owner page: it
@@ -68,7 +69,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $result = $this->manager([], [42])->addOwnerToZone(5, 42);
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
     }
 
     public function testRefusesAnUnknownUserSoNoZoneEndsUpOrphaned(): void
@@ -76,7 +77,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [])->addOwnerToZone(5, 42);
 
         $this->assertFalse($result->success);
-        $this->assertSame(404, $result->status);
+        $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
         $this->assertSame('Unknown user ID: 42', $result->message);
     }
 }

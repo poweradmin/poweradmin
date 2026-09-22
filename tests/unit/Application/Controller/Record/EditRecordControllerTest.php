@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
@@ -757,7 +758,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->fileResult = ZoneChangeRequestResult::failure(
             ZoneChangeRequestResult::CODE_VALIDATION,
             'refused',
-            400,
+            Refusal::INVALID_INPUT,
             ['content is invalid']
         );
         $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => 'nope']);

@@ -35,6 +35,7 @@ use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Application\Http\RefusalStatus;
 
 /**
  * /api/v2/zones/{id}/rrsets: lists, replaces and deletes records grouped by name and type.
@@ -510,7 +511,7 @@ class ZonesRRSetsController extends PublicApiController
                 $message = isset($result['write'])
                     ? $this->recordWriteErrorMessage($result['write'], 'Failed to insert record: ' . $result['content'])
                     : $result['message'];
-                return $this->returnApiError($message, $result['status']);
+                return $this->returnApiError($message, RefusalStatus::of($result['refusal']));
             }
             $normalizedName = $result['name'];
             $validatedRecords = $result['records'];

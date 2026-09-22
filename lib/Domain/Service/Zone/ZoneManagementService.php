@@ -44,10 +44,11 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
 use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Creates zones for the API with the same checks the web form applies. Failures come back as
- * ['success' => false, 'message' => ..., 'status' => ..., 'code' => ...]: the
+ * ['success' => false, 'message' => ..., 'refusal' => ..., 'code' => ...]: the
  * message is the API wording, the code lets the web forms word it themselves.
  */
 class ZoneManagementService
@@ -81,7 +82,7 @@ class ZoneManagementService
     private DomainManagerInterface|Closure $domainManager;
     private ?ZoneOverlapService $overlapService = null;
     private ?HostnameValidator $hostnameValidator = null;
-    /** @var array<string, array{id: string}|array{success: false, message: string, status: int, code: string}> */
+    /** @var array<string, array{id: string}|array{success: false, message: string, refusal: Refusal, code: string}> */
     private array $resolvedTemplates = [];
 
     /**
@@ -124,7 +125,7 @@ class ZoneManagementService
      * Resolves a template given by name or numeric id and checks the acting user
      * may apply it (own, global, or ueberuser - the same rule the web UI enforces).
      *
-     * @return array{id: string}|array{success: false, message: string, status: int, code: string}
+     * @return array{id: string}|array{success: false, message: string, refusal: Refusal, code: string}
      */
     public function resolveZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
     {
@@ -137,21 +138,21 @@ class ZoneManagementService
     }
 
     /**
-     * @return array{id: string}|array{success: false, message: string, status: int, code: string}
+     * @return array{id: string}|array{success: false, message: string, refusal: Refusal, code: string}
      */
     private function lookUpZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
     {
         if (is_numeric($zoneTemplate)) {
             if (!$this->zoneTemplates->zoneTemplIdExists((int)$zoneTemplate)) {
-                return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
+                return ['success' => false, 'message' => 'Zone template not found', 'refusal' => Refusal::NOT_FOUND, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
             }
             $templateId = (int)$zoneTemplate;
         } else {
             $matchingIds = $this->zoneTemplates->getZoneTemplIdsByName($zoneTemplate);
             if (count($matchingIds) === 0) {
-                return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
+                return ['success' => false, 'message' => 'Zone template not found', 'refusal' => Refusal::NOT_FOUND, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
             } elseif (count($matchingIds) > 1) {
-                return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead', 'status' => 409, 'code' => self::ERR_TEMPLATE_AMBIGUOUS];
+                return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_TEMPLATE_AMBIGUOUS];
             }
             $templateId = (int)$matchingIds[0];
         }
@@ -159,7 +160,7 @@ class ZoneManagementService
         if ($actingUserId !== null) {
             $isAdmin = $this->permissions->isAdmin($actingUserId);
             if (!$this->zoneTemplates->canUseTemplate($templateId, $actingUserId, $isAdmin)) {
-                return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'status' => 403, 'code' => self::ERR_TEMPLATE_FORBIDDEN];
+                return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'refusal' => Refusal::FORBIDDEN, 'code' => self::ERR_TEMPLATE_FORBIDDEN];
             }
         }
 
@@ -178,7 +179,7 @@ class ZoneManagementService
      * @param array<int> $groupIds Optional list of group IDs to assign as owners
      * @param int|null $actingUserId User performing the creation, used for the overlap check
      * @param string|null $soaEditApi Per-zone SOA-EDIT-API choice; null applies the dns.soa_edit_api default
-     * @return array{success: true, zone_id: int, domain: string, type: string, dnssec: ?ZoneSigningResult}|array{success: false, message: string, status: int, code: string}
+     * @return array{success: true, zone_id: int, domain: string, type: string, dnssec: ?ZoneSigningResult}|array{success: false, message: string, refusal: Refusal, code: string}
      */
     public function createZone(
         string $domain,
@@ -192,7 +193,7 @@ class ZoneManagementService
         ?string $soaEditApi = null
     ): array {
         if ($owner === null && empty($groupIds)) {
-            return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400, 'code' => self::ERR_NO_OWNER];
+            return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'refusal' => Refusal::INVALID_INPUT, 'code' => self::ERR_NO_OWNER];
         }
 
         // Stored names are punycode, as the web form writes them.
@@ -200,7 +201,7 @@ class ZoneManagementService
 
         $this->hostnameValidator ??= new HostnameValidator(HostnamePolicy::fromConfig($this->config));
         if (!$this->hostnameValidator->isValid($domain)) {
-            return ['success' => false, 'message' => 'Invalid domain name', 'status' => 400, 'code' => self::ERR_INVALID_NAME];
+            return ['success' => false, 'message' => 'Invalid domain name', 'refusal' => Refusal::INVALID_INPUT, 'code' => self::ERR_INVALID_NAME];
         }
 
         // The validator tolerates the absolute-name dot; the existence and parent
@@ -213,7 +214,7 @@ class ZoneManagementService
 
         // Check if domain already exists
         if ($domainRepository->domainExists($domain)) {
-            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409, 'code' => self::ERR_EXISTS];
+            return ['success' => false, 'message' => 'Domain already exists', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_EXISTS];
         }
 
         if (
@@ -221,20 +222,20 @@ class ZoneManagementService
             && DomainUtility::getDomainLevel($domain) > 2
             && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($domain))
         ) {
-            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409, 'code' => self::ERR_EXISTS];
+            return ['success' => false, 'message' => 'Domain already exists', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_EXISTS];
         }
 
         // Check if non-delegation records exist (prevents zone hijacking)
         // Only delegation records (NS, DS) are allowed
         if ($this->repositoryFactory->createRecordRepository()->hasNonDelegationRecords($domain)) {
-            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409, 'code' => self::ERR_EXISTS];
+            return ['success' => false, 'message' => 'Domain already exists', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_EXISTS];
         }
 
         // Block a zone that would overlap an existing zone owned by another user.
         if ($actingUserId !== null) {
             $this->overlapService ??= new ZoneOverlapService($domainRepository, $this->config, $this->permissions);
             if ($this->overlapService->findConflictingZone($domain, $actingUserId) !== null) {
-                return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409, 'code' => self::ERR_OVERLAP];
+                return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_OVERLAP];
             }
         }
 
@@ -248,7 +249,7 @@ class ZoneManagementService
             return [
                 'success' => false,
                 'message' => 'Invalid zone type. Must be one of: ' . implode(', ', $validTypes),
-                'status' => 400,
+                'refusal' => Refusal::INVALID_INPUT,
                 'code' => self::ERR_INVALID_TYPE,
             ];
         }
@@ -257,11 +258,11 @@ class ZoneManagementService
         if (trim($slaveMaster) !== '') {
             $masters = (new IPAddressValidator())->validateMultipleIPs($slaveMaster);
             if (!$masters->isValid()) {
-                return ['success' => false, 'message' => 'Invalid master servers format: ' . implode('; ', $masters->getErrors()), 'status' => 400, 'code' => self::ERR_INVALID_MASTER];
+                return ['success' => false, 'message' => 'Invalid master servers format: ' . implode('; ', $masters->getErrors()), 'refusal' => Refusal::INVALID_INPUT, 'code' => self::ERR_INVALID_MASTER];
             }
             $slaveMaster = implode(',', $masters->getData());
         } elseif (ZoneType::replicatesFromPrimary($type)) {
-            return ['success' => false, 'message' => 'Master IP address is required for ' . $type . ' zones', 'status' => 400, 'code' => self::ERR_MASTER_REQUIRED];
+            return ['success' => false, 'message' => 'Master IP address is required for ' . $type . ' zones', 'refusal' => Refusal::INVALID_INPUT, 'code' => self::ERR_MASTER_REQUIRED];
         }
 
         // applySerialPolicy() only logs and ignores an unoffered value, which would quietly
@@ -272,7 +273,7 @@ class ZoneManagementService
                 return [
                     'success' => false,
                     'message' => 'Invalid soa_edit_api value. Must be one of: ' . implode(', ', $soaEditApiChoices),
-                    'status' => 400,
+                    'refusal' => Refusal::INVALID_INPUT,
                     'code' => self::ERR_INVALID_SOA_EDIT_API,
                 ];
             }
@@ -293,10 +294,11 @@ class ZoneManagementService
         $created = $this->domainManager()->addDomain($domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
         if (!$created->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
+            $createdRefusal = $created->refusal ?? Refusal::BACKEND_FAILURE;
             return [
                 'success' => false,
-                'message' => $created->status === 500 ? 'Failed to create zone' : (string)$created->message,
-                'status' => $created->status,
+                'message' => $createdRefusal === Refusal::BACKEND_FAILURE ? 'Failed to create zone' : (string)$created->message,
+                'refusal' => $createdRefusal,
                 'code' => self::ERR_ZONE_WRITE,
             ];
         }
@@ -334,7 +336,7 @@ class ZoneManagementService
     {
         // Check if zone exists
         if (!$this->domainRepository()->zoneIdExists($zoneId)) {
-            return ['success' => false, 'message' => 'Zone not found', 'status' => 404];
+            return ['success' => false, 'message' => 'Zone not found', 'refusal' => Refusal::NOT_FOUND];
         }
 
         // Snapshot before
@@ -349,11 +351,11 @@ class ZoneManagementService
         try {
             $success = $this->zoneRepository->updateZone($zoneId, $updates);
         } catch (\InvalidArgumentException $e) {
-            return ['success' => false, 'message' => $e->getMessage(), 'status' => 400];
+            return ['success' => false, 'message' => $e->getMessage(), 'refusal' => Refusal::INVALID_INPUT];
         }
 
         if (!$success) {
-            return ['success' => false, 'message' => 'Failed to update zone', 'status' => 500];
+            return ['success' => false, 'message' => 'Failed to update zone', 'refusal' => Refusal::BACKEND_FAILURE];
         }
 
         if ($beforeZone !== null) {
@@ -380,7 +382,7 @@ class ZoneManagementService
     {
         // Check if zone exists
         if (!$this->domainRepository()->zoneIdExists($zoneId)) {
-            return ['success' => false, 'message' => 'Zone not found', 'status' => 404, 'code' => self::ERR_NOT_FOUND];
+            return ['success' => false, 'message' => 'Zone not found', 'refusal' => Refusal::NOT_FOUND, 'code' => self::ERR_NOT_FOUND];
         }
 
         // Snapshot the zone for the audit log before any state is touched.
@@ -403,7 +405,7 @@ class ZoneManagementService
         $success = $this->zoneRepository->deleteZone($zoneId);
 
         if (!$success) {
-            return ['success' => false, 'message' => 'Failed to delete zone', 'status' => 500, 'code' => self::ERR_ZONE_WRITE];
+            return ['success' => false, 'message' => 'Failed to delete zone', 'refusal' => Refusal::BACKEND_FAILURE, 'code' => self::ERR_ZONE_WRITE];
         }
 
         if ($zoneSnapshot !== null) {
@@ -421,17 +423,17 @@ class ZoneManagementService
      * Applies a zone template (or "none" to unlink) to an existing zone, replacing
      * the template-managed records. The caller must be allowed to use the template.
      *
-     * @return array{success: true, template_id: int}|array{success: false, message: string, status: int, code: string}
+     * @return array{success: true, template_id: int}|array{success: false, message: string, refusal: Refusal, code: string}
      */
     public function applyTemplate(int $zoneId, string $template, int $actingUserId): array
     {
         if (!$this->domainRepository()->zoneIdExists($zoneId)) {
-            return ['success' => false, 'message' => 'Zone not found', 'status' => 404, 'code' => self::ERR_NOT_FOUND];
+            return ['success' => false, 'message' => 'Zone not found', 'refusal' => Refusal::NOT_FOUND, 'code' => self::ERR_NOT_FOUND];
         }
 
         // Applying a template writes records, which read-only zones cannot accept
         if (ZoneType::isReadOnly($this->domainRepository()->getDomainType($zoneId))) {
-            return ['success' => false, 'message' => 'Cannot apply a template to a read-only zone', 'status' => 400, 'code' => self::ERR_READ_ONLY];
+            return ['success' => false, 'message' => 'Cannot apply a template to a read-only zone', 'refusal' => Refusal::INVALID_INPUT, 'code' => self::ERR_READ_ONLY];
         }
 
         $resolved = $this->resolveZoneTemplate($template, $actingUserId);
@@ -448,7 +450,7 @@ class ZoneManagementService
             $templateId
         );
         if (!$written->success) {
-            return ['success' => false, 'message' => (string)$written->message, 'status' => $written->status, 'code' => self::ERR_ZONE_WRITE];
+            return ['success' => false, 'message' => (string)$written->message, 'refusal' => $written->refusal ?? Refusal::BACKEND_FAILURE, 'code' => self::ERR_ZONE_WRITE];
         }
 
         return ['success' => true, 'template_id' => $templateId];

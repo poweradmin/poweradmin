@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Applying a template writes records straight to the backend, so it takes the
@@ -75,7 +76,7 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
             ->updateZoneRecords(86400, self::ZONE_ID, 3);
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
     }
 
     public function testUnlinkingTheTemplateWritesNoRecordsSoMetaEditIsEnough(): void
@@ -86,7 +87,7 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
         // anything other than the 403 proves the gate let it through.
         try {
             $result = $manager->updateZoneRecords(86400, self::ZONE_ID, 0);
-            $this->assertNotSame(403, $result->status);
+            $this->assertNotSame(Refusal::FORBIDDEN, $result->refusal);
         } catch (\Throwable) {
             $this->addToAssertionCount(1);
         }
@@ -97,6 +98,6 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
         $result = $this->manager([Permission::PERM_ZONE_CONTENT_EDIT_OWN], false)
             ->updateZoneRecords(86400, self::ZONE_ID, 3);
 
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
     }
 }

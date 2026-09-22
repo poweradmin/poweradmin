@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\User\UserProfileAssembler;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Security tests for password updates in UserManagementService
@@ -293,7 +294,7 @@ class UserManagementServicePasswordTest extends TestCase
         $result = $this->updateUser($userId, ['username' => '']);
 
         $this->assertFalse($result['success']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
         $this->assertStringContainsString('cannot be empty', $result['message']);
     }
 
@@ -311,7 +312,7 @@ class UserManagementServicePasswordTest extends TestCase
         $result = $this->updateUser($userId, ['username' => '   ']);
 
         $this->assertFalse($result['success']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
         $this->assertStringContainsString('cannot be empty', $result['message']);
     }
 

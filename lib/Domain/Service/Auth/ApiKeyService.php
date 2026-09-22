@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Creates, regenerates, disables and deletes API keys and enforces the per-user key limit.
@@ -150,16 +151,16 @@ class ApiKeyService
         $userId = $this->actor->userId() ?? 0;
 
         if (!$this->config->get('api', 'enabled', false)) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_API_DISABLED, _('API functionality is disabled.'), 403);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_API_DISABLED, _('API functionality is disabled.'), Refusal::FORBIDDEN);
         }
 
         if (!$this->canManageKeys()) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to create API keys.'), 403);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to create API keys.'), Refusal::FORBIDDEN);
         }
 
         $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
         if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !$this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_LIMIT, _('You have reached the maximum number of API keys allowed.'), 409);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_LIMIT, _('You have reached the maximum number of API keys allowed.'), Refusal::CONFLICT);
         }
 
         $apiKey = new ApiKey(
@@ -196,10 +197,10 @@ class ApiKeyService
     {
         $apiKey = $this->getApiKey($id);
         if ($apiKey === null) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to edit it.'), 404);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to edit it.'), Refusal::NOT_FOUND);
         }
         if (!$this->canManageKeys()) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to update API keys.'), 403);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to update API keys.'), Refusal::FORBIDDEN);
         }
 
         $apiKey->setName($name);
@@ -227,15 +228,15 @@ class ApiKeyService
     {
         $apiKey = $this->getApiKey($id);
         if ($apiKey === null) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to delete it.'), 404);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to delete it.'), Refusal::NOT_FOUND);
         }
         if (!$this->canManageKeys()) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to delete API keys.'), 403);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to delete API keys.'), Refusal::FORBIDDEN);
         }
 
         return $this->apiKeyRepository->delete($id)
             ? ApiKeyWriteResult::ok($apiKey)
-            : ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_WRITE, _('An error occurred. Please try again.'), 500);
+            : ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_WRITE, _('An error occurred. Please try again.'), Refusal::BACKEND_FAILURE);
     }
 
     /**
@@ -245,10 +246,10 @@ class ApiKeyService
     {
         $apiKey = $this->getApiKey($id);
         if ($apiKey === null) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to edit it.'), 404);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to edit it.'), Refusal::NOT_FOUND);
         }
         if (!$this->canManageKeys()) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to regenerate API keys.'), 403);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to regenerate API keys.'), Refusal::FORBIDDEN);
         }
 
         $apiKey->regenerateSecretKey();
@@ -263,10 +264,10 @@ class ApiKeyService
     {
         $apiKey = $this->getApiKey($id);
         if ($apiKey === null) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to edit it.'), 404);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to edit it.'), Refusal::NOT_FOUND);
         }
         if (!$this->canManageKeys()) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to update API keys.'), 403);
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to update API keys.'), Refusal::FORBIDDEN);
         }
 
         $apiKey->setDisabled($disabled);

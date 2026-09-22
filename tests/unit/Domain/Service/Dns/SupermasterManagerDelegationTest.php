@@ -9,6 +9,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\Dns\SupermasterWriteResult;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 #[CoversClass(SupermasterManager::class)]
 class SupermasterManagerDelegationTest extends TestCase
@@ -130,7 +131,7 @@ class SupermasterManagerDelegationTest extends TestCase
             ->addSupermaster('192.168.1.1', 'ns1.example.com', 'admin');
 
         $this->assertSame(SupermasterWriteResult::ERR_EXISTS, $result->code);
-        $this->assertSame(409, $result->status);
+        $this->assertSame(Refusal::CONFLICT, $result->refusal);
     }
 
     public function testUpdateRefusesAnUnknownSupermasterWith404(): void
@@ -142,7 +143,7 @@ class SupermasterManagerDelegationTest extends TestCase
             ->updateSupermaster('192.168.1.1', 'ns1.example.com', '192.168.1.2', 'ns2.example.com', 'admin');
 
         $this->assertSame(SupermasterWriteResult::ERR_NOT_FOUND, $result->code);
-        $this->assertSame(404, $result->status);
+        $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
     }
 
     public function testABackendRefusalIsA500(): void
@@ -154,6 +155,6 @@ class SupermasterManagerDelegationTest extends TestCase
             ->addSupermaster('192.168.1.1', 'ns1.example.com', 'admin');
 
         $this->assertSame(SupermasterWriteResult::ERR_BACKEND, $result->code);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
     }
 }

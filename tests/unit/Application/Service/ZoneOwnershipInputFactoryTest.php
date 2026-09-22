@@ -29,6 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ZoneOwnershipInputFactory;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipInput;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 #[CoversClass(ZoneOwnershipInputFactory::class)]
 class ZoneOwnershipInputFactoryTest extends TestCase
@@ -85,7 +86,7 @@ class ZoneOwnershipInputFactoryTest extends TestCase
 
         $this->assertInstanceOf(ZoneOwnershipResolution::class, $result);
         $this->assertSame($message, $result->error);
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertSame(ZoneOwnershipResolution::INVALID_INPUT, $result->code);
     }
 }

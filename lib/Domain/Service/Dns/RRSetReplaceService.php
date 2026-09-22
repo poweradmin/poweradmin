@@ -30,6 +30,7 @@ use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Throwable;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Replaces every record of one name and type with a new set: validate all, delete the old set, insert the new one.
@@ -56,7 +57,7 @@ class RRSetReplaceService
      * The serial bump shares the transaction; the rectify runs after the commit.
      *
      * @param list<array{content: string, priority: int, disabled: int}> $records Parsed and content-formatted input records
-     * @return array{success: bool, message: string, status: int, name?: string, records?: list<array{content: string, ttl: int, priority: int, disabled: int}>, write?: RecordWriteResult, content?: string}
+     * @return array{success: bool, message: string, refusal?: Refusal, name?: string, records?: list<array{content: string, ttl: int, priority: int, disabled: int}>, write?: RecordWriteResult, content?: string}
      *   On failure 'write' carries the refused record write and 'content' the record it was for, so the caller can word the refusal.
      */
     public function replace(int $zoneId, string $zoneName, string $fqdn, string $type, int $ttl, array $records): array
@@ -76,19 +77,19 @@ class RRSetReplaceService
 
             $validated = $validation['records'];
             if (empty($validated)) {
-                return $this->rollBack($useTransaction, self::failure('No valid records to create', 400));
+                return $this->rollBack($useTransaction, self::failure('No valid records to create', Refusal::INVALID_INPUT));
             }
 
             // The manager refuses a duplicate on insert; on the API backend that would
             // land after the old set is gone, so refuse a repeated content up front.
             $contents = array_column($validated, 'content');
             if (count($contents) !== count(array_unique($contents))) {
-                return $this->rollBack($useTransaction, self::failure('A record with this hostname, type, and content already exists', 409));
+                return $this->rollBack($useTransaction, self::failure('A record with this hostname, type, and content already exists', Refusal::CONFLICT));
             }
 
             foreach ($this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type) as $record) {
                 if (!$this->recordManager->deleteRecord($record['id'], false)->success) {
-                    return $this->rollBack($useTransaction, self::failure('Failed to delete existing record with ID ' . $record['id'], 500));
+                    return $this->rollBack($useTransaction, self::failure('Failed to delete existing record with ID ' . $record['id'], Refusal::BACKEND_FAILURE));
                 }
             }
 
@@ -97,7 +98,7 @@ class RRSetReplaceService
             foreach ($validated as $vr) {
                 $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $vr['content'], $vr['ttl'], $vr['priority'], $vr['disabled'], false);
                 if (!$created->success) {
-                    return $this->rollBack($useTransaction, self::failure((string)$created->message, $created->status) + ['write' => $created, 'content' => $vr['content']]);
+                    return $this->rollBack($useTransaction, self::failure((string)$created->message, $created->refusal) + ['write' => $created, 'content' => $vr['content']]);
                 }
                 $recordsCreated++;
             }
@@ -121,14 +122,13 @@ class RRSetReplaceService
         return [
             'success' => true,
             'message' => 'RRSet replaced successfully',
-            'status' => 200,
             'name' => $normalizedName,
             'records' => $validated,
         ];
     }
 
     /**
-     * @return array{records: list<array{content: string, ttl: int, priority: int, disabled: int}>, error: array{success: false, message: string, status: int}|null}
+     * @return array{records: list<array{content: string, ttl: int, priority: int, disabled: int}>, error: array{success: false, message: string, refusal: Refusal}|null}
      */
     private function validateRecords(int $zoneId, string $normalizedName, string $type, int $ttl, array $records): array
     {
@@ -139,7 +139,7 @@ class RRSetReplaceService
         foreach ($records as $record) {
             $result = $this->validationService->validateRecord(-1, $zoneId, $type, $record['content'], $normalizedName, $record['priority'], $ttl, $hostmaster, $defaultTtl);
             if (!$result->isValid()) {
-                return ['records' => [], 'error' => self::failure($result->getFirstError(), 400)];
+                return ['records' => [], 'error' => self::failure($result->getFirstError(), Refusal::INVALID_INPUT)];
             }
 
             $data = $result->getData();
@@ -164,10 +164,10 @@ class RRSetReplaceService
     }
 
     /**
-     * @return array{success: false, message: string, status: int}
+     * @return array{success: false, message: string, refusal: Refusal}
      */
-    private static function failure(string $message, int $status): array
+    private static function failure(string $message, Refusal $refusal): array
     {
-        return ['success' => false, 'message' => $message, 'status' => $status];
+        return ['success' => false, 'message' => $message, 'refusal' => $refusal];
     }
 }

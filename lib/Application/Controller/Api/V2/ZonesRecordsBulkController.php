@@ -38,6 +38,8 @@ use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * POST /api/v2/zones/{id}/records/bulk: applies a list of create, update and delete record operations.
@@ -397,7 +399,7 @@ class ZonesRecordsBulkController extends PublicApiController
         // the batch bumps the serial and rectifies once at the end.
         $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled, false);
         if (!$created->success) {
-            throw new ApiErrorException($this->recordWriteErrorMessage($created, 'Failed to create record'), $created->status);
+            throw new ApiErrorException($this->recordWriteErrorMessage($created, 'Failed to create record'), RefusalStatus::of($created->refusal));
         }
 
         return $type;
@@ -476,10 +478,10 @@ class ZonesRecordsBulkController extends PublicApiController
         $result = $this->recordManager->editRecord($recordData, false);
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
-            if ($result->status === 500) {
+            if ($result->refusal === Refusal::BACKEND_FAILURE) {
                 throw new Exception('Failed to update record');
             }
-            throw new ApiErrorException((string)$result->message, $result->status);
+            throw new ApiErrorException((string)$result->message, RefusalStatus::of($result->refusal));
         }
 
         return $recordData['type'];
@@ -518,10 +520,10 @@ class ZonesRecordsBulkController extends PublicApiController
         $result = $this->recordManager->deleteRecord($recordId, false);
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
-            if ($result->status === 500) {
+            if ($result->refusal === Refusal::BACKEND_FAILURE) {
                 throw new Exception('Failed to delete record');
             }
-            throw new ApiErrorException((string)$result->message, $result->status);
+            throw new ApiErrorException((string)$result->message, RefusalStatus::of($result->refusal));
         }
 
         return $recordType;

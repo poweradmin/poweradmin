@@ -27,6 +27,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Psr\Log\LoggerInterface;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Creating, editing and deleting zone templates, saving a zone as a template,
@@ -121,7 +122,7 @@ class ZoneTemplateWriteService
     {
         $ownerVal = $this->repository->getOwner($zone_templ_id);
         if ($ownerVal === null) {
-            return ZoneTemplateWriteResult::failure(_('Zone template not found.'), 404);
+            return ZoneTemplateWriteResult::failure(_('Zone template not found.'), Refusal::NOT_FOUND);
         }
         if ($ownerVal !== 0) {
             return ZoneTemplateWriteResult::failure(_('Only global zone templates can be set as the default.'));
@@ -160,7 +161,7 @@ class ZoneTemplateWriteService
             return ZoneTemplateWriteResult::forbidden(_("You do not have the permission to add a zone template."));
         }
         if ($this->repository->zoneTemplateNameExists($details['templ_name'])) {
-            return ZoneTemplateWriteResult::failure(_('Zone template with this name already exists, please choose another one.'), 409);
+            return ZoneTemplateWriteResult::failure(_('Zone template with this name already exists, please choose another one.'), Refusal::CONFLICT);
         }
 
         try {
@@ -193,7 +194,7 @@ class ZoneTemplateWriteService
             return ZoneTemplateWriteResult::forbidden(_("You do not have the permission to edit a zone template."));
         }
         if ($this->repository->zoneTemplateNameExists($details['templ_name'], $zone_templ_id)) {
-            return ZoneTemplateWriteResult::failure(_('Zone template with this name already exists, please choose another one.'), 409);
+            return ZoneTemplateWriteResult::failure(_('Zone template with this name already exists, please choose another one.'), Refusal::CONFLICT);
         }
 
         // Making a template global (owner 0) is reserved for ueberusers; keep

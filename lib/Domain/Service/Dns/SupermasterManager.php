@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Port\SupermasterBackendInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Creates, updates and deletes PowerDNS supermasters.
@@ -72,12 +73,12 @@ class SupermasterManager
         }
 
         if ($this->supermasterIpNameExists($master_ip, $ns_name)) {
-            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_EXISTS, _('There is already a supermaster with this IP address and hostname.'), 409);
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_EXISTS, _('There is already a supermaster with this IP address and hostname.'), Refusal::CONFLICT);
         }
 
         return $this->backendProvider->addSupermaster($master_ip, $ns_name, $account)
             ? SupermasterWriteResult::ok()
-            : SupermasterWriteResult::refused(SupermasterWriteResult::ERR_BACKEND, _('An error occurred. Please try again.'), 500);
+            : SupermasterWriteResult::refused(SupermasterWriteResult::ERR_BACKEND, _('An error occurred. Please try again.'), Refusal::BACKEND_FAILURE);
     }
 
     /**
@@ -94,7 +95,7 @@ class SupermasterManager
 
         return $this->backendProvider->deleteSupermaster($master_ip, $ns_name)
             ? SupermasterWriteResult::ok()
-            : SupermasterWriteResult::refused(SupermasterWriteResult::ERR_BACKEND, _('An error occurred. Please try again.'), 500);
+            : SupermasterWriteResult::refused(SupermasterWriteResult::ERR_BACKEND, _('An error occurred. Please try again.'), Refusal::BACKEND_FAILURE);
     }
 
     /**
@@ -213,7 +214,7 @@ class SupermasterManager
         }
 
         if (!$this->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
-            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_NOT_FOUND, _('The supermaster you are trying to edit does not exist.'), 404);
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_NOT_FOUND, _('The supermaster you are trying to edit does not exist.'), Refusal::NOT_FOUND);
         }
 
         // A duplicate only matters when the identifying pair changes
@@ -221,12 +222,12 @@ class SupermasterManager
             ($old_master_ip !== $new_master_ip || $old_ns_name !== $new_ns_name)
             && $this->supermasterIpNameExists($new_master_ip, $new_ns_name)
         ) {
-            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_EXISTS, _('There is already a supermaster with this IP address and hostname.'), 409);
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_EXISTS, _('There is already a supermaster with this IP address and hostname.'), Refusal::CONFLICT);
         }
 
         return $this->backendProvider->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account)
             ? SupermasterWriteResult::ok()
-            : SupermasterWriteResult::refused(SupermasterWriteResult::ERR_BACKEND, _('An error occurred. Please try again.'), 500);
+            : SupermasterWriteResult::refused(SupermasterWriteResult::ERR_BACKEND, _('An error occurred. Please try again.'), Refusal::BACKEND_FAILURE);
     }
 
     private function validateFields(string $master_ip, string $ns_name, string $account): ?SupermasterWriteResult

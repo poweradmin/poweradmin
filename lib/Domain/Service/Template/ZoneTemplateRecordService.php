@@ -31,6 +31,7 @@ use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Adding, editing and deleting the records of a zone template. Writes report
@@ -146,7 +147,7 @@ class ZoneTemplateRecordService
         // Reject a record id that lives in another template, even when the caller owns this one.
         $storedRecord = $this->repository->getZoneTemplateRecordById((int)($record['rid'] ?? 0), $zone_templ_id);
         if (empty($storedRecord)) {
-            return ZoneTemplateWriteResult::failure(_('The record does not belong to this zone template.'), 404);
+            return ZoneTemplateWriteResult::failure(_('The record does not belong to this zone template.'), Refusal::NOT_FOUND);
         }
 
         // Both types are gated: checking only the submitted one would let a
@@ -214,7 +215,7 @@ class ZoneTemplateRecordService
         // Reject a record id that lives in another template, even when the caller owns this one.
         $storedRecord = $this->repository->getZoneTemplateRecordById($rid, $zone_templ_id);
         if (empty($storedRecord)) {
-            return ZoneTemplateWriteResult::failure(_('The record does not belong to this zone template.'), 404);
+            return ZoneTemplateWriteResult::failure(_('The record does not belong to this zone template.'), Refusal::NOT_FOUND);
         }
 
         // A caller who may not create this type may not remove one either.

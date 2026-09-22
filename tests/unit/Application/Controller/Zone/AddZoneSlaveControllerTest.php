@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterizes the add-secondary-zone form: its gates, what reaches the
@@ -102,7 +103,7 @@ class AddZoneSlaveControllerTest extends ZoneCreateControllerTestCase
 
     public function testAnOwnershipRefusalIsWordedForTheForm(): void
     {
-        $this->ownership = ZoneOwnershipResolution::error('api wording', 403, ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN);
+        $this->ownership = ZoneOwnershipResolution::error('api wording', Refusal::FORBIDDEN, ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN);
         $this->submit([]);
 
         $controller = $this->makeController();

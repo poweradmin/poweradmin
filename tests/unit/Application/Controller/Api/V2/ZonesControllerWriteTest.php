@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterization of POST, PUT and DELETE on /api/v2/zones: the deliberate
@@ -274,7 +275,7 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
     public function testAFailedUpdateKeepsTheServiceStatusAndMessage(): void
     {
         $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER']);
-        $this->zoneManagement->method('updateZone')->willReturn(['success' => false, 'message' => 'Zone already exists', 'status' => 409]);
+        $this->zoneManagement->method('updateZone')->willReturn(['success' => false, 'message' => 'Zone already exists', 'refusal' => Refusal::CONFLICT]);
 
         $response = $this->invokeHandler('updateZone', 'PUT', ['name' => 'other.example.com']);
 
@@ -388,7 +389,7 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
     public function testAFailedZoneDeleteKeepsTheServiceStatus(): void
     {
         $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com']);
-        $this->zoneManagement->method('deleteZone')->willReturn(['success' => false, 'message' => 'Zone is a catalog member', 'status' => 409]);
+        $this->zoneManagement->method('deleteZone')->willReturn(['success' => false, 'message' => 'Zone is a catalog member', 'refusal' => Refusal::CONFLICT]);
 
         $response = $this->invokeHandler('deleteZone', 'DELETE', null);
 

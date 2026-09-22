@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Issue #1332: the zone log event for a record add showed the record name
@@ -90,12 +91,12 @@ class RecordManagerServiceLogTest extends TestCase
         $comments = $this->createMock(RecordCommentService::class);
         $comments->expects($this->never())->method('createCommentForRecord');
 
-        $service = $this->makeService($audit, RecordWriteResult::failure('Invalid IP address', 400), $comments);
+        $service = $this->makeService($audit, RecordWriteResult::failure('Invalid IP address', Refusal::INVALID_INPUT), $comments);
         $result = $service->createRecord(1, 'host', 'A', 'not-an-ip', 3600, 0, 'a comment', 'admin');
 
         $this->assertFalse($result->success);
         $this->assertSame('Invalid IP address', $result->message);
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertNull($result->field);
     }
 

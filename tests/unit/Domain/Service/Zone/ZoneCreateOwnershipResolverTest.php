@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\PermissionServiceTestCase;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 #[CoversClass(ZoneCreateOwnershipResolver::class)]
 class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
@@ -104,7 +105,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 
         $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([2]), self::CALLER_ID);
 
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('users_only', $result->error);
     }
@@ -116,7 +117,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 
         $result = $resolver->resolve(ZoneOwnershipInput::owner(2, [4]), self::CALLER_ID);
 
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('groups_only', $result->error);
     }
@@ -168,7 +169,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
         // groups_only forces owner=null and groups stay empty -> nothing assigned.
         $result = $resolver->resolve(new ZoneOwnershipInput(), self::CALLER_ID);
 
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('At least one', $result->error);
     }
@@ -180,7 +181,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 
         $result = $resolver->resolve(ZoneOwnershipInput::owner(99), self::CALLER_ID);
 
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('other users', $result->error);
     }
@@ -203,7 +204,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 
         $result = $resolver->resolve(ZoneOwnershipInput::owner(42), self::CALLER_ID);
 
-        $this->assertSame(404, $result->status);
+        $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
         $this->assertSame(ZoneOwnershipResolution::UNKNOWN_OWNER, $result->code);
         $this->assertSame('Unknown user ID: 42', $result->error);
         $this->assertSame([42], $result->ids);
@@ -216,7 +217,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 
         $result = $resolver->resolve(ZoneOwnershipInput::owner(42), self::CALLER_ID);
 
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame(ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN, $result->code);
     }
 
@@ -261,7 +262,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 
         $result = $resolver->resolve(ZoneOwnershipInput::owner(0), self::CALLER_ID);
 
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('At least one', $result->error);
     }
@@ -285,7 +286,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 
         $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([3, 99]), self::CALLER_ID);
 
-        $this->assertSame(404, $result->status);
+        $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('99', $result->error);
         $this->assertSame(ZoneOwnershipResolution::UNKNOWN_GROUPS, $result->code);
@@ -299,7 +300,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 
         $result = $resolver->resolve(ZoneOwnershipInput::ownerOmitted([3, 9]), self::CALLER_ID);
 
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('9', $result->error);
         $this->assertSame(ZoneOwnershipResolution::GROUPS_NOT_MEMBER, $result->code);

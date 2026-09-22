@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * The template writes used to flash their reason into the session; now they
@@ -68,15 +69,15 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
 
         $added = $service->addZoneTempl(['templ_name' => 'new', 'templ_descr' => ''], self::CLIENT_USER_ID);
         $this->assertFalse($added->success);
-        $this->assertSame(403, $added->status);
+        $this->assertSame(Refusal::FORBIDDEN, $added->refusal);
         $this->assertSame('You do not have the permission to add a zone template.', $added->message);
 
         $deleted = $service->deleteZoneTempl(self::GLOBAL_TEMPLATE);
-        $this->assertSame(403, $deleted->status);
+        $this->assertSame(Refusal::FORBIDDEN, $deleted->refusal);
         $this->assertSame('You do not have the permission to delete zone templates.', $deleted->message);
 
         $record = $service->addZoneTemplRecord(self::GLOBAL_TEMPLATE, 'www.[ZONE]', 'A', '192.0.2.1', 3600, 0);
-        $this->assertSame(403, $record->status);
+        $this->assertSame(Refusal::FORBIDDEN, $record->refusal);
         $this->assertSame('You do not have the permission to add a record to this zone template.', $record->message);
 
         $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zone_templ WHERE name = 'global'")->fetchColumn());
@@ -88,11 +89,11 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
         $added = $this->service()->addZoneTempl(['templ_name' => 'global', 'templ_descr' => ''], self::ADMIN_USER_ID);
 
         $this->assertFalse($added->success);
-        $this->assertSame(409, $added->status);
+        $this->assertSame(Refusal::CONFLICT, $added->refusal);
         $this->assertSame('Zone template with this name already exists, please choose another one.', $added->message);
 
         $renamed = $this->service()->editZoneTempl(['templ_name' => 'global', 'templ_descr' => ''], self::PRIVATE_TEMPLATE, self::ADMIN_USER_ID);
-        $this->assertSame(409, $renamed->status);
+        $this->assertSame(Refusal::CONFLICT, $renamed->refusal);
         $this->assertSame([['name' => 'private']], $this->db->query("SELECT name FROM zone_templ WHERE id = " . self::PRIVATE_TEMPLATE)->fetchAll(\PDO::FETCH_ASSOC));
     }
 
@@ -101,11 +102,11 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
         $service = $this->service();
 
         $missing = $service->setDefaultTemplate(999);
-        $this->assertSame(404, $missing->status);
+        $this->assertSame(Refusal::NOT_FOUND, $missing->refusal);
         $this->assertSame('Zone template not found.', $missing->message);
 
         $private = $service->setDefaultTemplate(self::PRIVATE_TEMPLATE);
-        $this->assertSame(400, $private->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $private->refusal);
         $this->assertSame('Only global zone templates can be set as the default.', $private->message);
 
         $this->assertTrue($service->setDefaultTemplate(self::GLOBAL_TEMPLATE)->success);
@@ -121,11 +122,11 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
         $service = $this->service();
 
         $edited = $service->editZoneTemplRecord(['rid' => 5, 'name' => 'www.[ZONE]', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600, 'prio' => 0], self::GLOBAL_TEMPLATE);
-        $this->assertSame(404, $edited->status);
+        $this->assertSame(Refusal::NOT_FOUND, $edited->refusal);
         $this->assertSame('The record does not belong to this zone template.', $edited->message);
 
         $deleted = $service->deleteZoneTemplRecord(5, self::GLOBAL_TEMPLATE);
-        $this->assertSame(404, $deleted->status);
+        $this->assertSame(Refusal::NOT_FOUND, $deleted->refusal);
 
         $this->assertSame('192.0.2.1', $this->db->query("SELECT content FROM zone_templ_records WHERE id = 5")->fetchColumn());
     }

@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service\Zone;
 
+use Poweradmin\Domain\Service\Validation\Refusal;
+
 /**
  * Outcome of filing, approving, rejecting or cancelling a change request.
  * Messages are plain English; web callers map the code to a translated line.
@@ -47,7 +49,7 @@ final readonly class ZoneChangeRequestResult
         public bool $success,
         public string $code,
         public string $message,
-        public int $status,
+        public ?Refusal $refusal,
         public ?int $requestId,
         public array $errors
     ) {
@@ -55,12 +57,12 @@ final readonly class ZoneChangeRequestResult
 
     public static function ok(?int $requestId, string $message): self
     {
-        return new self(true, self::CODE_OK, $message, 200, $requestId, []);
+        return new self(true, self::CODE_OK, $message, null, $requestId, []);
     }
 
     /** @param list<string> $errors */
-    public static function failure(string $code, string $message, int $status = 400, array $errors = [], ?int $requestId = null): self
+    public static function failure(string $code, string $message, Refusal $refusal = Refusal::INVALID_INPUT, array $errors = [], ?int $requestId = null): self
     {
-        return new self(false, $code, $message, $status, $requestId, $errors);
+        return new self(false, $code, $message, $refusal, $requestId, $errors);
     }
 }

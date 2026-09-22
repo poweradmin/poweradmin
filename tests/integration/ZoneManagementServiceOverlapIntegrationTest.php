@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Psr\Log\NullLogger;
 use TestHelpers\ZoneTemplateServiceBuilder;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Integration test for the API zone-creation path. Confirms that the
@@ -155,7 +156,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
         );
 
         $this->assertFalse($result['success']);
-        $this->assertSame(409, $result['status']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
         $this->assertStringContainsString('overlaps', $result['message']);
     }
 }

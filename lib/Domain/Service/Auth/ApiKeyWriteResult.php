@@ -23,10 +23,11 @@
 namespace Poweradmin\Domain\Service\Auth;
 
 use Poweradmin\Domain\Model\ApiKey;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Outcome of an API key write: the saved key on success, otherwise the reason,
- * its code and the HTTP status.
+ * its code and the refusal.
  */
 final readonly class ApiKeyWriteResult
 {
@@ -40,18 +41,18 @@ final readonly class ApiKeyWriteResult
         public bool $success,
         public ?ApiKey $key,
         public ?string $message,
-        public int $status,
+        public ?Refusal $refusal,
         public ?string $code
     ) {
     }
 
     public static function ok(?ApiKey $key = null): self
     {
-        return new self(true, $key, null, 200, null);
+        return new self(true, $key, null, null, null);
     }
 
-    public static function refused(string $code, string $message, int $status): self
+    public static function refused(string $code, string $message, Refusal $refusal): self
     {
-        return new self(false, null, $message, $status, $code);
+        return new self(false, null, $message, $refusal, $code);
     }
 }

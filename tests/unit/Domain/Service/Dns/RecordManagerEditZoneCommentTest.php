@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * editZoneComment() updates the zones row of the zone, and creates one for a
@@ -91,7 +92,7 @@ class RecordManagerEditZoneCommentTest extends PermissionServiceTestCase
         $result = $this->manager('SLAVE')->editZoneComment(self::ZONE_ID, 'comment');
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame('You do not have the permission to edit this comment.', $result->message);
         $this->assertSame([], $this->rows());
     }

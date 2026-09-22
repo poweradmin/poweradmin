@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\UserCommandFactory;
 use Poweradmin\Domain\Service\User\CreateUserCommand;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * The API body and the web forms reach UserManagementService through this
@@ -86,7 +87,7 @@ class UserCommandFactoryTest extends TestCase
         $this->assertSame([
             'success' => false,
             'message' => 'use_ldap must be a boolean',
-            'status' => 400,
+            'refusal' => Refusal::INVALID_INPUT,
             'code' => UserManagementService::ERR_INVALID_LDAP,
         ], $result);
     }
@@ -112,7 +113,7 @@ class UserCommandFactoryTest extends TestCase
         $this->assertSame([
             'success' => false,
             'message' => 'Permission template not found',
-            'status' => 400,
+            'refusal' => Refusal::INVALID_INPUT,
             'code' => UserManagementService::ERR_TEMPLATE_NOT_FOUND,
         ], $result);
     }
@@ -158,7 +159,7 @@ class UserCommandFactoryTest extends TestCase
 
         $this->assertIsArray($result);
         $this->assertSame('Permission template not found', $result['message']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
     }
 
     #[Test]
@@ -196,11 +197,11 @@ class UserCommandFactoryTest extends TestCase
     {
         $update = UserCommandFactory::update(['fullname' => 'x', 'password' => ['a']]);
         $this->assertIsArray($update);
-        $this->assertSame(400, $update['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $update['refusal']);
         $this->assertSame('Invalid field types in request body', $update['message']);
 
         $create = UserCommandFactory::create(['username' => 'u', 'password' => ['a']]);
         $this->assertIsArray($create);
-        $this->assertSame(400, $create['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $create['refusal']);
     }
 }

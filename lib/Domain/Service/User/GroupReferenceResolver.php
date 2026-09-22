@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\User;
 
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Turns a submitted list of group references into distinct group entities
@@ -43,7 +44,7 @@ class GroupReferenceResolver
     /**
      * @param mixed $submitted Raw value supplied by the caller
      * @param int $maxEntries Largest list accepted, guarding against a query storm
-     * @return array{success: bool, groups?: UserGroup[], message?: string, status?: int}
+     * @return array{success: bool, groups?: UserGroup[], message?: string, refusal?: Refusal}
      *         On success, groups is keyed by group ID
      */
     public function resolve(mixed $submitted, int $maxEntries): array
@@ -89,10 +90,10 @@ class GroupReferenceResolver
     }
 
     /**
-     * @return array{success: false, message: string, status: int}
+     * @return array{success: false, message: string, refusal: Refusal}
      */
     private function failure(string $message): array
     {
-        return ['success' => false, 'message' => $message, 'status' => 400];
+        return ['success' => false, 'message' => $message, 'refusal' => Refusal::INVALID_INPUT];
     }
 }

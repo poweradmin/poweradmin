@@ -26,6 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Validation\RecordField;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 #[CoversClass(RecordWriteResult::class)]
 class RecordWriteResultTest extends TestCase
@@ -37,28 +38,28 @@ class RecordWriteResultTest extends TestCase
         $this->assertTrue($result->success);
         $this->assertSame(42, $result->recordId);
         $this->assertNull($result->message);
-        $this->assertSame(200, $result->status);
+        $this->assertNull($result->refusal);
         $this->assertNull($result->field);
     }
 
-    public function testRefusalsCarryAStatusAndNoField(): void
+    public function testRefusalsCarryAReasonAndNoField(): void
     {
         $forbidden = RecordWriteResult::forbidden('You do not have the permission to add a record to this zone.');
         $missing = RecordWriteResult::notFound('Record not found.');
         $backend = RecordWriteResult::backendFailure('Failed to add record to DNS backend.');
 
-        foreach ([[$forbidden, 403], [$missing, 404], [$backend, 500]] as [$result, $status]) {
+        foreach ([[$forbidden, Refusal::FORBIDDEN], [$missing, Refusal::NOT_FOUND], [$backend, Refusal::BACKEND_FAILURE]] as [$result, $refusal]) {
             $this->assertFalse($result->success);
-            $this->assertSame($status, $result->status);
+            $this->assertSame($refusal, $result->refusal);
             $this->assertNull($result->field);
         }
     }
 
     public function testFailureCarriesTheFieldTheValidatorNamed(): void
     {
-        $result = RecordWriteResult::failure('A record with this hostname, type, and content already exists.', 409, RecordField::DUPLICATE);
+        $result = RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT, RecordField::DUPLICATE);
 
-        $this->assertSame(409, $result->status);
+        $this->assertSame(Refusal::CONFLICT, $result->refusal);
         $this->assertSame(RecordField::DUPLICATE, $result->field);
     }
 

@@ -44,6 +44,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterizes the add-record page: the order of its gates, what a refused
@@ -156,7 +157,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
     private static function refused(string $message, ?RecordField $field = null): RecordAddResult
     {
-        return RecordAddResult::refused(RecordWriteResult::failure($message, 400, $field));
+        return RecordAddResult::refused(RecordWriteResult::failure($message, Refusal::INVALID_INPUT, $field));
     }
 
     /** @param array<string, array<string, mixed>> $config */

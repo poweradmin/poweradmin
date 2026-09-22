@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Module\SecondaryZoneImport\Controller\SecondaryZoneImportController;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 use Poweradmin\Tests\Unit\Application\Controller\Zone\ZoneCreateControllerTestCase;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterizes the secondary zone import: its gates, the secondary it
@@ -97,7 +98,7 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
 
     public function testAnOwnershipRefusalIsWordedForTheForm(): void
     {
-        $this->ownership = ZoneOwnershipResolution::error('api wording', 400, ZoneOwnershipResolution::GROUPS_NOT_MEMBER, [5]);
+        $this->ownership = ZoneOwnershipResolution::error('api wording', Refusal::INVALID_INPUT, ZoneOwnershipResolution::GROUPS_NOT_MEMBER, [5]);
         $this->submit([]);
 
         $controller = $this->makeController();

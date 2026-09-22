@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipInput;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Reads the owner fields of a decoded zone creation body into the typed input
@@ -73,6 +74,6 @@ class ZoneOwnershipInputFactory
 
     private static function invalid(string $message): ZoneOwnershipResolution
     {
-        return ZoneOwnershipResolution::error($message, 400, ZoneOwnershipResolution::INVALID_INPUT);
+        return ZoneOwnershipResolution::error($message, Refusal::INVALID_INPUT, ZoneOwnershipResolution::INVALID_INPUT);
     }
 }

@@ -22,9 +22,11 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Poweradmin\Domain\Service\Validation\Refusal;
+
 /**
  * Outcome of a zone write (create, delete, metadata, owner or template change).
- * Callers read the reason and HTTP status from here instead of the session;
+ * Callers read the reason and the refusal from here instead of the session;
  * success carries the zone id.
  */
 final readonly class ZoneWriteResult
@@ -32,28 +34,28 @@ final readonly class ZoneWriteResult
     private function __construct(
         public bool $success,
         public ?string $message,
-        public int $status,
+        public ?Refusal $refusal,
         public ?int $zoneId
     ) {
     }
 
     public static function ok(int $zoneId): self
     {
-        return new self(true, null, 200, $zoneId);
+        return new self(true, null, null, $zoneId);
     }
 
-    public static function failure(string $message, int $status = 400): self
+    public static function failure(string $message, Refusal $refusal = Refusal::INVALID_INPUT): self
     {
-        return new self(false, $message, $status, null);
+        return new self(false, $message, $refusal, null);
     }
 
     public static function forbidden(string $message): self
     {
-        return new self(false, $message, 403, null);
+        return new self(false, $message, Refusal::FORBIDDEN, null);
     }
 
     public static function backendFailure(string $message): self
     {
-        return new self(false, $message, 500, null);
+        return new self(false, $message, Refusal::BACKEND_FAILURE, null);
     }
 }

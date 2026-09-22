@@ -22,8 +22,10 @@
 
 namespace Poweradmin\Domain\Service\Template;
 
+use Poweradmin\Domain\Service\Validation\Refusal;
+
 /**
- * Outcome of a zone template write. Callers read the reason and HTTP status
+ * Outcome of a zone template write. Callers read the reason and the refusal
  * from here instead of the session; a success may still carry a warning.
  */
 final readonly class ZoneTemplateWriteResult
@@ -31,27 +33,27 @@ final readonly class ZoneTemplateWriteResult
     private function __construct(
         public bool $success,
         public ?string $message,
-        public int $status
+        public ?Refusal $refusal
     ) {
     }
 
     public static function ok(?string $warning = null): self
     {
-        return new self(true, $warning, 200);
+        return new self(true, $warning, null);
     }
 
-    public static function failure(string $message, int $status = 400): self
+    public static function failure(string $message, Refusal $refusal = Refusal::INVALID_INPUT): self
     {
-        return new self(false, $message, $status);
+        return new self(false, $message, $refusal);
     }
 
     public static function forbidden(string $message): self
     {
-        return new self(false, $message, 403);
+        return new self(false, $message, Refusal::FORBIDDEN);
     }
 
     public static function backendFailure(string $message): self
     {
-        return new self(false, $message, 500);
+        return new self(false, $message, Refusal::BACKEND_FAILURE);
     }
 }

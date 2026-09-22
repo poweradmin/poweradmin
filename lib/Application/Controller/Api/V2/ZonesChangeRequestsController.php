@@ -43,6 +43,7 @@ use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Poweradmin\Application\Http\RefusalStatus;
 
 /**
  * /api/v2/zones/{id}/change-requests: files change requests for a zone
@@ -386,7 +387,7 @@ class ZonesChangeRequestsController extends PublicApiController
         if ($refused !== []) {
             $refusal = $refused[0];
 
-            return $this->returnApiError($refusal->message, $refusal->status, [
+            return $this->returnApiError($refusal->message, RefusalStatus::of($refusal->refusal), [
                 'errors' => $refusal->errors,
                 'change_requests' => $requests,
             ]);

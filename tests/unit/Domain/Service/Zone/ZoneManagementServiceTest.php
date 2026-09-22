@@ -35,6 +35,7 @@ use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 #[CoversClass(ZoneManagementService::class)]
 class ZoneManagementServiceTest extends TestCase
@@ -92,7 +93,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('At least one user or group must be assigned as owner', $result['message']);
-        $this->assertEquals(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
     }
 
     /**
@@ -115,7 +116,7 @@ class ZoneManagementServiceTest extends TestCase
             );
 
             $this->assertFalse($result['success'], "$type must be rejected");
-            $this->assertEquals(400, $result['status']);
+            $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
             $this->assertStringContainsString('Invalid zone type', $result['message']);
         }
     }
@@ -133,7 +134,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Zone not found', $result['message']);
-        $this->assertEquals(404, $result['status']);
+        $this->assertSame(Refusal::NOT_FOUND, $result['refusal']);
     }
 
     #[Test]
@@ -151,7 +152,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Invalid zone type', $result['message']);
-        $this->assertEquals(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
     }
 
     #[Test]
@@ -169,7 +170,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Failed to update zone', $result['message']);
-        $this->assertEquals(500, $result['status']);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result['refusal']);
     }
 
     #[Test]
@@ -202,7 +203,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Zone not found', $result['message']);
-        $this->assertEquals(404, $result['status']);
+        $this->assertSame(Refusal::NOT_FOUND, $result['refusal']);
         $this->assertSame(ZoneManagementService::ERR_NOT_FOUND, $result['code']);
     }
 
@@ -221,7 +222,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Failed to delete zone', $result['message']);
-        $this->assertEquals(500, $result['status']);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result['refusal']);
     }
 
     #[Test]

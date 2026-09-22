@@ -23,10 +23,11 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Service\Validation\RecordField;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Outcome of a record write. Replaces the bool return plus MessageService side
- * channel: callers read the reason, the HTTP status and the offending record
+ * channel: callers read the reason, the refusal and the offending record
  * part from here instead of the session.
  */
 final readonly class RecordWriteResult
@@ -34,7 +35,7 @@ final readonly class RecordWriteResult
     private function __construct(
         public bool $success,
         public ?string $message,
-        public int $status,
+        public ?Refusal $refusal,
         public ?RecordField $field,
         public int|string|null $recordId
     ) {
@@ -43,29 +44,29 @@ final readonly class RecordWriteResult
     /** @param int|string|null $recordId The new id on create; edits and deletes carry none */
     public static function ok(int|string|null $recordId = null): self
     {
-        return new self(true, null, 200, null, $recordId);
+        return new self(true, null, null, null, $recordId);
     }
 
     /**
      * @param RecordField|null $field The record part the message is about, when the validator named one
      */
-    public static function failure(string $message, int $status = 400, ?RecordField $field = null): self
+    public static function failure(string $message, Refusal $refusal = Refusal::INVALID_INPUT, ?RecordField $field = null): self
     {
-        return new self(false, $message, $status, $field, null);
+        return new self(false, $message, $refusal, $field, null);
     }
 
     public static function forbidden(string $message): self
     {
-        return new self(false, $message, 403, null, null);
+        return new self(false, $message, Refusal::FORBIDDEN, null, null);
     }
 
     public static function notFound(string $message): self
     {
-        return new self(false, $message, 404, null, null);
+        return new self(false, $message, Refusal::NOT_FOUND, null, null);
     }
 
     public static function backendFailure(string $message): self
     {
-        return new self(false, $message, 500, null, null);
+        return new self(false, $message, Refusal::BACKEND_FAILURE, null, null);
     }
 }

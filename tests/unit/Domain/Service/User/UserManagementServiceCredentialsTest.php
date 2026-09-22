@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\User\UserProfileAssembler;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Password hashing, password policy and LDAP handling in UserManagementService.
@@ -141,7 +142,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         ]);
 
         $this->assertFalse($result['success']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
         $this->assertSame('Password must be at least 8 characters long', $result['message']);
     }
 
@@ -157,7 +158,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         ]);
 
         $this->assertFalse($result['success']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
         $this->assertSame('LDAP authentication is not enabled', $result['message']);
     }
 
@@ -192,7 +193,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         ]);
 
         $this->assertFalse($result['success']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
         $this->assertSame('use_ldap must be a boolean', $result['message']);
     }
 
@@ -242,7 +243,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $result = $this->updateUser(false, 7, ['username' => 'renamed', 'password' => 'lowercase1!']);
 
         $this->assertFalse($result['success']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
         $this->assertSame('Password must contain at least one uppercase letter', $result['message']);
     }
 
@@ -255,7 +256,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $result = $this->updateUser(true, 7, ['use_ldap' => 1, 'password' => 'Secret123!']);
 
         $this->assertFalse($result['success']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
         $this->assertStringContainsString('LDAP', $result['message']);
     }
 
@@ -307,7 +308,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $result = $this->updateUser(true, 7, ['use_ldap' => false]);
 
         $this->assertFalse($result['success']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
         $this->assertSame('Password is required when disabling LDAP authentication', $result['message']);
     }
 
@@ -333,7 +334,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $result = $this->updateUser(false, 7, ['password' => '0']);
 
         $this->assertFalse($result['success']);
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
     }
 
     #[Test]

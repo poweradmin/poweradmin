@@ -37,6 +37,7 @@ use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Application\Http\RefusalStatus;
 
 /**
  * /api/v2/users: lists, creates, updates and deletes users and assigns their permission template.
@@ -588,7 +589,7 @@ class UsersController extends PublicApiController
             }
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
 
                 return $this->returnApiError($result['message'], $statusCode, null, [
                     'meta' => [
@@ -804,7 +805,7 @@ class UsersController extends PublicApiController
             }
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
 
                 return $this->returnApiError($result['message'], $statusCode, null, [
                     'meta' => [
@@ -935,7 +936,7 @@ class UsersController extends PublicApiController
             $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId, $currentUserId);
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
@@ -1072,7 +1073,7 @@ class UsersController extends PublicApiController
             $result = $this->userManagementService->assignPermissionTemplate($targetUserId, $permTemplId);
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
@@ -1114,7 +1115,7 @@ class UsersController extends PublicApiController
             ->resolve($submitted, self::MAX_GROUPS_PER_REQUEST);
 
         if (!$result['success']) {
-            return $this->returnApiError($result['message'], $result['status'] ?? 400);
+            return $this->returnApiError($result['message'], RefusalStatus::ofResult($result));
         }
 
         $groups = $result['groups'];

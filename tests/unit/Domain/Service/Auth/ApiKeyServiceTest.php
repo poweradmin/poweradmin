@@ -36,6 +36,7 @@ use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 #[CoversClass(ApiKeyService::class)]
 class ApiKeyServiceTest extends PermissionServiceTestCase
@@ -503,7 +504,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
 
         $this->assertFalse($result->success);
         $this->assertSame(ApiKeyWriteResult::ERR_FORBIDDEN, $result->code);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
     }
 
     #[Test]

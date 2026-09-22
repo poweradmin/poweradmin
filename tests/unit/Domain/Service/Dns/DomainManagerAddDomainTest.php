@@ -42,6 +42,7 @@ use TestHelpers\PermissionServiceTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use TestHelpers\StubActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * addDomain() drives zone creation end to end: refusal before any write,
@@ -106,7 +107,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'BOGUS', '', 'none');
 
         $this->assertFalse($result->success);
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertSame('Invalid or unexpected input given.', $result->message);
     }
 
@@ -118,7 +119,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $result = $this->manager([])->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none');
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame('You do not have the permission to add a master zone.', $result->message);
     }
 
@@ -138,7 +139,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         ) {
             $result = $manager->addDomain($domain, self::CALLER_ID, $type, $master, $template);
             $this->assertFalse($result->success);
-            $this->assertSame(400, $result->status);
+            $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
             $this->assertSame('Invalid argument(s) given to function addDomain', $result->message);
         }
     }
@@ -152,7 +153,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
 
         $this->assertFalse($result->success);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertSame('Failed to create zone in DNS backend.', $result->message);
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
@@ -167,7 +168,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none');
 
         $this->assertFalse($result->success);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertSame('Failed to create zone: api down', $result->message);
     }
 
@@ -426,7 +427,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
 
         $this->assertFalse($result->success);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertSame('Failed to create SOA record for zone.', $result->message);
         // The zones row was committed before the SOA write, so it is deleted rather than rolled back.
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
@@ -478,7 +479,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
 
         $this->assertFalse($result->success);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertSame('Failed to create SOA record for zone.', $result->message);
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
@@ -500,7 +501,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
 
         $this->assertFalse($result->success);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertSame('Failed to create A record for zone.', $result->message);
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
@@ -520,7 +521,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none', [4]);
 
         $this->assertFalse($result->success);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertSame('Failed to create zone: disk full', $result->message);
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
@@ -538,7 +539,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'bogus', [4]);
 
         $this->assertFalse($result->success);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertSame('Invalid argument(s) given to function addDomain could not create zone', $result->message);
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));

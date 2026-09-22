@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Domain service for user management operations
@@ -175,7 +176,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Username is required',
-                'status' => 400,
+                'refusal' => Refusal::INVALID_INPUT,
                 'code' => self::ERR_USERNAME_REQUIRED,
             ];
         }
@@ -189,7 +190,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Password is required',
-                'status' => 400,
+                'refusal' => Refusal::INVALID_INPUT,
                 'code' => self::ERR_PASSWORD_REQUIRED,
             ];
         }
@@ -208,7 +209,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Username already exists',
-                'status' => 409,
+                'refusal' => Refusal::CONFLICT,
                 'code' => self::ERR_USERNAME_EXISTS,
             ];
         }
@@ -218,7 +219,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Email already exists',
-                'status' => 409,
+                'refusal' => Refusal::CONFLICT,
                 'code' => self::ERR_EMAIL_EXISTS,
             ];
         }
@@ -229,7 +230,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'No permission template available to assign',
-                'status' => 400,
+                'refusal' => Refusal::INVALID_INPUT,
                 'code' => self::ERR_NO_TEMPLATE,
             ];
         }
@@ -249,7 +250,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Failed to create user',
-                    'status' => 500,
+                    'refusal' => Refusal::BACKEND_FAILURE,
                     'code' => self::ERR_WRITE,
                 ];
             }
@@ -263,7 +264,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Failed to create user: ' . $e->getMessage(),
-                'status' => 500,
+                'refusal' => Refusal::BACKEND_FAILURE,
                 'code' => self::ERR_WRITE,
             ];
         }
@@ -282,7 +283,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'User not found',
-                'status' => 404,
+                'refusal' => Refusal::NOT_FOUND,
                 'code' => self::ERR_NOT_FOUND,
             ];
         }
@@ -316,7 +317,7 @@ class UserManagementService
                     strtoupper($targetMethod->value),
                     strtoupper($targetMethod->value)
                 ),
-                'status' => 400,
+                'refusal' => Refusal::INVALID_INPUT,
                 'code' => self::ERR_PASSWORD_FORBIDDEN,
             ];
         }
@@ -329,7 +330,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Password is required when disabling LDAP authentication',
-                'status' => 400,
+                'refusal' => Refusal::INVALID_INPUT,
                 'code' => self::ERR_PASSWORD_REQUIRED,
             ];
         }
@@ -346,7 +347,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Username already exists',
-                    'status' => 409,
+                    'refusal' => Refusal::CONFLICT,
                     'code' => self::ERR_USERNAME_EXISTS,
                 ];
             }
@@ -360,7 +361,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Email already exists',
-                    'status' => 409,
+                    'refusal' => Refusal::CONFLICT,
                     'code' => self::ERR_EMAIL_EXISTS,
                 ];
             }
@@ -376,7 +377,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
-                'status' => 409,
+                'refusal' => Refusal::CONFLICT,
                 'code' => self::ERR_LAST_ADMIN,
             ];
         }
@@ -392,7 +393,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Failed to update user',
-                    'status' => 500,
+                    'refusal' => Refusal::BACKEND_FAILURE,
                     'code' => self::ERR_WRITE,
                 ];
             }
@@ -410,7 +411,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Failed to update user: ' . $e->getMessage(),
-                'status' => 500,
+                'refusal' => Refusal::BACKEND_FAILURE,
                 'code' => self::ERR_WRITE,
             ];
         }
@@ -441,7 +442,7 @@ class UserManagementService
                     return [
                         'success' => false,
                         'message' => 'User owns zones. Please specify transfer_to_user_id to transfer zones to another user.',
-                        'status' => 400,
+                        'refusal' => Refusal::INVALID_INPUT,
                         'code' => self::ERR_TRANSFER_TARGET,
                     ];
                 }
@@ -453,7 +454,7 @@ class UserManagementService
                     return [
                         'success' => false,
                         'message' => 'Cannot transfer zones to the user being deleted. Specify a different transfer_to_user_id.',
-                        'status' => 400,
+                        'refusal' => Refusal::INVALID_INPUT,
                         'code' => self::ERR_TRANSFER_TARGET,
                     ];
                 }
@@ -463,7 +464,7 @@ class UserManagementService
                     return [
                         'success' => false,
                         'message' => 'Transfer target user not found',
-                        'status' => 404,
+                        'refusal' => Refusal::NOT_FOUND,
                         'code' => self::ERR_TRANSFER_TARGET,
                     ];
                 }
@@ -475,7 +476,7 @@ class UserManagementService
                             return [
                                 'success' => false,
                                 'message' => 'You do not have permission to reassign zone ' . (int)$zone['domain_id'],
-                                'status' => 403,
+                                'refusal' => Refusal::FORBIDDEN,
                                 'code' => self::ERR_ZONE_META_FORBIDDEN,
                             ];
                         }
@@ -487,7 +488,7 @@ class UserManagementService
                     return [
                         'success' => false,
                         'message' => 'Failed to transfer zones to target user',
-                        'status' => 500,
+                        'refusal' => Refusal::BACKEND_FAILURE,
                         'code' => self::ERR_ZONE_WRITE,
                     ];
                 }
@@ -499,7 +500,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Failed to delete user',
-                    'status' => 500,
+                    'refusal' => Refusal::BACKEND_FAILURE,
                     'code' => self::ERR_WRITE,
                 ];
             }
@@ -517,7 +518,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Failed to delete user: ' . $e->getMessage(),
-                'status' => 500,
+                'refusal' => Refusal::BACKEND_FAILURE,
                 'code' => self::ERR_WRITE,
             ];
         }
@@ -532,7 +533,7 @@ class UserManagementService
      * acting user may delete this user at all is the caller's check.
      *
      * @param list<mixed> $zoneDecisions Entries that are not a decision (no zid, unknown target) are ignored
-     * @return array{success: true, message: string, zones_affected: int}|array{success: false, message: string, status: int, code: string}
+     * @return array{success: true, message: string, zones_affected: int}|array{success: false, message: string, refusal: Refusal, code: string}
      */
     public function deleteUserWithZoneDecisions(int $actingUserId, int $userId, array $zoneDecisions): array
     {
@@ -547,10 +548,10 @@ class UserManagementService
         foreach ($zoneDecisions as $decision) {
             $zoneId = (int)$decision['zid'];
             if ($decision['target'] === 'delete' && !$this->permissions->canDeleteZoneById($actingUserId, $zoneId)) {
-                return ['success' => false, 'message' => 'You do not have permission to delete zone ' . $zoneId, 'status' => 403, 'code' => self::ERR_ZONE_DELETE_FORBIDDEN];
+                return ['success' => false, 'message' => 'You do not have permission to delete zone ' . $zoneId, 'refusal' => Refusal::FORBIDDEN, 'code' => self::ERR_ZONE_DELETE_FORBIDDEN];
             }
             if ($decision['target'] === 'new_owner' && !$this->permissions->canEditZoneMeta($actingUserId, $zoneId)) {
-                return ['success' => false, 'message' => 'You do not have permission to reassign zone ' . $zoneId, 'status' => 403, 'code' => self::ERR_ZONE_META_FORBIDDEN];
+                return ['success' => false, 'message' => 'You do not have permission to reassign zone ' . $zoneId, 'refusal' => Refusal::FORBIDDEN, 'code' => self::ERR_ZONE_META_FORBIDDEN];
             }
         }
 
@@ -561,20 +562,20 @@ class UserManagementService
                 // records and metadata with the zone, as the web and API deletes do
                 $deleted = $this->zones->deleteZone($zoneId);
                 if (!$deleted['success']) {
-                    return ['success' => false, 'message' => $deleted['message'], 'status' => $deleted['status'], 'code' => self::ERR_ZONE_WRITE];
+                    return ['success' => false, 'message' => $deleted['message'], 'refusal' => $deleted['refusal'] ?? Refusal::BACKEND_FAILURE, 'code' => self::ERR_ZONE_WRITE];
                 }
                 continue;
             }
             $result = $this->domainManager->addOwnerToZone($zoneId, (int)($decision['newowner'] ?? 0));
             if (!$result->success) {
-                return ['success' => false, 'message' => (string)$result->message, 'status' => $result->status, 'code' => self::ERR_ZONE_WRITE];
+                return ['success' => false, 'message' => (string)$result->message, 'refusal' => $result->refusal ?? Refusal::BACKEND_FAILURE, 'code' => self::ERR_ZONE_WRITE];
             }
             $this->permissions->forgetZone($zoneId);
         }
 
         // Row cleanup (auth links, preferences, MFA, memberships, templates) is shared with the API.
         if (!$this->userRepository->deleteUser($userId)) {
-            return ['success' => false, 'message' => 'Failed to delete user', 'status' => 500, 'code' => self::ERR_WRITE];
+            return ['success' => false, 'message' => 'Failed to delete user', 'refusal' => Refusal::BACKEND_FAILURE, 'code' => self::ERR_WRITE];
         }
 
         return ['success' => true, 'message' => 'User deleted successfully', 'zones_affected' => count($zoneDecisions)];
@@ -583,12 +584,12 @@ class UserManagementService
     /**
      * Why the user cannot be deleted at all, or null: unknown, or the last super admin.
      *
-     * @return array{success: false, message: string, status: int, code: string}|null
+     * @return array{success: false, message: string, refusal: Refusal, code: string}|null
      */
     private function deleteRefusal(int $userId): ?array
     {
         if (!$this->userExists($userId)) {
-            return ['success' => false, 'message' => 'User not found', 'status' => 404, 'code' => self::ERR_NOT_FOUND];
+            return ['success' => false, 'message' => 'User not found', 'refusal' => Refusal::NOT_FOUND, 'code' => self::ERR_NOT_FOUND];
         }
 
         // The last super admin cannot go, or nobody could administer the system.
@@ -596,7 +597,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.',
-                'status' => 409,
+                'refusal' => Refusal::CONFLICT,
                 'code' => self::ERR_LAST_ADMIN,
             ];
         }
@@ -618,7 +619,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'User not found',
-                'status' => 404
+                'refusal' => Refusal::NOT_FOUND
             ];
         }
 
@@ -627,7 +628,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Permission template not found',
-                'status' => 400
+                'refusal' => Refusal::INVALID_INPUT
             ];
         }
 
@@ -641,7 +642,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
-                'status' => 409
+                'refusal' => Refusal::CONFLICT
             ];
         }
 
@@ -651,7 +652,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Failed to assign permission template',
-                    'status' => 500
+                    'refusal' => Refusal::BACKEND_FAILURE
                 ];
             }
             $this->permissions->forgetUser($userId);
@@ -664,7 +665,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Failed to assign permission template: ' . $e->getMessage(),
-                'status' => 500
+                'refusal' => Refusal::BACKEND_FAILURE
             ];
         }
     }
@@ -676,7 +677,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'LDAP authentication is not enabled',
-                'status' => 400,
+                'refusal' => Refusal::INVALID_INPUT,
                 'code' => self::ERR_INVALID_LDAP,
             ];
         }
@@ -689,7 +690,7 @@ class UserManagementService
         return [
             'success' => false,
             'message' => 'Permission template not found',
-            'status' => 400,
+            'refusal' => Refusal::INVALID_INPUT,
             'code' => self::ERR_TEMPLATE_NOT_FOUND,
         ];
     }
@@ -705,7 +706,7 @@ class UserManagementService
         return [
             'success' => false,
             'message' => $errors[0],
-            'status' => 400,
+            'refusal' => Refusal::INVALID_INPUT,
             'code' => self::ERR_PASSWORD_POLICY,
         ];
     }
@@ -735,7 +736,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => ucfirst($field) . " must not exceed $max characters",
-                    'status' => 400,
+                    'refusal' => Refusal::INVALID_INPUT,
                     'code' => self::ERR_FIELD_LENGTH,
                 ];
             }
@@ -756,7 +757,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Username cannot be empty',
-                'status' => 400,
+                'refusal' => Refusal::INVALID_INPUT,
                 'code' => self::ERR_USERNAME_REQUIRED,
             ];
         }

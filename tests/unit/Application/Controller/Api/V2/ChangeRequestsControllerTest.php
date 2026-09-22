@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * The change request endpoints: hidden while the feature is off, scoped to
@@ -151,7 +152,7 @@ class ChangeRequestsControllerTest extends TestCase
         $this->requests->method('find')->willReturn($this->request(12, self::OWNED_ZONE));
         $this->permissions->method('canReviewChangeRequests')->willReturn(true);
         $this->service->method('approve')
-            ->willReturn(ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_APPLY_FAILED, 'Action 1 (add) failed: duplicate. Nothing was applied.', 409, [], 12));
+            ->willReturn(ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_APPLY_FAILED, 'Action 1 (add) failed: duplicate. Nothing was applied.', Refusal::CONFLICT, [], 12));
 
         $response = $this->call('approveChangeRequest', id: 12);
 

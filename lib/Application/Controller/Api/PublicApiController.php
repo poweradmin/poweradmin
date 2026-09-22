@@ -36,6 +36,7 @@ use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Base for /api/v2 endpoints: API key or Basic auth, key scope enforcement, request logging and wrapped responses.
@@ -436,8 +437,8 @@ abstract class PublicApiController extends AbstractApiController
     protected function recordWriteErrorMessage(RecordWriteResult $result, string $backendFailureText): string
     {
         return match (true) {
-            $result->status === 409 => 'A record with this hostname, type, and content already exists',
-            $result->status === 500 => $backendFailureText,
+            $result->refusal === Refusal::CONFLICT => 'A record with this hostname, type, and content already exists',
+            $result->refusal === Refusal::BACKEND_FAILURE => $backendFailureText,
             default => (string)$result->message,
         };
     }

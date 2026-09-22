@@ -39,6 +39,7 @@ use Poweradmin\Application\Service\ControllerServiceFactory;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * API zone creation must apply the same name and template rules as the web UI:
@@ -134,11 +135,11 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
     public function testAReplicatingZoneNeedsAValidPrimary(): void
     {
         $missing = $this->service()->createZone('new.example', 'SLAVE', self::ADMIN_USER_ID);
-        $this->assertSame(400, $missing['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $missing['refusal']);
         $this->assertSame(ZoneManagementService::ERR_MASTER_REQUIRED, $missing['code']);
 
         $invalid = $this->service()->createZone('new.example', 'SLAVE', self::ADMIN_USER_ID, 'not-an-ip');
-        $this->assertSame(400, $invalid['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $invalid['refusal']);
         $this->assertSame(ZoneManagementService::ERR_INVALID_MASTER, $invalid['code']);
         $this->assertStringContainsString('Invalid master servers format', $invalid['message']);
 
@@ -190,7 +191,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
     {
         $result = $this->service()->createZone('bücher.example', 'MASTER', self::ADMIN_USER_ID);
 
-        $this->assertSame(409, $result['status']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
         $this->assertSame('Domain already exists', $result['message']);
     }
 
@@ -198,7 +199,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
     {
         $result = $this->service()->createZone('new.example..', 'MASTER', self::ADMIN_USER_ID);
 
-        $this->assertSame(400, $result['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
     }
 
     public function testCreateZoneRefusesSubzoneOfExistingZoneWhenThirdLevelCheckIsOn(): void
@@ -208,7 +209,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         foreach (['sub.parent.example', 'sub.parent.example.'] as $name) {
             $result = $this->service()->createZone($name, 'MASTER', self::ADMIN_USER_ID);
 
-            $this->assertSame(409, $result['status'], $name);
+            $this->assertSame(Refusal::CONFLICT, $result['refusal'], $name);
             $this->assertSame('Domain already exists', $result['message']);
         }
     }
@@ -220,7 +221,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         $refused = $this->service(null, $this->existingZoneOfType('SLAVE'))->applyTemplate(1, (string)self::GLOBAL_TEMPLATE, self::ADMIN_USER_ID);
 
         $this->assertSame(ZoneManagementService::ERR_READ_ONLY, $refused['code']);
-        $this->assertSame(400, $refused['status']);
+        $this->assertSame(Refusal::INVALID_INPUT, $refused['refusal']);
     }
 
     public function testApplyTemplateEnforcesTheTemplateRules(): void
@@ -239,24 +240,24 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
 
     public function testUnknownTemplateIs404(): void
     {
-        $this->assertSame(404, $this->service()->resolveZoneTemplate('999', self::ADMIN_USER_ID)['status']);
-        $this->assertSame(404, $this->service()->resolveZoneTemplate('missing', self::ADMIN_USER_ID)['status']);
+        $this->assertSame(Refusal::NOT_FOUND, $this->service()->resolveZoneTemplate('999', self::ADMIN_USER_ID)['refusal']);
+        $this->assertSame(Refusal::NOT_FOUND, $this->service()->resolveZoneTemplate('missing', self::ADMIN_USER_ID)['refusal']);
     }
 
     public function testAmbiguousNameIs409(): void
     {
-        $this->assertSame(409, $this->service()->resolveZoneTemplate('dup', self::ADMIN_USER_ID)['status']);
+        $this->assertSame(Refusal::CONFLICT, $this->service()->resolveZoneTemplate('dup', self::ADMIN_USER_ID)['refusal']);
     }
 
     public function testOtherUsersPrivateTemplateIsRefused(): void
     {
         $result = $this->service()->resolveZoneTemplate((string)self::PRIVATE_TEMPLATE, self::OTHER_USER);
 
-        $this->assertSame(403, $result['status']);
+        $this->assertSame(Refusal::FORBIDDEN, $result['refusal']);
         $this->assertSame('You do not have permission to use this zone template', $result['message']);
 
         $byName = $this->service()->resolveZoneTemplate('admin-private', self::OTHER_USER);
-        $this->assertSame(403, $byName['status']);
+        $this->assertSame(Refusal::FORBIDDEN, $byName['refusal']);
     }
 
     public function testGlobalTemplateIsUsableByAnyone(): void

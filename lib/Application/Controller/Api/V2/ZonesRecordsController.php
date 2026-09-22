@@ -38,6 +38,8 @@ use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * /api/v2/zones/{id}/records: lists, creates, updates and deletes single records in a zone.
@@ -480,7 +482,7 @@ class ZonesRecordsController extends PublicApiController
                 $disabled
             );
             if (!$added->isOk()) {
-                return $this->returnApiError($this->recordWriteErrorMessage($added->record, 'Failed to create record'), $added->record->status);
+                return $this->returnApiError($this->recordWriteErrorMessage($added->record, 'Failed to create record'), RefusalStatus::of($added->record->refusal));
             }
             $newRecordId = $added->record->recordId;
 
@@ -714,7 +716,7 @@ class ZonesRecordsController extends PublicApiController
                 $this->getAuthenticatedUsername()
             ));
             if (!$edited->isOk()) {
-                return $this->returnApiError($this->recordWriteErrorMessage($edited->write, 'Failed to update record'), $edited->write->status);
+                return $this->returnApiError($this->recordWriteErrorMessage($edited->write, 'Failed to update record'), RefusalStatus::of($edited->write->refusal));
             }
 
             $ptrMessage = '';
@@ -830,7 +832,7 @@ class ZonesRecordsController extends PublicApiController
             $result = $this->recordManager->deleteRecord($recordId);
             if (!$result->success) {
                 // Backend faults keep the generic contract string; refusals carry their reason
-                return $this->returnApiError($result->status === 500 ? 'Failed to delete record' : (string)$result->message, $result->status);
+                return $this->returnApiError($result->refusal === Refusal::BACKEND_FAILURE ? 'Failed to delete record' : (string)$result->message, RefusalStatus::of($result->refusal));
             }
 
             $this->services()->auditService()->logApiRecordDelete($zoneId, $existingRecord['name'] ?? '', $existingRecord['type'] ?? '', $existingRecord['content'] ?? '');

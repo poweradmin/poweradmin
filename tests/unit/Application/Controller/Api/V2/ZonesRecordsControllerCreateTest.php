@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterization of POST /api/v2/zones/{id}/records: the gate order, every
@@ -295,7 +296,7 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
     public function testADuplicateIsReportedAs409WithTheContractWording(): void
     {
         $this->addService->method('add')->willReturn(
-            RecordAddResult::refused(RecordWriteResult::failure('whatever the manager said', 409))
+            RecordAddResult::refused(RecordWriteResult::failure('whatever the manager said', Refusal::CONFLICT))
         );
 
         $response = $this->create($this->validBody());
@@ -319,7 +320,7 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
     public function testAnyOtherRefusalCarriesTheManagersOwnReason(): void
     {
         $this->addService->method('add')->willReturn(
-            RecordAddResult::refused(RecordWriteResult::failure('Invalid IPv4 address', 400))
+            RecordAddResult::refused(RecordWriteResult::failure('Invalid IPv4 address', Refusal::INVALID_INPUT))
         );
 
         $response = $this->create($this->validBody());

@@ -47,6 +47,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterization of PUT and DELETE on /api/v2/zones/{id}/records/{record_id}:
@@ -328,7 +329,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
     public function testAFailedEditKeepsTheManagersStatusAndReason(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
-        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::failure('Invalid IPv4 address', 400));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::failure('Invalid IPv4 address', Refusal::INVALID_INPUT));
 
         $response = $this->update(['content' => 'not-an-ip']);
 

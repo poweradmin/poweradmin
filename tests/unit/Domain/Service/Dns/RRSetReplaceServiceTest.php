@@ -36,6 +36,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use RuntimeException;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 class RRSetReplaceServiceTest extends TestCase
 {
@@ -139,7 +140,6 @@ class RRSetReplaceServiceTest extends TestCase
         $this->assertSame([
             'success' => true,
             'message' => 'RRSet replaced successfully',
-            'status' => 200,
             'name' => 'www.example.com',
             'records' => [
                 ['content' => '192.0.2.1', 'ttl' => 300, 'priority' => 0, 'disabled' => 0],
@@ -177,7 +177,7 @@ class RRSetReplaceServiceTest extends TestCase
 
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1', 'nope']));
 
-        $this->assertSame(['success' => false, 'message' => 'Invalid IPv4 address', 'status' => 400], $result);
+        $this->assertSame(['success' => false, 'message' => 'Invalid IPv4 address', 'refusal' => Refusal::INVALID_INPUT], $result);
         $this->assertSame(['beginTransaction', 'rollBack'], $this->calls);
     }
 
@@ -185,7 +185,7 @@ class RRSetReplaceServiceTest extends TestCase
     {
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, []);
 
-        $this->assertSame(['success' => false, 'message' => 'No valid records to create', 'status' => 400], $result);
+        $this->assertSame(['success' => false, 'message' => 'No valid records to create', 'refusal' => Refusal::INVALID_INPUT], $result);
         $this->assertSame(['beginTransaction', 'rollBack'], $this->calls);
     }
 
@@ -193,7 +193,7 @@ class RRSetReplaceServiceTest extends TestCase
     {
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1', '192.0.2.1']));
 
-        $this->assertSame(['success' => false, 'message' => 'A record with this hostname, type, and content already exists', 'status' => 409], $result);
+        $this->assertSame(['success' => false, 'message' => 'A record with this hostname, type, and content already exists', 'refusal' => Refusal::CONFLICT], $result);
         $this->assertNotContains('delete:5', $this->calls);
         $this->assertSame('rollBack', end($this->calls));
     }
@@ -206,13 +206,13 @@ class RRSetReplaceServiceTest extends TestCase
 
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1']));
 
-        $this->assertSame(['success' => false, 'message' => 'Failed to delete existing record with ID 5', 'status' => 500], $result);
+        $this->assertSame(['success' => false, 'message' => 'Failed to delete existing record with ID 5', 'refusal' => Refusal::BACKEND_FAILURE], $result);
         $this->assertSame(['beginTransaction', 'validate:192.0.2.1', 'rollBack'], $this->calls);
     }
 
     public function testAFailedInsertRollsBackAndHandsBackTheWriteResult(): void
     {
-        $refused = RecordWriteResult::failure('Content too long', 422);
+        $refused = RecordWriteResult::failure('Content too long', Refusal::INVALID_INPUT);
         $this->manager = $this->createMock(RecordManagerInterface::class);
         $this->manager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
         $this->manager->method('addRecordGetId')->willReturn($refused);
@@ -224,7 +224,7 @@ class RRSetReplaceServiceTest extends TestCase
         $this->assertSame([
             'success' => false,
             'message' => 'Content too long',
-            'status' => 422,
+            'refusal' => Refusal::INVALID_INPUT,
             'write' => $refused,
             'content' => '192.0.2.1',
         ], $result);

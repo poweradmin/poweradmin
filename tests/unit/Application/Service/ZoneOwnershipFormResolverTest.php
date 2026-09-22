@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\PermissionServiceTestCase;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * The add-zone forms drop the owner or groups the ownership mode disallows
@@ -144,7 +145,7 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
 
     public function testUnmappedCodesFallBackToTheResolutionText(): void
     {
-        $result = ZoneOwnershipResolution::error('api wording', 400, ZoneOwnershipResolution::INVALID_INPUT);
+        $result = ZoneOwnershipResolution::error('api wording', Refusal::INVALID_INPUT, ZoneOwnershipResolution::INVALID_INPUT);
 
         $this->assertSame('api wording', ZoneOwnershipFormResolver::errorMessage($result));
     }

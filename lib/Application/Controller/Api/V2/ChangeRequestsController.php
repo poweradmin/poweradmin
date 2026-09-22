@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Poweradmin\Application\Http\RefusalStatus;
 
 /**
  * /api/v2/change-requests: lists and shows filed change requests, applies a
@@ -467,7 +468,7 @@ class ChangeRequestsController extends PublicApiController
 
         return $result->success
             ? $this->returnApiResponse($data, true, $result->message)
-            : $this->returnApiError($result->message, $result->status, $data);
+            : $this->returnApiError($result->message, RefusalStatus::of($result->refusal), $data);
     }
 
     /**

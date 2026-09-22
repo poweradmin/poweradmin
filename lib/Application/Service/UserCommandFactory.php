@@ -25,17 +25,18 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Service\User\CreateUserCommand;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Turns a user create or update request, keyed by the API field names, into
  * the typed command UserManagementService takes. A value of the wrong shape
- * is refused here with the same wording and status the service used to give.
+ * is refused here with the same wording and refusal the service used to give.
  */
 class UserCommandFactory
 {
     /**
      * @param array<string, mixed> $input The request fields under their API names
-     * @return CreateUserCommand|array{success: false, message: string, status: int, code: string}
+     * @return CreateUserCommand|array{success: false, message: string, refusal: Refusal, code: string}
      */
     public static function create(array $input): CreateUserCommand|array
     {
@@ -68,7 +69,7 @@ class UserCommandFactory
 
     /**
      * @param array<string, mixed> $input The request fields under their API names; absent ones stay unchanged
-     * @return UpdateUserCommand|array{success: false, message: string, status: int, code: string}
+     * @return UpdateUserCommand|array{success: false, message: string, refusal: Refusal, code: string}
      */
     public static function update(array $input): UpdateUserCommand|array
     {
@@ -116,14 +117,14 @@ class UserCommandFactory
     }
 
     /**
-     * @return array{success: false, message: string, status: int, code: string}
+     * @return array{success: false, message: string, refusal: Refusal, code: string}
      */
     private static function passwordInvalid(): array
     {
         return [
             'success' => false,
             'message' => 'Invalid field types in request body',
-            'status' => 400,
+            'refusal' => Refusal::INVALID_INPUT,
             'code' => UserManagementService::ERR_PASSWORD_POLICY,
         ];
     }
@@ -145,7 +146,7 @@ class UserCommandFactory
     }
 
     /**
-     * @return bool|null|array{success: false, message: string, status: int, code: string}
+     * @return bool|null|array{success: false, message: string, refusal: Refusal, code: string}
      */
     private static function useLdap(array $input): bool|null|array
     {
@@ -158,7 +159,7 @@ class UserCommandFactory
             return [
                 'success' => false,
                 'message' => 'use_ldap must be a boolean',
-                'status' => 400,
+                'refusal' => Refusal::INVALID_INPUT,
                 'code' => UserManagementService::ERR_INVALID_LDAP,
             ];
         }
@@ -170,7 +171,7 @@ class UserCommandFactory
      * A positive int or all-digit string is the template id; an absent or null
      * value gives null; anything else (0, "admin", "2foo") is refused.
      *
-     * @return int|null|array{success: false, message: string, status: int, code: string}
+     * @return int|null|array{success: false, message: string, refusal: Refusal, code: string}
      */
     private static function permissionTemplateId(array $input): int|null|array
     {
@@ -189,14 +190,14 @@ class UserCommandFactory
     }
 
     /**
-     * @return array{success: false, message: string, status: int, code: string}
+     * @return array{success: false, message: string, refusal: Refusal, code: string}
      */
     private static function templateNotFound(): array
     {
         return [
             'success' => false,
             'message' => 'Permission template not found',
-            'status' => 400,
+            'refusal' => Refusal::INVALID_INPUT,
             'code' => UserManagementService::ERR_TEMPLATE_NOT_FOUND,
         ];
     }

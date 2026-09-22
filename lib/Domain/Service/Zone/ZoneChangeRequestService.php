@@ -49,6 +49,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Throwable;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Files zone change requests and applies the reviewer's decision.
@@ -146,7 +147,7 @@ class ZoneChangeRequestService
             ];
         }
         if ($errors !== []) {
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, 'The request was not filed because some rows are invalid.', 400, $errors);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, 'The request was not filed because some rows are invalid.', Refusal::INVALID_INPUT, $errors);
         }
 
         $zoneComment = $this->changedZoneComment($submission->zoneId, $submission->zoneComment);
@@ -178,11 +179,11 @@ class ZoneChangeRequestService
         ];
         $error = $this->validate(-1, $zoneId, $row);
         if ($error !== null) {
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, 400, [$error]);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::INVALID_INPUT, [$error]);
         }
         if ($this->records->recordExists($zoneId, strtolower($row['name']), $row['type'], $row['content'])) {
             $error = 'A record with this hostname, type, and content already exists.';
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, 409, [$error]);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::CONFLICT, [$error]);
         }
 
         $actions = [['op' => ZoneChangeRequest::OP_ADD, 'after' => ZoneChangeRequestRowCodec::afterState($row)]];
@@ -200,7 +201,7 @@ class ZoneChangeRequestService
         $recordId = RecordIdHelper::normalizeId($recordId);
         $stored = $this->records->getRecordFromId($recordId);
         if ($stored === null || (int)($stored['domain_id'] ?? 0) !== $zoneId) {
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_RECORD_NOT_FOUND, 'Record not found.', 404);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_RECORD_NOT_FOUND, 'Record not found.', Refusal::NOT_FOUND);
         }
         $zoneName = $this->domains->getDomainNameById($zoneId) ?? '';
         $stored['comment'] = $this->linkedComments?->findByRecordId($recordId)?->getComment();
@@ -218,7 +219,7 @@ class ZoneChangeRequestService
     {
         $zoneName = $this->domains->getDomainNameById($zoneId);
         if ($zoneName === null) {
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_FOUND, 'Zone not found.', 404);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_FOUND, 'Zone not found.', Refusal::NOT_FOUND);
         }
 
         $actions = [['op' => ZoneChangeRequest::OP_ZONE_DELETE]];
@@ -243,12 +244,13 @@ class ZoneChangeRequestService
             return $this->decidedMeanwhile($requestId);
         }
 
-        [$error, $status] = $this->apply($request, $reviewerId, $reviewerName, $comment);
-        if ($error !== null) {
+        $failure = $this->apply($request, $reviewerId, $reviewerName, $comment);
+        if ($failure !== null) {
+            [$error, $refusal] = $failure;
             $this->requests->markFailed($requestId, $error);
             $this->notify($requestId, fn(ZoneChangeRequest $r) => $this->notifier?->requestDecided($r));
 
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_APPLY_FAILED, $error, $status, [], $requestId);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_APPLY_FAILED, $error, $refusal, [], $requestId);
         }
 
         $this->requests->markApplied($requestId);
@@ -282,7 +284,7 @@ class ZoneChangeRequestService
             return $request;
         }
         if ($request->requesterId !== $userId) {
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_REQUESTER, 'Only the requester can cancel this request.', 403);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_REQUESTER, 'Only the requester can cancel this request.', Refusal::FORBIDDEN);
         }
 
         if (!$this->requests->cancel($requestId)) {
@@ -339,11 +341,11 @@ class ZoneChangeRequestService
     }
 
     /**
-     * @return array{0: string|null, 1: int} The failure text and HTTP status, or null when everything applied
+     * @return array{0: string, 1: Refusal}|null The failure text and refusal, or null when everything applied
      */
-    private function apply(ZoneChangeRequest $request, int $reviewerId, string $reviewerName, ?string $reviewComment): array
+    private function apply(ZoneChangeRequest $request, int $reviewerId, string $reviewerName, ?string $reviewComment): ?array
     {
-        $work = fn(): array => $request->isZoneDelete()
+        $work = fn(): ?array => $request->isZoneDelete()
             ? $this->applyZoneDelete($request, $reviewerId)
             : $this->applyRecords($request, $reviewerId, $reviewerName);
 
@@ -357,25 +359,25 @@ class ZoneChangeRequestService
         try {
             return $this->changeset === null ? $work() : ($this->changeset)($request->zoneId, $reason, $work);
         } catch (Throwable $e) {
-            return [$e->getMessage(), 500];
+            return [$e->getMessage(), Refusal::BACKEND_FAILURE];
         }
     }
 
-    /** @return array{0: string|null, 1: int} */
-    private function applyZoneDelete(ZoneChangeRequest $request, int $reviewerId): array
+    /** @return array{0: string, 1: Refusal}|null */
+    private function applyZoneDelete(ZoneChangeRequest $request, int $reviewerId): ?array
     {
         // deleteZone() has no gate of its own, so the reviewer needs the same delete right as a direct delete
         if ($this->permissions !== null && !$this->permissions->canPerformZoneAction($reviewerId, $request->zoneId, Permission::PERM_ZONE_DELETE_OWN) && !$this->permissions->hasPermission($reviewerId, Permission::PERM_ZONE_DELETE_OTHERS)) {
-            return ['You do not have the permission to delete a zone.', 403];
+            return ['You do not have the permission to delete a zone.', Refusal::FORBIDDEN];
         }
 
         $this->keepSnapshot($request);
         $result = $this->zoneManagement->deleteZone($request->zoneId);
         if (!($result['success'] ?? false)) {
-            return [(string)($result['message'] ?? 'Failed to delete zone'), (int)($result['status'] ?? 500)];
+            return [(string)($result['message'] ?? 'Failed to delete zone'), $result['refusal'] ?? Refusal::BACKEND_FAILURE];
         }
 
-        return [null, 200];
+        return null;
     }
 
     /**
@@ -398,9 +400,9 @@ class ZoneChangeRequestService
      * local transactions a failure leaves the zone untouched; otherwise the
      * error names the actions that had already landed.
      *
-     * @return array{0: string|null, 1: int}
+     * @return array{0: string, 1: Refusal}|null
      */
-    private function applyRecords(ZoneChangeRequest $request, int $reviewerId, string $reviewerName): array
+    private function applyRecords(ZoneChangeRequest $request, int $reviewerId, string $reviewerName): ?array
     {
         $zoneId = $request->zoneId;
         $transactional = $this->backend->supportsLocalWriteTransaction() && !$this->db->inTransaction();
@@ -433,13 +435,13 @@ class ZoneChangeRequestService
             throw $e;
         }
 
-        return [null, 200];
+        return null;
     }
 
     /**
      * Runs every action and the zone comment write, stopping at the first refusal.
      *
-     * @return array{0: string, 1: int}|null The failure text and status, or null when all landed
+     * @return array{0: string, 1: Refusal}|null The failure text and refusal, or null when all landed
      */
     private function replayActions(ZoneChangeRequest $request, int $reviewerId, string $reviewerName, bool $rolledBackOnFailure): ?array
     {
@@ -447,7 +449,7 @@ class ZoneChangeRequestService
         foreach ($request->actions as $index => $action) {
             $result = $this->applyAction($request, $action, $reviewerId, $reviewerName);
             if (!$result->success) {
-                return [$this->describeFailure($index, $action, (string)$result->message, $applied, $rolledBackOnFailure), $result->status];
+                return [$this->describeFailure($index, $action, (string)$result->message, $applied, $rolledBackOnFailure), $result->refusal ?? Refusal::BACKEND_FAILURE];
             }
             $applied[] = $index;
         }
@@ -455,7 +457,7 @@ class ZoneChangeRequestService
         if ($request->zoneComment !== null) {
             $written = $this->recordManager->editZoneComment($request->zoneId, $request->zoneComment);
             if (!$written->success) {
-                return [$this->describeFailure(count($request->actions), ['op' => 'zone_comment'], (string)$written->message, $applied, $rolledBackOnFailure), $written->status];
+                return [$this->describeFailure(count($request->actions), ['op' => 'zone_comment'], (string)$written->message, $applied, $rolledBackOnFailure), $written->refusal ?? Refusal::BACKEND_FAILURE];
             }
         }
 
@@ -635,10 +637,10 @@ class ZoneChangeRequestService
         // The same rule the change log applies to direct bulk edits, checked before the request exists
         if ($comment === null && $this->config->get('logging', 'require_change_comment', false)) {
             $error = 'A reason for this change is required.';
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, 400, [$error]);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::INVALID_INPUT, [$error]);
         }
         if (strlen(ZoneChangeRequest::encodePayload($actions, $zoneComment)) > self::MAX_PAYLOAD_BYTES) {
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_PAYLOAD_TOO_LARGE, 'The request is too large to store; submit it as several smaller changes.', 413);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_PAYLOAD_TOO_LARGE, 'The request is too large to store; submit it as several smaller changes.', Refusal::PAYLOAD_TOO_LARGE);
         }
 
         $id = $this->requests->create($zoneId, $zoneName, $kind, $userId, $username, $comment, $baseSerial, $actions, $zoneComment);
@@ -662,7 +664,7 @@ class ZoneChangeRequestService
             return null;
         }
 
-        return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_READ_ONLY_ZONE, 'This zone replicates from a primary and cannot be edited.', 403);
+        return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_READ_ONLY_ZONE, 'This zone replicates from a primary and cannot be edited.', Refusal::FORBIDDEN);
     }
 
     /**
@@ -672,10 +674,10 @@ class ZoneChangeRequestService
     {
         $request = $this->requests->find($requestId);
         if ($request === null) {
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_FOUND, 'Change request not found.', 404);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_FOUND, 'Change request not found.', Refusal::NOT_FOUND);
         }
         if (!($allowFailed ? $request->canBeApplied() : $request->isPending())) {
-            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_PENDING, 'This change request has already been decided.', 409, [], $request->id);
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_PENDING, 'This change request has already been decided.', Refusal::CONFLICT, [], $request->id);
         }
 
         return $request;
@@ -700,7 +702,7 @@ class ZoneChangeRequestService
 
     private function decidedMeanwhile(int $requestId): ZoneChangeRequestResult
     {
-        return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_PENDING, 'This change request has already been decided.', 409, [], $requestId);
+        return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_PENDING, 'This change request has already been decided.', Refusal::CONFLICT, [], $requestId);
     }
 
     private function truncated(): ZoneChangeRequestResult

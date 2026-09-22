@@ -35,6 +35,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Application\Http\RefusalStatus;
 
 /**
  * /api/v2/zones: lists, creates, updates and deletes zones.
@@ -514,7 +515,7 @@ class ZonesController extends PublicApiController
                 $resolved = $this->services()->zoneCreateOwnershipResolver()->resolve($resolved, $userId);
             }
             if ($resolved->hasError()) {
-                return $this->returnApiError($resolved->error, $resolved->status);
+                return $this->returnApiError($resolved->error, RefusalStatus::of($resolved->refusal));
             }
             $owner = $resolved->owner;
             $groupIds = $resolved->groupIds;
@@ -540,7 +541,7 @@ class ZonesController extends PublicApiController
             );
 
             if (!$result['success']) {
-                return $this->returnApiError($result['message'], $result['status'], null, [
+                return $this->returnApiError($result['message'], RefusalStatus::of($result['refusal']), null, [
                     'meta' => [
                         'timestamp' => date('Y-m-d H:i:s')
                     ]
@@ -787,7 +788,7 @@ class ZonesController extends PublicApiController
                 $result = $this->zoneManagementService->updateZone($zoneId, $updates);
 
                 if (!$result['success']) {
-                    $statusCode = $result['status'] ?? 400;
+                    $statusCode = RefusalStatus::ofResult($result);
                     return $this->returnApiError($result['message'], $statusCode);
                 }
             }
@@ -878,7 +879,7 @@ class ZonesController extends PublicApiController
             $result = $this->zoneManagementService->deleteZone($zoneId);
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
                 return $this->returnApiError($result['message'], $statusCode);
             }
 

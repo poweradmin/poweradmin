@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\Dns\RecordManager;
 use ReflectionClass;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * deleteRecord() resolves the acting user's edit level and zone ownership
@@ -89,7 +90,7 @@ class RecordManagerDeleteGateTest extends PermissionServiceTestCase
         $result = $this->manager(null, [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS], [])->deleteRecord(self::RECORD_ID);
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame('You do not have the permission to delete this record.', $result->message);
     }
 
@@ -98,7 +99,7 @@ class RecordManagerDeleteGateTest extends PermissionServiceTestCase
         $result = $this->manager(self::CALLER_ID, [Permission::PERM_ZONE_CONTENT_EDIT_OWN], [99])->deleteRecord(self::RECORD_ID);
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame('You do not have the permission to delete this record.', $result->message);
     }
 }

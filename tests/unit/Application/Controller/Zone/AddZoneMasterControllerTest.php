@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\Zone\ZoneSigningResult;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterizes the add-primary-zone form: its gates, the order of its
@@ -151,7 +152,7 @@ class AddZoneMasterControllerTest extends ZoneCreateControllerTestCase
 
     public function testAnOwnershipRefusalIsWordedForTheForm(): void
     {
-        $this->ownership = ZoneOwnershipResolution::error('api wording', 400, ZoneOwnershipResolution::NO_OWNER);
+        $this->ownership = ZoneOwnershipResolution::error('api wording', Refusal::INVALID_INPUT, ZoneOwnershipResolution::NO_OWNER);
         $this->submit([]);
 
         $controller = $this->makeController();

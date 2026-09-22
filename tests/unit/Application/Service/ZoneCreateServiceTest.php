@@ -36,6 +36,7 @@ use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\Zone\ZoneSigningResult;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Every zone creation form goes through one flow: the name is normalised,
@@ -132,7 +133,7 @@ class ZoneCreateServiceTest extends TestCase
 
     public function testAnOwnershipRefusalIsWordedForTheFormAndStopsTheCreate(): void
     {
-        $this->ownership = ZoneOwnershipResolution::error('api wording', 400, ZoneOwnershipResolution::UNKNOWN_OWNER, [42]);
+        $this->ownership = ZoneOwnershipResolution::error('api wording', Refusal::INVALID_INPUT, ZoneOwnershipResolution::UNKNOWN_OWNER, [42]);
 
         $outcome = $this->service()->create(self::request());
 
@@ -172,7 +173,7 @@ class ZoneCreateServiceTest extends TestCase
 
     public function testARefusedCreationIsWordedForTheFormAndNotAudited(): void
     {
-        $this->createResults = [['success' => false, 'message' => 'Domain already exists', 'status' => 409, 'code' => ZoneManagementService::ERR_EXISTS]];
+        $this->createResults = [['success' => false, 'message' => 'Domain already exists', 'refusal' => Refusal::CONFLICT, 'code' => ZoneManagementService::ERR_EXISTS]];
 
         $outcome = $this->service()->create(self::request());
 
@@ -201,7 +202,7 @@ class ZoneCreateServiceTest extends TestCase
     {
         $this->ownership = ZoneOwnershipResolution::success(4, [2]);
         $this->createResults = [
-            ['success' => false, 'message' => 'Invalid domain name', 'status' => 400, 'code' => ZoneManagementService::ERR_INVALID_NAME],
+            ['success' => false, 'message' => 'Invalid domain name', 'refusal' => Refusal::INVALID_INPUT, 'code' => ZoneManagementService::ERR_INVALID_NAME],
         ];
 
         $batch = $this->service()->createMany(self::request(['name' => '', 'template' => '7']), ['bad..example', 'good.example']);
@@ -215,7 +216,7 @@ class ZoneCreateServiceTest extends TestCase
 
     public function testABatchIsStoppedByAnOwnershipRefusalBeforeAnyNameIsTried(): void
     {
-        $this->ownership = ZoneOwnershipResolution::error('api wording', 400, ZoneOwnershipResolution::NO_OWNER);
+        $this->ownership = ZoneOwnershipResolution::error('api wording', Refusal::INVALID_INPUT, ZoneOwnershipResolution::NO_OWNER);
 
         $batch = $this->service()->createMany(self::request(['name' => '']), ['one.example', 'two.example']);
 

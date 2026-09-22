@@ -37,6 +37,7 @@ use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Every add-record entry point goes through one flow: open() gates the zone
@@ -155,7 +156,7 @@ class RecordAddServiceTest extends TestCase
             ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 7, 'alice', RecordAddResult::COMPANION_PTR);
 
         $this->assertFalse($result->isOk());
-        $this->assertSame(403, $result->record->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->record->refusal);
     }
 
     public function testChecksThePermissionAgainstTheNormalisedNameAndZoneType(): void

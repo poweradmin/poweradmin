@@ -22,9 +22,11 @@
 
 namespace Poweradmin\Domain\Service\Zone;
 
+use Poweradmin\Domain\Service\Validation\Refusal;
+
 /**
  * Outcome of {@see ZoneCreateOwnershipResolver}: either a resolved owner/group
- * assignment for the new zone, or an error with HTTP status. The error carries
+ * assignment for the new zone, or an error with its refusal. The error carries
  * a code so the web forms can word it themselves; the message is the API text.
  */
 final readonly class ZoneOwnershipResolution
@@ -44,7 +46,7 @@ final readonly class ZoneOwnershipResolution
      * @param int|null   $owner    Resolved user owner (null when no user owner).
      * @param list<int>  $groupIds Resolved unique group ids (empty when none).
      * @param string|null $error   Error message; null on success.
-     * @param int        $status   HTTP status code to return on error.
+     * @param Refusal|null $refusal Why the assignment was refused; null on success.
      * @param string|null $code    One of the class constants; null on success.
      * @param list<int>  $ids      The user or group ids the error is about, if any.
      */
@@ -52,7 +54,7 @@ final readonly class ZoneOwnershipResolution
         public ?int $owner,
         public array $groupIds,
         public ?string $error,
-        public int $status,
+        public ?Refusal $refusal,
         public ?string $code,
         public array $ids,
     ) {
@@ -63,15 +65,15 @@ final readonly class ZoneOwnershipResolution
      */
     public static function success(?int $owner, array $groupIds): self
     {
-        return new self($owner, $groupIds, null, 200, null, []);
+        return new self($owner, $groupIds, null, null, null, []);
     }
 
     /**
      * @param list<int> $ids
      */
-    public static function error(string $message, int $status, string $code, array $ids = []): self
+    public static function error(string $message, Refusal $refusal, string $code, array $ids = []): self
     {
-        return new self(null, [], $message, $status, $code, $ids);
+        return new self(null, [], $message, $refusal, $code, $ids);
     }
 
     public function hasError(): bool

@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\RecordAddAccess;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Poweradmin\Application\Http\RefusalStatus;
 
 /**
  * /api/internal/dns-wizard: validates and previews wizard input for the record form.
@@ -341,7 +342,7 @@ class DnsWizardApiController extends InternalApiController
             );
 
             if (!$added->isOk()) {
-                return $this->returnApiError((string)$added->record->message, $added->record->status);
+                return $this->returnApiError((string)$added->record->message, RefusalStatus::of($added->record->refusal));
             }
 
             // Set success message for display after page reload

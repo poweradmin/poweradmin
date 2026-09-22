@@ -32,6 +32,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 use ReflectionClass;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Tests for EditController::handleZoneMetadataPost(), which dispatches the
@@ -177,7 +178,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
 
         $zoneService = $this->createMock(ZoneManagementService::class);
         $zoneService->expects($this->once())->method('applyTemplate')->with(42, 'none', 7)
-            ->willReturn(['success' => false, 'message' => 'Cannot apply a template to a read-only zone', 'status' => 400, 'code' => ZoneManagementService::ERR_READ_ONLY]);
+            ->willReturn(['success' => false, 'message' => 'Cannot apply a template to a read-only zone', 'refusal' => Refusal::INVALID_INPUT, 'code' => ZoneManagementService::ERR_READ_ONLY]);
 
         $messages = $this->invokeHandler($this->createMock(DomainManagerInterface::class), 42, zoneService: $zoneService);
 

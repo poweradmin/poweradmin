@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\Zone\ZoneSigningResult;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Shared fixture for the zone creation forms: the ownership resolver, the
@@ -152,7 +153,7 @@ abstract class ZoneCreateControllerTestCase extends SeamControllerTestCase
     /** @return array<string, mixed> */
     protected static function refusedWith(string $code, string $message = 'refused'): array
     {
-        return ['success' => false, 'message' => $message, 'status' => 400, 'code' => $code];
+        return ['success' => false, 'message' => $message, 'refusal' => Refusal::INVALID_INPUT, 'code' => $code];
     }
 
     protected function haltOf(callable $run): ControllerHalt

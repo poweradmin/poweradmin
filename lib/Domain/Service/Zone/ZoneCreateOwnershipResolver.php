@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Resolves the user-owner and group-owner assignment for a new zone, applying
@@ -78,14 +79,14 @@ class ZoneCreateOwnershipResolver
         if (!$this->mode->isUserOwnerAllowed() && $input->ownerSupplied && $input->ownerUserId !== null) {
             return ZoneOwnershipResolution::error(
                 'User-owner assignment is disabled by the current zone ownership mode (groups_only). Omit owner_user_id or set it to null.',
-                400,
+                Refusal::INVALID_INPUT,
                 ZoneOwnershipResolution::USER_OWNER_DISABLED
             );
         }
         if (!$this->mode->isGroupOwnerAllowed() && !empty($groupIds)) {
             return ZoneOwnershipResolution::error(
                 'Group-owner assignment is disabled by the current zone ownership mode (users_only).',
-                400,
+                Refusal::INVALID_INPUT,
                 ZoneOwnershipResolution::GROUP_OWNER_DISABLED
             );
         }
@@ -132,7 +133,7 @@ class ZoneCreateOwnershipResolver
             if (!empty($missing)) {
                 return ZoneOwnershipResolution::error(
                     'Unknown group ID(s): ' . implode(',', $missing),
-                    404,
+                    Refusal::NOT_FOUND,
                     ZoneOwnershipResolution::UNKNOWN_GROUPS,
                     $missing
                 );
@@ -142,7 +143,7 @@ class ZoneCreateOwnershipResolver
         if ($owner === null && empty($groupIds)) {
             return ZoneOwnershipResolution::error(
                 'At least one of owner_user_id or group_ids must be provided',
-                400,
+                Refusal::INVALID_INPUT,
                 ZoneOwnershipResolution::NO_OWNER
             );
         }
@@ -151,7 +152,7 @@ class ZoneCreateOwnershipResolver
             if (!$this->canAssignOtherOwners($callerUserId)) {
                 return ZoneOwnershipResolution::error(
                     'You do not have permission to create zones for other users',
-                    403,
+                    Refusal::FORBIDDEN,
                     ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN
                 );
             }
@@ -159,7 +160,7 @@ class ZoneCreateOwnershipResolver
             if ($this->users->getUserById($owner) === null) {
                 return ZoneOwnershipResolution::error(
                     'Unknown user ID: ' . $owner,
-                    404,
+                    Refusal::NOT_FOUND,
                     ZoneOwnershipResolution::UNKNOWN_OWNER,
                     [$owner]
                 );
@@ -172,7 +173,7 @@ class ZoneCreateOwnershipResolver
             if (!empty($disallowed)) {
                 return ZoneOwnershipResolution::error(
                     'You can only assign groups you are a member of (disallowed: ' . implode(',', $disallowed) . ')',
-                    403,
+                    Refusal::FORBIDDEN,
                     ZoneOwnershipResolution::GROUPS_NOT_MEMBER,
                     $disallowed
                 );

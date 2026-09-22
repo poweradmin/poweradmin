@@ -36,6 +36,7 @@ use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * A refused validation reaches the caller with the field the validator named,
@@ -65,7 +66,7 @@ class RecordManagerValidationFieldTest extends SqliteIntegrationTestCase
         $result = $this->makeRecordManager($backend)->addRecordGetId(self::ZONE_ID, 'www', 'A', '192.0.2.2', -1, 0);
 
         $this->assertFalse($result->success);
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertSame('TTL value cannot be negative. It must be 0 or higher.', $result->message);
         $this->assertSame(RecordField::TTL, $result->field);
     }
@@ -88,7 +89,7 @@ class RecordManagerValidationFieldTest extends SqliteIntegrationTestCase
         ]);
 
         $this->assertFalse($result->success);
-        $this->assertSame(400, $result->status);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
         $this->assertSame(RecordField::TTL, $result->field);
     }
 

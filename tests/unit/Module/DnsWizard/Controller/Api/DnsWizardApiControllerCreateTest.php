@@ -44,6 +44,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterizes the wizard API's create action: the body it accepts, the gates
@@ -271,7 +272,7 @@ class DnsWizardApiControllerCreateTest extends SeamControllerTestCase
 
     public function testARefusedWriteRelaysItsMessageAndStatus(): void
     {
-        $this->writeResults = [RecordWriteResult::failure('There is already a record with this name and content.', 409)];
+        $this->writeResults = [RecordWriteResult::failure('There is already a record with this name and content.', Refusal::CONFLICT)];
 
         $response = $this->create(self::validBody());
 

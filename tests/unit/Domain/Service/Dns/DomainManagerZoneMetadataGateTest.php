@@ -31,6 +31,7 @@ use Psr\Log\NullLogger;
 use ReflectionClass;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * changeZoneType() is gated on the acting user: meta-edit-others passes
@@ -82,7 +83,7 @@ class DomainManagerZoneMetadataGateTest extends PermissionServiceTestCase
         $result = $this->manager(null, [Permission::PERM_ZONE_META_EDIT_OTHERS], [], false)->changeZoneType('NATIVE', self::ZONE_ID);
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
     }
 
     public function testMetaEditOthersPassesWithoutOwnership(): void
@@ -104,6 +105,6 @@ class DomainManagerZoneMetadataGateTest extends PermissionServiceTestCase
         $result = $this->manager(self::CALLER_ID, [Permission::PERM_ZONE_META_EDIT_OWN], [99], false)->changeZoneType('NATIVE', self::ZONE_ID);
 
         $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
     }
 }

@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterization of ZonesRRSetsController::replaceRRSet - the gate order,
@@ -387,7 +388,7 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
                 ['content' => '"hello"', 'priority' => 5, 'disabled' => 1],
                 ['content' => '"world"', 'priority' => 0, 'disabled' => 0],
             ])
-            ->willReturn(['success' => true, 'message' => 'RRSet replaced successfully', 'status' => 200, 'name' => 'txt.example.com', 'records' => []]);
+            ->willReturn(['success' => true, 'message' => 'RRSet replaced successfully', 'name' => 'txt.example.com', 'records' => []]);
         $this->records->method('getRRSetRecords')->willReturn([
             ['name' => 'txt.example.com', 'type' => 'TXT', 'ttl' => 60, 'content' => '"hello"', 'prio' => 5, 'disabled' => 1],
             ['name' => 'txt.example.com', 'type' => 'TXT', 'ttl' => 60, 'content' => '"world"', 'prio' => 0, 'disabled' => 0],
@@ -447,23 +448,23 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
     public static function serviceRefusalProvider(): array
     {
         return [
-            'validator' => [['success' => false, 'message' => 'Invalid IPv4 address', 'status' => 400], 400, 'Invalid IPv4 address'],
-            'nothing usable' => [['success' => false, 'message' => 'No valid records to create', 'status' => 400], 400, 'No valid records to create'],
-            'repeated content' => [['success' => false, 'message' => 'A record with this hostname, type, and content already exists', 'status' => 409], 409, 'A record with this hostname, type, and content already exists'],
-            'delete failed' => [['success' => false, 'message' => 'Failed to delete existing record with ID 5', 'status' => 500], 500, 'Failed to delete existing record with ID 5'],
+            'validator' => [['success' => false, 'message' => 'Invalid IPv4 address', 'refusal' => Refusal::INVALID_INPUT], 400, 'Invalid IPv4 address'],
+            'nothing usable' => [['success' => false, 'message' => 'No valid records to create', 'refusal' => Refusal::INVALID_INPUT], 400, 'No valid records to create'],
+            'repeated content' => [['success' => false, 'message' => 'A record with this hostname, type, and content already exists', 'refusal' => Refusal::CONFLICT], 409, 'A record with this hostname, type, and content already exists'],
+            'delete failed' => [['success' => false, 'message' => 'Failed to delete existing record with ID 5', 'refusal' => Refusal::BACKEND_FAILURE], 500, 'Failed to delete existing record with ID 5'],
             'insert duplicate' => [
-                ['success' => false, 'message' => 'dup', 'status' => 409, 'write' => RecordWriteResult::failure('dup', 409), 'content' => '192.0.2.1'],
+                ['success' => false, 'message' => 'dup', 'refusal' => Refusal::CONFLICT, 'write' => RecordWriteResult::failure('dup', Refusal::CONFLICT), 'content' => '192.0.2.1'],
                 409,
                 'A record with this hostname, type, and content already exists',
             ],
             'insert backend fault' => [
-                ['success' => false, 'message' => 'db down', 'status' => 500, 'write' => RecordWriteResult::backendFailure('db down'), 'content' => '192.0.2.1'],
+                ['success' => false, 'message' => 'db down', 'refusal' => Refusal::BACKEND_FAILURE, 'write' => RecordWriteResult::backendFailure('db down'), 'content' => '192.0.2.1'],
                 500,
                 'Failed to insert record: 192.0.2.1',
             ],
             'insert refused' => [
-                ['success' => false, 'message' => 'Content too long', 'status' => 422, 'write' => RecordWriteResult::failure('Content too long', 422), 'content' => '192.0.2.1'],
-                422,
+                ['success' => false, 'message' => 'Content too long', 'refusal' => Refusal::INVALID_INPUT, 'write' => RecordWriteResult::failure('Content too long', Refusal::INVALID_INPUT), 'content' => '192.0.2.1'],
+                400,
                 'Content too long',
             ],
         ];
@@ -489,7 +490,6 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
         $this->replacer->method('replace')->willReturn([
             'success' => true,
             'message' => 'RRSet replaced successfully',
-            'status' => 200,
             'name' => 'txt.example.com',
             'records' => [['content' => '"hello"', 'ttl' => 60, 'priority' => 3, 'disabled' => 1]],
         ]);

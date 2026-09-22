@@ -45,6 +45,7 @@ use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Deleting a user through the web decides zone by zone: refuse the last super
@@ -141,13 +142,13 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . ")");
         $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::TARGET . ")");
         $this->zoneService = $this->createMock(ZoneManagementService::class);
-        $this->zoneService->method('deleteZone')->willReturn(['success' => false, 'message' => 'Failed to delete zone', 'status' => 500, 'code' => ZoneManagementService::ERR_ZONE_WRITE]);
+        $this->zoneService->method('deleteZone')->willReturn(['success' => false, 'message' => 'Failed to delete zone', 'refusal' => Refusal::BACKEND_FAILURE, 'code' => ZoneManagementService::ERR_ZONE_WRITE]);
 
         $result = $this->service()->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, [['zid' => 10, 'target' => 'delete']]);
 
         $this->assertFalse($result['success']);
         $this->assertSame(UserManagementService::ERR_ZONE_WRITE, $result['code']);
-        $this->assertSame(500, $result['status']);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result['refusal']);
         $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
     }
 

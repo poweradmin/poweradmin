@@ -43,6 +43,7 @@ use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use TestHelpers\StubActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * updateZoneRecords() re-applies a template to an existing zone: the records the
@@ -378,7 +379,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
         $this->assertFalse($result->success);
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertSame('Failed to update zone records: disk full', $result->message);
         $this->assertSame([['id' => 101]], $this->rows('SELECT id FROM records'));
         $this->assertSame([['zone_templ_id' => self::OLD_TEMPLATE_ID]], $this->rows('SELECT zone_templ_id FROM zones'));

@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Characterizes bulk registration: its gates, one ownership resolution for
@@ -112,7 +113,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
 
     public function testAnOwnershipRefusalStopsTheWholeBatch(): void
     {
-        $this->ownership = ZoneOwnershipResolution::error('api wording', 400, ZoneOwnershipResolution::UNKNOWN_GROUPS, [8]);
+        $this->ownership = ZoneOwnershipResolution::error('api wording', Refusal::INVALID_INPUT, ZoneOwnershipResolution::UNKNOWN_GROUPS, [8]);
         $this->submit([]);
 
         $controller = $this->makeController();

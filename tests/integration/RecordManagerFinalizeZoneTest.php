@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Every single write ends by bumping the serial; a batch caller (bulk operations,
@@ -99,7 +100,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
 
         $result = $this->makeRecordManager($soa, $this->createMock(RecordChangeLogger::class), $backend)->addRecordGetId(self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0);
 
-        $this->assertSame(500, $result->status);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
         $this->assertFalse($this->db->inTransaction());
     }
 
@@ -113,7 +114,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
         $result = $this->makeRecordManager($this->createMock(SOARecordManagerInterface::class), $this->createMock(RecordChangeLogger::class), $backend)->addRecordGetId(self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0, 0, false);
 
         $this->assertFalse($result->success);
-        $this->assertSame(409, $result->status);
+        $this->assertSame(Refusal::CONFLICT, $result->refusal);
     }
 
     #[RunInSeparateProcess]
