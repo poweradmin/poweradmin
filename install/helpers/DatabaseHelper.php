@@ -24,7 +24,7 @@ namespace PoweradminInstall;
 
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Service\Database\DatabaseSchemaService;
+use Poweradmin\Infrastructure\Database\DatabaseSchemaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\SeedRepository;
 

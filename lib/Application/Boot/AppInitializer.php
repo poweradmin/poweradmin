@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Boot;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\LocaleResolver;
-use Poweradmin\Domain\Service\Database\DatabaseCredentialMapper;
+use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;

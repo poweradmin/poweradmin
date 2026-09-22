@@ -27,7 +27,7 @@ use Poweradmin\Application\Bootstrap;
 use Poweradmin\Application\Console\Command\ZoneListCommand;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\DatabaseService;
-use Poweradmin\Domain\Service\Database\DatabaseCredentialMapper;
+use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Psr\Log\NullLogger;

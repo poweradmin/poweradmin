@@ -20,13 +20,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service\Database;
+namespace Poweradmin\Tests\Unit\Infrastructure\Database;
 
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\Database\DatabaseSchemaService;
+use Poweradmin\Infrastructure\Database\DatabaseSchemaService;
 
 #[CoversClass(DatabaseSchemaService::class)]
 class DatabaseSchemaServiceTest extends TestCase

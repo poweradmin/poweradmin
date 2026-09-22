@@ -62,7 +62,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\MailService;
-use Poweradmin\Domain\Service\Database\DatabaseCredentialMapper;
+use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;

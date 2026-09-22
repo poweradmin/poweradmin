@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service\Database;
+namespace Poweradmin\Infrastructure\Database;
 
 use InvalidArgumentException;
 use PDO;
