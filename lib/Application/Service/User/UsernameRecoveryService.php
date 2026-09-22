@@ -24,9 +24,9 @@ namespace Poweradmin\Application\Service\User;
 
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
 use Psr\Log\LoggerInterface;
-use PDO;
 use Poweradmin\Application\Service\Mail\MailService;
 use Poweradmin\Application\Service\Mail\EmailTemplateService;
 use Poweradmin\Application\Service\Web\UrlService;
@@ -42,7 +42,7 @@ class UsernameRecoveryService
     private ClientContext $client;
     private LoggerInterface $logger;
     private EmailTemplateService $templateService;
-    private PDO $db;
+    private UserLookupInterface $users;
     private UrlService $urlService;
 
     public function __construct(
@@ -51,7 +51,7 @@ class UsernameRecoveryService
         ConfigurationInterface $config,
         ClientContext $client,
         LoggerInterface $logger,
-        PDO $db,
+        UserLookupInterface $users,
         UrlService $urlService
     ) {
         $this->recoveryRepository = $recoveryRepository;
@@ -59,7 +59,7 @@ class UsernameRecoveryService
         $this->config = $config;
         $this->client = $client;
         $this->logger = $logger;
-        $this->db = $db;
+        $this->users = $users;
         $this->urlService = $urlService;
         $this->templateService = new EmailTemplateService($config);
     }
@@ -165,16 +165,7 @@ class UsernameRecoveryService
      */
     private function getUsersByEmail(string $email): array
     {
-        $query = "SELECT id, username, fullname, email, auth_method, active
-                  FROM users
-                  WHERE email = :email
-                  AND active = 1
-                  ORDER BY username ASC";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([':email' => $email]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->users->findActiveUsersByEmail($email);
     }
 
     /**

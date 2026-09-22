@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Application\Service\Zone;
 
-use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\UserNotificationRecipientInterface;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Port\ChangeRequestNotifierInterface;
@@ -51,7 +51,7 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
     public const KIND_RECORDS = 'records';
     public const KIND_ZONE_DELETE = 'zone_delete';
 
-    private PDO $db;
+    private UserNotificationRecipientInterface $recipients;
     private ConfigurationInterface $config;
     private MailService $mailService;
     private EmailTemplateService $emailTemplateService;
@@ -64,7 +64,7 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
      * @param LoggerInterface|null $logger Omit to discard log lines
      */
     public function __construct(
-        PDO $db,
+        UserNotificationRecipientInterface $recipients,
         ConfigurationInterface $config,
         MailService $mailService,
         EmailTemplateService $emailTemplateService,
@@ -75,7 +75,7 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         private readonly ?AuditService $audit = null,
         private readonly ?SOARecordManagerInterface $soaRecords = null
     ) {
-        $this->db = $db;
+        $this->recipients = $recipients;
         $this->config = $config;
         $this->mailService = $mailService;
         $this->emailTemplateService = $emailTemplateService;
@@ -334,16 +334,8 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
 
     private function findReviewers(int $zoneId, int $requesterId): array
     {
-        $stmt = $this->db->prepare('
-            SELECT id, username, fullname, email
-            FROM users
-            WHERE active = 1 AND email IS NOT NULL AND email <> :empty
-            ORDER BY id
-        ');
-        $stmt->execute(['empty' => '']);
-
         $reviewers = [];
-        while ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        foreach ($this->recipients->listNotifiableUsers() as $user) {
             $userId = (int)$user['id'];
             if ($userId === $requesterId) {
                 continue;
@@ -375,16 +367,6 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
      */
     private function getUserDetails(int $userId): ?array
     {
-        $stmt = $this->db->prepare('
-            SELECT id, username, fullname, email
-            FROM users
-            WHERE id = :user_id
-            LIMIT 1
-        ');
-
-        $stmt->execute(['user_id' => $userId]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $user ?: null;
+        return $this->recipients->findNotificationRecipient($userId);
     }
 }

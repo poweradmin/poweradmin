@@ -1384,6 +1384,7 @@ return array(
     'Poweradmin\\Domain\\Repository\\UserGroupWriterInterface' => $baseDir . '/lib/Domain/Repository/UserGroupWriterInterface.php',
     'Poweradmin\\Domain\\Repository\\UserLookupInterface' => $baseDir . '/lib/Domain/Repository/UserLookupInterface.php',
     'Poweradmin\\Domain\\Repository\\UserMfaRepositoryInterface' => $baseDir . '/lib/Domain/Repository/UserMfaRepositoryInterface.php',
+    'Poweradmin\\Domain\\Repository\\UserNotificationRecipientInterface' => $baseDir . '/lib/Domain/Repository/UserNotificationRecipientInterface.php',
     'Poweradmin\\Domain\\Repository\\UserPermissionReadInterface' => $baseDir . '/lib/Domain/Repository/UserPermissionReadInterface.php',
     'Poweradmin\\Domain\\Repository\\UserPreferenceRepositoryInterface' => $baseDir . '/lib/Domain/Repository/UserPreferenceRepositoryInterface.php',
     'Poweradmin\\Domain\\Repository\\UserRepositoryInterface' => $baseDir . '/lib/Domain/Repository/UserRepositoryInterface.php',

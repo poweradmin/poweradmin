@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Application\Service\Zone;
 
-use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\UserNotificationRecipientInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -42,7 +42,7 @@ use Poweradmin\Application\Service\Web\UrlService;
  */
 final class ZoneAccessNotificationService
 {
-    private PDO $db;
+    private UserNotificationRecipientInterface $recipients;
     private ConfigurationInterface $config;
     private MailService $mailService;
     private EmailTemplateService $emailTemplateService;
@@ -51,7 +51,7 @@ final class ZoneAccessNotificationService
     private LoggerInterface $logger;
 
     public function __construct(
-        PDO $db,
+        UserNotificationRecipientInterface $recipients,
         ConfigurationInterface $config,
         MailService $mailService,
         EmailTemplateService $emailTemplateService,
@@ -59,7 +59,7 @@ final class ZoneAccessNotificationService
         UrlService $urlService,
         ?LoggerInterface $logger = null
     ) {
-        $this->db = $db;
+        $this->recipients = $recipients;
         $this->config = $config;
         $this->mailService = $mailService;
         $this->emailTemplateService = $emailTemplateService;
@@ -240,16 +240,6 @@ final class ZoneAccessNotificationService
      */
     private function getUserDetails(int $userId): ?array
     {
-        $stmt = $this->db->prepare('
-            SELECT id, username, fullname, email
-            FROM users
-            WHERE id = :user_id
-            LIMIT 1
-        ');
-
-        $stmt->execute(['user_id' => $userId]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $user ?: null;
+        return $this->recipients->findNotificationRecipient($userId);
     }
 }

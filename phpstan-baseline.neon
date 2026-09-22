@@ -37,24 +37,6 @@ parameters:
 			path: lib/Application/Controller/Zone/ListForwardZonesController.php
 
 		-
-			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Service/User/UsernameRecoveryService.php
-
-		-
-			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 2
-			path: lib/Application/Service/Zone/ChangeRequestNotificationService.php
-
-		-
-			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Service/Zone/ZoneAccessNotificationService.php
-
-		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 13

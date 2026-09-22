@@ -252,7 +252,7 @@ final class RecordServices
     public function changeRequestNotificationService(): ChangeRequestNotificationService
     {
         return $this->changeRequestNotificationService ??= new ChangeRequestNotificationService(
-            $this->db,
+            $this->services->userRepository(),
             $this->config,
             $this->services->mailService(),
             $this->emailTemplateService(),

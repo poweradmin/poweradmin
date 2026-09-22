@@ -261,7 +261,7 @@ class ZoneOwnershipController extends BaseController
         $emailTemplateService = $this->services()->emailTemplateService();
 
         return new ZoneAccessNotificationService(
-            $this->db,
+            $this->services()->userRepository(),
             $this->config,
             $mailService,
             $emailTemplateService,

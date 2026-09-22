@@ -62,6 +62,13 @@ interface UserLookupInterface
     public function getUserByEmail(string $email): ?array;
 
     /**
+     * Every active account registered to an email address, ordered by username.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function findActiveUsersByEmail(string $email): array;
+
+    /**
      * Count how many users share the given email address.
      *
      * @param string $email Email to search for

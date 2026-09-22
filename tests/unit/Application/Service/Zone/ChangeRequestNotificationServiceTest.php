@@ -37,6 +37,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use TestHelpers\PermissionServiceTestCase;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\FakeConfiguration;
 
 #[CoversClass(ChangeRequestNotificationService::class)]
@@ -85,6 +86,11 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
         foreach ($rows as $row) {
             $stmt->execute($row);
         }
+    }
+
+    private function recipients(): DbUserRepository
+    {
+        return new DbUserRepository($this->db, new FakeConfiguration(), false);
     }
 
     private function defaultPermissions(): PermissionService
@@ -139,7 +145,7 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
         $domainRepository->method('getDomainNameById')->willReturn(self::ZONE_NAME);
 
         return new ChangeRequestNotificationService(
-            $this->db,
+            $this->recipients(),
             $config,
             $mailService,
             new EmailTemplateService($config),
@@ -332,7 +338,7 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
         $mailService->method('sendMail')->willThrowException(new \RuntimeException('smtp down'));
 
         $service = new ChangeRequestNotificationService(
-            $this->db,
+            $this->recipients(),
             $config,
             $mailService,
             new EmailTemplateService($config),

@@ -23,16 +23,20 @@
 namespace Poweradmin\Domain\Repository;
 
 /**
- * Persistence for user accounts and the zones they own.
- *
- * Union of the UserRepositoryInterface roles; consumers should depend on the narrowest role they use.
+ * The account rows the notification mailers address their messages to.
  */
-interface UserRepositoryInterface extends
-    UserLookupInterface,
-    AuthUserLookupInterface,
-    UserNotificationRecipientInterface,
-    UserPermissionReadInterface,
-    UserCredentialWriterInterface,
-    UserAdminInterface
+interface UserNotificationRecipientInterface
 {
+    /**
+     * One recipient by id: id, username, fullname, email.
+     */
+    public function findNotificationRecipient(int $userId): ?array;
+
+    /**
+     * Every active account with a usable email address, ordered by id. The caller
+     * filters further by permission.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function listNotifiableUsers(): array;
 }

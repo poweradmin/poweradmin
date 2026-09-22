@@ -71,6 +71,48 @@ class DbUserRepository implements UserRepositoryInterface
         return new User($data['id'], $data['password'], (bool)$data['use_ldap']);
     }
 
+    public function findActiveUsersByEmail(string $email): array
+    {
+        $query = "SELECT id, username, fullname, email, auth_method, active
+                  FROM users
+                  WHERE email = :email
+                  AND active = 1
+                  ORDER BY username ASC";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':email' => $email]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function findNotificationRecipient(int $userId): ?array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, username, fullname, email
+            FROM users
+            WHERE id = :user_id
+            LIMIT 1
+        ');
+
+        $stmt->execute(['user_id' => $userId]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $user ?: null;
+    }
+
+    public function listNotifiableUsers(): array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, username, fullname, email
+            FROM users
+            WHERE active = 1 AND email IS NOT NULL AND email <> :empty
+            ORDER BY id
+        ');
+        $stmt->execute(['empty' => '']);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function findSqlLoginUser(string $username): ?array
     {
         $stmt = $this->db->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");

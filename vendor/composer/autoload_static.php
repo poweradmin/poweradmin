@@ -1790,6 +1790,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Repository\\UserGroupWriterInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/UserGroupWriterInterface.php',
         'Poweradmin\\Domain\\Repository\\UserLookupInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/UserLookupInterface.php',
         'Poweradmin\\Domain\\Repository\\UserMfaRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/UserMfaRepositoryInterface.php',
+        'Poweradmin\\Domain\\Repository\\UserNotificationRecipientInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/UserNotificationRecipientInterface.php',
         'Poweradmin\\Domain\\Repository\\UserPermissionReadInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/UserPermissionReadInterface.php',
         'Poweradmin\\Domain\\Repository\\UserPreferenceRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/UserPreferenceRepositoryInterface.php',
         'Poweradmin\\Domain\\Repository\\UserRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/UserRepositoryInterface.php',

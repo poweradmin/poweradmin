@@ -63,7 +63,7 @@ class ForgotUsernameController extends BaseController
             $this->config,
             $this->client(),
             $this->logger,
-            $this->db,
+            $this->services()->userRepository(),
             $this->services()->urlService()
         );
     }
