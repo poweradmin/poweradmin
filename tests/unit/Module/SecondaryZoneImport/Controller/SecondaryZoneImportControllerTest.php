@@ -55,9 +55,9 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
         $this->factory->method('domainManager')->willReturn($this->domainManager);
     }
 
-    private function makeController(): TestableSecondaryZoneImportController
+    private function makeController(): SecondaryZoneImportController
     {
-        return new TestableSecondaryZoneImportController($this->requestData(), $this->environment($this->configure()));
+        return new SecondaryZoneImportController($this->requestData(), true, $this->environment($this->configure()));
     }
 
     /** @param array<string, mixed> $fields */
@@ -81,8 +81,8 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertSame('@secondary_zone_import/import.html', $controller->rendered[0][0]);
-        $this->assertFalse($controller->rendered[0][1]['imported']);
+        $this->assertSame('@secondary_zone_import/import.html', $this->output->rendered[0][0]);
+        $this->assertFalse($this->output->rendered[0][1]['imported']);
     }
 
     public function testNameAndPrimaryAreBothRequired(): void
@@ -120,7 +120,7 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
             [['error', 'Cannot create this zone because it overlaps an existing zone owned by another user.']],
             $this->messagesFor(self::PAGE)
         );
-        $this->assertFalse($controller->rendered[0][1]['imported']);
+        $this->assertFalse($this->output->rendered[0][1]['imported']);
         $this->assertSame([], $this->audited);
     }
 
@@ -138,7 +138,7 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
         );
         $this->assertSame([['logSecondaryZoneImport', 1, 'xn--bcher-kva.example', '192.0.2.53']], $this->audited);
 
-        [$template, $params] = $controller->rendered[0];
+        [$template, $params] = $this->output->rendered[0];
         $this->assertSame('@secondary_zone_import/import.html', $template);
         $this->assertTrue($params['imported']);
         $this->assertSame(1, $params['imported_zone_id']);

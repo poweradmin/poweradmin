@@ -130,12 +130,12 @@ class DeleteRecordsControllerTest extends SeamControllerTestCase
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function makeController(array $config = []): TestableDeleteRecordsController
+    private function makeController(array $config = []): DeleteRecordsController
     {
-        return new TestableDeleteRecordsController($this->requestData(), $this->environment($this->configure($config)));
+        return new DeleteRecordsController($this->requestData(), true, $this->environment($this->configure($config)));
     }
 
-    private function haltOf(TestableDeleteRecordsController $controller): RequestHalted
+    private function haltOf(DeleteRecordsController $controller): RequestHalted
     {
         try {
             $controller->run();
@@ -173,8 +173,8 @@ class DeleteRecordsControllerTest extends SeamControllerTestCase
         $controller->run();
 
         $this->assertSame([], $this->deleteCalls);
-        $this->assertSame('delete_records.html', $controller->rendered[0][0]);
-        $this->assertSame(2, $controller->rendered[0][1]['total_records']);
+        $this->assertSame('delete_records.html', $this->output->rendered[0][0]);
+        $this->assertSame(2, $this->output->rendered[0][1]['total_records']);
     }
 
     public function testEveryRecordIsDeletedWithoutFinalizingAndEachZoneIsFinalizedOnce(): void

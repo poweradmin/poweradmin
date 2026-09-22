@@ -23,11 +23,11 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Controller\Zone\ListChangeRequestsController;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use RuntimeException;
 
 #[CoversClass(ListChangeRequestsController::class)]
 class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
@@ -61,7 +61,7 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
 
         $controller->run();
 
-        $this->assertSame('404.html', $controller->rendered[0][0]);
+        $this->assertSame('404.html', $this->output->rendered[0][0]);
     }
 
     public function testUserWithoutAnyRoleIsRefused(): void
@@ -70,7 +70,7 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
         $this->permissions->method('getChangeRequestPermissionLevel')->willReturn('none');
         $controller = $this->makeController(true);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(RequestHalted::class);
         $this->expectExceptionMessage('You do not have permission to view change requests.');
         $controller->run();
     }
@@ -83,7 +83,7 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
 
         $controller->run();
 
-        [$template, $params] = $controller->rendered[0];
+        [$template, $params] = $this->output->rendered[0];
         $this->assertSame('list_change_requests.html', $template);
         $this->assertTrue($params['own_only']);
         $this->assertSame(['status' => 'pending', 'requesterId' => self::USER_ID, 'zoneIds' => null], $this->listedWith);
@@ -106,7 +106,7 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
         $controller->run();
 
         $this->assertSame(['zoneIds' => []], $this->listedWith);
-        $this->assertSame('all', $controller->rendered[0][1]['status_filter']);
+        $this->assertSame('all', $this->output->rendered[0][1]['status_filter']);
     }
 
     public function testAGlobalApproverWithOwnEditRightsReviewsOnlyOwnedZones(): void
@@ -133,6 +133,6 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
         $controller->run();
 
         $this->assertSame(['status' => 'pending', 'zoneIds' => null], $this->listedWith);
-        $this->assertFalse($controller->rendered[0][1]['own_only']);
+        $this->assertFalse($this->output->rendered[0][1]['own_only']);
     }
 }

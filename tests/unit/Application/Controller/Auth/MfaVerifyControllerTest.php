@@ -57,10 +57,10 @@ class MfaVerifyControllerTest extends SeamControllerTestCase
         $this->factory->method('loginAttemptService')->willReturn($attempts);
 
         $this->post(['mfa_code' => '123456', 'mfa_token' => 'stale']);
-        $controller = new TestableMfaVerifyController([], $this->environment($config));
+        $controller = new MfaVerifyController([], $this->environment($config));
         $controller->run();
 
-        $this->assertSame('mfa_verify.html', $controller->rendered[0][0]);
-        $this->assertSame('Invalid security token. Please try again.', $controller->rendered[0][1]['msg']);
+        $this->assertSame('mfa_verify.html', $this->output->rendered[0][0]);
+        $this->assertSame('Invalid security token. Please try again.', $this->output->rendered[0][1]['msg']);
     }
 }

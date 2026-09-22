@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
@@ -158,6 +159,40 @@ class ControllerEnvironmentSeamTest extends TestCase
         $controller = new TestableSeamController(['_token' => 'tok'], true, $environment);
 
         $this->assertTrue($controller->isPost());
+    }
+
+    /**
+     * The environment's page output receives what the controller renders, with
+     * the parameters as the controller built them, and the error pages the
+     * halting checks answer with; no Twig is involved.
+     */
+    public function testRenderedPagesAndErrorPagesReachTheEnvironmentsPageOutput(): void
+    {
+        $output = new RecordingPageOutput();
+        $environment = new ControllerEnvironment(
+            ConfigurationManager::getInstance(),
+            $this->createMock(PDO::class),
+            new NullLogger(),
+            new ModuleRegistry(ConfigurationManager::getInstance()),
+            null,
+            new HttpRequest([], [], ['REQUEST_METHOD' => 'GET']),
+            null,
+            null,
+            $this->createMock(UserContextService::class),
+            $output
+        );
+        $controller = new TestableSeamController([], true, $environment);
+
+        $controller->render('list_forward_zones.html', ['zones' => [1]]);
+        try {
+            $controller->checkCondition(true, 'Nope.');
+            $this->fail('checkCondition() must halt');
+        } catch (RequestHalted) {
+        }
+
+        $this->assertSame([['list_forward_zones.html', ['zones' => [1]]]], $output->rendered);
+        $this->assertSame(1, $output->errorPages);
+        $this->assertSame('Nope.', $output->messages['system'][0]['content']);
     }
 
     public function testCsrfOptOutSkipsValidationOnPost(): void

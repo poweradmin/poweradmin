@@ -58,13 +58,13 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function makeController(array $config = []): TestableListReverseZonesController
+    private function makeController(array $config = []): ListReverseZonesController
     {
-        return new TestableListReverseZonesController($this->requestData(), $this->environment($this->configure($config)));
+        return new ListReverseZonesController($this->requestData(), true, $this->environment($this->configure($config)));
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function runController(array $config = []): TestableListReverseZonesController
+    private function runController(array $config = []): ListReverseZonesController
     {
         $controller = $this->makeController($config);
         $controller->run();
@@ -77,10 +77,12 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
     public function testEitherViewPermissionOpensThePage(): void
     {
         $this->granted = [Permission::PERM_ZONE_CONTENT_VIEW_OWN];
-        $this->assertSame('list_reverse_zones.html', $this->runController()->rendered[0][0]);
+        $this->runController();
+        $this->assertSame('list_reverse_zones.html', $this->output->rendered[0][0]);
 
         $this->granted = [Permission::PERM_ZONE_CONTENT_VIEW_OTHERS];
-        $this->assertSame('list_reverse_zones.html', $this->runController()->rendered[0][0]);
+        $this->runController();
+        $this->assertSame('list_reverse_zones.html', $this->output->rendered[0][0]);
     }
 
     public function testWithoutEitherViewPermissionThePageIsRefusedBeforeAnyQuery(): void
@@ -113,8 +115,7 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->post(['action' => 'sync']);
         $controller = $this->runController(['dns' => ['backend' => 'api']]);
 
-        $this->assertNull($controller->redirectedTo);
-        $this->assertSame('list_reverse_zones.html', $controller->rendered[0][0]);
+        $this->assertSame('list_reverse_zones.html', $this->output->rendered[0][0]);
     }
 
     // ------------------------------------------------------------- counting
@@ -135,7 +136,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->rewireFactory();
 
         $this->query(['letter' => 'q']);
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame([
             ['all', 'all', 'reverse'],
@@ -180,7 +182,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
     {
         $this->query(['rows_per_page' => '25']);
 
-        $this->assertSame(25, $this->runController()->renderedParams()['iface_rowamount']);
+        $this->runController();
+        $this->assertSame(25, $this->renderedParams()['iface_rowamount']);
     }
 
     public function testPaginationCarriesTheFilterAndThePageSizeOnce(): void
@@ -189,7 +192,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->reverseZoneCounts = ['count_all' => 100, 'count_ipv4' => 60, 'count_ipv6' => 40];
         $this->query(['rows_per_page' => '20', 'reverse_type' => 'ipv4']);
 
-        $pagination = $this->runController()->renderedParams()['pagination'];
+        $this->runController();
+        $pagination = $this->renderedParams()['pagination'];
 
         $this->assertStringContainsString('/zones/reverse?start=1&reverse_type=ipv4&rows_per_page=20"', $pagination);
         $this->assertStringNotContainsString('rows_per_page=20&rows_per_page=20', $pagination);
@@ -221,7 +225,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->dnsData->expects($this->once())->method('getReverseZones')
             ->with('all', self::USER_ID, $expectedFilter)->willReturn([]);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame($expectedFilter, $params['reverse_zone_type']);
         $this->assertStringContainsString(
@@ -237,7 +242,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->runController();
 
         $this->query([]);
-        $this->assertSame('ipv6', $this->runController()->renderedParams()['reverse_zone_type']);
+        $this->runController();
+        $this->assertSame('ipv6', $this->renderedParams()['reverse_zone_type']);
     }
 
     public function testAnUnknownReverseTypeLeavesTheRememberedOneAlone(): void
@@ -245,7 +251,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'ipv6';
         $this->query(['reverse_type' => 'nonsense']);
 
-        $this->assertSame('ipv6', $this->runController()->renderedParams()['reverse_zone_type']);
+        $this->runController();
+        $this->assertSame('ipv6', $this->renderedParams()['reverse_zone_type']);
     }
 
     // --------------------------------------------------------------- sorting
@@ -267,7 +274,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
             $this->query(['zone_sort_by' => $submitted]);
         }
 
-        $this->assertSame($expected, $this->runController()->renderedParams()['zone_sort_by']);
+        $this->runController();
+        $this->assertSame($expected, $this->renderedParams()['zone_sort_by']);
     }
 
     public function testOwnerSortIsDroppedWhenOwnershipIsOnlyVisibleForOwnZones(): void
@@ -275,7 +283,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->ownershipViewLevel = 'own';
         $this->query(['zone_sort_by' => 'owner']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertFalse($params['is_owner_sort_supported']);
         $this->assertSame('name', $params['zone_sort_by']);
@@ -284,9 +293,11 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
     public function testGroupSortIsUnavailableOnAnApiBackend(): void
     {
         $this->query(['zone_sort_by' => 'group']);
-        $this->assertSame('group', $this->runController()->renderedParams()['zone_sort_by']);
+        $this->runController();
+        $this->assertSame('group', $this->renderedParams()['zone_sort_by']);
 
-        $this->assertSame('name', $this->runController(['dns' => ['backend' => 'api']])->renderedParams()['zone_sort_by']);
+        $this->runController(['dns' => ['backend' => 'api']]);
+        $this->assertSame('name', $this->renderedParams()['zone_sort_by']);
     }
 
     public function testSortingByNameIsReorderedInPhpUnlikeTheForwardList(): void
@@ -298,7 +309,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
             ['id' => '2', 'name' => '2.10.10.in-addr.arpa', 'owners' => [], 'full_names' => []],
         ];
 
-        $names = array_column($this->runController()->renderedParams()['zones'], 'name');
+        $this->runController();
+        $names = array_column($this->renderedParams()['zones'], 'name');
 
         $this->assertSame(['2.10.10.in-addr.arpa', '10.10.10.in-addr.arpa'], $names);
     }
@@ -311,7 +323,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         ];
         $this->query(['zone_sort_by' => 'type']);
 
-        $names = array_column($this->runController()->renderedParams()['zones'], 'name');
+        $this->runController();
+        $names = array_column($this->renderedParams()['zones'], 'name');
 
         $this->assertSame(['10.10.10.in-addr.arpa', '2.10.10.in-addr.arpa'], $names);
     }
@@ -329,7 +342,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
             'full_names' => [],
         ]];
 
-        $zone = $this->runController()->renderedParams()['zones'][0];
+        $this->runController();
+        $zone = $this->renderedParams()['zones'][0];
 
         $this->assertSame('2001:db8::', $zone['utf8_name']);
         // Only the display copy is shortened; the real name is untouched
@@ -345,7 +359,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         ];
         $this->ownership = new ZoneOwnershipIndex(self::USER_ID, [], [1 => [self::USER_ID]], []);
 
-        $zones = $this->runController()->renderedParams()['zones'];
+        $this->runController();
+        $zones = $this->renderedParams()['zones'];
 
         $this->assertTrue($zones[0]['user_can_delete']);
         $this->assertFalse($zones[1]['user_can_delete']);
@@ -360,7 +375,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         ];
         $this->ownership = new ZoneOwnershipIndex(self::USER_ID, [], [1 => [self::USER_ID]], [1 => [7], 2 => [7]]);
 
-        $zones = $this->runController()->renderedParams()['zones'];
+        $this->runController();
+        $zones = $this->renderedParams()['zones'];
 
         $this->assertSame(['tester'], $zones[0]['owners']);
         $this->assertSame(['netops'], $zones[0]['groups']);
@@ -373,7 +389,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->zones = [['id' => '1', 'name' => '1.10.10.in-addr.arpa', 'owners' => [], 'full_names' => []]];
         $this->zoneRepository->expects($this->never())->method('findForwardZonesByPtrRecords');
 
-        $params = $this->runController(['interface' => ['show_forward_zone_associations' => false]])->renderedParams();
+        $this->runController(['interface' => ['show_forward_zone_associations' => false]]);
+        $params = $this->renderedParams();
 
         $this->assertSame([], $params['associated_forward_zones']);
         $this->assertFalse($params['show_forward_zone_associations']);
@@ -390,7 +407,8 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         ]];
         $this->zoneRepository->expects($this->once())->method('findForwardZonesByPtrRecords')->with(['1']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame([['id' => '9', 'name' => 'example.com', 'ptr_records' => 1]], $params['associated_forward_zones']['1']);
     }
@@ -407,7 +425,7 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->factory->method('zoneRepository')->willReturn($this->zoneRepository);
     }
 
-    private function haltOf(TestableListReverseZonesController $controller): RequestHalted
+    private function haltOf(ListReverseZonesController $controller): RequestHalted
     {
         try {
             $controller->run();

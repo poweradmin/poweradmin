@@ -91,20 +91,20 @@ class UsersControllerListTest extends SeamControllerTestCase
     }
 
     /** @return array<string, mixed> */
-    private function renderedParams(): array
+    private function runAndRender(): array
     {
-        $controller = new TestableUsersController([], $this->environment($this->configure()));
+        $controller = new UsersController([], true, $this->environment($this->configure()));
         $controller->run();
 
-        $this->assertSame('users.html', $controller->rendered[0][0]);
+        $this->assertSame('users.html', $this->output->rendered[0][0]);
 
-        return $controller->renderedParams();
+        return $this->renderedParams();
     }
 
     public function testWithoutViewOrEditOthersTheListRedirectsHome(): void
     {
         $this->granted = [Permission::PERM_USER_EDIT_OWN];
-        $controller = new TestableUsersController([], $this->environment($this->configure()));
+        $controller = new UsersController([], true, $this->environment($this->configure()));
 
         try {
             $controller->run();
@@ -125,7 +125,7 @@ class UsersControllerListTest extends SeamControllerTestCase
         ];
         $this->admins = [self::SUPERUSER_ID, self::USER_ID];
 
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
 
         $this->assertTrue($params['perm_is_godlike']);
         $this->assertSame(self::USER_ID, $params['session_userid']);
@@ -145,7 +145,7 @@ class UsersControllerListTest extends SeamControllerTestCase
     {
         $this->granted = [Permission::PERM_USER_VIEW_OTHERS, Permission::PERM_USER_EDIT_OTHERS];
 
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
 
         $this->assertFalse($params['perm_is_godlike']);
         $this->assertFalse($params['permissions'][Permission::PERM_USER_IS_UEBERUSER]);
@@ -161,7 +161,7 @@ class UsersControllerListTest extends SeamControllerTestCase
     {
         $this->granted = [Permission::PERM_USER_VIEW_OTHERS, Permission::PERM_USER_EDIT_OTHERS, Permission::PERM_USER_EDIT_TEMPL_PERM];
 
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
 
         $this->assertSame([false, true, true], array_column($params['users'], 'can_edit'));
         $this->assertSame([false, true, true], array_column($params['users'], 'can_change_template'));
@@ -171,7 +171,7 @@ class UsersControllerListTest extends SeamControllerTestCase
     {
         $this->granted = [Permission::PERM_USER_VIEW_OTHERS, Permission::PERM_USER_EDIT_OWN];
 
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
 
         $this->assertSame([false, true, false], array_column($params['users'], 'can_edit'));
     }

@@ -23,21 +23,21 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Controller\Zone\ChangeRequestController;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
-use RuntimeException;
 
 #[CoversClass(ChangeRequestController::class)]
 class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
 {
-    private function makeController(bool $approvalEnabled, array $request = ['id' => '5']): TestableChangeRequestController
+    private function makeController(bool $approvalEnabled, array $request = ['id' => '5']): ChangeRequestController
     {
         $config = $this->configure($approvalEnabled);
 
-        return new TestableChangeRequestController($request, true, $this->environment($config));
+        return new ChangeRequestController($request, true, $this->environment($config));
     }
 
     private function storeRequest(?\Poweradmin\Domain\Model\ZoneChangeRequest $request): void
@@ -53,8 +53,7 @@ class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
 
         $controller->run();
 
-        $this->assertSame('404.html', $controller->rendered[0][0]);
-        $this->assertNull($controller->redirectedTo);
+        $this->assertSame('404.html', $this->output->rendered[0][0]);
     }
 
     public function testNonReviewerCannotApprove(): void
@@ -67,7 +66,7 @@ class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
         $this->post(['action' => 'approve']);
         $controller = $this->makeController(true);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(RequestHalted::class);
         $this->expectExceptionMessage('You do not have permission to review this change request.');
         $controller->run();
     }
@@ -78,7 +77,7 @@ class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
         $this->reviewer(false);
         $controller = $this->makeController(true);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(RequestHalted::class);
         $this->expectExceptionMessage('You do not have permission to view this change request.');
         $controller->run();
     }
@@ -97,9 +96,10 @@ class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
         $this->post(['action' => 'approve', 'review_comment' => ' fine ']);
         $controller = $this->makeController(true);
 
-        $controller->run();
+        $halt = $this->haltOf($controller);
 
-        $this->assertSame('/zones/requests/5', $controller->redirectedTo);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
+        $this->assertSame('/zones/requests/5', $halt->target);
     }
 
     public function testRequesterCancelRedirectsToTheList(): void
@@ -112,9 +112,21 @@ class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
         $this->post(['action' => 'cancel']);
         $controller = $this->makeController(true);
 
-        $controller->run();
+        $halt = $this->haltOf($controller);
 
-        $this->assertSame('/zones/requests', $controller->redirectedTo);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
+        $this->assertSame('/zones/requests', $halt->target);
+    }
+
+    private function haltOf(ChangeRequestController $controller): RequestHalted
+    {
+        try {
+            $controller->run();
+        } catch (RequestHalted $halt) {
+            return $halt;
+        }
+
+        $this->fail('Expected the request to end early.');
     }
 
     public function testRequesterViewRendersActionsWithoutReviewButtons(): void
@@ -132,7 +144,7 @@ class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
 
         $controller->run();
 
-        [$template, $params] = $controller->rendered[0];
+        [$template, $params] = $this->output->rendered[0];
         $this->assertSame('change_request.html', $template);
         $this->assertFalse($params['can_review']);
         $this->assertTrue($params['can_cancel']);

@@ -39,15 +39,15 @@ use Poweradmin\Application\Controller\RequestHalted;
 class ListForwardZonesControllerTest extends ZoneListControllerTestCase
 {
     /** @param array<string, array<string, mixed>> $config */
-    private function makeController(array $config = []): TestableListForwardZonesController
+    private function makeController(array $config = []): ListForwardZonesController
     {
         // The router hands the controller the merged request, which is what
         // getSafeRequestValue() reads; the HttpRequest keeps them separate.
-        return new TestableListForwardZonesController($this->requestData(), $this->environment($this->configure($config)));
+        return new ListForwardZonesController($this->requestData(), true, $this->environment($this->configure($config)));
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function runController(array $config = []): TestableListForwardZonesController
+    private function runController(array $config = []): ListForwardZonesController
     {
         $controller = $this->makeController($config);
         $controller->run();
@@ -60,10 +60,12 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
     public function testEitherViewPermissionOpensThePage(): void
     {
         $this->granted = [Permission::PERM_ZONE_CONTENT_VIEW_OWN];
-        $this->assertSame('list_forward_zones.html', $this->runController()->rendered[0][0]);
+        $this->runController();
+        $this->assertSame('list_forward_zones.html', $this->output->rendered[0][0]);
 
         $this->granted = [Permission::PERM_ZONE_CONTENT_VIEW_OTHERS];
-        $this->assertSame('list_forward_zones.html', $this->runController()->rendered[0][0]);
+        $this->runController();
+        $this->assertSame('list_forward_zones.html', $this->output->rendered[0][0]);
     }
 
     public function testWithoutEitherViewPermissionThePageIsRefusedBeforeAnyQuery(): void
@@ -76,7 +78,7 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $halt = $this->haltOf($controller);
         $this->assertSame(RequestHalted::KIND_CONDITION, $halt->kind);
         $this->assertSame('You do not have sufficient permissions to view this page.', $halt->target);
-        $this->assertSame([], $controller->rendered);
+        $this->assertSame([], $this->output->rendered);
     }
 
     public function testPermViewNoneStillFetchesTheZonesBeforeErroring(): void
@@ -124,8 +126,7 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->query(['action' => 'sync']);
         $controller = $this->runController(['dns' => ['backend' => 'api']]);
 
-        $this->assertNull($controller->redirectedTo);
-        $this->assertSame('list_forward_zones.html', $controller->rendered[0][0]);
+        $this->assertSame('list_forward_zones.html', $this->output->rendered[0][0]);
     }
 
     public function testAPostWithoutTheSyncActionJustListsTheZones(): void
@@ -133,8 +134,7 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->post(['action' => 'something-else']);
         $controller = $this->runController(['dns' => ['backend' => 'api']]);
 
-        $this->assertNull($controller->redirectedTo);
-        $this->assertCount(1, $controller->rendered);
+        $this->assertCount(1, $this->output->rendered);
     }
 
     // --------------------------------------------------------- paging / rows
@@ -169,14 +169,16 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
     {
         $this->query(['rows_per_page' => '25', 'start' => '2']);
 
-        $this->assertSame(25, $this->runController()->renderedParams()['iface_rowamount']);
+        $this->runController();
+        $this->assertSame(25, $this->renderedParams()['iface_rowamount']);
     }
 
     public function testRowsPerPageFallsBackToTheStoredPreferenceOverConfig(): void
     {
         $this->rowsPerPagePreference = 50;
 
-        $this->assertSame(50, $this->runController(['interface' => ['rows_per_page' => 30]])->renderedParams()['iface_rowamount']);
+        $this->runController(['interface' => ['rows_per_page' => 30]]);
+        $this->assertSame(50, $this->renderedParams()['iface_rowamount']);
     }
 
     // ------------------------------------------------------------- letter filter
@@ -186,7 +188,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->zoneCount = 10;
         $this->query(['letter' => 'b']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame('all', $params['letter_start']);
         // A short listing never even reads or stores the letter
@@ -197,7 +200,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
     {
         $this->zoneCount = 11;
 
-        $this->assertSame('a', $this->runController()->renderedParams()['letter_start']);
+        $this->runController();
+        $this->assertSame('a', $this->renderedParams()['letter_start']);
     }
 
     public function testASubmittedLetterIsUsedAndRemembered(): void
@@ -205,7 +209,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->zoneCount = 11;
         $this->query(['letter' => 'q']);
 
-        $this->assertSame('q', $this->runController()->renderedParams()['letter_start']);
+        $this->runController();
+        $this->assertSame('q', $this->renderedParams()['letter_start']);
         $this->assertSame('q', $_SESSION[SessionKeys::LETTER]);
     }
 
@@ -214,7 +219,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->zoneCount = 11;
         $_SESSION[SessionKeys::LETTER] = 'z';
 
-        $this->assertSame('z', $this->runController()->renderedParams()['letter_start']);
+        $this->runController();
+        $this->assertSame('z', $this->renderedParams()['letter_start']);
     }
 
     public function testAnySubmittedLetterIsTakenVerbatim(): void
@@ -223,7 +229,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->zoneCount = 11;
         $this->query(['letter' => '1 OR 1']);
 
-        $this->assertSame('1 OR 1', $this->runController()->renderedParams()['letter_start']);
+        $this->runController();
+        $this->assertSame('1 OR 1', $this->renderedParams()['letter_start']);
         $this->assertSame('1 OR 1', $_SESSION[SessionKeys::LETTER]);
     }
 
@@ -256,14 +263,16 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
             $this->query(['zone_sort_by' => $submitted]);
         }
 
-        $this->assertSame($expected, $this->runController()->renderedParams()['zone_sort_by']);
+        $this->runController();
+        $this->assertSame($expected, $this->renderedParams()['zone_sort_by']);
     }
 
     public function testOwnerSortNeedsTheOwnershipViewScope(): void
     {
         $this->query(['zone_sort_by' => 'owner']);
 
-        $this->assertSame('owner', $this->runController()->renderedParams()['zone_sort_by']);
+        $this->runController();
+        $this->assertSame('owner', $this->renderedParams()['zone_sort_by']);
     }
 
     public function testOwnerSortIsDroppedWhenOwnershipIsOnlyVisibleForOwnZones(): void
@@ -273,7 +282,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->ownershipViewLevel = 'own';
         $this->query(['zone_sort_by' => 'owner']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertFalse($params['is_owner_sort_supported']);
         $this->assertSame('name', $params['zone_sort_by']);
@@ -285,7 +295,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->viewLevel = 'own';
         $this->query(['zone_sort_by' => 'owner']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertTrue($params['is_owner_sort_supported']);
         $this->assertSame('owner', $params['zone_sort_by']);
@@ -295,9 +306,11 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
     {
         $this->query(['zone_sort_by' => 'group']);
 
-        $this->assertSame('group', $this->runController()->renderedParams()['zone_sort_by']);
+        $this->runController();
+        $this->assertSame('group', $this->renderedParams()['zone_sort_by']);
 
-        $params = $this->runController(['dns' => ['backend' => 'api']])->renderedParams();
+        $this->runController(['dns' => ['backend' => 'api']]);
+        $params = $this->renderedParams();
         $this->assertFalse($params['is_group_sort_supported']);
         $this->assertSame('name', $params['zone_sort_by']);
     }
@@ -305,22 +318,27 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
     public function testRecordCountSortNeedsTheColumnAndAnSqlBackend(): void
     {
         $this->query(['zone_sort_by' => 'count_records']);
-        $this->assertSame('count_records', $this->runController()->renderedParams()['zone_sort_by']);
+        $this->runController();
+        $this->assertSame('count_records', $this->renderedParams()['zone_sort_by']);
 
-        $this->assertSame('name', $this->runController(['dns' => ['backend' => 'api']])->renderedParams()['zone_sort_by']);
+        $this->runController(['dns' => ['backend' => 'api']]);
+        $this->assertSame('name', $this->renderedParams()['zone_sort_by']);
 
         $this->showRecordCount = false;
-        $this->assertSame('name', $this->runController()->renderedParams()['zone_sort_by']);
+        $this->runController();
+        $this->assertSame('name', $this->renderedParams()['zone_sort_by']);
     }
 
     public function testSortDirectionIsNormalisedAndUnknownValuesFallBackToAscending(): void
     {
         $this->query(['zone_sort_by_direction' => 'desc']);
-        $this->assertSame('DESC', $this->runController()->renderedParams()['zone_sort_direction']);
+        $this->runController();
+        $this->assertSame('DESC', $this->renderedParams()['zone_sort_direction']);
 
         $this->resetSession();
         $this->query(['zone_sort_by_direction' => 'sideways']);
-        $this->assertSame('ASC', $this->runController()->renderedParams()['zone_sort_direction']);
+        $this->runController();
+        $this->assertSame('ASC', $this->renderedParams()['zone_sort_direction']);
     }
 
     public function testASubmittedSortIsRememberedForTheNextRequest(): void
@@ -329,7 +347,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->runController();
 
         $this->query([]);
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame('type', $params['zone_sort_by']);
         $this->assertSame('DESC', $params['zone_sort_direction']);
@@ -341,7 +360,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
     {
         $this->ownershipViewLevel = 'none';
 
-        $params = $this->runController(['interface' => ['display_fullname_in_zone_list' => true]])->renderedParams();
+        $this->runController(['interface' => ['display_fullname_in_zone_list' => true]]);
+        $params = $this->renderedParams();
 
         $this->assertFalse($params['show_owner_column']);
         $this->assertFalse($params['show_group_column']);
@@ -353,11 +373,13 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
 
     public function testZoneOwnershipModeSuppressesTheMatchingColumn(): void
     {
-        $usersOnly = $this->runController(['dns' => ['zone_ownership_mode' => 'users_only']])->renderedParams();
+        $this->runController(['dns' => ['zone_ownership_mode' => 'users_only']]);
+        $usersOnly = $this->renderedParams();
         $this->assertTrue($usersOnly['show_owner_column']);
         $this->assertFalse($usersOnly['show_group_column']);
 
-        $groupsOnly = $this->runController(['dns' => ['zone_ownership_mode' => 'groups_only']])->renderedParams();
+        $this->runController(['dns' => ['zone_ownership_mode' => 'groups_only']]);
+        $groupsOnly = $this->renderedParams();
         $this->assertFalse($groupsOnly['show_owner_column']);
         $this->assertTrue($groupsOnly['show_group_column']);
     }
@@ -369,7 +391,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->zones = [['id' => '1', 'name' => 'example.com', 'owners' => [], 'full_names' => []]];
         $this->ownership = new ZoneOwnershipIndex(self::USER_ID, [7], [], [1 => [7, 99]]);
 
-        $zone = $this->runController()->renderedParams()['zones'][0];
+        $this->runController();
+        $zone = $this->renderedParams()['zones'][0];
 
         $this->assertSame(['netops', 'Group #99'], $zone['groups']);
     }
@@ -383,7 +406,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         ];
         $this->ownership = new ZoneOwnershipIndex(self::USER_ID, [], [1 => [self::USER_ID]], []);
 
-        $zones = $this->runController()->renderedParams()['zones'];
+        $this->runController();
+        $zones = $this->renderedParams()['zones'];
 
         $this->assertTrue($zones[0]['user_can_delete']);
         $this->assertFalse($zones[1]['user_can_delete']);
@@ -398,7 +422,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         ];
         $this->ownership = new ZoneOwnershipIndex(self::USER_ID, [], [1 => [self::USER_ID]], [1 => [7], 2 => [7]]);
 
-        $zones = $this->runController()->renderedParams()['zones'];
+        $this->runController();
+        $zones = $this->renderedParams()['zones'];
 
         $this->assertSame(['tester'], $zones[0]['owners']);
         $this->assertSame(['netops'], $zones[0]['groups']);
@@ -413,7 +438,8 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->zones = [['id' => '1', 'name' => 'example.com', 'owners' => [], 'full_names' => []]];
         $this->factory->expects($this->never())->method('zoneChangeRequestRepository');
 
-        $this->assertSame([], $this->runController()->renderedParams()['pending_change_requests_by_zone']);
+        $this->runController();
+        $this->assertSame([], $this->renderedParams()['pending_change_requests_by_zone']);
     }
 
     public function testPaginationLinksCarryThePageSizeExactlyOnce(): void
@@ -424,14 +450,15 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->zoneCount = 100;
         $this->query(['rows_per_page' => '20']);
 
-        $pagination = $this->runController()->renderedParams()['pagination'];
+        $this->runController();
+        $pagination = $this->renderedParams()['pagination'];
 
         $this->assertStringContainsString('/zones/forward?start=1&rows_per_page=20', $pagination);
         // five page links plus "Next"
         $this->assertSame(6, substr_count($pagination, 'rows_per_page=20'));
     }
 
-    private function haltOf(TestableListForwardZonesController $controller): RequestHalted
+    private function haltOf(ListForwardZonesController $controller): RequestHalted
     {
         try {
             $controller->run();

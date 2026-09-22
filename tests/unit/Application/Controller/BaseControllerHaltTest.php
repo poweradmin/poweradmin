@@ -27,11 +27,8 @@ use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Application\Module\ModuleRegistry;
-use PDO;
-use Psr\Log\NullLogger;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Every site where BaseController used to call exit now writes its response
@@ -70,11 +67,31 @@ class BaseControllerHaltTest extends SeamControllerTestCase
 
     private function controller(array $request = []): HaltingSeamController
     {
-        $environment = $this->environment($this->configure());
         $this->factory->method('permissionService')->willReturn($this->createStub(PermissionService::class));
         $this->factory->method('auditService')->willReturn($this->createStub(AuditService::class));
 
-        return new HaltingSeamController($request, true, $environment);
+        return new HaltingSeamController($request, true, $this->renderingEnvironment($this->configure()));
+    }
+
+    /**
+     * The seam's environment without its page recorder, so the controller
+     * renders the real chrome through Twig and the test can read the wire.
+     */
+    private function renderingEnvironment(ConfigurationInterface $config, ?HttpRequest $request = null, ?CsrfTokenService $csrf = null): ControllerEnvironment
+    {
+        $seam = $this->environment($config);
+
+        return new ControllerEnvironment(
+            $seam->config,
+            $seam->db,
+            $seam->logger,
+            $seam->moduleRegistry,
+            $seam->serviceFactory,
+            $request ?? $seam->httpRequest,
+            $csrf ?? $seam->csrfTokenService,
+            $seam->messageService,
+            $seam->userContextService
+        );
     }
 
     /**
@@ -172,18 +189,8 @@ class BaseControllerHaltTest extends SeamControllerTestCase
         $audit->expects($this->once())->method('logAccessDenied')->with('zone_content_edit_others', '/zones/7/edit');
         $this->factory->method('permissionService')->willReturn($this->createStub(PermissionService::class));
         $this->factory->method('auditService')->willReturn($audit);
-        $environment = new ControllerEnvironment(
-            $config,
-            $this->createMock(PDO::class),
-            new NullLogger(),
-            new ModuleRegistry($config),
-            $this->factory,
-            new HttpRequest([], [], ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/zones/7/edit']),
-            null,
-            $this->messageService,
-            new UserContextService()
-        );
-        $controller = new HaltingSeamController([], true, $environment);
+        $request = new HttpRequest([], [], ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/zones/7/edit']);
+        $controller = new HaltingSeamController([], true, $this->renderingEnvironment($config, $request));
 
         [$halt] = $this->capture(fn() => $controller->checkPermission('zone_content_edit_others', 'Not allowed.'));
 
@@ -203,7 +210,7 @@ class BaseControllerHaltTest extends SeamControllerTestCase
 
     public function testRedirectPrependsTheBaseUrlPrefix(): void
     {
-        $environment = $this->environment($this->configure(['interface' => ['base_url_prefix' => '/dns']]));
+        $environment = $this->renderingEnvironment($this->configure(['interface' => ['base_url_prefix' => '/dns']]));
         $controller = new HaltingSeamController([], true, $environment);
 
         [$halt] = $this->capture(fn() => $controller->redirect('/zones/forward'));
@@ -216,18 +223,7 @@ class BaseControllerHaltTest extends SeamControllerTestCase
         $this->post(['_token' => 'wrong']);
         $csrf = $this->createMock(CsrfTokenService::class);
         $csrf->method('validateToken')->willReturn(false);
-        $config = $this->configure();
-        $environment = new ControllerEnvironment(
-            $config,
-            $this->createMock(PDO::class),
-            new NullLogger(),
-            new ModuleRegistry($config),
-            $this->factory,
-            $this->request(),
-            $csrf,
-            $this->messageService,
-            new UserContextService()
-        );
+        $environment = $this->renderingEnvironment($this->configure(), null, $csrf);
 
         [$halt, $output] = $this->capture(fn() => new HaltingSeamController(['_token' => 'wrong'], true, $environment));
 

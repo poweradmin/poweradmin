@@ -30,21 +30,13 @@ use ReflectionProperty;
 
 /**
  * Builds the change-password controller through the ControllerEnvironment
- * seam and captures the form render. The password change itself is planted,
- * since it needs a real user row to verify the old password against.
+ * seam. The password change itself is planted, since it needs a real user row
+ * to verify the old password against.
  */
 class TestableChangePasswordController extends ChangePasswordController
 {
-    /** @var list<array{0: string, 1: array<string, mixed>}> */
-    public array $rendered = [];
-
     public function plantPasswordService(PasswordChangeService $service): void
     {
         (new ReflectionProperty(ChangePasswordController::class, 'passwordService'))->setValue($this, $service);
-    }
-
-    public function render(string $template, array $params): void
-    {
-        $this->rendered[] = [$template, $params];
     }
 }

@@ -97,9 +97,9 @@ class DeleteRecordsControllerViewLevelTest extends SeamControllerTestCase
         $this->factory->method('recordDeletionService')->willReturn($deletion);
     }
 
-    private function makeController(): TestableDeleteRecordsController
+    private function makeController(): DeleteRecordsController
     {
-        return new TestableDeleteRecordsController($this->requestData(), $this->environment($this->configure()));
+        return new DeleteRecordsController($this->requestData(), true, $this->environment($this->configure()));
     }
 
     public function testAConfirmedDeleteFromTheZonePageReturnsToTheZone(): void
@@ -143,8 +143,8 @@ class DeleteRecordsControllerViewLevelTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertSame('delete_records.html', $controller->rendered[0][0]);
-        $this->assertSame(1, $controller->rendered[0][1]['total_records']);
+        $this->assertSame('delete_records.html', $this->output->rendered[0][0]);
+        $this->assertSame(1, $this->output->rendered[0][1]['total_records']);
         $this->assertSame([['error', 'You do not have permission to view this zone.']], $this->messagesFor('system'));
     }
 }

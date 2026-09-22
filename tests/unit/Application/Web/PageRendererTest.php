@@ -64,6 +64,55 @@ class PageRendererTest extends TestCase
         );
     }
 
+    /**
+     * A page is the header, the body and the footer in that order; the body gets
+     * the language selector vars and the falsy chrome defaults under the
+     * controller's own parameters.
+     */
+    public function testRenderPageWrapsTheBodyInTheChromeAndFillsTheSharedDefaults(): void
+    {
+        $app = $this->createMock(AppManager::class);
+        $app->method('getSupportedLocales')->willReturn(['en_EN', 'de_DE']);
+        $app->method('getInterfaceLocale')->willReturn('de_DE');
+        $app->method('getThemeBasePath')->willReturn('templates');
+        $app->method('getThemeName')->willReturn('default');
+        $renderedTemplates = [];
+        $bodyParams = null;
+        $app->method('render')->willReturnCallback(function (string $template, array $params = []) use (&$renderedTemplates, &$bodyParams): void {
+            $renderedTemplates[] = $template;
+            if ($template === 'list_forward_zones.html') {
+                $bodyParams = $params;
+            }
+        });
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $default);
+
+        $renderer = new PageRenderer(
+            $app,
+            $config,
+            $this->createMock(CsrfTokenService::class),
+            $this->createMock(UserContextService::class),
+            $this->createMock(ModuleRegistry::class),
+            false,
+            fn(string $permission): bool => false,
+            fn(): ?array => null,
+            fn() => [],
+            false
+        );
+
+        ob_start();
+        $renderer->renderPage('list_forward_zones.html', ['zones' => [], 'message' => 'kept'], ['page' => 'list_forward_zones'], 'Zones', null, null);
+        ob_end_clean();
+
+        $this->assertSame(['header.html', 'list_forward_zones.html', 'footer.html'], $renderedTemplates);
+        $this->assertSame([], $bodyParams['zones']);
+        $this->assertSame('kept', $bodyParams['message'], 'a page parameter wins over the shared default');
+        $this->assertFalse($bodyParams['is_reverse_zone']);
+        $this->assertFalse($bodyParams['success']);
+        $this->assertSame('de_DE', $bodyParams['current_language']);
+        $this->assertTrue($bodyParams['show_language_selector']);
+    }
+
     public function testModuleNavItemsComeFromTheInjectedRegistryFilteredByPermission(): void
     {
         $registry = $this->createMock(ModuleRegistry::class);

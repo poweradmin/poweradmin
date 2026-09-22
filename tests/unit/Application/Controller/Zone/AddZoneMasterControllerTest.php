@@ -50,9 +50,9 @@ class AddZoneMasterControllerTest extends ZoneCreateControllerTestCase
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function makeController(array $config = []): TestableAddZoneMasterController
+    private function makeController(array $config = []): AddZoneMasterController
     {
-        return new TestableAddZoneMasterController($this->requestData(), $this->environment($this->configure($config)));
+        return new AddZoneMasterController($this->requestData(), true, $this->environment($this->configure($config)));
     }
 
     /** @param array<string, mixed> $fields */
@@ -88,7 +88,7 @@ class AddZoneMasterControllerTest extends ZoneCreateControllerTestCase
         $controller = $this->makeController(['dns' => ['zone_type_default' => 'NATIVE']]);
         $controller->run();
 
-        [$template, $params] = $controller->rendered[0];
+        [$template, $params] = $this->output->rendered[0];
         $this->assertSame('add_zone_master.html', $template);
         $this->assertSame('NATIVE', $params['dom_type_value']);
         $this->assertSame(['MASTER', 'NATIVE'], $params['available_zone_types'], 'an unknown server version offers no catalog kinds');
@@ -134,7 +134,7 @@ class AddZoneMasterControllerTest extends ZoneCreateControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', $message]], $this->messagesFor(self::PAGE));
-        $this->assertSame('add_zone_master.html', $controller->rendered[0][0]);
+        $this->assertSame('add_zone_master.html', $this->output->rendered[0][0]);
         $this->assertCount(0, $this->createCalls);
     }
 
@@ -159,7 +159,7 @@ class AddZoneMasterControllerTest extends ZoneCreateControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', 'At least one user or group must be selected as owner.']], $this->messagesFor(self::PAGE));
-        $this->assertSame('add_zone_master.html', $controller->rendered[0][0]);
+        $this->assertSame('add_zone_master.html', $this->output->rendered[0][0]);
         $this->assertCount(0, $this->createCalls);
     }
 
@@ -184,7 +184,7 @@ class AddZoneMasterControllerTest extends ZoneCreateControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', 'There is already a zone with this name.']], $this->messagesFor(self::PAGE));
-        $this->assertSame('add_zone_master.html', $controller->rendered[0][0]);
+        $this->assertSame('add_zone_master.html', $this->output->rendered[0][0]);
         $this->assertSame([], $this->audited);
     }
 

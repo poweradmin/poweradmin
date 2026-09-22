@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\System;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Controller\System\DatabaseConsistencyController;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
@@ -72,7 +73,11 @@ class DatabaseConsistencyControllerTest extends SeamControllerTestCase
         $this->factory->method('consistencyChecker')->willReturn($this->checker);
     }
 
-    private function fixRequest(string $checkType, string $action, ?string $itemId = '7'): TestableDatabaseConsistencyController
+    /**
+     * Runs a fix request and returns the halt that ended it: every fix, even a
+     * refused one, redirects back to the page.
+     */
+    private function fixRequest(string $checkType, string $action, ?string $itemId = '7'): RequestHalted
     {
         $fields = ['check_type' => $checkType, 'action' => $action];
         if ($itemId !== null) {
@@ -80,22 +85,27 @@ class DatabaseConsistencyControllerTest extends SeamControllerTestCase
         }
         $this->post($fields);
 
-        $controller = new TestableDatabaseConsistencyController(
+        $controller = new DatabaseConsistencyController(
             $fields,
             true,
             $this->environment($this->configure(['interface' => ['enable_consistency_checks' => true]]))
         );
 
-        $controller->run();
+        try {
+            $controller->run();
+        } catch (RequestHalted $halt) {
+            return $halt;
+        }
 
-        return $controller;
+        $this->fail('Expected the fix to redirect back to the page.');
     }
 
     /** @param list<array{0: string, 1: string}> $expected */
-    private function assertFlashed(array $expected, TestableDatabaseConsistencyController $controller): void
+    private function assertFlashed(array $expected, RequestHalted $halt): void
     {
-        $this->assertSame([self::REDIRECT], $controller->redirects);
-        $this->assertSame([], $controller->rendered);
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
+        $this->assertSame(self::REDIRECT, $halt->target);
+        $this->assertSame([], $this->output->rendered);
         $this->assertSame($expected, $this->messagesFor('database_consistency'));
     }
 

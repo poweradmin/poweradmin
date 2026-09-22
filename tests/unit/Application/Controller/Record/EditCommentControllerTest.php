@@ -109,10 +109,10 @@ class EditCommentControllerTest extends SeamControllerTestCase
 
         $controller->run();
 
-        $this->assertSame('edit_comment.html', $controller->rendered[0][0]);
-        $this->assertSame('kept in zones.comment', $controller->rendered[0][1]['comment']);
-        $this->assertSame(self::ZONE_ID, $controller->rendered[0][1]['zone_id']);
-        $this->assertSame('example.com', $controller->rendered[0][1]['zone_name']);
+        $this->assertSame('edit_comment.html', $this->output->rendered[0][0]);
+        $this->assertSame('kept in zones.comment', $this->output->rendered[0][1]['comment']);
+        $this->assertSame(self::ZONE_ID, $this->output->rendered[0][1]['zone_id']);
+        $this->assertSame('example.com', $this->output->rendered[0][1]['zone_name']);
     }
 
     public function testAZoneWithoutACommentRendersAnEmptyTextarea(): void
@@ -123,7 +123,7 @@ class EditCommentControllerTest extends SeamControllerTestCase
 
         $controller->run();
 
-        $this->assertSame('', $controller->rendered[0][1]['comment']);
+        $this->assertSame('', $this->output->rendered[0][1]['comment']);
     }
 
     public function testASavedCommentFlashesSuccessAndReturnsToTheZone(): void

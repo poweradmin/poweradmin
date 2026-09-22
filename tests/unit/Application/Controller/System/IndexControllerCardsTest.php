@@ -59,22 +59,22 @@ class IndexControllerCardsTest extends SeamControllerTestCase
      * @param array<string, array<string, mixed>> $config
      * @return array<string, mixed>
      */
-    private function renderedParams(array $config = []): array
+    private function runAndRender(array $config = []): array
     {
         $config['interface'] = ($config['interface'] ?? []) + ['show_dashboard_stats' => false];
-        $controller = new TestableIndexController([], $this->environment($this->configure($config)));
+        $controller = new IndexController([], true, $this->environment($this->configure($config)));
         $controller->run();
 
-        $this->assertSame('index.html', $controller->rendered[0][0]);
+        $this->assertSame('index.html', $this->output->rendered[0][0]);
 
-        return $controller->renderedParams();
+        return $this->renderedParams();
     }
 
     public function testUeberuserWithApiEnabledGetsTheRawFlags(): void
     {
         $this->granted = [Permission::PERM_USER_IS_UEBERUSER];
 
-        $params = $this->renderedParams(['api' => ['enabled' => true]]);
+        $params = $this->runAndRender(['api' => ['enabled' => true]]);
 
         $this->assertTrue($params['permissions'][Permission::PERM_USER_IS_UEBERUSER]);
         $this->assertFalse($params['permissions'][Permission::PERM_API_MANAGE_KEYS]);
@@ -97,11 +97,11 @@ class IndexControllerCardsTest extends SeamControllerTestCase
     {
         $this->granted = [Permission::PERM_USER_IS_UEBERUSER];
 
-        $params = $this->renderedParams(['interface' => ['show_pdns_status' => true]]);
+        $params = $this->runAndRender(['interface' => ['show_pdns_status' => true]]);
         $this->assertFalse($params['show_pdns_status_card'], 'pdns_api is not configured');
         $this->assertTrue($params['show_groups_card']);
 
-        $params = $this->renderedParams(['permissions' => ['show_group_access_templates' => false]]);
+        $params = $this->runAndRender(['permissions' => ['show_group_access_templates' => false]]);
         $this->assertFalse($params['show_groups_card']);
     }
 
@@ -109,7 +109,7 @@ class IndexControllerCardsTest extends SeamControllerTestCase
     {
         $this->granted = [Permission::PERM_API_MANAGE_KEYS, Permission::PERM_SEARCH];
 
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
 
         $this->assertTrue($params['permissions'][Permission::PERM_API_MANAGE_KEYS]);
         $this->assertFalse($params['api_enabled']);
@@ -118,14 +118,14 @@ class IndexControllerCardsTest extends SeamControllerTestCase
         $this->assertFalse($params['show_groups_card']);
         $this->assertFalse($params['show_pdns_version_fallback']);
 
-        $this->assertTrue($this->renderedParams(['api' => ['enabled' => true]])['show_api_keys_card']);
+        $this->assertTrue($this->runAndRender(['api' => ['enabled' => true]])['show_api_keys_card']);
     }
 
     public function testLimitedUserIsTheOneWhoMayOnlyEditTheirOwnAccount(): void
     {
         $this->granted = [Permission::PERM_USER_EDIT_OWN];
 
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
 
         $this->assertTrue($params['is_limited_user']);
         $this->assertTrue($params['show_edit_profile_card']);
@@ -133,7 +133,7 @@ class IndexControllerCardsTest extends SeamControllerTestCase
         $this->assertSame(self::USER_ID, $params['user_id']);
 
         $this->granted = [Permission::PERM_USER_EDIT_OWN, Permission::PERM_USER_VIEW_OTHERS];
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
         $this->assertFalse($params['is_limited_user']);
         $this->assertFalse($params['show_edit_profile_card']);
     }

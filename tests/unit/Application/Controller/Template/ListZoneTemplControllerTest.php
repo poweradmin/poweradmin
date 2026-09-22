@@ -89,19 +89,19 @@ class ListZoneTemplControllerTest extends SeamControllerTestCase
     }
 
     /** @return array<string, mixed> */
-    private function renderedParams(): array
+    private function runAndRender(): array
     {
-        $controller = new TestableListZoneTemplController([], $this->environment($this->configure()));
+        $controller = new ListZoneTemplController([], true, $this->environment($this->configure()));
         $controller->run();
 
-        $this->assertSame('list_zone_templ.html', $controller->rendered[0][0]);
+        $this->assertSame('list_zone_templ.html', $this->output->rendered[0][0]);
 
-        return $controller->renderedParams();
+        return $this->renderedParams();
     }
 
     public function testWithoutAnyTemplatePermissionThePageIsRefused(): void
     {
-        $controller = new TestableListZoneTemplController([], $this->environment($this->configure()));
+        $controller = new ListZoneTemplController([], true, $this->environment($this->configure()));
 
         try {
             $controller->run();
@@ -116,7 +116,7 @@ class ListZoneTemplControllerTest extends SeamControllerTestCase
     {
         $this->granted = [Permission::PERM_USER_IS_UEBERUSER];
 
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
 
         $this->assertTrue($params['perm_is_godlike']);
         $this->assertFalse($params['perm_zone_templ_edit']);
@@ -135,7 +135,7 @@ class ListZoneTemplControllerTest extends SeamControllerTestCase
     {
         $this->granted = [Permission::PERM_ZONE_TEMPL_EDIT];
 
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
 
         $this->assertFalse($params['perm_is_godlike']);
         $this->assertTrue($params['perm_zone_templ_edit']);
@@ -149,7 +149,7 @@ class ListZoneTemplControllerTest extends SeamControllerTestCase
     {
         $this->granted = [Permission::PERM_ZONE_TEMPL_ADD];
 
-        $params = $this->renderedParams();
+        $params = $this->runAndRender();
 
         $this->assertSame([false, false, false], array_column($params['zone_templates'], 'can_edit'));
     }

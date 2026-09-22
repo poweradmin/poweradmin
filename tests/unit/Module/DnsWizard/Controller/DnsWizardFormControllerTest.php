@@ -119,15 +119,15 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function makeController(array $config = [], string $type = 'spf', string $id = '12'): TestableDnsWizardFormController
+    private function makeController(array $config = [], string $type = 'spf', string $id = '12'): DnsWizardFormController
     {
         $config += ['dns_wizards' => ['enabled' => true, 'available_types' => ['SPF']]];
         $request = ['id' => $id, 'type' => $type] + $this->requestData();
 
-        return new TestableDnsWizardFormController($request, $this->environment($this->configure($config)));
+        return new DnsWizardFormController($request, true, $this->environment($this->configure($config)));
     }
 
-    private function haltOf(TestableDnsWizardFormController $controller): RequestHalted
+    private function haltOf(DnsWizardFormController $controller): RequestHalted
     {
         try {
             $controller->run();
@@ -195,7 +195,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
 
         if ($allowed) {
             $controller->run();
-            $this->assertSame('dns_wizard_form.html', $controller->rendered[0][0]);
+            $this->assertSame('dns_wizard_form.html', $this->output->rendered[0][0]);
             return;
         }
 
@@ -231,7 +231,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        [$template, $params] = $controller->rendered[0];
+        [$template, $params] = $this->output->rendered[0];
         $this->assertSame('dns_wizard_form.html', $template);
         $this->assertSame(self::ZONE_ID, $params['zone_id']);
         $this->assertSame('example.com', $params['zone_name']);
@@ -250,7 +250,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $params = $controller->rendered[0][1];
+        $params = $this->output->rendered[0][1];
         $this->assertSame('192.0.2.0/24', $params['formData']['ip4']);
         $this->assertArrayNotHasKey('_warnings', $params['formData']);
         $this->assertSame(['careful'], $params['warnings']);

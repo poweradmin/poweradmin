@@ -46,8 +46,9 @@ use Psr\Log\NullLogger;
 
 /**
  * Shared fixture for controllers built through the ControllerEnvironment seam:
- * an in-memory configuration, a request assembled from post()/query(), and a
- * stub service factory that every create*() accessor on BaseController routes through.
+ * an in-memory configuration, a request assembled from post()/query(), a page
+ * output that records instead of rendering, and a stub service factory that
+ * every create*() accessor on BaseController routes through.
  *
  * The logged-in user is a plain $_SESSION entry, so UserContextService,
  * MessageService and ZoneSortingService all work against real (in-memory) state;
@@ -66,6 +67,12 @@ abstract class SeamControllerTestCase extends TestCase
 
     /** The configuration every controller of the test reads; configure() sets its contents */
     protected SeamConfiguration $config;
+
+    /** What the controller built last rendered; environment() starts a fresh one per controller */
+    protected RecordingPageOutput $output;
+
+    /** @var list<RecordingPageOutput> Every recorder of the test, oldest first */
+    private array $outputs = [];
 
     /** @var array<string, mixed> */
     protected array $queryParams = [];
@@ -91,6 +98,7 @@ abstract class SeamControllerTestCase extends TestCase
         $this->messageService = new MessageService();
         $this->config = new SeamConfiguration();
         $this->configure();
+        $this->output = $this->outputs[] = new RecordingPageOutput();
     }
 
     protected function tearDown(): void
@@ -151,6 +159,9 @@ abstract class SeamControllerTestCase extends TestCase
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 
+        // One recorder per controller, so a test running two of them reads each one's page
+        $this->output = $this->outputs[] = new RecordingPageOutput();
+
         return new ControllerEnvironment(
             $config,
             $db,
@@ -160,8 +171,24 @@ abstract class SeamControllerTestCase extends TestCase
             $this->request(),
             $csrf,
             $this->messageService,
-            new UserContextService()
+            new UserContextService(),
+            $this->output
         );
+    }
+
+    /**
+     * The template variables of the first page rendered, as the controller built them.
+     *
+     * @return array<string, mixed>
+     */
+    protected function renderedParams(): array
+    {
+        return $this->output->renderedParams();
+    }
+
+    protected function renderedTemplate(): ?string
+    {
+        return $this->output->renderedTemplate();
     }
 
     /**
@@ -216,15 +243,18 @@ abstract class SeamControllerTestCase extends TestCase
     }
 
     /**
-     * The flashed messages for a page, as [type, content] pairs.
+     * The flashed messages for a page, as [type, content] pairs: the ones the
+     * rendered pages already showed, then the ones still waiting in the session.
      *
      * @return list<array{0: string, 1: string}>
      */
     protected function messagesFor(string $script): array
     {
+        $shown = array_merge(...array_map(static fn(RecordingPageOutput $output): array => $output->messages[$script] ?? [], $this->outputs));
+
         return array_map(
             static fn(array $message): array => [$message['type'], $message['content']],
-            $this->messageService->getMessages($script) ?? []
+            array_merge($shown, $this->messageService->getMessages($script) ?? [])
         );
     }
 }

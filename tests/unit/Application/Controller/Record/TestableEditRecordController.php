@@ -25,7 +25,6 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 use Poweradmin\Application\Controller\Record\EditRecordController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Controller\RequestHalted;
 use ReflectionProperty;
 
 /**
@@ -36,39 +35,9 @@ use ReflectionProperty;
  */
 class TestableEditRecordController extends EditRecordController
 {
-    /** @var list<array{0: string, 1: array<string, mixed>}> */
-    public array $rendered = [];
-    public ?string $redirectedTo = null;
-
     public function __construct(array $request, ControllerEnvironment $environment, RecordCommentService $recordCommentService)
     {
         parent::__construct($request, true, $environment);
         (new ReflectionProperty(EditRecordController::class, 'recordCommentService'))->setValue($this, $recordCommentService);
-    }
-
-    public function render(string $template, array $params): void
-    {
-        $this->rendered[] = [$template, $params];
-    }
-
-    /** @return array<string, mixed> */
-    public function renderedParams(): array
-    {
-        return $this->rendered[0][1] ?? [];
-    }
-
-    public function redirect(string $url, array $args = []): void
-    {
-        $this->redirectedTo = $url;
-        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
-    }
-
-    public function showError(string $error, ?string $recordName = null): void
-    {
-        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
-    }
-
-    protected function refreshPdnsCapabilities(): void
-    {
     }
 }

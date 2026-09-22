@@ -23,27 +23,12 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\Zone\ListChangeRequestsController;
-use RuntimeException;
 
 /**
- * Captures the page or error the controller would have produced, and skips
- * the pagination markup, which needs no exercising here.
+ * Skips the pagination markup, which needs no exercising here.
  */
 class TestableListChangeRequestsController extends ListChangeRequestsController
 {
-    /** @var list<array{0: string, 1: array<string, mixed>}> */
-    public array $rendered = [];
-
-    public function render(string $template, array $params): void
-    {
-        $this->rendered[] = [$template, $params];
-    }
-
-    public function showError(string $error, ?string $recordName = null): void
-    {
-        throw new RuntimeException($error);
-    }
-
     protected function paginationVariables(int $totalItems, int $itemsPerPage, string $path, array $queryParams = []): array
     {
         return ['pagination' => '', 'pagination_items' => []];

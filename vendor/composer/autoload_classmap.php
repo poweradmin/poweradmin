@@ -1266,6 +1266,7 @@ return array(
     'Poweradmin\\Application\\Service\\ZoneSigningMessages' => $baseDir . '/lib/Application/Service/ZoneSigningMessages.php',
     'Poweradmin\\Application\\Service\\ZoneSortingService' => $baseDir . '/lib/Application/Service/ZoneSortingService.php',
     'Poweradmin\\Application\\Web\\NavigationVisibility' => $baseDir . '/lib/Application/Web/NavigationVisibility.php',
+    'Poweradmin\\Application\\Web\\PageOutputInterface' => $baseDir . '/lib/Application/Web/PageOutputInterface.php',
     'Poweradmin\\Application\\Web\\PageRenderer' => $baseDir . '/lib/Application/Web/PageRenderer.php',
     'Poweradmin\\Application\\Web\\ZoneEditFormParser' => $baseDir . '/lib/Application/Web/ZoneEditFormParser.php',
     'Poweradmin\\Domain\\Config\\ConfigurationInterface' => $baseDir . '/lib/Domain/Config/ConfigurationInterface.php',

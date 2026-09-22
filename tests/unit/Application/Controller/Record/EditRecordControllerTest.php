@@ -267,7 +267,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertSame('edit_record.html', $controller->rendered[0][0]);
+        $this->assertSame('edit_record.html', $this->output->rendered[0][0]);
     }
 
     public function testAReadOnlyZoneIsRefusedBeforeTheEditPermissionIsResolved(): void
@@ -298,7 +298,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
 
         $controller = $this->makeController(['approval' => ['enabled' => true]]);
         $controller->run();
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
 
         $this->assertSame(ChangeApprovalPolicy::MODE_REQUEST, $params['edit_mode']);
         $this->assertSame('all', $params['perm_edit'], 'the change-request level stands in for the edit level');
@@ -371,8 +371,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertNull($controller->redirectedTo);
-        $this->assertSame('edit_record.html', $controller->rendered[0][0]);
+        $this->assertSame('edit_record.html', $this->output->rendered[0][0]);
         $this->assertSame([['error', 'Invalid IPv4 address.']], $this->messagesFor('system'));
     }
 
@@ -400,7 +399,6 @@ class EditRecordControllerTest extends SeamControllerTestCase
 
         $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame('Zone not found.', $halt->target);
-        $this->assertNull($controller->redirectedTo);
         $this->assertSame([['error', 'Zone not found.']], $this->messagesFor('edit'));
     }
 
@@ -699,7 +697,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertSame('', $controller->renderedParams()['comment']);
+        $this->assertSame('', $this->renderedParams()['comment']);
     }
 
     // --------------------------------------------------------- request mode
@@ -765,7 +763,6 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $controller = $this->makeController(['approval' => ['enabled' => true]]);
         $controller->run();
 
-        $this->assertNull($controller->redirectedTo);
         $this->assertSame([['error', 'content is invalid']], $this->messagesFor('system'));
         $this->assertSame([['error', 'refused']], $this->messagesFor('edit_record'));
     }

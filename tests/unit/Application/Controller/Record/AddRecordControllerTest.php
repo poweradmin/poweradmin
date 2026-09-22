@@ -160,14 +160,14 @@ class AddRecordControllerTest extends SeamControllerTestCase
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function makeController(array $config = []): TestableAddRecordController
+    private function makeController(array $config = []): AddRecordController
     {
         $this->query($this->queryParams + ['id' => (string)self::ZONE_ID, 'zone_id' => (string)self::ZONE_ID]);
 
-        return new TestableAddRecordController($this->requestData(), $this->environment($this->configure($config)));
+        return new AddRecordController($this->requestData(), true, $this->environment($this->configure($config)));
     }
 
-    private function haltOf(TestableAddRecordController $controller): RequestHalted
+    private function haltOf(AddRecordController $controller): RequestHalted
     {
         try {
             $controller->run();
@@ -187,7 +187,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $this->zoneName = null;
         $this->domains->expects($this->once())->method('getDomainNameById')->with(0);
 
-        $halt = $this->haltOf(new TestableAddRecordController([], $this->environment($this->configure())));
+        $halt = $this->haltOf(new AddRecordController([], true, $this->environment($this->configure())));
 
         $this->assertSame(RequestHalted::KIND_CONDITION, $halt->kind);
         $this->assertSame('There is no zone with this ID.', $halt->target);
@@ -247,7 +247,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
         if ($allowed) {
             $controller->run();
-            $this->assertSame('add_record.html', $controller->rendered[0][0]);
+            $this->assertSame('add_record.html', $this->output->rendered[0][0]);
             return;
         }
 
@@ -263,7 +263,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
         $this->assertSame(self::ZONE_ID, $params['zone_id']);
         $this->assertSame('example.com', $params['zone_name']);
         $this->assertFalse($params['is_reverse_zone']);
@@ -276,8 +276,8 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertNotContains('SOA', $controller->renderedParams()['types']);
-        $this->assertContains('A', $controller->renderedParams()['types']);
+        $this->assertNotContains('SOA', $this->renderedParams()['types']);
+        $this->assertContains('A', $this->renderedParams()['types']);
     }
 
     public function testAReverseZoneGetsTheReverseTypeList(): void
@@ -287,8 +287,8 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertTrue($controller->renderedParams()['is_reverse_zone']);
-        $this->assertContains('PTR', $controller->renderedParams()['types']);
+        $this->assertTrue($this->renderedParams()['is_reverse_zone']);
+        $this->assertContains('PTR', $this->renderedParams()['types']);
     }
 
     // ------------------------------------------------------ single record
@@ -573,7 +573,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
         $controller = $this->makeController();
         $controller->run();
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
 
         $this->assertSame('www', $params['name']);
         $this->assertSame('AAAA', $params['type']);

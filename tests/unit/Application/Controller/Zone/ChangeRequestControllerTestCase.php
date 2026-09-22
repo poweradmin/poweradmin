@@ -36,6 +36,7 @@ use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Tests\Unit\Application\Controller\RecordingPageOutput;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 
@@ -61,6 +62,9 @@ abstract class ChangeRequestControllerTestCase extends TestCase
     /** @var MessageService&MockObject */
     protected MessageService $messages;
 
+    /** Every page the test's controllers rendered, in order */
+    protected RecordingPageOutput $output;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -69,6 +73,7 @@ abstract class ChangeRequestControllerTestCase extends TestCase
         $this->permissions = $this->createMock(PermissionService::class);
         $this->messages = $this->createMock(MessageService::class);
         $this->factory->method('permissionService')->willReturn($this->permissions);
+        $this->output = new RecordingPageOutput();
     }
 
     protected function configure(bool $approvalEnabled): ConfigurationInterface
@@ -112,7 +117,8 @@ abstract class ChangeRequestControllerTestCase extends TestCase
             new HttpRequest($this->queryParams, $this->postParams, ['REQUEST_METHOD' => $this->method]),
             $csrf,
             $this->messages,
-            $user
+            $user,
+            $this->output
         );
     }
 

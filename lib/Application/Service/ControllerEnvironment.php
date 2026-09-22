@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Module\ModuleRegistry;
+use Poweradmin\Application\Web\PageOutputInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -42,7 +43,9 @@ use Psr\Log\LoggerInterface;
  *
  * The request carries the method and the query and post parameters the
  * controller reads (isPost(), the request helpers); without one the controller
- * snapshots the superglobals as it does in production.
+ * snapshots the superglobals as it does in production. The page output receives
+ * every rendered template with its parameters, so a test can observe pages
+ * instead of subclassing render(); without one the themed PageRenderer is built.
  */
 final class ControllerEnvironment
 {
@@ -55,7 +58,8 @@ final class ControllerEnvironment
         public readonly ?HttpRequest $httpRequest = null,
         public readonly ?CsrfTokenService $csrfTokenService = null,
         public readonly ?MessageService $messageService = null,
-        public readonly ?UserContextService $userContextService = null
+        public readonly ?UserContextService $userContextService = null,
+        public readonly ?PageOutputInterface $pageOutput = null
     ) {
     }
 }

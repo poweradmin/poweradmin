@@ -53,6 +53,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Application\Web\PageOutputInterface;
 use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Psr\Log\LoggerInterface;
@@ -64,7 +65,6 @@ use Psr\Log\LoggerInterface;
  */
 abstract class BaseController
 {
-    private ?AppManager $app = null;
     private ?AppInitializer $init = null;
     protected PDO $db;
     protected array $requestData;
@@ -82,7 +82,7 @@ abstract class BaseController
 
     /** The registry the router loaded for this request; see bindModuleRegistry() */
     private static ?ModuleRegistry $requestModuleRegistry = null;
-    private ?PageRenderer $pageRenderer = null;
+    private ?PageOutputInterface $pageOutput = null;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -106,6 +106,7 @@ abstract class BaseController
             $this->db = $environment->db;
             $this->moduleRegistry = $environment->moduleRegistry;
             $this->serviceFactory = $environment->serviceFactory;
+            $this->pageOutput = $environment->pageOutput;
 
             $this->requestData = $request;
             $this->httpRequest = $environment->httpRequest ?? new HttpRequest();
@@ -212,29 +213,14 @@ abstract class BaseController
      */
     public function render(string $template, array $params): void
     {
-        // The language selector vars are shared with the body template so the
-        // login form's hidden userlang field carries the chosen language
-        // through submission (PageRenderer memoizes them per request).
-        $languageVars = $this->getPageRenderer()->languageVars();
-
-        $this->renderHeader(
+        $this->pageOutput()->renderPage(
+            $template,
+            $params,
+            $this->requestData,
+            $this->pageTitle,
             $this->messageService->getMessages('system'),
             $this->messageService->getMessages(pathinfo($template)['filename'])
         );
-
-        // csrf_token, base_url_prefix, pdns_caps, and pdns_server_info are Twig
-        // globals (see PageRenderer::setupTwigEnvironment); page params still
-        // override them.
-        $params = array_merge($languageVars, $params);
-
-        // Shared page chrome tested bare in many templates; the falsy defaults
-        // keep strict_variables mode rendering identical to non-strict output.
-        $params['message'] ??= false;
-        $params['is_reverse_zone'] ??= false;
-        $params['success'] ??= false;
-
-        $this->app()->render($template, $params);
-        $this->renderFooter();
     }
 
     /**
@@ -302,9 +288,9 @@ abstract class BaseController
 
         $token = $this->getSafeRequestValue('_token');
         if (!$this->csrfTokenService->validateToken($token)) {
-            $this->renderHeader();
+            // Flashed after the chrome went out: the error shows on the next page, not this one
+            $this->renderMessagePage(null);
             $this->messageService->addSystemError(_('Invalid CSRF token.'));
-            $this->renderFooter();
             $this->halt(RequestHalted::KIND_ERROR, _('Invalid CSRF token.'));
         }
     }
@@ -369,13 +355,8 @@ abstract class BaseController
     public function checkCondition(bool $condition, string $errorMessage): void
     {
         if ($condition) {
-            // Add as system message
             $this->addSystemMessage('error', $errorMessage);
-
-            // Render the page with the message
-            $systemMessages = $this->messageService->getMessages('system');
-            $this->renderHeader($systemMessages);
-            $this->renderFooter();
+            $this->renderMessagePage($this->messageService->getMessages('system'));
             $this->halt(RequestHalted::KIND_CONDITION, $errorMessage);
         }
     }
@@ -704,13 +685,8 @@ abstract class BaseController
                 $this->halt(RequestHalted::KIND_PERMISSION, $errorMessage);
             }
 
-            // Add as system message
             $this->addSystemMessage('error', $errorMessage);
-
-            // Render the page with the message
-            $systemMessages = $this->messageService->getMessages('system');
-            $this->renderHeader($systemMessages);
-            $this->renderFooter();
+            $this->renderMessagePage($this->messageService->getMessages('system'));
             $this->halt(RequestHalted::KIND_PERMISSION, $errorMessage);
         }
     }
@@ -762,36 +738,28 @@ abstract class BaseController
             $this->halt(RequestHalted::KIND_ERROR, $error);
         }
 
-        // Add as system message
         $this->addSystemMessage('error', $error);
-
-        // Render the page with the message
-        $systemMessages = $this->messageService->getMessages('system');
-        $this->renderHeader($systemMessages);
-        $this->renderFooter();
+        $this->renderMessagePage($this->messageService->getMessages('system'));
         $this->halt(RequestHalted::KIND_ERROR, $error);
     }
 
     /**
-     * Lazily builds the Twig environment and translator. Both consumers are
-     * presentation paths, so API controllers never pay for the template stack.
+     * Where pages go: the environment's output when a test supplied one,
+     * otherwise the page chrome renderer over the Twig environment, built
+     * lazily. Deferred closures keep permission, capability, and debug-query
+     * lookups out of controller construction, and API controllers never pay
+     * for the template stack at all.
      */
-    private function app(): AppManager
+    private function pageOutput(): PageOutputInterface
     {
-        return $this->app ??= new AppManager($this->moduleRegistry, $this->logger);
-    }
+        if ($this->pageOutput !== null) {
+            return $this->pageOutput;
+        }
 
-    /**
-     * Lazily builds the page chrome renderer. Deferred closures keep
-     * permission, capability, and debug-query lookups out of controller
-     * construction, and API controllers never build the renderer at all.
-     */
-    private function getPageRenderer(): PageRenderer
-    {
         $userId = $this->userContextService->getLoggedInUserId();
 
-        return $this->pageRenderer ??= new PageRenderer(
-            $this->app(),
+        return $this->pageOutput = new PageRenderer(
+            new AppManager($this->moduleRegistry, $this->logger),
             $this->config,
             $this->csrfTokenService,
             $this->userContextService,
@@ -806,21 +774,12 @@ abstract class BaseController
     }
 
     /**
-     * Renders the header of the page.
-     *
-     * @param array|null $systemMessages System messages to be displayed
+     * The page chrome alone, carrying the given system messages: the error
+     * page every halting check answers with.
      */
-    private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null): void
+    private function renderMessagePage(?array $systemMessages): void
     {
-        $this->getPageRenderer()->renderHeader($this->requestData, $this->pageTitle, $systemMessages, $scriptMessages);
-    }
-
-    /**
-     * Renders the footer of the page.
-     */
-    private function renderFooter(): void
-    {
-        $this->getPageRenderer()->renderFooter();
+        $this->pageOutput()->renderChrome($this->requestData, $this->pageTitle, $systemMessages);
     }
 
     /**

@@ -67,7 +67,7 @@ class ChangePasswordControllerTest extends SeamControllerTestCase
 
         $controller->run();
 
-        $this->assertSame([], $controller->rendered);
+        $this->assertSame([], $this->output->rendered);
     }
 
     public function testRejectedChangeRerendersTheFormWithoutEndingTheSession(): void
@@ -87,7 +87,7 @@ class ChangePasswordControllerTest extends SeamControllerTestCase
 
         $controller->run();
 
-        $this->assertSame('change_password.html', $controller->rendered[0][0]);
+        $this->assertSame('change_password.html', $this->output->rendered[0][0]);
         $this->assertSame([['error', 'Current password is incorrect']], $this->messagesFor('change_password'));
     }
 }

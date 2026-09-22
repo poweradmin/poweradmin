@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Application\Controller\Zone\ZoneOwnershipController;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use ReflectionMethod;
 
@@ -174,7 +175,7 @@ class ZoneOwnershipControllerLastOwnerTest extends SeamControllerTestCase
         );
         $this->post($fields);
 
-        $controller = new TestableZoneOwnershipController([], $this->environment($config));
+        $controller = new ZoneOwnershipController([], true, $this->environment($config));
 
         $handler = new ReflectionMethod($controller, 'handleFormSubmission');
         $handler->invoke($controller, self::ZONE_ID, 'example.com', self::USER_ID, true);

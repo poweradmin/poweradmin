@@ -45,9 +45,9 @@ class AddZoneSlaveControllerTest extends ZoneCreateControllerTestCase
         $this->granted = [Permission::PERM_ZONE_SLAVE_ADD];
     }
 
-    private function makeController(): TestableAddZoneSlaveController
+    private function makeController(): AddZoneSlaveController
     {
-        return new TestableAddZoneSlaveController($this->requestData(), $this->environment($this->configure()));
+        return new AddZoneSlaveController($this->requestData(), true, $this->environment($this->configure()));
     }
 
     /** @param array<string, mixed> $fields */
@@ -81,8 +81,8 @@ class AddZoneSlaveControllerTest extends ZoneCreateControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertSame('add_zone_slave.html', $controller->rendered[0][0]);
-        $this->assertFalse($controller->rendered[0][1]['is_post']);
+        $this->assertSame('add_zone_slave.html', $this->output->rendered[0][0]);
+        $this->assertFalse($this->output->rendered[0][1]['is_post']);
         $this->assertCount(0, $this->createCalls);
     }
 
@@ -97,7 +97,7 @@ class AddZoneSlaveControllerTest extends ZoneCreateControllerTestCase
             [['error', 'Enter a network in CIDR notation (for example 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa.']],
             $this->messagesFor(self::PAGE)
         );
-        $this->assertSame('add_zone_slave.html', $controller->rendered[0][0]);
+        $this->assertSame('add_zone_slave.html', $this->output->rendered[0][0]);
         $this->assertCount(0, $this->createCalls);
     }
 
@@ -122,7 +122,7 @@ class AddZoneSlaveControllerTest extends ZoneCreateControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', 'This is not a valid IPv4 or IPv6 address.']], $this->messagesFor(self::PAGE));
-        $this->assertSame('add_zone_slave.html', $controller->rendered[0][0]);
+        $this->assertSame('add_zone_slave.html', $this->output->rendered[0][0]);
         $this->assertSame([], $this->audited);
     }
 

@@ -144,15 +144,16 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function makeController(array $config = [], ?string $recordId = null): TestableDeleteRecordController
+    private function makeController(array $config = [], ?string $recordId = null): DeleteRecordController
     {
-        return new TestableDeleteRecordController(
+        return new DeleteRecordController(
             ['id' => $recordId ?? (string)self::RECORD_ID] + $this->requestData(),
+            true,
             $this->environment($this->configure($config))
         );
     }
 
-    private function haltOf(TestableDeleteRecordController $controller): RequestHalted
+    private function haltOf(DeleteRecordController $controller): RequestHalted
     {
         try {
             $controller->run();
@@ -225,7 +226,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', 'You do not have permission to view this zone.']], $this->messagesFor('system'));
-        $this->assertSame('delete_record.html', $controller->rendered[0][0]);
+        $this->assertSame('delete_record.html', $this->output->rendered[0][0]);
     }
 
     public function testAGetRendersTheConfirmationPage(): void
@@ -233,8 +234,8 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertSame('delete_record.html', $controller->rendered[0][0]);
-        $params = $controller->rendered[0][1];
+        $this->assertSame('delete_record.html', $this->output->rendered[0][0]);
+        $params = $this->output->rendered[0][1];
         $this->assertSame((string)self::RECORD_ID, $params['record_id']);
         $this->assertSame(self::ZONE_ID, $params['zone_id']);
         $this->assertSame(ChangeApprovalPolicy::MODE_DIRECT, $params['edit_mode']);
@@ -262,7 +263,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', 'Backend refused']], $this->messagesFor('system'));
-        $this->assertSame('delete_record.html', $controller->rendered[0][0]);
+        $this->assertSame('delete_record.html', $this->output->rendered[0][0]);
     }
 
     public function testASuccessfulDeletionIsAuditedAndRedirectsToTheZone(): void
@@ -403,6 +404,6 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', 'nope']], $this->messagesFor('system'));
-        $this->assertSame(ChangeApprovalPolicy::MODE_REQUEST, $controller->rendered[0][1]['edit_mode']);
+        $this->assertSame(ChangeApprovalPolicy::MODE_REQUEST, $this->output->rendered[0][1]['edit_mode']);
     }
 }

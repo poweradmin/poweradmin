@@ -85,7 +85,7 @@ class DeleteDomainControllerViewLevelTest extends SeamControllerTestCase
     private function haltOfConfirmedPost(array $config = []): RequestHalted
     {
         $this->post(['id' => (string)self::ZONE_ID]);
-        $controller = new TestableDeleteDomainController(['id' => (string)self::ZONE_ID], $this->environment($this->configure($config)));
+        $controller = new DeleteDomainController(['id' => (string)self::ZONE_ID], true, $this->environment($this->configure($config)));
 
         try {
             $controller->run();

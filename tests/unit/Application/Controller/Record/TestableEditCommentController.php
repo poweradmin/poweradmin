@@ -24,25 +24,19 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\Record\EditCommentController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Controller\RequestHalted;
 
 /**
  * Builds the zone comment controller through the ControllerEnvironment seam.
- *
- * redirect() and showError() end the request in production, so each throws a
- * RequestHalted; the form render is recorded, and only rendered for real when
- * a test opts in to inspect its template variables.
+ * The form render is recorded, and only rendered for real when a test opts in
+ * to inspect its template variables.
  */
 class TestableEditCommentController extends EditCommentController
 {
     /** @var list<array{0: int, 1: bool}> */
     public array $formsShown = [];
 
-    /** When true the form is rendered for real and its template variables land in $rendered */
+    /** When true the form is rendered for real and its template variables reach the page output */
     public bool $renderForms = false;
-
-    /** @var list<array{0: string, 1: array<string, mixed>}> */
-    public array $rendered = [];
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
@@ -56,24 +50,5 @@ class TestableEditCommentController extends EditCommentController
             return;
         }
         $this->formsShown[] = [$zone_id, $perm_edit_comment];
-    }
-
-    public function render(string $template, array $params): void
-    {
-        $this->rendered[] = [$template, $params];
-    }
-
-    public function redirect(string $url, array $args = []): void
-    {
-        throw new RequestHalted(RequestHalted::KIND_REDIRECT, $url);
-    }
-
-    public function showError(string $error, ?string $recordName = null): void
-    {
-        throw new RequestHalted(RequestHalted::KIND_ERROR, $error);
-    }
-
-    protected function refreshPdnsCapabilities(): void
-    {
     }
 }

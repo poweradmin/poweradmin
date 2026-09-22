@@ -5,34 +5,16 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\Auth\ForgotUsernameController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
 
 /**
- * Test double that skips BaseController's constructor, which opens a database
- * connection, and captures rendering instead of running Twig.
+ * Builds the controller through the ControllerEnvironment seam and lets a test
+ * swap in the logger it wants to observe.
  */
 class TestableForgotUsernameController extends ForgotUsernameController
 {
-    /** @var array<int, array{0: string, 1: array}> */
-    public array $rendered = [];
-
-    public function __construct()
-    {
-    }
-
-    public function render(string $template, array $params): void
-    {
-        $this->rendered[] = [$template, $params];
-    }
-
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-    }
-
-    public function setConfig(ConfigurationManager $config): void
-    {
-        $this->config = $config;
     }
 }

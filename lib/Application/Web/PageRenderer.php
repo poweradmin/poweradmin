@@ -49,7 +49,7 @@ use Poweradmin\Domain\Model\RecordType;
  * deferred until a template actually needs them, and so this class never
  * triggers authentication or database work on construction.
  */
-final class PageRenderer
+final class PageRenderer implements PageOutputInterface
 {
     /** Shorter than the 46 characters the installer writes, so a generated key never trips the warning. */
     private const MIN_SESSION_KEY_LENGTH = 32;
@@ -231,6 +231,35 @@ final class PageRenderer
             return $path;
         }
         return $baseUrlPrefix . (str_starts_with($path, '/') ? $path : '/' . $path);
+    }
+
+    public function renderPage(string $template, array $params, array $requestData, string $pageTitle, ?array $systemMessages, ?array $scriptMessages): void
+    {
+        // The language selector vars are shared with the body template so the
+        // login form's hidden userlang field carries the chosen language
+        // through submission (memoized per request).
+        $languageVars = $this->languageVars();
+
+        $this->renderHeader($requestData, $pageTitle, $systemMessages, $scriptMessages);
+
+        // csrf_token, base_url_prefix, pdns_caps, and pdns_server_info are Twig
+        // globals (see setupTwigEnvironment); page params still override them.
+        $params = array_merge($languageVars, $params);
+
+        // Shared page chrome tested bare in many templates; the falsy defaults
+        // keep strict_variables mode rendering identical to non-strict output.
+        $params['message'] ??= false;
+        $params['is_reverse_zone'] ??= false;
+        $params['success'] ??= false;
+
+        $this->app->render($template, $params);
+        $this->renderFooter();
+    }
+
+    public function renderChrome(array $requestData, string $pageTitle, ?array $systemMessages): void
+    {
+        $this->renderHeader($requestData, $pageTitle, $systemMessages);
+        $this->renderFooter();
     }
 
     /**

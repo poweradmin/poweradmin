@@ -1672,6 +1672,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\ZoneSigningMessages' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneSigningMessages.php',
         'Poweradmin\\Application\\Service\\ZoneSortingService' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneSortingService.php',
         'Poweradmin\\Application\\Web\\NavigationVisibility' => __DIR__ . '/../..' . '/lib/Application/Web/NavigationVisibility.php',
+        'Poweradmin\\Application\\Web\\PageOutputInterface' => __DIR__ . '/../..' . '/lib/Application/Web/PageOutputInterface.php',
         'Poweradmin\\Application\\Web\\PageRenderer' => __DIR__ . '/../..' . '/lib/Application/Web/PageRenderer.php',
         'Poweradmin\\Application\\Web\\ZoneEditFormParser' => __DIR__ . '/../..' . '/lib/Application/Web/ZoneEditFormParser.php',
         'Poweradmin\\Domain\\Config\\ConfigurationInterface' => __DIR__ . '/../..' . '/lib/Domain/Config/ConfigurationInterface.php',

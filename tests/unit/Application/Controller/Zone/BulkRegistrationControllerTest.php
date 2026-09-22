@@ -45,9 +45,9 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
         $this->granted = [Permission::PERM_ZONE_MASTER_ADD];
     }
 
-    private function makeController(): TestableBulkRegistrationController
+    private function makeController(): BulkRegistrationController
     {
-        return new TestableBulkRegistrationController($this->requestData(), $this->environment($this->configure()));
+        return new BulkRegistrationController($this->requestData(), true, $this->environment($this->configure()));
     }
 
     /** @param array<string, mixed> $fields */
@@ -81,7 +81,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        [$template, $params] = $controller->rendered[0];
+        [$template, $params] = $this->output->rendered[0];
         $this->assertSame('bulk_registration.html', $template);
         $this->assertSame(['MASTER', 'NATIVE'], $params['available_zone_types']);
         $this->assertSame([], $params['failed_domains']);
@@ -95,7 +95,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', 'Invalid or unexpected input given.']], $this->messagesFor(self::PAGE));
-        $this->assertSame('bulk_registration.html', $controller->rendered[0][0]);
+        $this->assertSame('bulk_registration.html', $this->output->rendered[0][0]);
         $this->assertCount(0, $this->createCalls);
     }
 
@@ -120,7 +120,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', 'Unknown group ID(s): 8']], $this->messagesFor(self::PAGE));
-        $this->assertSame('bulk_registration.html', $controller->rendered[0][0]);
+        $this->assertSame('bulk_registration.html', $this->output->rendered[0][0]);
         $this->assertCount(0, $this->createCalls);
     }
 
@@ -159,7 +159,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
         $controller->run();
 
         $this->assertSame([['warning', 'Some zone(s) could not be added.']], $this->messagesFor(self::PAGE));
-        [$template, $params] = $controller->rendered[0];
+        [$template, $params] = $this->output->rendered[0];
         $this->assertSame('bulk_registration.html', $template);
         $this->assertSame([['name' => 'one.example', 'reason' => 'There is already a zone with this name.']], $params['failed_domains']);
         $this->assertSame(['two.example'], $params['added_domains']);

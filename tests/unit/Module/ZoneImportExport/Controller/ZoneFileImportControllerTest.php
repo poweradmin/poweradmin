@@ -118,11 +118,11 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         parent::tearDown();
     }
 
-    private function makeController(): TestableZoneFileImportController
+    private function makeController(): ZoneFileImportController
     {
         $request = $this->requestData();
 
-        return new TestableZoneFileImportController($request, $this->environment($this->configure([
+        return new ZoneFileImportController($request, true, $this->environment($this->configure([
             'modules' => ['zone_import_export.max_file_size' => 1048576, 'zone_import_export.auto_ttl_value' => 300],
         ])));
     }
@@ -157,8 +157,8 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $params = $controller->renderedParams();
-        $this->assertSame('@zone_import_export/import.html', $controller->rendered[0][0]);
+        $params = $this->renderedParams();
+        $this->assertSame('@zone_import_export/import.html', $this->output->rendered[0][0]);
         $this->assertSame(self::ZONE_ID, $params['target_zone_id']);
         $this->assertSame('example.com', $params['target_zone_name']);
         $this->assertSame(1048576, $params['max_file_size']);
@@ -173,7 +173,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
         $this->assertSame(0, $params['target_zone_id']);
         $this->assertSame('', $params['target_zone_name']);
     }
@@ -183,7 +183,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
         $this->assertSame(0, $params['target_zone_id']);
         $this->assertSame('', $params['target_zone_name']);
         $this->assertArrayNotHasKey('preview', $params);
@@ -197,7 +197,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
         $this->assertTrue($params['preview']);
         $this->assertSame('new', $params['import_mode']);
         $this->assertSame(0, $params['existing_zone_id']);
@@ -228,7 +228,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
         $this->assertSame('existing', $params['import_mode']);
         $this->assertSame(self::ZONE_ID, $params['existing_zone_id']);
         $this->assertSame('example.com', $params['existing_zone_name']);
@@ -243,7 +243,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
         $this->assertSame('existing', $params['import_mode']);
         $this->assertSame(self::ZONE_ID, $params['existing_zone_id']);
         $this->assertSame('example.com', $params['existing_zone_name']);
@@ -312,7 +312,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame([self::ZONE_ID, 'mail.example.com', 'MX', 'mail.example.com', 3600, 10, '', self::USERNAME, 0], $this->writes[1]);
         $this->assertSame([[self::ZONE_ID, 'example.com', true]], $this->auditLogs);
 
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
         $this->assertTrue($params['result']);
         $this->assertSame(2, $params['success_count']);
         $this->assertSame(0, $params['fail_count']);
@@ -355,7 +355,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertCount(1, $this->writes);
         $this->assertSame(31, $this->writes[0][0]);
 
-        $params = $controller->renderedParams();
+        $params = $this->renderedParams();
         $this->assertSame(31, $params['zone_id']);
         $this->assertSame('example.com', $params['zone_name']);
         $this->assertSame(1, $params['success_count']);

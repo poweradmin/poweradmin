@@ -4,23 +4,21 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
-use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Controller\Auth\ForgotUsernameController;
-use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UsernameRecoveryService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
-use ReflectionClass;
+use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
+use ReflectionMethod;
+use ReflectionProperty;
 use RuntimeException;
 
 /**
  * A stack trace prints call arguments, and this flow logs an email address, so the
  * error log records where the failure came from rather than how it got there.
  */
-class ForgotUsernameControllerErrorLoggingTest extends TestCase
+class ForgotUsernameControllerErrorLoggingTest extends SeamControllerTestCase
 {
     private const EMAIL = 'user@example.com';
 
@@ -61,54 +59,29 @@ class ForgotUsernameControllerErrorLoggingTest extends TestCase
 
     private function runRecoveryRequestFailingWith(RuntimeException $failure): void
     {
-        $controller = new TestableForgotUsernameController();
-
         $logger = $this->createMock(LoggerInterface::class);
         $logger->method('error')->willReturnCallback(
             function (string $message, array $context): void {
                 $this->loggedError = [$message, $context];
             }
         );
-        $controller->setLogger($logger);
 
-        // Leaving this on would pull the session-backed CSRF check into a test that
-        // is not about CSRF.
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, $default = null) =>
-                $group === 'security' && $key === 'global_token_validation' ? false : $default
-        );
-        $controller->setConfig($config);
-
-        $usernameRecoveryService = $this->createMock(UsernameRecoveryService::class);
-        $usernameRecoveryService->method('createRecoveryRequest')->willThrowException($failure);
-
-        $request = $this->createMock(Request::class);
-        $request->method('getPostParam')->willReturnCallback(
-            fn(string $name, $default = null) => $name === 'email' ? self::EMAIL : $default
-        );
-
-        $client = new ClientContext('203.0.113.7', 'phpunit', 'Unknown', false);
+        $service = $this->createMock(UsernameRecoveryService::class);
+        $service->method('createRecoveryRequest')->willThrowException($failure);
 
         $recaptchaService = $this->createMock(RecaptchaService::class);
         $recaptchaService->method('isEnabled')->willReturn(false);
+        $this->factory->method('recaptchaService')->willReturn($recaptchaService);
+        $this->factory->method('clientContext')->willReturn(new ClientContext('203.0.113.7', 'phpunit', 'Unknown', false));
 
-        $this->setPrivate($controller, 'usernameRecoveryService', $usernameRecoveryService);
-        $this->setPrivate($controller, 'httpRequest', $request);
-        $this->setPrivate($controller, 'client', $client);
-        $this->setPrivate($controller, 'recaptchaService', $recaptchaService);
-        $this->setPrivate($controller, 'csrfTokenService', $this->createMock(CsrfTokenService::class));
+        // Leaving this on would pull the session-backed CSRF check into a test that
+        // is not about CSRF.
+        $this->post(['email' => self::EMAIL]);
+        $controller = new TestableForgotUsernameController([], $this->environment($this->configure(['security' => ['global_token_validation' => false]])));
+        $controller->setLogger($logger);
+        // Composed with new rather than through the factory, so it is planted
+        (new ReflectionProperty(ForgotUsernameController::class, 'usernameRecoveryService'))->setValue($controller, $service);
 
-        $method = (new ReflectionClass(ForgotUsernameController::class))
-            ->getMethod('handleUsernameRecoveryRequest');
-        $method->setAccessible(true);
-        $method->invoke($controller);
-    }
-
-    private function setPrivate(object $controller, string $name, object $value): void
-    {
-        $property = (new ReflectionClass(ForgotUsernameController::class))->getProperty($name);
-        $property->setAccessible(true);
-        $property->setValue($controller, $value);
+        (new ReflectionMethod(ForgotUsernameController::class, 'handleUsernameRecoveryRequest'))->invoke($controller);
     }
 }

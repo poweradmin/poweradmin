@@ -88,9 +88,9 @@ class ManageGroupZonesControllerViewLevelTest extends SeamControllerTestCase
         $this->factory->method('auditService')->willReturn($this->audit);
     }
 
-    private function makeController(): TestableManageGroupZonesController
+    private function makeController(): ManageGroupZonesController
     {
-        return new TestableManageGroupZonesController(['id' => (string)self::GROUP_ID] + $this->requestData(), $this->environment($this->configure()));
+        return new ManageGroupZonesController(['id' => (string)self::GROUP_ID] + $this->requestData(), true, $this->environment($this->configure()));
     }
 
     public function testThePageListsTheOwnedZonesByName(): void
@@ -98,8 +98,8 @@ class ManageGroupZonesControllerViewLevelTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertSame('manage_group_zones.html', $controller->rendered[0][0]);
-        $this->assertSame([['id' => 12, 'name' => 'example.com', 'type' => 'MASTER']], $controller->rendered[0][1]['owned_zones']);
+        $this->assertSame('manage_group_zones.html', $this->output->rendered[0][0]);
+        $this->assertSame([['id' => 12, 'name' => 'example.com', 'type' => 'MASTER']], $this->output->rendered[0][1]['owned_zones']);
         $this->assertSame([], $this->messagesFor('system'));
     }
 
@@ -111,7 +111,7 @@ class ManageGroupZonesControllerViewLevelTest extends SeamControllerTestCase
         $controller = $this->makeController();
         $controller->run();
 
-        $this->assertSame([], $controller->rendered[0][1]['owned_zones']);
+        $this->assertSame([], $this->output->rendered[0][1]['owned_zones']);
         $this->assertSame([['error', 'You do not have permission to view this zone.']], $this->messagesFor('system'));
     }
 

@@ -101,13 +101,13 @@ class SearchControllerTest extends SeamControllerTestCase
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function makeController(array $config = []): TestableSearchController
+    private function makeController(array $config = []): SearchController
     {
-        return new TestableSearchController($this->requestData(), $this->environment($this->configure($config)));
+        return new SearchController($this->requestData(), true, $this->environment($this->configure($config)));
     }
 
     /** @param array<string, array<string, mixed>> $config */
-    private function runController(array $config = []): TestableSearchController
+    private function runController(array $config = []): SearchController
     {
         $controller = $this->makeController($config);
         $controller->run();
@@ -139,7 +139,8 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->dnsData->expects($this->never())->method('searchZones');
         $this->dnsData->expects($this->never())->method('searchRecords');
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame([], $params['found_zones']);
         $this->assertSame([], $params['found_records']);
@@ -157,7 +158,8 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->dnsData->expects($this->once())->method('searchZones')->willReturn([]);
         $this->dnsData->expects($this->once())->method('searchRecords')->willReturn([]);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame(42, $params['total_zones']);
         $this->assertSame(7, $params['total_records']);
@@ -198,7 +200,8 @@ class SearchControllerTest extends SeamControllerTestCase
         }
         $this->post($fields);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame($expected, $params['zones_page']);
         $this->assertSame($expected, $params['records_page']);
@@ -210,7 +213,8 @@ class SearchControllerTest extends SeamControllerTestCase
     {
         $this->post(['query' => 'a', 'rows_per_page' => '30', 'zones_rows_per_page' => '15']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame(30, $params['zone_rowamount']);
         $this->assertSame(30, $params['record_rowamount']);
@@ -220,7 +224,8 @@ class SearchControllerTest extends SeamControllerTestCase
     {
         $this->post(['query' => 'a', 'zones_rows_per_page' => '15', 'records_rows_per_page' => '25']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame(15, $params['zone_rowamount']);
         $this->assertSame(25, $params['record_rowamount']);
@@ -230,7 +235,8 @@ class SearchControllerTest extends SeamControllerTestCase
     {
         $this->post(['query' => 'a', 'zones_rows_per_page' => '9999', 'records_rows_per_page' => 'lots']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame(10, $params['zone_rowamount']);
         $this->assertSame(10, $params['record_rowamount']);
@@ -241,7 +247,8 @@ class SearchControllerTest extends SeamControllerTestCase
         // The posted controls are ignored entirely outside a POST
         $this->query(['rows_per_page' => '50']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame(50, $params['zone_rowamount']);
         $this->assertSame(50, $params['record_rowamount']);
@@ -266,7 +273,8 @@ class SearchControllerTest extends SeamControllerTestCase
     {
         $this->query(['zone_sort_by' => $submitted]);
 
-        $this->assertSame($expected, $this->runController()->renderedParams()['zone_sort_by']);
+        $this->runController();
+        $this->assertSame($expected, $this->renderedParams()['zone_sort_by']);
     }
 
     public function testFullnameSortNeedsTheOwnershipViewScope(): void
@@ -274,7 +282,8 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->ownershipViewLevel = 'own';
         $this->query(['zone_sort_by' => 'fullname']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertFalse($params['is_owner_sort_supported']);
         $this->assertSame('name', $params['zone_sort_by']);
@@ -286,7 +295,8 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->viewLevel = 'own';
         $this->query(['zone_sort_by' => 'fullname']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertTrue($params['is_owner_sort_supported']);
         $this->assertSame('fullname', $params['zone_sort_by']);
@@ -296,7 +306,8 @@ class SearchControllerTest extends SeamControllerTestCase
     {
         $this->query(['zone_sort_by' => 'count_records']);
 
-        $params = $this->runController(['dns' => ['backend' => 'api']])->renderedParams();
+        $this->runController(['dns' => ['backend' => 'api']]);
+        $params = $this->renderedParams();
 
         $this->assertFalse($params['is_record_count_sort_supported']);
         $this->assertSame('name', $params['zone_sort_by']);
@@ -321,7 +332,8 @@ class SearchControllerTest extends SeamControllerTestCase
     {
         $this->query(['record_sort_by' => $submitted]);
 
-        $this->assertSame($expected, $this->runController()->renderedParams()['record_sort_by']);
+        $this->runController();
+        $this->assertSame($expected, $this->renderedParams()['record_sort_by']);
     }
 
     public function testTheTwoSortBucketsAreRememberedSeparately(): void
@@ -330,7 +342,8 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->runController();
 
         $this->query([]);
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertSame('type', $params['zone_sort_by']);
         $this->assertSame('ttl', $params['record_sort_by']);
@@ -354,7 +367,8 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->ownership = new ZoneOwnershipIndex(self::USER_ID, [3], [], [1 => [3]]);
         $this->post(['query' => 'example.com']);
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertTrue($params['found_zones'][0]['user_can_edit']);
         $this->assertTrue($params['found_zones'][0]['user_can_delete']);
@@ -373,19 +387,22 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->ownership = new ZoneOwnershipIndex(self::USER_ID, [], [1 => [self::USER_ID]], []);
         $this->post(['query' => 'example.com']);
 
-        $zones = $this->runController()->renderedParams()['found_zones'];
+        $this->runController();
+        $zones = $this->renderedParams()['found_zones'];
 
         $this->assertSame('Tess Ter', $zones[0]['fullname']);
         $this->assertSame('', $zones[1]['fullname']);
         $this->assertArrayNotHasKey('owner_usernames', $zones[1]);
-        $this->assertTrue($this->runController()->renderedParams()['show_zone_owners']);
+        $this->runController();
+        $this->assertTrue($this->renderedParams()['show_zone_owners']);
     }
 
     public function testOwnershipViewNoneHidesTheOwnerColumnEntirely(): void
     {
         $this->ownershipViewLevel = 'none';
 
-        $this->assertFalse($this->runController()->renderedParams()['show_zone_owners']);
+        $this->runController();
+        $this->assertFalse($this->renderedParams()['show_zone_owners']);
     }
 
     public function testBulkActionsFollowTheDeleteAndEditScopes(): void
@@ -393,7 +410,8 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->deleteLevel = 'none';
         $this->editLevel = 'own';
 
-        $params = $this->runController()->renderedParams();
+        $this->runController();
+        $params = $this->renderedParams();
 
         $this->assertFalse($params['can_bulk_delete_zones']);
         $this->assertTrue($params['can_bulk_delete_records']);
@@ -419,7 +437,8 @@ class SearchControllerTest extends SeamControllerTestCase
         ];
         $this->post(['query' => 'example.com']);
 
-        $records = $this->runController()->renderedParams()['found_records'];
+        $this->runController();
+        $records = $this->renderedParams()['found_records'];
 
         $this->assertSame('2001:db8::1', $records[1]['content']);
         $this->assertStringStartsWith('2001:db8::1', $records[0]['display_name']);
@@ -435,7 +454,8 @@ class SearchControllerTest extends SeamControllerTestCase
             ['domain_id' => 1, 'name' => 'mail.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'disabled' => 0],
         ];
 
-        $records = $this->runController()->renderedParams()['found_records'];
+        $this->runController();
+        $records = $this->renderedParams()['found_records'];
 
         $this->assertTrue($records[0]['disabled']);
         $this->assertSame('Yes', $records[0]['disabled_label']);
@@ -449,7 +469,8 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->foundRecords = [['domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1']];
         $this->post(['query' => 'example.com']);
 
-        $records = $this->runController()->renderedParams()['found_records'];
+        $this->runController();
+        $records = $this->renderedParams()['found_records'];
 
         $this->assertSame('www.example.com', $records[0]['display_name']);
     }

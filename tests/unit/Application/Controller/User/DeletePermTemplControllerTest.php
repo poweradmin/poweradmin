@@ -69,8 +69,9 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
     private function runConfirmedDelete(): RequestHalted
     {
         $this->post(['confirm' => '1', 'id' => (string)self::TEMPLATE_ID]);
-        $controller = new TestableDeletePermTemplController(
+        $controller = new DeletePermTemplController(
             ['id' => (string)self::TEMPLATE_ID] + $this->requestData(),
+            true,
             $this->environment($this->configure())
         );
 
