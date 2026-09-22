@@ -882,6 +882,7 @@ main() {
         echo "  - Zone template sync: admin-zone (synced), manager-zone (needs sync), slave-zone (needs sync; zones.id != domain_id - regression trap for #1210)"
         echo "  - Login attempts: 2 successful, 3 failed"
         echo "  - Group audit logs: 4 entries"
+        echo "  - User preference: rows_per_page = 100 for every test user (the seeded zones fit on one page)"
         echo ""
         exit 0
     else

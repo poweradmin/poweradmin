@@ -134,6 +134,20 @@ WHERE u."username" = 'admin'
 SELECT setval('api_keys_id_seq', COALESCE((SELECT MAX(id) FROM api_keys), 1));
 
 -- =============================================================================
+-- USER PREFERENCES
+-- =============================================================================
+-- A page large enough for the seeded zones. The API backend applies the page
+-- limit to the "all" letter filter where SQL mode ignores it, so without this
+-- the two backends show different zone lists.
+
+INSERT INTO "user_preferences" ("user_id", "preference_key", "preference_value")
+SELECT u."id", 'rows_per_page', '100'
+FROM "users" u
+WHERE NOT EXISTS (
+    SELECT 1 FROM "user_preferences" p WHERE p."user_id" = u."id" AND p."preference_key" = 'rows_per_page'
+);
+
+-- =============================================================================
 -- TEST DOMAINS
 -- =============================================================================
 

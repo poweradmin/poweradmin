@@ -121,6 +121,20 @@ WHERE u."username" = 'admin'
   AND NOT EXISTS (SELECT 1 FROM "api_keys" WHERE "secret_key" = 'test-api-key-for-automated-testing-12345');
 
 -- =============================================================================
+-- USER PREFERENCES
+-- =============================================================================
+-- A page large enough for the seeded zones. The API backend applies the page
+-- limit to the "all" letter filter where SQL mode ignores it, so without this
+-- the two backends show different zone lists.
+
+INSERT INTO "user_preferences" ("user_id", "preference_key", "preference_value")
+SELECT u."id", 'rows_per_page', '100'
+FROM "users" u
+WHERE NOT EXISTS (
+    SELECT 1 FROM "user_preferences" p WHERE p."user_id" = u."id" AND p."preference_key" = 'rows_per_page'
+);
+
+-- =============================================================================
 -- TEST DOMAINS
 -- =============================================================================
 
