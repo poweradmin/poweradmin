@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -89,7 +90,7 @@ class MRRecordValidator implements DnsRecordValidatorInterface
         // Validate current mailbox name (should be a valid hostname)
         $nameResult = $this->hostnameValidator->validate($name, false);
         if (!$nameResult->isValid()) {
-            return ValidationResult::failure(_('MR record name must be a valid domain name.'));
+            return ValidationResult::failure(_('MR record name must be a valid domain name.'))->withField(RecordField::NAME);
         }
 
         // Get the validated hostname

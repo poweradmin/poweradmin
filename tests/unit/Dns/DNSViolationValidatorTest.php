@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 /**
  * Class DNSViolationValidatorTest
@@ -71,6 +72,7 @@ class DNSViolationValidatorTest extends TestCase
         $result = $this->validator->validate(-1, 1, RecordType::CNAME, 'alias.example.com', 'target.example.com');
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Multiple CNAME records with the same name are not allowed', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testCNAMEConflictWithOtherTypes()
@@ -83,6 +85,7 @@ class DNSViolationValidatorTest extends TestCase
         $result = $this->validator->validate(-1, 1, RecordType::CNAME, 'conflict.example.com', 'target.example.com');
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('A CNAME record cannot coexist with other record types', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testRecordConflictsWithExistingCNAME()
@@ -95,6 +98,7 @@ class DNSViolationValidatorTest extends TestCase
         $result = $this->validator->validate(-1, 1, RecordType::A, 'conflict.example.com', '192.168.1.1');
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('conflicts with an existing CNAME record', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testDuplicateCNAMEDetectedRegardlessOfCase()

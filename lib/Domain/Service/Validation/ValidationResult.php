@@ -81,6 +81,20 @@ final class ValidationResult
     }
 
     /**
+     * Prepend earlier errors to a failed sub-result. The sub-result's field survives
+     * only while its error is still the first one, since the form highlights one input.
+     *
+     * @param array $earlier Error messages collected before the sub-result failed
+     * @param self $failed The failed sub-result whose errors come last
+     */
+    public static function mergeErrors(array $earlier, self $failed): self
+    {
+        $merged = new self(false, array_merge($earlier, $failed->errors));
+        $merged->field = $earlier === [] ? $failed->field : null;
+        return $merged;
+    }
+
+    /**
      * Name the record part the errors are about; a copy so shared results stay untouched
      */
     public function withField(RecordField $field): self

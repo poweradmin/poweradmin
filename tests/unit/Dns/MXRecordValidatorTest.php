@@ -26,6 +26,7 @@ use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\DnsValidation\MXRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use ReflectionMethod;
 
 class MXRecordValidatorTest extends BaseDnsTest
@@ -84,6 +85,7 @@ class MXRecordValidatorTest extends BaseDnsTest
 
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testInvalidPriority()
@@ -127,6 +129,7 @@ class MXRecordValidatorTest extends BaseDnsTest
 
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getFirstError());
+        $this->assertSame(RecordField::TTL, $result->getField());
     }
 
     public function testDefaultTTL()

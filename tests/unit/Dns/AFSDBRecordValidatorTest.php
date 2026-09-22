@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\AFSDBRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 /**
  * Tests for the AFSDBRecordValidator
@@ -141,6 +142,7 @@ class AFSDBRecordValidatorTest extends TestCase
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getErrors());
         $this->assertStringContainsString('TTL', $result->getFirstError());
+        $this->assertSame(RecordField::TTL, $result->getField());
     }
 
     public function testValidateWithEmptySubtype()

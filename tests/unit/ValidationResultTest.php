@@ -325,4 +325,26 @@ class ValidationResultTest extends TestCase
         $this->assertSame($original->getErrors(), $named->getErrors());
         $this->assertSame($original->getWarnings(), $named->getWarnings());
     }
+
+    public function testMergeErrorsKeepsTheFieldWhenNothingComesBefore(): void
+    {
+        $ttl = ValidationResult::failure('TTL value cannot be negative. It must be 0 or higher.')->withField(RecordField::TTL);
+
+        $merged = ValidationResult::mergeErrors([], $ttl);
+
+        $this->assertFalse($merged->isValid());
+        $this->assertSame(['TTL value cannot be negative. It must be 0 or higher.'], $merged->getErrors());
+        $this->assertSame(RecordField::TTL, $merged->getField());
+    }
+
+    public function testMergeErrorsDropsTheFieldWhenAnEarlierErrorComesFirst(): void
+    {
+        $ttl = ValidationResult::failure('TTL value cannot be negative. It must be 0 or higher.')->withField(RecordField::TTL);
+
+        $merged = ValidationResult::mergeErrors(['Invalid IPv4 address format.'], $ttl);
+
+        $this->assertSame('Invalid IPv4 address format.', $merged->getFirstError());
+        $this->assertSame(['Invalid IPv4 address format.', 'TTL value cannot be negative. It must be 0 or higher.'], $merged->getErrors());
+        $this->assertNull($merged->getField());
+    }
 }

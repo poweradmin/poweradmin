@@ -100,6 +100,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('A hostname can not start or end with a dash', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testValidateWithInvalidTargetHostname()
@@ -114,6 +115,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('A hostname can not start or end with a dash', $result->getFirstError());
+        $this->assertNull($result->getField());
     }
 
     public function testValidateWithEmptyCname()
@@ -130,6 +132,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Empty CNAME records', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testValidateWithInvalidTTL()
@@ -144,6 +147,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('TTL', $result->getFirstError());
+        $this->assertSame(RecordField::TTL, $result->getField());
     }
 
     public function testValidateWithInvalidPriority()
@@ -251,6 +255,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
         $result = $method->invoke($this->validator, 'invalid.example.com');
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Did you assign an MX or NS record', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testValidateNotEmptyCnameRR()
@@ -267,6 +272,7 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
         $result = $method->invoke($this->validator, 'example.com', 'example.com');
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Empty CNAME records', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testValidateAllowsSingleLabelTargetWhenTopLevelTldCheckIsOff()

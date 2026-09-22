@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -106,7 +107,8 @@ class DNSViolationValidator
         $records = $this->recordRepository->getRecordsByName($zoneId, $name, 'CNAME');
         foreach ($records as $r) {
             if (strcasecmp($r['name'], $name) === 0 && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
-                return ValidationResult::failure(_('Multiple CNAME records with the same name are not allowed. This would create a DNS violation.'));
+                return ValidationResult::failure(_('Multiple CNAME records with the same name are not allowed. This would create a DNS violation.'))
+                    ->withField(RecordField::NAME);
             }
         }
         return ValidationResult::success(true);
@@ -117,7 +119,8 @@ class DNSViolationValidator
         $records = $this->recordRepository->getRecordsByName($zoneId, $name);
         foreach ($records as $r) {
             if (strcasecmp($r['name'], $name) === 0 && $r['type'] !== 'CNAME' && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
-                return ValidationResult::failure(sprintf(_('A CNAME record cannot coexist with other record types for the same name. Found existing %s record.'), $r['type']));
+                return ValidationResult::failure(sprintf(_('A CNAME record cannot coexist with other record types for the same name. Found existing %s record.'), $r['type']))
+                    ->withField(RecordField::NAME);
             }
         }
         return ValidationResult::success(true);
@@ -128,7 +131,8 @@ class DNSViolationValidator
         $records = $this->recordRepository->getRecordsByName($zoneId, $name, 'CNAME');
         foreach ($records as $r) {
             if (strcasecmp($r['name'], $name) === 0 && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
-                return ValidationResult::failure(_('This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types.'));
+                return ValidationResult::failure(_('This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types.'))
+                    ->withField(RecordField::NAME);
             }
         }
         return ValidationResult::success(true);

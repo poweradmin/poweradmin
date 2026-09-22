@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -188,12 +189,24 @@ class TTLValidatorTest extends TestCase
         $result1 = $this->ttlValidator->validate(-1, $defaultTtl);
         $this->assertFalse($result1->isValid());
         $this->assertNotEmpty($result1->getErrors());
+        $this->assertSame(RecordField::TTL, $result1->getField());
 
         $result2 = $this->ttlValidator->validate(2147483648, $defaultTtl);
         $this->assertFalse($result2->isValid());
+        $this->assertSame(RecordField::TTL, $result2->getField());
 
         $result3 = $this->ttlValidator->validate("invalid", $defaultTtl);
         $this->assertFalse($result3->isValid());
+        $this->assertSame(RecordField::TTL, $result3->getField());
+    }
+
+    public function testInvalidDefaultTtlNamesTheTtlField(): void
+    {
+        $result = $this->ttlValidator->validate("", "not-a-number");
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('default TTL', $result->getFirstError());
+        $this->assertSame(RecordField::TTL, $result->getField());
     }
 
     /**

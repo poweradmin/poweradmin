@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -76,7 +77,7 @@ class ARecordValidator implements DnsRecordValidatorInterface
         // Validate hostname
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
-            return ValidationResult::errors(array_merge($errors, $hostnameResult->getErrors()));
+            return ValidationResult::mergeErrors($errors, $hostnameResult->withField(RecordField::NAME));
         }
         $hostnameData = $hostnameResult->getData();
         $name = $hostnameData['hostname'];
@@ -84,7 +85,7 @@ class ARecordValidator implements DnsRecordValidatorInterface
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
-            return ValidationResult::errors(array_merge($errors, $ttlResult->getErrors()));
+            return ValidationResult::mergeErrors($errors, $ttlResult);
         }
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
@@ -92,7 +93,7 @@ class ARecordValidator implements DnsRecordValidatorInterface
         // Validate priority (should be 0 for A records)
         $prioResult = $this->validatePriority($prio);
         if (!$prioResult->isValid()) {
-            return ValidationResult::errors(array_merge($errors, $prioResult->getErrors()));
+            return ValidationResult::mergeErrors($errors, $prioResult);
         }
         $validatedPrio = $prioResult->getData();
 

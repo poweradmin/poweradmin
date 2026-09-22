@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\MRRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 class MRRecordValidatorTest extends TestCase
 {
@@ -95,6 +96,16 @@ class MRRecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('domain name', $result->getFirstError());
+        $this->assertNull($result->getField());
+    }
+
+    public function testInvalidNameNamesTheNameField(): void
+    {
+        $result = $this->validator->validate('new-mailbox.example.com', 'invalid..domain', '', 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('MR record name', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     /**
@@ -112,6 +123,7 @@ class MRRecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('TTL', $result->getFirstError());
+        $this->assertSame(RecordField::TTL, $result->getField());
     }
 
     /**

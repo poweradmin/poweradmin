@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 /**
  * Tests for the ARecordValidator using ValidationResult pattern
@@ -88,6 +89,7 @@ class ARecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid(), "A record validation should fail for invalid hostname");
         $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid hostname");
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testValidateWithInvalidTTL()
@@ -102,6 +104,17 @@ class ARecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid(), "A record validation should fail for invalid TTL");
         $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid TTL");
+        $this->assertSame(RecordField::TTL, $result->getField());
+    }
+
+    public function testInvalidContentBeforeInvalidTtlLeavesTheFieldUnnamed()
+    {
+        $result = $this->validator->validate('not-an-ip', 'host.example.com', 0, -1, 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertSame('Invalid IPv4 address format.', $result->getFirstError());
+        $this->assertCount(2, $result->getErrors());
+        $this->assertNull($result->getField());
     }
 
     public function testValidateWithInvalidPriority()

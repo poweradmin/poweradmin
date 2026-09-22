@@ -131,7 +131,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         // Validate CNAME hostname
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
-            return $hostnameResult;
+            return $hostnameResult->withField(RecordField::NAME);
         }
         $hostnameData = $hostnameResult->getData();
         $name = $hostnameData['hostname'];
@@ -230,7 +230,8 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     {
         foreach ($this->backendProvider->findRecordsByContent($name) as $r) {
             if (in_array($r['type'], ['MX', 'NS'], true)) {
-                return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
+                return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'))
+                    ->withField(RecordField::NAME);
             }
         }
         return ValidationResult::success(true);
@@ -247,7 +248,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     private function validateNotEmptyCnameRR(string $name, string $zone): ValidationResult
     {
         if ($name == $zone) {
-            return ValidationResult::failure(_('Empty CNAME records are not allowed.'));
+            return ValidationResult::failure(_('Empty CNAME records are not allowed.'))->withField(RecordField::NAME);
         }
         return ValidationResult::success(true);
     }
