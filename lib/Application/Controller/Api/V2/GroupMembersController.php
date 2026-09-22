@@ -103,17 +103,23 @@ class GroupMembersController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Members retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'user_id', type: 'integer', example: 1),
-                            new OA\Property(property: 'username', type: 'string', example: 'admin'),
-                            new OA\Property(property: 'fullname', type: 'string', example: 'Administrator'),
-                            new OA\Property(property: 'email', type: 'string', example: 'admin@example.com'),
-                            new OA\Property(property: 'joined_at', type: 'string', example: '2025-01-01 12:00:00'),
-                        ],
-                        type: 'object'
-                    )
+                    type: 'object',
+                    properties: [
+                        new OA\Property(
+                            property: 'members',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'user_id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'username', type: 'string', example: 'admin'),
+                                    new OA\Property(property: 'fullname', type: 'string', example: 'Administrator'),
+                                    new OA\Property(property: 'email', type: 'string', example: 'admin@example.com'),
+                                    new OA\Property(property: 'joined_at', type: 'string', example: '2025-01-01 12:00:00'),
+                                ],
+                                type: 'object'
+                            )
+                        )
+                    ]
                 )
             ],
             type: 'object'

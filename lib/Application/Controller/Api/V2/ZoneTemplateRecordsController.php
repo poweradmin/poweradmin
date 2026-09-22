@@ -175,18 +175,24 @@ class ZoneTemplateRecordsController extends PublicApiController
                         new OA\Property(property: 'success', type: 'boolean', example: true),
                         new OA\Property(
                             property: 'data',
-                            type: 'array',
-                            items: new OA\Items(
-                                type: 'object',
-                                properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
-                                    new OA\Property(property: 'type', type: 'string', example: 'SOA'),
-                                    new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
-                                    new OA\Property(property: 'ttl', type: 'integer', example: 86400),
-                                    new OA\Property(property: 'priority', type: 'integer', example: 0)
-                                ]
-                            )
+                            type: 'object',
+                            properties: [
+                                new OA\Property(
+                                    property: 'records',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        type: 'object',
+                                        properties: [
+                                            new OA\Property(property: 'id', type: 'integer', example: 1),
+                                            new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
+                                            new OA\Property(property: 'type', type: 'string', example: 'SOA'),
+                                            new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
+                                            new OA\Property(property: 'ttl', type: 'integer', example: 86400),
+                                            new OA\Property(property: 'priority', type: 'integer', example: 0)
+                                        ]
+                                    )
+                                )
+                            ]
                         )
                     ]
                 )
@@ -362,12 +368,18 @@ class ZoneTemplateRecordsController extends PublicApiController
                             property: 'data',
                             type: 'object',
                             properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 1),
-                                new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
-                                new OA\Property(property: 'type', type: 'string', example: 'SOA'),
-                                new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
-                                new OA\Property(property: 'ttl', type: 'integer', example: 86400),
-                                new OA\Property(property: 'priority', type: 'integer', example: 0)
+                                new OA\Property(
+                                    property: 'record',
+                                    type: 'object',
+                                    properties: [
+                                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                                        new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
+                                        new OA\Property(property: 'type', type: 'string', example: 'SOA'),
+                                        new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
+                                        new OA\Property(property: 'ttl', type: 'integer', example: 86400),
+                                        new OA\Property(property: 'priority', type: 'integer', example: 0)
+                                    ]
+                                )
                             ]
                         )
                     ]

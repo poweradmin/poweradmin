@@ -107,16 +107,22 @@ class GroupZonesController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Zones retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'zone_id', type: 'integer', example: 1),
-                            new OA\Property(property: 'zone_name', type: 'string', example: 'example.com'),
-                            new OA\Property(property: 'zone_type', type: 'string', example: 'MASTER'),
-                            new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
-                        ],
-                        type: 'object'
-                    )
+                    type: 'object',
+                    properties: [
+                        new OA\Property(
+                            property: 'zones',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'zone_id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'zone_name', type: 'string', example: 'example.com'),
+                                    new OA\Property(property: 'zone_type', type: 'string', example: 'MASTER'),
+                                    new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
+                                ],
+                                type: 'object'
+                            )
+                        )
+                    ]
                 )
             ],
             type: 'object'
