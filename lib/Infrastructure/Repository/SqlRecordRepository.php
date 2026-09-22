@@ -463,7 +463,7 @@ final class SqlRecordRepository implements RecordRepositoryInterface
         $records = [];
 
         while ($record = $stmt->fetch()) {
-            $records[] = self::decodeFlags($record);
+            $records[] = RecordRow::fromRow(self::decodeFlags($record));
         }
 
         return $records;

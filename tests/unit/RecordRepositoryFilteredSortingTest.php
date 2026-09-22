@@ -27,6 +27,7 @@ use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 
@@ -64,12 +65,12 @@ class RecordRepositoryFilteredSortingTest extends SqliteIntegrationTestCase
     }
 
     /**
-     * @param list<array<string, mixed>> $records
+     * @param list<RecordRow> $records
      * @return list<string>
      */
     private function names(array $records): array
     {
-        return array_map(fn(array $record): string => $record['name'], $records);
+        return array_map(static fn(RecordRow $record): string => $record->name, $records);
     }
 
     #[Test]

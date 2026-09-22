@@ -94,6 +94,11 @@ class SqlRecordRepositoryRowShapeTest extends TestCase
         $this->assertSame([false, true, true], array_map(static fn(RecordRow $r): bool => $r->disabled, $listing));
         $this->assertSame([true, false, false], array_map(static fn(RecordRow $r): ?bool => $r->auth, $listing));
 
+        // The filtered listing crosses the same boundary as the full one
+        $filtered = $this->repository->getFilteredRecords(1, 0, 100, 'name', 'ASC', false);
+        $this->assertContainsOnlyInstancesOf(RecordRow::class, $filtered);
+        $this->assertSame([false, true, true], array_map(static fn(RecordRow $r): bool => $r->disabled, $filtered));
+
         $byDomain = $this->repository->getRecordsByDomainId(1, 'A');
         $this->assertSame(self::ROW_KEYS, array_keys($byDomain[0]));
         $this->assertSame([true, true], array_column($byDomain, 'disabled'));

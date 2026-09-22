@@ -40,27 +40,6 @@ final class ApiRecordRepository implements RecordRepositoryInterface
         $this->backendProvider = $backendProvider;
     }
 
-    /**
-     * Rename the API's RRset comment keys to the column names the filtered
-     * listing returns. getRecordsFromDomainId no longer needs this: RecordRow
-     * reads either naming.
-     *
-     * @param list<array<string, mixed>> $records
-     * @return list<array<string, mixed>>
-     */
-    private function enrichRecordsWithComments(array $records): array
-    {
-        foreach ($records as &$record) {
-            $record['comment'] = $record['api_comment'] ?? null;
-            $record['comment_account'] = $record['api_comment_account'] ?? null;
-            $record['comment_modified_at'] = $record['api_comment_modified_at'] ?? null;
-            unset($record['api_comment'], $record['api_comment_account'], $record['api_comment_modified_at']);
-        }
-        unset($record);
-
-        return $records;
-    }
-
     public function getZoneIdFromRecordId(int|string $rid): int
     {
         return $this->backendProvider->getZoneIdFromRecordId($rid);
@@ -224,12 +203,16 @@ final class ApiRecordRepository implements RecordRepositoryInterface
         // Paginate
         $records = ResultPaginator::paginate($records, $row_start, $row_amount);
 
-        // Enrich with comments if requested
-        if ($include_comments && !empty($records)) {
-            $records = $this->enrichRecordsWithComments($records);
+        // RecordRow reads either comment naming, so the rows only need the
+        // API keys dropped when the caller did not ask for comments
+        if (!$include_comments) {
+            $records = array_map(static function (array $record): array {
+                unset($record['api_comment'], $record['api_comment_account'], $record['api_comment_modified_at']);
+                return $record;
+            }, $records);
         }
 
-        return $records;
+        return array_map(RecordRow::fromRow(...), $records);
     }
 
     public function getFilteredRecordCount(

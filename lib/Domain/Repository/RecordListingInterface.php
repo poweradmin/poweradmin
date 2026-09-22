@@ -67,7 +67,7 @@ interface RecordListingInterface
      * @param string $search_term Optional search term to filter by name or content
      * @param string $type_filter Optional record type filter
      * @param string $content_filter Optional content filter
-     * @return array Array of filtered records
+     * @return list<RecordRow> One read model per matching record
      */
     public function getFilteredRecords(
         int $zone_id,
