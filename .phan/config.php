@@ -380,5 +380,6 @@ return [
     'file_list' => [
         'index.php',
         'dynamic_update.php',
+        'bin/poweradmin',
     ],
 ];

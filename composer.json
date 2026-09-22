@@ -93,9 +93,9 @@
     "tests:functional": "phpunit --testsuite functional",
     "tests:all": "phpunit",
 
-    "check:all": "phpcs --standard=phpcs.xml addons bin config index.php install lib tests dynamic_update.php",
-    "format:all": "phpcbf --standard=phpcs.xml addons bin config index.php install lib tests dynamic_update.php",
-    "analyse:phpstan": "phpstan analyse --level=4 --memory-limit=512M addons bin config index.php install lib tests dynamic_update.php",
+    "check:all": "phpcs --standard=phpcs.xml addons bin bin/poweradmin config index.php install lib tests dynamic_update.php",
+    "format:all": "phpcbf --standard=phpcs.xml addons bin bin/poweradmin config index.php install lib tests dynamic_update.php",
+    "analyse:phpstan": "phpstan analyse --level=4 --memory-limit=512M addons bin bin/poweradmin config index.php install lib tests dynamic_update.php",
     "analyse:complexity": "phpstan analyse -c phpstan-complexity.neon --level=4 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
     "analyse:taint": "psalm --taint-analysis --no-cache",
     "lint:twig": [

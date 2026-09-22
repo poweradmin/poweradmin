@@ -161,6 +161,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -177,9 +178,11 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Infrastructure/*
         - lib/Application/Boot/AppInitializer.php
         - lib/Application/Boot/AppManager.php
+        - lib/Application/Console/ConsoleApplication.php
         - lib/Application/Controller/BaseController.php
         - lib/Application/Controller/Api/AbstractApiController.php
         - lib/Application/Controller/Api/HealthController.php
@@ -197,6 +200,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -210,6 +214,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -223,6 +228,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -236,6 +242,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -253,6 +260,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -266,6 +274,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -279,6 +288,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -292,6 +302,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -305,6 +316,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -318,6 +330,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -331,6 +344,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -344,6 +358,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -357,6 +372,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -370,6 +386,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -383,6 +400,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -396,6 +414,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -452,6 +471,7 @@ parameters:
         - install/*
         - index.php
         - dynamic_update.php
+        - bin/*
         - lib/Application/Boot/AppInitializer.php
         - lib/Application/Boot/AppManager.php
         - lib/Application/Controller/BaseController.php
