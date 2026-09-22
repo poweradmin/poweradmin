@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Record;
 
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
@@ -79,6 +80,7 @@ class RecordAddService
      * @param int|null $ttl The submitted TTL, or null for the configured default of the type
      * @param string $companion One of the RecordAddResult::COMPANION_* constants, or '' for none
      * @param int $disabled 1 to create the record disabled (API callers); the forms always pass 0
+     * @param string $origin One of the AuditLoggerInterface::ORIGIN_* values; the API writes api_add_record
      */
     public function add(
         int $zoneId,
@@ -92,7 +94,8 @@ class RecordAddService
         int $userId,
         string $username,
         string $companion = '',
-        int $disabled = 0
+        int $disabled = 0,
+        string $origin = AuditLoggerInterface::ORIGIN_WEB
     ): RecordAddResult {
         $ttl ??= $this->ttlResolver->resolveTtlForType($type, DnsHelper::isReverseZoneName($zoneName));
         $name = DnsHelper::restoreZoneSuffix(DnsIdnService::toPunycode($name), $zoneName);
@@ -106,7 +109,7 @@ class RecordAddService
             ));
         }
 
-        $written = $this->records->createRecord($zoneId, $name, $type, $content, $ttl, $prio, $comment, $username, $disabled);
+        $written = $this->records->createRecord($zoneId, $name, $type, $content, $ttl, $prio, $comment, $username, $disabled, $origin);
         if (!$written->success) {
             return RecordAddResult::refused($written);
         }

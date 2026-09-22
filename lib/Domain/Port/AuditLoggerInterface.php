@@ -27,6 +27,10 @@ namespace Poweradmin\Domain\Port;
  */
 interface AuditLoggerInterface
 {
+    /** Who drove a record mutation: the web forms or the public API. Each writes its own event. */
+    public const ORIGIN_WEB = 'web';
+    public const ORIGIN_API = 'api';
+
     public function logRecordAdd(int $zoneId, string $type, string $name, string $content, int|string $ttl, int|string $prio): void;
 
     /**
@@ -36,6 +40,10 @@ interface AuditLoggerInterface
     public function logRecordEdit(?int $zoneId, array $before, array $after): void;
 
     public function logRecordDelete(int $zoneId, string $type, string $name, string $content, int|string $ttl, int|string|null $prio): void;
+
+    public function logApiRecordAdd(int $zoneId, string $name, string $type, string $content): void;
+
+    public function logApiRecordEdit(int $zoneId, string $name, string $type, string $content): void;
 
     public function logBatchPtrRecordAdd(int $zoneId, string $name, string $content, int|string $ttl, int|string $prio): void;
 

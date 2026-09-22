@@ -113,7 +113,11 @@ class RecordEditService
 
         [$ptrUpdated, $ptrMessage] = $this->syncReverseRecord($request, $stored);
 
-        $this->audit->logRecordEdit($request->zoneId, $request->current, $stored);
+        if ($request->origin === AuditLoggerInterface::ORIGIN_API) {
+            $this->audit->logApiRecordEdit($request->zoneId, (string)$stored['name'], (string)$stored['type'], (string)$stored['content']);
+        } else {
+            $this->audit->logRecordEdit($request->zoneId, $request->current, $stored);
+        }
         $this->storeComment($request, $stored, $recordId);
 
         return new RecordEditResult($written, $recordId, $stored, $ptrUpdated, $ptrMessage);

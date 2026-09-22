@@ -69,6 +69,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
     private ReverseRecordCreator&MockObject $reverseCreator;
     private RecordCommentService&MockObject $comments;
     private RecordCommentSyncService&MockObject $commentSync;
+    private AuditService&MockObject $audit;
 
     /** @var array<string, mixed> */
     private array $zoneRow = ['id' => self::ZONE_ID, 'name' => self::ZONE_NAME, 'type' => 'MASTER'];
@@ -84,6 +85,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->reverseCreator = $this->createMock(ReverseRecordCreator::class);
         $this->comments = $this->createMock(RecordCommentService::class);
         $this->commentSync = $this->createMock(RecordCommentSyncService::class);
+        $this->audit = $this->createMock(AuditService::class);
         $this->scope = ApiKeyScope::unrestricted();
 
         $this->permissions->method('canEditZoneContent')->willReturn(true);
@@ -365,6 +367,31 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertFalse($record['ptr_updated']);
     }
 
+    /**
+     * The edit flow writes the one api_edit_record line for an API caller, with
+     * the stored FQDN; the controller no longer writes a second one on top.
+     */
+    public function testASuccessfulUpdateIsAuditedOnceAsAnApiEdit(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9']));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->audit->expects($this->never())->method('logRecordEdit');
+        $this->audit->expects($this->once())->method('logApiRecordEdit')->with(self::ZONE_ID, 'www.example.com', 'A', '192.0.2.9');
+
+        $this->assertSame(200, $this->update(['content' => '192.0.2.9'])->getStatusCode());
+    }
+
+    public function testARefusedUpdateIsNotAudited(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::forbidden('no'));
+        $this->audit->expects($this->never())->method('logRecordEdit');
+        $this->audit->expects($this->never())->method('logApiRecordEdit');
+
+        $this->assertSame(403, $this->update(['content' => '192.0.2.9'])->getStatusCode());
+    }
+
     public function testTheUpdateResponseBodyIsTheDocumentedEnvelope(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
@@ -611,6 +638,29 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertSame('', (string)$response->getContent());
     }
 
+    /**
+     * The API delete goes straight to the record manager, which writes no audit
+     * line of its own, so the controller's api_delete_record line is the only one.
+     */
+    public function testASuccessfulDeleteIsAuditedOnceByTheController(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->audit->expects($this->once())->method('logApiRecordDelete')->with(self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1');
+        $this->audit->expects($this->never())->method('logRecordDelete');
+
+        $this->assertSame(204, $this->delete()->getStatusCode());
+    }
+
+    public function testAFailedDeleteIsNotAudited(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::forbidden('no'));
+        $this->audit->expects($this->never())->method('logApiRecordDelete');
+
+        $this->assertSame(403, $this->delete()->getStatusCode());
+    }
+
     public function testAFailedDeleteKeepsTheRefusalReasonButHidesBackendFaults(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
@@ -690,7 +740,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
 
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('domainRepository')->willReturn($domains);
-        $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
+        $factory->method('auditService')->willReturn($this->audit);
         $factory->method('reverseRecordCreator')->willReturn($this->reverseCreator);
         $factory->method('userRepository')->willReturn($this->stubUsers());
         // The real edit flow over the same doubles, so the PUT is characterized end to end
@@ -702,7 +752,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
             $this->reverseCreator,
             $this->comments,
             $this->commentSync,
-            $this->createMock(AuditService::class),
+            $this->audit,
             $this->createMock(ConfigurationInterface::class),
             new NullLogger()
         ));

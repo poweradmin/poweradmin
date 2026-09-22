@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Application\Service\Web\AuditService;
 
 /**
@@ -63,8 +64,10 @@ class RecordManagerService
     /**
      * Creates the record and, on success, logs, rectifies and stores the comment.
      * Failures come back as the result; nothing is written to MessageService.
+     *
+     * @param string $origin One of the AuditLoggerInterface::ORIGIN_* values; picks the audit event
      */
-    public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, int $disabled = 0): RecordWriteResult
+    public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, int $disabled = 0, string $origin = AuditLoggerInterface::ORIGIN_WEB): RecordWriteResult
     {
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
@@ -78,7 +81,12 @@ class RecordManagerService
             return $result;
         }
 
-        $this->audit->logRecordAdd($zone_id, $type, DnsHelper::restoreZoneSuffix($name, $zone_name), $content, $ttl, $prio);
+        $fqdn = DnsHelper::restoreZoneSuffix($name, $zone_name);
+        if ($origin === AuditLoggerInterface::ORIGIN_API) {
+            $this->audit->logApiRecordAdd($zone_id, $fqdn, $type, $content);
+        } else {
+            $this->audit->logRecordAdd($zone_id, $type, $fqdn, $content, $ttl, $prio);
+        }
         $this->handleCommentsWithId($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name, $result->recordId);
 
         return $result;

@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\Record\RecordAddResult;
 use Poweradmin\Application\Service\Record\RecordAddService;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
@@ -58,6 +59,7 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
     private ZoneReadRepositoryInterface&MockObject $zones;
     private RecordRepositoryInterface&MockObject $records;
     private RecordAddService&MockObject $addService;
+    private AuditService&MockObject $audit;
 
     /** @var array<string, mixed>|null */
     private ?array $zoneRow = ['id' => self::ZONE_ID, 'name' => self::ZONE_NAME, 'type' => 'MASTER'];
@@ -71,6 +73,7 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
         $this->zones = $this->createMock(ZoneReadRepositoryInterface::class);
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->addService = $this->createMock(RecordAddService::class);
+        $this->audit = $this->createMock(AuditService::class);
         $this->scope = ApiKeyScope::unrestricted();
 
         $this->permissions->method('canEditZoneContent')->willReturn(true);
@@ -355,6 +358,21 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
         $this->assertFalse($record['ptr_created']);
     }
 
+    /**
+     * The add flow writes the one api_add_record line for an API caller; the
+     * controller no longer writes a second one on top of the service's.
+     */
+    public function testASuccessfulCreateIsAuditedByTheAddFlowAsAnApiAdd(): void
+    {
+        $this->addService->expects($this->once())->method('add')
+            ->with(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', '192.0.2.1', 3600, 0, '', self::USER_ID, 'apiuser', '', 0, AuditLoggerInterface::ORIGIN_API)
+            ->willReturn(new RecordAddResult(RecordWriteResult::ok(77)));
+        $this->audit->expects($this->never())->method('logApiRecordAdd');
+        $this->audit->expects($this->never())->method('logRecordAdd');
+
+        $this->assertSame(201, $this->create($this->validBody())->getStatusCode());
+    }
+
     public function testTheCreateResponseBodyIsTheDocumentedEnvelope(): void
     {
         $this->addService->method('add')->willReturn(new RecordAddResult(RecordWriteResult::ok(77)));
@@ -518,7 +536,7 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
 
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('domainRepository')->willReturn($domains);
-        $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
+        $factory->method('auditService')->willReturn($this->audit);
         $factory->method('recordAddService')->willReturn($this->addService);
         $factory->method('userRepository')->willReturn($this->stubUsers());
 

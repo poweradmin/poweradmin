@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\Record\RecordCommentService;
 use Poweradmin\Application\Service\Record\RecordManagerService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -78,6 +79,29 @@ class RecordManagerServiceLogTest extends TestCase
 
         $service = $this->makeService($audit);
         $service->createRecord(1, $inputName, 'A', '192.0.2.1', 3600, 0, '', 'admin');
+    }
+
+    /**
+     * An API caller gets the api_add_record line instead of add_record, and only that one.
+     */
+    public function testAnApiOriginWritesTheApiEventOnly(): void
+    {
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->once())->method('logApiRecordAdd')->with(1, 'host.example.com', 'A', '192.0.2.1');
+        $audit->expects($this->never())->method('logRecordAdd');
+
+        $service = $this->makeService($audit);
+        $service->createRecord(1, 'host', 'A', '192.0.2.1', 3600, 0, '', 'admin', 0, AuditLoggerInterface::ORIGIN_API);
+    }
+
+    public function testTheWebOriginNeverWritesTheApiEvent(): void
+    {
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->once())->method('logRecordAdd');
+        $audit->expects($this->never())->method('logApiRecordAdd');
+
+        $service = $this->makeService($audit);
+        $service->createRecord(1, 'host', 'A', '192.0.2.1', 3600, 0, '', 'admin');
     }
 
     /**

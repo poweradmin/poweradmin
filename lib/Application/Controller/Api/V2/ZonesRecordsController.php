@@ -26,6 +26,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
 use Poweradmin\Application\Service\Record\RecordAddResult;
 use Poweradmin\Application\Service\Record\RecordEditRequest;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -479,7 +480,8 @@ class ZonesRecordsController extends PublicApiController
                 $userId,
                 $this->getAuthenticatedUsername(),
                 $companion,
-                $disabled
+                $disabled,
+                AuditLoggerInterface::ORIGIN_API
             );
             if (!$added->isOk()) {
                 return $this->returnApiError($this->recordWriteErrorMessage($added->record, 'Failed to create record'), RefusalStatus::of($added->record->refusal));
@@ -515,8 +517,6 @@ class ZonesRecordsController extends PublicApiController
                 'disabled' => $disabled,
                 'auth' => true,
             ], $zoneId, $zoneName, $this->formatRecordId(...)) + ['ptr_created' => $ptrCreated];
-
-            $this->services()->auditService()->logApiRecordAdd($zoneId, $name, $type, $content);
 
             $message = 'Record created successfully' . $ptrMessage;
             return $this->returnApiResponse(['record' => $responseData], true, $message, 201);
@@ -713,7 +713,8 @@ class ZonesRecordsController extends PublicApiController
                 $comment,
                 $updatePtr,
                 false,
-                $this->getAuthenticatedUsername()
+                $this->getAuthenticatedUsername(),
+                AuditLoggerInterface::ORIGIN_API
             ));
             if (!$edited->isOk()) {
                 return $this->returnApiError($this->recordWriteErrorMessage($edited->write, 'Failed to update record'), RefusalStatus::of($edited->write->refusal));
@@ -735,8 +736,6 @@ class ZonesRecordsController extends PublicApiController
                 $zoneName,
                 $this->formatRecordId(...)
             ) + ['ptr_updated' => $edited->ptrUpdated === true];
-
-            $this->services()->auditService()->logApiRecordEdit($zoneId, $formattedRecord['name'], $formattedRecord['type'], $formattedRecord['content']);
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully' . $ptrMessage, 200);
         } catch (\Throwable $e) {

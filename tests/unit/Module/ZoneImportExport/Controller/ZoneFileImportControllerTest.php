@@ -308,8 +308,8 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $controller->execute();
 
         $this->assertCount(2, $this->writes);
-        $this->assertSame([self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0, '', self::USERNAME, 0], $this->writes[0]);
-        $this->assertSame([self::ZONE_ID, 'mail.example.com', 'MX', 'mail.example.com', 3600, 10, '', self::USERNAME, 0], $this->writes[1]);
+        $this->assertSame([self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0, '', self::USERNAME, 0, 'web'], $this->writes[0]);
+        $this->assertSame([self::ZONE_ID, 'mail.example.com', 'MX', 'mail.example.com', 3600, 10, '', self::USERNAME, 0, 'web'], $this->writes[1]);
         $this->assertSame([[self::ZONE_ID, 'example.com', true]], $this->auditLogs);
 
         $params = $this->renderedParams();

@@ -189,8 +189,18 @@ class RecordEditServiceTest extends TestCase
     public function testTheEditIsAuditedWithTheRowBeforeAndTheRereadRowAfter(): void
     {
         $this->audit->expects($this->once())->method('logRecordEdit')->with(self::ZONE_ID, $this->current, $this->reread);
+        $this->audit->expects($this->never())->method('logApiRecordEdit');
 
         $this->service()->edit($this->request());
+    }
+
+    public function testAnApiEditIsAuditedOnceAsAnApiEditWithTheRereadRow(): void
+    {
+        $this->audit->expects($this->never())->method('logRecordEdit');
+        $this->audit->expects($this->once())->method('logApiRecordEdit')
+            ->with(self::ZONE_ID, $this->reread['name'], $this->reread['type'], $this->reread['content']);
+
+        $this->service()->edit($this->request(['origin' => AuditLoggerInterface::ORIGIN_API]));
     }
 
     public function testAReKeyedRecordIsFoundAgainByItsSubmittedValues(): void

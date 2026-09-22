@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Service\Record;
 
+use Poweradmin\Domain\Port\AuditLoggerInterface;
+
 /**
  * One record edit as the edit-record form or an API PUT submits it. The caller
  * has already found and authorised the stored row; the service normalises the
@@ -38,6 +40,7 @@ final readonly class RecordEditRequest
      * @param bool $bumpSoaSerial The web form lets an SOA carry a serial placeholder whose expanded
      *                            value is bumped after the write (#1360); API callers keep the serial
      *                            they sent and pass false
+     * @param string $origin One of the AuditLoggerInterface::ORIGIN_* values; the API writes api_edit_record
      */
     public function __construct(
         public int $zoneId,
@@ -53,7 +56,8 @@ final readonly class RecordEditRequest
         public ?string $comment,
         public bool $syncPtr,
         public bool $bumpSoaSerial,
-        public string $username
+        public string $username,
+        public string $origin = AuditLoggerInterface::ORIGIN_WEB
     ) {
     }
 }
