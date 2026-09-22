@@ -1,8 +1,9 @@
 includes:
-  # Grandfathered layering violations: 7 files, 23 counts ($_SESSION reads in
+  # Grandfathered layering violations: 12 files, 46 counts ($_SESSION reads in
   # UserContextService and four controllers, PDO::beginTransaction() in two API
-  # controllers). reportUnmatchedIgnoredErrors fails the run on a stale entry, so
-  # regenerate with --generate-baseline after removing one; never add to it.
+  # controllers, module imports of Infrastructure and Application services).
+  # reportUnmatchedIgnoredErrors fails the run on a stale entry, so regenerate
+  # with --generate-baseline after removing one; never add to it.
   - phpstan-baseline.neon
   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
   - vendor/spaze/phpstan-disallowed-calls/extension.neon
@@ -391,6 +392,44 @@ parameters:
         - bin/*
         - lib/Application/*
         - lib/Infrastructure/*
+        - lib/Module/*
+  # Layering. lib/Infrastructure adapts the outside world for Domain and
+  # Application; it never calls back into them or into a module.
+    -
+      namespace: 'Poweradmin\Application\*'
+      message: 'lib/Infrastructure must not depend on Application or Module code; depend on a lib/Domain interface instead'
+      allowExceptIn:
+        - lib/Infrastructure/*
+    -
+      namespace: 'Poweradmin\Module\*'
+      message: 'lib/Infrastructure must not depend on Application or Module code; depend on a lib/Domain interface instead'
+      allowExceptIn:
+        - lib/Infrastructure/*
+  # Controllers and modules obtain repositories through the factories
+  # (ControllerServiceFactory, ModuleServices) typed by their Domain interfaces.
+    -
+      namespace: 'Poweradmin\Infrastructure\Repository\*'
+      message: 'controllers and modules take the lib/Domain/Repository interface from the service factory; the concrete repository is wired in lib/Application/Service/Factory'
+      allowExceptIn:
+        - lib/Application/Controller/*
+        - lib/Module/*
+  # Modules see the SDK only: BaseController, ModuleServices and the value types
+  # named under exclude. Grandfathered uses are in phpstan-baseline.neon.
+    -
+      namespace: 'Poweradmin\Infrastructure\*'
+      message: 'modules do not reach lib/Infrastructure; add an accessor to ModuleServices or take the value from the request'
+      allowExceptIn:
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Application\Service\*'
+      exclude:
+        - 'Poweradmin\Application\Service\Record\RecordAddResult'
+        - 'Poweradmin\Application\Service\Record\RecordAddAccess'
+        - 'Poweradmin\Application\Service\Zone\ChangeRequestMessages'
+        - 'Poweradmin\Application\Service\Zone\ZoneCreateRequest'
+        - 'Poweradmin\Application\Service\Zone\ZoneCreateFormMessages'
+      message: 'modules obtain application services through ModuleServices; only the SDK value types are imported directly'
+      allowExceptIn:
         - lib/Module/*
   # Driver encodings (0/1 versus 't'/'f') are decoded by the repositories; a
   # controller works with the PHP bools they return.
