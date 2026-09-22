@@ -200,12 +200,18 @@ class GroupService
             throw new GroupNotFoundException('Group not found');
         }
 
-        $orphaned = $this->ownershipGuard->zonesOrphanedByGroupDeletion($groupId);
-        if ($orphaned !== []) {
-            throw new LastZoneOwnerException($orphaned, 'Cannot delete the last owner of a zone');
+        // The guard decides and deletes under one lock: checking here and
+        // deleting afterwards let a concurrent owner removal orphan the zone.
+        $result = $this->ownershipGuard->deleteGroup(
+            $groupId,
+            fn(): bool => $this->groupRepository->delete($groupId)
+        );
+
+        if (is_array($result)) {
+            throw new LastZoneOwnerException($result, 'Cannot delete the last owner of a zone');
         }
 
-        return $this->groupRepository->delete($groupId);
+        return $result;
     }
 
     /**

@@ -192,6 +192,69 @@ class ZoneOwnershipGuardTest extends TestCase
         $this->assertSame(['lock owners', 'lock groups', 'read owners', 'delete'], $calls);
     }
 
+    public function testDeletingAGroupLocksEveryZoneItOwnsBeforeDeciding(): void
+    {
+        $calls = [];
+        $zoneRepository = $this->createMock(ZoneOwnershipRepositoryInterface::class);
+        $zoneRepository->method('lockZoneOwners')->willReturnCallback(function () use (&$calls): void {
+            $calls[] = 'lock owners';
+        });
+        $zoneRepository->method('getZoneOwners')->willReturnCallback(function () use (&$calls): array {
+            $calls[] = 'read owners';
+            return [['id' => 5]];
+        });
+
+        $zoneGroupRepository = $this->createMock(ZoneGroupRepositoryInterface::class);
+        $zoneGroupRepository->method('lockZoneGroups')->willReturnCallback(function () use (&$calls): void {
+            $calls[] = 'lock groups';
+        });
+        $zoneGroupRepository->method('findByGroupId')->willReturn([new ZoneGroup(null, self::ZONE_ID, 3, null, 'example.com')]);
+        $zoneGroupRepository->method('findByDomainId')->willReturn([ZoneGroup::create(self::ZONE_ID, 3)]);
+
+        $guard = new ZoneOwnershipGuard(
+            $zoneRepository,
+            $zoneGroupRepository,
+            new ZoneOwnershipModeService(new FakeConfiguration(['dns' => ['zone_ownership_mode' => 'both']])),
+            $this->createMock(TransactionInterface::class)
+        );
+
+        $deleted = $guard->deleteGroup(3, function () use (&$calls): bool {
+            $calls[] = 'delete';
+            return true;
+        });
+
+        $this->assertTrue($deleted);
+        $this->assertSame(['lock owners', 'lock groups', 'read owners', 'delete'], $calls);
+    }
+
+    public function testDeletingAGroupThatIsTheLastOwnerIsRefusedAndRolledBack(): void
+    {
+        $transaction = $this->createMock(TransactionInterface::class);
+        $transaction->expects($this->once())->method('begin');
+        $transaction->expects($this->once())->method('rollBack');
+        $transaction->expects($this->never())->method('commit');
+
+        $zoneRepository = $this->createMock(ZoneOwnershipRepositoryInterface::class);
+        $zoneRepository->method('getZoneOwners')->willReturn([]);
+
+        $zoneGroupRepository = $this->createMock(ZoneGroupRepositoryInterface::class);
+        $zoneGroupRepository->method('findByGroupId')->willReturn([new ZoneGroup(null, self::ZONE_ID, 3, null, 'orphan.example.com')]);
+        $zoneGroupRepository->method('findByDomainId')->willReturn([ZoneGroup::create(self::ZONE_ID, 3)]);
+
+        $guard = new ZoneOwnershipGuard(
+            $zoneRepository,
+            $zoneGroupRepository,
+            new ZoneOwnershipModeService(new FakeConfiguration(['dns' => ['zone_ownership_mode' => 'both']])),
+            $transaction
+        );
+
+        $refused = $guard->deleteGroup(3, function (): bool {
+            $this->fail('The group must not be deleted while it is the last owner of a zone');
+        });
+
+        $this->assertSame([self::ZONE_ID => 'orphan.example.com'], $refused);
+    }
+
     /**
      * @param list<int> $owners
      * @param list<int> $groups

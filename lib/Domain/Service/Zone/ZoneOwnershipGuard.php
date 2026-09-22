@@ -189,6 +189,51 @@ class ZoneOwnershipGuard
         return $orphaned;
     }
 
+    /**
+     * Deletes a group, deciding and writing under the same locks the single-zone
+     * removals take, so a concurrent removal of the other owner cannot slip in
+     * between the check and the delete and leave a zone with nobody.
+     *
+     * @param callable $delete Deletes the group and reports whether a row went
+     * @return array<int, string>|bool Zone id => name when the deletion is refused,
+     *         otherwise what $delete reported
+     */
+    public function deleteGroup(int $groupId, callable $delete): array|bool
+    {
+        // An outer transaction owns its own commit; this one only joins it.
+        $owned = !$this->transaction->inTransaction();
+        if ($owned) {
+            $this->transaction->begin();
+        }
+
+        try {
+            foreach ($this->zoneGroupRepository->findByGroupId($groupId) as $zoneGroup) {
+                $this->zoneRepository->lockZoneOwners($zoneGroup->getDomainId());
+                $this->zoneGroupRepository->lockZoneGroups($zoneGroup->getDomainId());
+            }
+
+            $orphaned = $this->zonesOrphanedByGroupDeletion($groupId);
+            if ($orphaned !== []) {
+                if ($owned) {
+                    $this->transaction->rollBack();
+                }
+                return $orphaned;
+            }
+
+            $written = $delete();
+            if ($owned) {
+                $this->transaction->commit();
+            }
+
+            return $written;
+        } catch (Throwable $e) {
+            if ($owned && $this->transaction->inTransaction()) {
+                $this->transaction->rollBack();
+            }
+            throw $e;
+        }
+    }
+
     private function refusal(string $code): ZoneOwnershipRefusal
     {
         return new ZoneOwnershipRefusal($code, $this->ownershipMode->getMode());
