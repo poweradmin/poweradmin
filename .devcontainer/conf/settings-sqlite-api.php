@@ -12,6 +12,7 @@ $settings = devcontainer_settings('sqlite');
 $settings = devcontainer_api_backend($settings);
 
 $settings['interface']['title'] = 'Poweradmin (SQLite + API)';
-$settings['interface']['theme'] = 'modern';
+// The sweep runs the full suite here, and the layout specs assert the default
+// chrome; the modern theme is exercised by the mysql-sql-de instance instead.
 
 return $settings;
