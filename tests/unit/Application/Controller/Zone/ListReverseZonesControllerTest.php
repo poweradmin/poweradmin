@@ -60,7 +60,7 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
     /** @param array<string, array<string, mixed>> $config */
     private function makeController(array $config = []): TestableListReverseZonesController
     {
-        return new TestableListReverseZonesController(array_merge($_GET, $_POST), $this->environment($this->configure($config)));
+        return new TestableListReverseZonesController($this->requestData(), $this->environment($this->configure($config)));
     }
 
     /** @param array<string, array<string, mixed>> $config */

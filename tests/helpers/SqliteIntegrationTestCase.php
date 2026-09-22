@@ -29,9 +29,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use ReflectionClass;
 
 /**
  * Base test case for integration tests that need a throwaway in-memory SQLite
@@ -81,21 +79,15 @@ abstract class SqliteIntegrationTestCase extends TestCase
     }
 
     /**
-     * Points the ConfigurationManager singleton at the sqlite settings, for code
-     * that reads it directly instead of taking a ConfigurationInterface.
+     * The sqlite settings as a configuration, with extra sections merged in.
      *
      * @param array<string, array<string, mixed>> $overrides extra sections, e.g. ['dns' => [...]]
      */
-    protected function primeConfigurationManager(array $overrides = []): ConfigurationManager
+    protected function sqliteConfiguration(array $overrides = []): ConfigurationInterface
     {
-        $config = ConfigurationManager::getInstance();
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $reflection->getProperty('settings')->setValue($config, array_merge([
+        return new FakeConfiguration(array_merge([
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
         ], $overrides));
-        $reflection->getProperty('initialized')->setValue($config, true);
-
-        return $config;
     }
 
     /**

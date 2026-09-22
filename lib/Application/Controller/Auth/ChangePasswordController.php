@@ -86,9 +86,6 @@ class ChangePasswordController extends BaseController
             return;
         }
 
-        // Make sure we have the latest POST data
-        $this->httpRequest->refresh();
-
         if (!$this->validateInput()) {
             $this->renderChangePasswordForm($policyConfig);
             return;

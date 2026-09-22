@@ -37,7 +37,7 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
 
     private function makeController(bool $approvalEnabled, array $query = []): TestableListChangeRequestsController
     {
-        $_GET = $query;
+        $this->query($query);
         $config = $this->configure($approvalEnabled);
 
         $pagination = $this->createMock(PaginationService::class);

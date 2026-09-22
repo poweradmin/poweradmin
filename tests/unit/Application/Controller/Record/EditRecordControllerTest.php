@@ -44,7 +44,6 @@ use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
@@ -192,7 +191,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
             $this->comments,
             $this->commentSync,
             $this->audit,
-            ConfigurationManager::getInstance(),
+            $this->config,
             new NullLogger()
         ));
     }
@@ -201,7 +200,7 @@ class EditRecordControllerTest extends SeamControllerTestCase
     private function makeController(array $config = [], ?string $recordId = null): TestableEditRecordController
     {
         return new TestableEditRecordController(
-            ['id' => $recordId ?? (string)self::RECORD_ID] + array_merge($_GET, $_POST),
+            ['id' => $recordId ?? (string)self::RECORD_ID] + $this->requestData(),
             $this->environment($this->configure($config)),
             $this->comments
         );

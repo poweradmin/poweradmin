@@ -94,7 +94,7 @@ class RecordManagerDeleteRecordCleanupTest extends SqliteIntegrationTestCase
 
     private function makeRecordManager(SOARecordManagerInterface $soa): RecordManager
     {
-        $config = $this->primeConfigurationManager(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
+        $config = $this->sqliteConfiguration(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $domainRepository->method('getDomainType')->willReturn('MASTER');
         $domainRepository->method('getDomainNameById')->willReturn('example.com');

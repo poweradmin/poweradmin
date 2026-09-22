@@ -103,7 +103,7 @@ class SearchControllerTest extends SeamControllerTestCase
     /** @param array<string, array<string, mixed>> $config */
     private function makeController(array $config = []): TestableSearchController
     {
-        return new TestableSearchController(array_merge($_GET, $_POST), $this->environment($this->configure($config)));
+        return new TestableSearchController($this->requestData(), $this->environment($this->configure($config)));
     }
 
     /** @param array<string, array<string, mixed>> $config */

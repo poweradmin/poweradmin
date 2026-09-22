@@ -70,7 +70,7 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
     {
         $this->post(['confirm' => '1', 'id' => (string)self::TEMPLATE_ID]);
         $controller = new TestableDeletePermTemplController(
-            ['id' => (string)self::TEMPLATE_ID] + $_POST,
+            ['id' => (string)self::TEMPLATE_ID] + $this->requestData(),
             $this->environment($this->configure())
         );
 

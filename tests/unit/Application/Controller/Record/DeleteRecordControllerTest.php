@@ -37,7 +37,6 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -140,7 +139,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
             $this->recordManager,
             $this->reverseCreator,
             $this->audit,
-            (bool)ConfigurationManager::getInstance()->get('interface', 'add_reverse_record', false)
+            (bool)$this->config->get('interface', 'add_reverse_record', false)
         ));
     }
 
@@ -148,7 +147,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
     private function makeController(array $config = [], ?string $recordId = null): TestableDeleteRecordController
     {
         return new TestableDeleteRecordController(
-            ['id' => $recordId ?? (string)self::RECORD_ID] + array_merge($_GET, $_POST),
+            ['id' => $recordId ?? (string)self::RECORD_ID] + $this->requestData(),
             $this->environment($this->configure($config))
         );
     }

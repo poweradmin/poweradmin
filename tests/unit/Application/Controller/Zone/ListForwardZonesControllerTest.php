@@ -43,7 +43,7 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
     {
         // The router hands the controller the merged request, which is what
         // getSafeRequestValue() reads; the HttpRequest keeps them separate.
-        return new TestableListForwardZonesController(array_merge($_GET, $_POST), $this->environment($this->configure($config)));
+        return new TestableListForwardZonesController($this->requestData(), $this->environment($this->configure($config)));
     }
 
     /** @param array<string, array<string, mixed>> $config */

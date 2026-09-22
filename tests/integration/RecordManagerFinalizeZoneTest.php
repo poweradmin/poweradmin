@@ -145,7 +145,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
 
     private function makeRecordManager(SOARecordManagerInterface $soa, RecordChangeLogger $changeLogger, ?DnsBackendProviderInterface $backend = null): RecordManager
     {
-        $config = $this->primeConfigurationManager(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
+        $config = $this->sqliteConfiguration(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
 
         $validation = $this->createMock(DnsRecordValidationServiceInterface::class);
         $validation->method('validateRecord')->willReturn(ValidationResult::success([

@@ -26,6 +26,9 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * In-memory ConfigurationInterface backed by a plain array, for tests.
+ *
+ * A dotted key matches a literal key first, then walks nested arrays the way
+ * ConfigurationManager does; a missing or null value yields the default.
  */
 class FakeConfiguration implements ConfigurationInterface
 {
@@ -38,7 +41,19 @@ class FakeConfiguration implements ConfigurationInterface
 
     public function get(string $group, string $key, mixed $default = null): mixed
     {
-        return $this->config[$group][$key] ?? $default;
+        if (isset($this->config[$group][$key])) {
+            return $this->config[$group][$key];
+        }
+
+        $value = $this->config[$group] ?? null;
+        foreach (explode('.', $key) as $part) {
+            if (!is_array($value) || !isset($value[$part])) {
+                return $default;
+            }
+            $value = $value[$part];
+        }
+
+        return $value;
     }
 
     public function getGroup(string $group): array

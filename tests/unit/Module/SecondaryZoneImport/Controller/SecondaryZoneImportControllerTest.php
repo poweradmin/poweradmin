@@ -57,7 +57,7 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
 
     private function makeController(): TestableSecondaryZoneImportController
     {
-        return new TestableSecondaryZoneImportController($_GET + $_POST, $this->environment($this->configure()));
+        return new TestableSecondaryZoneImportController($this->requestData(), $this->environment($this->configure()));
     }
 
     /** @param array<string, mixed> $fields */

@@ -154,7 +154,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
 
     private function makeRecordManager(DnsBackendProviderInterface $backend): RecordManager
     {
-        $config = $this->primeConfigurationManager(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
+        $config = $this->sqliteConfiguration(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
 
         // The validation and zone-name lookups are stubbed to succeed so that, on
         // vulnerable code, nothing but the ownership check stands between the forged

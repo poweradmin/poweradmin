@@ -239,4 +239,30 @@ class RequestTest extends TestCase
         $_GET = [];
         $this->assertNull((new Request())->getRowsPerPage());
     }
+
+    public function testExplicitArraysReplaceTheSuperglobalSnapshot(): void
+    {
+        $_GET = ['from' => 'globals'];
+        $_POST = ['from' => 'globals'];
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $request = new Request(['q' => '1'], ['field' => 'v'], ['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/zones']);
+
+        $this->assertSame(['q' => '1'], $request->getQueryParams());
+        $this->assertSame(['field' => 'v'], $request->getPostParams());
+        $this->assertSame('POST', $request->getMethod());
+        $this->assertSame('/zones', $request->getUri());
+        $this->assertSame('v', $request->getParam('field'));
+    }
+
+    public function testAnyExplicitArrayLeavesTheOthersEmptyInsteadOfReadingGlobals(): void
+    {
+        $_GET = ['from' => 'globals'];
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $request = new Request(postParams: ['field' => 'v']);
+
+        $this->assertSame([], $request->getQueryParams());
+        $this->assertSame('GET', $request->getMethod());
+    }
 }

@@ -47,7 +47,7 @@ class AddZoneSlaveControllerTest extends ZoneCreateControllerTestCase
 
     private function makeController(): TestableAddZoneSlaveController
     {
-        return new TestableAddZoneSlaveController($_GET + $_POST, $this->environment($this->configure()));
+        return new TestableAddZoneSlaveController($this->requestData(), $this->environment($this->configure()));
     }
 
     /** @param array<string, mixed> $fields */

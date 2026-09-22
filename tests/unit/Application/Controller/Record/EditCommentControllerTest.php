@@ -86,7 +86,7 @@ class EditCommentControllerTest extends SeamControllerTestCase
     private function makeController(): TestableEditCommentController
     {
         return new TestableEditCommentController(
-            ['id' => (string)self::ZONE_ID] + array_merge($_GET, $_POST),
+            ['id' => (string)self::ZONE_ID] + $this->requestData(),
             $this->environment($this->configure())
         );
     }

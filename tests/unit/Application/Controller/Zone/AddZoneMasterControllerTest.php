@@ -52,7 +52,7 @@ class AddZoneMasterControllerTest extends ZoneCreateControllerTestCase
     /** @param array<string, array<string, mixed>> $config */
     private function makeController(array $config = []): TestableAddZoneMasterController
     {
-        return new TestableAddZoneMasterController($_GET + $_POST, $this->environment($this->configure($config)));
+        return new TestableAddZoneMasterController($this->requestData(), $this->environment($this->configure($config)));
     }
 
     /** @param array<string, mixed> $fields */

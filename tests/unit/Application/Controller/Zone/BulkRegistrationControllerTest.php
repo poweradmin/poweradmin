@@ -47,7 +47,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
 
     private function makeController(): TestableBulkRegistrationController
     {
-        return new TestableBulkRegistrationController($_GET + $_POST, $this->environment($this->configure()));
+        return new TestableBulkRegistrationController($this->requestData(), $this->environment($this->configure()));
     }
 
     /** @param array<string, mixed> $fields */

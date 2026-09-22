@@ -155,7 +155,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
 
     private function makeDomainManager(DnsBackendProviderInterface $backend): DomainManager
     {
-        $config = $this->primeConfigurationManager([
+        $config = $this->sqliteConfiguration([
             'dns' => ['ns1' => 'ns1.example', 'hostmaster' => 'hostmaster.example', 'ttl' => 3600],
         ]);
 

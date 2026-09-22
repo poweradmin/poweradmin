@@ -90,7 +90,7 @@ class ManageGroupZonesControllerViewLevelTest extends SeamControllerTestCase
 
     private function makeController(): TestableManageGroupZonesController
     {
-        return new TestableManageGroupZonesController(['id' => (string)self::GROUP_ID] + $_POST, $this->environment($this->configure()));
+        return new TestableManageGroupZonesController(['id' => (string)self::GROUP_ID] + $this->requestData(), $this->environment($this->configure()));
     }
 
     public function testThePageListsTheOwnedZonesByName(): void

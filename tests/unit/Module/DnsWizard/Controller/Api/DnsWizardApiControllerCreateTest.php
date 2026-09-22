@@ -37,7 +37,6 @@ use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Module\DnsWizard\Controller\Api\DnsWizardApiController;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use ReflectionMethod;
@@ -115,7 +114,7 @@ class DnsWizardApiControllerCreateTest extends SeamControllerTestCase
             $permissions,
             $domains,
             new ChangeApprovalContext(
-                ConfigurationManager::getInstance(),
+                $this->config,
                 fn(): PermissionService => $permissions,
                 fn(): ZoneRepositoryInterface => $this->createMock(ZoneRepositoryInterface::class),
                 fn(): ZoneChangeRequestRepositoryInterface => $this->createMock(ZoneChangeRequestRepositoryInterface::class)

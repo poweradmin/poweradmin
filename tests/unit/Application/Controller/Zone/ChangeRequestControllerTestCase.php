@@ -31,16 +31,16 @@ use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\NullLogger;
-use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 /**
- * Shared fixture for the change request controllers: a runtime configuration
+ * Shared fixture for the change request controllers: an in-memory configuration
  * with approval.enabled switchable, a stub service factory, and a request
  * environment that bypasses the session bootstrap.
  */
@@ -48,11 +48,11 @@ abstract class ChangeRequestControllerTestCase extends TestCase
 {
     protected const USER_ID = 7;
 
-    private array $configBackup = [];
-    private bool $configInitializedBackup = false;
-    private ?string $previousRequestMethod = null;
-    private array $previousGet = [];
-    private array $previousPost = [];
+    /** @var array<string, mixed> */
+    private array $queryParams = [];
+    /** @var array<string, mixed> */
+    private array $postParams = [];
+    private string $method = 'GET';
 
     /** @var ControllerServiceFactory&MockObject */
     protected ControllerServiceFactory $factory;
@@ -64,17 +64,6 @@ abstract class ChangeRequestControllerTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        [$settings, $initialized] = self::configProperties();
-        $config = ConfigurationManager::getInstance();
-        $this->configBackup = $settings->getValue($config);
-        $this->configInitializedBackup = $initialized->getValue($config);
-
-        $this->previousRequestMethod = $_SERVER['REQUEST_METHOD'] ?? null;
-        $this->previousGet = $_GET;
-        $this->previousPost = $_POST;
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_GET = [];
-        $_POST = [];
 
         $this->factory = $this->createMock(ControllerServiceFactory::class);
         $this->permissions = $this->createMock(PermissionService::class);
@@ -82,51 +71,17 @@ abstract class ChangeRequestControllerTestCase extends TestCase
         $this->factory->method('permissionService')->willReturn($this->permissions);
     }
 
-    protected function tearDown(): void
+    protected function configure(bool $approvalEnabled): ConfigurationInterface
     {
-        [$settings, $initialized] = self::configProperties();
-        $config = ConfigurationManager::getInstance();
-        $settings->setValue($config, $this->configBackup);
-        $initialized->setValue($config, $this->configInitializedBackup);
-
-        if ($this->previousRequestMethod === null) {
-            unset($_SERVER['REQUEST_METHOD']);
-        } else {
-            $_SERVER['REQUEST_METHOD'] = $this->previousRequestMethod;
-        }
-        $_GET = $this->previousGet;
-        $_POST = $this->previousPost;
-        parent::tearDown();
-    }
-
-    /** @return array{0: \ReflectionProperty, 1: \ReflectionProperty} */
-    private static function configProperties(): array
-    {
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settings = $reflection->getProperty('settings');
-        $settings->setAccessible(true);
-        $initialized = $reflection->getProperty('initialized');
-        $initialized->setAccessible(true);
-
-        return [$settings, $initialized];
-    }
-
-    protected function configure(bool $approvalEnabled): ConfigurationManager
-    {
-        [$settings, $initialized] = self::configProperties();
-        $config = ConfigurationManager::getInstance();
-        $settings->setValue($config, [
+        return new FakeConfiguration([
             'database' => ['type' => 'sqlite'],
             'security' => ['global_token_validation' => true],
             'interface' => ['rows_per_page' => 10],
             'approval' => ['enabled' => $approvalEnabled, 'require_review_for_all' => false],
         ]);
-        $initialized->setValue($config, true);
-
-        return $config;
     }
 
-    protected function environment(ConfigurationManager $config): ControllerEnvironment
+    protected function environment(ConfigurationInterface $config): ControllerEnvironment
     {
         $csrf = $this->createMock(CsrfTokenService::class);
         $csrf->method('validateToken')->willReturn(true);
@@ -154,17 +109,28 @@ abstract class ChangeRequestControllerTestCase extends TestCase
             new NullLogger(),
             $registry,
             $this->factory,
-            new HttpRequest(),
+            new HttpRequest($this->queryParams, $this->postParams, ['REQUEST_METHOD' => $this->method]),
             $csrf,
             $this->messages,
             $user
         );
     }
 
+    /**
+     * Switches the pending request to POST; call before constructing the controller.
+     *
+     * @param array<string, mixed> $fields
+     */
     protected function post(array $fields): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST = $fields + ['_token' => 'tok'];
+        $this->method = 'POST';
+        $this->postParams = $fields + ['_token' => 'tok'];
+    }
+
+    /** @param array<string, mixed> $params */
+    protected function query(array $params): void
+    {
+        $this->queryParams = $params;
     }
 
     protected function pendingRequest(int $id = 5, int $zoneId = 42, int $requesterId = 3, string $status = ZoneChangeRequest::STATUS_PENDING): ZoneChangeRequest

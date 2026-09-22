@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Application\Service\ControllerServiceFactory;
@@ -130,6 +131,33 @@ class ControllerEnvironmentSeamTest extends TestCase
             {
             }
         };
+    }
+
+    /**
+     * The controller reads the method from the environment's request, so a seam
+     * test can post without touching $_SERVER.
+     */
+    public function testTheInjectedRequestDecidesWhetherThisIsAPost(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $csrf = $this->createMock(CsrfTokenService::class);
+        $csrf->expects($this->once())->method('validateToken')->with('tok')->willReturn(true);
+        $environment = new ControllerEnvironment(
+            ConfigurationManager::getInstance(),
+            $this->createMock(PDO::class),
+            new NullLogger(),
+            new ModuleRegistry(ConfigurationManager::getInstance()),
+            null,
+            new HttpRequest([], ['_token' => 'tok'], ['REQUEST_METHOD' => 'POST']),
+            $csrf,
+            null,
+            $this->createMock(UserContextService::class)
+        );
+
+        $controller = new TestableSeamController(['_token' => 'tok'], true, $environment);
+
+        $this->assertTrue($controller->isPost());
     }
 
     public function testCsrfOptOutSkipsValidationOnPost(): void

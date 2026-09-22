@@ -120,7 +120,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
 
     private function makeController(): TestableZoneFileImportController
     {
-        $request = $_GET + $_POST;
+        $request = $this->requestData();
 
         return new TestableZoneFileImportController($request, $this->environment($this->configure([
             'modules' => ['zone_import_export.max_file_size' => 1048576, 'zone_import_export.auto_ttl_value' => 300],

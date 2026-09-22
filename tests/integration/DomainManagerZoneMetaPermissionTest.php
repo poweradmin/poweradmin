@@ -228,7 +228,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
 
     private function makeDomainManager(?object $backend = null): DomainManager
     {
-        $config = $this->primeConfigurationManager();
+        $config = $this->sqliteConfiguration();
         $repo = $this->createMock(DomainRepositoryInterface::class);
         $changeLogger = $this->createMock(RecordChangeLogger::class);
         $backend ??= $this->dnsBackendStub(false);

@@ -40,7 +40,6 @@ use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Domain\Service\Validation\RecordField;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
@@ -121,7 +120,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
     private function recordAddOver(PermissionService $permissions, ReverseTtlResolver $ttl): RecordAddService
     {
         $approval = new ChangeApprovalContext(
-            ConfigurationManager::getInstance(),
+            $this->config,
             fn(): PermissionService => $permissions,
             fn(): ZoneRepositoryInterface => $this->createMock(ZoneRepositoryInterface::class),
             fn(): ZoneChangeRequestRepositoryInterface => $this->createMock(ZoneChangeRequestRepositoryInterface::class)
@@ -163,9 +162,9 @@ class AddRecordControllerTest extends SeamControllerTestCase
     /** @param array<string, array<string, mixed>> $config */
     private function makeController(array $config = []): TestableAddRecordController
     {
-        $_GET += ['id' => (string)self::ZONE_ID, 'zone_id' => (string)self::ZONE_ID];
+        $this->query($this->queryParams + ['id' => (string)self::ZONE_ID, 'zone_id' => (string)self::ZONE_ID]);
 
-        return new TestableAddRecordController(array_merge($_GET, $_POST), $this->environment($this->configure($config)));
+        return new TestableAddRecordController($this->requestData(), $this->environment($this->configure($config)));
     }
 
     private function haltOf(TestableAddRecordController $controller): RequestHalted
@@ -184,7 +183,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
     public function testAMissingZoneIdIsRefusedAsAnUnknownZone(): void
     {
         // The route guarantees a numeric zone_id, so the zone lookup is the only gate
-        $_GET = ['zone_id' => ''];
+        $this->query(['zone_id' => '']);
         $this->zoneName = null;
         $this->domains->expects($this->once())->method('getDomainNameById')->with(0);
 

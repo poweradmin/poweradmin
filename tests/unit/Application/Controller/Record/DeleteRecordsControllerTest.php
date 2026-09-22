@@ -33,7 +33,6 @@ use Poweradmin\Domain\Service\Dns\RecordDeletionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
@@ -126,14 +125,14 @@ class DeleteRecordsControllerTest extends SeamControllerTestCase
             $recordManager,
             $this->reverseCreator,
             $this->audit,
-            (bool)ConfigurationManager::getInstance()->get('interface', 'add_reverse_record', false)
+            (bool)$this->config->get('interface', 'add_reverse_record', false)
         ));
     }
 
     /** @param array<string, array<string, mixed>> $config */
     private function makeController(array $config = []): TestableDeleteRecordsController
     {
-        return new TestableDeleteRecordsController(array_merge($_GET, $_POST), $this->environment($this->configure($config)));
+        return new TestableDeleteRecordsController($this->requestData(), $this->environment($this->configure($config)));
     }
 
     private function haltOf(TestableDeleteRecordsController $controller): RequestHalted

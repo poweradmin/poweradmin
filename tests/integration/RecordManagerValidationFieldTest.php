@@ -95,7 +95,7 @@ class RecordManagerValidationFieldTest extends SqliteIntegrationTestCase
 
     private function makeRecordManager(DnsBackendProviderInterface $backend): RecordManager
     {
-        $config = $this->primeConfigurationManager(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
+        $config = $this->sqliteConfiguration(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
 
         $validation = $this->createMock(DnsRecordValidationServiceInterface::class);
         $validation->method('validateRecord')->willReturn(

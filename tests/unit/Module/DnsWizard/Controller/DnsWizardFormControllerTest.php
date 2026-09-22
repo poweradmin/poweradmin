@@ -36,7 +36,6 @@ use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Module\DnsWizard\Controller\DnsWizardFormController;
 use Poweradmin\Application\Controller\RequestHalted;
@@ -111,7 +110,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
             $permissions,
             $domains,
             new ChangeApprovalContext(
-                ConfigurationManager::getInstance(),
+                $this->config,
                 fn(): PermissionService => $permissions,
                 fn(): ZoneRepositoryInterface => $this->createMock(ZoneRepositoryInterface::class),
                 fn(): ZoneChangeRequestRepositoryInterface => $this->createMock(ZoneChangeRequestRepositoryInterface::class)
@@ -123,7 +122,7 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
     private function makeController(array $config = [], string $type = 'spf', string $id = '12'): TestableDnsWizardFormController
     {
         $config += ['dns_wizards' => ['enabled' => true, 'available_types' => ['SPF']]];
-        $request = ['id' => $id, 'type' => $type] + $_GET + $_POST;
+        $request = ['id' => $id, 'type' => $type] + $this->requestData();
 
         return new TestableDnsWizardFormController($request, $this->environment($this->configure($config)));
     }

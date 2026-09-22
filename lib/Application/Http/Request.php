@@ -31,9 +31,20 @@ class Request
     protected array $postParams;
     protected array $serverParams;
 
-    public function __construct()
+    /**
+     * Without arguments the request is a snapshot of the superglobals; given any,
+     * it is built from those arrays instead (tests, or a request assembled by hand).
+     */
+    public function __construct(?array $queryParams = null, ?array $postParams = null, ?array $serverParams = null)
     {
-        $this->refresh();
+        if ($queryParams === null && $postParams === null && $serverParams === null) {
+            $this->refresh();
+            return;
+        }
+
+        $this->queryParams = $queryParams ?? [];
+        $this->postParams = $postParams ?? [];
+        $this->serverParams = $serverParams ?? [];
     }
 
     /**

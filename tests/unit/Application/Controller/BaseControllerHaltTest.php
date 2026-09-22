@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use Poweradmin\Application\Controller\RequestHalted;
+use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\CsrfTokenService;
@@ -164,6 +165,31 @@ class BaseControllerHaltTest extends SeamControllerTestCase
         $this->assertSame('{"error":true,"message":"Not allowed."}', $output);
     }
 
+    public function testARefusedPermissionIsAuditedWithTheRequestUri(): void
+    {
+        $config = $this->configure();
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->once())->method('logAccessDenied')->with('zone_content_edit_others', '/zones/7/edit');
+        $this->factory->method('permissionService')->willReturn($this->createStub(PermissionService::class));
+        $this->factory->method('auditService')->willReturn($audit);
+        $environment = new ControllerEnvironment(
+            $config,
+            $this->createMock(PDO::class),
+            new NullLogger(),
+            new ModuleRegistry($config),
+            $this->factory,
+            new HttpRequest([], [], ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/zones/7/edit']),
+            null,
+            $this->messageService,
+            new UserContextService()
+        );
+        $controller = new HaltingSeamController([], true, $environment);
+
+        [$halt] = $this->capture(fn() => $controller->checkPermission('zone_content_edit_others', 'Not allowed.'));
+
+        $this->assertSame(RequestHalted::KIND_PERMISSION, $halt->kind);
+    }
+
     public function testRedirectSendsNothingToTheBodyAndHaltsWithTheFinalUrl(): void
     {
         $controller = $this->controller();
@@ -197,7 +223,7 @@ class BaseControllerHaltTest extends SeamControllerTestCase
             new NullLogger(),
             new ModuleRegistry($config),
             $this->factory,
-            null,
+            $this->request(),
             $csrf,
             $this->messageService,
             new UserContextService()

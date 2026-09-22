@@ -99,7 +99,7 @@ class DeleteRecordsControllerViewLevelTest extends SeamControllerTestCase
 
     private function makeController(): TestableDeleteRecordsController
     {
-        return new TestableDeleteRecordsController($_POST, $this->environment($this->configure()));
+        return new TestableDeleteRecordsController($this->requestData(), $this->environment($this->configure()));
     }
 
     public function testAConfirmedDeleteFromTheZonePageReturnsToTheZone(): void

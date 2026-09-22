@@ -32,27 +32,27 @@ use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\ZoneSortingService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Psr\Log\NullLogger;
-use ReflectionClass;
-use ReflectionProperty;
 
 /**
  * Shared fixture for controllers built through the ControllerEnvironment seam:
- * a runtime configuration, superglobals isolated per test, and a stub service
- * factory that every create*() accessor on BaseController routes through.
+ * an in-memory configuration, a request assembled from post()/query(), and a
+ * stub service factory that every create*() accessor on BaseController routes through.
  *
  * The logged-in user is a plain $_SESSION entry, so UserContextService,
- * MessageService and ZoneSortingService all work against real (in-memory) state.
+ * MessageService and ZoneSortingService all work against real (in-memory) state;
+ * the session is the one superglobal the seam still swaps, since those services
+ * read it directly.
  */
 abstract class SeamControllerTestCase extends TestCase
 {
@@ -64,30 +64,24 @@ abstract class SeamControllerTestCase extends TestCase
 
     protected MessageService $messageService;
 
-    private array $configBackup = [];
-    private bool $configInitializedBackup = false;
-    private array $serverBackup = [];
-    private array $getBackup = [];
-    private array $postBackup = [];
+    /** The configuration every controller of the test reads; configure() sets its contents */
+    protected SeamConfiguration $config;
+
+    /** @var array<string, mixed> */
+    protected array $queryParams = [];
+
+    /** @var array<string, mixed> */
+    protected array $postParams = [];
+
+    private string $method = 'GET';
+
     private array $sessionBackup = [];
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        [$settings, $initialized] = self::configProperties();
-        $config = ConfigurationManager::getInstance();
-        $this->configBackup = $settings->getValue($config);
-        $this->configInitializedBackup = $initialized->getValue($config);
-
-        $this->serverBackup = $_SERVER;
-        $this->getBackup = $_GET;
-        $this->postBackup = $_POST;
         $this->sessionBackup = $_SESSION ?? [];
-
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_GET = [];
-        $_POST = [];
         $_SESSION = [
             SessionKeys::USERID => self::USER_ID,
             SessionKeys::USERLOGIN => self::USERNAME,
@@ -95,38 +89,24 @@ abstract class SeamControllerTestCase extends TestCase
 
         $this->factory = $this->createMock(ControllerServiceFactory::class);
         $this->messageService = new MessageService();
+        $this->config = new SeamConfiguration();
+        $this->configure();
     }
 
     protected function tearDown(): void
     {
-        [$settings, $initialized] = self::configProperties();
-        $config = ConfigurationManager::getInstance();
-        $settings->setValue($config, $this->configBackup);
-        $initialized->setValue($config, $this->configInitializedBackup);
-
-        $_SERVER = $this->serverBackup;
-        $_GET = $this->getBackup;
-        $_POST = $this->postBackup;
         $_SESSION = $this->sessionBackup;
 
         parent::tearDown();
     }
 
-    /** @return array{0: ReflectionProperty, 1: ReflectionProperty} */
-    private static function configProperties(): array
-    {
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-
-        return [$reflection->getProperty('settings'), $reflection->getProperty('initialized')];
-    }
-
     /**
-     * Installs a runtime configuration, merging $overrides section by section
-     * over a minimal SQL-backend baseline.
+     * Sets the test's configuration, merging $overrides section by section over
+     * a minimal SQL-backend baseline.
      *
      * @param array<string, array<string, mixed>> $overrides
      */
-    protected function configure(array $overrides = []): ConfigurationManager
+    protected function configure(array $overrides = []): ConfigurationInterface
     {
         $settings = [
             'database' => ['type' => 'sqlite'],
@@ -140,15 +120,12 @@ abstract class SeamControllerTestCase extends TestCase
             $settings[$section] = array_merge($settings[$section] ?? [], $values);
         }
 
-        [$settingsProperty, $initialized] = self::configProperties();
-        $config = ConfigurationManager::getInstance();
-        $settingsProperty->setValue($config, $settings);
-        $initialized->setValue($config, true);
+        $this->config->replace($settings);
 
-        return $config;
+        return $this->config;
     }
 
-    protected function environment(ConfigurationManager $config): ControllerEnvironment
+    protected function environment(ConfigurationInterface $config): ControllerEnvironment
     {
         $csrf = $this->createMock(CsrfTokenService::class);
         $csrf->method('validateToken')->willReturn(true);
@@ -180,7 +157,7 @@ abstract class SeamControllerTestCase extends TestCase
             new NullLogger(),
             $registry,
             $this->factory,
-            new HttpRequest(),
+            $this->request(),
             $csrf,
             $this->messageService,
             new UserContextService()
@@ -188,10 +165,19 @@ abstract class SeamControllerTestCase extends TestCase
     }
 
     /**
+     * The pending request as the controller will see it: the method and the
+     * parameters given to post() and query() so far.
+     */
+    protected function request(): HttpRequest
+    {
+        return new HttpRequest($this->queryParams, $this->postParams, ['REQUEST_METHOD' => $this->method]);
+    }
+
+    /**
      * The real provider for the configured dns.backend, so capability answers
      * are the shipped ones; its data methods are never reached over a PDO mock.
      */
-    private function backendProvider(ConfigurationManager $config, PDO $db): DnsBackendProviderInterface
+    private function backendProvider(ConfigurationInterface $config, PDO $db): DnsBackendProviderInterface
     {
         if ($config->get('dns', 'backend') === 'api') {
             return new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $db, $config, new NullLogger());
@@ -201,21 +187,32 @@ abstract class SeamControllerTestCase extends TestCase
     }
 
     /**
-     * Switches the pending request to POST. The environment's HttpRequest is
-     * built afterwards, so $_POST must be in place before the controller.
+     * Switches the pending request to POST. The environment's request is built
+     * when the controller is, so call this before constructing it.
      *
      * @param array<string, mixed> $fields
      */
     protected function post(array $fields): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST = $fields + ['_token' => 'tok'];
+        $this->method = 'POST';
+        $this->postParams = $fields + ['_token' => 'tok'];
     }
 
     /** @param array<string, mixed> $params */
     protected function query(array $params): void
     {
-        $_GET = $params;
+        $this->queryParams = $params;
+    }
+
+    /**
+     * The request data the router would hand the controller: query and post
+     * parameters merged, post winning.
+     *
+     * @return array<string, mixed>
+     */
+    protected function requestData(): array
+    {
+        return array_merge($this->queryParams, $this->postParams);
     }
 
     /**

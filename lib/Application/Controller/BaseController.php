@@ -176,7 +176,7 @@ abstract class BaseController
      */
     public function isPost(): bool
     {
-        return $_SERVER['REQUEST_METHOD'] === 'POST';
+        return $this->httpRequest->getMethod() === 'POST';
     }
 
     /**
@@ -691,7 +691,7 @@ abstract class BaseController
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!$this->hasPermission($permission)) {
-            $this->services()->auditService()->logAccessDenied($permission, $_SERVER['REQUEST_URI'] ?? '');
+            $this->services()->auditService()->logAccessDenied($permission, $this->httpRequest->getServerParam('REQUEST_URI', ''));
 
             // Check if this request expects JSON
             if (RequestContext::expectsJson()) {

@@ -39,6 +39,10 @@ use Psr\Log\LoggerInterface;
  * untouched. Tests construct a controller directly with stubbed services, most
  * usefully a stub ControllerServiceFactory, which the create*() accessors on
  * BaseController all route through.
+ *
+ * The request carries the method and the query and post parameters the
+ * controller reads (isPost(), the request helpers); without one the controller
+ * snapshots the superglobals as it does in production.
  */
 final class ControllerEnvironment
 {
