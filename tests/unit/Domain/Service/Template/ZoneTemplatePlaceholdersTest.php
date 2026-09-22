@@ -143,6 +143,18 @@ class ZoneTemplatePlaceholdersTest extends TestCase
         $this->assertEquals($expected, $this->placeholders()->replaceWithTemplatePlaceholders($domain, $record, $options));
     }
 
+    public function testHyphenatedDomainFormatIsRecognisedWhateverItsCase()
+    {
+        $record = [
+            'name' => 'mail.example.com',
+            'content' => 'EXAMPLE-COM.mail.protection.outlook.com'
+        ];
+
+        $result = $this->placeholders()->replaceWithTemplatePlaceholders('example.com', $record);
+
+        $this->assertEquals('[DOMAIN]-[TLD].mail.protection.outlook.com', $result[1]);
+    }
+
     public function testReplaceWithTemplatePlaceholdersHyphenatedDomainFormat()
     {
         $domain = 'example.com';

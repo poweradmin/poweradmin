@@ -64,8 +64,9 @@ class ZoneTemplatePlaceholders
 
         // Content such as example-com.mail.protection.outlook.com cannot use
         // [ZONE] directly, so only the hyphenated domain-tld form is replaced.
+        // Matched case-insensitively because the parsed parts are lowercased.
         if (!empty($domainName) && !empty($tld)) {
-            $content = str_replace($domainName . '-' . $tld, '[DOMAIN]-[TLD]', $content);
+            $content = str_ireplace($domainName . '-' . $tld, '[DOMAIN]-[TLD]', $content);
         }
 
         if (isset($record['type']) && $record['type'] === 'SOA') {
