@@ -608,6 +608,7 @@ services:
 | `PA_OIDC_ENABLED` | Enable OIDC authentication | `false` | No |
 | `PA_OIDC_AUTO_PROVISION` | Automatically create user accounts from OIDC | `true` | No |
 | `PA_OIDC_LINK_BY_EMAIL` | Link OIDC accounts to existing users by email | `true` | No |
+| `PA_OIDC_REQUIRE_VERIFIED_EMAIL` | Only link by email when the provider sends `email_verified` | `false` | No |
 | `PA_OIDC_SYNC_USER_INFO` | Sync user information from OIDC provider | `true` | No |
 | `PA_OIDC_ALLOW_SUPERUSER_PROVISIONING` | Let OIDC group mappings grant the superuser flag | `false` | No |
 | `PA_OIDC_DEFAULT_PERMISSION_TEMPLATE` | Permission template for auto-provisioned OIDC users when no mapping matches | `Guest` | No |

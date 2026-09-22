@@ -1021,6 +1021,8 @@ generate_config() {
     oidc_auto_provision=$(to_php_bool "${PA_OIDC_AUTO_PROVISION:-true}")
     local oidc_link_by_email
     oidc_link_by_email=$(to_php_bool "${PA_OIDC_LINK_BY_EMAIL:-true}")
+    local oidc_require_verified_email
+    oidc_require_verified_email=$(to_php_bool "${PA_OIDC_REQUIRE_VERIFIED_EMAIL:-false}")
     local oidc_sync_user_info
     oidc_sync_user_info=$(to_php_bool "${PA_OIDC_SYNC_USER_INFO:-true}")
     local oidc_allow_superuser_provisioning
@@ -1466,6 +1468,7 @@ return [
         'enabled' => ${oidc_enabled},
         'auto_provision' => ${oidc_auto_provision},
         'link_by_email' => ${oidc_link_by_email},
+        'require_verified_email' => ${oidc_require_verified_email},
         'sync_user_info' => ${oidc_sync_user_info},
         'allow_superuser_provisioning' => ${oidc_allow_superuser_provisioning},
         'default_permission_template' => $(php_sq "${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Guest}"),
