@@ -20,32 +20,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Utility;
+namespace Poweradmin\Infrastructure\Network;
+
+use Poweradmin\Domain\Port\ProxyContextInterface;
 
 /**
- * Prefixes CSV cell values that start with a formula trigger (=, +, -, @, tab, CR, LF) with a quote.
+ * The HTTP(S)_PROXY / NO_PROXY lookup of ProxyContext behind the port, for
+ * services that take the proxy as a dependency.
  */
-final class CsvFormulaEscaper
+final class EnvironmentProxyContext implements ProxyContextInterface
 {
-    private const FORMULA_TRIGGERS = ['=', '+', '-', '@', "\t", "\r", "\n"];
-
-    public function escape(mixed $value): mixed
+    public function applyTo(array $options, string $url): array
     {
-        if (!is_string($value) || $value === '') {
-            return $value;
-        }
-
-        // Strip only ASCII spaces - tab/CR/LF must remain to count as direct triggers.
-        $trimmed = ltrim($value, ' ');
-        if ($trimmed === '' || !in_array($trimmed[0], self::FORMULA_TRIGGERS, true)) {
-            return $value;
-        }
-
-        return "'" . $value;
-    }
-
-    public function escapeRow(array $row): array
-    {
-        return array_map($this->escape(...), $row);
+        return ProxyContext::applyTo($options, $url);
     }
 }

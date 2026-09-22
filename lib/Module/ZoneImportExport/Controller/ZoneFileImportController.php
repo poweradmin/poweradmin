@@ -30,7 +30,6 @@ use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Application\Service\Zone\ZoneCreateFormMessages;
-use Poweradmin\Application\Service\Zone\ZoneOwnershipFormResolver;
 use Poweradmin\Module\ZoneImportExport\ImportSessionKeys;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 use Poweradmin\Domain\Enum\ZoneKind;
@@ -350,7 +349,7 @@ class ZoneFileImportController extends BaseController
                 return;
             }
             if ($ownership->hasError()) {
-                $this->showError(ZoneOwnershipFormResolver::errorMessage($ownership));
+                $this->showError(ZoneCreateFormMessages::ownershipError($ownership));
                 return;
             }
             $created = $this->createZoneManagementService()->createZone($zoneName, $zoneType, $ownerForCreate, '', 'none', false, $ownership->groupIds, $userId);

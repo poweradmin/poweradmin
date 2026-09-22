@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Backend;
 
+use Poweradmin\Domain\Enum\DnsBackendKind;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -52,9 +53,8 @@ final class DnsBackendProviderFactory
     public static function create(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null): DnsBackendProviderInterface
     {
         $logger = $logger ?? new NullLogger();
-        $backend = $config->get('dns', 'backend');
 
-        if ($backend === 'api') {
+        if (self::isApiBackend($config)) {
             $pdnsApiUrl = $config->get('pdns_api', 'url');
             $pdnsApiKey = $config->get('pdns_api', 'key');
 
@@ -92,7 +92,7 @@ final class DnsBackendProviderFactory
      */
     public static function isApiBackend(ConfigurationInterface $config): bool
     {
-        return $config->get('dns', 'backend') === 'api';
+        return DnsBackendKind::fromConfig($config)->isApi();
     }
 
     public static function createApiClient(

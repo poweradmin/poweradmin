@@ -39,7 +39,7 @@ class RdapController extends BaseController
     private function rdapService(): RdapService
     {
         if ($this->rdapService === null) {
-            $this->rdapService = new RdapService();
+            $this->rdapService = new RdapService($this->moduleServices()->proxyContext());
             $this->rdapService->setRequestTimeout($this->getModuleConfig('rdap', 'request_timeout', 10));
 
             $customServers = $this->getModuleConfig('rdap', 'custom_servers', []);

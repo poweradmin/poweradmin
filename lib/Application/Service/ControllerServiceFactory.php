@@ -98,6 +98,7 @@ use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Domain\Port\ProxyContextInterface;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\User\UserManagementService;
@@ -130,7 +131,10 @@ use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Application\Service\Auth\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
+use Poweradmin\Infrastructure\Network\EnvironmentProxyContext;
+use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Infrastructure\Session\SessionService;
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
 
@@ -147,6 +151,8 @@ class ControllerServiceFactory implements ModuleServices
     private AuthServices $auth;
     private ZoneServices $zones;
     private RecordServices $records;
+    private ?ProxyContextInterface $proxyContext = null;
+    private ?CsvFormulaEscaper $csvFormulaEscaper = null;
 
     /**
      * @param ActorInterface $actor Who the request acts as; an API controller rebinds it via bindActor()
@@ -362,6 +368,21 @@ class ControllerServiceFactory implements ModuleServices
     public function sessionService(): SessionService
     {
         return $this->auth->sessionService();
+    }
+
+    public function formStateService(): FormStateService
+    {
+        return $this->auth->formStateService();
+    }
+
+    public function proxyContext(): ProxyContextInterface
+    {
+        return $this->proxyContext ??= new EnvironmentProxyContext();
+    }
+
+    public function csvFormulaEscaper(): CsvFormulaEscaper
+    {
+        return $this->csvFormulaEscaper ??= new CsvFormulaEscaper();
     }
 
     public function redirectService(): RedirectService

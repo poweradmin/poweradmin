@@ -23,10 +23,11 @@
 namespace Poweradmin\Application\Module;
 
 use Poweradmin\Application\Service\Web\AuditService;
-use Poweradmin\Application\Service\Mail\EmailTemplateService;
 use Poweradmin\Application\Service\Record\RecordAddService;
 use Poweradmin\Application\Service\Record\RecordManagerService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\EmailTemplateRendererInterface;
+use Poweradmin\Domain\Port\ProxyContextInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
@@ -36,6 +37,8 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Infrastructure\Session\FormStateService;
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 /**
  * The module-facing service surface: the collaborators a module controller may
@@ -50,15 +53,21 @@ interface ModuleServices
 {
     public function auditService(): AuditService;
 
+    public function csvFormulaEscaper(): CsvFormulaEscaper;
+
     public function dnsBackendProvider(): DnsBackendProviderInterface;
 
     public function domainManager(): DomainManagerInterface;
 
     public function domainRepository(): DomainRepositoryInterface;
 
-    public function emailTemplateService(): EmailTemplateService;
+    public function emailTemplateService(): EmailTemplateRendererInterface;
+
+    public function formStateService(): FormStateService;
 
     public function permissionService(): PermissionService;
+
+    public function proxyContext(): ProxyContextInterface;
 
     public function recordAddService(): RecordAddService;
 

@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\Zone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\Zone\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\Zone\ZoneOwnershipFormResolver;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
@@ -92,7 +93,7 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
         $result = $this->resolver('both')->resolve(new Request(), self::CALLER_ID);
 
         $this->assertSame(ZoneOwnershipResolution::NO_OWNER, $result->code);
-        $this->assertSame('At least one user or group must be selected as owner.', ZoneOwnershipFormResolver::errorMessage($result));
+        $this->assertSame('At least one user or group must be selected as owner.', ZoneCreateFormMessages::ownershipError($result));
     }
 
     public function testRefusalsNameTheOffendingGroups(): void
@@ -102,7 +103,7 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
         $result = $this->resolver('both', [3])->resolve(new Request(), self::CALLER_ID);
 
         $this->assertSame(ZoneOwnershipResolution::GROUPS_NOT_MEMBER, $result->code);
-        $this->assertSame('You can only assign groups you are a member of (disallowed: 9)', ZoneOwnershipFormResolver::errorMessage($result));
+        $this->assertSame('You can only assign groups you are a member of (disallowed: 9)', ZoneCreateFormMessages::ownershipError($result));
     }
 
     public function testAnUnknownOwnerIsNamedInTheRefusal(): void
@@ -112,7 +113,7 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
         $result = $this->resolver('both', adminCaller: true)->resolve(new Request(), self::CALLER_ID);
 
         $this->assertSame(ZoneOwnershipResolution::UNKNOWN_OWNER, $result->code);
-        $this->assertSame('Unknown user ID: 42', ZoneOwnershipFormResolver::errorMessage($result));
+        $this->assertSame('Unknown user ID: 42', ZoneCreateFormMessages::ownershipError($result));
     }
 
     public function testTheBlockerIsWordedForThePage(): void
@@ -147,7 +148,7 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
     {
         $result = ZoneOwnershipResolution::error('api wording', Refusal::INVALID_INPUT, ZoneOwnershipResolution::INVALID_INPUT);
 
-        $this->assertSame('api wording', ZoneOwnershipFormResolver::errorMessage($result));
+        $this->assertSame('api wording', ZoneCreateFormMessages::ownershipError($result));
     }
 
     /**

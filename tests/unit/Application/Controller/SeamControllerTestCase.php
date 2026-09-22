@@ -41,6 +41,8 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use Poweradmin\Infrastructure\Session\FormStateService;
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Psr\Log\NullLogger;
 
@@ -156,6 +158,9 @@ abstract class SeamControllerTestCase extends TestCase
         $this->factory->method('zoneSortingService')->willReturnCallback(
             static fn(UserContextService $userContext): ZoneSortingService => new ZoneSortingService(new ReverseZoneSorting(), $userContext)
         );
+        // Dependency-free helpers as shipped: the escaper is final and the form stash is read back by tests
+        $this->factory->method('csvFormulaEscaper')->willReturn(new CsvFormulaEscaper());
+        $this->factory->method('formStateService')->willReturn(new FormStateService());
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 

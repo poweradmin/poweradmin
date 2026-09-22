@@ -28,7 +28,6 @@ use DateTimeZone;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 /**
  * Renders the record change log page for admins with filters, pagination and CSV/JSON export.
@@ -236,7 +235,7 @@ class ListRecordChangesController extends BaseController
                     break;
                 }
                 foreach ($logs as $log) {
-                    fputcsv($output, CsvFormulaEscaper::escapeRow($this->buildExportRow($log)));
+                    fputcsv($output, $this->services()->csvFormulaEscaper()->escapeRow($this->buildExportRow($log)));
                 }
                 if (count($logs) < $pageSize) {
                     break;

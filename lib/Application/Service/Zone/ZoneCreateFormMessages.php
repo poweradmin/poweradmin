@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service\Zone;
 
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 
 /**
  * Words a refused ZoneManagementService::createZone() for the add-zone forms.
@@ -42,6 +43,21 @@ final class ZoneCreateFormMessages
     public static function dnssecForbidden(): string
     {
         return _('You do not have permission to manage DNSSEC for this zone.');
+    }
+
+    /**
+     * The refusal of a resolved ownership in the user's language; the resolution's own text is the API wording.
+     */
+    public static function ownershipError(ZoneOwnershipResolution $resolution): string
+    {
+        return match ($resolution->code) {
+            ZoneOwnershipResolution::NO_OWNER => _('At least one user or group must be selected as owner.'),
+            ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN => _('You do not have permission to create zones for other users.'),
+            ZoneOwnershipResolution::UNKNOWN_OWNER => sprintf(_('Unknown user ID: %s'), implode(',', $resolution->ids)),
+            ZoneOwnershipResolution::UNKNOWN_GROUPS => sprintf(_('Unknown group ID(s): %s'), implode(',', $resolution->ids)),
+            ZoneOwnershipResolution::GROUPS_NOT_MEMBER => sprintf(_('You can only assign groups you are a member of (disallowed: %s)'), implode(',', $resolution->ids)),
+            default => (string)$resolution->error,
+        };
     }
 
     /**

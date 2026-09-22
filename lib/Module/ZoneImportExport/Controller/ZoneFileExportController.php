@@ -24,7 +24,6 @@ namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Network\ProxyContext;
 use Poweradmin\Domain\Service\Dns\BindZoneFileGenerator;
 
 /**
@@ -109,7 +108,7 @@ class ZoneFileExportController extends BaseController
                 ]
             ];
 
-            $context = stream_context_create(ProxyContext::applyTo($options, $url));
+            $context = stream_context_create($this->moduleServices()->proxyContext()->applyTo($options, $url));
 
             $response = @file_get_contents($url, false, $context);
 

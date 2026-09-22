@@ -51,6 +51,7 @@ use Poweradmin\Application\Service\Auth\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Application\Service\Auth\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use Psr\Log\LoggerInterface;
@@ -73,6 +74,7 @@ final class AuthServices
     private ?UserMfaRepositoryInterface $userMfaRepository = null;
     private ?MfaService $mfaService = null;
     private ?SessionService $sessionService = null;
+    private ?FormStateService $formStateService = null;
     private ?RedirectService $redirectService = null;
     private ?AuthenticationService $authenticationService = null;
     private ?MailService $mailService = null;
@@ -92,6 +94,11 @@ final class AuthServices
     public function sessionService(): SessionService
     {
         return $this->sessionService ??= new SessionService();
+    }
+
+    public function formStateService(): FormStateService
+    {
+        return $this->formStateService ??= new FormStateService();
     }
 
     public function redirectService(): RedirectService

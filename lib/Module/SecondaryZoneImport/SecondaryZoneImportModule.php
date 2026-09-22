@@ -22,9 +22,9 @@
 
 namespace Poweradmin\Module\SecondaryZoneImport;
 
-use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Enum\DnsBackendKind;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
@@ -102,6 +102,6 @@ final class SecondaryZoneImportModule implements ModuleInterface
 
     private function isApiBackendMode(): bool
     {
-        return DnsBackendProviderFactory::isApiBackend($this->config);
+        return DnsBackendKind::fromConfig($this->config)->isApi();
     }
 }

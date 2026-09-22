@@ -24,7 +24,6 @@ namespace Poweradmin\Module\CsvExport\Controller;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 /**
  * GET /zones/{id}/export/csv - downloads the zone's records as a CSV file.
@@ -91,6 +90,7 @@ class CsvExportController extends BaseController
 
         fputcsv($output, $header, ',', '"', '');
 
+        $escaper = $this->moduleServices()->csvFormulaEscaper();
         foreach ($records as $record) {
             $row = [
                 $record['name'],
@@ -105,7 +105,7 @@ class CsvExportController extends BaseController
                 $row[] = $record['comment'] ?? '';
             }
 
-            fputcsv($output, CsvFormulaEscaper::escapeRow($row), ',', '"', '');
+            fputcsv($output, $escaper->escapeRow($row), ',', '"', '');
         }
 
         fclose($output);

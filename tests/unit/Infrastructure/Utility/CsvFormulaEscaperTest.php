@@ -45,7 +45,7 @@ class CsvFormulaEscaperTest extends TestCase
     public function testValueStartingWithTriggerGetsQuotePrefix(string $trigger): void
     {
         $value = $trigger . 'abc';
-        $this->assertSame("'" . $value, CsvFormulaEscaper::escape($value));
+        $this->assertSame("'" . $value, (new CsvFormulaEscaper())->escape($value));
     }
 
     #[DataProvider('triggerCharacters')]
@@ -54,34 +54,34 @@ class CsvFormulaEscaperTest extends TestCase
         // tab/CR/LF would be consumed by ltrim if spaces were stripped greedily;
         // they are still escaped because they remain the first character.
         $value = '   ' . $trigger . 'abc';
-        $this->assertSame("'" . $value, CsvFormulaEscaper::escape($value));
+        $this->assertSame("'" . $value, (new CsvFormulaEscaper())->escape($value));
     }
 
     public function testPlainStringsAreUnchanged(): void
     {
-        $this->assertSame('admin', CsvFormulaEscaper::escape('admin'));
-        $this->assertSame('user@example.com', CsvFormulaEscaper::escape('user@example.com'));
-        $this->assertSame('example.com.', CsvFormulaEscaper::escape('example.com.'));
-        $this->assertSame('192.0.2.1', CsvFormulaEscaper::escape('192.0.2.1'));
-        $this->assertSame(' leading space ok', CsvFormulaEscaper::escape(' leading space ok'));
+        $this->assertSame('admin', (new CsvFormulaEscaper())->escape('admin'));
+        $this->assertSame('user@example.com', (new CsvFormulaEscaper())->escape('user@example.com'));
+        $this->assertSame('example.com.', (new CsvFormulaEscaper())->escape('example.com.'));
+        $this->assertSame('192.0.2.1', (new CsvFormulaEscaper())->escape('192.0.2.1'));
+        $this->assertSame(' leading space ok', (new CsvFormulaEscaper())->escape(' leading space ok'));
     }
 
     public function testEmptyStringIsUnchanged(): void
     {
-        $this->assertSame('', CsvFormulaEscaper::escape(''));
+        $this->assertSame('', (new CsvFormulaEscaper())->escape(''));
     }
 
     public function testWhitespaceOnlyStringIsUnchanged(): void
     {
-        $this->assertSame('   ', CsvFormulaEscaper::escape('   '));
+        $this->assertSame('   ', (new CsvFormulaEscaper())->escape('   '));
     }
 
     public function testNonStringScalarsArePassedThrough(): void
     {
-        $this->assertSame(42, CsvFormulaEscaper::escape(42));
-        $this->assertSame(3.14, CsvFormulaEscaper::escape(3.14));
-        $this->assertSame(true, CsvFormulaEscaper::escape(true));
-        $this->assertSame(null, CsvFormulaEscaper::escape(null));
+        $this->assertSame(42, (new CsvFormulaEscaper())->escape(42));
+        $this->assertSame(3.14, (new CsvFormulaEscaper())->escape(3.14));
+        $this->assertSame(true, (new CsvFormulaEscaper())->escape(true));
+        $this->assertSame(null, (new CsvFormulaEscaper())->escape(null));
     }
 
     public function testEscapeRowAppliesElementWise(): void
@@ -89,7 +89,7 @@ class CsvFormulaEscaperTest extends TestCase
         $row = ['admin', '=abc', 'note', '@abc', 'plain'];
         $expected = ['admin', "'=abc", 'note', "'@abc", 'plain'];
 
-        $this->assertSame($expected, CsvFormulaEscaper::escapeRow($row));
+        $this->assertSame($expected, (new CsvFormulaEscaper())->escapeRow($row));
     }
 
     public function testEscapeRowPreservesKeys(): void
@@ -97,7 +97,7 @@ class CsvFormulaEscaperTest extends TestCase
         $row = ['username' => '=abc', 'email' => 'a@b.test'];
         $expected = ['username' => "'=abc", 'email' => 'a@b.test'];
 
-        $this->assertSame($expected, CsvFormulaEscaper::escapeRow($row));
+        $this->assertSame($expected, (new CsvFormulaEscaper())->escapeRow($row));
     }
 
     public function testEscapeRowPassesNonStringsThrough(): void
@@ -105,12 +105,12 @@ class CsvFormulaEscaperTest extends TestCase
         $row = ['id' => 5, 'active' => true, 'name' => '=abc', 'comment' => null];
         $expected = ['id' => 5, 'active' => true, 'name' => "'=abc", 'comment' => null];
 
-        $this->assertSame($expected, CsvFormulaEscaper::escapeRow($row));
+        $this->assertSame($expected, (new CsvFormulaEscaper())->escapeRow($row));
     }
 
     public function testEscapedValueSurvivesFputcsvRoundTrip(): void
     {
-        $row = CsvFormulaEscaper::escapeRow(['=abc', 'plain']);
+        $row = (new CsvFormulaEscaper())->escapeRow(['=abc', 'plain']);
         $stream = fopen('php://memory', 'r+');
         fputcsv($stream, $row);
         rewind($stream);

@@ -55,7 +55,7 @@ class ZoneCreateService
 
         $ownership = $this->ownership->resolveInputs($request->ownerInput, $request->groupsInput, $request->callerUserId);
         if ($ownership->hasError()) {
-            return ZoneCreateOutcome::refused(ZoneOwnershipFormResolver::errorMessage($ownership), $zoneName);
+            return ZoneCreateOutcome::refused(ZoneCreateFormMessages::ownershipError($ownership), $zoneName);
         }
 
         return $this->createOwned($request, $zoneName, $ownership);
@@ -72,7 +72,7 @@ class ZoneCreateService
     {
         $ownership = $this->ownership->resolveInputs($request->ownerInput, $request->groupsInput, $request->callerUserId);
         if ($ownership->hasError()) {
-            return ZoneBatchCreateOutcome::refused(ZoneOwnershipFormResolver::errorMessage($ownership));
+            return ZoneBatchCreateOutcome::refused(ZoneCreateFormMessages::ownershipError($ownership));
         }
 
         $outcomes = [];

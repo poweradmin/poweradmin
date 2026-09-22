@@ -24,7 +24,6 @@ namespace Poweradmin\Module\EmailPreviews\Controller;
 
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\Mail\EmailTemplateService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Module\EmailPreviews\Service\EmailPreviewService;
 
@@ -33,17 +32,11 @@ use Poweradmin\Module\EmailPreviews\Service\EmailPreviewService;
  */
 class EmailPreviewsController extends BaseController
 {
-    private ?EmailTemplateService $emailTemplateService = null;
     private ?EmailPreviewService $emailPreviewService = null;
-
-    private function emailTemplateService(): EmailTemplateService
-    {
-        return $this->emailTemplateService ??= $this->moduleServices()->emailTemplateService();
-    }
 
     private function emailPreviewService(): EmailPreviewService
     {
-        return $this->emailPreviewService ??= new EmailPreviewService($this->emailTemplateService());
+        return $this->emailPreviewService ??= new EmailPreviewService($this->moduleServices()->emailTemplateService());
     }
 
     public function run(): void

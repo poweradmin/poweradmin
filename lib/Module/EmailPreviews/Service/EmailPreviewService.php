@@ -23,18 +23,15 @@
 namespace Poweradmin\Module\EmailPreviews\Service;
 
 use InvalidArgumentException;
-use Poweradmin\Application\Service\Mail\EmailTemplateService;
+use Poweradmin\Domain\Port\EmailTemplateRendererInterface;
 
 /**
  * Renders each email template with sample data, in light and forced dark mode, for the preview page.
  */
 final class EmailPreviewService
 {
-    private EmailTemplateService $emailTemplateService;
-
-    public function __construct(EmailTemplateService $emailTemplateService)
+    public function __construct(private readonly EmailTemplateRendererInterface $emailTemplateService)
     {
-        $this->emailTemplateService = $emailTemplateService;
     }
 
     public function generateNewAccountPreview(bool $forceDarkMode = false): array

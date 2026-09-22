@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Module\Rdap\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Infrastructure\Network\EnvironmentProxyContext;
 use Poweradmin\Module\Rdap\Service\RdapService;
 use ReflectionClass;
 use ReflectionMethod;
@@ -42,7 +43,7 @@ class RdapServiceTest extends TestCase
             'example' => 'https://example.rdap.server/',
             'test' => 'http://test.rdap.server:8080/',
         ]);
-        $this->rdapService = new RdapService($this->testDataFile);
+        $this->rdapService = new RdapService(new EnvironmentProxyContext(), $this->testDataFile);
     }
 
     protected function tearDown(): void
@@ -169,7 +170,7 @@ class RdapServiceTest extends TestCase
 
     public function testMissingDataFile(): void
     {
-        $rdapService = new RdapService('/path/to/nonexistent/file.php');
+        $rdapService = new RdapService(new EnvironmentProxyContext(), '/path/to/nonexistent/file.php');
 
         $this->assertNull($rdapService->getRdapServer('com'));
         $this->assertFalse($rdapService->hasTld('com'));
@@ -220,7 +221,7 @@ class RdapServiceTest extends TestCase
     public function testGetRdapInfoWithNoServer(): void
     {
         $this->createTestDataFile([]);
-        $emptyService = new RdapService($this->testDataFile);
+        $emptyService = new RdapService(new EnvironmentProxyContext(), $this->testDataFile);
 
         $result = $emptyService->getRdapInfo('example.nonexistent');
 

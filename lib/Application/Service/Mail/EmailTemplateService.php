@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service\Mail;
 
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Port\EmailTemplateRendererInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\Error\LoaderError;
@@ -32,7 +33,7 @@ use Twig\Error\SyntaxError;
 /**
  * Renders the transactional email templates under templates/emails, with custom overrides, through Twig.
  */
-class EmailTemplateService
+class EmailTemplateService implements EmailTemplateRendererInterface
 {
     private ?Environment $twig = null;
     private ConfigurationInterface $config;

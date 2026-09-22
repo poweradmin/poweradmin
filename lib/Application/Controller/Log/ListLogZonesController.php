@@ -26,7 +26,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
-use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 /**
  * Renders the zone log page, limited to owned zones for users without the view-others permission.
@@ -192,9 +191,10 @@ class ListLogZonesController extends AbstractListLogController
 
     protected function writeCsvRows($output, array $parsed): void
     {
-        fputcsv($output, CsvFormulaEscaper::escapeRow(array_keys($parsed[0])));
+        $escaper = $this->services()->csvFormulaEscaper();
+        fputcsv($output, $escaper->escapeRow(array_keys($parsed[0])));
         foreach ($parsed as $row) {
-            fputcsv($output, CsvFormulaEscaper::escapeRow($row));
+            fputcsv($output, $escaper->escapeRow($row));
         }
     }
 }

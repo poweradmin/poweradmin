@@ -20,32 +20,17 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Utility;
+namespace Poweradmin\Domain\Port;
 
 /**
- * Prefixes CSV cell values that start with a formula trigger (=, +, -, @, tab, CR, LF) with a quote.
+ * Merges the outbound HTTP proxy, when one applies to the URL, into a set of
+ * PHP stream context options.
  */
-final class CsvFormulaEscaper
+interface ProxyContextInterface
 {
-    private const FORMULA_TRIGGERS = ['=', '+', '-', '@', "\t", "\r", "\n"];
-
-    public function escape(mixed $value): mixed
-    {
-        if (!is_string($value) || $value === '') {
-            return $value;
-        }
-
-        // Strip only ASCII spaces - tab/CR/LF must remain to count as direct triggers.
-        $trimmed = ltrim($value, ' ');
-        if ($trimmed === '' || !in_array($trimmed[0], self::FORMULA_TRIGGERS, true)) {
-            return $value;
-        }
-
-        return "'" . $value;
-    }
-
-    public function escapeRow(array $row): array
-    {
-        return array_map($this->escape(...), $row);
-    }
+    /**
+     * @param array<string, mixed> $options Stream context options, typically with an 'http' entry
+     * @return array<string, mixed> The options with the proxy settings merged in, or unchanged
+     */
+    public function applyTo(array $options, string $url): array;
 }

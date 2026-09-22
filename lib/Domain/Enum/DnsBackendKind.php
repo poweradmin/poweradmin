@@ -20,32 +20,30 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Utility;
+namespace Poweradmin\Domain\Enum;
+
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
- * Prefixes CSV cell values that start with a formula trigger (=, +, -, @, tab, CR, LF) with a quote.
+ * Where zone data lives: the PowerDNS tables on the Poweradmin database, or a
+ * PowerDNS server reached over its HTTP API. Read from dns.backend before any
+ * backend provider exists, so modules can shape their routes to it.
  */
-final class CsvFormulaEscaper
+enum DnsBackendKind: string
 {
-    private const FORMULA_TRIGGERS = ['=', '+', '-', '@', "\t", "\r", "\n"];
+    case SQL = 'sql';
+    case API = 'api';
 
-    public function escape(mixed $value): mixed
+    /**
+     * Anything other than "api" is the SQL backend, as the provider factory has always read it.
+     */
+    public static function fromConfig(ConfigurationInterface $config): self
     {
-        if (!is_string($value) || $value === '') {
-            return $value;
-        }
-
-        // Strip only ASCII spaces - tab/CR/LF must remain to count as direct triggers.
-        $trimmed = ltrim($value, ' ');
-        if ($trimmed === '' || !in_array($trimmed[0], self::FORMULA_TRIGGERS, true)) {
-            return $value;
-        }
-
-        return "'" . $value;
+        return $config->get('dns', 'backend') === 'api' ? self::API : self::SQL;
     }
 
-    public function escapeRow(array $row): array
+    public function isApi(): bool
     {
-        return array_map($this->escape(...), $row);
+        return $this === self::API;
     }
 }

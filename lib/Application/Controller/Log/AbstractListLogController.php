@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Log;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 /**
  * Shared flow for the log listing pages (API, user, group and zone logs):
@@ -240,13 +239,14 @@ abstract class AbstractListLogController extends BaseController
             $allKeys = array_merge($allKeys, array_keys($row));
         }
         $allKeys = array_unique($allKeys);
-        fputcsv($output, CsvFormulaEscaper::escapeRow($allKeys));
+        $escaper = $this->services()->csvFormulaEscaper();
+        fputcsv($output, $escaper->escapeRow($allKeys));
         foreach ($parsed as $row) {
             $csvRow = [];
             foreach ($allKeys as $key) {
                 $csvRow[] = $row[$key] ?? '';
             }
-            fputcsv($output, CsvFormulaEscaper::escapeRow($csvRow));
+            fputcsv($output, $escaper->escapeRow($csvRow));
         }
     }
 }
