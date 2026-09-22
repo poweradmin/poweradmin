@@ -22,22 +22,16 @@
 
 namespace Poweradmin\Domain\Service\Auth;
 
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
 use Exception;
 use PDOException;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserMfa;
+use Poweradmin\Domain\Port\QrCodeRendererInterface;
+use Poweradmin\Domain\Port\TotpInterface;
 use Poweradmin\Domain\Port\MfaVerificationMailerInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\User\UserTimezoneService;
-use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
-use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
-use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
-use PragmaRX\Google2FA\Google2FA;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use RuntimeException;
@@ -48,7 +42,8 @@ use Poweradmin\Domain\Enum\AuthMethod;
  */
 class MfaService
 {
-    private Google2FA $google2fa;
+    private TotpInterface $totp;
+    private QrCodeRendererInterface $qrCodes;
     private UserMfaRepositoryInterface $userMfaRepository;
     private ConfigurationInterface $configManager;
     private MfaVerificationMailerInterface $mailer;
@@ -62,10 +57,13 @@ class MfaService
         UserMfaRepositoryInterface $userMfaRepository,
         ConfigurationInterface $configManager,
         MfaVerificationMailerInterface $mailer,
+        TotpInterface $totp,
+        QrCodeRendererInterface $qrCodes,
         ?LoggerInterface $logger = null,
         ?UserTimezoneService $userTimezoneService = null
     ) {
-        $this->google2fa = new Google2FA();
+        $this->totp = $totp;
+        $this->qrCodes = $qrCodes;
         $this->userMfaRepository = $userMfaRepository;
         $this->configManager = $configManager;
         $this->mailer = $mailer;
@@ -161,14 +159,10 @@ class MfaService
      *
      * @param int $length Length of the secret key in bytes (16 is standard)
      * @return string Base32-encoded secret key
-     * @throws IncompatibleWithGoogleAuthenticatorException
-     * @throws InvalidCharactersException
-     * @throws SecretKeyTooShortException
      */
     public function generateSecretKey(int $length = 16): string
     {
-        // Use Google2FA's built-in method which generates a Base32-encoded secret
-        $secret = $this->google2fa->generateSecretKey($length);
+        $secret = $this->totp->generateSecret($length);
 
         return $secret;
     }
@@ -376,8 +370,7 @@ class MfaService
             // This helps if device's clock is slightly out of sync (±30 seconds)
             $window = 1;
 
-            // Use the Google2FA library to verify the TOTP code exactly as intended
-            $isValid = $this->google2fa->verifyKey($secret, $code, $window);
+            $isValid = $this->totp->verify($secret, $code, $window);
 
             if ($isValid) {
                 $this->logger->debug('Valid TOTP code for user ID: {userId}', ['userId' => $userId]);
@@ -432,25 +425,12 @@ class MfaService
         // Let's not modify the secret at all - use it exactly as provided
         // This ensures compatibility with what the verification expects
 
-        // Generate the otpauth URL using the Google2FA library
-        $qrCodeUrl = $this->google2fa->getQRCodeUrl($appName, $email, $secret);
-
-        // Make sure the issuer parameter is included in the URL - this is critical for compatibility
-        if (strpos($qrCodeUrl, 'issuer=') === false) {
-            $qrCodeUrl .= (strpos($qrCodeUrl, '?') !== false ? '&' : '?') . 'issuer=' . urlencode($appName);
-        }
+        $qrCodeUrl = $this->totp->provisioningUri($appName, $email, $secret);
 
         // Log for audit
         $this->logger->info('Generated QR code for user with email: {email}', ['email' => $email]);
 
-        // Create a QR code renderer with increased size for better scanability
-        $renderer = new ImageRenderer(
-            new RendererStyle(240), // Increased size from 200 to 240
-            new SvgImageBackEnd()
-        );
-
-        $writer = new Writer($renderer);
-        return $writer->writeString($qrCodeUrl);
+        return $this->qrCodes->renderSvg($qrCodeUrl);
     }
 
     /**

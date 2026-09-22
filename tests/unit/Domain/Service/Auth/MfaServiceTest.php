@@ -28,6 +28,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Infrastructure\Auth\BaconQrCodeRenderer;
+use Poweradmin\Infrastructure\Auth\Google2FaTotp;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Port\MfaVerificationMailerInterface;
 use Poweradmin\Domain\Model\UserMfa;
@@ -66,7 +68,9 @@ class MfaServiceTest extends TestCase
         $this->service = new MfaService(
             $this->userMfaRepository,
             $this->configManager,
-            $this->mailService
+            $this->mailService,
+            new Google2FaTotp(),
+            new BaconQrCodeRenderer()
         );
     }
 

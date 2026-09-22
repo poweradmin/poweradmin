@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Service\Factory;
 
 use PDO;
+use Poweradmin\Infrastructure\Auth\BaconQrCodeRenderer;
+use Poweradmin\Infrastructure\Auth\Google2FaTotp;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
@@ -147,6 +149,8 @@ final class AuthServices
             $this->userMfaRepository(),
             $this->config,
             new MfaVerificationMailer($this->mailService(), $this->config),
+            new Google2FaTotp(),
+            new BaconQrCodeRenderer(),
             null,
             $this->services->userTimezoneService()
         );
