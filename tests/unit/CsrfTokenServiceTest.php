@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 #[CoversClass(CsrfTokenService::class)]
 class CsrfTokenServiceTest extends TestCase
@@ -20,7 +21,7 @@ class CsrfTokenServiceTest extends TestCase
             $_SESSION = [];
         }
 
-        $this->service = new CsrfTokenService();
+        $this->service = new CsrfTokenService(new PhpSession());
     }
 
     protected function tearDown(): void

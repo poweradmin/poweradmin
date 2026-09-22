@@ -36,6 +36,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Every handler of /api/internal/user-preferences answers with a returned
@@ -71,7 +72,7 @@ class UserPreferencesControllerTest extends TestCase
 
         (new ReflectionProperty($controller, 'request'))->setValue($controller, $request);
         (new ReflectionProperty($controller, 'userPreferenceService'))->setValue($controller, $this->preferences);
-        (new ReflectionProperty($controller, 'userContextService'))->setValue($controller, new UserContextService());
+        (new ReflectionProperty($controller, 'userContextService'))->setValue($controller, new UserContextService(new PhpSession()));
 
         return (new ReflectionMethod($controller, 'respond'))->invoke($controller);
     }

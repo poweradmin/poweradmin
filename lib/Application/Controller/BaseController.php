@@ -58,6 +58,8 @@ use Poweradmin\Application\Web\PageRenderer;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Poweradmin\Domain\Port\SessionInterface;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Base for every web controller: config, database, session, permissions, CSRF, validation and Twig rendering.
@@ -74,6 +76,7 @@ abstract class BaseController
     protected MessageService $messageService;
     protected ConfigurationInterface $config;
     private UserContextService $userContextService;
+    private SessionInterface $session;
     private string $pageTitle = '';
     protected LoggerInterface $logger;
     private ?ControllerServiceFactory $serviceFactory = null;
@@ -112,9 +115,10 @@ abstract class BaseController
         $this->requestData = $request;
         $this->httpRequest = $environment->httpRequest ?? new HttpRequest();
 
-        $this->csrfTokenService = $environment->csrfTokenService ?? new CsrfTokenService();
-        $this->messageService = $environment->messageService ?? new MessageService();
-        $this->userContextService = $environment->userContextService ?? new UserContextService();
+        $this->session = $environment->session ?? new PhpSession();
+        $this->csrfTokenService = $environment->csrfTokenService ?? new CsrfTokenService($this->session);
+        $this->userContextService = $environment->userContextService ?? new UserContextService($this->session);
+        $this->messageService = $environment->messageService ?? new MessageService($this->userContextService);
 
         // Every state-changing web request is token-checked here rather than in each
         // controller, so a handler cannot be written without the guard
@@ -214,10 +218,10 @@ abstract class BaseController
      */
     protected function getPdnsCapabilities(): PdnsCapabilities
     {
-        $info = PdnsVersionService::getCachedInfo($_SESSION ?? []);
+        $info = PdnsVersionService::getCachedInfo($this->session);
         if ($info === null) {
             $this->refreshPdnsCapabilities();
-            $info = PdnsVersionService::getCachedInfo($_SESSION ?? [], true);
+            $info = PdnsVersionService::getCachedInfo($this->session, true);
         }
         return PdnsCapabilities::fromServerInfo($info);
     }
@@ -254,7 +258,7 @@ abstract class BaseController
      */
     protected function refreshPdnsCapabilities(): void
     {
-        PdnsVersionService::refreshFromConfig($this->config, $this->logger, $_SESSION);
+        PdnsVersionService::refreshFromConfig($this->config, $this->logger, $this->session);
     }
 
     /**
@@ -365,7 +369,7 @@ abstract class BaseController
      */
     protected function services(): ControllerServiceFactory
     {
-        return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger, new SessionActor());
+        return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger, new SessionActor($this->session), $this->session);
     }
 
     /**
@@ -624,6 +628,14 @@ abstract class BaseController
     }
 
     /**
+     * The request's session, shared by every collaborator this controller builds.
+     */
+    protected function session(): SessionInterface
+    {
+        return $this->session;
+    }
+
+    /**
      * Get the user context service
      *
      * @return UserContextService
@@ -756,7 +768,7 @@ abstract class BaseController
             $this->moduleRegistry,
             $this->isApiBackend(),
             $this->hasPermission(...),
-            static fn(): ?array => PdnsVersionService::getCachedInfo($_SESSION ?? []),
+            fn(): ?array => PdnsVersionService::getCachedInfo($this->session),
             fn(): array => $this->db instanceof DebugPDO ? $this->db->getQueries() : [],
             $userId !== null && $this->services()->userPreferenceService()->getWideLayout($userId),
             fn(): int => $this->pendingChangeRequestCount()

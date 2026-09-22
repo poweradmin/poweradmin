@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Port\ApiStatusRecorderInterface;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 class ApiStatusServiceTest extends TestCase
 {
@@ -37,7 +38,7 @@ class ApiStatusServiceTest extends TestCase
 
     public function testImplementsBothTheReadAndTheWriteContract(): void
     {
-        $service = new ApiStatusService();
+        $service = new ApiStatusService(new PhpSession());
 
         $this->assertInstanceOf(ApiStatusInterface::class, $service);
         $this->assertInstanceOf(ApiStatusRecorderInterface::class, $service);
@@ -45,12 +46,12 @@ class ApiStatusServiceTest extends TestCase
 
     public function testGetLastErrorReturnsNullWhenNoneRecorded(): void
     {
-        $this->assertNull((new ApiStatusService())->getLastError());
+        $this->assertNull((new ApiStatusService(new PhpSession()))->getLastError());
     }
 
     public function testRecordErrorStoresMessageContextAndTimestamp(): void
     {
-        $service = new ApiStatusService();
+        $service = new ApiStatusService(new PhpSession());
         $service->recordError('boom', ['endpoint' => 'zones', 'http_code' => 500]);
 
         $last = $service->getLastError();
@@ -63,7 +64,7 @@ class ApiStatusServiceTest extends TestCase
 
     public function testRecordErrorOverwritesPrevious(): void
     {
-        $service = new ApiStatusService();
+        $service = new ApiStatusService(new PhpSession());
         $service->recordError('first', ['endpoint' => 'zones']);
         $service->recordError('second', ['endpoint' => 'servers']);
 
@@ -74,7 +75,7 @@ class ApiStatusServiceTest extends TestCase
 
     public function testClearErrorRemovesStoredError(): void
     {
-        $service = new ApiStatusService();
+        $service = new ApiStatusService(new PhpSession());
         $service->recordError('boom');
         $this->assertNotNull($service->getLastError());
 
@@ -84,7 +85,7 @@ class ApiStatusServiceTest extends TestCase
 
     public function testClearErrorIsSafeWhenNothingStored(): void
     {
-        $service = new ApiStatusService();
+        $service = new ApiStatusService(new PhpSession());
         $service->clearError();
         $this->assertNull($service->getLastError());
     }

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Session;
 
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
@@ -35,6 +36,10 @@ class FormStateService
     private const SESSION_KEY = 'form_state';
     private const EXPIRY_TIME = 300; // 5 minutes in seconds
 
+    public function __construct(private readonly SessionInterface $session)
+    {
+    }
+
     /**
      * Save form data to the session with an expiry time
      *
@@ -44,14 +49,12 @@ class FormStateService
      */
     public function saveFormData(string $formId, array $data): void
     {
-        if (!isset($_SESSION[self::SESSION_KEY])) {
-            $_SESSION[self::SESSION_KEY] = [];
-        }
-
-        $_SESSION[self::SESSION_KEY][$formId] = [
+        $forms = $this->forms();
+        $forms[$formId] = [
             'data' => $data,
             'expires' => time() + self::EXPIRY_TIME
         ];
+        $this->session->set(self::SESSION_KEY, $forms);
     }
 
     /**
@@ -64,20 +67,23 @@ class FormStateService
     {
         $this->cleanupExpiredData();
 
-        if (!isset($_SESSION[self::SESSION_KEY][$formId])) {
+        $forms = $this->forms();
+        if (!isset($forms[$formId])) {
             return null;
         }
 
-        $formState = $_SESSION[self::SESSION_KEY][$formId];
+        $formState = $forms[$formId];
 
         // Check if the data has expired
         if (time() > $formState['expires']) {
-            unset($_SESSION[self::SESSION_KEY][$formId]);
+            unset($forms[$formId]);
+            $this->session->set(self::SESSION_KEY, $forms);
             return null;
         }
 
         // Refresh the expiry time
-        $_SESSION[self::SESSION_KEY][$formId]['expires'] = time() + self::EXPIRY_TIME;
+        $forms[$formId]['expires'] = time() + self::EXPIRY_TIME;
+        $this->session->set(self::SESSION_KEY, $forms);
 
         // Return the data without removing it
         return $formState['data'];
@@ -91,8 +97,10 @@ class FormStateService
      */
     public function clearFormData(string $formId): void
     {
-        if (isset($_SESSION[self::SESSION_KEY][$formId])) {
-            unset($_SESSION[self::SESSION_KEY][$formId]);
+        $forms = $this->forms();
+        if (isset($forms[$formId])) {
+            unset($forms[$formId]);
+            $this->session->set(self::SESSION_KEY, $forms);
         }
     }
 
@@ -103,16 +111,28 @@ class FormStateService
      */
     private function cleanupExpiredData(): void
     {
-        if (!isset($_SESSION[self::SESSION_KEY])) {
+        if (!$this->session->has(self::SESSION_KEY)) {
             return;
         }
 
         $now = time();
-        foreach ($_SESSION[self::SESSION_KEY] as $formId => $formState) {
+        $forms = $this->forms();
+        foreach ($forms as $formId => $formState) {
             if ($now > $formState['expires']) {
-                unset($_SESSION[self::SESSION_KEY][$formId]);
+                unset($forms[$formId]);
             }
         }
+        $this->session->set(self::SESSION_KEY, $forms);
+    }
+
+    /**
+     * @return array<string, array{data: array, expires: int}> The stored forms, keyed by form id
+     */
+    private function forms(): array
+    {
+        $forms = $this->session->get(self::SESSION_KEY, []);
+
+        return is_array($forms) ? $forms : [];
     }
 
     /**
@@ -137,7 +157,7 @@ class FormStateService
      */
     public function rememberAddRecordForm(array $values): void
     {
-        $_SESSION[SessionKeys::ADD_RECORD_LAST_DATA] = $values;
+        $this->session->set(SessionKeys::ADD_RECORD_LAST_DATA, $values);
     }
 
     /**
@@ -147,7 +167,7 @@ class FormStateService
      */
     public function rememberAddRecordError(array $error): void
     {
-        $_SESSION[SessionKeys::ADD_RECORD_ERROR] = $error;
+        $this->session->set(SessionKeys::ADD_RECORD_ERROR, $error);
     }
 
     /**
@@ -157,11 +177,11 @@ class FormStateService
      */
     public function addRecordFormWithError(): ?array
     {
-        if (!isset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]) || !isset($_SESSION[SessionKeys::ADD_RECORD_ERROR])) {
+        if (!$this->session->has(SessionKeys::ADD_RECORD_LAST_DATA) || !$this->session->has(SessionKeys::ADD_RECORD_ERROR)) {
             return null;
         }
 
-        return array_merge($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+        return array_merge($this->session->get(SessionKeys::ADD_RECORD_LAST_DATA), $this->session->get(SessionKeys::ADD_RECORD_ERROR));
     }
 
     /**
@@ -169,8 +189,8 @@ class FormStateService
      */
     public function forgetAddRecordForm(): void
     {
-        unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
-        unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+        $this->session->remove(SessionKeys::ADD_RECORD_LAST_DATA);
+        $this->session->remove(SessionKeys::ADD_RECORD_ERROR);
     }
 
     /**
@@ -179,11 +199,11 @@ class FormStateService
      */
     public function trackAddRecordZone(int $zoneId): void
     {
-        if (isset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]) && $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] != $zoneId) {
+        if ($this->session->has(SessionKeys::ADD_RECORD_ZONE_ID) && $this->session->get(SessionKeys::ADD_RECORD_ZONE_ID) != $zoneId) {
             $this->forgetAddRecordForm();
-            unset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]);
+            $this->session->remove(SessionKeys::ADD_RECORD_ZONE_ID);
         }
 
-        $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] = $zoneId;
+        $this->session->set(SessionKeys::ADD_RECORD_ZONE_ID, $zoneId);
     }
 }

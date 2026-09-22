@@ -37,6 +37,7 @@ use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 #[CoversClass(ApiKeyService::class)]
 class ApiKeyServiceTest extends PermissionServiceTestCase
@@ -346,7 +347,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
             $this->config,
             $this->createMock(PermissionService::class),
             StubActor::nobody(),
-            new UserContextService()
+            new UserContextService(new PhpSession())
         );
     }
 
@@ -368,7 +369,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
             $this->config,
             $this->buildPermissionService(permissionsByUser: [7 => $permissions], adminUserIds: $isAdmin ? [7] : []),
             new StubActor(7),
-            new UserContextService()
+            new UserContextService(new PhpSession())
         );
     }
 

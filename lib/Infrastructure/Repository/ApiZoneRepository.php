@@ -39,6 +39,7 @@ use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * API-backend zone repository; reads zone state through PowerDNS and ownership from zones and zones_groups.
@@ -140,7 +141,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         // the Forward Zones page first. Throttled to once per 5 minutes. Reads
         // the same zone-list variant as the stats call below so both share one
         // response.
-        (new ZoneSyncService($this->db, $this->backendProvider))->syncIfStale($needsDnssec);
+        (new ZoneSyncService($this->db, $this->backendProvider, new PhpSession()))->syncIfStale($needsDnssec);
 
         // Build base query from local zones table
         if ($countOnly) {

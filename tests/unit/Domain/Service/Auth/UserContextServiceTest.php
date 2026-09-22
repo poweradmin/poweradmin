@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 class UserContextServiceTest extends TestCase
 {
@@ -19,7 +20,7 @@ class UserContextServiceTest extends TestCase
 
     public function testReturnsNullWhenTheSessionHasNoUser(): void
     {
-        $service = new UserContextService();
+        $service = new UserContextService(new PhpSession());
         $this->assertNull($service->getLoggedInUserId());
         $this->assertNull($service->getLoggedInUsername());
         $this->assertFalse($service->isAuthenticated());
@@ -30,7 +31,7 @@ class UserContextServiceTest extends TestCase
         $_SESSION['userid'] = 7;
         $_SESSION['userlogin'] = 'web-alice';
 
-        $service = new UserContextService();
+        $service = new UserContextService(new PhpSession());
         $this->assertSame(7, $service->getLoggedInUserId());
         $this->assertSame('web-alice', $service->getLoggedInUsername());
         $this->assertTrue($service->isAuthenticated());
@@ -40,6 +41,6 @@ class UserContextServiceTest extends TestCase
     {
         $_SESSION['userid'] = 0;
 
-        $this->assertFalse((new UserContextService())->isAuthenticated());
+        $this->assertFalse((new UserContextService(new PhpSession()))->isAuthenticated());
     }
 }

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Session;
 
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
@@ -29,6 +30,10 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
  */
 class SessionService
 {
+    public function __construct(private readonly SessionInterface $session)
+    {
+    }
+
     public function startSession(FlashMessage $sessionEntity): void
     {
         $this->setSessionData($sessionEntity);
@@ -37,42 +42,42 @@ class SessionService
     public function endSession(): void
     {
         // Explicitly clear MFA-related session variables
-        unset($_SESSION[AuthFlowSessionKeys::MFA_STATE]);
-        if (isset($_SESSION[AuthFlowSessionKeys::MFA_REQUIRED])) {
-            unset($_SESSION[AuthFlowSessionKeys::MFA_REQUIRED]);
+        $this->session->remove(AuthFlowSessionKeys::MFA_STATE);
+        if ($this->session->has(AuthFlowSessionKeys::MFA_REQUIRED)) {
+            $this->session->remove(AuthFlowSessionKeys::MFA_REQUIRED);
         }
 
         // Clear authentication status
-        if (isset($_SESSION[SessionKeys::AUTHENTICATED])) {
-            unset($_SESSION[SessionKeys::AUTHENTICATED]);
+        if ($this->session->has(SessionKeys::AUTHENTICATED)) {
+            $this->session->remove(SessionKeys::AUTHENTICATED);
         }
 
         // Handle MFA tokens if present
-        if (isset($_SESSION[AuthFlowSessionKeys::MFA_TOKEN])) {
-            unset($_SESSION[AuthFlowSessionKeys::MFA_TOKEN]);
+        if ($this->session->has(AuthFlowSessionKeys::MFA_TOKEN)) {
+            $this->session->remove(AuthFlowSessionKeys::MFA_TOKEN);
         }
 
         // Clear user data
-        if (isset($_SESSION[SessionKeys::USERID])) {
-            unset($_SESSION[SessionKeys::USERID]);
+        if ($this->session->has(SessionKeys::USERID)) {
+            $this->session->remove(SessionKeys::USERID);
         }
-        if (isset($_SESSION[SessionKeys::USERLOGIN])) {
-            unset($_SESSION[SessionKeys::USERLOGIN]);
+        if ($this->session->has(SessionKeys::USERLOGIN)) {
+            $this->session->remove(SessionKeys::USERLOGIN);
         }
-        if (isset($_SESSION[SessionKeys::USERPWD])) {
-            unset($_SESSION[SessionKeys::USERPWD]);
+        if ($this->session->has(SessionKeys::USERPWD)) {
+            $this->session->remove(SessionKeys::USERPWD);
         }
 
         // Regenerate session ID and unset all variables only if session is active
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
-            session_unset();
+        if ($this->session->isActive()) {
+            $this->session->regenerateId(true);
+            $this->session->clear();
         }
     }
 
     public function setSessionData(FlashMessage $sessionEntity): void
     {
-        $_SESSION[SessionKeys::LOGIN_MESSAGE] = $sessionEntity->getMessage();
-        $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE] = $sessionEntity->getType();
+        $this->session->set(SessionKeys::LOGIN_MESSAGE, $sessionEntity->getMessage());
+        $this->session->set(SessionKeys::LOGIN_MESSAGE_TYPE, $sessionEntity->getType());
     }
 }

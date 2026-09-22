@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\ApiKeyActor;
 use Poweradmin\Application\Service\Auth\RequestActor;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * The API actor normalises what the key lookup hands it the way the old
@@ -77,7 +78,7 @@ class ApiKeyActorTest extends TestCase
     {
         $_SESSION['userid'] = 7;
         $_SESSION['userlogin'] = 'web-alice';
-        $actor = new RequestActor(new SessionActor());
+        $actor = new RequestActor(new SessionActor(new PhpSession()));
         $this->assertSame(7, $actor->userId());
         $this->assertSame('web-alice', $actor->username());
 

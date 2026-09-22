@@ -43,6 +43,7 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Pins what LdapAuthenticator decides on the paths that never reach the
@@ -152,10 +153,11 @@ class LdapAuthenticatorOutcomeTest extends TestCase
             $this->createMock(CsrfTokenService::class),
             new NullLogger(),
             $this->attempts,
-            new UserContextService(),
+            new UserContextService(new PhpSession()),
             new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
             $this->createMock(MfaService::class),
-            $this->createMock(UserProvisioningService::class)
+            $this->createMock(UserProvisioningService::class),
+            new PhpSession()
         );
     }
 }

@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\FormStateService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 #[CoversClass(FormStateService::class)]
 class FormStateServiceTest extends TestCase
@@ -28,7 +29,7 @@ class FormStateServiceTest extends TestCase
             $_SESSION = [];
         }
 
-        $this->service = new FormStateService();
+        $this->service = new FormStateService(new PhpSession());
     }
 
     /**

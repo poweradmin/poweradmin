@@ -141,9 +141,9 @@ class ListForwardZonesController extends BaseController
             $letter = $this->httpRequest->getQueryParam('letter');
             if ($letter !== null) {
                 $letter_start = $letter;
-                $_SESSION[SessionKeys::LETTER] = $letter;
-            } elseif (isset($_SESSION[SessionKeys::LETTER])) {
-                $letter_start = $_SESSION[SessionKeys::LETTER];
+                $this->session()->set(SessionKeys::LETTER, $letter);
+            } elseif ($this->session()->has(SessionKeys::LETTER)) {
+                $letter_start = $this->session()->get(SessionKeys::LETTER);
             }
         }
 

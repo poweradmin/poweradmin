@@ -40,6 +40,7 @@ use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Version;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Renders the shared page chrome (header, footer, Twig globals) around
@@ -372,7 +373,7 @@ final class PageRenderer implements PageOutputInterface
 
             // Surface PowerDNS API errors on every page, not just the dashboard.
             if ($perm_is_godlike && $this->isApiBackend) {
-                $vars['api_error'] = (new ApiStatusService())->getLastError();
+                $vars['api_error'] = (new ApiStatusService(new PhpSession()))->getLastError();
             }
         }
 

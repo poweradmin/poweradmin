@@ -17,7 +17,7 @@ $config = $context->config;
 
 // The same per-request service graph the web controllers use, so the backend
 // provider, repositories and permission cache are built once
-$services = $context->services(new SessionActor());
+$services = $context->services(new SessionActor($context->session));
 $repository = $services->repositoryFactory()->createDynamicDnsRepository($services->soaRecordManager());
 $updateService = DynamicDnsRequestFactory::createUpdateService($context->database(), $config, $repository, $services->permissionService());
 

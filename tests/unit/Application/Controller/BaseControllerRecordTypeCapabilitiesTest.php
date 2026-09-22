@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Covers BaseController::getRecordTypeCapabilities(), which decides whether
@@ -128,6 +129,10 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         $loggerProperty = (new ReflectionClass(BaseController::class))->getProperty('logger');
         $loggerProperty->setAccessible(true);
         $loggerProperty->setValue($controller, new NullLogger());
+
+        $sessionProperty = (new ReflectionClass(BaseController::class))->getProperty('session');
+        $sessionProperty->setAccessible(true);
+        $sessionProperty->setValue($controller, new PhpSession());
 
         $method = (new ReflectionClass(BaseController::class))->getMethod('getRecordTypeCapabilities');
         $method->setAccessible(true);

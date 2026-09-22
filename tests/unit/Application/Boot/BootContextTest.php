@@ -31,6 +31,7 @@ use Psr\Log\NullLogger;
 use TestHelpers\BootContexts;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\StubActor;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class BootContextTest extends TestCase
 {
@@ -40,7 +41,7 @@ class BootContextTest extends TestCase
         $logger = new NullLogger();
         $registry = new ModuleRegistry($config);
 
-        $context = new BootContext($config, $logger, $registry);
+        $context = new BootContext($config, $logger, $registry, new ArraySession());
 
         $this->assertSame($config, $context->config);
         $this->assertSame($logger, $context->logger);

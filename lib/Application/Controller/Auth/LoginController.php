@@ -45,7 +45,7 @@ class LoginController extends BaseController
 
     private function csrfTokenService(): CsrfTokenService
     {
-        return $this->csrfTokenService ??= new CsrfTokenService();
+        return $this->csrfTokenService ??= new CsrfTokenService($this->session());
     }
 
     private function samlService(): SamlService
@@ -57,7 +57,8 @@ class LoginController extends BaseController
             $this->logger,
             $this->services()->authenticationService(),
             $this->services()->auditService(),
-            $this->services()->mfaService()
+            $this->services()->mfaService(),
+            $this->session()
         );
     }
 
@@ -72,7 +73,7 @@ class LoginController extends BaseController
 
     public function run(): void
     {
-        if (isset($_SESSION[SessionKeys::USERID])) {
+        if ($this->session()->has(SessionKeys::USERID)) {
             $this->redirect('/');
             return;
         }
@@ -89,16 +90,17 @@ class LoginController extends BaseController
 
     private function getSessionMessages(): array
     {
-        $msg = $_SESSION[SessionKeys::LOGIN_MESSAGE] ?? '';
-        $type = $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE] ?? '';
-        unset($_SESSION[SessionKeys::LOGIN_MESSAGE], $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE]);
+        $msg = $this->session()->get(SessionKeys::LOGIN_MESSAGE, '');
+        $type = $this->session()->get(SessionKeys::LOGIN_MESSAGE_TYPE, '');
+        $this->session()->remove(SessionKeys::LOGIN_MESSAGE);
+        $this->session()->remove(SessionKeys::LOGIN_MESSAGE_TYPE);
         return [$msg, $type];
     }
 
     private function renderLogin(string $msg, string $type): void
     {
         $loginToken = $this->csrfTokenService()->generateToken();
-        $_SESSION[SessionKeys::LOGIN_TOKEN] = $loginToken;
+        $this->session()->set(SessionKeys::LOGIN_TOKEN, $loginToken);
 
         $oidcEnabled = $this->config->get('oidc', 'enabled', false);
         $oidcProviders = $oidcEnabled ? $this->buildOidcProviders() : [];

@@ -27,13 +27,14 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Psr\Log\LoggerInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Psr\Log\NullLogger;
 
 /**
  * Detects and caches the connected PowerDNS server version so admins can see
  * it in the UI and so error reports include it without a manual lookup.
  *
- * Cached in the per-user array the caller hands in (the session, in practice)
+ * Cached in the store the caller hands in (the session, in practice)
  * with a 5-minute TTL to avoid an extra API round-trip on every request.
  * Detection failures are swallowed - callers must treat the absence of a
  * cached value as "version unknown", not as an error.
@@ -46,17 +47,16 @@ class PdnsVersionService
 
     private PowerdnsApiClient $apiClient;
     private LoggerInterface $logger;
-    /** @var array<string, mixed> */
-    private array $cache;
+    private SessionInterface $cache;
 
     /**
-     * @param array<string, mixed> $cache Where the server info and retry stamp live, normally $_SESSION
+     * @param SessionInterface $cache Where the server info and retry stamp live, the session in practice
      */
-    public function __construct(PowerdnsApiClient $apiClient, ?LoggerInterface $logger = null, array &$cache = [])
+    public function __construct(PowerdnsApiClient $apiClient, ?LoggerInterface $logger, SessionInterface $cache)
     {
         $this->apiClient = $apiClient;
         $this->logger = $logger ?? new NullLogger();
-        $this->cache = &$cache;
+        $this->cache = $cache;
     }
 
     /**
@@ -66,7 +66,7 @@ class PdnsVersionService
      */
     public function detect(): ?array
     {
-        $cached = $this->cache[self::SESSION_KEY] ?? null;
+        $cached = $this->cache->get(self::SESSION_KEY);
         if (is_array($cached) && isset($cached['fetched_at']) && (time() - $cached['fetched_at']) < self::TTL_SECONDS) {
             return $cached['info'] ?? null;
         }
@@ -102,10 +102,10 @@ class PdnsVersionService
             ]);
         }
 
-        $this->cache[self::SESSION_KEY] = [
+        $this->cache->set(self::SESSION_KEY, [
             'info' => $info,
             'fetched_at' => time(),
-        ];
+        ]);
 
         return $info;
     }
@@ -115,20 +115,20 @@ class PdnsVersionService
      * per cache. A no-op when no API is configured; failures leave the previous
      * entry in place, so callers never see an error from here.
      *
-     * @param array<string, mixed> $cache Normally $_SESSION
+     * @param SessionInterface $cache Normally the request's session
      */
-    public static function refreshFromConfig(ConfigurationInterface $config, LoggerInterface $logger, array &$cache): void
+    public static function refreshFromConfig(ConfigurationInterface $config, LoggerInterface $logger, SessionInterface $cache): void
     {
         $apiUrl = (string) $config->get('pdns_api', 'url', '');
         $apiKey = (string) $config->get('pdns_api', 'key', '');
         if ($apiUrl === '' || $apiKey === '') {
             return;
         }
-        $last = $cache[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] ?? 0;
+        $last = $cache->get(SessionKeys::PDNS_VERSION_LAST_ATTEMPT, 0);
         if ((time() - (int) $last) < self::RETRY_SECONDS) {
             return;
         }
-        $cache[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] = time();
+        $cache->set(SessionKeys::PDNS_VERSION_LAST_ATTEMPT, time());
         try {
             $apiClient = DnsBackendProviderFactory::createApiClient($config, $logger);
             if ($apiClient !== null) {
@@ -159,12 +159,12 @@ class PdnsVersionService
      * that get null fall through to detect() and refresh the cache. Pass
      * $allowExpired to read the old entry anyway once that refresh has failed.
      *
-     * @param array<string, mixed> $cache Normally $_SESSION
+     * @param SessionInterface $cache Normally the request's session
      * @return array{version: string, daemon_type: string, id: string, backends?: string, views?: string}|null
      */
-    public static function getCachedInfo(array $cache, bool $allowExpired = false): ?array
+    public static function getCachedInfo(SessionInterface $cache, bool $allowExpired = false): ?array
     {
-        $cached = $cache[self::SESSION_KEY] ?? null;
+        $cached = $cache->get(self::SESSION_KEY);
         if (!is_array($cached)) {
             return null;
         }

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Auth;
 
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
@@ -30,6 +31,10 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
 class CsrfTokenService
 {
     public const TOKEN_LENGTH = 40;
+
+    public function __construct(private readonly SessionInterface $session)
+    {
+    }
 
     public function generateToken(): string
     {
@@ -41,21 +46,21 @@ class CsrfTokenService
 
     public function getToken(string $session_var = SessionKeys::CSRF_TOKEN): string
     {
-        return $_SESSION[$session_var] ?? '';
+        return $this->session->get($session_var, '');
     }
 
     public function validateToken(string $token, string $session_var = SessionKeys::CSRF_TOKEN): bool
     {
-        if (!isset($_SESSION[$session_var])) {
+        if (!$this->session->has($session_var)) {
             return false;
         }
-        return hash_equals($_SESSION[$session_var], $token);
+        return hash_equals($this->session->get($session_var), $token);
     }
 
     public function ensureTokenExists(string $session_var = SessionKeys::CSRF_TOKEN): void
     {
-        if (!isset($_SESSION[$session_var]) || $_SESSION[$session_var] === '') {
-            $_SESSION[$session_var] = $this->generateToken();
+        if (!$this->session->has($session_var) || $this->session->get($session_var) === '') {
+            $this->session->set($session_var, $this->generateToken());
         }
     }
 
@@ -65,6 +70,6 @@ class CsrfTokenService
      */
     public function regenerateToken(string $session_var = SessionKeys::CSRF_TOKEN): void
     {
-        $_SESSION[$session_var] = $this->generateToken();
+        $this->session->set($session_var, $this->generateToken());
     }
 }

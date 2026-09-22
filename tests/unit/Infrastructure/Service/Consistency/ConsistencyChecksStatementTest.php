@@ -37,6 +37,7 @@ use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Pins the statements each strategy issues against a mocked PDO: the SQL owner
@@ -59,12 +60,12 @@ class ConsistencyChecksStatementTest extends TestCase
             fn(string $section, string $key, mixed $default = null) => $default
         );
         // ApiStatusService is session-backed; start each test with a clean slate.
-        (new ApiStatusService())->clearError();
+        (new ApiStatusService(new PhpSession()))->clearError();
     }
 
     protected function tearDown(): void
     {
-        (new ApiStatusService())->clearError();
+        (new ApiStatusService(new PhpSession()))->clearError();
         parent::tearDown();
     }
 
@@ -82,7 +83,7 @@ class ConsistencyChecksStatementTest extends TestCase
 
     private function apiChecks(DnsBackendProviderInterface $backend, ?ApiStatusInterface $apiStatus = null): ConsistencyCheckerInterface
     {
-        return new ApiConsistencyChecks($this->db, $backend, $apiStatus ?? new ApiStatusService(), new ZoneOwnerRepair($this->db));
+        return new ApiConsistencyChecks($this->db, $backend, $apiStatus ?? new ApiStatusService(new PhpSession()), new ZoneOwnerRepair($this->db));
     }
 
     #[Test]
@@ -237,7 +238,7 @@ class ConsistencyChecksStatementTest extends TestCase
     {
         // getZones() swallows an API outage into an empty list but records the error.
         $backend = $this->apiBackend([]);
-        (new ApiStatusService())->recordError('connection refused', ['endpoint' => 'zones']);
+        (new ApiStatusService(new PhpSession()))->recordError('connection refused', ['endpoint' => 'zones']);
 
         $service = $this->apiChecks($backend);
 
@@ -260,7 +261,7 @@ class ConsistencyChecksStatementTest extends TestCase
 
         // ...but the per-zone SOA read fails and is swallowed into an empty list.
         $backend->method('getRecordsByZoneId')->willReturnCallback(function () {
-            (new ApiStatusService())->recordError('502 Bad Gateway', ['endpoint' => 'zone']);
+            (new ApiStatusService(new PhpSession()))->recordError('502 Bad Gateway', ['endpoint' => 'zone']);
             return [];
         });
 

@@ -32,6 +32,7 @@ use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * The template writes used to flash their reason into the session; now they
@@ -162,7 +163,7 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
             $this->config,
             $backend,
             $this->permissionService(),
-            new SessionActor(),
+            new SessionActor(new PhpSession()),
             new NullLogger()
         );
     }

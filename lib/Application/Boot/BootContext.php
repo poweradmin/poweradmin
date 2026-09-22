@@ -27,6 +27,7 @@ use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Psr\Log\LoggerInterface;
 
@@ -40,12 +41,14 @@ final class BootContext
 
     /**
      * @param ModuleRegistry $moduleRegistry Already loaded; routes, templates and capabilities come from it
+     * @param SessionInterface $session The process's one session, opened by Bootstrap
      * @param PDO|null $db An open connection, or null to open one from the configuration on first use
      */
     public function __construct(
         public readonly ConfigurationInterface $config,
         public readonly LoggerInterface $logger,
         public readonly ModuleRegistry $moduleRegistry,
+        public readonly SessionInterface $session,
         ?PDO $db = null
     ) {
         $this->db = $db;
@@ -65,6 +68,6 @@ final class BootContext
      */
     public function services(ActorInterface $actor): ControllerServiceFactory
     {
-        return new ControllerServiceFactory($this->database(), $this->config, $this->logger, $actor);
+        return new ControllerServiceFactory($this->database(), $this->config, $this->logger, $actor, $this->session);
     }
 }

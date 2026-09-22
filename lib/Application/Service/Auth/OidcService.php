@@ -37,6 +37,7 @@ use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 use RuntimeException;
 use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Domain\Port\SessionInterface;
 
 /**
  * Runs the OIDC login flow: builds the authorization redirect and turns the callback into a session.
@@ -56,6 +57,7 @@ final class OidcService
     private Request $request;
     private CsrfTokenService $csrfTokenService;
     private MfaService $mfaService;
+    private SessionInterface $session;
     private AuditService $auditService;
 
     public function __construct(
@@ -66,6 +68,7 @@ final class OidcService
         AuthenticationService $authenticationService,
         AuditService $auditService,
         MfaService $mfaService,
+        SessionInterface $session,
         ?Request $request = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
@@ -76,7 +79,8 @@ final class OidcService
         $this->request = $request ?: new Request();
 
         $this->authenticationService = $authenticationService;
-        $this->csrfTokenService = new CsrfTokenService();
+        $this->session = $session;
+        $this->csrfTokenService = new CsrfTokenService($session);
         $this->auditService = $auditService;
         $this->mfaService = $mfaService;
     }
@@ -332,7 +336,7 @@ final class OidcService
                 $this->auditService->logLoginSuccess(AuthMethod::OIDC);
 
                 // Rotate session id before binding the user - matches SqlAuthenticator.
-                session_regenerate_id(true);
+                $this->session->regenerateId(true);
                 $this->logger->info('Session ID regenerated for OIDC user {username}', ['username' => $databaseUsername]);
 
                 // Ensure a CSRF token exists for subsequent requests
@@ -369,7 +373,7 @@ final class OidcService
                     }
 
                     // Use our centralized MFA session manager to set MFA required
-                    MfaSessionManager::setMfaRequired($userId);
+                    (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($userId);
 
                     // Clean up temporary session data
                     $this->unsetSessionValue('oidc_state');
@@ -389,7 +393,7 @@ final class OidcService
                     $this->setSessionValue('authenticated', true);
                     // Clears any stale pending state from an abandoned MFA login,
                     // which would otherwise bounce this session back to /mfa/verify.
-                    MfaSessionManager::setMfaNotRequired();
+                    (new MfaSessionManager($this->session, $this->logger))->setMfaNotRequired();
 
                     // Set OIDC-specific session variables for logout detection
                     $this->setSessionValue('oidc_authenticated', true);
@@ -567,18 +571,18 @@ final class OidcService
      */
     private function setSessionValue(string $key, $value): void
     {
-        $_SESSION[$key] = $value;
+        $this->session->set($key, $value);
     }
 
     private function getSessionValue(string $key, $default = null)
     {
-        return $_SESSION[$key] ?? $default;
+        return $this->session->get($key, $default);
     }
 
     private function unsetSessionValue(string $key): void
     {
-        if (isset($_SESSION[$key])) {
-            unset($_SESSION[$key]);
+        if ($this->session->has($key)) {
+            $this->session->remove($key);
         }
     }
 

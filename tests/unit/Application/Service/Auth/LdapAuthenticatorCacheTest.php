@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\AuthUserLookupInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use ReflectionClass;
 use ReflectionMethod;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 class LdapAuthenticatorCacheTest extends TestCase
 {
@@ -41,7 +42,7 @@ class LdapAuthenticatorCacheTest extends TestCase
         // Mock dependencies without full construction
         $this->reflection = new ReflectionClass(LdapAuthenticator::class);
         $this->authenticator = $this->reflection->newInstanceWithoutConstructor();
-        $this->userContextService = new UserContextService();
+        $this->userContextService = new UserContextService(new PhpSession());
 
         // Mock logger to avoid initialization errors
         $mockLogger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);

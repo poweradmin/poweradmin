@@ -28,27 +28,19 @@ use Poweradmin\Domain\Enum\MfaSessionState;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class MfaSessionStateTest extends TestCase
 {
-    /**
-     * setMfaRequired()/setMfaVerified() call session_write_close() then
-     * session_start(), which discards $_SESSION unless a real session is open.
-     */
+    private ArraySession $session;
+    private MfaSessionManager $manager;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            @session_start();
-        }
-        $_SESSION = [];
-    }
-
-    protected function tearDown(): void
-    {
-        $_SESSION = [];
-        parent::tearDown();
+        $this->session = new ArraySession();
+        $this->manager = new MfaSessionManager($this->session);
     }
 
     public function testOnlyPendingBlocksAccess(): void
@@ -60,22 +52,22 @@ class MfaSessionStateTest extends TestCase
 
     public function testAuthoritativeKeyWins(): void
     {
-        $_SESSION[AuthFlowSessionKeys::MFA_STATE] = MfaSessionState::PENDING->value;
+        $this->session->set(AuthFlowSessionKeys::MFA_STATE, MfaSessionState::PENDING->value);
         // Legacy slots disagree; the authoritative key decides.
-        $_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] = false;
-        $_SESSION[SessionKeys::AUTHENTICATED] = true;
+        $this->session->set(AuthFlowSessionKeys::MFA_REQUIRED, false);
+        $this->session->set(SessionKeys::AUTHENTICATED, true);
 
-        $this->assertSame(MfaSessionState::PENDING, MfaSessionManager::currentState());
-        $this->assertTrue(MfaSessionManager::isMfaRequired());
+        $this->assertSame(MfaSessionState::PENDING, $this->manager->currentState());
+        $this->assertTrue($this->manager->isMfaRequired());
     }
 
     public function testSetMfaNotRequiredKeepsTheLegacySlotInStep(): void
     {
-        MfaSessionManager::setMfaNotRequired();
+        $this->manager->setMfaNotRequired();
 
-        $this->assertSame(MfaSessionState::NOT_REQUIRED, MfaSessionManager::currentState());
-        $this->assertFalse($_SESSION[AuthFlowSessionKeys::MFA_REQUIRED]);
-        $this->assertFalse(MfaSessionManager::isMfaRequired());
+        $this->assertSame(MfaSessionState::NOT_REQUIRED, $this->manager->currentState());
+        $this->assertFalse($this->session->get(AuthFlowSessionKeys::MFA_REQUIRED));
+        $this->assertFalse($this->manager->isMfaRequired());
     }
 
     /**
@@ -84,29 +76,29 @@ class MfaSessionStateTest extends TestCase
      */
     public function testEmptySessionIsNotRequired(): void
     {
-        $this->assertSame(MfaSessionState::NOT_REQUIRED, MfaSessionManager::currentState());
-        $this->assertFalse(MfaSessionManager::isMfaRequired());
+        $this->assertSame(MfaSessionState::NOT_REQUIRED, $this->manager->currentState());
+        $this->assertFalse($this->manager->isMfaRequired());
     }
 
     public function testLegacySessionPendingIsStillRecognised(): void
     {
-        $_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] = true;
+        $this->session->set(AuthFlowSessionKeys::MFA_REQUIRED, true);
 
-        $this->assertSame(MfaSessionState::PENDING, MfaSessionManager::currentState());
+        $this->assertSame(MfaSessionState::PENDING, $this->manager->currentState());
     }
 
     public function testLegacySessionVerifiedViaStatusFlag(): void
     {
-        $_SESSION[AuthFlowSessionKeys::MFA_STATUS] = 'verified';
+        $this->session->set(AuthFlowSessionKeys::MFA_STATUS, 'verified');
 
-        $this->assertSame(MfaSessionState::VERIFIED, MfaSessionManager::currentState());
+        $this->assertSame(MfaSessionState::VERIFIED, $this->manager->currentState());
     }
 
     public function testLegacySessionVerifiedViaToken(): void
     {
-        $_SESSION[AuthFlowSessionKeys::MFA_VERIFICATION_TOKEN] = 'abc';
+        $this->session->set(AuthFlowSessionKeys::MFA_VERIFICATION_TOKEN, 'abc');
 
-        $this->assertSame(MfaSessionState::VERIFIED, MfaSessionManager::currentState());
+        $this->assertSame(MfaSessionState::VERIFIED, $this->manager->currentState());
     }
 
     /**
@@ -116,13 +108,13 @@ class MfaSessionStateTest extends TestCase
      */
     public function testSetMfaRequiredDoesNotDowngradeAVerifiedSession(): void
     {
-        $_SESSION[AuthFlowSessionKeys::MFA_STATE] = MfaSessionState::VERIFIED->value;
-        $_SESSION[SessionKeys::USERID] = 42;
+        $this->session->set(AuthFlowSessionKeys::MFA_STATE, MfaSessionState::VERIFIED->value);
+        $this->session->set(SessionKeys::USERID, 42);
 
-        MfaSessionManager::setMfaRequired(42);
+        $this->manager->setMfaRequired(42);
 
-        $this->assertSame(MfaSessionState::VERIFIED, MfaSessionManager::currentState());
-        $this->assertFalse(MfaSessionManager::isMfaRequired());
+        $this->assertSame(MfaSessionState::VERIFIED, $this->manager->currentState());
+        $this->assertFalse($this->manager->isMfaRequired());
     }
 
     /**
@@ -131,13 +123,13 @@ class MfaSessionStateTest extends TestCase
      */
     public function testADifferentUserIsStillChallengedOnAVerifiedSession(): void
     {
-        $_SESSION[AuthFlowSessionKeys::MFA_STATE] = MfaSessionState::VERIFIED->value;
-        $_SESSION[SessionKeys::USERID] = 42;
+        $this->session->set(AuthFlowSessionKeys::MFA_STATE, MfaSessionState::VERIFIED->value);
+        $this->session->set(SessionKeys::USERID, 42);
 
-        MfaSessionManager::setMfaRequired(99);
+        $this->manager->setMfaRequired(99);
 
-        $this->assertSame(MfaSessionState::PENDING, MfaSessionManager::currentState());
-        $this->assertTrue(MfaSessionManager::isMfaRequired());
+        $this->assertSame(MfaSessionState::PENDING, $this->manager->currentState());
+        $this->assertTrue($this->manager->isMfaRequired());
     }
 
     /**
@@ -145,19 +137,19 @@ class MfaSessionStateTest extends TestCase
      */
     public function testSetMfaRequiredRespectsALegacyVerificationToken(): void
     {
-        $_SESSION[AuthFlowSessionKeys::MFA_VERIFICATION_TOKEN] = 'abc';
-        $_SESSION[SessionKeys::USERID] = 42;
+        $this->session->set(AuthFlowSessionKeys::MFA_VERIFICATION_TOKEN, 'abc');
+        $this->session->set(SessionKeys::USERID, 42);
 
-        MfaSessionManager::setMfaRequired(42);
+        $this->manager->setMfaRequired(42);
 
-        $this->assertFalse(MfaSessionManager::isMfaRequired());
+        $this->assertFalse($this->manager->isMfaRequired());
     }
 
     public function testGarbageInTheStateKeyFallsBackToTheLegacySlots(): void
     {
-        $_SESSION[AuthFlowSessionKeys::MFA_STATE] = 'nonsense';
-        $_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] = true;
+        $this->session->set(AuthFlowSessionKeys::MFA_STATE, 'nonsense');
+        $this->session->set(AuthFlowSessionKeys::MFA_REQUIRED, true);
 
-        $this->assertSame(MfaSessionState::PENDING, MfaSessionManager::currentState());
+        $this->assertSame(MfaSessionState::PENDING, $this->manager->currentState());
     }
 }

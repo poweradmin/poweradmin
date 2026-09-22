@@ -98,6 +98,7 @@ use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Port\ProxyContextInterface;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
@@ -146,6 +147,7 @@ use Poweradmin\Application\Service\Zone\ZoneGroupService;
 class ControllerServiceFactory implements ModuleServices
 {
     private RequestActor $actor;
+    private SessionInterface $session;
     private BackendServices $backend;
     private UserServices $users;
     private AuthServices $auth;
@@ -157,14 +159,23 @@ class ControllerServiceFactory implements ModuleServices
     /**
      * @param ActorInterface $actor Who the request acts as; an API controller rebinds it via bindActor()
      */
-    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ActorInterface $actor)
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ActorInterface $actor, SessionInterface $session)
     {
+        $this->session = $session;
         $this->actor = new RequestActor($actor);
-        $this->backend = new BackendServices($db, $config, $logger, $this->actor);
+        $this->backend = new BackendServices($db, $config, $logger, $this->actor, $session);
         $this->users = new UserServices($db, $config, $logger, $this);
         $this->auth = new AuthServices($db, $config, $logger, $this);
         $this->zones = new ZoneServices($db, $config, $logger, $this);
         $this->records = new RecordServices($db, $config, $logger, $this);
+    }
+
+    /**
+     * The request's session, shared by every service built here.
+     */
+    public function session(): SessionInterface
+    {
+        return $this->session;
     }
 
     /**

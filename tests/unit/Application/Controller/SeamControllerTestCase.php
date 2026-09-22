@@ -45,6 +45,7 @@ use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Shared fixture for controllers built through the ControllerEnvironment seam:
@@ -97,7 +98,7 @@ abstract class SeamControllerTestCase extends TestCase
         ];
 
         $this->factory = $this->createMock(ControllerServiceFactory::class);
-        $this->messageService = new MessageService();
+        $this->messageService = new MessageService(new UserContextService(new PhpSession()));
         $this->config = new SeamConfiguration();
         $this->configure();
         $this->output = $this->outputs[] = new RecordingPageOutput();
@@ -160,7 +161,7 @@ abstract class SeamControllerTestCase extends TestCase
         );
         // Dependency-free helpers as shipped: the escaper is final and the form stash is read back by tests
         $this->factory->method('csvFormulaEscaper')->willReturn(new CsvFormulaEscaper());
-        $this->factory->method('formStateService')->willReturn(new FormStateService());
+        $this->factory->method('formStateService')->willReturn(new FormStateService(new PhpSession()));
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 
@@ -176,7 +177,7 @@ abstract class SeamControllerTestCase extends TestCase
             $this->request(),
             $csrf,
             $this->messageService,
-            new UserContextService(),
+            new UserContextService(new PhpSession()),
             $this->output
         );
     }

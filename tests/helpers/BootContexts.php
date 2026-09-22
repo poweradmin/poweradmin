@@ -27,6 +27,8 @@ use Poweradmin\Application\Boot\BootContext;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
+use Poweradmin\Domain\Port\SessionInterface;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Boot contexts for tests: what Kernel::boot() returns, built from an
@@ -38,11 +40,11 @@ final class BootContexts
      * A context over the given configuration with its modules loaded and, when
      * given, a database that the context hands out instead of connecting.
      */
-    public static function over(ConfigurationInterface $config, ?PDO $db = null): BootContext
+    public static function over(ConfigurationInterface $config, ?PDO $db = null, ?SessionInterface $session = null): BootContext
     {
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 
-        return new BootContext($config, new NullLogger(), $registry, $db);
+        return new BootContext($config, new NullLogger(), $registry, $session ?? new ArraySession(), $db);
     }
 }

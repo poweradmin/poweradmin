@@ -15,6 +15,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionClass;
 use ReflectionMethod;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 class SamlResponseValidationTest extends TestCase
 {
@@ -41,6 +42,7 @@ class SamlResponseValidationTest extends TestCase
             $this->createMock(AuthenticationService::class),
             $this->createMock(AuditService::class),
             $this->createMock(MfaService::class),
+            new PhpSession(),
             $this->mockRequest
         );
 

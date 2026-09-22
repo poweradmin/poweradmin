@@ -32,6 +32,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionMethod;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 class OidcServiceIdTokenTest extends TestCase
 {
@@ -53,7 +54,8 @@ class OidcServiceIdTokenTest extends TestCase
             $logger,
             $this->createMock(AuthenticationService::class),
             $this->createMock(AuditService::class),
-            $this->createMock(MfaService::class)
+            $this->createMock(MfaService::class),
+            new PhpSession()
         );
 
         $this->decodeMethod = new ReflectionMethod(OidcService::class, 'decodeIdTokenPayload');

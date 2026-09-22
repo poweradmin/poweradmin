@@ -19,6 +19,7 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Pins the module SDK surface: every service a module obtains through
@@ -127,7 +128,7 @@ class ModuleServicesTest extends TestCase
 
     public function testFactoryMemoizesTheModuleEdgeHelpers(): void
     {
-        $factory = new ControllerServiceFactory($this->createMock(PDO::class), new FakeConfiguration(), new NullLogger(), $this->createMock(ActorInterface::class));
+        $factory = new ControllerServiceFactory($this->createMock(PDO::class), new FakeConfiguration(), new NullLogger(), $this->createMock(ActorInterface::class), new PhpSession());
 
         $this->assertSame($factory->csvFormulaEscaper(), $factory->csvFormulaEscaper());
         $this->assertSame($factory->formStateService(), $factory->formStateService());

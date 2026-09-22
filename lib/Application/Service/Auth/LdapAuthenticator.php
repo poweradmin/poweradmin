@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -52,6 +53,7 @@ final class LdapAuthenticator
     private ClientContext $client;
     private MfaService $mfaService;
     private UserProvisioningService $provisioningService;
+    private SessionInterface $session;
 
     public function __construct(
         AuthUserLookupInterface $userLookup,
@@ -63,7 +65,8 @@ final class LdapAuthenticator
         UserContextService $userContextService,
         ClientContext $client,
         MfaService $mfaService,
-        UserProvisioningService $provisioningService
+        UserProvisioningService $provisioningService,
+        SessionInterface $session
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -76,6 +79,7 @@ final class LdapAuthenticator
         $this->client = $client;
         $this->mfaService = $mfaService;
         $this->provisioningService = $provisioningService;
+        $this->session = $session;
     }
 
 
@@ -251,8 +255,8 @@ final class LdapAuthenticator
             return AuthOutcome::failure(_('LDAP Authentication failed!'));
         }
 
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
+        if ($this->session->isActive()) {
+            $this->session->regenerateId(true);
             $this->logger->info('Session ID regenerated for user {username}', ['username' => $username]);
         }
 
@@ -286,7 +290,7 @@ final class LdapAuthenticator
             $this->userContextService->setSessionData(SessionKeys::PENDING_AUTH_USED, 'ldap');
 
             // Use our centralized MFA session manager to set MFA required
-            MfaSessionManager::setMfaRequired($rowObj['id']);
+            (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($rowObj['id']);
 
             if (!$isLogin) {
                 return AuthOutcome::mfaRequired();
@@ -305,7 +309,7 @@ final class LdapAuthenticator
         $this->userContextService->setSessionData(SessionKeys::EMAIL, $sessionEmail);
         $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'ldap');
         $this->userContextService->setSessionData(SessionKeys::AUTHENTICATED, true);
-        MfaSessionManager::setMfaNotRequired();
+        (new MfaSessionManager($this->session, $this->logger))->setMfaNotRequired();
 
         // Update LDAP authentication cache BEFORE redirect (so next page load uses cache)
         $this->updateAuthenticationCache($ipAddress);

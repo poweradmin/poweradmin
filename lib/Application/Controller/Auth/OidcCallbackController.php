@@ -54,6 +54,7 @@ class OidcCallbackController extends BaseController
             $this->services()->authenticationService(),
             $this->services()->auditService(),
             $this->services()->mfaService(),
+            $this->session(),
             $this->httpRequest
         );
     }
@@ -106,7 +107,7 @@ class OidcCallbackController extends BaseController
         }
 
         // Log successful OIDC login if session was established
-        if (isset($_SESSION[SessionKeys::USERID])) {
+        if ($this->session()->has(SessionKeys::USERID)) {
             $this->services()->auditService()->logSsoLoginSuccess(AuthMethod::OIDC);
         }
     }

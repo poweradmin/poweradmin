@@ -57,7 +57,7 @@ class MfaVerifyController extends BaseController
 
     private function csrfTokenService(): CsrfTokenService
     {
-        return $this->csrfTokenService ??= new CsrfTokenService();
+        return $this->csrfTokenService ??= new CsrfTokenService($this->session());
     }
 
     private function client(): ClientContext
@@ -92,8 +92,8 @@ class MfaVerifyController extends BaseController
 
             // If this is a logout request, do a proper logout
             if ($logout !== null) {
-                session_regenerate_id(true);
-                session_unset();
+                $this->session()->regenerateId(true);
+                $this->session()->clear();
 
                 // Build redirect URL with base_url_prefix support for subfolder deployments
                 $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
@@ -102,7 +102,7 @@ class MfaVerifyController extends BaseController
             } else {
                 // Otherwise just mark as authenticated
                 $this->getUserContextService()->setSessionData(SessionKeys::AUTHENTICATED, true);
-                session_regenerate_id(true);
+                $this->session()->regenerateId(true);
 
                 // Build redirect URL with base_url_prefix support for subfolder deployments
                 $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
@@ -121,7 +121,7 @@ class MfaVerifyController extends BaseController
 
         // If the user is already fully authenticated (MFA passed), redirect to index
         // Use our centralized MFA session manager to check state
-        if (!MfaSessionManager::isMfaRequired()) {
+        if (!(new MfaSessionManager($this->session(), $this->logger))->isMfaRequired()) {
             $this->logger->debug('MFA not required according to MfaSessionManager, redirecting to /');
             $this->redirect('/');
         }
@@ -228,7 +228,7 @@ class MfaVerifyController extends BaseController
             }
 
             // Use the centralized session manager to mark MFA as verified
-            MfaSessionManager::setMfaVerified();
+            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified();
 
             $this->services()->auditService()->logMfaVerify($this->mfaService()->getMfaType($userId) ?? 'unknown');
 
@@ -247,7 +247,7 @@ class MfaVerifyController extends BaseController
             }
 
             // Ensure session is written before redirecting
-            session_write_close();
+            $this->session()->writeClose();
 
             // Clear output buffer if any exists
             if (ob_get_level()) {

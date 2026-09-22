@@ -29,6 +29,7 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 use TestHelpers\ZoneTemplateServiceBuilder;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * IDOR guard for zone-template-record edit/delete. Ownership is checked against
@@ -101,7 +102,7 @@ class ZoneTemplateRecordOwnershipTest extends SqliteIntegrationTestCase
     private function zoneTemplate(): ZoneTemplateService
     {
         $backend = $this->dnsBackendStub(false);
-        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor(), new NullLogger());
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor(new PhpSession()), new NullLogger());
     }
 
     private function forgedEditPayload(): array

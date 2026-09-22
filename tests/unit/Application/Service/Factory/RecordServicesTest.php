@@ -33,6 +33,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use ReflectionProperty;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * The DNS managers are wired from the request's one object graph: the record
@@ -47,7 +48,8 @@ class RecordServicesTest extends TestCase
             $this->createMock(PDO::class),
             new FakeConfiguration(['database' => ['type' => 'mysql'], 'dns' => ['backend' => 'sql']]),
             new \Psr\Log\NullLogger(),
-            new ApiKeyActor(7, 'alice')
+            new ApiKeyActor(7, 'alice'),
+            new PhpSession()
         );
     }
 

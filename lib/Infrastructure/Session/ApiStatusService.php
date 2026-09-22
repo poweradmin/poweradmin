@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Session;
 
 use Poweradmin\Domain\Port\ApiStatusRecorderInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 
 /**
  * Tracks the most recent PowerDNS API error so the UI can surface it.
@@ -35,18 +36,22 @@ class ApiStatusService implements ApiStatusRecorderInterface
 {
     private const SESSION_KEY = 'pdns_api_last_error';
 
+    public function __construct(private readonly SessionInterface $session)
+    {
+    }
+
     public function recordError(string $message, array $context = []): void
     {
-        $_SESSION[self::SESSION_KEY] = [
+        $this->session->set(self::SESSION_KEY, [
             'message' => $message,
             'context' => $context,
             'timestamp' => time(),
-        ];
+        ]);
     }
 
     public function clearError(): void
     {
-        unset($_SESSION[self::SESSION_KEY]);
+        $this->session->remove(self::SESSION_KEY);
     }
 
     /**
@@ -54,6 +59,6 @@ class ApiStatusService implements ApiStatusRecorderInterface
      */
     public function getLastError(): ?array
     {
-        return $_SESSION[self::SESSION_KEY] ?? null;
+        return $this->session->get(self::SESSION_KEY);
     }
 }

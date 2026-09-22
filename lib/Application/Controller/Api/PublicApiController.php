@@ -37,6 +37,8 @@ use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Port\SessionInterface;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Base for /api/v2 endpoints: API key or Basic auth, key scope enforcement, request logging and wrapped responses.
@@ -61,8 +63,8 @@ abstract class PublicApiController extends AbstractApiController
      */
     protected ?ApiKeyScope $apiKeyScope = null;
 
-    /** @var array<string, mixed> Request-scoped stand-in for the session version cache */
-    private array $capabilityCache = [];
+    /** Request-scoped stand-in for the session version cache */
+    private SessionInterface $capabilityCache;
 
     /**
      * PublicApiController constructor
@@ -75,6 +77,8 @@ abstract class PublicApiController extends AbstractApiController
         // Call parent constructor with authentication disabled
         // We will handle authentication ourselves in this controller
         parent::__construct($requestParams, false);
+
+        $this->capabilityCache = new ArraySession();
 
         // Store path parameters for use by child classes
         $this->pathParameters = $pathParameters;
@@ -235,7 +239,7 @@ abstract class PublicApiController extends AbstractApiController
      */
     protected function getPdnsCapabilities(): PdnsCapabilities
     {
-        if ($this->capabilityCache === []) {
+        if ($this->capabilityCache->all() === []) {
             PdnsVersionService::refreshFromConfig($this->config, $this->logger, $this->capabilityCache);
         }
 

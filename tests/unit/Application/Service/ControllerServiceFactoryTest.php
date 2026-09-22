@@ -33,6 +33,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Psr\Log\NullLogger;
 use ReflectionProperty;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * The factory must hand out per-request shared instances where state matters
@@ -51,7 +52,8 @@ class ControllerServiceFactoryTest extends TestCase
             $this->createMock(PDO::class),
             $config,
             new NullLogger(),
-            new ApiKeyActor(0, null)
+            new ApiKeyActor(0, null),
+            new PhpSession()
         );
     }
 

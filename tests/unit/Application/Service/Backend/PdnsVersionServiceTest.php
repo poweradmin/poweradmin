@@ -27,15 +27,17 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Backend\PdnsVersionService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Psr\Log\LoggerInterface;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class PdnsVersionServiceTest extends TestCase
 {
+    private ArraySession $session;
     private PowerdnsApiClient&MockObject $mockClient;
     private LoggerInterface&MockObject $mockLogger;
 
     protected function setUp(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
         $this->mockClient = $this->createMock(PowerdnsApiClient::class);
         $this->mockLogger = $this->createMock(LoggerInterface::class);
     }
@@ -50,7 +52,7 @@ class PdnsVersionServiceTest extends TestCase
                 'id' => 'localhost',
             ]);
 
-        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION);
+        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session);
         $info = $service->detect();
 
         $this->assertSame('4.9.12', $info['version']);
@@ -70,7 +72,7 @@ class PdnsVersionServiceTest extends TestCase
             ->method('getServerConfig')
             ->willReturn(['launch' => 'lmdb', 'views' => 'yes', 'api' => 'yes']);
 
-        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION))->detect();
+        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session))->detect();
 
         $this->assertSame('lmdb', $info['backends']);
         $this->assertSame('yes', $info['views']);
@@ -86,7 +88,7 @@ class PdnsVersionServiceTest extends TestCase
         // Views cannot exist before 5.0, so the extra round-trip is skipped.
         $this->mockClient->expects($this->never())->method('getServerConfig');
 
-        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION))->detect();
+        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session))->detect();
 
         $this->assertArrayNotHasKey('backends', $info);
     }
@@ -100,7 +102,7 @@ class PdnsVersionServiceTest extends TestCase
         ]);
         $this->mockClient->method('getServerConfig')->willReturn([]);
 
-        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION))->detect();
+        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session))->detect();
 
         // Empty reads as "not known", which leaves Views visible.
         $this->assertSame('', $info['backends']);
@@ -118,7 +120,7 @@ class PdnsVersionServiceTest extends TestCase
                 'id' => 'localhost',
             ]);
 
-        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION);
+        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session);
         $service->detect();
 
         // Second call should be served from the session cache - getServerInfo
@@ -131,7 +133,7 @@ class PdnsVersionServiceTest extends TestCase
     {
         $this->mockClient->method('getServerInfo')->willReturn([]);
 
-        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION);
+        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session);
         $this->assertNull($service->detect());
         $this->assertNull($service->getCached());
     }
@@ -144,7 +146,7 @@ class PdnsVersionServiceTest extends TestCase
             // no 'version' key
         ]);
 
-        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION);
+        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session);
         $this->assertNull($service->detect());
     }
 
@@ -165,12 +167,12 @@ class PdnsVersionServiceTest extends TestCase
                 })
             );
 
-        (new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION))->detect();
+        (new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session))->detect();
     }
 
     public function testGetCachedReturnsNullBeforeAnyDetection(): void
     {
-        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION);
+        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session);
         $this->assertNull($service->getCached());
     }
 
@@ -184,48 +186,50 @@ class PdnsVersionServiceTest extends TestCase
                 'id' => 'localhost',
             ]);
 
-        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $_SESSION);
+        $service = new PdnsVersionService($this->mockClient, $this->mockLogger, $this->session);
         $service->detect();
 
         // Simulate TTL expiry by backdating the cache timestamp.
-        $_SESSION['pdns_server_info']['fetched_at'] = time() - 400;
+        $cached = $this->session->get('pdns_server_info');
+        $cached['fetched_at'] = time() - 400;
+        $this->session->set('pdns_server_info', $cached);
 
         $service->detect();
     }
 
     public function testGetCachedInfoReturnsCachedDataInsideTtl(): void
     {
-        $_SESSION['pdns_server_info'] = [
+        $this->session->set('pdns_server_info', [
             'info' => ['version' => '4.9.12', 'daemon_type' => 'authoritative', 'id' => 'localhost'],
             'fetched_at' => time() - 60,
-        ];
+        ]);
 
-        $info = PdnsVersionService::getCachedInfo($_SESSION);
+        $info = PdnsVersionService::getCachedInfo($this->session);
         $this->assertNotNull($info);
         $this->assertSame('4.9.12', $info['version']);
     }
 
     public function testGetCachedInfoReturnsNullAfterTtlExpiry(): void
     {
-        $_SESSION['pdns_server_info'] = [
+        $this->session->set('pdns_server_info', [
             'info' => ['version' => '4.9.12', 'daemon_type' => 'authoritative', 'id' => 'localhost'],
             // 6 minutes ago - the 5-min TTL has expired.
             'fetched_at' => time() - 360,
-        ];
+        ]);
 
         // Stale cache must look the same as no cache so BaseController's
         // lazy-detect path re-fires and the UI can pick up version changes
         // (e.g. PowerDNS upgrade) within a session.
-        $this->assertNull(PdnsVersionService::getCachedInfo($_SESSION));
+        $this->assertNull(PdnsVersionService::getCachedInfo($this->session));
     }
 
     public function testGetCachedInfoReturnsNullWhenFetchedAtMissing(): void
     {
-        $_SESSION['pdns_server_info'] = [
+        $this->session->set('pdns_server_info', [
             'info' => ['version' => '4.9.12', 'daemon_type' => 'authoritative', 'id' => 'localhost'],
             // No fetched_at - treat as expired so we don't trust ancient data.
-        ];
+        ]);
 
-        $this->assertNull(PdnsVersionService::getCachedInfo($_SESSION));
+        $this->assertNull(PdnsVersionService::getCachedInfo($this->session));
     }
 }

@@ -48,7 +48,7 @@ class ForgotPasswordController extends BaseController
 
     private function csrfTokenService(): CsrfTokenService
     {
-        return $this->csrfTokenService ??= new CsrfTokenService();
+        return $this->csrfTokenService ??= new CsrfTokenService($this->session());
     }
 
     private function client(): ClientContext
@@ -139,7 +139,7 @@ class ForgotPasswordController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION[AuthFlowSessionKeys::PASSWORD_RESET_TOKEN]);
+            $this->session()->remove(AuthFlowSessionKeys::PASSWORD_RESET_TOKEN);
         }
 
         // Verify reCAPTCHA if enabled
@@ -242,7 +242,7 @@ class ForgotPasswordController extends BaseController
 
         // Generate a new token for password reset
         $passwordResetToken = $this->csrfTokenService()->generateToken();
-        $_SESSION[AuthFlowSessionKeys::PASSWORD_RESET_TOKEN] = $passwordResetToken;
+        $this->session()->set(AuthFlowSessionKeys::PASSWORD_RESET_TOKEN, $passwordResetToken);
 
         $this->render('forgot_password.html', [
             'error' => $error,

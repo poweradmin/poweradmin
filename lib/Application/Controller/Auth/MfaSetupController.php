@@ -380,11 +380,11 @@ class MfaSetupController extends BaseController
         $mfaEnforced = $this->mfaService()->isMfaEnforced($userId, $this->db, $this->getUserContextService()->getAuthMethod());
 
         // Check if this is an enforced setup from login redirect
-        $setupEnforced = isset($_SESSION[AuthFlowSessionKeys::MFA_SETUP_ENFORCED]) && $_SESSION[AuthFlowSessionKeys::MFA_SETUP_ENFORCED] === true;
+        $setupEnforced = $this->session()->has(AuthFlowSessionKeys::MFA_SETUP_ENFORCED) && $this->session()->get(AuthFlowSessionKeys::MFA_SETUP_ENFORCED) === true;
 
         // Clear the session flag once we've read it
         if ($setupEnforced) {
-            unset($_SESSION[AuthFlowSessionKeys::MFA_SETUP_ENFORCED]);
+            $this->session()->remove(AuthFlowSessionKeys::MFA_SETUP_ENFORCED);
         }
 
         $this->render('mfa_setup.html', [

@@ -26,6 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * The session actor answers exactly what UserContextService reads from the
@@ -46,7 +47,7 @@ class SessionActorTest extends TestCase
 
     public function testNobodyWhenTheSessionIsEmpty(): void
     {
-        $actor = new SessionActor();
+        $actor = new SessionActor(new PhpSession());
 
         $this->assertNull($actor->userId());
         $this->assertNull($actor->username());
@@ -56,8 +57,8 @@ class SessionActorTest extends TestCase
     {
         $_SESSION['userid'] = 7;
         $_SESSION['userlogin'] = 'web-alice';
-        $actor = new SessionActor();
-        $context = new UserContextService();
+        $actor = new SessionActor(new PhpSession());
+        $context = new UserContextService(new PhpSession());
 
         $this->assertSame($context->getLoggedInUserId(), $actor->userId());
         $this->assertSame($context->getLoggedInUsername(), $actor->username());

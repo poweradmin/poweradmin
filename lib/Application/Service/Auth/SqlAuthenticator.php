@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
@@ -48,6 +49,7 @@ final class SqlAuthenticator
     private ClientContext $client;
     private MfaService $mfaService;
     private UserRepositoryInterface $userRepository;
+    private SessionInterface $session;
 
     public function __construct(
         ConfigurationInterface $configManager,
@@ -57,7 +59,8 @@ final class SqlAuthenticator
         LoginAttemptService $loginAttemptService,
         ClientContext $client,
         MfaService $mfaService,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+        SessionInterface $session
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -68,6 +71,7 @@ final class SqlAuthenticator
         $this->client = $client;
         $this->mfaService = $mfaService;
         $this->userRepository = $userRepository;
+        $this->session = $session;
     }
 
     /**
@@ -81,7 +85,7 @@ final class SqlAuthenticator
 
         $isLogin = $credentials !== null;
         $ipAddress = $this->client->ip ?: '0.0.0.0';
-        $username = $credentials !== null ? $credentials->username : ($_SESSION[SessionKeys::USERLOGIN] ?? '');
+        $username = $credentials !== null ? $credentials->username : ($this->session->get(SessionKeys::USERLOGIN, ''));
 
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logger->warning('Account is locked for user {username}', ['username' => $username]);
@@ -93,14 +97,14 @@ final class SqlAuthenticator
 
         $sessionKey = $this->configManager->get('security', 'session_key');
 
-        if (!isset($_SESSION[SessionKeys::USERLOGIN]) || !isset($_SESSION[SessionKeys::USERPWD])) {
+        if (!$this->session->has(SessionKeys::USERLOGIN) || !$this->session->has(SessionKeys::USERPWD)) {
             $this->logger->warning('Session variables userlogin or userpwd are not set.');
             $this->logger->info('Authentication process ended due to missing session variables.');
             return AuthOutcome::failure('');
         }
 
         $encryptionService = new PasswordEncryptionService($sessionKey);
-        $sessionPassword = $credentials !== null ? $credentials->password : $encryptionService->decrypt($_SESSION[SessionKeys::USERPWD]);
+        $sessionPassword = $credentials !== null ? $credentials->password : $encryptionService->decrypt($this->session->get(SessionKeys::USERPWD));
 
         $userAuthService = UserAuthenticationService::fromConfig($this->configManager);
 
@@ -150,8 +154,8 @@ final class SqlAuthenticator
         // auth cache like LDAP), so regenerating each time destroyed the previous id
         // and bounced overlapping requests to login. Login-time regeneration still
         // protects against session fixation.
-        if ($isLogin && session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
+        if ($isLogin && $this->session->isActive()) {
+            $this->session->regenerateId(true);
             $this->logger->info('Session ID regenerated for user {username}', ['username' => $username]);
         }
 
@@ -172,13 +176,13 @@ final class SqlAuthenticator
             $this->logger->info('MFA is required for user {username}', ['username' => $username]);
 
             // Store user details temporarily for MFA verification - DO NOT set userid yet!
-            $_SESSION[SessionKeys::PENDING_USERID] = $rowObj['id'];
-            $_SESSION[SessionKeys::PENDING_NAME] = $rowObj['fullname'];
-            $_SESSION[SessionKeys::PENDING_EMAIL] = $rowObj['email'];
-            $_SESSION[SessionKeys::PENDING_AUTH_USED] = 'internal';
+            $this->session->set(SessionKeys::PENDING_USERID, $rowObj['id']);
+            $this->session->set(SessionKeys::PENDING_NAME, $rowObj['fullname']);
+            $this->session->set(SessionKeys::PENDING_EMAIL, $rowObj['email']);
+            $this->session->set(SessionKeys::PENDING_AUTH_USED, 'internal');
 
             // Use our centralized MFA session manager to set MFA required
-            MfaSessionManager::setMfaRequired($rowObj['id']);
+            (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($rowObj['id']);
 
             if (!$isLogin) {
                 return AuthOutcome::mfaRequired();
@@ -192,12 +196,12 @@ final class SqlAuthenticator
 
         // No MFA required, proceed with full authentication
         // NOW it's safe to set userid since MFA is not required
-        $_SESSION[SessionKeys::USERID] = $rowObj['id'];
-        $_SESSION[SessionKeys::NAME] = $rowObj['fullname'];
-        $_SESSION[SessionKeys::EMAIL] = $rowObj['email'];
-        $_SESSION[SessionKeys::AUTH_USED] = 'internal';
-        $_SESSION[SessionKeys::AUTHENTICATED] = true;
-        MfaSessionManager::setMfaNotRequired();
+        $this->session->set(SessionKeys::USERID, $rowObj['id']);
+        $this->session->set(SessionKeys::NAME, $rowObj['fullname']);
+        $this->session->set(SessionKeys::EMAIL, $rowObj['email']);
+        $this->session->set(SessionKeys::AUTH_USED, 'internal');
+        $this->session->set(SessionKeys::AUTHENTICATED, true);
+        (new MfaSessionManager($this->session, $this->logger))->setMfaNotRequired();
 
         $this->logger->info('Authentication process completed successfully for user {username}', ['username' => $username]);
 
@@ -219,8 +223,8 @@ final class SqlAuthenticator
             return AuthOutcome::failure(_('Authentication failed!'));
         }
 
-        unset($_SESSION[SessionKeys::USERPWD]);
-        unset($_SESSION[SessionKeys::USERLOGIN]);
+        $this->session->remove(SessionKeys::USERPWD);
+        $this->session->remove(SessionKeys::USERLOGIN);
         return AuthOutcome::failure(_('Session expired, please login again.'));
     }
 }

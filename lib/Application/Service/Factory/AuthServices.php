@@ -96,12 +96,12 @@ final class AuthServices
 
     public function sessionService(): SessionService
     {
-        return $this->sessionService ??= new SessionService();
+        return $this->sessionService ??= new SessionService($this->services->session());
     }
 
     public function formStateService(): FormStateService
     {
-        return $this->formStateService ??= new FormStateService();
+        return $this->formStateService ??= new FormStateService($this->services->session());
     }
 
     public function redirectService(): RedirectService
@@ -199,7 +199,7 @@ final class AuthServices
             $this->config,
             $this->services->permissionService(),
             $this->services->actor(),
-            new UserContextService()
+            new UserContextService($this->services->session())
         );
     }
 
@@ -210,7 +210,7 @@ final class AuthServices
 
     public function basicAuthenticationMiddleware(): BasicAuthenticationMiddleware
     {
-        return new BasicAuthenticationMiddleware($this->db, $this->config);
+        return new BasicAuthenticationMiddleware($this->db, $this->config, $this->services->session());
     }
 
     public function passwordResetTokenRepository(): PasswordResetTokenRepositoryInterface

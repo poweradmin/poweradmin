@@ -27,6 +27,8 @@ use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use TestHelpers\SqliteIntegrationTestCase;
+use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Deleting a permission template is refused while a user or a group still
@@ -74,7 +76,7 @@ class DbPermissionTemplateRepositoryDeleteTest extends SqliteIntegrationTestCase
     /** @return list<string> */
     private function systemErrors(): array
     {
-        return array_column((new MessageService())->getMessages('system') ?? [], 'content');
+        return array_column((new MessageService(new UserContextService(new PhpSession())))->getMessages('system') ?? [], 'content');
     }
 
     public function testAnUnassignedTemplateIsDeletedWithItsItems(): void

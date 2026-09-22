@@ -48,9 +48,9 @@ class LogoutController extends BaseController
         $this->services()->auditService()->logLogout();
 
         // Check if user was authenticated via external auth
-        $authMethod = $_SESSION[SessionKeys::AUTH_METHOD_USED] ?? null;
-        $oidcProviderId = $_SESSION[SessionKeys::OIDC_PROVIDER] ?? null;
-        $samlProviderId = $_SESSION[SessionKeys::SAML_PROVIDER] ?? null;
+        $authMethod = $this->session()->get(SessionKeys::AUTH_METHOD_USED);
+        $oidcProviderId = $this->session()->get(SessionKeys::OIDC_PROVIDER);
+        $samlProviderId = $this->session()->get(SessionKeys::SAML_PROVIDER);
 
         if ($authMethod === 'oidc' && $oidcProviderId) {
             $this->performOidcLogout($oidcProviderId);
@@ -72,7 +72,7 @@ class LogoutController extends BaseController
 
             if ($providerConfig && !empty($providerConfig['logout_url'])) {
                 // The id_token captured at login lets the provider honor post_logout_redirect_uri
-                $idToken = $_SESSION[SessionKeys::OIDC_ID_TOKEN] ?? null;
+                $idToken = $this->session()->get(SessionKeys::OIDC_ID_TOKEN);
                 $baseUrl = $this->getBaseUrl();
                 $returnUrl = $baseUrl !== null ? $baseUrl . '/login' : null;
                 $logoutUrl = $this->buildOidcLogoutUrl($providerConfig, $returnUrl, $idToken);
@@ -112,7 +112,8 @@ class LogoutController extends BaseController
                 $this->logger,
                 $this->services()->authenticationService(),
                 $this->services()->auditService(),
-                $this->services()->mfaService()
+                $this->services()->mfaService(),
+                $this->session()
             );
 
             // Initiate SAML Single Logout
@@ -120,7 +121,7 @@ class LogoutController extends BaseController
 
             if ($logoutUrl) {
                 // Mark session for clearing after SLO callback
-                $_SESSION[AuthFlowSessionKeys::SAML_SLO_PENDING] = true;
+                $this->session()->set(AuthFlowSessionKeys::SAML_SLO_PENDING, true);
 
                 // Clear user data but preserve SAML state for SLO callback
                 $this->clearUserSession();
@@ -189,71 +190,57 @@ class LogoutController extends BaseController
     private function clearSession(): void
     {
         // Clear OIDC-specific session data
-        unset(
-            $_SESSION[SessionKeys::OIDC_AUTHENTICATED],
-            $_SESSION[SessionKeys::OIDC_PROVIDER],
-            $_SESSION[SessionKeys::OIDC_ID_TOKEN],
-            $_SESSION[AuthFlowSessionKeys::OIDC_STATE]
-        );
+        $this->session()->remove(SessionKeys::OIDC_AUTHENTICATED);
+        $this->session()->remove(SessionKeys::OIDC_PROVIDER);
+        $this->session()->remove(SessionKeys::OIDC_ID_TOKEN);
+        $this->session()->remove(AuthFlowSessionKeys::OIDC_STATE);
 
         // Clear SAML-specific session data
-        unset(
-            $_SESSION[SessionKeys::SAML_AUTHENTICATED],
-            $_SESSION[SessionKeys::SAML_PROVIDER],
-            $_SESSION[SessionKeys::SAML_SESSION_INDEX]
-        );
+        $this->session()->remove(SessionKeys::SAML_AUTHENTICATED);
+        $this->session()->remove(SessionKeys::SAML_PROVIDER);
+        $this->session()->remove(SessionKeys::SAML_SESSION_INDEX);
 
         // Clear LDAP session cache
-        unset(
-            $_SESSION[SessionKeys::LDAP_AUTH_TIMESTAMP],
-            $_SESSION[SessionKeys::LDAP_AUTH_IP],
-            $_SESSION[SessionKeys::LDAP_AUTH_USERNAME]
-        );
+        $this->session()->remove(SessionKeys::LDAP_AUTH_TIMESTAMP);
+        $this->session()->remove(SessionKeys::LDAP_AUTH_IP);
+        $this->session()->remove(SessionKeys::LDAP_AUTH_USERNAME);
 
         // Clear general external auth data
-        unset($_SESSION[SessionKeys::AUTH_METHOD_USED]);
+        $this->session()->remove(SessionKeys::AUTH_METHOD_USED);
 
         // Clear standard session data
-        session_destroy();
+        $this->session()->destroy();
     }
 
     private function clearUserSession(): void
     {
         // Clear OIDC-specific session data
-        unset(
-            $_SESSION[SessionKeys::OIDC_AUTHENTICATED],
-            $_SESSION[SessionKeys::OIDC_PROVIDER],
-            $_SESSION[SessionKeys::OIDC_ID_TOKEN],
-            $_SESSION[AuthFlowSessionKeys::OIDC_STATE]
-        );
+        $this->session()->remove(SessionKeys::OIDC_AUTHENTICATED);
+        $this->session()->remove(SessionKeys::OIDC_PROVIDER);
+        $this->session()->remove(SessionKeys::OIDC_ID_TOKEN);
+        $this->session()->remove(AuthFlowSessionKeys::OIDC_STATE);
 
         // Clear user session data but preserve SAML state for SLO callback
-        unset(
-            $_SESSION[SessionKeys::SAML_AUTHENTICATED],
-            $_SESSION[SessionKeys::SAML_SESSION_INDEX]
-        );
-        // Keep $_SESSION[SessionKeys::SAML_PROVIDER] for SLO callback
+        $this->session()->remove(SessionKeys::SAML_AUTHENTICATED);
+        $this->session()->remove(SessionKeys::SAML_SESSION_INDEX);
+        // Keep SessionKeys::SAML_PROVIDER for the SLO callback
 
         // Clear LDAP session cache
-        unset(
-            $_SESSION[SessionKeys::LDAP_AUTH_TIMESTAMP],
-            $_SESSION[SessionKeys::LDAP_AUTH_IP],
-            $_SESSION[SessionKeys::LDAP_AUTH_USERNAME]
-        );
+        $this->session()->remove(SessionKeys::LDAP_AUTH_TIMESTAMP);
+        $this->session()->remove(SessionKeys::LDAP_AUTH_IP);
+        $this->session()->remove(SessionKeys::LDAP_AUTH_USERNAME);
 
         // Clear general external auth data
-        unset($_SESSION[SessionKeys::AUTH_METHOD_USED]);
+        $this->session()->remove(SessionKeys::AUTH_METHOD_USED);
 
         // Clear user-specific data but keep session alive
-        unset(
-            $_SESSION[SessionKeys::USERID],
-            $_SESSION[SessionKeys::USERLOGIN],
-            $_SESSION[SessionKeys::USERFULLNAME],
-            $_SESSION[SessionKeys::USERPASSWD],
-            $_SESSION[SessionKeys::USEREMAIL],
-            $_SESSION[SessionKeys::USERTYPE],
-            $_SESSION[SessionKeys::USERLEVEL]
-        );
+        $this->session()->remove(SessionKeys::USERID);
+        $this->session()->remove(SessionKeys::USERLOGIN);
+        $this->session()->remove(SessionKeys::USERFULLNAME);
+        $this->session()->remove(SessionKeys::USERPASSWD);
+        $this->session()->remove(SessionKeys::USEREMAIL);
+        $this->session()->remove(SessionKeys::USERTYPE);
+        $this->session()->remove(SessionKeys::USERLEVEL);
     }
 
     /**

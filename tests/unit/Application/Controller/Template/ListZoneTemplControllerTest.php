@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Characterizes what the zone template list hands its template for a ueberuser
@@ -76,7 +77,7 @@ class ListZoneTemplControllerTest extends SeamControllerTestCase
         $this->factory->method('permissionService')->willReturn($permissions);
         $this->factory->method('zoneTemplateService')->willReturn($templates);
         $this->factory->method('zoneTemplateAccessPolicy')->willReturn(
-            new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new SessionActor())
+            new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new SessionActor(new PhpSession()))
         );
         $this->factory->method('zoneTemplateSync')->willReturn($sync);
         $this->factory->method('userRepository')->willReturn($users);

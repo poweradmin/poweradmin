@@ -39,6 +39,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Domain lookups for the API backend mode, read through PowerDNS.
@@ -136,7 +137,7 @@ final class ApiDomainRepository implements DomainRepositoryInterface
         $needsEditedSerial = (bool)$iface_zonelist_signed_serial;
 
         // Sync local zones table with PowerDNS API before listing
-        $syncService = new ZoneSyncService($this->db, $this->backendProvider);
+        $syncService = new ZoneSyncService($this->db, $this->backendProvider, new PhpSession());
         $syncService->syncIfStale($needsDnssec);
 
         $allZones = $this->backendProvider->getZones($needsDnssec);

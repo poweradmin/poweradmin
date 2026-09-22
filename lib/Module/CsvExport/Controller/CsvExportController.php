@@ -32,7 +32,7 @@ class CsvExportController extends BaseController
 {
     public function run(): void
     {
-        $userContextService = new UserContextService();
+        $userContextService = new UserContextService($this->session());
         if (!$userContextService->isAuthenticated()) {
             $this->showError(_('You need to be logged in to export zone data.'));
             return;

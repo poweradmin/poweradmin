@@ -41,6 +41,7 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * DomainManager write methods report refusals through the result (status and
@@ -181,7 +182,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
             new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),
             new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $backend->allocatesZoneIdsLocally()), $config, $backend),
-            new SessionActor()
+            new SessionActor(new PhpSession())
         );
     }
 }

@@ -36,6 +36,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * PowerDNS REST API-based DNS backend provider.
@@ -939,7 +940,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
     public function getZones(bool $withDnssec = true): array
     {
-        $statusService = new ApiStatusService();
+        $statusService = new ApiStatusService(new PhpSession());
         try {
             $apiZones = $this->client->getAllZones($withDnssec);
         } catch (ApiErrorException $e) {

@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * IDOR guard for RecordManager::editRecord(). The record's zone must be derived
@@ -185,7 +186,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
             $this->permissionService($config),
             $changeLogger,
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
-            new SessionActor()
+            new SessionActor(new PhpSession())
         );
     }
 }

@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Builds the dyndns2 request value object and the update service that handles it.
@@ -70,7 +71,7 @@ class DynamicDnsRequestFactory
                 new LoginAttemptService(new DbLoginAttemptRepository($db, $config), $config)
             ),
             $repository,
-            $auditService ?? new AuditService(new AuditLogWriter($db, $config), $client, new SessionActor()),
+            $auditService ?? new AuditService(new AuditLogWriter($db, $config), $client, new SessionActor(new PhpSession())),
             $client->ip,
             self::requiresApproval($config, $permissions)
         );

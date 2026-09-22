@@ -28,6 +28,7 @@ use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Application\Web\PageOutputInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
@@ -45,6 +46,9 @@ use Poweradmin\Application\Service\Auth\CsrfTokenService;
  * snapshots the superglobals as it does in production. The page output receives
  * every rendered template with its parameters, so a test can observe pages
  * instead of subclassing render(); without one the themed PageRenderer is built.
+ *
+ * The session is the store every collaborator reads and writes; without one
+ * the controller works on PHP's own session as it does in production.
  */
 final class ControllerEnvironment
 {
@@ -58,7 +62,8 @@ final class ControllerEnvironment
         public readonly ?CsrfTokenService $csrfTokenService = null,
         public readonly ?MessageService $messageService = null,
         public readonly ?UserContextService $userContextService = null,
-        public readonly ?PageOutputInterface $pageOutput = null
+        public readonly ?PageOutputInterface $pageOutput = null,
+        public readonly ?SessionInterface $session = null
     ) {
     }
 }

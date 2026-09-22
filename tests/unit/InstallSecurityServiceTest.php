@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use PoweradminInstall\InstallSecurityService;
 use Symfony\Component\HttpFoundation\Request;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 class InstallSecurityServiceTest extends TestCase
 {
@@ -50,7 +51,7 @@ class InstallSecurityServiceTest extends TestCase
     {
         return new InstallSecurityService(
             $config,
-            new CsrfTokenService(),
+            new CsrfTokenService(new PhpSession()),
             $server
         );
     }

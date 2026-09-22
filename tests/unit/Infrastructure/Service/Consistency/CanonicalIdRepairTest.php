@@ -32,6 +32,7 @@ use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * The repair points a stranded zones row's domain_id at its own id. That is only valid in
@@ -52,7 +53,7 @@ class CanonicalIdRepairTest extends TestCase
     {
         $ownerRepair = new ZoneOwnerRepair($this->db);
         if ($apiBackend) {
-            return new ApiConsistencyChecks($this->db, $this->createMock(DnsBackendProviderInterface::class), new ApiStatusService(), $ownerRepair);
+            return new ApiConsistencyChecks($this->db, $this->createMock(DnsBackendProviderInterface::class), new ApiStatusService(new PhpSession()), $ownerRepair);
         }
 
         $config = ConfigurationManager::getInstance();

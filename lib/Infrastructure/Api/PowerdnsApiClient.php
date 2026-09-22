@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Typed wrapper over the PowerDNS /api/v1 server endpoints: zones, RRsets, DNSSEC keys, metadata, TSIG, views.
@@ -880,7 +881,7 @@ class PowerdnsApiClient
             if ($response && $response['responseCode'] === 200) {
                 // Mirror getZones(): a successful read clears any stale API error
                 // so the outage banner doesn't linger after the API recovers.
-                (new ApiStatusService())->clearError();
+                (new ApiStatusService(new PhpSession()))->clearError();
                 // Only a complete body may stand in for a different, narrower read
                 if ($params === []) {
                     $this->lastZone = ['name' => $zoneName, 'data' => $response['data']];
@@ -897,7 +898,7 @@ class PowerdnsApiClient
             // apart from a genuinely empty zone. A 404 just means the zone is gone.
             $httpCode = $e->getDetail('http_code', $e->getCode());
             if ($httpCode !== 404) {
-                (new ApiStatusService())->recordError($e->getMessage(), [
+                (new ApiStatusService(new PhpSession()))->recordError($e->getMessage(), [
                     'endpoint' => 'zone',
                     'http_code' => $httpCode,
                     'url' => $e->getDetail('url'),

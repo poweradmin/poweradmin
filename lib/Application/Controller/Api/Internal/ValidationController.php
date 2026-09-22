@@ -57,7 +57,7 @@ class ValidationController extends InternalApiController
             $dnsViolationValidator
         );
         $this->apiPermissionService = $this->services()->apiPermissionService();
-        $this->userContextService = new UserContextService();
+        $this->userContextService = new UserContextService($this->session());
     }
 
     public function run(): void

@@ -34,9 +34,9 @@ class MessageService
 
     private UserContextService $userContextService;
 
-    public function __construct(?UserContextService $userContextService = null)
+    public function __construct(UserContextService $userContextService)
     {
-        $this->userContextService = $userContextService ?? new UserContextService();
+        $this->userContextService = $userContextService;
     }
 
     /**

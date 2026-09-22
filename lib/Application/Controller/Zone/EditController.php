@@ -95,7 +95,7 @@ class EditController extends BaseController
 
     private function formStateService(): FormStateService
     {
-        return $this->formStateService ??= new FormStateService();
+        return $this->formStateService ??= new FormStateService($this->session());
     }
 
     private function soaRecordManager(): SOARecordManagerInterface

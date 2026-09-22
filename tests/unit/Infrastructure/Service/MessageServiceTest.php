@@ -26,6 +26,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 #[CoversClass(MessageService::class)]
 class MessageServiceTest extends TestCase
@@ -44,7 +46,7 @@ class MessageServiceTest extends TestCase
         // Clear any existing messages
         $_SESSION['messages'] = [];
 
-        $this->service = new MessageService();
+        $this->service = new MessageService(new UserContextService(new PhpSession()));
     }
 
     protected function tearDown(): void

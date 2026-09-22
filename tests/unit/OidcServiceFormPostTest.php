@@ -35,6 +35,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionMethod;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 class OidcServiceFormPostTest extends TestCase
 {
@@ -78,7 +79,8 @@ class OidcServiceFormPostTest extends TestCase
             $this->createMock(Logger::class),
             $this->createMock(AuthenticationService::class),
             $this->createMock(AuditService::class),
-            $this->createMock(MfaService::class)
+            $this->createMock(MfaService::class),
+            new PhpSession()
         );
     }
 

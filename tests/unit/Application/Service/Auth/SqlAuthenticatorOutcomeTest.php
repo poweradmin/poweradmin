@@ -43,6 +43,7 @@ use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Pins what SqlAuthenticator decides for good, wrong, unknown, disabled, locked
@@ -265,7 +266,8 @@ class SqlAuthenticatorOutcomeTest extends TestCase
             $this->attempts,
             new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
             $this->mfa,
-            $this->users
+            $this->users,
+            new PhpSession()
         );
     }
 }

@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Session;
 
 use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
@@ -30,13 +31,17 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
  */
 class SessionActor implements ActorInterface
 {
+    public function __construct(private readonly SessionInterface $session)
+    {
+    }
+
     public function userId(): ?int
     {
-        return $_SESSION[SessionKeys::USERID] ?? null;
+        return $this->session->get(SessionKeys::USERID);
     }
 
     public function username(): ?string
     {
-        return $_SESSION[SessionKeys::USERLOGIN] ?? null;
+        return $this->session->get(SessionKeys::USERLOGIN);
     }
 }

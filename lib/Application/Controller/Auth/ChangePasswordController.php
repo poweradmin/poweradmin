@@ -63,7 +63,7 @@ class ChangePasswordController extends BaseController
     public function run(): void
     {
         // Check for external authentication methods that don't allow password changes
-        $authUsed = $_SESSION[SessionKeys::AUTH_USED] ?? null;
+        $authUsed = $this->session()->get(SessionKeys::AUTH_USED);
 
         // Block external authentication users
         if (AuthMethod::fromDb($authUsed)->isExternal()) {

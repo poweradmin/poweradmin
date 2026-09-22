@@ -25,6 +25,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use ReflectionClass;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Covers BaseController::getPdnsCapabilities() re-detecting the PowerDNS
@@ -116,6 +117,9 @@ class BaseControllerPdnsCapabilitiesRefreshTest extends TestCase
     private function controllerRefreshingTo(?string $version): PdnsCapabilitiesRefreshTestController
     {
         $controller = (new ReflectionClass(PdnsCapabilitiesRefreshTestController::class))->newInstanceWithoutConstructor();
+        $session = (new ReflectionClass(BaseController::class))->getProperty('session');
+        $session->setAccessible(true);
+        $session->setValue($controller, new PhpSession());
         $controller->versionToCache = $version;
         return $controller;
     }

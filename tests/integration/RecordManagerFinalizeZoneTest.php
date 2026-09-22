@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Every single write ends by bumping the serial; a batch caller (bulk operations,
@@ -175,7 +176,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
             $this->permissionService($config),
             $changeLogger,
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
-            new SessionActor()
+            new SessionActor(new PhpSession())
         );
     }
 }

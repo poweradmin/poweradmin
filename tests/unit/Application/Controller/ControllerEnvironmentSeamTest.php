@@ -35,6 +35,7 @@ use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The ControllerEnvironment seam lets a test construct any controller without a
@@ -178,8 +179,9 @@ class ControllerEnvironmentSeamTest extends TestCase
             new HttpRequest([], [], ['REQUEST_METHOD' => 'GET']),
             null,
             null,
-            $this->createMock(UserContextService::class),
-            $output
+            new UserContextService($session = new ArraySession()),
+            $output,
+            $session
         );
         $controller = new TestableSeamController([], true, $environment);
 

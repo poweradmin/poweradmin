@@ -27,6 +27,8 @@ use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Controller\System\NotFoundController;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Process-level setup Kernel::boot() runs before routing: timezone and session cookie.
@@ -67,7 +69,7 @@ class Bootstrap
     public static function initializeSession(ConfigurationInterface $config): void
     {
         if (!function_exists('session_start')) {
-            (new MessageService())->displayDirectSystemError("You have to install the PHP session extension!");
+            (new MessageService(new UserContextService(new PhpSession())))->displayDirectSystemError("You have to install the PHP session extension!");
         }
 
         // PHP collects sessions after gc_maxlifetime, 1440s by default, which is shorter

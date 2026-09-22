@@ -42,7 +42,7 @@ class UserPreferencesController extends InternalApiController
         parent::__construct($request);
 
         $this->userPreferenceService = $this->services()->userPreferenceService();
-        $this->userContextService = new UserContextService();
+        $this->userContextService = new UserContextService($this->session());
     }
 
     public function run(): void

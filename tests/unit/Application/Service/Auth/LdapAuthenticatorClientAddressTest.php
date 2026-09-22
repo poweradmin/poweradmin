@@ -41,6 +41,7 @@ use Poweradmin\Application\Service\Auth\AuthOutcomeStatus;
 use Poweradmin\Application\Service\Auth\LoginCredentials;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Pins that the lockout check and the audit line both see the client address
@@ -77,10 +78,11 @@ class LdapAuthenticatorClientAddressTest extends TestCase
             $this->createMock(CsrfTokenService::class),
             new NullLogger(),
             $attempts,
-            new UserContextService(),
+            new UserContextService(new PhpSession()),
             new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
             $this->createMock(MfaService::class),
-            $this->createMock(UserProvisioningService::class)
+            $this->createMock(UserProvisioningService::class),
+            new PhpSession()
         );
 
         $outcome = $authenticator->authenticate(new LoginCredentials('', 'secret'));

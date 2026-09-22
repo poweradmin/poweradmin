@@ -46,7 +46,7 @@ class ZoneController extends InternalApiController
         parent::__construct($request);
 
         $this->zoneRepository = $this->services()->zoneRepository();
-        $this->userContextService = new UserContextService();
+        $this->userContextService = new UserContextService($this->session());
     }
 
     /**

@@ -67,6 +67,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 $options = getopt('', [
     'since::',
@@ -111,7 +112,7 @@ $db = (new DatabaseService(new PDODatabaseConnection()))
     ->connect(DatabaseCredentialMapper::mapCredentials($config));
 
 // The digest only reads the log, so nobody acts here
-$logger = new RecordChangeLogger($db, $config, new SessionActor());
+$logger = new RecordChangeLogger($db, $config, new SessionActor(new PhpSession()));
 $filters = ['date_from' => $since, 'date_to' => $until];
 
 // Cap the body length so very busy windows don't produce multi-MB emails;

@@ -31,6 +31,7 @@ use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Pins every check and fix of the API backend strategy: zone and record state
@@ -69,17 +70,17 @@ class ApiConsistencyChecksTest extends TestCase
             return true;
         });
 
-        (new ApiStatusService())->clearError();
+        (new ApiStatusService(new PhpSession()))->clearError();
     }
 
     protected function tearDown(): void
     {
-        (new ApiStatusService())->clearError();
+        (new ApiStatusService(new PhpSession()))->clearError();
     }
 
     private function checker(?ApiStatusInterface $apiStatus = null): ApiConsistencyChecks
     {
-        return new ApiConsistencyChecks($this->db, $this->provider, $apiStatus ?? new ApiStatusService(), new ZoneOwnerRepair($this->db));
+        return new ApiConsistencyChecks($this->db, $this->provider, $apiStatus ?? new ApiStatusService(new PhpSession()), new ZoneOwnerRepair($this->db));
     }
 
     /** @param list<array<string, mixed>> $zones */
@@ -320,7 +321,7 @@ class ApiConsistencyChecksTest extends TestCase
     public function testRunAllChecksReturnsNullWhenTheZoneListIsUnavailable(): void
     {
         $this->zones([]);
-        (new ApiStatusService())->recordError('connection refused', ['endpoint' => 'zones']);
+        (new ApiStatusService(new PhpSession()))->recordError('connection refused', ['endpoint' => 'zones']);
 
         $this->assertNull($this->checker()->runAllChecks());
     }

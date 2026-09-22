@@ -37,7 +37,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
 
 /**
@@ -79,7 +81,7 @@ final class Kernel
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 
-        $context = new BootContext($config, $logger, $registry);
+        $context = new BootContext($config, $logger, $registry, new PhpSession());
         if ($options->connectsDatabase()) {
             $context->database();
         }
@@ -97,14 +99,20 @@ final class Kernel
     {
         DependencyCheck::verifyExtensions();
         self::assertConfigurationFileExists();
-        self::loadLocale($context->config);
+        self::loadLocale($context->config, $context->session);
 
         $db = $context->database();
         if ($authenticate) {
-            (new SessionAuthenticator($db, $context->config, new HttpRequest()))->authenticate();
+            (new SessionAuthenticator($db, $context->config, new HttpRequest(), $context->session))->authenticate();
         }
 
-        return new ControllerEnvironment($context->config, $db, $context->logger, $context->moduleRegistry);
+        return new ControllerEnvironment(
+            $context->config,
+            $db,
+            $context->logger,
+            $context->moduleRegistry,
+            session: $context->session
+        );
     }
 
     /**
@@ -147,7 +155,7 @@ final class Kernel
     private static function assertConfigurationUsable(ConfigurationManager $configuration): void
     {
         if (!$configuration->isDefaultsFileLoaded()) {
-            (new MessageService())->displayDirectSystemError(sprintf(
+            (new MessageService(new UserContextService(new PhpSession())))->displayDirectSystemError(sprintf(
                 'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
                 $configuration->getDefaultsFilePath()
             ));
@@ -159,7 +167,7 @@ final class Kernel
         }
 
         // MessageService escapes the message itself, so pass plain text only
-        (new MessageService())->displayDirectSystemError(
+        (new MessageService(new UserContextService(new PhpSession())))->displayDirectSystemError(
             'Invalid configuration: ' . implode('; ', $validator->getErrors())
         );
     }
@@ -171,7 +179,7 @@ final class Kernel
             return;
         }
 
-        (new MessageService())->displayDirectSystemError(
+        (new MessageService(new UserContextService(new PhpSession())))->displayDirectSystemError(
             sprintf(
                 _('No configuration file found at %s. Please run the installer at install/ to create one, or create the configuration file manually.'),
                 $configFile
@@ -182,9 +190,9 @@ final class Kernel
     /**
      * Sets the gettext locale from the configuration, the session or the request.
      */
-    private static function loadLocale(ConfigurationInterface $config): void
+    private static function loadLocale(ConfigurationInterface $config, SessionInterface $session): void
     {
-        $resolver = new LocaleResolver($config, new UserContextService(), new HttpRequest());
+        $resolver = new LocaleResolver($config, new UserContextService($session), new HttpRequest());
         $localeManager = new LocaleManager($resolver->getSupportedLocales(), './locale');
         $localeManager->setLocale($resolver->resolve());
     }

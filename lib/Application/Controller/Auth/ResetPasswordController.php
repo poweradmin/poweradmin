@@ -51,7 +51,7 @@ class ResetPasswordController extends BaseController
 
     private function csrfTokenService(): CsrfTokenService
     {
-        return $this->csrfTokenService ??= new CsrfTokenService();
+        return $this->csrfTokenService ??= new CsrfTokenService($this->session());
     }
 
     private function client(): ClientContext
@@ -183,7 +183,7 @@ class ResetPasswordController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION[AuthFlowSessionKeys::RESET_PASSWORD_TOKEN]);
+            $this->session()->remove(AuthFlowSessionKeys::RESET_PASSWORD_TOKEN);
         }
 
         $password = $this->httpRequest->getPostParam('password', '');
@@ -267,7 +267,7 @@ class ResetPasswordController extends BaseController
 
         // Generate a new token for password reset
         $resetPasswordToken = $this->csrfTokenService()->generateToken();
-        $_SESSION[AuthFlowSessionKeys::RESET_PASSWORD_TOKEN] = $resetPasswordToken;
+        $this->session()->set(AuthFlowSessionKeys::RESET_PASSWORD_TOKEN, $resetPasswordToken);
 
         $this->render('reset_password.html', [
             'token' => $this->token,

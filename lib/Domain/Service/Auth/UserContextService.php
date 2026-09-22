@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\Auth;
 
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Port\SessionInterface;
 
 /**
  * Session-backed identity of the current user (id, username, auth method) and the
@@ -39,24 +40,28 @@ class UserContextService
         AuthMethod::SAML->value,
     ];
 
+    public function __construct(private readonly SessionInterface $session)
+    {
+    }
+
     public function getLoggedInUsername(): ?string
     {
-        return $_SESSION[SessionKeys::USERLOGIN] ?? null;
+        return $this->session->get(SessionKeys::USERLOGIN);
     }
 
     public function getLoggedInUserId(): ?int
     {
-        return $_SESSION[SessionKeys::USERID] ?? null;
+        return $this->session->get(SessionKeys::USERID);
     }
 
     public function getDisplayName(): ?string
     {
-        return $_SESSION[SessionKeys::NAME] ?? $this->getLoggedInUsername();
+        return $this->session->get(SessionKeys::NAME, $this->getLoggedInUsername());
     }
 
     public function getAuthMethod(): ?string
     {
-        return $_SESSION[SessionKeys::AUTH_USED] ?? null;
+        return $this->session->get(SessionKeys::AUTH_USED);
     }
 
     /**
@@ -71,12 +76,12 @@ class UserContextService
     public function getUserEmail(): ?string
     {
         // Check both OAuth and regular login email session keys
-        return $_SESSION[SessionKeys::USEREMAIL] ?? $_SESSION[SessionKeys::EMAIL] ?? null;
+        return $this->session->get(SessionKeys::USEREMAIL, $this->session->get(SessionKeys::EMAIL)) ?? null;
     }
 
     public function getOAuthAvatarUrl(): ?string
     {
-        return $_SESSION[SessionKeys::OAUTH_AVATAR_URL] ?? null;
+        return $this->session->get(SessionKeys::OAUTH_AVATAR_URL);
     }
 
     public function isAuthenticated(): bool
@@ -87,31 +92,31 @@ class UserContextService
 
     public function getUserLanguage(): ?string
     {
-        return $_SESSION[SessionKeys::USERLANG] ?? null;
+        return $this->session->get(SessionKeys::USERLANG);
     }
 
     public function setUserLanguage(string $language): void
     {
-        $_SESSION[SessionKeys::USERLANG] = $language;
+        $this->session->set(SessionKeys::USERLANG, $language);
     }
 
     public function hasSessionData(string $key): bool
     {
-        return isset($_SESSION[$key]);
+        return $this->session->has($key);
     }
 
     public function getSessionData(string $key): mixed
     {
-        return $_SESSION[$key] ?? null;
+        return $this->session->get($key);
     }
 
     public function setSessionData(string $key, mixed $value): void
     {
-        $_SESSION[$key] = $value;
+        $this->session->set($key, $value);
     }
 
     public function unsetSessionData(string $key): void
     {
-        unset($_SESSION[$key]);
+        $this->session->remove($key);
     }
 }

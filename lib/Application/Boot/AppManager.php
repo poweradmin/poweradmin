@@ -42,6 +42,7 @@ use Twig\Extension\DebugExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extra\Intl\IntlExtension;
 use Twig\Loader\FilesystemLoader;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Builds the Twig environment with theme, translator and extensions, and renders templates for web controllers.
@@ -133,7 +134,7 @@ class AppManager
             }
 
             if (!is_dir($theme_path)) {
-                $messageService = new MessageService();
+                $messageService = new MessageService(new UserContextService(new PhpSession()));
                 $messageService->displayDirectSystemError(
                     "Critical error: Default theme directory '$theme_path' does not exist. " .
                     "Please ensure Poweradmin is properly installed."
@@ -225,7 +226,7 @@ class AppManager
      */
     private function setupTranslator(): void
     {
-        $resolver = new LocaleResolver($this->configuration, new UserContextService(), new Request());
+        $resolver = new LocaleResolver($this->configuration, new UserContextService(new PhpSession()), new Request());
         $this->interfaceLocale = $resolver->resolve();
         $this->supportedLocales = $resolver->getSupportedLocales();
         $interfaceLang = $this->interfaceLocale;
@@ -307,7 +308,7 @@ class AppManager
             echo $this->templateRenderer->render($template, $params);
         } catch (Error $e) {
             $this->logger->error('Template rendering failed: {error}', ['error' => $e->getMessage()]);
-            $messageService = new MessageService();
+            $messageService = new MessageService(new UserContextService(new PhpSession()));
             if ($this->templateRenderer->isDebug()) {
                 // Twig messages carry the template name and line - essential in dev mode
                 $messageService->displayDirectSystemError('Template rendering failed: ' . $e->getMessage());

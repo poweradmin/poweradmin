@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Psr\Log\LoggerInterface;
@@ -42,6 +43,7 @@ class ZoneSyncService
     private PDO $db;
     private ZoneReadBackendInterface $backendProvider;
     private LoggerInterface $logger;
+    private SessionInterface $session;
 
     /** @var int Minimum seconds between syncs */
     private int $syncInterval;
@@ -49,8 +51,9 @@ class ZoneSyncService
     /** @var string Session key for tracking last sync time */
     private const LAST_SYNC_KEY = 'zone_sync_last';
 
-    public function __construct(PDO $db, ZoneReadBackendInterface $backendProvider, int $syncInterval = 300, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, ZoneReadBackendInterface $backendProvider, SessionInterface $session, int $syncInterval = 300, ?LoggerInterface $logger = null)
     {
+        $this->session = $session;
         $this->db = $db;
         $this->backendProvider = $backendProvider;
         $this->syncInterval = $syncInterval;
@@ -67,7 +70,7 @@ class ZoneSyncService
      */
     public function syncIfStale(bool $withDnssec = false): ?array
     {
-        $lastSync = $_SESSION[self::LAST_SYNC_KEY] ?? 0;
+        $lastSync = $this->session->get(self::LAST_SYNC_KEY, 0);
         $age = time() - $lastSync;
         if ($age < $this->syncInterval) {
             $this->logger->debug('Zone sync skipped (last ran {age}s ago, interval {interval}s)', [
@@ -99,7 +102,7 @@ class ZoneSyncService
     {
         $this->logger->debug('Zone sync starting');
 
-        $apiStatusService = new ApiStatusService();
+        $apiStatusService = new ApiStatusService($this->session);
         $syncStartedAt = time();
 
         // Only name/kind/master are mirrored, so the DNSSEC lookup is skipped
@@ -147,7 +150,7 @@ class ZoneSyncService
         } else {
             $this->logger->debug('Zone sync complete: no changes', $result);
         }
-        $_SESSION[self::LAST_SYNC_KEY] = time();
+        $this->session->set(self::LAST_SYNC_KEY, time());
         return $result;
     }
 

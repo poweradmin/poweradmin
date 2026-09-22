@@ -30,6 +30,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Zone\ZoneCountService;
 use Poweradmin\Domain\Port\RecordSearchInterface;
 use Poweradmin\Domain\Port\ZoneSearchInterface;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Orchestration service for DNS data reads.
@@ -59,7 +60,7 @@ class DnsDataService
         $this->actor = $actor;
 
         if ($backendProvider->isApiBackend()) {
-            $this->zoneSyncService = new ZoneSyncService($db, $backendProvider);
+            $this->zoneSyncService = new ZoneSyncService($db, $backendProvider, new PhpSession());
         }
     }
 

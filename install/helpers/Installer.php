@@ -23,6 +23,7 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use PoweradminInstall\Validators\AbstractStepValidator;
@@ -68,7 +69,7 @@ class Installer
         $this->input = $input;
         $this->localeHandler = new LocaleHandler();
         $this->stepValidator = new StepValidator();
-        $this->csrfTokenService = new CsrfTokenService();
+        $this->csrfTokenService = new CsrfTokenService(new PhpSession());
         $this->config = $this->loadConfig($this->installConfigFile);
         $this->securityService = new InstallSecurityService(
             $this->config,

@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\Zone\AddZoneMasterController;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 class AddZoneMasterControllerZoneTypesTest extends TestCase
 {
@@ -60,6 +61,10 @@ class AddZoneMasterControllerZoneTypesTest extends TestCase
         $logger = $this->reflection->getParentClass()->getProperty('logger');
         $logger->setAccessible(true);
         $logger->setValue($controller, new NullLogger());
+
+        $session = $this->reflection->getParentClass()->getProperty('session');
+        $session->setAccessible(true);
+        $session->setValue($controller, new PhpSession());
 
         return $controller;
     }

@@ -54,6 +54,7 @@ class SamlCallbackController extends BaseController
             $this->services()->authenticationService(),
             $this->services()->auditService(),
             $this->services()->mfaService(),
+            $this->session(),
             $this->httpRequest
         );
     }
@@ -108,7 +109,7 @@ class SamlCallbackController extends BaseController
             }
 
             // Log successful SAML login if session was established
-            if (isset($_SESSION[SessionKeys::USERID])) {
+            if ($this->session()->has(SessionKeys::USERID)) {
                 $this->services()->auditService()->logSsoLoginSuccess(AuthMethod::SAML);
             }
         } catch (\Exception $e) {

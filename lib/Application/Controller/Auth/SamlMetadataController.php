@@ -49,6 +49,7 @@ class SamlMetadataController extends BaseController
             $this->services()->authenticationService(),
             $this->services()->auditService(),
             $this->services()->mfaService(),
+            $this->session(),
             $this->httpRequest
         );
     }

@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * The list page's edit/delete decision follows the edit and delete pages:
@@ -62,7 +63,7 @@ class ZoneTemplateAccessPolicyEditTest extends TestCase
         $permissions->method('hasPermission')
             ->willReturnCallback(fn(int $userId, string $permission): bool => in_array($permission, $this->granted, true));
 
-        return new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new SessionActor());
+        return new ZoneTemplateAccessPolicy($this->createMock(ZoneTemplateRepositoryInterface::class), $permissions, new SessionActor(new PhpSession()));
     }
 
     public function testUeberuserMayEditAnyTemplate(): void

@@ -34,6 +34,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Domain\Port\SessionInterface;
 
 /**
  * Runs the SAML login flow: builds the IdP redirect, consumes the assertion and handles single logout.
@@ -48,6 +49,7 @@ final class SamlService
     private Request $request;
     private CsrfTokenService $csrfTokenService;
     private MfaService $mfaService;
+    private SessionInterface $session;
     private AuditService $auditService;
 
     public function __construct(
@@ -58,6 +60,7 @@ final class SamlService
         AuthenticationService $authenticationService,
         AuditService $auditService,
         MfaService $mfaService,
+        SessionInterface $session,
         ?Request $request = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
@@ -68,7 +71,8 @@ final class SamlService
         $this->request = $request ?: new Request();
 
         $this->authenticationService = $authenticationService;
-        $this->csrfTokenService = new CsrfTokenService();
+        $this->session = $session;
+        $this->csrfTokenService = new CsrfTokenService($session);
         $this->auditService = $auditService;
         $this->mfaService = $mfaService;
     }
@@ -155,7 +159,7 @@ final class SamlService
             $this->setSessionValue('saml_provider', $providerId);
             $this->logger->info('Stored provider ID in session: {provider_id}, Session ID: {session_id}', [
                 'provider_id' => $providerId,
-                'session_id' => session_id()
+                'session_id' => $this->session->id()
             ]);
 
             // Use RelayState to maintain provider ID across SAML flow
@@ -202,7 +206,7 @@ final class SamlService
 
         if (empty($providerId)) {
             $this->logger->warning('No provider ID in session or RelayState during SAML assertion. Session ID: {session_id}', [
-                'session_id' => session_id()
+                'session_id' => $this->session->id()
             ]);
             $sessionEntity = new FlashMessage(_('Authentication failed: Invalid session'), 'danger');
             $this->authenticationService->auth($sessionEntity);
@@ -304,7 +308,7 @@ final class SamlService
             $this->auditService->logLoginSuccess(AuthMethod::SAML);
 
             // Rotate session id before binding the user - matches SqlAuthenticator.
-            session_regenerate_id(true);
+            $this->session->regenerateId(true);
             $this->logger->info('Session ID regenerated for SAML user {username}', ['username' => $databaseUsername]);
 
             // Ensure a CSRF token exists for subsequent requests
@@ -334,7 +338,7 @@ final class SamlService
                 $this->setSessionValue('pending_saml_session_index', $userInfo->getSessionIndex());
 
                 // Use our centralized MFA session manager to set MFA required
-                MfaSessionManager::setMfaRequired($userId);
+                (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($userId);
 
                 return '/mfa/verify';
             } else {
@@ -350,7 +354,7 @@ final class SamlService
                 $this->setSessionValue('authenticated', true);
                 // Clears any stale pending state from an abandoned MFA login,
                 // which would otherwise bounce this session back to /mfa/verify.
-                MfaSessionManager::setMfaNotRequired();
+                (new MfaSessionManager($this->session, $this->logger))->setMfaNotRequired();
 
                 // Set SAML-specific session variables for logout detection
                 $this->setSessionValue('saml_authenticated', true);
@@ -465,7 +469,7 @@ final class SamlService
         // If SLO was pending, destroy the entire session now
         if ($this->getSessionValue('saml_slo_pending', false)) {
             $this->unsetSessionValue('saml_slo_pending');
-            session_destroy();
+            $this->session->destroy();
         }
     }
 
@@ -575,18 +579,18 @@ final class SamlService
      */
     private function setSessionValue(string $key, $value): void
     {
-        $_SESSION[$key] = $value;
+        $this->session->set($key, $value);
     }
 
     private function getSessionValue(string $key, $default = null)
     {
-        return $_SESSION[$key] ?? $default;
+        return $this->session->get($key, $default);
     }
 
     private function unsetSessionValue(string $key): void
     {
-        if (isset($_SESSION[$key])) {
-            unset($_SESSION[$key]);
+        if ($this->session->has($key)) {
+            $this->session->remove($key);
         }
     }
 

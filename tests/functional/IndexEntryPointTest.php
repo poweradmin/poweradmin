@@ -215,6 +215,25 @@ class IndexEntryPointTest extends TestCase
     }
 
     /**
+     * The login page's CSRF token is written to the session and read back while
+     * the same request renders, so it can only appear once the session round
+     * trip works. A second request gets a fresh session and a different token.
+     */
+    public function testTheLoginPageCarriesACsrfTokenReadBackFromTheSession(): void
+    {
+        [$exitCode, $first, $stderr] = $this->runFrontController('halting-settings.php', '/login', 'text/html');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame(1, preg_match("/window\\.CSRF_TOKEN = '([^']+)'/", $first, $matches), 'The login page must carry a token');
+        $this->assertSame(40, strlen($matches[1]));
+
+        [, $second] = $this->runFrontController('halting-settings.php', '/login', 'text/html');
+        preg_match("/window\\.CSRF_TOKEN = '([^']+)'/", $second, $other);
+        $this->assertNotSame($matches[1], $other[1], 'A fresh session must mint a fresh token');
+    }
+
+    /**
      * Drives index.php in a subprocess with the given settings fixture.
      *
      * @return array{0: int, 1: string, 2: string} Exit code, stdout, stderr

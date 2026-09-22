@@ -35,6 +35,7 @@ use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -63,6 +64,7 @@ final class BackendServices
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private ActorInterface $actor;
+    private SessionInterface $session;
 
     private ?TransactionInterface $transaction = null;
     private ?DnsBackendProviderInterface $dnsBackendProvider = null;
@@ -78,8 +80,9 @@ final class BackendServices
     private ?PowerdnsStatusService $powerdnsStatusService = null;
     private ?ZoneSyncService $zoneSyncService = null;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ActorInterface $actor)
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ActorInterface $actor, SessionInterface $session)
     {
+        $this->session = $session;
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger;
@@ -173,7 +176,7 @@ final class BackendServices
         $ownerRepair = new ZoneOwnerRepair($this->db);
 
         return $provider->isApiBackend()
-            ? new ApiConsistencyChecks($this->db, $provider, new ApiStatusService(), $ownerRepair)
+            ? new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), $ownerRepair)
             : new SqlConsistencyChecks($this->db, new TableNameService($this->config), $ownerRepair);
     }
 
@@ -188,6 +191,6 @@ final class BackendServices
      */
     public function zoneSyncService(): ZoneSyncService
     {
-        return $this->zoneSyncService ??= new ZoneSyncService($this->db, $this->dnsBackendProvider(), 300, $this->logger);
+        return $this->zoneSyncService ??= new ZoneSyncService($this->db, $this->dnsBackendProvider(), $this->session, 300, $this->logger);
     }
 }

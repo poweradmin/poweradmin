@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionPromotionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Tests for SessionPromotionService, which converts the half-authenticated
@@ -37,7 +38,7 @@ class SessionPromotionServiceTest extends TestCase
         parent::setUp();
         $this->sessionBackup = $_SESSION ?? [];
         $_SESSION = [];
-        $this->service = new SessionPromotionService(new UserContextService());
+        $this->service = new SessionPromotionService(new UserContextService(new PhpSession()));
     }
 
     protected function tearDown(): void

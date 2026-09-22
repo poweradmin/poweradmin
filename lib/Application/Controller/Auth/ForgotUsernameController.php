@@ -47,7 +47,7 @@ class ForgotUsernameController extends BaseController
 
     private function csrfTokenService(): CsrfTokenService
     {
-        return $this->csrfTokenService ??= new CsrfTokenService();
+        return $this->csrfTokenService ??= new CsrfTokenService($this->session());
     }
 
     private function client(): ClientContext
@@ -137,7 +137,7 @@ class ForgotUsernameController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION[AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN]);
+            $this->session()->remove(AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN);
         }
 
         // Verify reCAPTCHA if enabled
@@ -223,7 +223,7 @@ class ForgotUsernameController extends BaseController
 
         // Generate a new token for username recovery
         $usernameRecoveryToken = $this->csrfTokenService()->generateToken();
-        $_SESSION[AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN] = $usernameRecoveryToken;
+        $this->session()->set(AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN, $usernameRecoveryToken);
 
         $this->render('forgot_username.html', [
             'error' => $error,
