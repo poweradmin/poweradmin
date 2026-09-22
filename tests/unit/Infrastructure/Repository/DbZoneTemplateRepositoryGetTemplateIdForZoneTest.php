@@ -22,132 +22,67 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
-use PDO;
-use PDOStatement;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * Test for DbZoneTemplateRepository::getTemplateIdForZone()
+ * Issue #935: getTemplateIdForZone() must return an int for every row shape a
+ * backend can produce, including a NULL zone_templ_id and a missing zone,
+ * rather than tripping the return type on PHP 8.4.
  *
- * Issue #935: PHP 8.4 TypeError when zone_templ_id is NULL or row not found
  * @see https://github.com/poweradmin/poweradmin/issues/935
  */
-class DbZoneTemplateRepositoryGetTemplateIdForZoneTest extends TestCase
+#[CoversClass(DbZoneTemplateRepository::class)]
+class DbZoneTemplateRepositoryGetTemplateIdForZoneTest extends SqliteIntegrationTestCase
 {
-    /**
-     * Test that getTemplateIdForZone returns the template ID when it exists
-     */
-    public function testGetZoneTemplateReturnsTemplateId(): void
+    private DbZoneTemplateRepository $repository;
+
+    protected function setUp(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(5);
+        parent::setUp();
 
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturn($stmt);
+        // zone_templ_id is NOT NULL in Poweradmin's own schema, but a hand-migrated
+        // or PostgreSQL-imported install can still hold NULL there
+        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES
+            (1, " . self::ADMIN_USER_ID . ", 5),
+            (2, " . self::ADMIN_USER_ID . ", 0),
+            (3, " . self::ADMIN_USER_ID . ", NULL)");
 
-        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
-
-        $this->assertSame(5, $result);
+        $this->repository = new DbZoneTemplateRepository($this->db);
     }
 
-    /**
-     * Test that getTemplateIdForZone returns 0 when zone has no template (zone_templ_id = 0)
-     */
-    public function testGetZoneTemplateReturnsZeroForNoTemplate(): void
+    #[Test]
+    public function aZoneLinkedToATemplateReturnsItsId(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(0);
-
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturn($stmt);
-
-        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
-
-        $this->assertSame(0, $result);
+        $this->assertSame(5, $this->repository->getTemplateIdForZone(1));
     }
 
-    /**
-     * Test that getTemplateIdForZone handles NULL value from database (PostgreSQL)
-     *
-     * Issue #935: This test exposes the bug where fetchColumn() returns null
-     * but the method signature requires int return type, causing TypeError in PHP 8.4
-     */
-    public function testGetZoneTemplateHandlesNullValue(): void
+    #[Test]
+    public function aZoneWithoutATemplateReturnsZero(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(null);  // NULL in database
-
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturn($stmt);
-
-        // This should return 0 instead of throwing TypeError
-        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
-
-        $this->assertIsInt($result);
-        $this->assertSame(0, $result);
+        $this->assertSame(0, $this->repository->getTemplateIdForZone(2));
     }
 
-    /**
-     * Test that getTemplateIdForZone handles no row found (fetchColumn returns false)
-     *
-     * Issue #935: This test exposes the bug where fetchColumn() returns false
-     * when no row is found, but the method signature requires int return type
-     */
-    public function testGetZoneTemplateHandlesNoRowFound(): void
+    #[Test]
+    public function aNullTemplateColumnReturnsZero(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(false);  // No row found
-
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturn($stmt);
-
-        // This should return 0 instead of throwing TypeError
-        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(99999);
-
-        $this->assertIsInt($result);
-        $this->assertSame(0, $result);
+        $this->assertSame(0, $this->repository->getTemplateIdForZone(3));
     }
 
-    /**
-     * Test that getTemplateIdForZone returns string "0" cast to int
-     * Some database drivers may return string values
-     */
-    public function testGetZoneTemplateHandlesStringZero(): void
+    #[Test]
+    public function anUnknownZoneReturnsZero(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn("0");  // String "0"
-
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturn($stmt);
-
-        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
-
-        $this->assertIsInt($result);
-        $this->assertSame(0, $result);
+        $this->assertSame(0, $this->repository->getTemplateIdForZone(99999));
     }
 
-    /**
-     * Test that getTemplateIdForZone returns string template ID cast to int
-     * Some database drivers may return string values
-     */
-    public function testGetZoneTemplateHandlesStringTemplateId(): void
+    #[Test]
+    public function assigningATemplateIsReadBack(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn("42");  // String "42"
+        $this->repository->assignTemplateToZone(2, 7);
 
-        $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturn($stmt);
-
-        $result = (new DbZoneTemplateRepository($db))->getTemplateIdForZone(1);
-
-        $this->assertIsInt($result);
-        $this->assertSame(42, $result);
+        $this->assertSame(7, $this->repository->getTemplateIdForZone(2));
     }
 }

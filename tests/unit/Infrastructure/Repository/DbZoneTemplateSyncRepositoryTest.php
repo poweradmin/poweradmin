@@ -24,126 +24,140 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PDOStatement;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
-use Poweradmin\Domain\Config\ConfigurationInterface;
+use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * Test for DbZoneTemplateSyncRepository::removeStaleSyncRecords()
+ * Issue #1249: zone_template_sync keeps stale entries when a zone changes
+ * template, and the UPDATE-then-INSERT upsert must not create a duplicate.
  *
- * Issue #1249: zone_template_sync keeps stale entries when changing a zone template
  * @see https://github.com/poweradmin/poweradmin/issues/1249
  */
-class DbZoneTemplateSyncRepositoryTest extends TestCase
+#[CoversClass(DbZoneTemplateSyncRepository::class)]
+class DbZoneTemplateSyncRepositoryTest extends SqliteIntegrationTestCase
 {
-    public function testRemoveStaleSyncRecordsDeletesRowsForOtherTemplates(): void
+    private const ZONE = 34;
+
+    private DbZoneTemplateSyncRepository $repository;
+
+    protected function setUp(): void
     {
-        $statement = $this->createMock(PDOStatement::class);
-        $statement->expects($this->once())
-            ->method('execute')
-            ->with($this->equalTo([
-                'zone_id' => 34,
-                'keep_id' => 2,
-            ]));
+        parent::setUp();
 
-        $pdo = $this->createMock(PDO::class);
-        $pdo->expects($this->once())
-            ->method('prepare')
-            ->with($this->callback(function (string $sql): bool {
-                return str_contains($sql, 'DELETE FROM zone_template_sync')
-                    && str_contains($sql, 'zone_id = :zone_id')
-                    && str_contains($sql, 'zone_templ_id <> :keep_id');
-            }))
-            ->willReturn($statement);
+        $this->createZoneTables();
+        // The production schema's unique key, so a duplicate insert fails loudly
+        $this->db->exec("CREATE UNIQUE INDEX idx_zone_template_unique ON zone_template_sync (zone_id, zone_templ_id)");
 
-        $config = $this->createMock(ConfigurationInterface::class);
-
-        $service = new DbZoneTemplateSyncRepository($pdo, $config);
-        $service->removeStaleSyncRecords(34, 2);
+        $this->repository = new DbZoneTemplateSyncRepository($this->db, $this->config);
     }
 
-    public function testRemoveStaleSyncRecordsClearsAllWhenKeepIsZero(): void
+    /** @return list<array{zone_templ_id: int, needs_sync: int}> */
+    private function syncRows(int $zoneId = self::ZONE): array
     {
-        $statement = $this->createMock(PDOStatement::class);
-        $statement->expects($this->once())
-            ->method('execute')
-            ->with($this->equalTo([
-                'zone_id' => 34,
-                'keep_id' => 0,
-            ]));
+        $stmt = $this->db->prepare("SELECT zone_templ_id, needs_sync FROM zone_template_sync WHERE zone_id = ? ORDER BY zone_templ_id");
+        $stmt->execute([$zoneId]);
 
-        $pdo = $this->createMock(PDO::class);
-        $pdo->expects($this->once())
-            ->method('prepare')
-            ->willReturn($statement);
+        return array_map(
+            fn(array $row): array => [
+                'zone_templ_id' => (int)$row['zone_templ_id'],
+                'needs_sync' => (int)$row['needs_sync'],
+            ],
+            $stmt->fetchAll()
+        );
+    }
 
-        $config = $this->createMock(ConfigurationInterface::class);
+    #[Test]
+    public function createSyncRecordAddsTheRowAndMarksItForSync(): void
+    {
+        $this->repository->createSyncRecord(self::ZONE, 2);
 
-        $service = new DbZoneTemplateSyncRepository($pdo, $config);
-        $service->removeStaleSyncRecords(34, 0);
+        $this->assertSame([['zone_templ_id' => 2, 'needs_sync' => 1]], $this->syncRows());
+    }
+
+    #[Test]
+    public function createSyncRecordIsIdempotentForTheSamePair(): void
+    {
+        $this->repository->createSyncRecord(self::ZONE, 2);
+        $this->repository->markZoneAsSynced(self::ZONE, 2);
+        $this->repository->createSyncRecord(self::ZONE, 2);
+
+        $this->assertSame([['zone_templ_id' => 2, 'needs_sync' => 1]], $this->syncRows());
+    }
+
+    #[Test]
+    public function removeStaleSyncRecordsKeepsOnlyTheCurrentTemplate(): void
+    {
+        $this->repository->createSyncRecord(self::ZONE, 1);
+        $this->repository->createSyncRecord(self::ZONE, 2);
+        $this->repository->createSyncRecord(99, 1);
+
+        $this->repository->removeStaleSyncRecords(self::ZONE, 2);
+
+        $this->assertSame([['zone_templ_id' => 2, 'needs_sync' => 1]], $this->syncRows());
+        $this->assertCount(1, $this->syncRows(99));
+    }
+
+    #[Test]
+    public function removeStaleSyncRecordsClearsEveryRowWhenKeepIsZero(): void
+    {
+        $this->repository->createSyncRecord(self::ZONE, 1);
+        $this->repository->createSyncRecord(self::ZONE, 2);
+
+        $this->repository->removeStaleSyncRecords(self::ZONE, 0);
+
+        $this->assertSame([], $this->syncRows());
+    }
+
+    #[Test]
+    public function markZoneAsSyncedClearsTheFlagAndCreatesAMissingRow(): void
+    {
+        $this->repository->markZoneAsSynced(self::ZONE, 4);
+
+        $this->assertSame([['zone_templ_id' => 4, 'needs_sync' => 0]], $this->syncRows());
+    }
+
+    #[Test]
+    public function markTemplateAsModifiedFlagsEveryZoneUsingIt(): void
+    {
+        $this->repository->markZoneAsSynced(self::ZONE, 4);
+        $this->repository->markZoneAsSynced(99, 4);
+        $this->repository->markZoneAsSynced(100, 5);
+
+        $this->repository->markTemplateAsModified(4);
+
+        $this->assertSame([['zone_templ_id' => 4, 'needs_sync' => 1]], $this->syncRows());
+        $this->assertSame([['zone_templ_id' => 4, 'needs_sync' => 1]], $this->syncRows(99));
+        $this->assertSame([['zone_templ_id' => 5, 'needs_sync' => 0]], $this->syncRows(100));
     }
 
     /**
-     * Regression: createSyncRecord must not INSERT when the sync row already
-     * exists but the UPDATE reports zero affected rows. MySQL returns zero for
-     * an UPDATE that matches a row without changing any value, which previously
-     * triggered a duplicate INSERT and a unique-key violation on
-     * idx_zone_template_unique (the "update zones from template" fatal error).
+     * MySQL reports zero affected rows for an UPDATE that matches a row without
+     * changing a value; SQLite counts the match, so only a mocked PDO can put
+     * the upsert in that state.
      */
-    public function testCreateSyncRecordDoesNotInsertWhenRowExistsButUpdateAffectsNoRows(): void
+    #[Test]
+    public function createSyncRecordDoesNotInsertWhenTheUpdateAffectsNoRowsButTheRowExists(): void
     {
-        $updateStmt = $this->createMock(PDOStatement::class);
-        $updateStmt->method('execute')->willReturn(true);
-        $updateStmt->method('rowCount')->willReturn(0);
+        $updateStatement = $this->createMock(PDOStatement::class);
+        $updateStatement->method('execute')->willReturn(true);
+        $updateStatement->method('rowCount')->willReturn(0);
 
-        $existsStmt = $this->createMock(PDOStatement::class);
-        $existsStmt->expects($this->once())->method('execute');
-        $existsStmt->method('fetchColumn')->willReturn(1);
+        $existsStatement = $this->createMock(PDOStatement::class);
+        $existsStatement->expects($this->once())->method('execute');
+        $existsStatement->method('fetchColumn')->willReturn(1);
 
-        $pdo = $this->createMock(PDO::class);
-        $pdo->method('prepare')->willReturnCallback(function (string $sql) use ($updateStmt, $existsStmt) {
-            if (str_contains($sql, 'INSERT INTO zone_template_sync')) {
-                $this->fail('createSyncRecord must not INSERT when a sync row already exists');
+        $db = $this->createMock(PDO::class);
+        $db->method('prepare')->willReturnCallback(
+            function (string $sql) use ($updateStatement, $existsStatement): PDOStatement {
+                if (str_contains($sql, 'INSERT INTO zone_template_sync')) {
+                    $this->fail('createSyncRecord must not INSERT when a sync row already exists');
+                }
+                return str_contains($sql, 'SELECT 1 FROM zone_template_sync') ? $existsStatement : $updateStatement;
             }
-            return str_contains($sql, 'SELECT 1 FROM zone_template_sync') ? $existsStmt : $updateStmt;
-        });
+        );
 
-        $config = $this->createMock(ConfigurationInterface::class);
-        $config->method('get')->willReturn('mysql');
-
-        $service = new DbZoneTemplateSyncRepository($pdo, $config);
-        $service->createSyncRecord(7, 11);
-    }
-
-    /**
-     * The existence guard must not suppress a legitimate insert: when no sync
-     * row exists and the UPDATE affects nothing, the row is still created.
-     */
-    public function testCreateSyncRecordInsertsWhenRowDoesNotExist(): void
-    {
-        $updateStmt = $this->createMock(PDOStatement::class);
-        $updateStmt->method('execute')->willReturn(true);
-        $updateStmt->method('rowCount')->willReturn(0);
-
-        $existsStmt = $this->createMock(PDOStatement::class);
-        $existsStmt->method('execute');
-        $existsStmt->method('fetchColumn')->willReturn(false);
-
-        $insertStmt = $this->createMock(PDOStatement::class);
-        $insertStmt->expects($this->once())->method('execute');
-
-        $pdo = $this->createMock(PDO::class);
-        $pdo->method('prepare')->willReturnCallback(function (string $sql) use ($updateStmt, $existsStmt, $insertStmt) {
-            if (str_contains($sql, 'INSERT INTO zone_template_sync')) {
-                return $insertStmt;
-            }
-            return str_contains($sql, 'SELECT 1 FROM zone_template_sync') ? $existsStmt : $updateStmt;
-        });
-
-        $config = $this->createMock(ConfigurationInterface::class);
-        $config->method('get')->willReturn('mysql');
-
-        $service = new DbZoneTemplateSyncRepository($pdo, $config);
-        $service->createSyncRecord(7, 11);
+        (new DbZoneTemplateSyncRepository($db, $this->sqliteConfiguration()))->createSyncRecord(7, 11);
     }
 }
