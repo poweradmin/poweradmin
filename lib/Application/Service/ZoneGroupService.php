@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@ use InvalidArgumentException;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 
 /**
  * Service for managing zone-group ownership
@@ -34,15 +36,78 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
  */
 class ZoneGroupService
 {
+    /** The removal would leave the zone with no group and no user owner. */
+    public const REFUSAL_LAST_OWNER = 'last_owner';
+
+    /** groups_only mode: the last group cannot go even though user owners remain. */
+    public const REFUSAL_LAST_GROUP_GROUPS_ONLY = 'last_group_groups_only';
+
+    /** users_only mode: no group can go while the zone has no user owner. */
+    public const REFUSAL_USERS_ONLY_NO_USER_OWNERS = 'users_only_no_user_owners';
+
     private ZoneGroupRepositoryInterface $zoneGroupRepository;
     private UserGroupRepositoryInterface $groupRepository;
+    private ?ZoneRepositoryInterface $zoneRepository;
+    private ?ZoneOwnershipModeService $ownershipMode;
 
     public function __construct(
         ZoneGroupRepositoryInterface $zoneGroupRepository,
-        UserGroupRepositoryInterface $groupRepository
+        UserGroupRepositoryInterface $groupRepository,
+        ?ZoneRepositoryInterface $zoneRepository = null,
+        ?ZoneOwnershipModeService $ownershipMode = null
     ) {
         $this->zoneGroupRepository = $zoneGroupRepository;
         $this->groupRepository = $groupRepository;
+        $this->zoneRepository = $zoneRepository;
+        $this->ownershipMode = $ownershipMode;
+    }
+
+    /**
+     * The last-owner rule for a group removal: a zone keeps at least one owner
+     * of a kind the ownership mode allows. Callers word the code themselves.
+     *
+     * @param int $domainId Zone/Domain ID
+     * @param int $groupId Group ID
+     * @return string|null One of the REFUSAL_* codes, or null when the group may be removed
+     */
+    public function getGroupRemovalRefusal(int $domainId, int $groupId): ?string
+    {
+        if ($this->zoneRepository === null || $this->ownershipMode === null) {
+            return null;
+        }
+
+        $currentGroups = $this->zoneGroupRepository->findByDomainId($domainId);
+        $isCurrentGroup = in_array($groupId, array_map(fn($zg) => $zg->getGroupId(), $currentGroups), true);
+        if (!$isCurrentGroup) {
+            return null;
+        }
+
+        $currentOwners = $this->zoneRepository->getZoneOwners($domainId);
+        $wouldRemoveLastGroup = count($currentGroups) <= 1;
+
+        if ($wouldRemoveLastGroup && count($currentOwners) === 0) {
+            return self::REFUSAL_LAST_OWNER;
+        }
+        if ($wouldRemoveLastGroup && !$this->ownershipMode->isUserOwnerAllowed()) {
+            return self::REFUSAL_LAST_GROUP_GROUPS_ONLY;
+        }
+        if (!$this->ownershipMode->isGroupOwnerAllowed() && count($currentOwners) === 0) {
+            return self::REFUSAL_USERS_ONLY_NO_USER_OWNERS;
+        }
+
+        return null;
+    }
+
+    /**
+     * English wording of a refusal code for the bulk result shape.
+     */
+    private static function refusalReason(string $code): string
+    {
+        return match ($code) {
+            self::REFUSAL_LAST_GROUP_GROUPS_ONLY => 'Cannot remove the last group: zone ownership mode is groups_only and requires at least one group',
+            self::REFUSAL_USERS_ONLY_NO_USER_OWNERS => 'Cannot remove group: zone ownership mode is users_only and the zone has no user owners',
+            default => 'Cannot remove the last owner: this would leave the zone with no ownership',
+        };
     }
 
     /**
@@ -72,7 +137,8 @@ class ZoneGroupService
     /**
      * Remove a group from zone owners
      *
-     * Note: Zones can exist without any owners
+     * Returns false without removing anything when the last-owner rule forbids
+     * it; callers can ask getGroupRemovalRefusal() for the reason.
      *
      * @param int $domainId Zone/Domain ID
      * @param int $groupId Group ID
@@ -81,6 +147,10 @@ class ZoneGroupService
      */
     public function removeGroupFromZone(int $domainId, int $groupId): bool
     {
+        if ($this->getGroupRemovalRefusal($domainId, $groupId) !== null) {
+            return false;
+        }
+
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
@@ -156,7 +226,8 @@ class ZoneGroupService
     }
 
     /**
-     * Remove multiple zones from a group
+     * Remove multiple zones from a group. A zone whose last allowed owner is
+     * this group stays assigned and is reported in `failed` with the reason.
      *
      * @param int $groupId Group ID
      * @param int[] $domainIds Array of domain IDs
@@ -177,7 +248,10 @@ class ZoneGroupService
 
         foreach ($domainIds as $domainId) {
             try {
-                if ($this->zoneGroupRepository->remove($domainId, $groupId)) {
+                $refusal = $this->getGroupRemovalRefusal($domainId, $groupId);
+                if ($refusal !== null) {
+                    $results['failed'][$domainId] = self::refusalReason($refusal);
+                } elseif ($this->zoneGroupRepository->remove($domainId, $groupId)) {
                     $results['success'][] = $domainId;
                 } else {
                     $results['failed'][$domainId] = 'Group does not own this zone';
