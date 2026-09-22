@@ -24,9 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\Zone\BulkRegistrationController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
 
 /**
  * Builds the controller through the ControllerEnvironment seam. checkPermission(),
@@ -40,7 +38,7 @@ class TestableBulkRegistrationController extends BulkRegistrationController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

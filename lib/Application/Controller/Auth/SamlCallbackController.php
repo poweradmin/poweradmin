@@ -35,30 +35,32 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
  */
 class SamlCallbackController extends BaseController
 {
-    private SamlService $samlService;
-    private AuthenticationService $authService;
+    private ?SamlService $samlService = null;
+    private ?AuthenticationService $authService = null;
 
     public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
         // Don't authenticate - this is the callback endpoint
         parent::__construct($request, false, $environment);
+    }
 
-        // Initialize SAML services
-        $samlConfigService = $this->services()->samlConfigurationService();
-        $userProvisioningService = $this->services()->userProvisioningService();
-
-        $this->samlService = new SamlService(
+    private function samlService(): SamlService
+    {
+        return $this->samlService ??= new SamlService(
             $this->config,
-            $samlConfigService,
-            $userProvisioningService,
+            $this->services()->samlConfigurationService(),
+            $this->services()->userProvisioningService(),
             $this->logger,
             $this->services()->authenticationService(),
             $this->services()->auditService(),
             $this->services()->mfaService(),
             $this->httpRequest
         );
+    }
 
-        $this->authService = $this->services()->authenticationService();
+    private function authService(): AuthenticationService
+    {
+        return $this->authService ??= $this->services()->authenticationService();
     }
 
     /**
@@ -73,9 +75,9 @@ class SamlCallbackController extends BaseController
     public function run(): void
     {
         // Check if SAML is enabled
-        if (!$this->samlService->isEnabled()) {
+        if (!$this->samlService()->isEnabled()) {
             $sessionEntity = new FlashMessage(_('SAML authentication is not enabled'), 'danger');
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
             return;
         }
 
@@ -91,7 +93,7 @@ class SamlCallbackController extends BaseController
         } else {
             // Unknown SAML endpoint
             $sessionEntity = new FlashMessage(_('Unknown SAML endpoint'), 'danger');
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
         }
     }
 
@@ -99,7 +101,7 @@ class SamlCallbackController extends BaseController
     {
         try {
             // Process the SAML assertion
-            $redirectPath = $this->samlService->handleAssertion();
+            $redirectPath = $this->samlService()->handleAssertion();
             if ($redirectPath !== null) {
                 $this->redirect($redirectPath);
                 return;
@@ -118,7 +120,7 @@ class SamlCallbackController extends BaseController
                 _('SAML authentication failed: ') . $e->getMessage(),
                 'danger'
             );
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
         }
     }
 
@@ -129,20 +131,20 @@ class SamlCallbackController extends BaseController
 
         try {
             // Process SAML Single Logout
-            $this->samlService->handleSingleLogout();
+            $this->samlService()->handleSingleLogout();
 
             $this->services()->auditService()->logSamlLogout($username);
 
             // Clear the session and redirect to login
             $sessionEntity = new FlashMessage(_('You have been logged out'), 'info');
-            $this->authService->logout($sessionEntity);
+            $this->authService()->logout($sessionEntity);
         } catch (\Exception $e) {
             // Even if SLO fails, we should still log the user out locally
             $sessionEntity = new FlashMessage(
                 _('Logout completed (with warnings): ') . $e->getMessage(),
                 'warning'
             );
-            $this->authService->logout($sessionEntity);
+            $this->authService()->logout($sessionEntity);
         }
     }
 }

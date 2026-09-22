@@ -26,7 +26,6 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
@@ -37,16 +36,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class DeleteDomainController extends BaseController
 {
-
-    private UserContextService $userContextService;
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-
-        $this->userContextService = new UserContextService();
-    }
-
     public function run(): void
     {
         $constraints = [
@@ -65,7 +54,7 @@ class DeleteDomainController extends BaseController
         $zone_id = (int)$this->getSafeRequestValue('id');
 
         // Check zone-specific delete permission (includes group permissions)
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
         $permissionService = $this->services()->permissionService();
         $canDelete = $permissionService->canPerformZoneAction($userId, $zone_id, Permission::PERM_ZONE_DELETE_OWN);
@@ -106,7 +95,7 @@ class DeleteDomainController extends BaseController
         $result = $this->services()->zoneChangeRequestService()->fileZoneDelete(
             $zone_id,
             (int)$this->getCurrentUserId(),
-            (string)$this->userContextService->getLoggedInUsername(),
+            (string)$this->getUserContextService()->getLoggedInUsername(),
             $comment === '' ? null : $comment
         );
 

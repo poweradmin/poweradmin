@@ -32,19 +32,17 @@ use Poweradmin\Domain\Service\Dns\SupermasterManager;
  */
 class PdnsStatusController extends BaseController
 {
-    private PowerdnsStatusService $statusService;
-    private SupermasterManager $supermasterManager;
+    private ?PowerdnsStatusService $statusService = null;
+    private ?SupermasterManager $supermasterManager = null;
 
-    /**
-     * Constructor
-     *
-     * @param array $request Request parameters
-     */
-    public function __construct(array $request)
+    private function statusService(): PowerdnsStatusService
     {
-        parent::__construct($request);
-        $this->statusService = $this->services()->powerdnsStatusService();
-        $this->supermasterManager = $this->services()->supermasterManager();
+        return $this->statusService ??= $this->services()->powerdnsStatusService();
+    }
+
+    private function supermasterManager(): SupermasterManager
+    {
+        return $this->supermasterManager ??= $this->services()->supermasterManager();
     }
 
     /**
@@ -65,7 +63,7 @@ class PdnsStatusController extends BaseController
         }
 
         // Check if PowerDNS API is enabled in the config
-        if (!$this->statusService->isApiEnabled()) {
+        if (!$this->statusService()->isApiEnabled()) {
             $this->showError(_('The PowerDNS API feature is not configured. Please set the API URL and key in the system configuration.'));
             return;
         }
@@ -78,13 +76,13 @@ class PdnsStatusController extends BaseController
      */
     private function showStatus(): void
     {
-        $serverStatus = $this->statusService->getServerStatus();
+        $serverStatus = $this->statusService()->getServerStatus();
 
         // Get slave servers if any
         $slaveStatus = [];
-        $slaveServers = $this->supermasterManager->getSlaveServerIPs();
+        $slaveServers = $this->supermasterManager()->getSlaveServerIPs();
         if (!empty($slaveServers)) {
-            $slaveStatus = $this->statusService->checkSlaveServerStatus($slaveServers);
+            $slaveStatus = $this->statusService()->checkSlaveServerStatus($slaveServers);
         }
 
         $serverStatus['error'] ??= null;
@@ -92,7 +90,7 @@ class PdnsStatusController extends BaseController
         $this->render('pdns_status.html', [
             'server_status' => $serverStatus,
             'slave_status' => $slaveStatus,
-            'pdns_api_enabled' => $this->statusService->isApiEnabled(),
+            'pdns_api_enabled' => $this->statusService()->isApiEnabled(),
         ]);
     }
 }

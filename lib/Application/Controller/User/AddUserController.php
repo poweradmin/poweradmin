@@ -41,29 +41,41 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AddUserController extends BaseController
 {
-    private PasswordPolicyService $passwordPolicyService;
-    private PasswordGenerationService $passwordGenerationService;
-    private MailService $mailService;
-    private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
-    private UserGroupLookupInterface $groupRepository;
-    private UserGroupMemberRepositoryInterface $memberRepository;
+    private ?PasswordPolicyService $passwordPolicyService = null;
+    private ?PasswordGenerationService $passwordGenerationService = null;
+    private ?MailService $mailService = null;
+    private ?PermissionTemplateRepositoryInterface $permissionTemplateRepository = null;
+    private ?UserGroupLookupInterface $groupRepository = null;
+    private ?UserGroupMemberRepositoryInterface $memberRepository = null;
 
-
-    public function __construct(array $request)
+    private function passwordPolicyService(): PasswordPolicyService
     {
-        parent::__construct($request);
-        $this->passwordPolicyService = $this->services()->passwordPolicyService();
-        $this->passwordGenerationService = $this->services()->passwordGenerationService();
+        return $this->passwordPolicyService ??= $this->services()->passwordPolicyService();
+    }
 
-        // Initialize mail service
-        $this->mailService = $this->services()->mailService();
+    private function passwordGenerationService(): PasswordGenerationService
+    {
+        return $this->passwordGenerationService ??= $this->services()->passwordGenerationService();
+    }
 
-        // Initialize permission template repository
-        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
+    private function mailService(): MailService
+    {
+        return $this->mailService ??= $this->services()->mailService();
+    }
 
-        // Initialize group repositories for group membership management
-        $this->groupRepository = $this->services()->userGroupRepository();
-        $this->memberRepository = $this->services()->userGroupMemberRepository();
+    private function permissionTemplateRepository(): PermissionTemplateRepositoryInterface
+    {
+        return $this->permissionTemplateRepository ??= $this->services()->permissionTemplateRepository();
+    }
+
+    private function groupRepository(): UserGroupLookupInterface
+    {
+        return $this->groupRepository ??= $this->services()->userGroupRepository();
+    }
+
+    private function memberRepository(): UserGroupMemberRepositoryInterface
+    {
+        return $this->memberRepository ??= $this->services()->userGroupMemberRepository();
     }
 
     public function run(): void
@@ -74,7 +86,7 @@ class AddUserController extends BaseController
         $this->setCurrentPage('add_user');
         $this->setPageTitle(_('Add user'));
 
-        $policyConfig = $this->passwordPolicyService->getPolicyConfig();
+        $policyConfig = $this->passwordPolicyService()->getPolicyConfig();
 
         if ($this->isPost()) {
             $this->addUser($policyConfig);
@@ -112,7 +124,7 @@ class AddUserController extends BaseController
         // and an omitted one falls back to the minimal template rather than Administrator.
         $templateError = PermissionTemplateAssignmentGuard::apply(
             $this->services()->permissionService(),
-            $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user'),
+            $this->permissionTemplateRepository()->getMinimalPermissionTemplateId('user'),
             $callerId,
             $input,
             null
@@ -126,7 +138,7 @@ class AddUserController extends BaseController
         // Handle auto-generated password
         $generatedPassword = '';
         if (!$input['use_ldap'] && $this->httpRequest->getPostParam('auto_generate_password')) {
-            $generatedPassword = $this->passwordGenerationService->generatePassword();
+            $generatedPassword = $this->passwordGenerationService()->generatePassword();
             $input['password'] = $generatedPassword;
         }
 
@@ -157,7 +169,7 @@ class AddUserController extends BaseController
                 $mailEnabled = $this->config->get('mail', 'enabled', false);
 
                 if ($mailEnabled && $input['email'] && $this->httpRequest->getPostParam('send_email')) {
-                    $emailSent = $this->mailService->sendNewAccountEmail(
+                    $emailSent = $this->mailService()->sendNewAccountEmail(
                         $input['email'],
                         $input['username'],
                         $generatedPassword,
@@ -190,7 +202,7 @@ class AddUserController extends BaseController
     private function renderAddUserForm(array $policyConfig): void
     {
         $user_edit_templ_perm = $this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM);
-        $user_templates = $this->permissionTemplateRepository->listPermissionTemplates('user');
+        $user_templates = $this->permissionTemplateRepository()->listPermissionTemplates('user');
 
         $username = $this->httpRequest->getPostParam('username', '');
         $fullname = $this->httpRequest->getPostParam('fullname', '');
@@ -198,7 +210,7 @@ class AddUserController extends BaseController
 
         // Use minimal permission template as default (most secure); preselect
         // nothing rather than falling back to template id 1 (Administrator).
-        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user') ?? '';
+        $defaultTemplateId = $this->permissionTemplateRepository()->getMinimalPermissionTemplateId('user') ?? '';
         $perm_templ = $this->httpRequest->getPostParam('perm_templ', (string)$defaultTemplateId);
 
         $description = $this->httpRequest->getPostParam('descr', '');
@@ -210,7 +222,7 @@ class AddUserController extends BaseController
         $mail_enabled = $this->config->get('mail', 'enabled', false);
 
         // Fetch all available groups for group membership assignment
-        $allGroups = $this->groupRepository->findAll();
+        $allGroups = $this->groupRepository()->findAll();
         $availableGroups = array_map(function ($group) {
             return [
                 'id' => $group->getId(),
@@ -283,7 +295,7 @@ class AddUserController extends BaseController
         // Convert to integers
         $groupIds = array_map('intval', $groupIds);
 
-        $membershipService = new GroupMembershipService($this->memberRepository, $this->groupRepository);
+        $membershipService = new GroupMembershipService($this->memberRepository(), $this->groupRepository());
 
         $successfulGroups = [];
 
@@ -292,7 +304,7 @@ class AddUserController extends BaseController
                 $membershipService->addUserToGroup($groupId, $userId);
 
                 // Store group info for logging
-                $group = $this->groupRepository->findById($groupId);
+                $group = $this->groupRepository()->findById($groupId);
                 if ($group) {
                     $successfulGroups[] = [
                         'id' => $groupId,

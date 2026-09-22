@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
@@ -36,14 +35,11 @@ use Poweradmin\Domain\Utility\IpHelper;
  */
 class DeleteRecordsController extends BaseController
 {
-    private UserContextService $userContextService;
-    private PermissionService $permissionService;
+    private ?PermissionService $permissionService = null;
 
-    public function __construct(array $request)
+    private function permissionService(): PermissionService
     {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-        $this->permissionService = $this->services()->permissionService();
+        return $this->permissionService ??= $this->services()->permissionService();
     }
 
     public function run(): void
@@ -170,8 +166,8 @@ class DeleteRecordsController extends BaseController
 
                 $zone_info = $this->canViewZones() ? $domainRepository->getZoneInfoFromId($zid) : [];
 
-                $userId = $this->userContextService->getLoggedInUserId();
-                $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $domain_id);
+                $userId = $this->getUserContextService()->getLoggedInUserId();
+                $perm_edit = $this->permissionService()->getEditPermissionLevelForZone($userId, $domain_id);
 
                 if (ZoneType::isReadOnly($zone_info['type'] ?? null) || $perm_edit === 'none') {
                     continue;

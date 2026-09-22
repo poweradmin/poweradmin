@@ -43,13 +43,11 @@ class ListRecordChangesController extends BaseController
         'PT1H' => '1 hour ago',
     ];
 
-    private RecordChangeLogger $changeLogger;
+    private ?RecordChangeLogger $changeLogger = null;
 
-    public function __construct(array $request)
+    private function changeLogger(): RecordChangeLogger
     {
-        parent::__construct($request);
-
-        $this->changeLogger = $this->services()->recordChangeLog();
+        return $this->changeLogger ??= $this->services()->recordChangeLog();
     }
 
     public function run(): void
@@ -153,13 +151,13 @@ class ListRecordChangesController extends BaseController
             return;
         }
 
-        $totalLogs = $this->changeLogger->countFiltered($filters);
+        $totalLogs = $this->changeLogger()->countFiltered($filters);
         $pages = (int) ceil($totalLogs / max(1, $logsPerPage));
         if ($totalLogs > 0 && $selectedPage > $pages) {
             die(_('Page number exceeds available pages.'));
         }
         $offset = ($selectedPage - 1) * $logsPerPage;
-        $logs = $this->changeLogger->getFiltered($filters, $logsPerPage, $offset);
+        $logs = $this->changeLogger()->getFiltered($filters, $logsPerPage, $offset);
 
         $timeWindows = [];
         foreach (self::TIME_WINDOWS as $key => $label) {
@@ -169,8 +167,8 @@ class ListRecordChangesController extends BaseController
         $this->render('list_record_changes.html', [
             'number_of_logs' => $totalLogs,
             'data' => $logs,
-            'actions' => $this->changeLogger->getDistinctActions(),
-            'users' => $this->changeLogger->getDistinctUsers(),
+            'actions' => $this->changeLogger()->getDistinctActions(),
+            'users' => $this->changeLogger()->getDistinctUsers(),
             'time_windows' => $timeWindows,
             'action_filter' => (string) $this->httpRequest->getQueryParam('action', ''),
             'user_filter' => (string) $this->httpRequest->getQueryParam('user', ''),
@@ -204,7 +202,7 @@ class ListRecordChangesController extends BaseController
             $first = true;
             $offset = 0;
             while (true) {
-                $logs = $this->changeLogger->getFiltered($filters, $pageSize, $offset);
+                $logs = $this->changeLogger()->getFiltered($filters, $pageSize, $offset);
                 if ($logs === []) {
                     break;
                 }
@@ -233,7 +231,7 @@ class ListRecordChangesController extends BaseController
 
             $offset = 0;
             while (true) {
-                $logs = $this->changeLogger->getFiltered($filters, $pageSize, $offset);
+                $logs = $this->changeLogger()->getFiltered($filters, $pageSize, $offset);
                 if ($logs === []) {
                     break;
                 }

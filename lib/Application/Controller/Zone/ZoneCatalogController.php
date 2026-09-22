@@ -28,7 +28,6 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\CatalogZoneService;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
@@ -36,18 +35,23 @@ use Poweradmin\Domain\Utility\DnsHelper;
  */
 class ZoneCatalogController extends BaseController
 {
-    private UserContextService $userContextService;
-    private DomainRepositoryInterface $domainRepository;
-    private PermissionService $permissionService;
-    private CatalogZoneService $catalogService;
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?PermissionService $permissionService = null;
+    private ?CatalogZoneService $catalogService = null;
 
-    public function __construct(array $request)
+    private function domainRepository(): DomainRepositoryInterface
     {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-        $this->domainRepository = $this->services()->domainRepository();
-        $this->permissionService = $this->services()->permissionService();
-        $this->catalogService = $this->services()->catalogZoneService();
+        return $this->domainRepository ??= $this->services()->domainRepository();
+    }
+
+    private function permissionService(): PermissionService
+    {
+        return $this->permissionService ??= $this->services()->permissionService();
+    }
+
+    private function catalogService(): CatalogZoneService
+    {
+        return $this->catalogService ??= $this->services()->catalogZoneService();
     }
 
     public function run(): void
@@ -65,19 +69,19 @@ class ZoneCatalogController extends BaseController
             return;
         }
 
-        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
+        $zoneName = $this->domainRepository()->getDomainNameById($zoneId);
         if ($zoneName === null) {
             $this->showError(_('Zone not found.'));
             return;
         }
 
-        if ($this->domainRepository->getDomainType($zoneId) !== ZoneType::PRODUCER) {
+        if ($this->domainRepository()->getDomainType($zoneId) !== ZoneType::PRODUCER) {
             $this->showError(_('Only producer zones publish a catalog.'));
             return;
         }
 
-        $userId = $this->userContextService->getLoggedInUserId();
-        $metadataView = $this->permissionService->getZoneMetadataViewPermissionLevel($userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $metadataView = $this->permissionService()->getZoneMetadataViewPermissionLevel($userId);
         $isOwner = $this->isZoneOwner($zoneId);
 
         if ($metadataView !== 'all' && !($metadataView === 'own' && $isOwner)) {
@@ -85,17 +89,17 @@ class ZoneCatalogController extends BaseController
             return;
         }
 
-        $mayEdit = $this->catalogService->canManageZone($userId, $zoneId);
+        $mayEdit = $this->catalogService()->canManageZone($userId, $zoneId);
 
         if ($this->isPost()) {
             $this->handleFormSubmission($zoneId, $userId, $mayEdit);
         }
 
-        $members = $this->catalogService->getMembers($zoneName);
+        $members = $this->catalogService()->getMembers($zoneName);
         $memberIds = array_column($members, 'id');
 
         $available = array_values(array_filter(
-            $this->catalogService->getEligibleMembers($userId),
+            $this->catalogService()->getEligibleMembers($userId),
             fn(array $zone): bool => $zone['id'] !== $zoneId && !in_array($zone['id'], $memberIds, true)
         ));
 
@@ -126,10 +130,10 @@ class ZoneCatalogController extends BaseController
         // CatalogZoneService writes the audit entry, so both this page and the
         // member-side selector log the same way.
         if ($this->httpRequest->getPostParam('add_member') !== null) {
-            $done = $this->catalogService->assign($userId, $memberId, $producerId);
+            $done = $this->catalogService()->assign($userId, $memberId, $producerId);
             $message = $done ? _('The zone has been added to the catalog.') : _('You do not have permission to edit this zone.');
         } elseif ($this->httpRequest->getPostParam('remove_member') !== null) {
-            $done = $this->catalogService->clear($userId, $memberId);
+            $done = $this->catalogService()->clear($userId, $memberId);
             $message = $done ? _('The zone has been removed from the catalog.') : _('You do not have permission to edit this zone.');
         } else {
             return;

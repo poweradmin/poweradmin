@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Auth;
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\SamlService;
-use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
@@ -36,13 +35,11 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
  */
 class LogoutController extends BaseController
 {
-    private AuthenticationService $authService;
+    private ?AuthenticationService $authService = null;
 
-    public function __construct(array $request, ?ControllerEnvironment $environment = null)
+    private function authService(): AuthenticationService
     {
-        parent::__construct($request, true, $environment);
-
-        $this->authService = $this->services()->authenticationService();
+        return $this->authService ??= $this->services()->authenticationService();
     }
 
     public function run(): void
@@ -99,7 +96,7 @@ class LogoutController extends BaseController
     private function performStandardLogout(): void
     {
         $sessionEntity = new FlashMessage(_('You have logged out.'), 'success');
-        $this->authService->logout($sessionEntity);
+        $this->authService()->logout($sessionEntity);
     }
 
     private function performSamlLogout(string $providerId): void

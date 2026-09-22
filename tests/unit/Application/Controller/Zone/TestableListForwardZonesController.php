@@ -25,16 +25,11 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 use Poweradmin\Application\Controller\Zone\ListForwardZonesController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the forward zone list controller through the ControllerEnvironment
- * seam. Its own constructor takes no environment, so BaseController's is
- * invoked directly and the one private collaborator is planted afterwards.
+ * seam; its collaborators resolve lazily off the seam's service factory.
  *
  * The exiting methods are captured instead: checkCondition() and showError()
  * render an error page and exit, redirect() sends a header and exits, so each
@@ -48,9 +43,7 @@ class TestableListForwardZonesController extends ListForwardZonesController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-        (new ReflectionProperty(ListForwardZonesController::class, 'zoneSortingService'))
-            ->setValue($this, new ZoneSortingService(new ReverseZoneSorting(), $this->getUserContextService()));
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

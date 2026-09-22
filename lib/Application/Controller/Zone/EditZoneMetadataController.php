@@ -47,21 +47,21 @@ class EditZoneMetadataController extends BaseController
     /**
      * Repository used for loading the zone.
      */
-    private ZoneReadRepositoryInterface $zoneRepository;
+    private ?ZoneReadRepositoryInterface $zoneRepository = null;
 
     /**
      * The rules and the persistence, shared with the API.
      */
-    private ZoneMetadataService $metadataService;
+    private ?ZoneMetadataService $metadataService = null;
 
-    /**
-     * @param array<string, mixed> $request
-     */
-    public function __construct(array $request)
+    private function zoneRepository(): ZoneReadRepositoryInterface
     {
-        parent::__construct($request);
-        $this->zoneRepository = $this->services()->zoneRepository();
-        $this->metadataService = $this->services()->zoneMetadataService();
+        return $this->zoneRepository ??= $this->services()->zoneRepository();
+    }
+
+    private function metadataService(): ZoneMetadataService
+    {
+        return $this->metadataService ??= $this->services()->zoneMetadataService();
     }
 
     /**
@@ -83,7 +83,7 @@ class EditZoneMetadataController extends BaseController
         }
 
         $zoneId = (int) $this->getSafeRequestValue('id');
-        $zone = $this->zoneRepository->getZone($zoneId);
+        $zone = $this->zoneRepository()->getZone($zoneId);
 
         if ($zone === null) {
             $this->showError(_('Zone not found.'));
@@ -106,7 +106,7 @@ class EditZoneMetadataController extends BaseController
         if ($this->isPost()) {
             $submittedMetadata = $this->normalizeSubmittedMetadata($this->httpRequest->getPostParam('metadata', []));
 
-            $result = $this->metadataService->replaceAll($zoneId, $zone->name, $submittedMetadata, (int)$this->getCurrentUserId());
+            $result = $this->metadataService()->replaceAll($zoneId, $zone->name, $submittedMetadata, (int)$this->getCurrentUserId());
             if (!$result->isOk()) {
                 $this->setMessage('edit_zone_metadata', 'error', ZoneMetadataFormMessages::errorMessage($result));
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
@@ -118,7 +118,7 @@ class EditZoneMetadataController extends BaseController
             return;
         }
 
-        $this->renderPage($zoneId, $zone, $this->metadataService->load($zoneId, $zone->name), $canEditMetadata);
+        $this->renderPage($zoneId, $zone, $this->metadataService()->load($zoneId, $zone->name), $canEditMetadata);
     }
 
     /**
@@ -199,7 +199,7 @@ class EditZoneMetadataController extends BaseController
         $definitions = [];
 
         foreach (MetadataDefinitions::DEFINITIONS as $kind => $definition) {
-            $support = $this->metadataService->kindSupport($definition, $caps);
+            $support = $this->metadataService()->kindSupport($definition, $caps);
             // Strict mode: hide kinds whose support cannot be confirmed (version
             // detection failed). Older known-but-unsupported kinds remain visible
             // but disabled, so admins can still see what newer servers add.
@@ -312,7 +312,7 @@ class EditZoneMetadataController extends BaseController
     {
         $badges = [];
 
-        if ($kind !== '' && $this->metadataService->writeRejection($kind) !== null) {
+        if ($kind !== '' && $this->metadataService()->writeRejection($kind) !== null) {
             $badges[] = [
                 'label' => _('Read-only'),
                 'class' => 'bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle',

@@ -26,7 +26,6 @@ use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 
 /**
@@ -36,14 +35,6 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
  */
 class SecondaryZoneImportController extends BaseController
 {
-    private UserContextService $userContextService;
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-    }
-
     public function run(): void
     {
         $this->checkPermission(Permission::PERM_ZONE_SLAVE_ADD, _('You do not have the permission to import a secondary zone.'));
@@ -202,7 +193,7 @@ class SecondaryZoneImportController extends BaseController
         }
 
         $ownershipMode = $this->moduleServices()->zoneOwnershipModeService();
-        $sessionUserId = $this->userContextService->getLoggedInUserId();
+        $sessionUserId = $this->getUserContextService()->getLoggedInUserId();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $userGroupRepo = $this->moduleServices()->userGroupRepository();
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($sessionUserId);

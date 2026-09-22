@@ -51,7 +51,6 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Service\Dns\RecordDisplayService;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
@@ -64,15 +63,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class EditController extends BaseController
 {
-    private RecordTypeService $recordTypeService;
-    private FormStateService $formStateService;
-    private SOARecordManagerInterface $soaRecordManager;
-    private ReverseTtlResolver $reverseTtlResolver;
-    private UserContextService $userContextService;
-    private ZoneReadRepositoryInterface $zoneRepository;
-    private PermissionService $permissionService;
-    private RecordListingInterface $recordRepository;
-    private DomainRepositoryInterface $domainRepository;
+    private ?RecordTypeService $recordTypeService = null;
+    private ?FormStateService $formStateService = null;
+    private ?SOARecordManagerInterface $soaRecordManager = null;
+    private ?ReverseTtlResolver $reverseTtlResolver = null;
+    private ?ZoneReadRepositoryInterface $zoneRepository = null;
+    private ?PermissionService $permissionService = null;
+    private ?RecordListingInterface $recordRepository = null;
+    private ?DomainRepositoryInterface $domainRepository = null;
     /**
      * Rows and comment from a submission rejected as stale, so the re-render can restore them.
      * @var list<ZoneEditRow>
@@ -80,19 +78,44 @@ class EditController extends BaseController
     private array $rejectedRecords = [];
     private ?string $rejectedZoneComment = null;
 
-    public function __construct(array $request)
+    private function recordRepository(): RecordListingInterface
     {
-        parent::__construct($request);
-        $this->recordRepository = $this->services()->recordRepository();
-        $this->domainRepository = $this->services()->domainRepository();
-        $this->recordTypeService = new RecordTypeService($this->getConfig());
-        $this->formStateService = new FormStateService();
-        $this->soaRecordManager = $this->services()->soaRecordManager();
-        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
-        $this->userContextService = new UserContextService();
-        $this->zoneRepository = $this->services()->zoneRepository();
+        return $this->recordRepository ??= $this->services()->recordRepository();
+    }
 
-        $this->permissionService = $this->services()->permissionService();
+    private function domainRepository(): DomainRepositoryInterface
+    {
+        return $this->domainRepository ??= $this->services()->domainRepository();
+    }
+
+    private function recordTypeService(): RecordTypeService
+    {
+        return $this->recordTypeService ??= new RecordTypeService($this->getConfig());
+    }
+
+    private function formStateService(): FormStateService
+    {
+        return $this->formStateService ??= new FormStateService();
+    }
+
+    private function soaRecordManager(): SOARecordManagerInterface
+    {
+        return $this->soaRecordManager ??= $this->services()->soaRecordManager();
+    }
+
+    private function reverseTtlResolver(): ReverseTtlResolver
+    {
+        return $this->reverseTtlResolver ??= $this->services()->reverseTtlResolver();
+    }
+
+    private function zoneRepository(): ZoneReadRepositoryInterface
+    {
+        return $this->zoneRepository ??= $this->services()->zoneRepository();
+    }
+
+    private function permissionService(): PermissionService
+    {
+        return $this->permissionService ??= $this->services()->permissionService();
     }
 
     public function run(): void
@@ -124,13 +147,13 @@ class EditController extends BaseController
         $contentFilter = $this->httpRequest->getQueryParam('content', '');
 
         // Generate a form token for the add record form
-        $formToken = $this->formStateService->generateFormId('add_record');
+        $formToken = $this->formStateService()->generateFormId('add_record');
 
         // Check if we have any form data from a failed submission
         $formData = null;
         $formId = $this->httpRequest->getQueryParam('form_id');
         if ($formId) {
-            $formData = $this->formStateService->getFormData($formId);
+            $formData = $this->formStateService()->getFormData($formId);
         }
 
         $row_start = 0;
@@ -149,11 +172,11 @@ class EditController extends BaseController
         $zone_id = $this->requireNumericParam('id');
 
         // Clear session-based form data if zone has changed to prevent persistence across zones
-        $this->formStateService->trackAddRecordZone($zone_id);
+        $this->formStateService()->trackAddRecordZone($zone_id);
 
         // Early permission check - validate access before data retrieval
-        $userId = $this->userContextService->getLoggedInUserId();
-        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $perm_view = $this->permissionService()->getViewPermissionLevel($userId);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view !== "all" && !$user_is_zone_owner) {
@@ -162,7 +185,7 @@ class EditController extends BaseController
         }
 
         // Only retrieve zone data after permission validation
-        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
@@ -190,10 +213,10 @@ class EditController extends BaseController
 
             // If the record was added successfully, clear the stored data
             if ($result) {
-                $this->formStateService->forgetAddRecordForm();
+                $this->formStateService()->forgetAddRecordForm();
             } elseif (!$formData) {
                 // Re-display the refused submission with its error
-                $formData = $this->formStateService->addRecordFormWithError() ?? $formData;
+                $formData = $this->formStateService()->addRecordFormWithError() ?? $formData;
             }
         } elseif ($intent === ZoneEditIntent::SAVE_RECORDS || $intent === ZoneEditIntent::SAVE_TRUNCATED) {
             // SAVE_TRUNCATED: max_input_vars dropped the bottom save button; run the
@@ -207,14 +230,14 @@ class EditController extends BaseController
 
         // If we have stored validation error data from a previous request, use it
         if (!$formData) {
-            $formData = $this->formStateService->addRecordFormWithError() ?? $formData;
+            $formData = $this->formStateService()->addRecordFormWithError() ?? $formData;
         }
 
         // Permission levels - use zone-aware checking for group permission support
-        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zone_id);
-        $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
+        $perm_edit = $this->permissionService()->getEditPermissionLevelForZone($userId, $zone_id);
+        $perm_meta_edit = $this->permissionService()->getZoneMetaEditPermissionLevel($userId);
         $meta_edit = ZoneAccessPolicy::levelAppliesToZone($perm_meta_edit, $user_is_zone_owner);
-        $can_manage_dnssec = $this->permissionService->canManageDnssecForZone($userId, $zone_id);
+        $can_manage_dnssec = $this->permissionService()->canManageDnssecForZone($userId, $zone_id);
 
         $this->requireZoneView($zone_id);
 
@@ -226,7 +249,7 @@ class EditController extends BaseController
             return;
         }
 
-        $domain_type = $this->domainRepository->getDomainType($zone_id);
+        $domain_type = $this->domainRepository()->getDomainType($zone_id);
 
         // Only zones PowerDNS would actually publish from a catalog get the selector,
         // so nothing below runs for the kinds that would discard the result.
@@ -271,7 +294,7 @@ class EditController extends BaseController
         // A requester gets the same inputs as an editor; the save files a request instead
         $requests_only = $edit_mode === ChangeApprovalPolicy::MODE_REQUEST && !ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner);
         if ($requests_only) {
-            $perm_edit = $this->permissionService->getChangeRequestPermissionLevelForZone($userId, $zone_id);
+            $perm_edit = $this->permissionService()->getChangeRequestPermissionLevelForZone($userId, $zone_id);
         }
         $pending_change_requests = $this->changeApproval()->enabled() && $perm_edit !== 'none'
             ? ChangeRequestPresenter::summaries($this->services()->zoneChangeRequestRepository()->listPendingForZone($zone_id))
@@ -288,18 +311,18 @@ class EditController extends BaseController
             zoneName: $zone_name,
             // Twig escapes this for the textarea. Escaping it here as well would put the
             // entities in front of the operator and save them back on the next submit.
-            storedZoneComment: (string)$this->zoneRepository->getZoneComment($zone_id),
+            storedZoneComment: (string)$this->zoneRepository()->getZoneComment($zone_id),
             rejectedZoneComment: $this->rejectedZoneComment,
             domainType: $domain_type,
-            slaveMaster: $this->domainRepository->getDomainMaster($zone_id),
+            slaveMaster: $this->domainRepository()->getDomainMaster($zone_id),
             zoneTemplates: $this->services()->zoneTemplateService()->getListZoneTempl($userId),
             zoneTemplateId: $zone_template_id,
             zoneTemplateDetails: $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_template_id) ?: [],
-            recordCount: $this->recordRepository->countZoneRecords($zone_id),
+            recordCount: $this->recordRepository()->countZoneRecords($zone_id),
             filteredRecordCount: $total_filtered_count,
             records: $displayRecords,
             rejectedRecords: $this->rejectedRecords,
-            soaRecord: $this->soaRecordManager->getSOARecord($zone_id),
+            soaRecord: $this->soaRecordManager()->getSOARecord($zone_id),
             isReverseZone: $isReverseZone,
             supportsCatalogZones: $supports_catalog_zones,
             catalogSelectorView: $catalog_selector_view,
@@ -314,12 +337,12 @@ class EditController extends BaseController
             permEditNsSubzone: $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE),
             permMetaEdit: $perm_meta_edit,
             metaEdit: $meta_edit,
-            permMetadataView: $this->permissionService->getZoneMetadataViewPermissionLevel($userId),
-            permOwnershipView: $this->permissionService->getZoneOwnershipViewPermissionLevel($userId),
-            logPermission: $this->permissionService->getZoneLogPermissionLevel($userId),
+            permMetadataView: $this->permissionService()->getZoneMetadataViewPermissionLevel($userId),
+            permOwnershipView: $this->permissionService()->getZoneOwnershipViewPermissionLevel($userId),
+            logPermission: $this->permissionService()->getZoneLogPermissionLevel($userId),
             canManageDnssec: $can_manage_dnssec,
-            permZoneTemplAdd: $this->permissionService->canAddZoneTemplates($userId),
-            permIsGodlike: $this->permissionService->isAdmin($userId),
+            permZoneTemplAdd: $this->permissionService()->canAddZoneTemplates($userId),
+            permIsGodlike: $this->permissionService()->isAdmin($userId),
             permViewZoneOwn: $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OWN),
             permViewZoneOther: $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS),
             editMode: $edit_mode,
@@ -329,11 +352,11 @@ class EditController extends BaseController
             isSecured: $is_secured,
             isPresigned: $is_presigned,
             signedSerial: $signed_serial,
-            recordTypeService: $this->recordTypeService,
+            recordTypeService: $this->recordTypeService(),
             recordTypeCapabilities: $this->getRecordTypeCapabilities(),
-            forwardTtl: $this->reverseTtlResolver->getForwardTtl(),
-            ptrDefaultTtl: $this->reverseTtlResolver->getConfiguredReverseTtl(),
-            typeDefaultTtls: $this->reverseTtlResolver->getTypeDefaults(),
+            forwardTtl: $this->reverseTtlResolver()->getForwardTtl(),
+            ptrDefaultTtl: $this->reverseTtlResolver()->getConfiguredReverseTtl(),
+            typeDefaultTtls: $this->reverseTtlResolver()->getTypeDefaults(),
             supportsZoneRetrieve: $backend->supportsZoneRetrieve(),
             recordIdsAreNumeric: $backend->recordIdsAreNumeric(),
             showRecordId: $iface_show_id,
@@ -377,12 +400,12 @@ class EditController extends BaseController
         $prio = $this->httpRequest->getPostParam('prio');
         $ttl = $this->httpRequest->getPostParam('ttl');
         $type = (string)$this->httpRequest->getPostParam('type');
-        $this->formStateService->rememberAddRecordForm([
+        $this->formStateService()->rememberAddRecordForm([
             'name' => $this->httpRequest->getPostParam('name'),
             'content' => $this->httpRequest->getPostParam('content'),
             'type' => $type,
             'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
-            'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone),
+            'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver()->resolveTtlForType($type, $isReverseZone),
             'comment' => $this->httpRequest->getPostParam('comment', '')
         ]);
     }
@@ -430,7 +453,7 @@ class EditController extends BaseController
 
     private function handleCatalogChange(int $zone_id): void
     {
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         $catalogService = $this->services()->catalogZoneService();
         $producerId = $this->httpRequest->getPostParam('new_catalog', '');
 
@@ -460,7 +483,7 @@ class EditController extends BaseController
         $new_type = $this->httpRequest->getPostParam('newtype', '');
         if ($this->httpRequest->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
             // Converting a zone is equivalent to creating one of the target type.
-            if (!$this->permissionService->canCreateZone((int)$this->getCurrentUserId(), $new_type)) {
+            if (!$this->permissionService()->canCreateZone((int)$this->getCurrentUserId(), $new_type)) {
                 $this->setMessage('edit', 'error', _('You do not have permission to change this zone to that type.'));
                 return;
             }
@@ -515,7 +538,7 @@ class EditController extends BaseController
     private function handleRetrieveZone(int $zone_id, DomainManagerInterface $domainManager): void
     {
         // The SQL backend cannot trigger a transfer, and only a secondary has a primary to pull from
-        $isSecondary = $this->domainRepository->getDomainType($zone_id) === ZoneType::SLAVE;
+        $isSecondary = $this->domainRepository()->getDomainType($zone_id) === ZoneType::SLAVE;
         if (!$this->backendCapabilities()->supportsZoneRetrieve() || !$isSecondary) {
             $this->setMessage('edit', 'error', _('Retrieving a zone from its primary needs the PowerDNS API backend and a secondary zone.'));
             return;
@@ -561,10 +584,10 @@ class EditController extends BaseController
             'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : null,
             'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
             'comment' => (string)$this->httpRequest->getPostParam('comment', ''),
-        ], (int)$this->getCurrentUserId(), (string)$this->userContextService->getLoggedInUsername(), $this->requestComment());
+        ], (int)$this->getCurrentUserId(), (string)$this->getUserContextService()->getLoggedInUsername(), $this->requestComment());
 
         if (!$result->success) {
-            $this->formStateService->rememberAddRecordError([
+            $this->formStateService()->rememberAddRecordError([
                 'error' => true,
                 'errorMessage' => ChangeRequestMessages::forResult($result),
                 'fieldError' => 'content',
@@ -572,7 +595,7 @@ class EditController extends BaseController
             return false;
         }
 
-        $this->formStateService->forgetAddRecordForm();
+        $this->formStateService()->forgetAddRecordForm();
         $this->setMessage('edit', 'success', ChangeRequestMessages::submitted());
         $this->redirect('/zones/' . $zone_id . '/edit');
 
@@ -593,7 +616,7 @@ class EditController extends BaseController
             $zone_id,
             $zone_name,
             (int)$this->getCurrentUserId(),
-            (string)$this->userContextService->getLoggedInUsername()
+            (string)$this->getUserContextService()->getLoggedInUsername()
         );
     }
 
@@ -638,7 +661,7 @@ class EditController extends BaseController
         $this->setValidationConstraints($constraints);
 
         if (!$this->doValidateRequest($this->httpRequest->getPostParams())) {
-            $this->formStateService->rememberAddRecordError([
+            $this->formStateService()->rememberAddRecordError([
                 'error' => true,
                 'errorMessage' => _('Please provide all required fields.'),
                 'fieldError' => !empty($this->httpRequest->getPostParam('content')) ? 'type' : 'content'
@@ -667,11 +690,11 @@ class EditController extends BaseController
             $prio,
             $comment,
             (int)$this->getCurrentUserId(),
-            (string)$this->userContextService->getLoggedInUsername(),
+            (string)$this->getUserContextService()->getLoggedInUsername(),
             RecordAddResult::companionFrom($this->httpRequest->getPostParams())
         );
         if (!$added->isOk()) {
-            $this->formStateService->rememberAddRecordError([
+            $this->formStateService()->rememberAddRecordError([
                 'error' => true,
                 'errorMessage' => $added->record->message,
                 'fieldError' => RecordFormFieldPresenter::fieldId($added->record->field, (string)$added->record->message)
@@ -680,12 +703,12 @@ class EditController extends BaseController
         }
 
         // Clear session data when record is successfully created
-        $this->formStateService->forgetAddRecordForm();
+        $this->formStateService()->forgetAddRecordForm();
 
         // Clear form data if it exists in the session
         $formToken = $this->httpRequest->getPostParam('form_token');
         if ($formToken !== null) {
-            $this->formStateService->clearFormData($formToken);
+            $this->formStateService()->clearFormData($formToken);
         }
 
         [$messageType, $message] = RecordAddMessages::forAdded($added);

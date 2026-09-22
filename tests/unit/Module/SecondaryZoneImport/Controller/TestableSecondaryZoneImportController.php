@@ -23,12 +23,8 @@
 namespace Poweradmin\Tests\Unit\Module\SecondaryZoneImport\Controller;
 
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Module\SecondaryZoneImport\Controller\SecondaryZoneImportController;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the controller through the ControllerEnvironment seam. checkPermission(),
@@ -42,8 +38,7 @@ class TestableSecondaryZoneImportController extends SecondaryZoneImportControlle
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-        (new ReflectionProperty(SecondaryZoneImportController::class, 'userContextService'))->setValue($this, new UserContextService());
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

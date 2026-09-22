@@ -30,13 +30,11 @@ use Poweradmin\Infrastructure\Logger\DbUserLogger;
  */
 class ListLogUsersController extends AbstractListLogController
 {
-    private DbUserLogger $dbUserLogger;
+    private ?DbUserLogger $dbUserLogger = null;
 
-    public function __construct(array $request)
+    private function dbUserLogger(): DbUserLogger
     {
-        parent::__construct($request);
-
-        $this->dbUserLogger = $this->services()->userLogger();
+        return $this->dbUserLogger ??= $this->services()->userLogger();
     }
 
     protected function authorize(): bool
@@ -78,20 +76,20 @@ class ListLogUsersController extends AbstractListLogController
 
     protected function countLogs(array $filters): int
     {
-        return $this->dbUserLogger->countFilteredLogs($filters);
+        return $this->dbUserLogger()->countFilteredLogs($filters);
     }
 
     protected function fetchLogs(array $filters, int $limit, int $offset): array
     {
-        return $this->dbUserLogger->getFilteredLogs($filters, $limit, $offset);
+        return $this->dbUserLogger()->getFilteredLogs($filters, $limit, $offset);
     }
 
     protected function getAdditionalRenderParams(): array
     {
         return [
             'event_type' => $this->httpRequest->getQueryParam('event_type', ''),
-            'event_types' => $this->dbUserLogger->getDistinctEventTypes(),
-            'users' => $this->dbUserLogger->getDistinctUsers(),
+            'event_types' => $this->dbUserLogger()->getDistinctEventTypes(),
+            'users' => $this->dbUserLogger()->getDistinctUsers(),
         ];
     }
 }

@@ -24,30 +24,25 @@ namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\User\UserAgreementService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Handles the user agreement page: shows the text and records the user's acceptance.
  */
 class UserAgreementController extends BaseController
 {
-    private UserAgreementService $agreementService;
-    private UserContextService $userContextService;
+    private ?UserAgreementService $agreementService = null;
 
-    public function __construct(array $request)
+    private function agreementService(): UserAgreementService
     {
-        parent::__construct($request, true);
-
-        $this->agreementService = new UserAgreementService(
+        return $this->agreementService ??= new UserAgreementService(
             $this->services()->userAgreementRepository(),
             $this->config
         );
-        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
     {
-        if (!$this->agreementService->isEnabled()) {
+        if (!$this->agreementService()->isEnabled()) {
             $this->redirect('/');
         }
 
@@ -61,7 +56,7 @@ class UserAgreementController extends BaseController
     private function showAgreementForm(): void
     {
         $theme = $this->config->get('interface', 'theme', 'default');
-        $templatePath = $this->agreementService->getAgreementTemplate($theme);
+        $templatePath = $this->agreementService()->getAgreementTemplate($theme);
 
         $messages = $this->getMessages('user_agreement');
         $msg = '';
@@ -72,8 +67,8 @@ class UserAgreementController extends BaseController
         }
 
         $this->render($templatePath, [
-            'agreement_version' => $this->agreementService->getCurrentVersion(),
-            'custom_content_exists' => $this->agreementService->hasCustomContent($theme),
+            'agreement_version' => $this->agreementService()->getCurrentVersion(),
+            'custom_content_exists' => $this->agreementService()->hasCustomContent($theme),
             'msg' => $msg,
             'type' => $type,
         ]);
@@ -87,11 +82,11 @@ class UserAgreementController extends BaseController
             return;
         }
 
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         $ipAddress = $this->services()->clientContext()->ip;
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-        if ($this->agreementService->recordAgreementAcceptance($userId, $ipAddress, $userAgent)) {
+        if ($this->agreementService()->recordAgreementAcceptance($userId, $ipAddress, $userAgent)) {
             $this->setMessage('index', 'success', _('User agreement accepted successfully.'));
             $this->redirect('/');
         } else {

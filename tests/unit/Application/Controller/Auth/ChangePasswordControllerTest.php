@@ -57,7 +57,7 @@ class ChangePasswordControllerTest extends SeamControllerTestCase
         $this->factory->expects($this->once())->method('authenticationService')->willReturn($authentication);
 
         $this->post(['old_password' => 'old-secret', 'new_password' => 'new-secret', 'new_password2' => 'new-secret']);
-        $controller = new TestableChangePasswordController([], $this->environment($config));
+        $controller = new TestableChangePasswordController([], true, $this->environment($config));
 
         $passwordService = $this->createMock(PasswordChangeService::class);
         $passwordService->expects($this->once())->method('changePassword')
@@ -79,7 +79,7 @@ class ChangePasswordControllerTest extends SeamControllerTestCase
         $this->factory->method('authenticationService')->willReturn($authentication);
 
         $this->post(['old_password' => 'wrong', 'new_password' => 'new-secret', 'new_password2' => 'new-secret']);
-        $controller = new TestableChangePasswordController([], $this->environment($config));
+        $controller = new TestableChangePasswordController([], true, $this->environment($config));
 
         $passwordService = $this->createMock(PasswordChangeService::class);
         $passwordService->method('changePassword')->willReturn([false, 'Current password is incorrect']);

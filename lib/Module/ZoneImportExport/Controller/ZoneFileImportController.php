@@ -28,7 +28,6 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
@@ -43,14 +42,6 @@ use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
  */
 class ZoneFileImportController extends BaseController
 {
-    private UserContextService $userContextService;
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-    }
-
     public function run(): void
     {
         $this->checkImportPermission();
@@ -90,7 +81,7 @@ class ZoneFileImportController extends BaseController
         if ($requestedZoneId > 0) {
             $zoneName = $this->moduleServices()->domainRepository()->getDomainNameById($requestedZoneId);
             if ($zoneName) {
-                $userId = $this->userContextService->getLoggedInUserId();
+                $userId = $this->getUserContextService()->getLoggedInUserId();
                 $permissionService = $this->moduleServices()->permissionService();
                 $permEdit = $permissionService->getEditPermissionLevelForZone($userId, $requestedZoneId);
                 if ($permEdit !== 'none') {
@@ -160,7 +151,7 @@ class ZoneFileImportController extends BaseController
         $importMode = $this->httpRequest->getPostParam('import_mode', 'new');
         $existingZoneId = (int)$this->httpRequest->getPostParam('existing_zone_id', 0);
 
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         $permissionService = $this->moduleServices()->permissionService();
 
         // Verify permission when importing into an existing zone via POST
@@ -192,7 +183,7 @@ class ZoneFileImportController extends BaseController
         }
 
         // Store parsed data in session for the execute step
-        $this->userContextService->setSessionData(ImportSessionKeys::ZONE_IMPORT_DATA, [
+        $this->getUserContextService()->setSessionData(ImportSessionKeys::ZONE_IMPORT_DATA, [
             'origin' => $origin,
             'records' => json_encode(array_map(fn($r) => [
                 'name' => $r->name,
@@ -236,7 +227,7 @@ class ZoneFileImportController extends BaseController
             // so the preview step can offer a group picker without inferring all
             // memberships at execute time.
             $ownershipMode = $this->moduleServices()->zoneOwnershipModeService();
-            $userId = $this->userContextService->getLoggedInUserId();
+            $userId = $this->getUserContextService()->getLoggedInUserId();
             $userGroupRepo = $this->moduleServices()->userGroupRepository();
             $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
             $availableGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
@@ -264,12 +255,12 @@ class ZoneFileImportController extends BaseController
 
     private function handleExecute(): void
     {
-        if (!$this->userContextService->hasSessionData(ImportSessionKeys::ZONE_IMPORT_DATA)) {
+        if (!$this->getUserContextService()->hasSessionData(ImportSessionKeys::ZONE_IMPORT_DATA)) {
             $this->showError(_('Import session expired. Please upload the file again.'));
             return;
         }
 
-        $importData = $this->userContextService->getSessionData(ImportSessionKeys::ZONE_IMPORT_DATA);
+        $importData = $this->getUserContextService()->getSessionData(ImportSessionKeys::ZONE_IMPORT_DATA);
         $records = json_decode($importData['records']);
         if (!is_array($records)) {
             $this->showError(_('Invalid import data. Please upload the file again.'));
@@ -287,8 +278,8 @@ class ZoneFileImportController extends BaseController
             $zoneName = DnsIdnService::toPunycode($zoneName);
         }
 
-        $userId = $this->userContextService->getLoggedInUserId();
-        $userLogin = $this->userContextService->getLoggedInUsername();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $userLogin = $this->getUserContextService()->getLoggedInUsername();
         $audit = $this->moduleServices()->auditService();
 
         $domainRepository = $this->moduleServices()->domainRepository();
@@ -425,7 +416,7 @@ class ZoneFileImportController extends BaseController
         }
 
         // Clean up session data
-        $this->userContextService->unsetSessionData(ImportSessionKeys::ZONE_IMPORT_DATA);
+        $this->getUserContextService()->unsetSessionData(ImportSessionKeys::ZONE_IMPORT_DATA);
 
         $this->showForm([
             'result' => true,

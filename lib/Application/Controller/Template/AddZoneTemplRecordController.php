@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Template;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -34,16 +33,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AddZoneTemplRecordController extends BaseController
 {
-    private RecordTypeService $recordTypeService;
-    private UserContextService $userContext;
-    private ZoneTemplateService $zoneTemplate;
+    private ?RecordTypeService $recordTypeService = null;
+    private ?ZoneTemplateService $zoneTemplate = null;
 
-    public function __construct(array $request)
+    private function recordTypeService(): RecordTypeService
     {
-        parent::__construct($request);
-        $this->recordTypeService = new RecordTypeService($this->getConfig());
-        $this->userContext = new UserContextService();
-        $this->zoneTemplate = $this->services()->zoneTemplateService();
+        return $this->recordTypeService ??= new RecordTypeService($this->getConfig());
+    }
+
+    private function zoneTemplate(): ZoneTemplateService
+    {
+        return $this->zoneTemplate ??= $this->services()->zoneTemplateService();
     }
 
     public function run(): void
@@ -61,8 +61,8 @@ class AddZoneTemplRecordController extends BaseController
         }
 
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
-        $userId = $this->userContext->getLoggedInUserId();
-        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 
@@ -110,7 +110,7 @@ class AddZoneTemplRecordController extends BaseController
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
         $ttl = $this->httpRequest->getPostParam('ttl', $dns_ttl);
 
-        $added = $this->zoneTemplate->addZoneTemplRecord($zone_templ_id, $name, $type, $content, (int)$ttl, (int)$prio);
+        $added = $this->zoneTemplate()->addZoneTemplRecord($zone_templ_id, $name, $type, $content, (int)$ttl, (int)$prio);
         if ($added->success) {
             // Mark template as modified to track sync status
             $syncService = $this->services()->zoneTemplateSync();
@@ -139,8 +139,8 @@ class AddZoneTemplRecordController extends BaseController
         $ttl = $this->httpRequest->getPostParam('ttl', $dns_ttl);
 
         // Get count of zones using this template
-        $userId = $this->userContext->getLoggedInUserId();
-        $linked_zones = $this->zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $linked_zones = $this->zoneTemplate()->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
 
         $this->render('add_zone_templ_record.html', [
@@ -148,7 +148,7 @@ class AddZoneTemplRecordController extends BaseController
             'zone_templ_id' => $zone_templ_id,
             'name' => $name,
             'type' => $type,
-            'record_types' => $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities()),
+            'record_types' => $this->recordTypeService()->getAllTypes($this->getRecordTypeCapabilities()),
             'content' => $content,
             'prio' => $prio,
             'ttl' => $ttl,

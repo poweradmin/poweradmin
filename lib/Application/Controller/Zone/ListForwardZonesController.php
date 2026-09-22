@@ -37,12 +37,11 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
  */
 class ListForwardZonesController extends BaseController
 {
-    private ZoneSortingService $zoneSortingService;
+    private ?ZoneSortingService $zoneSortingService = null;
 
-    public function __construct(array $request, bool $authenticate = true)
+    private function zoneSortingService(): ZoneSortingService
     {
-        parent::__construct($request, $authenticate);
-        $this->zoneSortingService = $this->createZoneSortingService();
+        return $this->zoneSortingService ??= $this->createZoneSortingService();
     }
 
     public function run(): void
@@ -180,7 +179,7 @@ class ListForwardZonesController extends BaseController
             $allowedSort[] = 'group';
         }
 
-        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
+        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService()->getZoneSortOrder(
             $allowedSort,
             submittedSortBy: $this->httpRequest->getPostParam('zone_sort_by') ?? $this->httpRequest->getQueryParam('zone_sort_by'),
             submittedDirection: $this->httpRequest->getPostParam('zone_sort_by_direction') ?? $this->httpRequest->getQueryParam('zone_sort_by_direction')

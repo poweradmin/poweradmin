@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller\System;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
@@ -32,18 +31,10 @@ use Poweradmin\Domain\Enum\AuthMethod;
  */
 class IndexController extends BaseController
 {
-    private UserContextService $userContextService;
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-    }
-
     public function run(): void
     {
         // Check if user is logged in; if not, redirect to login page
-        if (!$this->userContextService->isAuthenticated()) {
+        if (!$this->getUserContextService()->isAuthenticated()) {
             $this->redirect('/login');
             return;
         }
@@ -56,8 +47,8 @@ class IndexController extends BaseController
 
     private function showIndex(): void
     {
-        $userlogin = $this->userContextService->getLoggedInUsername();
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userlogin = $this->getUserContextService()->getLoggedInUsername();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
 
         $permissions = $this->services()->permissionService()->getPermissionFlags((int)$userId, [
             Permission::PERM_SEARCH,
@@ -105,7 +96,7 @@ class IndexController extends BaseController
                         !$permissions[Permission::PERM_USER_EDIT_OTHERS];
 
         // Determine if user can change password (internal auth only, not ldap/oidc/saml)
-        $canChangePassword = AuthMethod::fromDb($this->userContextService->getAuthMethod())->allowsLocalPassword();
+        $canChangePassword = AuthMethod::fromDb($this->getUserContextService()->getAuthMethod())->allowsLocalPassword();
 
         // Dashboard stats for admin users
         $dashboardStats = null;
@@ -170,8 +161,8 @@ class IndexController extends BaseController
             'show_api_keys_card' => $showApiKeysCard,
             'show_edit_profile_card' => $isLimitedUser,
             'dashboard_stats' => $dashboardStats,
-            'user_name' => $this->userContextService->getDisplayName(),
-            'auth_used' => $this->userContextService->getAuthMethod() ?? '',
+            'user_name' => $this->getUserContextService()->getDisplayName(),
+            'auth_used' => $this->getUserContextService()->getAuthMethod() ?? '',
             'can_change_password' => $canChangePassword,
             'permissions' => $permissions,
             'dblog_use' => $dblogUse,

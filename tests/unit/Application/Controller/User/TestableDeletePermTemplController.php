@@ -22,12 +22,9 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\User;
 
-use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\User\DeletePermTemplController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the delete-permission-template controller through the
@@ -42,9 +39,7 @@ class TestableDeletePermTemplController extends DeletePermTemplController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-        (new ReflectionProperty(DeletePermTemplController::class, 'permissionTemplate'))
-            ->setValue($this, $this->services()->permissionTemplateRepository());
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

@@ -33,13 +33,11 @@ use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
  */
 class DeletePermTemplController extends BaseController
 {
-    private PermissionTemplateRepositoryInterface $permissionTemplate;
+    private ?PermissionTemplateRepositoryInterface $permissionTemplate = null;
 
-    public function __construct(array $request)
+    private function permissionTemplate(): PermissionTemplateRepositoryInterface
     {
-        parent::__construct($request);
-
-        $this->permissionTemplate = $this->services()->permissionTemplateRepository();
+        return $this->permissionTemplate ??= $this->services()->permissionTemplateRepository();
     }
 
     public function run(): void
@@ -61,9 +59,9 @@ class DeletePermTemplController extends BaseController
         }
 
         $id = (int)$this->getSafeRequestValue('id');
-        $templDetails = $this->permissionTemplate->getPermissionTemplateDetails($id);
+        $templDetails = $this->permissionTemplate()->getPermissionTemplateDetails($id);
 
-        $result = $this->permissionTemplate->deletePermissionTemplate($id);
+        $result = $this->permissionTemplate()->deletePermissionTemplate($id);
         if ($result->isDeleted()) {
             $this->services()->auditService()->logPermTemplateDelete($id, (string)($templDetails['name'] ?? 'unknown'));
         }
@@ -75,7 +73,7 @@ class DeletePermTemplController extends BaseController
     private function showForm(): void
     {
         $id = $this->getSafeRequestValue('id');
-        $templ_details = $this->permissionTemplate->getPermissionTemplateDetails((int)$id);
+        $templ_details = $this->permissionTemplate()->getPermissionTemplateDetails((int)$id);
 
         $this->render('delete_perm_templ.html', [
             'perm_templ_id' => $id,

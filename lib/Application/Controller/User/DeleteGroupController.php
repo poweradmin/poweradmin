@@ -33,17 +33,17 @@ use Poweradmin\Domain\Model\Permission;
  */
 class DeleteGroupController extends BaseController
 {
-    private GroupService $groupService;
-    private ZoneGroupService $zoneGroupService;
+    private ?GroupService $groupService = null;
+    private ?ZoneGroupService $zoneGroupService = null;
 
-    public function __construct(array $request)
+    private function groupService(): GroupService
     {
-        parent::__construct($request);
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository());
+    }
 
-        $groupRepository = $this->services()->userGroupRepository();
-
-        $this->groupService = new GroupService($groupRepository);
-        $this->zoneGroupService = $this->services()->zoneGroupService();
+    private function zoneGroupService(): ZoneGroupService
+    {
+        return $this->zoneGroupService ??= $this->services()->zoneGroupService();
     }
 
     public function run(): void
@@ -89,15 +89,15 @@ class DeleteGroupController extends BaseController
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($userId);
-            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
+            $group = $this->groupService()->getGroupById($groupId, $userId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get member and zone counts before deletion
-            $details = $this->groupService->getGroupDetails($groupId);
+            $details = $this->groupService()->getGroupDetails($groupId);
             $memberCount = $details['memberCount'];
             $zoneCount = $details['zoneCount'];
 
-            $this->groupService->deleteGroup($groupId);
+            $this->groupService()->deleteGroup($groupId);
 
             $this->services()->auditService()->logGroupDelete($groupId, $groupName, $memberCount, $zoneCount);
 
@@ -116,17 +116,17 @@ class DeleteGroupController extends BaseController
             $userId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
-            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
+            $group = $this->groupService()->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
                 $this->setMessage('list_groups', 'error', _('Group not found.'));
                 $this->redirect('/groups');
                 return;
             }
 
-            $details = $this->groupService->getGroupDetails($groupId);
+            $details = $this->groupService()->getGroupDetails($groupId);
 
             // Get impact information (up to 20 zones)
-            $impact = $this->zoneGroupService->getGroupDeletionImpact($groupId, 20);
+            $impact = $this->zoneGroupService()->getGroupDeletionImpact($groupId, 20);
 
             // Get zone details for display
             $repositoryFactory = $this->services()->repositoryFactory();

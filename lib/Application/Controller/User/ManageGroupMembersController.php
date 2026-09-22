@@ -33,18 +33,20 @@ use Poweradmin\Domain\Model\Permission;
  */
 class ManageGroupMembersController extends BaseController
 {
-    private GroupMembershipService $membershipService;
-    private GroupService $groupService;
+    private ?GroupMembershipService $membershipService = null;
+    private ?GroupService $groupService = null;
 
-    public function __construct(array $request)
+    private function groupService(): GroupService
     {
-        parent::__construct($request);
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository());
+    }
 
-        $groupRepository = $this->services()->userGroupRepository();
-        $memberRepository = $this->services()->userGroupMemberRepository();
-
-        $this->groupService = new GroupService($groupRepository);
-        $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
+    private function membershipService(): GroupMembershipService
+    {
+        return $this->membershipService ??= new GroupMembershipService(
+            $this->services()->userGroupMemberRepository(),
+            $this->services()->userGroupRepository()
+        );
     }
 
     public function run(): void
@@ -127,13 +129,13 @@ class ManageGroupMembersController extends BaseController
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
-            $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+            $group = $this->groupService()->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get usernames for logging
             $userMap = array_column($this->getVisibleUsers(), 'username', 'uid');
 
-            $results = $this->membershipService->bulkAddUsers($groupId, $userIds);
+            $results = $this->membershipService()->bulkAddUsers($groupId, $userIds);
 
             if (!empty($results['success'])) {
                 $this->forgetMembers($results['success']);
@@ -200,13 +202,13 @@ class ManageGroupMembersController extends BaseController
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
-            $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+            $group = $this->groupService()->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get usernames for logging
             $userMap = array_column($this->getVisibleUsers(), 'username', 'uid');
 
-            $results = $this->membershipService->bulkRemoveUsers($groupId, $userIds);
+            $results = $this->membershipService()->bulkRemoveUsers($groupId, $userIds);
 
             if (!empty($results['success'])) {
                 $this->forgetMembers($results['success']);
@@ -252,7 +254,7 @@ class ManageGroupMembersController extends BaseController
             $userId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
-            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
+            $group = $this->groupService()->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
                 $this->setMessage('list_groups', 'error', _('Group not found.'));
                 $this->redirect('/groups');
@@ -260,7 +262,7 @@ class ManageGroupMembersController extends BaseController
             }
 
             // Get current members
-            $members = $this->membershipService->listGroupMembers($groupId);
+            $members = $this->membershipService()->listGroupMembers($groupId);
             $memberIds = array_map(fn($m) => $m->getUserId(), $members);
 
             // Get member details

@@ -41,12 +41,11 @@ use Poweradmin\Domain\Utility\IpHelper;
  */
 class SearchController extends BaseController
 {
-    private ZoneSortingService $zoneSortingService;
+    private ?ZoneSortingService $zoneSortingService = null;
 
-    public function __construct(array $request, bool $authenticate = true)
+    private function zoneSortingService(): ZoneSortingService
     {
-        parent::__construct($request, $authenticate);
-        $this->zoneSortingService = $this->createZoneSortingService();
+        return $this->zoneSortingService ??= $this->createZoneSortingService();
     }
 
     public function run(): void
@@ -84,13 +83,13 @@ class SearchController extends BaseController
             $allowedZoneSort[] = 'fullname';
         }
 
-        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
+        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService()->getZoneSortOrder(
             $allowedZoneSort,
             SessionKeys::SEARCH_ZONE_SORT_BY,
             submittedSortBy: $this->httpRequest->getPostParam('zone_sort_by') ?? $this->httpRequest->getQueryParam('zone_sort_by'),
             submittedDirection: $this->httpRequest->getPostParam('zone_sort_by_direction') ?? $this->httpRequest->getQueryParam('zone_sort_by_direction')
         );
-        list($record_sort_by, $record_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
+        list($record_sort_by, $record_sort_direction) = $this->zoneSortingService()->getZoneSortOrder(
             ['name', 'type', 'prio', 'content', 'ttl', 'disabled'],
             SessionKeys::SEARCH_RECORD_SORT_BY,
             submittedSortBy: $this->httpRequest->getPostParam('record_sort_by') ?? $this->httpRequest->getQueryParam('record_sort_by'),

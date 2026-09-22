@@ -22,16 +22,12 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\User;
 
-use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\User\EditPermTemplController;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
-use Poweradmin\Infrastructure\Service\MessageService;
-use ReflectionClass;
+use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
+use ReflectionMethod;
 use RuntimeException;
 
 /**
@@ -39,22 +35,8 @@ use RuntimeException;
  * keys every statement off the posted one. Without pinning it to the route,
  * POST /permissions/templates/5/edit with templ_id=1 rewrote template 1 (Administrator).
  */
-class EditPermTemplControllerTargetTest extends TestCase
+class EditPermTemplControllerTargetTest extends SeamControllerTestCase
 {
-    private ReflectionClass $reflection;
-
-    protected function setUp(): void
-    {
-        $this->reflection = new ReflectionClass(EditPermTemplController::class);
-        $_SESSION[SessionKeys::USERID] = 1;
-    }
-
-    protected function tearDown(): void
-    {
-        unset($_SESSION[SessionKeys::USERID]);
-        parent::tearDown();
-    }
-
     public function testPostedTemplateIdCannotRedirectTheWrite(): void
     {
         $details = $this->captureWrite([
@@ -105,7 +87,7 @@ class EditPermTemplControllerTargetTest extends TestCase
 
     /**
      * Invoke handleFormSubmission() and return the payload the repository was handed.
-     * The repository throws so the method stops before redirect(), which would exit().
+     * The repository throws so the method stops before redirect() ends the request.
      *
      * @param array<string, mixed> $requestData
      * @return array<string, mixed>
@@ -128,58 +110,19 @@ class EditPermTemplControllerTargetTest extends TestCase
         $userRepository = $this->createMock(UserRepositoryInterface::class);
         $userRepository->method('hasAdminPermission')->willReturn(true);
 
-        $controller = $this->reflection->newInstanceWithoutConstructor();
-        $this->setProperty($controller, 'permissionTemplate', $repository);
-        $this->setProperty(
-            $controller,
-            'permissionTemplateWriteService',
-            new PermissionTemplateWriteService($repository, $userRepository)
-        );
-        $this->setProperty($controller, 'userContextService', new UserContextService());
-        $this->setBaseProperty($controller, 'config', $this->primeConfig());
-        $this->setBaseProperty($controller, 'messageService', new MessageService());
-        $this->setBaseProperty($controller, 'requestData', $requestData);
-
-        $method = $this->reflection->getMethod('handleFormSubmission');
-        $method->setAccessible(true);
+        $this->factory->method('permissionTemplateRepository')->willReturn($repository);
+        $this->factory->method('permissionTemplateWriteService')
+            ->willReturn(new PermissionTemplateWriteService($repository, $userRepository));
+        $config = $this->configure(['security' => ['global_token_validation' => false]]);
+        $controller = new EditPermTemplController($requestData, true, $this->environment($config));
 
         try {
-            $method->invoke($controller);
+            (new ReflectionMethod($controller, 'handleFormSubmission'))->invoke($controller);
             $this->fail('Expected the repository stub to short-circuit the redirect');
         } catch (RuntimeException $e) {
             $this->assertSame('stop before redirect', $e->getMessage());
         }
 
         return $captured;
-    }
-
-    private function primeConfig(): ConfigurationManager
-    {
-        $config = ConfigurationManager::getInstance();
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-
-        $settings = $reflection->getProperty('settings');
-        $settings->setAccessible(true);
-        $settings->setValue($config, ['security' => ['global_token_validation' => false]]);
-
-        $initialized = $reflection->getProperty('initialized');
-        $initialized->setAccessible(true);
-        $initialized->setValue($config, true);
-
-        return $config;
-    }
-
-    private function setProperty(object $target, string $name, mixed $value): void
-    {
-        $property = $this->reflection->getProperty($name);
-        $property->setAccessible(true);
-        $property->setValue($target, $value);
-    }
-
-    private function setBaseProperty(object $target, string $name, mixed $value): void
-    {
-        $property = new \ReflectionProperty($this->reflection->getParentClass()->getName(), $name);
-        $property->setAccessible(true);
-        $property->setValue($target, $value);
     }
 }

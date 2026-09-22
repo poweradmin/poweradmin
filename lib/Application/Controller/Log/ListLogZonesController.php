@@ -33,7 +33,7 @@ use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
  */
 class ListLogZonesController extends AbstractListLogController
 {
-    private DbZoneLogger $dbZoneLogger;
+    private ?DbZoneLogger $dbZoneLogger = null;
 
     /**
      * Owner-only filter applies when the user may see their own zones' logs but
@@ -50,11 +50,9 @@ class ListLogZonesController extends AbstractListLogController
 
     private bool $isReverseZone = false;
 
-    public function __construct(array $request)
+    private function dbZoneLogger(): DbZoneLogger
     {
-        parent::__construct($request);
-
-        $this->dbZoneLogger = $this->services()->zoneLogger();
+        return $this->dbZoneLogger ??= $this->services()->zoneLogger();
     }
 
     protected function authorize(): bool
@@ -137,12 +135,12 @@ class ListLogZonesController extends AbstractListLogController
 
     protected function countLogs(array $filters): int
     {
-        return $this->dbZoneLogger->countFilteredLogs($filters, $this->ownedZoneIds);
+        return $this->dbZoneLogger()->countFilteredLogs($filters, $this->ownedZoneIds);
     }
 
     protected function fetchLogs(array $filters, int $limit, int $offset): array
     {
-        return $this->dbZoneLogger->getFilteredLogs($filters, $limit, $offset, $this->ownedZoneIds);
+        return $this->dbZoneLogger()->getFilteredLogs($filters, $limit, $offset, $this->ownedZoneIds);
     }
 
     protected function getAdditionalRenderParams(): array
@@ -153,10 +151,10 @@ class ListLogZonesController extends AbstractListLogController
             'zone_id_filter' => $this->requestedZoneId,
             'zone_name' => $this->zoneFilterName,
             'is_reverse_zone' => $this->isReverseZone,
-            'operations' => $this->dbZoneLogger->getDistinctOperations(),
+            'operations' => $this->dbZoneLogger()->getDistinctOperations(),
             'users' => $this->applyOwnerFilter
-                ? $this->dbZoneLogger->getDistinctUsersForZones($this->ownedZoneIds ?? [])
-                : $this->dbZoneLogger->getDistinctUsers(),
+                ? $this->dbZoneLogger()->getDistinctUsersForZones($this->ownedZoneIds ?? [])
+                : $this->dbZoneLogger()->getDistinctUsers(),
             'is_owner_view' => $this->applyOwnerFilter,
         ];
     }

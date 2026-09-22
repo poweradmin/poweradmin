@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Template;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -34,16 +33,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class EditZoneTemplRecordController extends BaseController
 {
-    private RecordTypeService $recordTypeService;
-    private UserContextService $userContext;
-    private ZoneTemplateService $zoneTemplate;
+    private ?RecordTypeService $recordTypeService = null;
+    private ?ZoneTemplateService $zoneTemplate = null;
 
-    public function __construct(array $request)
+    private function recordTypeService(): RecordTypeService
     {
-        parent::__construct($request);
-        $this->recordTypeService = new RecordTypeService($this->getConfig());
-        $this->userContext = new UserContextService();
-        $this->zoneTemplate = $this->services()->zoneTemplateService();
+        return $this->recordTypeService ??= new RecordTypeService($this->getConfig());
+    }
+
+    private function zoneTemplate(): ZoneTemplateService
+    {
+        return $this->zoneTemplate ??= $this->services()->zoneTemplateService();
     }
 
     public function run(): void
@@ -68,8 +68,8 @@ class EditZoneTemplRecordController extends BaseController
         $record_id = (int)$this->getSafeRequestValue('id');
         $zone_templ_id = (int)$this->getSafeRequestValue('template_id');
 
-        $userId = $this->userContext->getLoggedInUserId();
-        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone template records."));
@@ -91,8 +91,8 @@ class EditZoneTemplRecordController extends BaseController
         }
 
         // Get count of zones using this template
-        $userId = $this->userContext->getLoggedInUserId();
-        $linked_zones = $this->zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $linked_zones = $this->zoneTemplate()->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
 
         $this->render('edit_zone_templ_record.html', [
@@ -100,7 +100,7 @@ class EditZoneTemplRecordController extends BaseController
             'zone_templ_id' => $zone_templ_id,
             'record_id' => $record_id,
             'templ_details' => $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [],
-            'record_types' => $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities()),
+            'record_types' => $this->recordTypeService()->getAllTypes($this->getRecordTypeCapabilities()),
             'zones_linked_count' => $zones_linked_count,
         ]);
     }
@@ -134,7 +134,7 @@ class EditZoneTemplRecordController extends BaseController
             return;
         }
 
-        $edited = $this->zoneTemplate->editZoneTemplRecord($postParams, $zone_templ_id);
+        $edited = $this->zoneTemplate()->editZoneTemplRecord($postParams, $zone_templ_id);
         if (!$edited->success) {
             $this->addSystemMessage('error', (string)$edited->message);
         } else {

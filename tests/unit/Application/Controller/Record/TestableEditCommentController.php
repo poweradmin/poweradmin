@@ -24,9 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\Record\EditCommentController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
 
 /**
  * Builds the zone comment controller through the ControllerEnvironment seam.
@@ -48,7 +46,7 @@ class TestableEditCommentController extends EditCommentController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
+        parent::__construct($request, true, $environment);
     }
 
     public function showCommentForm(int $zone_id, bool $perm_edit_comment): void

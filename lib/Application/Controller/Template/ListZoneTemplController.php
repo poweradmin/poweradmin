@@ -24,21 +24,12 @@ namespace Poweradmin\Application\Controller\Template;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
  * Renders the zone templates list at /zones/templates.
  */
 class ListZoneTemplController extends BaseController
 {
-    private UserContextService $userContext;
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-        $this->userContext = new UserContextService();
-    }
-
     public function run(): void
     {
         // Only users with zone_templ_add or zone_templ_edit permission can view zone templates
@@ -58,8 +49,8 @@ class ListZoneTemplController extends BaseController
     private function showListZoneTempl(): void
     {
         $perm_zone_templ_add = $this->hasPermission(Permission::PERM_ZONE_TEMPL_ADD);
-        $userId = $this->userContext->getLoggedInUserId();
-        $userName = $this->userContext->getLoggedInUsername();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $userName = $this->getUserContextService()->getLoggedInUsername();
 
         $zone_templates = $this->services()->zoneTemplateService();
         $templatesList = $zone_templates->getListZoneTempl($userId);

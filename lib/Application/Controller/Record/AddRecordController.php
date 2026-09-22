@@ -35,7 +35,6 @@ use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -44,26 +43,35 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AddRecordController extends BaseController
 {
-    private RecordAddService $recordAdd;
-    private RecordTypeService $recordTypeService;
-    private FormStateService $formStateService;
-    private UserContextService $userContextService;
-    private ReverseTtlResolver $reverseTtlResolver;
+    private ?RecordAddService $recordAdd = null;
+    private ?RecordTypeService $recordTypeService = null;
+    private ?FormStateService $formStateService = null;
+    private ?ReverseTtlResolver $reverseTtlResolver = null;
 
-    public function __construct(array $request)
+    private function formStateService(): FormStateService
     {
-        parent::__construct($request);
-        $this->formStateService = new FormStateService();
-        $this->recordAdd = $this->services()->recordAddService();
-        $this->recordTypeService = new RecordTypeService($this->getConfig());
-        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
-        $this->userContextService = new UserContextService();
+        return $this->formStateService ??= new FormStateService();
+    }
+
+    private function recordAdd(): RecordAddService
+    {
+        return $this->recordAdd ??= $this->services()->recordAddService();
+    }
+
+    private function recordTypeService(): RecordTypeService
+    {
+        return $this->recordTypeService ??= new RecordTypeService($this->getConfig());
+    }
+
+    private function reverseTtlResolver(): ReverseTtlResolver
+    {
+        return $this->reverseTtlResolver ??= $this->services()->reverseTtlResolver();
     }
 
     public function run(): void
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $access = $this->recordAdd->open($zone_id, (int)$this->getCurrentUserId());
+        $access = $this->recordAdd()->open($zone_id, (int)$this->getCurrentUserId());
         $this->checkCondition($access->code === RecordAddAccess::ZONE_NOT_FOUND, _('There is no zone with this ID.'));
         // Multi-record mode stays direct-only: users whose changes need review use the zone editor
         $this->checkCondition($access->code === RecordAddAccess::REQUIRES_APPROVAL, ChangeRequestMessages::requiresApproval());
@@ -101,7 +109,7 @@ class AddRecordController extends BaseController
         $comment = (string)$this->httpRequest->getPostParam('comment', '');
         $ttl = $this->httpRequest->getPostParam('ttl');
 
-        $added = $this->recordAdd->add(
+        $added = $this->recordAdd()->add(
             $zone_id,
             $zone_name,
             $name,
@@ -111,13 +119,13 @@ class AddRecordController extends BaseController
             $prio,
             $comment,
             (int)$this->getCurrentUserId(),
-            (string)$this->userContextService->getLoggedInUsername(),
+            (string)$this->getUserContextService()->getLoggedInUsername(),
             RecordAddResult::companionFrom($this->httpRequest->getPostParams())
         );
         if (!$added->isOk()) {
             // Keep the submitted values and point at the field the reason names
-            $formId = $this->formStateService->generateFormId('add_record');
-            $this->formStateService->saveFormData($formId, [
+            $formId = $this->formStateService()->generateFormId('add_record');
+            $this->formStateService()->saveFormData($formId, [
                 'name' => $name,
                 'content' => $content,
                 'type' => $type,
@@ -136,7 +144,7 @@ class AddRecordController extends BaseController
         // Clear form data if it exists in the session
         $formToken = $this->httpRequest->getPostParam('form_token');
         if ($formToken !== null) {
-            $this->formStateService->clearFormData($formToken);
+            $this->formStateService()->clearFormData($formToken);
         }
 
         [$messageType, $message] = RecordAddMessages::forAdded($added);
@@ -153,7 +161,7 @@ class AddRecordController extends BaseController
         // Pre-fill with the plain dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
         // when the user selects PTR on a reverse zone, keeping the form consistent with
         // what the backend will actually persist.
-        $ttl = $this->reverseTtlResolver->getForwardTtl();
+        $ttl = $this->reverseTtlResolver()->getForwardTtl();
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
 
         $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
@@ -162,7 +170,7 @@ class AddRecordController extends BaseController
         $formData = null;
         $formId = $this->httpRequest->getQueryParam('form_id');
         if ($formId) {
-            $formData = $this->formStateService->getFormData($formId);
+            $formData = $this->formStateService()->getFormData($formId);
         }
 
         // Build saved_records array for multi-row restore
@@ -172,8 +180,8 @@ class AddRecordController extends BaseController
         }
 
         $offeredTypes = $isReverseZone
-            ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities(), false)
-            : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities(), false);
+            ? $this->recordTypeService()->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities(), false)
+            : $this->recordTypeService()->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities(), false);
 
         // Offer only what this caller may actually submit, so a restricted type is not
         // presented and then refused on save.
@@ -190,10 +198,10 @@ class AddRecordController extends BaseController
             'type' => $formData['type'] ?? $this->httpRequest->getPostParam('type', ''),
             'content' => $formData['content'] ?? $this->httpRequest->getPostParam('content', ''),
             'ttl' => $formData['ttl'] ?? $this->httpRequest->getPostParam('ttl', $ttl),
-            'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
-            'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
-            'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
-            'ttl_defaults_by_type' => $this->reverseTtlResolver->resolveTtlsForTypes($offeredTypes, $isReverseZone),
+            'default_ttl' => $this->reverseTtlResolver()->getForwardTtl(),
+            'ptr_default_ttl' => $this->reverseTtlResolver()->getConfiguredReverseTtl(),
+            'type_default_ttls' => $this->reverseTtlResolver()->getTypeDefaults(),
+            'ttl_defaults_by_type' => $this->reverseTtlResolver()->resolveTtlsForTypes($offeredTypes, $isReverseZone),
             'prio' => $formData['prio'] ?? $this->httpRequest->getPostParam('prio', 0),
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
@@ -204,7 +212,7 @@ class AddRecordController extends BaseController
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
             'display_hostname_only' => $this->services()->userPreferenceService()->getDisplayHostnameOnly(
-                $this->userContextService->getLoggedInUserId()
+                $this->getUserContextService()->getLoggedInUserId()
             ),
             'form_data' => $formData,
             'saved_records' => $savedRecords,
@@ -218,19 +226,19 @@ class AddRecordController extends BaseController
         $failureReasons = [];
         $matchingRecordCount = 0;
         $ptrWarnings = [];
-        $formId = $this->formStateService->generateFormId('add_record');
+        $formId = $this->formStateService()->generateFormId('add_record');
 
         if (empty($records)) {
             $formData = [
                 'error' => true,
                 'errorMessage' => _('No records were provided.'),
             ];
-            $this->formStateService->saveFormData($formId, $formData);
+            $this->formStateService()->saveFormData($formId, $formData);
             $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
             return;
         }
 
-        $username = (string)$this->userContextService->getLoggedInUsername();
+        $username = (string)$this->getUserContextService()->getLoggedInUsername();
 
         foreach ($records as $record) {
             // Skip non-array or incomplete records
@@ -238,7 +246,7 @@ class AddRecordController extends BaseController
                 continue;
             }
 
-            $added = $this->recordAdd->add(
+            $added = $this->recordAdd()->add(
                 $zone_id,
                 $zone_name,
                 (string)($record['name'] ?? ''),
@@ -268,7 +276,7 @@ class AddRecordController extends BaseController
         // Clear form data if it exists in the session
         $formToken = $this->httpRequest->getPostParam('form_token');
         if ($formToken !== null) {
-            $this->formStateService->clearFormData($formToken);
+            $this->formStateService()->clearFormData($formToken);
         }
 
         if ($successCount > 0) {
@@ -281,14 +289,14 @@ class AddRecordController extends BaseController
                 $errorMessage = end($failureReasons);
 
                 // Store form data with error flag for failed records
-                $formId = $this->formStateService->generateFormId('add_record');
+                $formId = $this->formStateService()->generateFormId('add_record');
                 $formData = [
                     'error' => true,
                     'multi_record_error' => true,
                     'failure_count' => count($failureReasons),
                     'errorMessage' => $errorMessage
                 ];
-                $this->formStateService->saveFormData($formId, $formData);
+                $this->formStateService()->saveFormData($formId, $formData);
 
                 // The form_data alert only renders inside the inline add-record card,
                 // which is off by default, so report the refused rows as a message too.
@@ -310,7 +318,7 @@ class AddRecordController extends BaseController
             // Store form data with error flag for all failed records
             // Include all records so the form can be fully restored
             $firstRecord = reset($records);
-            $formId = $this->formStateService->generateFormId('add_record');
+            $formId = $this->formStateService()->generateFormId('add_record');
             $formData = [
                 'error' => true,
                 'multi_record_error' => true,
@@ -324,7 +332,7 @@ class AddRecordController extends BaseController
                 'comment' => is_array($firstRecord) ? ($firstRecord['comment'] ?? '') : '',
                 'saved_records' => array_values($records),
             ];
-            $this->formStateService->saveFormData($formId, $formData);
+            $this->formStateService()->saveFormData($formId, $formData);
 
             // Redirect with form_id to show errors
             $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);

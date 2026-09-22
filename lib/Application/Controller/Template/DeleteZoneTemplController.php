@@ -32,13 +32,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class DeleteZoneTemplController extends BaseController
 {
-    private ZoneTemplateService $zoneTemplate;
+    private ?ZoneTemplateService $zoneTemplate = null;
 
-    public function __construct(array $request)
+    private function zoneTemplate(): ZoneTemplateService
     {
-        parent::__construct($request);
-        $this->zoneTemplate = $this->services()->zoneTemplateService();
+        return $this->zoneTemplate ??= $this->services()->zoneTemplateService();
     }
+
     public function run(): void
     {
         $constraints = [
@@ -55,7 +55,7 @@ class DeleteZoneTemplController extends BaseController
         }
 
         $zone_templ_id = $this->getSafeRequestValue('id');
-        $owner = $this->zoneTemplate->isUserOwnerOfTemplate((int)$zone_templ_id, (int)$this->getCurrentUserId());
+        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate((int)$zone_templ_id, (int)$this->getCurrentUserId());
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 
@@ -81,7 +81,7 @@ class DeleteZoneTemplController extends BaseController
 
         if ($this->doValidateRequest($this->requestData)) {
             $zone_templ_id = $this->getSafeRequestValue('id');
-            $deleted = $this->zoneTemplate->deleteZoneTempl((int)$zone_templ_id);
+            $deleted = $this->zoneTemplate()->deleteZoneTempl((int)$zone_templ_id);
             if (!$deleted->success) {
                 $this->addSystemMessage('error', (string)$deleted->message);
                 $this->showDeleteZoneTempl();

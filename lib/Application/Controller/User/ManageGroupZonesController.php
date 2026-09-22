@@ -35,17 +35,17 @@ use Poweradmin\Domain\Utility\IpHelper;
  */
 class ManageGroupZonesController extends BaseController
 {
-    private ZoneGroupService $zoneGroupService;
-    private GroupService $groupService;
+    private ?ZoneGroupService $zoneGroupService = null;
+    private ?GroupService $groupService = null;
 
-    public function __construct(array $request)
+    private function groupService(): GroupService
     {
-        parent::__construct($request);
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository());
+    }
 
-        $groupRepository = $this->services()->userGroupRepository();
-
-        $this->groupService = new GroupService($groupRepository);
-        $this->zoneGroupService = $this->services()->zoneGroupService();
+    private function zoneGroupService(): ZoneGroupService
+    {
+        return $this->zoneGroupService ??= $this->services()->zoneGroupService();
     }
 
     public function run(): void
@@ -128,13 +128,13 @@ class ManageGroupZonesController extends BaseController
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
-            $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+            $group = $this->groupService()->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             $repositoryFactory = $this->services()->repositoryFactory();
             $domainRepository = $repositoryFactory->createDomainRepository();
 
-            $results = $this->zoneGroupService->bulkAddZones($groupId, $domainIds);
+            $results = $this->zoneGroupService()->bulkAddZones($groupId, $domainIds);
 
             if (!empty($results['success'])) {
                 $message = sprintf(
@@ -185,13 +185,13 @@ class ManageGroupZonesController extends BaseController
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
-            $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+            $group = $this->groupService()->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             $repositoryFactory = $this->services()->repositoryFactory();
             $domainRepository = $repositoryFactory->createDomainRepository();
 
-            $results = $this->zoneGroupService->bulkRemoveZones($groupId, $domainIds);
+            $results = $this->zoneGroupService()->bulkRemoveZones($groupId, $domainIds);
 
             if (!empty($results['success'])) {
                 $message = sprintf(
@@ -261,7 +261,7 @@ class ManageGroupZonesController extends BaseController
             $userId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
-            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
+            $group = $this->groupService()->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
                 $this->setMessage('list_groups', 'error', _('Group not found.'));
                 $this->redirect('/groups');
@@ -272,7 +272,7 @@ class ManageGroupZonesController extends BaseController
             $domainRepository = $repositoryFactory->createDomainRepository();
 
             // Get zones owned by this group
-            $zoneGroups = $this->zoneGroupService->listGroupZones($groupId);
+            $zoneGroups = $this->zoneGroupService()->listGroupZones($groupId);
             $ownedDomainIds = array_map(fn($zg) => $zg->getDomainId(), $zoneGroups);
 
             // Get owned zone details in one bulk call to avoid per-zone API round-trips

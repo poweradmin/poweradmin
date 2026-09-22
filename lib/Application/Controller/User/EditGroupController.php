@@ -36,22 +36,32 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class EditGroupController extends BaseController
 {
-    private GroupService $groupService;
-    private GroupMembershipService $membershipService;
-    private ZoneGroupService $zoneGroupService;
-    private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
+    private ?GroupService $groupService = null;
+    private ?GroupMembershipService $membershipService = null;
+    private ?ZoneGroupService $zoneGroupService = null;
+    private ?PermissionTemplateRepositoryInterface $permissionTemplateRepository = null;
 
-    public function __construct(array $request)
+    private function groupService(): GroupService
     {
-        parent::__construct($request);
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository());
+    }
 
-        $groupRepository = $this->services()->userGroupRepository();
-        $memberRepository = $this->services()->userGroupMemberRepository();
+    private function membershipService(): GroupMembershipService
+    {
+        return $this->membershipService ??= new GroupMembershipService(
+            $this->services()->userGroupMemberRepository(),
+            $this->services()->userGroupRepository()
+        );
+    }
 
-        $this->groupService = new GroupService($groupRepository);
-        $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
-        $this->zoneGroupService = $this->services()->zoneGroupService();
-        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
+    private function zoneGroupService(): ZoneGroupService
+    {
+        return $this->zoneGroupService ??= $this->services()->zoneGroupService();
+    }
+
+    private function permissionTemplateRepository(): PermissionTemplateRepositoryInterface
+    {
+        return $this->permissionTemplateRepository ??= $this->services()->permissionTemplateRepository();
     }
 
     public function run(): void
@@ -94,7 +104,7 @@ class EditGroupController extends BaseController
         $permTemplId = (int)$this->httpRequest->getPostParam('perm_templ');
 
         // Validate that the template is a group template
-        if (!$this->permissionTemplateRepository->validateTemplateType($permTemplId, 'group')) {
+        if (!$this->permissionTemplateRepository()->validateTemplateType($permTemplId, 'group')) {
             $this->setMessage('edit_group', 'error', _('Invalid permission template: must be a group template'));
             $this->renderEditGroupForm($groupId);
             return;
@@ -105,7 +115,7 @@ class EditGroupController extends BaseController
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
-            $oldGroup = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+            $oldGroup = $this->groupService()->getGroupById($groupId, $currentUserId, $isAdmin);
 
             // Track what changed
             $changes = [];
@@ -119,7 +129,7 @@ class EditGroupController extends BaseController
             }
             if ($oldGroup->getPermTemplId() !== $permTemplId) {
                 // Get permission template names for better logging (no filter - need to find any template type)
-                $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates();
+                $permTemplates = $this->permissionTemplateRepository()->listPermissionTemplates();
                 $oldTemplName = 'Unknown';
                 $newTemplName = 'Unknown';
                 foreach ($permTemplates as $template) {
@@ -140,7 +150,7 @@ class EditGroupController extends BaseController
             }
 
             // Update the group
-            $this->groupService->updateGroup($groupId, $name, $description, $permTemplId);
+            $this->groupService()->updateGroup($groupId, $name, $description, $permTemplId);
 
             if (!empty($changes)) {
                 $this->services()->auditService()->logGroupEdit($groupId, (string)$name, $changes);
@@ -161,18 +171,18 @@ class EditGroupController extends BaseController
             $userId = $userContext->getLoggedInUserId();
             $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
-            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
+            $group = $this->groupService()->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
                 $this->setMessage('list_groups', 'error', _('Group not found.'));
                 $this->redirect('/groups');
                 return;
             }
 
-            $details = $this->groupService->getGroupDetails($groupId);
-            $members = $this->membershipService->listGroupMembers($groupId);
-            $zones = $this->zoneGroupService->listGroupZones($groupId);
+            $details = $this->groupService()->getGroupDetails($groupId);
+            $members = $this->membershipService()->listGroupMembers($groupId);
+            $zones = $this->zoneGroupService()->listGroupZones($groupId);
 
-            $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates('group');
+            $permTemplates = $this->permissionTemplateRepository()->listPermissionTemplates('group');
 
             // Get member usernames
             $memberUsernames = [];

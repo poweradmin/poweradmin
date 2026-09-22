@@ -22,13 +22,9 @@
 
 namespace Poweradmin\Tests\Unit\Module\ZoneImportExport\Controller;
 
-use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Module\ZoneImportExport\Controller\ZoneFileImportController;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the zone file import controller through the ControllerEnvironment
@@ -43,9 +39,7 @@ class TestableZoneFileImportController extends ZoneFileImportController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-
-        (new ReflectionProperty(ZoneFileImportController::class, 'userContextService'))->setValue($this, new UserContextService());
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

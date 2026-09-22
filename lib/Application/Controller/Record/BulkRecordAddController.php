@@ -33,7 +33,6 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -42,20 +41,29 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class BulkRecordAddController extends BaseController
 {
-    private DomainRepositoryInterface $domainRepository;
-    private RecordManagerService $recordManager;
-    private RecordTypeService $recordTypeService;
-    private UserContextService $userContextService;
-    private PermissionService $permissionService;
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?RecordManagerService $recordManager = null;
+    private ?RecordTypeService $recordTypeService = null;
+    private ?PermissionService $permissionService = null;
 
-    public function __construct(array $request)
+    private function domainRepository(): DomainRepositoryInterface
     {
-        parent::__construct($request);
-        $this->domainRepository = $this->services()->domainRepository();
-        $this->recordManager = $this->services()->recordManagerService();
-        $this->recordTypeService = new RecordTypeService($this->getConfig());
-        $this->userContextService = new UserContextService();
-        $this->permissionService = $this->services()->permissionService();
+        return $this->domainRepository ??= $this->services()->domainRepository();
+    }
+
+    private function recordManager(): RecordManagerService
+    {
+        return $this->recordManager ??= $this->services()->recordManagerService();
+    }
+
+    private function recordTypeService(): RecordTypeService
+    {
+        return $this->recordTypeService ??= new RecordTypeService($this->getConfig());
+    }
+
+    private function permissionService(): PermissionService
+    {
+        return $this->permissionService ??= $this->services()->permissionService();
     }
 
     public function run(): void
@@ -63,10 +71,10 @@ class BulkRecordAddController extends BaseController
         $this->checkId();
 
         $zone_id = (int)$this->getSafeRequestValue('id');
-        $zone_type = $this->domainRepository->getDomainType($zone_id);
-        $userId = $this->userContextService->getLoggedInUserId();
+        $zone_type = $this->domainRepository()->getDomainType($zone_id);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
 
-        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zone_id);
+        $perm_edit = $this->permissionService()->getEditPermissionLevelForZone($userId, $zone_id);
 
         // Bulk add stays direct-only: users whose changes need review use the zone editor
         $this->checkCondition(
@@ -145,7 +153,7 @@ class BulkRecordAddController extends BaseController
 
                 // Normalize record name to full FQDN (always, regardless of display setting)
                 // This converts @ to zone apex and ensures proper zone suffix
-                $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+                $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
                 if ($zone_name === null) {
                     $failed_records[] = $line . " - " . _('Zone not found.');
                     continue;
@@ -160,8 +168,8 @@ class BulkRecordAddController extends BaseController
                 $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
                 $caps = $this->getRecordTypeCapabilities();
                 $valid_types = $isReverseZone
-                    ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $caps, false)
-                    : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $caps, false);
+                    ? $this->recordTypeService()->getReverseZoneTypes($isDnsSecEnabled, $caps, false)
+                    : $this->recordTypeService()->getDomainZoneTypes($isDnsSecEnabled, $caps, false);
 
                 if (!in_array($type, $valid_types)) {
                     $failed_records[] = $line . " - " . _('Invalid record type.');
@@ -179,7 +187,7 @@ class BulkRecordAddController extends BaseController
                         $content .= '.';
                     }
 
-                    $result = $this->recordManager->createRecord(
+                    $result = $this->recordManager()->createRecord(
                         $zone_id,
                         $name,
                         $type,
@@ -187,7 +195,7 @@ class BulkRecordAddController extends BaseController
                         $ttl,
                         $prio,
                         $comment,
-                        $this->userContextService->getLoggedInUsername(),
+                        $this->getUserContextService()->getLoggedInUsername(),
                         $disabled
                     );
                     if ($result->success) {
@@ -215,7 +223,7 @@ class BulkRecordAddController extends BaseController
     private function showBulkRecordAdditionForm(array $failed_records = []): void
     {
         $zone_id = (int)$this->getSafeRequestValue('id');
-        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
 
         // For internationalized domain names
         $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
@@ -232,7 +240,7 @@ class BulkRecordAddController extends BaseController
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
             'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZoneName($zone_name),
             'display_hostname_only' => $this->services()->userPreferenceService()->getDisplayHostnameOnly(
-                $this->userContextService->getLoggedInUserId()
+                $this->getUserContextService()->getLoggedInUserId()
             ),
         ]);
     }

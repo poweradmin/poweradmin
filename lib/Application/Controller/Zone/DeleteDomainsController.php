@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Zone;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -34,15 +33,6 @@ use Poweradmin\Domain\Utility\IpHelper;
  */
 class DeleteDomainsController extends BaseController
 {
-
-    private UserContextService $userContextService;
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-    }
-
     public function run(): void
     {
         $zone_ids = $this->httpRequest->getPostParam('zone_id');
@@ -73,7 +63,7 @@ class DeleteDomainsController extends BaseController
 
     private function verifyDeletePermission($zone_ids): void
     {
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         $canDeleteOthers = $this->hasPermission(Permission::PERM_ZONE_DELETE_OTHERS);
 
         foreach ((array)$zone_ids as $zone_id) {
@@ -146,7 +136,7 @@ class DeleteDomainsController extends BaseController
         }
 
         $permissionService = $this->services()->permissionService();
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         // Same "all"/"own"/"none" contract as PermissionService::getDeletePermissionLevel(), but off
         // the request-cached service the delete check above already warmed
         $perm_delete = $permissionService->getDeletePermissionLevel($userId);

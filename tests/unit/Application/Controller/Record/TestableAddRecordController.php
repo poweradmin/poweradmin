@@ -24,18 +24,11 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\Record\AddRecordController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Domain\Service\Dns\RecordTypeService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
- * Builds the add-record controller through the ControllerEnvironment seam,
- * wiring the private collaborators exactly as its own constructor does but off
- * the seam's service factory.
+ * Builds the add-record controller through the ControllerEnvironment seam;
+ * its collaborators resolve lazily off the seam's service factory.
  *
  * redirect(), showError() and checkCondition() end the request in production,
  * so each throws a RequestHalted to stop the run at the same statement.
@@ -48,18 +41,7 @@ class TestableAddRecordController extends AddRecordController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-
-        $this->plant('formStateService', new FormStateService());
-        $this->plant('recordAdd', $this->services()->recordAddService());
-        $this->plant('recordTypeService', new RecordTypeService($this->getConfig()));
-        $this->plant('reverseTtlResolver', $this->services()->reverseTtlResolver());
-        $this->plant('userContextService', new UserContextService());
-    }
-
-    private function plant(string $property, object $value): void
-    {
-        (new ReflectionProperty(AddRecordController::class, $property))->setValue($this, $value);
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\SamlService;
 
 /**
@@ -30,21 +31,20 @@ use Poweradmin\Application\Service\SamlService;
  */
 class SamlMetadataController extends BaseController
 {
-    private SamlService $samlService;
+    private ?SamlService $samlService = null;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
         // Don't authenticate - metadata should be publicly accessible
-        parent::__construct($request, false);
+        parent::__construct($request, false, $environment);
+    }
 
-        // Initialize SAML services
-        $samlConfigService = $this->services()->samlConfigurationService();
-        $userProvisioningService = $this->services()->userProvisioningService();
-
-        $this->samlService = new SamlService(
+    private function samlService(): SamlService
+    {
+        return $this->samlService ??= new SamlService(
             $this->config,
-            $samlConfigService,
-            $userProvisioningService,
+            $this->services()->samlConfigurationService(),
+            $this->services()->userProvisioningService(),
             $this->logger,
             $this->services()->authenticationService(),
             $this->services()->auditService(),
@@ -56,7 +56,7 @@ class SamlMetadataController extends BaseController
     public function run(): void
     {
         // Check if SAML is enabled
-        if (!$this->samlService->isEnabled()) {
+        if (!$this->samlService()->isEnabled()) {
             http_response_code(404);
             echo 'SAML authentication is not enabled';
             return;
@@ -67,7 +67,7 @@ class SamlMetadataController extends BaseController
 
         // If no provider specified, get the first available provider
         if (empty($providerId)) {
-            $availableProviders = $this->samlService->getAvailableProviders();
+            $availableProviders = $this->samlService()->getAvailableProviders();
             if (empty($availableProviders)) {
                 http_response_code(404);
                 echo 'No SAML providers are configured';
@@ -87,7 +87,7 @@ class SamlMetadataController extends BaseController
 
         try {
             // Generate and serve metadata
-            $metadata = $this->samlService->generateMetadata($providerId);
+            $metadata = $this->samlService()->generateMetadata($providerId);
 
             // Set appropriate headers for XML content
             header('Content-Type: application/xml; charset=utf-8');
@@ -109,7 +109,7 @@ class SamlMetadataController extends BaseController
         }
 
         // Check if provider is actually available
-        $availableProviders = $this->samlService->getAvailableProviders();
+        $availableProviders = $this->samlService()->getAvailableProviders();
         return isset($availableProviders[$provider]);
     }
 }

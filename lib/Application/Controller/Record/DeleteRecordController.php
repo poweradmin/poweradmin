@@ -29,7 +29,6 @@ use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordDeletionOutcome;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -40,15 +39,11 @@ use Poweradmin\Domain\Utility\IpHelper;
  */
 class DeleteRecordController extends BaseController
 {
+    private ?PermissionService $permissionService = null;
 
-    private UserContextService $userContextService;
-    private PermissionService $permissionService;
-
-    public function __construct(array $request)
+    private function permissionService(): PermissionService
     {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-        $this->permissionService = $this->services()->permissionService();
+        return $this->permissionService ??= $this->services()->permissionService();
     }
 
     public function run(): void
@@ -73,11 +68,11 @@ class DeleteRecordController extends BaseController
         }
 
         // Early permission check - validate zone access before proceeding
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         $user_is_zone_owner = $this->isZoneOwner($zid);
 
         // Check zone-specific edit permission (includes group permissions)
-        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zid);
+        $perm_edit = $this->permissionService()->getEditPermissionLevelForZone($userId, $zid);
         $edit_mode = $this->changeApprovalModeForZone($zid);
 
         if ($perm_edit === "none" && $edit_mode !== ChangeApprovalPolicy::MODE_REQUEST) {
@@ -142,7 +137,7 @@ class DeleteRecordController extends BaseController
             $zid,
             $record_id,
             (int)$this->getCurrentUserId(),
-            (string)$this->userContextService->getLoggedInUsername(),
+            (string)$this->getUserContextService()->getLoggedInUsername(),
             $comment === '' ? null : $comment
         );
         if (!$result->success) {

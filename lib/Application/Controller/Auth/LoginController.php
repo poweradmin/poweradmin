@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
@@ -32,24 +33,27 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
  */
 class LoginController extends BaseController
 {
-    private CsrfTokenService $csrfTokenService;
-    private SamlService $samlService;
+    private ?CsrfTokenService $csrfTokenService = null;
+    private ?SamlService $samlService = null;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
         // Only authenticate on POST requests (when form is submitted)
         $authenticate = $_SERVER['REQUEST_METHOD'] === 'POST';
-        parent::__construct($request, $authenticate);
+        parent::__construct($request, $authenticate, $environment);
+    }
 
-        $this->csrfTokenService = new CsrfTokenService();
+    private function csrfTokenService(): CsrfTokenService
+    {
+        return $this->csrfTokenService ??= new CsrfTokenService();
+    }
 
-        $samlConfigService = $this->services()->samlConfigurationService();
-        $userProvisioningService = $this->services()->userProvisioningService();
-
-        $this->samlService = new SamlService(
+    private function samlService(): SamlService
+    {
+        return $this->samlService ??= new SamlService(
             $this->config,
-            $samlConfigService,
-            $userProvisioningService,
+            $this->services()->samlConfigurationService(),
+            $this->services()->userProvisioningService(),
             $this->logger,
             $this->services()->authenticationService(),
             $this->services()->auditService(),
@@ -93,14 +97,14 @@ class LoginController extends BaseController
 
     private function renderLogin(string $msg, string $type): void
     {
-        $loginToken = $this->csrfTokenService->generateToken();
+        $loginToken = $this->csrfTokenService()->generateToken();
         $_SESSION[SessionKeys::LOGIN_TOKEN] = $loginToken;
 
         $oidcEnabled = $this->config->get('oidc', 'enabled', false);
         $oidcProviders = $oidcEnabled ? $this->buildOidcProviders() : [];
 
-        $samlEnabled = $this->samlService->isEnabled();
-        $samlProviders = $samlEnabled ? $this->samlService->getAvailableProviders() : [];
+        $samlEnabled = $this->samlService()->isEnabled();
+        $samlProviders = $samlEnabled ? $this->samlService()->getAvailableProviders() : [];
 
         $this->render('login.html', [
             'login_token' => $loginToken,

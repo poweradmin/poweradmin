@@ -33,23 +33,27 @@ use Poweradmin\Module\Rdap\Service\RdapService;
  */
 class RdapController extends BaseController
 {
-    private RdapService $rdapService;
-    private DomainRepositoryInterface $domainRepository;
+    private ?RdapService $rdapService = null;
+    private ?DomainRepositoryInterface $domainRepository = null;
 
-    public function __construct(array $request)
+    private function rdapService(): RdapService
     {
-        parent::__construct($request);
+        if ($this->rdapService === null) {
+            $this->rdapService = new RdapService();
+            $this->rdapService->setRequestTimeout($this->getModuleConfig('rdap', 'request_timeout', 10));
 
-        $this->rdapService = new RdapService();
-        $this->domainRepository = $this->moduleServices()->domainRepository();
-
-        $timeout = $this->getModuleConfig('rdap', 'request_timeout', 10);
-        $this->rdapService->setRequestTimeout($timeout);
-
-        $customServers = $this->getModuleConfig('rdap', 'custom_servers', []);
-        if (is_array($customServers) && !empty($customServers)) {
-            $this->rdapService->setCustomServers($customServers);
+            $customServers = $this->getModuleConfig('rdap', 'custom_servers', []);
+            if (is_array($customServers) && !empty($customServers)) {
+                $this->rdapService->setCustomServers($customServers);
+            }
         }
+
+        return $this->rdapService;
+    }
+
+    private function domainRepository(): DomainRepositoryInterface
+    {
+        return $this->domainRepository ??= $this->moduleServices()->domainRepository();
     }
 
     public function run(): void
@@ -85,10 +89,10 @@ class RdapController extends BaseController
             }
         } elseif (isset($this->getRequest()['id'])) {
             $zone_id = (int)$this->getRequest()['id'];
-            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository()->getDomainNameById($zone_id) ?? '';
         } elseif (isset($this->getRequest()['zone_id'])) {
             $zone_id = (int)$this->getRequest()['zone_id'];
-            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository()->getDomainNameById($zone_id) ?? '';
         }
 
         return $domain;
@@ -109,16 +113,16 @@ class RdapController extends BaseController
         $customServer = $this->getModuleConfig('rdap', 'default_server', '');
 
         if (!empty($customServer)) {
-            $response = $this->rdapService->query($domain, $customServer);
+            $response = $this->rdapService()->query($domain, $customServer);
 
             if ($response !== null) {
                 $result['success'] = true;
-                $result['data'] = $this->rdapService->formatRdapResponse($response);
+                $result['data'] = $this->rdapService()->formatRdapResponse($response);
             } else {
                 $result['error'] = sprintf(_('Failed to retrieve RDAP information using server %s'), $customServer);
             }
         } else {
-            $result = $this->rdapService->getRdapInfo($domain);
+            $result = $this->rdapService()->getRdapInfo($domain);
         }
 
         return $result;

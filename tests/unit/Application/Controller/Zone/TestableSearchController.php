@@ -24,12 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\Zone\SearchController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the search controller through the ControllerEnvironment seam and
@@ -47,9 +42,7 @@ class TestableSearchController extends SearchController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-        (new ReflectionProperty(SearchController::class, 'zoneSortingService'))
-            ->setValue($this, new ZoneSortingService(new ReverseZoneSorting(), $this->getUserContextService()));
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

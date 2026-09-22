@@ -29,7 +29,6 @@ use Poweradmin\Application\Service\UserCommandFactory;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -40,19 +39,23 @@ use Poweradmin\Domain\Enum\AuthMethod;
  */
 class EditUserController extends BaseController
 {
-    private PasswordPolicyService $policyService;
-    private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
-    private readonly UserContextService $userContextService;
-    private AuditService $auditService;
+    private ?PasswordPolicyService $policyService = null;
+    private ?PermissionTemplateRepositoryInterface $permissionTemplateRepository = null;
+    private ?AuditService $auditService = null;
 
-    public function __construct(
-        array $request
-    ) {
-        parent::__construct($request);
-        $this->policyService = $this->services()->passwordPolicyService();
-        $this->userContextService = new UserContextService();
-        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
-        $this->auditService = $this->services()->auditService();
+    private function policyService(): PasswordPolicyService
+    {
+        return $this->policyService ??= $this->services()->passwordPolicyService();
+    }
+
+    private function permissionTemplateRepository(): PermissionTemplateRepositoryInterface
+    {
+        return $this->permissionTemplateRepository ??= $this->services()->permissionTemplateRepository();
+    }
+
+    private function auditService(): AuditService
+    {
+        return $this->auditService ??= $this->services()->auditService();
     }
 
     public function run(): void
@@ -65,7 +68,7 @@ class EditUserController extends BaseController
         $this->setCurrentPage('edit_user');
         $this->setPageTitle(_('Edit User'));
 
-        $policyConfig = $this->policyService->getPolicyConfig();
+        $policyConfig = $this->policyService()->getPolicyConfig();
 
         if ($this->isPost()) {
             // Check if this is a group addition request
@@ -109,13 +112,13 @@ class EditUserController extends BaseController
             $username = (string)($input['username'] ?? $stored['username']);
             $oldPermTempl = (int)$stored['tpl_id'];
             $newPermTempl = (int)($input['perm_templ'] ?? $oldPermTempl);
-            $this->auditService->logUserEdit($username, $newPermTempl, $this->useLdapAfterEdit($editId, $stored) ? 'ldap' : 'sql');
+            $this->auditService()->logUserEdit($username, $newPermTempl, $this->useLdapAfterEdit($editId, $stored) ? 'ldap' : 'sql');
 
             if ($oldPermTempl !== $newPermTempl) {
-                $this->auditService->logPermTemplateChange($username, $oldPermTempl, $newPermTempl);
+                $this->auditService()->logPermTemplateChange($username, $oldPermTempl, $newPermTempl);
             }
 
-            $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
+            $isOwnProfile = $editId === $this->getUserContextService()->getLoggedInUserId();
             $canViewAllUsers = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS);
             $canEditAllUsers = $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
 
@@ -170,7 +173,7 @@ class EditUserController extends BaseController
 
     private function checkEditPermissions(int $editId): void
     {
-        $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
+        $isOwnProfile = $editId === $this->getUserContextService()->getLoggedInUserId();
         $canEditOwn = $this->hasPermission(Permission::PERM_USER_EDIT_OWN);
         $canEditOthers = $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
 
@@ -193,7 +196,7 @@ class EditUserController extends BaseController
      */
     private function isRestrictedSelfEdit(int $editId): bool
     {
-        return $editId === $this->userContextService->getLoggedInUserId()
+        return $editId === $this->getUserContextService()->getLoggedInUserId()
             && !$this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
     }
 
@@ -205,7 +208,7 @@ class EditUserController extends BaseController
      */
     private function ldapControlEditable(int $editId): bool
     {
-        $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
+        $isOwnProfile = $editId === $this->getUserContextService()->getLoggedInUserId();
 
         return $this->config->get('ldap', 'enabled', false)
             && !($isOwnProfile && $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER))
@@ -237,7 +240,7 @@ class EditUserController extends BaseController
      */
     private function prepareUserData(int $editId, array $stored, int $callerId): array
     {
-        $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
+        $isOwnProfile = $editId === $this->getUserContextService()->getLoggedInUserId();
         $canEditOthers = $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
         $restrictedSelfEdit = $isOwnProfile && !$canEditOthers;
         $useLdap = $this->useLdapAfterEdit($editId, $stored);
@@ -350,7 +353,7 @@ class EditUserController extends BaseController
 
         $memberships = $groupMemberRepo->findByUserId($editId);
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $currentUserId = $this->userContextService->getLoggedInUserId();
+        $currentUserId = $this->getUserContextService()->getLoggedInUserId();
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($currentUserId);
 
         // Get list of group IDs user is already a member of
@@ -390,13 +393,13 @@ class EditUserController extends BaseController
             'edit_id' => $editId,
             'name' => $user['fullname'] ?: $user['username'],
             'user' => $user,
-            'session_user_id' => $this->userContextService->getLoggedInUserId(),
+            'session_user_id' => $this->getUserContextService()->getLoggedInUserId(),
             'check' => $user['active'] == "1" ? " CHECKED" : "",
             'edit_templ_perm' => $permissions['edit_templ_perm'],
             'edit_own_perm' => $permissions['edit_own'],
             'perm_passwd_edit_others' => $permissions['passwd_edit_others'],
-            'permission_templates' => $this->permissionTemplateRepository->listPermissionTemplates('user'),
-            'user_permissions' => $this->permissionTemplateRepository->getPermissionsByTemplateId((int)$user['tpl_id']),
+            'permission_templates' => $this->permissionTemplateRepository()->listPermissionTemplates('user'),
+            'user_permissions' => $this->permissionTemplateRepository()->getPermissionsByTemplateId((int)$user['tpl_id']),
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'is_external_auth' => $isExternalAuth,
@@ -406,7 +409,7 @@ class EditUserController extends BaseController
             'user_groups' => $userGroups,
             'available_groups' => $availableGroupsArray,
             'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
-            'can_manage_users' => $this->services()->permissionService()->canManageUsers((int)$this->userContextService->getLoggedInUserId()),
+            'can_manage_users' => $this->services()->permissionService()->canManageUsers((int)$this->getUserContextService()->getLoggedInUserId()),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
@@ -414,7 +417,7 @@ class EditUserController extends BaseController
 
     private function getUserPermissions(int $editId): array
     {
-        $isCurrentUser = $this->userContextService->getLoggedInUserId() == $editId;
+        $isCurrentUser = $this->getUserContextService()->getLoggedInUserId() == $editId;
 
         return [
             'edit_templ_perm' => $this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM),
@@ -430,7 +433,7 @@ class EditUserController extends BaseController
         // Only admins can manage group memberships
         if (!$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             $this->setMessage('edit_user', 'error', _('You do not have permission to manage group memberships.'));
-            $this->showUserEditForm($userId, $this->policyService->getPolicyConfig());
+            $this->showUserEditForm($userId, $this->policyService()->getPolicyConfig());
             return;
         }
 
@@ -438,7 +441,7 @@ class EditUserController extends BaseController
 
         if (!is_array($groupIds) || empty($groupIds)) {
             $this->setMessage('edit_user', 'warning', _('Please select at least one group.'));
-            $this->showUserEditForm($userId, $this->policyService->getPolicyConfig());
+            $this->showUserEditForm($userId, $this->policyService()->getPolicyConfig());
             return;
         }
 
@@ -487,7 +490,7 @@ class EditUserController extends BaseController
             $this->setMessage('edit_user', 'success', $message);
 
             foreach ($successfulGroups as $groupInfo) {
-                $this->auditService->logGroupMembersAdd($groupInfo['id'], $groupInfo['name'], [(string)$targetUsername]);
+                $this->auditService()->logGroupMembersAdd($groupInfo['id'], $groupInfo['name'], [(string)$targetUsername]);
             }
         }
 

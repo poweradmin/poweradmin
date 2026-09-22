@@ -32,13 +32,11 @@ use Poweradmin\Domain\Model\Permission;
  */
 class QuickRemoveGroupZoneController extends BaseController
 {
-    private ZoneGroupService $zoneGroupService;
+    private ?ZoneGroupService $zoneGroupService = null;
 
-    public function __construct(array $request)
+    private function zoneGroupService(): ZoneGroupService
     {
-        parent::__construct($request);
-
-        $this->zoneGroupService = $this->services()->zoneGroupService();
+        return $this->zoneGroupService ??= $this->services()->zoneGroupService();
     }
 
     public function run(): void
@@ -67,7 +65,7 @@ class QuickRemoveGroupZoneController extends BaseController
         }
 
         try {
-            $success = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
+            $success = $this->zoneGroupService()->removeGroupFromZone($zoneId, $groupId);
 
             if ($success) {
                 $auditService = $this->services()->auditService();

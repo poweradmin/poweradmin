@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\User\DeletePermTemplController;
 use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
@@ -93,6 +94,27 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
         $this->assertSame('/permissions/templates', $halt->target);
         $this->assertSame([['success', 'The permission template has been deleted successfully.']], $this->messagesFor('list_perm_templ'));
         $this->assertSame([], $this->messagesFor('system'));
+    }
+
+    /**
+     * The controller asks the factory for the repository on first use and keeps
+     * that instance for the rest of the request, so the lookup and the delete
+     * hit the same repository.
+     */
+    public function testTheTemplateRepositoryIsResolvedOnceForTheRequest(): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('hasPermission')->willReturn(true);
+        $this->templates->method('deletePermissionTemplate')->willReturn(PermissionTemplateDeleteResult::DELETED);
+
+        $this->factory = $this->createMock(ControllerServiceFactory::class);
+        $this->factory->expects($this->once())->method('permissionTemplateRepository')->willReturn($this->templates);
+        $this->factory->method('permissionService')->willReturn($permissions);
+        $this->factory->method('auditService')->willReturn($this->audit);
+
+        $halt = $this->runConfirmedDelete();
+
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
     }
 
     /** @return array<string, array{0: PermissionTemplateDeleteResult, 1: string}> */

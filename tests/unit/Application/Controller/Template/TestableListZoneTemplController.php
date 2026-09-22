@@ -22,18 +22,13 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Template;
 
-use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\Template\ListZoneTemplController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the zone template list controller through the ControllerEnvironment
- * seam; its own constructor takes no environment, so the private user context
- * is planted afterwards. checkCondition() halts the run instead of exiting.
+ * seam. checkCondition() halts the run instead of exiting.
  */
 class TestableListZoneTemplController extends ListZoneTemplController
 {
@@ -42,8 +37,7 @@ class TestableListZoneTemplController extends ListZoneTemplController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-        (new ReflectionProperty(ListZoneTemplController::class, 'userContext'))->setValue($this, new UserContextService());
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

@@ -30,13 +30,11 @@ use Poweradmin\Infrastructure\Logger\DbGroupLogger;
  */
 class ListLogGroupsController extends AbstractListLogController
 {
-    private DbGroupLogger $dbGroupLogger;
+    private ?DbGroupLogger $dbGroupLogger = null;
 
-    public function __construct(array $request)
+    private function dbGroupLogger(): DbGroupLogger
     {
-        parent::__construct($request);
-
-        $this->dbGroupLogger = $this->services()->groupLogger();
+        return $this->dbGroupLogger ??= $this->services()->groupLogger();
     }
 
     protected function authorize(): bool
@@ -83,19 +81,19 @@ class ListLogGroupsController extends AbstractListLogController
 
     protected function countLogs(array $filters): int
     {
-        return $this->dbGroupLogger->countFilteredLogs($filters);
+        return $this->dbGroupLogger()->countFilteredLogs($filters);
     }
 
     protected function fetchLogs(array $filters, int $limit, int $offset): array
     {
-        return $this->dbGroupLogger->getFilteredLogs($filters, $limit, $offset);
+        return $this->dbGroupLogger()->getFilteredLogs($filters, $limit, $offset);
     }
 
     protected function getAdditionalRenderParams(): array
     {
         return [
             'event_type' => $this->httpRequest->getQueryParam('event_type', ''),
-            'event_types' => $this->dbGroupLogger->getDistinctEventTypes(),
+            'event_types' => $this->dbGroupLogger()->getDistinctEventTypes(),
         ];
     }
 }

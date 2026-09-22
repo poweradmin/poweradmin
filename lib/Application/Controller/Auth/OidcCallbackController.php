@@ -35,30 +35,32 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
  */
 class OidcCallbackController extends BaseController
 {
-    private OidcService $oidcService;
-    private AuthenticationService $authService;
+    private ?OidcService $oidcService = null;
+    private ?AuthenticationService $authService = null;
 
     public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
         // Don't authenticate - this is the callback endpoint
         parent::__construct($request, false, $environment);
+    }
 
-        // Initialize OIDC services
-        $oidcConfigService = $this->services()->oidcConfigurationService();
-        $oidcProvisioningService = $this->services()->userProvisioningService();
-
-        $this->oidcService = new OidcService(
+    private function oidcService(): OidcService
+    {
+        return $this->oidcService ??= new OidcService(
             $this->config,
-            $oidcConfigService,
-            $oidcProvisioningService,
+            $this->services()->oidcConfigurationService(),
+            $this->services()->userProvisioningService(),
             $this->logger,
             $this->services()->authenticationService(),
             $this->services()->auditService(),
             $this->services()->mfaService(),
             $this->httpRequest
         );
+    }
 
-        $this->authService = $this->services()->authenticationService();
+    private function authService(): AuthenticationService
+    {
+        return $this->authService ??= $this->services()->authenticationService();
     }
 
     /**
@@ -73,9 +75,9 @@ class OidcCallbackController extends BaseController
     public function run(): void
     {
         // Check if OIDC is enabled
-        if (!$this->oidcService->isEnabled()) {
+        if (!$this->oidcService()->isEnabled()) {
             $sessionEntity = new FlashMessage(_('OIDC authentication is not enabled'), 'danger');
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
             return;
         }
 
@@ -92,12 +94,12 @@ class OidcCallbackController extends BaseController
                 _('Authentication failed: ') . $errorDescription,
                 'danger'
             );
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
             return;
         }
 
         // Process the OIDC callback
-        $redirectPath = $this->oidcService->handleCallback();
+        $redirectPath = $this->oidcService()->handleCallback();
         if ($redirectPath !== null) {
             $this->redirect($redirectPath);
             return;

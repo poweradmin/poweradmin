@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\User;
 use DateTime;
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
@@ -36,9 +37,9 @@ use Poweradmin\Domain\Service\Auth\ApiKeyService;
  */
 class ApiKeysController extends BaseController
 {
-    private ApiKeyService $apiKeyService;
-    private ApiKeyRepositoryInterface $apiKeyRepository;
-    private ZoneReadRepositoryInterface $zoneRepository;
+    private ?ApiKeyService $apiKeyService = null;
+    private ?ApiKeyRepositoryInterface $apiKeyRepository = null;
+    private ?ZoneReadRepositoryInterface $zoneRepository = null;
 
     /**
      * Matched route name, captured before setCurrentPage() overwrites the 'page' key.
@@ -52,14 +53,25 @@ class ApiKeysController extends BaseController
      *
      * @param array $request Request parameters
      */
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
-        parent::__construct($request);
-
+        parent::__construct($request, true, $environment);
         $this->routeName = (string)($request['page'] ?? '');
-        $this->apiKeyRepository = $this->services()->apiKeyRepository();
-        $this->apiKeyService = $this->services()->apiKeyService();
-        $this->zoneRepository = $this->services()->zoneRepository();
+    }
+
+    private function apiKeyRepository(): ApiKeyRepositoryInterface
+    {
+        return $this->apiKeyRepository ??= $this->services()->apiKeyRepository();
+    }
+
+    private function apiKeyService(): ApiKeyService
+    {
+        return $this->apiKeyService ??= $this->services()->apiKeyService();
+    }
+
+    private function zoneRepository(): ZoneReadRepositoryInterface
+    {
+        return $this->zoneRepository ??= $this->services()->zoneRepository();
     }
 
     /**
@@ -134,14 +146,14 @@ class ApiKeysController extends BaseController
      */
     private function listApiKeys(): void
     {
-        $apiKeys = $this->apiKeyService->getAllApiKeys();
+        $apiKeys = $this->apiKeyService()->getAllApiKeys();
 
         $this->render('api_keys.html', [
             'api_keys' => $apiKeys,
             'max_keys_per_user' => $this->config->get('api', 'max_keys_per_user', 5),
-            'current_keys_count' => $this->apiKeyRepository->countByUser((int)$this->getCurrentUserId()),
+            'current_keys_count' => $this->apiKeyRepository()->countByUser((int)$this->getCurrentUserId()),
             'can_add_more' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER) ||
-                $this->apiKeyRepository->countByUser((int)$this->getCurrentUserId()) < $this->config->get('api', 'max_keys_per_user', 5)
+                $this->apiKeyRepository()->countByUser((int)$this->getCurrentUserId()) < $this->config->get('api', 'max_keys_per_user', 5)
         ]);
     }
 
@@ -175,7 +187,7 @@ class ApiKeysController extends BaseController
             }
 
             // Create the API key
-            $created = $this->apiKeyService->createApiKey(
+            $created = $this->apiKeyService()->createApiKey(
                 $name,
                 $expiresAtDate,
                 $scope['is_readonly'],
@@ -212,7 +224,7 @@ class ApiKeysController extends BaseController
         $id = (int)$this->getSafeRequestValue('id');
 
         // Get the API key
-        $apiKey = $this->apiKeyService->getApiKey($id);
+        $apiKey = $this->apiKeyService()->getApiKey($id);
 
         if ($apiKey === null) {
             $this->showError(_('API key not found or you do not have permission to edit it.'));
@@ -245,7 +257,7 @@ class ApiKeysController extends BaseController
             }
 
             // Update the API key
-            $updated = $this->apiKeyService->updateApiKey(
+            $updated = $this->apiKeyService()->updateApiKey(
                 $id,
                 $name,
                 $expiresAtDate,
@@ -285,7 +297,7 @@ class ApiKeysController extends BaseController
 
         // Handle form submission for confirmation
         if ($this->isPost()) {
-            $deleted = $this->apiKeyService->deleteApiKey($id);
+            $deleted = $this->apiKeyService()->deleteApiKey($id);
 
             if ($deleted->success) {
                 $this->services()->auditService()->logApiKeyDelete($id, $deleted->key->getName());
@@ -299,7 +311,7 @@ class ApiKeysController extends BaseController
         }
 
         // Get the API key
-        $apiKey = $this->apiKeyService->getApiKey($id);
+        $apiKey = $this->apiKeyService()->getApiKey($id);
 
         if ($apiKey === null) {
             $this->showError(_('API key not found or you do not have permission to delete it.'));
@@ -319,7 +331,7 @@ class ApiKeysController extends BaseController
     {
         $id = (int)$this->getSafeRequestValue('id');
 
-        $apiKey = $this->apiKeyService->getApiKey($id);
+        $apiKey = $this->apiKeyService()->getApiKey($id);
         if ($apiKey === null) {
             $this->showError(_('API key not found or you do not have permission to edit it.'));
             return;
@@ -327,7 +339,7 @@ class ApiKeysController extends BaseController
 
         // Handle form submission for confirmation
         if ($this->isPost()) {
-            $regenerated = $this->apiKeyService->regenerateSecretKey($id);
+            $regenerated = $this->apiKeyService()->regenerateSecretKey($id);
 
             if ($regenerated->success) {
                 $this->services()->auditService()->logApiKeyRegenerate($id, $regenerated->key->getName());
@@ -357,7 +369,7 @@ class ApiKeysController extends BaseController
         $disable = $this->getSafeRequestValue('disable') === '1';
 
         // Toggle the API key status
-        $toggled = $this->apiKeyService->toggleApiKey($id, $disable);
+        $toggled = $this->apiKeyService()->toggleApiKey($id, $disable);
 
         if ($toggled->success) {
             $this->services()->auditService()->logApiKeyToggle($id, $toggled->key->getName(), $disable);
@@ -401,7 +413,7 @@ class ApiKeysController extends BaseController
         $userId = $this->getUserContextService()->getLoggedInUserId();
         $viewOthers = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
-        $zones = $this->zoneRepository->listZones($userId, $viewOthers, [], 0, 100000);
+        $zones = $this->zoneRepository()->listZones($userId, $viewOthers, [], 0, 100000);
 
         return array_map(static fn(array $zone): array => [
             'id' => (int) $zone['id'],

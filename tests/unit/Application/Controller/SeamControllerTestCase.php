@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\ZoneSortingService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
@@ -40,6 +41,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionProperty;
@@ -165,6 +167,10 @@ abstract class SeamControllerTestCase extends TestCase
         $this->factory->method('dnsBackendProvider')->willReturnCallback(fn() => $this->backendProvider($config, $db));
         // The real mode resolver, so the ownership flags a page renders follow dns.zone_ownership_mode
         $this->factory->method('zoneOwnershipModeService')->willReturn(new ZoneOwnershipModeService($config));
+        // The real sorter over the in-memory session, so list pages sort as shipped
+        $this->factory->method('zoneSortingService')->willReturnCallback(
+            static fn(UserContextService $userContext): ZoneSortingService => new ZoneSortingService(new ReverseZoneSorting(), $userContext)
+        );
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 

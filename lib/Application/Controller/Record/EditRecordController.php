@@ -28,7 +28,6 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordEditRequest;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Model\ZoneType;
@@ -49,24 +48,31 @@ use Poweradmin\Domain\ValueObject\RecordIdentifier;
  */
 class EditRecordController extends BaseController
 {
+    private ?RecordCommentService $recordCommentService = null;
+    private ?RecordTypeService $recordTypeService = null;
+    private ?PermissionService $permissionService = null;
 
-    private RecordCommentService $recordCommentService;
-    private RecordTypeService $recordTypeService;
-    private UserContextService $userContextService;
-    private PermissionService $permissionService;
-
-    public function __construct(array $request)
+    private function recordCommentService(): RecordCommentService
     {
-        parent::__construct($request);
-        $backendProvider = $this->services()->dnsBackendProvider();
-        $repositoryFactory = $this->services()->repositoryFactory($backendProvider);
-        $this->recordCommentService = new RecordCommentService(
-            $repositoryFactory->createRecordCommentRepository(),
-            $repositoryFactory->createRecordLinkedCommentRepository()
-        );
-        $this->recordTypeService = new RecordTypeService($this->getConfig());
-        $this->userContextService = new UserContextService();
-        $this->permissionService = $this->services()->permissionService();
+        if ($this->recordCommentService === null) {
+            $repositoryFactory = $this->services()->repositoryFactory($this->services()->dnsBackendProvider());
+            $this->recordCommentService = new RecordCommentService(
+                $repositoryFactory->createRecordCommentRepository(),
+                $repositoryFactory->createRecordLinkedCommentRepository()
+            );
+        }
+
+        return $this->recordCommentService;
+    }
+
+    private function recordTypeService(): RecordTypeService
+    {
+        return $this->recordTypeService ??= new RecordTypeService($this->getConfig());
+    }
+
+    private function permissionService(): PermissionService
+    {
+        return $this->permissionService ??= $this->services()->permissionService();
     }
 
     public function run(): void
@@ -91,11 +97,11 @@ class EditRecordController extends BaseController
         }
 
         // Early permission check - validate access before further operations
-        $userId = $this->userContextService->getLoggedInUserId();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         $user_is_zone_owner = $this->isZoneOwner($zid);
 
         // Check view permission first (zone-aware for group support)
-        $canView = $this->permissionService->canPerformZoneAction($userId, $zid, Permission::PERM_ZONE_CONTENT_VIEW_OWN);
+        $canView = $this->permissionService()->canPerformZoneAction($userId, $zid, Permission::PERM_ZONE_CONTENT_VIEW_OWN);
         $canViewOthers = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
 
         if (!$canViewOthers && !$canView) {
@@ -112,11 +118,11 @@ class EditRecordController extends BaseController
             return;
         }
 
-        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zid);
+        $perm_edit = $this->permissionService()->getEditPermissionLevelForZone($userId, $zid);
         $edit_mode = $this->changeApprovalModeForZone($zid);
         // A requester gets the editor's form; the save files a request instead
         if ($edit_mode === ChangeApprovalPolicy::MODE_REQUEST && !ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner)) {
-            $perm_edit = $this->permissionService->getChangeRequestPermissionLevelForZone($userId, $zid);
+            $perm_edit = $this->permissionService()->getChangeRequestPermissionLevelForZone($userId, $zid);
         }
         if ($perm_edit === 'none') {
             $this->showError(_("You do not have permission to edit this record."));
@@ -143,7 +149,7 @@ class EditRecordController extends BaseController
             return;
         }
 
-        $recordTypes = $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities());
+        $recordTypes = $this->recordTypeService()->getAllTypes($this->getRecordTypeCapabilities());
         $record = $recordRepository->getRecordFromId($record_id);
         if ($record === null) {
             $this->showError(_('Record not found.'));
@@ -151,7 +157,7 @@ class EditRecordController extends BaseController
         }
 
         $display_hostname_only = $this->services()->userPreferenceService()->getDisplayHostnameOnly(
-            $this->userContextService->getLoggedInUserId()
+            $this->getUserContextService()->getLoggedInUserId()
         );
         if ($display_hostname_only) {
             $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
@@ -161,10 +167,10 @@ class EditRecordController extends BaseController
 
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
         // Use record ID to find per-record comment, with fallback to RRset-based lookup for legacy comments
-        $recordComment = $this->recordCommentService->findCommentByRecordId($record_id);
+        $recordComment = $this->recordCommentService()->findCommentByRecordId($record_id);
         if ($recordComment === null) {
             // Fallback to legacy RRset-based comment lookup
-            $recordComment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
+            $recordComment = $this->recordCommentService()->findComment($zid, $record['name'], $record['type']);
         }
 
         $zone_is_read_only = ZoneType::isReadOnly($zone_type);
@@ -222,7 +228,7 @@ class EditRecordController extends BaseController
             $zid,
             $zone_name,
             (int)$this->getCurrentUserId(),
-            (string)$this->userContextService->getLoggedInUsername(),
+            (string)$this->getUserContextService()->getLoggedInUsername(),
             [$row],
             false,
             null,
@@ -288,7 +294,7 @@ class EditRecordController extends BaseController
             $showRecordComments ? (string)$this->httpRequest->getPostParam('comment', '') : null,
             $this->httpRequest->getPostParam('update_ptr') !== null,
             true,
-            $this->userContextService->getLoggedInUsername() ?? ''
+            $this->getUserContextService()->getLoggedInUsername() ?? ''
         ));
         if (!$edited->isOk()) {
             $this->addSystemMessage('error', (string)$edited->write->message);

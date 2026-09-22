@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Template;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 
 /**
@@ -33,17 +32,17 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
  */
 class SaveZoneAsTemplateController extends BaseController
 {
-    private UserContextService $userContextService;
-    private DomainRepositoryInterface $domainRepository;
-    private PermissionService $permissionService;
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?PermissionService $permissionService = null;
 
-    public function __construct(array $request)
+    private function domainRepository(): DomainRepositoryInterface
     {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-        $this->domainRepository = $this->services()->domainRepository();
+        return $this->domainRepository ??= $this->services()->domainRepository();
+    }
 
-        $this->permissionService = $this->services()->permissionService();
+    private function permissionService(): PermissionService
+    {
+        return $this->permissionService ??= $this->services()->permissionService();
     }
 
     public function run(): void
@@ -55,9 +54,9 @@ class SaveZoneAsTemplateController extends BaseController
         $zone_id = $this->requireNumericParam('id');
 
         // Check permissions
-        $userId = $this->userContextService->getLoggedInUserId();
-        $perm_zone_templ_add = $this->permissionService->canAddZoneTemplates($userId);
-        $perm_is_godlike = $this->permissionService->isAdmin($userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $perm_zone_templ_add = $this->permissionService()->canAddZoneTemplates($userId);
+        $perm_is_godlike = $this->permissionService()->isAdmin($userId);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if (!($perm_zone_templ_add || $perm_is_godlike)) {
@@ -66,20 +65,20 @@ class SaveZoneAsTemplateController extends BaseController
         }
 
         // Only zone owners or admins can save their zones as templates
-        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
+        $perm_view = $this->permissionService()->getViewPermissionLevel($userId);
         if ($perm_view !== "all" && !$user_is_zone_owner) {
             $this->showError(_('You do not have permission to access this zone.'));
             return;
         }
 
         // Get zone information
-        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
         }
 
-        $domain_type = $this->domainRepository->getDomainType($zone_id);
+        $domain_type = $this->domainRepository()->getDomainType($zone_id);
 
         // Handle form submission
         if ($this->isPost() && $this->httpRequest->getPostParam('save_as') !== null) {
@@ -123,7 +122,7 @@ class SaveZoneAsTemplateController extends BaseController
         $saved = $zoneTemplate->addZoneTemplSaveAs(
             $template_name,
             $description,
-            $this->userContextService->getLoggedInUserId(),
+            $this->getUserContextService()->getLoggedInUserId(),
             $records,
             $options,
             $zone_name

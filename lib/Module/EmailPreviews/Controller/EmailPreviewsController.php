@@ -33,15 +33,17 @@ use Poweradmin\Module\EmailPreviews\Service\EmailPreviewService;
  */
 class EmailPreviewsController extends BaseController
 {
-    private EmailTemplateService $emailTemplateService;
-    private EmailPreviewService $emailPreviewService;
+    private ?EmailTemplateService $emailTemplateService = null;
+    private ?EmailPreviewService $emailPreviewService = null;
 
-    public function __construct(array $request)
+    private function emailTemplateService(): EmailTemplateService
     {
-        parent::__construct($request);
+        return $this->emailTemplateService ??= $this->moduleServices()->emailTemplateService();
+    }
 
-        $this->emailTemplateService = $this->moduleServices()->emailTemplateService();
-        $this->emailPreviewService = new EmailPreviewService($this->emailTemplateService);
+    private function emailPreviewService(): EmailPreviewService
+    {
+        return $this->emailPreviewService ??= new EmailPreviewService($this->emailTemplateService());
     }
 
     public function run(): void
@@ -70,7 +72,7 @@ class EmailPreviewsController extends BaseController
             return;
         }
 
-        $previewData = $this->emailPreviewService->generateAllPreviews();
+        $previewData = $this->emailPreviewService()->generateAllPreviews();
 
         $this->render('email_previews.html', [
             'page_title' => 'Email Template Previews',
@@ -93,7 +95,7 @@ class EmailPreviewsController extends BaseController
         header('X-XSS-Protection: 1; mode=block');
 
         try {
-            $previewData = $this->emailPreviewService->generateAllPreviews();
+            $previewData = $this->emailPreviewService()->generateAllPreviews();
             $templates = $previewData['templates'];
 
             if (!isset($templates[$template])) {

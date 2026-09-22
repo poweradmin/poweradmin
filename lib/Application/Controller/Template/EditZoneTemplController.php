@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller\Template;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,14 +33,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class EditZoneTemplController extends BaseController
 {
-    private UserContextService $userContext;
-    private ZoneTemplateService $zoneTemplate;
+    private ?ZoneTemplateService $zoneTemplate = null;
 
-    public function __construct(array $request)
+    private function zoneTemplate(): ZoneTemplateService
     {
-        parent::__construct($request);
-        $this->userContext = new UserContextService();
-        $this->zoneTemplate = $this->services()->zoneTemplateService();
+        return $this->zoneTemplate ??= $this->services()->zoneTemplateService();
     }
 
     public function run(): void
@@ -53,8 +49,8 @@ class EditZoneTemplController extends BaseController
         }
 
         $zone_templ_id = (int)$id;
-        $userId = $this->userContext->getLoggedInUserId();
-        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 
@@ -89,8 +85,8 @@ class EditZoneTemplController extends BaseController
 
     private function updateZoneTemplate(int $zone_templ_id): void
     {
-        $userId = $this->userContext->getLoggedInUserId();
-        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
         if ($this->httpRequest->getPostParam('edit') !== null && ($owner || $perm_godlike)) {
@@ -110,7 +106,7 @@ class EditZoneTemplController extends BaseController
     {
         $iface_rowamount = $this->resolveRowsPerPage();
         $row_start = $this->getRowStart($iface_rowamount);
-        [$record_sort_by] = $this->services()->zoneSortingService($this->userContext)->getZoneSortOrder(
+        [$record_sort_by] = $this->services()->zoneSortingService($this->getUserContextService())->getZoneSortOrder(
             ['name', 'type', 'content', 'ttl', 'prio'],
             SessionKeys::ZONE_TEMPL_RECORD_SORT_BY,
             submittedSortBy: $this->httpRequest->getPostParam('record_sort_by') ?? $this->httpRequest->getQueryParam('record_sort_by'),
@@ -121,8 +117,8 @@ class EditZoneTemplController extends BaseController
         $templ_details = $templates->getZoneTemplateDetails($zone_templ_id) ?: [];
 
         // Get count of zones using this template
-        $userId = $this->userContext->getLoggedInUserId();
-        $linked_zones = $this->zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $linked_zones = $this->zoneTemplate()->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
 
         // Get sync status
@@ -172,8 +168,8 @@ class EditZoneTemplController extends BaseController
             return;
         }
 
-        $userId = $this->userContext->getLoggedInUserId();
-        $edited = $this->zoneTemplate->editZoneTempl($postParams, $zone_templ_id, $userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $edited = $this->zoneTemplate()->editZoneTempl($postParams, $zone_templ_id, $userId);
         if (!$edited->success) {
             $this->addSystemMessage('error', (string)$edited->message);
             return;
@@ -186,8 +182,8 @@ class EditZoneTemplController extends BaseController
 
     public function updateZoneRecords(int $zone_templ_id): void
     {
-        $userId = $this->userContext->getLoggedInUserId();
-        $zones = $this->zoneTemplate->getZoneAndDomainIdsByTemplate($zone_templ_id, $userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $zones = $this->zoneTemplate()->getZoneAndDomainIdsByTemplate($zone_templ_id, $userId);
         $domainManager = $this->services()->domainManager();
         $syncService = $this->services()->zoneTemplateSync();
 
@@ -254,7 +250,7 @@ class EditZoneTemplController extends BaseController
             return;
         }
 
-        $templateExists = $this->zoneTemplate->zoneTemplNameExists($postParams['templ_name']);
+        $templateExists = $this->zoneTemplate()->zoneTemplNameExists($postParams['templ_name']);
         $currentTemplate = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [];
 
         if ($templateExists) {
@@ -278,7 +274,7 @@ class EditZoneTemplController extends BaseController
         }
 
         // Call the addZoneTemplSaveAs with the correct signature
-        $saved = $this->zoneTemplate->addZoneTemplSaveAs(
+        $saved = $this->zoneTemplate()->addZoneTemplSaveAs(
             $postParams['templ_name'],
             $postParams['templ_descr'],
             (int)$this->getCurrentUserId(),

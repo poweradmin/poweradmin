@@ -32,15 +32,14 @@ use Poweradmin\Domain\Model\Permission;
  */
 class QuickRemoveGroupMemberController extends BaseController
 {
-    private GroupMembershipService $membershipService;
+    private ?GroupMembershipService $membershipService = null;
 
-    public function __construct(array $request)
+    private function membershipService(): GroupMembershipService
     {
-        parent::__construct($request);
-
-        $memberRepository = $this->services()->userGroupMemberRepository();
-        $groupRepository = $this->services()->userGroupRepository();
-        $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
+        return $this->membershipService ??= new GroupMembershipService(
+            $this->services()->userGroupMemberRepository(),
+            $this->services()->userGroupRepository()
+        );
     }
 
     public function run(): void
@@ -69,7 +68,7 @@ class QuickRemoveGroupMemberController extends BaseController
         }
 
         try {
-            $success = $this->membershipService->removeUserFromGroup($groupId, $memberId);
+            $success = $this->membershipService()->removeUserFromGroup($groupId, $memberId);
 
             if ($success) {
                 $auditService = $this->services()->auditService();

@@ -33,38 +33,40 @@ use Poweradmin\Application\Service\Auth\AuthenticationService;
  */
 class OidcLoginController extends BaseController
 {
-    private OidcService $oidcService;
-    private AuthenticationService $authService;
+    private ?OidcService $oidcService = null;
+    private ?AuthenticationService $authService = null;
 
     public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
         // Don't authenticate - this is a login endpoint
         parent::__construct($request, false, $environment);
+    }
 
-        // Initialize OIDC services
-        $oidcConfigService = $this->services()->oidcConfigurationService();
-        $oidcProvisioningService = $this->services()->userProvisioningService();
-
-        $this->oidcService = new OidcService(
+    private function oidcService(): OidcService
+    {
+        return $this->oidcService ??= new OidcService(
             $this->config,
-            $oidcConfigService,
-            $oidcProvisioningService,
+            $this->services()->oidcConfigurationService(),
+            $this->services()->userProvisioningService(),
             $this->logger,
             $this->services()->authenticationService(),
             $this->services()->auditService(),
             $this->services()->mfaService(),
             $this->httpRequest
         );
+    }
 
-        $this->authService = $this->services()->authenticationService();
+    private function authService(): AuthenticationService
+    {
+        return $this->authService ??= $this->services()->authenticationService();
     }
 
     public function run(): void
     {
         // Check if OIDC is enabled
-        if (!$this->oidcService->isEnabled()) {
+        if (!$this->oidcService()->isEnabled()) {
             $sessionEntity = new FlashMessage(_('OIDC authentication is not enabled'), 'danger');
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
             return;
         }
 
@@ -73,10 +75,10 @@ class OidcLoginController extends BaseController
 
         // If no provider specified, get the first available provider
         if (empty($providerId)) {
-            $availableProviders = $this->oidcService->getAvailableProviders();
+            $availableProviders = $this->oidcService()->getAvailableProviders();
             if (empty($availableProviders)) {
                 $sessionEntity = new FlashMessage(_('No OIDC providers are configured'), 'danger');
-                $this->authService->auth($sessionEntity);
+                $this->authService()->auth($sessionEntity);
                 return;
             }
 
@@ -86,7 +88,7 @@ class OidcLoginController extends BaseController
 
         try {
             // Initiate the OIDC authentication flow
-            $authUrl = $this->oidcService->initiateAuthFlow($providerId);
+            $authUrl = $this->oidcService()->initiateAuthFlow($providerId);
 
             // Redirect to OIDC provider
             header('Location: ' . $authUrl);
@@ -96,7 +98,7 @@ class OidcLoginController extends BaseController
                 _('Failed to initiate OIDC authentication: ') . $e->getMessage(),
                 'danger'
             );
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
         }
     }
 }

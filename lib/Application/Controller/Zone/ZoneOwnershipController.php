@@ -28,7 +28,6 @@ use Poweradmin\Application\Service\ZoneAccessNotificationService;
 use Poweradmin\Application\Service\ZoneOwnershipMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -39,18 +38,23 @@ use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
  */
 class ZoneOwnershipController extends BaseController
 {
-    private UserContextService $userContextService;
-    private ZoneOwnershipRepositoryInterface $zoneRepository;
-    private DomainRepositoryInterface $domainRepository;
-    private PermissionService $permissionService;
+    private ?ZoneOwnershipRepositoryInterface $zoneRepository = null;
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?PermissionService $permissionService = null;
 
-    public function __construct(array $request)
+    private function zoneRepository(): ZoneOwnershipRepositoryInterface
     {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-        $this->zoneRepository = $this->services()->zoneRepository();
-        $this->domainRepository = $this->services()->domainRepository();
-        $this->permissionService = $this->services()->permissionService();
+        return $this->zoneRepository ??= $this->services()->zoneRepository();
+    }
+
+    private function domainRepository(): DomainRepositoryInterface
+    {
+        return $this->domainRepository ??= $this->services()->domainRepository();
+    }
+
+    private function permissionService(): PermissionService
+    {
+        return $this->permissionService ??= $this->services()->permissionService();
     }
 
     public function run(): void
@@ -62,10 +66,10 @@ class ZoneOwnershipController extends BaseController
         $zone_id = $this->requireNumericParam('id');
 
         // Check permissions
-        $userId = $this->userContextService->getLoggedInUserId();
-        $perm_ownership_view = $this->permissionService->getZoneOwnershipViewPermissionLevel($userId);
-        $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
-        $perm_view_others = $this->permissionService->canViewOthersContent($userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $perm_ownership_view = $this->permissionService()->getZoneOwnershipViewPermissionLevel($userId);
+        $perm_meta_edit = $this->permissionService()->getZoneMetaEditPermissionLevel($userId);
+        $perm_view_others = $this->permissionService()->canViewOthersContent($userId);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_ownership_view !== "all" && !($perm_ownership_view === "own" && $user_is_zone_owner)) {
@@ -76,7 +80,7 @@ class ZoneOwnershipController extends BaseController
         $meta_edit = ZoneAccessPolicy::levelAppliesToZone($perm_meta_edit, $user_is_zone_owner);
 
         // Get zone information
-        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
@@ -89,7 +93,7 @@ class ZoneOwnershipController extends BaseController
 
         // Get owners
         $users = $this->services()->userRepository()->getUsersWithZoneCounts();
-        $owners = $this->zoneRepository->getZoneOwners($zone_id);
+        $owners = $this->zoneRepository()->getZoneOwners($zone_id);
 
         // Filter out users who are already owners
         $ownerIds = array_column($owners, 'id');
@@ -172,7 +176,7 @@ class ZoneOwnershipController extends BaseController
             $this->reportZoneWrite('zone-ownership', $result, _('Owner has been added successfully.'));
 
             if ($result->success) {
-                $this->permissionService->forgetZone($zone_id);
+                $this->permissionService()->forgetZone($zone_id);
                 $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$newowner);
 
                 // Send zone access granted notification
@@ -192,10 +196,10 @@ class ZoneOwnershipController extends BaseController
                 $this->setMessage('zone-ownership', 'error', ZoneOwnershipMessages::userOwnerRefusal($refusal));
                 return;
             }
-            $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $deleteUserId);
+            $ownerRemoved = $this->zoneRepository()->removeOwnerFromZone($zone_id, $deleteUserId);
 
             if ($ownerRemoved) {
-                $this->permissionService->forgetZone($zone_id);
+                $this->permissionService()->forgetZone($zone_id);
                 $auditService->logZoneOwnerRemove($zone_id, $zone_name, (int)$delete_owner);
                 $this->setMessage('zone-ownership', 'success', _('Owner has been removed successfully.'));
 
@@ -230,7 +234,7 @@ class ZoneOwnershipController extends BaseController
 
             $zoneGroupRepo = $this->services()->zoneGroupRepository();
             $zoneGroupRepo->add($zone_id, $groupId);
-            $this->permissionService->forgetZone($zone_id);
+            $this->permissionService()->forgetZone($zone_id);
             $auditService->logZoneGroupAdd($zone_id, $zone_name, $groupId);
             $this->setMessage('zone-ownership', 'success', _('Group has been added successfully.'));
         }
@@ -245,7 +249,7 @@ class ZoneOwnershipController extends BaseController
                 return;
             }
             $this->services()->zoneGroupRepository()->remove($zone_id, $deleteGroupId);
-            $this->permissionService->forgetZone($zone_id);
+            $this->permissionService()->forgetZone($zone_id);
             $auditService->logZoneGroupRemove($zone_id, $zone_name, $deleteGroupId);
             $this->setMessage('zone-ownership', 'success', _('Group has been removed successfully.'));
         }
@@ -261,7 +265,7 @@ class ZoneOwnershipController extends BaseController
             $this->config,
             $mailService,
             $emailTemplateService,
-            $this->domainRepository,
+            $this->domainRepository(),
             $this->services()->urlService(),
             $this->logger
         );

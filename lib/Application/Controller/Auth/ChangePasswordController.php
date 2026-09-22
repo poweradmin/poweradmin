@@ -26,10 +26,8 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\PasswordChangeService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -39,21 +37,27 @@ use Poweradmin\Domain\Enum\AuthMethod;
  */
 class ChangePasswordController extends BaseController
 {
-    private AuthenticationService $authService;
-    private PasswordPolicyService $policyService;
-    private PasswordChangeService $passwordService;
-    private UserContextService $userContextService;
+    private ?AuthenticationService $authService = null;
+    private ?PasswordPolicyService $policyService = null;
+    private ?PasswordChangeService $passwordService = null;
 
-    public function __construct(array $request, ?ControllerEnvironment $environment = null)
+    private function authService(): AuthenticationService
     {
-        parent::__construct($request, true, $environment);
-        $this->authService = $this->services()->authenticationService();
-        $this->policyService = $this->services()->passwordPolicyService();
+        return $this->authService ??= $this->services()->authenticationService();
+    }
 
-        $userAuthService = UserAuthenticationService::fromConfig($this->config);
-        $userRepository = $this->services()->userRepository();
-        $this->userContextService = new UserContextService();
-        $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $this->userContextService);
+    private function policyService(): PasswordPolicyService
+    {
+        return $this->policyService ??= $this->services()->passwordPolicyService();
+    }
+
+    private function passwordService(): PasswordChangeService
+    {
+        return $this->passwordService ??= new PasswordChangeService(
+            $this->services()->userRepository(),
+            UserAuthenticationService::fromConfig($this->config),
+            $this->getUserContextService()
+        );
     }
 
     public function run(): void
@@ -75,7 +79,7 @@ class ChangePasswordController extends BaseController
         $this->setCurrentPage('change_password');
         $this->setPageTitle(_('Change password'));
 
-        $policyConfig = $this->policyService->getPolicyConfig();
+        $policyConfig = $this->policyService()->getPolicyConfig();
 
         if (!$this->isPost()) {
             $this->renderChangePasswordForm($policyConfig);
@@ -138,7 +142,7 @@ class ChangePasswordController extends BaseController
 
     private function processPasswordChange(): bool
     {
-        [$success, $message] = $this->passwordService->changePassword(
+        [$success, $message] = $this->passwordService()->changePassword(
             $this->httpRequest->getPostParam('old_password'),
             $this->httpRequest->getPostParam('new_password')
         );
@@ -147,7 +151,7 @@ class ChangePasswordController extends BaseController
             $this->services()->auditService()->logPasswordChange();
 
             $sessionEntity = new FlashMessage($message, 'success');
-            $this->authService->logout($sessionEntity);
+            $this->authService()->logout($sessionEntity);
             return true;
         }
         $this->setMessage('change_password', 'error', $message);
@@ -157,7 +161,7 @@ class ChangePasswordController extends BaseController
     private function validatePasswordPolicy(): bool
     {
         $newPassword = $this->httpRequest->getPostParam('new_password');
-        $policyErrors = $this->policyService->validatePassword($newPassword);
+        $policyErrors = $this->policyService()->validatePassword($newPassword);
 
         if (!empty($policyErrors)) {
             $this->setMessage('change_password', 'error', array_shift($policyErrors));

@@ -33,23 +33,27 @@ use Poweradmin\Module\Whois\Service\WhoisService;
  */
 class WhoisController extends BaseController
 {
-    private WhoisService $whoisService;
-    private DomainRepositoryInterface $domainRepository;
+    private ?WhoisService $whoisService = null;
+    private ?DomainRepositoryInterface $domainRepository = null;
 
-    public function __construct(array $request)
+    private function whoisService(): WhoisService
     {
-        parent::__construct($request);
+        if ($this->whoisService === null) {
+            $this->whoisService = new WhoisService();
+            $this->whoisService->setSocketTimeout($this->getModuleConfig('whois', 'socket_timeout', 10));
 
-        $this->whoisService = new WhoisService();
-        $this->domainRepository = $this->moduleServices()->domainRepository();
-
-        $timeout = $this->getModuleConfig('whois', 'socket_timeout', 10);
-        $this->whoisService->setSocketTimeout($timeout);
-
-        $customServers = $this->getModuleConfig('whois', 'custom_servers', []);
-        if (is_array($customServers) && !empty($customServers)) {
-            $this->whoisService->setCustomServers($customServers);
+            $customServers = $this->getModuleConfig('whois', 'custom_servers', []);
+            if (is_array($customServers) && !empty($customServers)) {
+                $this->whoisService->setCustomServers($customServers);
+            }
         }
+
+        return $this->whoisService;
+    }
+
+    private function domainRepository(): DomainRepositoryInterface
+    {
+        return $this->domainRepository ??= $this->moduleServices()->domainRepository();
     }
 
     public function run(): void
@@ -85,10 +89,10 @@ class WhoisController extends BaseController
             }
         } elseif (isset($this->getRequest()['id'])) {
             $zone_id = (int)$this->getRequest()['id'];
-            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository()->getDomainNameById($zone_id) ?? '';
         } elseif (isset($this->getRequest()['zone_id'])) {
             $zone_id = (int)$this->getRequest()['zone_id'];
-            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository()->getDomainNameById($zone_id) ?? '';
         }
 
         return $domain;
@@ -109,16 +113,16 @@ class WhoisController extends BaseController
         $customServer = $this->getModuleConfig('whois', 'default_server', '');
 
         if (!empty($customServer)) {
-            $response = $this->whoisService->query($domain, $customServer);
+            $response = $this->whoisService()->query($domain, $customServer);
 
             if ($response !== null) {
                 $result['success'] = true;
-                $result['data'] = $this->whoisService->formatWhoisResponse($response);
+                $result['data'] = $this->whoisService()->formatWhoisResponse($response);
             } else {
                 $result['error'] = sprintf(_('Failed to retrieve WHOIS information using server %s'), $customServer);
             }
         } else {
-            $result = $this->whoisService->getWhoisInfo($domain);
+            $result = $this->whoisService()->getWhoisInfo($domain);
         }
 
         return $result;

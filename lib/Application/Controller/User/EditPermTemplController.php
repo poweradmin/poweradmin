@@ -27,7 +27,6 @@ use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateContentGuard;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
@@ -36,17 +35,17 @@ use Poweradmin\Domain\Enum\PermissionTemplateType;
  */
 class EditPermTemplController extends BaseController
 {
-    private PermissionTemplateRepositoryInterface $permissionTemplate;
-    private PermissionTemplateWriteService $permissionTemplateWriteService;
-    private UserContextService $userContextService;
+    private ?PermissionTemplateRepositoryInterface $permissionTemplate = null;
+    private ?PermissionTemplateWriteService $permissionTemplateWriteService = null;
 
-    public function __construct(array $request)
+    private function permissionTemplate(): PermissionTemplateRepositoryInterface
     {
-        parent::__construct($request);
+        return $this->permissionTemplate ??= $this->services()->permissionTemplateRepository();
+    }
 
-        $this->permissionTemplate = $this->services()->permissionTemplateRepository();
-        $this->permissionTemplateWriteService = $this->services()->permissionTemplateWriteService();
-        $this->userContextService = new UserContextService();
+    private function permissionTemplateWriteService(): PermissionTemplateWriteService
+    {
+        return $this->permissionTemplateWriteService ??= $this->services()->permissionTemplateWriteService();
     }
 
     public function run(): void
@@ -97,7 +96,7 @@ class EditPermTemplController extends BaseController
         // this write a template the URL never named.
         $templateId = (int)$this->getSafeRequestValue('id');
 
-        $result = $this->permissionTemplateWriteService->update($this->callerId(), $templateId, $request);
+        $result = $this->permissionTemplateWriteService()->update($this->callerId(), $templateId, $request);
         if (!$result['success']) {
             $this->setMessage('list_perm_templ', 'error', $this->translateWriteError($result['message']));
             $this->showForm();
@@ -115,11 +114,11 @@ class EditPermTemplController extends BaseController
         $id = $this->getSafeRequestValue('id');
         $this->render('edit_perm_templ.html', [
             'id' => $id,
-            'templ' => $this->permissionTemplate->getPermissionTemplateDetails((int)$id),
-            'perms_templ' => $this->permissionTemplate->getPermissionsByTemplateId((int)$id),
+            'templ' => $this->permissionTemplate()->getPermissionTemplateDetails((int)$id),
+            'perms_templ' => $this->permissionTemplate()->getPermissionsByTemplateId((int)$id),
             'perms_avail' => PermissionTemplateContentGuard::filterOfferedPermissions(
-                $this->permissionTemplate->getPermissionsByTemplateId(),
-                $this->permissionTemplateWriteService->callerMaySetSuperuser($this->callerId())
+                $this->permissionTemplate()->getPermissionsByTemplateId(),
+                $this->permissionTemplateWriteService()->callerMaySetSuperuser($this->callerId())
             ),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
@@ -153,7 +152,7 @@ class EditPermTemplController extends BaseController
 
     private function callerId(): int
     {
-        return (int)$this->userContextService->getLoggedInUserId();
+        return (int)$this->getUserContextService()->getLoggedInUserId();
     }
 
     private function translateWriteError(string $message): string

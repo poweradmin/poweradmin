@@ -28,7 +28,6 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -36,18 +35,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AddZoneMasterController extends BaseController
 {
-
-    private UserContextService $userContext;
-
     /** @var array<int, string>|null */
     private ?array $soaEditApiChoices = null;
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-
-        $this->userContext = new UserContextService();
-    }
 
     public function run(): void
     {
@@ -69,7 +58,6 @@ class AddZoneMasterController extends BaseController
             $this->showForm();
         }
     }
-
 
     /**
      * Zone kinds this install may create.
@@ -261,7 +249,7 @@ class AddZoneMasterController extends BaseController
         $dnssec_checked = $this->httpRequest->getPostParam('dnssec') == '1';
 
         // Get available templates for this user
-        $userId = $this->userContext->getLoggedInUserId();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         $templates = $zone_templates->getListZoneTempl($userId);
 
         // Fetch groups for the dropdown - admins see all, others see only their own

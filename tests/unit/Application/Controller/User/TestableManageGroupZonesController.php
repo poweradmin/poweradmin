@@ -22,13 +22,9 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\User;
 
-use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\User\ManageGroupZonesController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the group zones controller through the ControllerEnvironment seam,
@@ -42,16 +38,7 @@ class TestableManageGroupZonesController extends ManageGroupZonesController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-
-        $groupRepository = $this->services()->userGroupRepository();
-        $this->plant('groupService', new GroupService($groupRepository));
-        $this->plant('zoneGroupService', $this->services()->zoneGroupService());
-    }
-
-    private function plant(string $property, object $value): void
-    {
-        (new ReflectionProperty(ManageGroupZonesController::class, $property))->setValue($this, $value);
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

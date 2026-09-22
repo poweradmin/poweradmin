@@ -22,32 +22,17 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
-use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\Zone\ZoneOwnershipController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Service\Auth\UserContextService;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
- * Builds the controller through the ControllerEnvironment seam and fills the
- * private collaborators from the stub factory, as the real constructor does.
+ * Builds the controller through the ControllerEnvironment seam; its
+ * collaborators resolve lazily off the stub factory.
  */
 class TestableZoneOwnershipController extends ZoneOwnershipController
 {
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-
-        $services = $this->services();
-        $this->set('userContextService', new UserContextService());
-        $this->set('zoneRepository', $services->zoneRepository());
-        $this->set('domainRepository', $services->domainRepository());
-        $this->set('permissionService', $services->permissionService());
-    }
-
-    private function set(string $property, object $value): void
-    {
-        (new ReflectionProperty(ZoneOwnershipController::class, $property))->setValue($this, $value);
+        parent::__construct($request, true, $environment);
     }
 }

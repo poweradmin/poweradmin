@@ -22,13 +22,9 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 
-use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\Zone\DeleteDomainsController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the bulk delete-zones controller through the ControllerEnvironment
@@ -42,8 +38,7 @@ class TestableDeleteDomainsController extends DeleteDomainsController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-        (new ReflectionProperty(DeleteDomainsController::class, 'userContextService'))->setValue($this, new UserContextService());
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

@@ -31,14 +31,11 @@ use Poweradmin\Domain\Model\Permission;
  */
 class ListGroupsController extends BaseController
 {
-    private GroupService $groupService;
+    private ?GroupService $groupService = null;
 
-    public function __construct(array $request)
+    private function groupService(): GroupService
     {
-        parent::__construct($request);
-
-        $groupRepository = $this->services()->userGroupRepository();
-        $this->groupService = new GroupService($groupRepository);
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository());
     }
 
     public function run(): void
@@ -62,12 +59,12 @@ class ListGroupsController extends BaseController
         $isAdmin = $this->services()->permissionService()->isAdmin($userId);
 
         // Get groups based on user role (admin sees all, normal users see only their groups)
-        $groups = $this->groupService->listGroups($userId, $isAdmin);
+        $groups = $this->groupService()->listGroups($userId, $isAdmin);
 
         // Enrich groups with member and zone counts
         $enrichedGroups = [];
         foreach ($groups as $group) {
-            $details = $this->groupService->getGroupDetails($group->getId());
+            $details = $this->groupService()->getGroupDetails($group->getId());
             $enrichedGroups[] = [
                 'id' => $group->getId(),
                 'name' => $group->getName(),

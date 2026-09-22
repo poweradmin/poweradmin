@@ -34,16 +34,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AddGroupController extends BaseController
 {
-    private GroupService $groupService;
-    private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
+    private ?GroupService $groupService = null;
+    private ?PermissionTemplateRepositoryInterface $permissionTemplateRepository = null;
 
-    public function __construct(array $request)
+    private function groupService(): GroupService
     {
-        parent::__construct($request);
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository());
+    }
 
-        $groupRepository = $this->services()->userGroupRepository();
-        $this->groupService = new GroupService($groupRepository);
-        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
+    private function permissionTemplateRepository(): PermissionTemplateRepositoryInterface
+    {
+        return $this->permissionTemplateRepository ??= $this->services()->permissionTemplateRepository();
     }
 
     public function run(): void
@@ -81,17 +82,17 @@ class AddGroupController extends BaseController
         $userId = $userContext->getLoggedInUserId();
 
         // Validate that the template is a group template
-        if (!$this->permissionTemplateRepository->validateTemplateType($permTemplId, 'group')) {
+        if (!$this->permissionTemplateRepository()->validateTemplateType($permTemplId, 'group')) {
             $this->setMessage('add_group', 'error', _('Invalid permission template: must be a group template'));
             $this->renderAddGroupForm();
             return;
         }
 
         try {
-            $group = $this->groupService->createGroup($name, $permTemplId, $description, $userId);
+            $group = $this->groupService()->createGroup($name, $permTemplId, $description, $userId);
 
             // Log group creation with template details
-            $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates();
+            $permTemplates = $this->permissionTemplateRepository()->listPermissionTemplates();
             $templateName = 'Unknown';
             foreach ($permTemplates as $template) {
                 if ($template['id'] == $permTemplId) {
@@ -112,11 +113,11 @@ class AddGroupController extends BaseController
 
     private function renderAddGroupForm(): void
     {
-        $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates('group');
+        $permTemplates = $this->permissionTemplateRepository()->listPermissionTemplates('group');
 
         // Use minimal permission template as default (most secure); preselect
         // nothing rather than falling back to template id 1 (Administrator).
-        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('group') ?? '';
+        $defaultTemplateId = $this->permissionTemplateRepository()->getMinimalPermissionTemplateId('group') ?? '';
 
         $this->render('add_group.html', [
             'name' => $this->httpRequest->getPostParam('name', ''),

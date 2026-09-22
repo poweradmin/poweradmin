@@ -54,7 +54,7 @@ class LogoutControllerRunTest extends SeamControllerTestCase
         ));
         $this->factory->expects($this->once())->method('authenticationService')->willReturn($authentication);
 
-        $controller = new LogoutController([], $this->environment($config));
+        $controller = new LogoutController([], true, $this->environment($config));
         $controller->run();
     }
 }

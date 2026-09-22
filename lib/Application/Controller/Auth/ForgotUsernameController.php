@@ -23,11 +23,11 @@
 namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 
 /**
@@ -35,44 +35,42 @@ use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
  */
 class ForgotUsernameController extends BaseController
 {
-    private UsernameRecoveryService $usernameRecoveryService;
-    private RecaptchaService $recaptchaService;
-    private UserContextService $userContextService;
-    private CsrfTokenService $csrfTokenService;
-    private ClientContext $client;
+    private ?UsernameRecoveryService $usernameRecoveryService = null;
+    private ?RecaptchaService $recaptchaService = null;
+    private ?CsrfTokenService $csrfTokenService = null;
+    private ?ClientContext $client = null;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
-        parent::__construct($request, false); // No authentication required for forgot username
+        parent::__construct($request, false, $environment); // No authentication required for forgot username
+    }
 
-        // Create our own CSRF token service
-        $this->csrfTokenService = new CsrfTokenService();
+    private function csrfTokenService(): CsrfTokenService
+    {
+        return $this->csrfTokenService ??= new CsrfTokenService();
+    }
 
-        // Create UsernameRecoveryService with dependencies
-        try {
-            $recoveryRepository = $this->services()->usernameRecoveryRepository();
-            $mailService = $this->services()->mailService();
-            $this->client = $this->services()->clientContext();
+    private function client(): ClientContext
+    {
+        return $this->client ??= $this->services()->clientContext();
+    }
 
-            $this->usernameRecoveryService = new UsernameRecoveryService(
-                $recoveryRepository,
-                $mailService,
-                $this->config,
-                $this->client,
-                $this->logger,
-                $this->db,
-                $this->services()->urlService()
-            );
+    private function usernameRecoveryService(): UsernameRecoveryService
+    {
+        return $this->usernameRecoveryService ??= new UsernameRecoveryService(
+            $this->services()->usernameRecoveryRepository(),
+            $this->services()->mailService(),
+            $this->config,
+            $this->client(),
+            $this->logger,
+            $this->db,
+            $this->services()->urlService()
+        );
+    }
 
-            $this->recaptchaService = $this->services()->recaptchaService();
-            $this->userContextService = new UserContextService();
-        } catch (\Exception $e) {
-            $this->logger->error('Failed to initialize username recovery controller', [
-                'error' => $e->getMessage(),
-                'origin' => $e->getFile() . ':' . $e->getLine()
-            ]);
-            throw $e; // Re-throw to let the application handle it
-        }
+    private function recaptchaService(): RecaptchaService
+    {
+        return $this->recaptchaService ??= $this->services()->recaptchaService();
     }
 
     /**
@@ -87,12 +85,12 @@ class ForgotUsernameController extends BaseController
     public function run(): void
     {
         // Check if username recovery is enabled
-        if (!$this->usernameRecoveryService->isEnabled()) {
+        if (!$this->usernameRecoveryService()->isEnabled()) {
             $this->logger->warning('Username recovery attempt while feature is disabled', [
-                'ip' => $this->client->ip,
-                'user_agent' => $this->client->userAgent,
-                'browser' => $this->client->browser,
-                'is_bot' => $this->client->isBot,
+                'ip' => $this->client()->ip,
+                'user_agent' => $this->client()->userAgent,
+                'browser' => $this->client()->browser,
+                'is_bot' => $this->client()->isBot,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $this->showError('Username recovery functionality is disabled.');
@@ -100,11 +98,11 @@ class ForgotUsernameController extends BaseController
         }
 
         // Already logged in users shouldn't access this page
-        if ($this->userContextService->isAuthenticated()) {
+        if ($this->getUserContextService()->isAuthenticated()) {
             $this->logger->info('Authenticated user attempted to access username recovery', [
-                'user_id' => $this->userContextService->getLoggedInUserId(),
-                'username' => $this->userContextService->getLoggedInUsername(),
-                'ip' => $this->client->ip,
+                'user_id' => $this->getUserContextService()->getLoggedInUserId(),
+                'username' => $this->getUserContextService()->getLoggedInUsername(),
+                'ip' => $this->client()->ip,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
@@ -121,14 +119,14 @@ class ForgotUsernameController extends BaseController
 
     private function handleUsernameRecoveryRequest(): void
     {
-        $ipAddress = $this->client->ip;
-        $userAgent = $this->client->userAgent;
+        $ipAddress = $this->client()->ip;
+        $userAgent = $this->client()->userAgent;
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
             $token = $this->httpRequest->getPostParam('username_recovery_token', '');
 
-            if (!$this->csrfTokenService->validateToken($token, AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN)) {
+            if (!$this->csrfTokenService()->validateToken($token, AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN)) {
                 $this->logger->warning('Username recovery failed - invalid CSRF token', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
@@ -143,9 +141,9 @@ class ForgotUsernameController extends BaseController
         }
 
         // Verify reCAPTCHA if enabled
-        if ($this->recaptchaService->isEnabled()) {
+        if ($this->recaptchaService()->isEnabled()) {
             $recaptchaToken = $this->httpRequest->getPostParam('g-recaptcha-response', '');
-            if (!$this->recaptchaService->verify($recaptchaToken, $ipAddress, 'forgot_username')) {
+            if (!$this->recaptchaService()->verify($recaptchaToken, $ipAddress, 'forgot_username')) {
                 $this->logger->warning('Username recovery failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
@@ -175,15 +173,15 @@ class ForgotUsernameController extends BaseController
             'email' => $email,
             'ip' => $ipAddress,
             'user_agent' => $userAgent,
-            'browser' => $this->client->browser,
-            'is_bot' => $this->client->isBot,
+            'browser' => $this->client()->browser,
+            'is_bot' => $this->client()->isBot,
             'referrer' => $_SERVER['HTTP_REFERER'] ?? 'none',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
 
         try {
             // Create username recovery request
-            $this->usernameRecoveryService->createRecoveryRequest($email);
+            $this->usernameRecoveryService()->createRecoveryRequest($email);
 
             $this->services()->auditService()->logUsernameRecovery($email);
 
@@ -218,21 +216,21 @@ class ForgotUsernameController extends BaseController
         if ($error) {
             $this->logger->debug('Username recovery form displayed with error', [
                 'error' => $error,
-                'ip' => $this->client->ip,
+                'ip' => $this->client()->ip,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
         }
 
         // Generate a new token for username recovery
-        $usernameRecoveryToken = $this->csrfTokenService->generateToken();
+        $usernameRecoveryToken = $this->csrfTokenService()->generateToken();
         $_SESSION[AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN] = $usernameRecoveryToken;
 
         $this->render('forgot_username.html', [
             'error' => $error,
             'username_recovery_token' => $usernameRecoveryToken,
-            'recaptcha_enabled' => $this->recaptchaService->isEnabled(),
-            'recaptcha_site_key' => $this->recaptchaService->getSiteKey(),
-            'recaptcha_version' => $this->recaptchaService->getVersion(),
+            'recaptcha_enabled' => $this->recaptchaService()->isEnabled(),
+            'recaptcha_site_key' => $this->recaptchaService()->getSiteKey(),
+            'recaptcha_version' => $this->recaptchaService()->getVersion(),
         ]);
     }
 

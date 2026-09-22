@@ -25,19 +25,11 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
 use Poweradmin\Application\Controller\Zone\ListReverseZonesController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Domain\Service\Zone\ForwardZoneAssociationService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Application\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the reverse zone list controller through the ControllerEnvironment
- * seam. Its own constructor takes no environment, so BaseController's is
- * invoked directly and the private collaborators are wired exactly as the real
- * constructor wires them, off the seam's service factory.
+ * seam; its collaborators resolve lazily off the seam's service factory.
  *
  * The exiting methods are captured instead: showError() renders an error page
  * and exits, so it throws a RequestHalted to stop the run at the same statement.
@@ -50,18 +42,7 @@ class TestableListReverseZonesController extends ListReverseZonesController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-
-        $userContext = new UserContextService();
-        $this->plant('dnsDataService', $this->services()->dnsDataService());
-        $this->plant('forwardZoneAssociationService', new ForwardZoneAssociationService($this->services()->zoneRepository()));
-        $this->plant('userContextService', $userContext);
-        $this->plant('zoneSortingService', new ZoneSortingService(new ReverseZoneSorting(), $userContext));
-    }
-
-    private function plant(string $property, object $value): void
-    {
-        (new ReflectionProperty(ListReverseZonesController::class, $property))->setValue($this, $value);
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

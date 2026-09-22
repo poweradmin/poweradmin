@@ -48,7 +48,7 @@ class MfaSetupControllerTest extends SeamControllerTestCase
         $this->factory->expects($this->once())->method('mfaService')->willReturn($mfa);
 
         $this->post(['setup_app' => '1']);
-        $controller = new TestableMfaSetupController([], $this->environment($config));
+        $controller = new TestableMfaSetupController([], true, $this->environment($config));
         $controller->run();
 
         $this->assertSame('mfa_setup.html', $controller->rendered[0][0]);

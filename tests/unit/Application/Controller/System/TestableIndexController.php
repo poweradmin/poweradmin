@@ -22,18 +22,13 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\System;
 
-use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\System\IndexController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
- * Builds the dashboard controller through the ControllerEnvironment seam; its
- * own constructor takes no environment, so the private user context is planted
- * afterwards. redirect() halts the run instead of exiting.
+ * Builds the dashboard controller through the ControllerEnvironment seam.
+ * redirect() halts the run instead of exiting.
  */
 class TestableIndexController extends IndexController
 {
@@ -42,8 +37,7 @@ class TestableIndexController extends IndexController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-        (new ReflectionProperty(IndexController::class, 'userContextService'))->setValue($this, new UserContextService());
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

@@ -33,38 +33,40 @@ use Poweradmin\Application\Service\Auth\AuthenticationService;
  */
 class SamlLoginController extends BaseController
 {
-    private SamlService $samlService;
-    private AuthenticationService $authService;
+    private ?SamlService $samlService = null;
+    private ?AuthenticationService $authService = null;
 
     public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
         // Don't authenticate - this is a login endpoint
         parent::__construct($request, false, $environment);
+    }
 
-        // Initialize SAML services
-        $samlConfigService = $this->services()->samlConfigurationService();
-        $userProvisioningService = $this->services()->userProvisioningService();
-
-        $this->samlService = new SamlService(
+    private function samlService(): SamlService
+    {
+        return $this->samlService ??= new SamlService(
             $this->config,
-            $samlConfigService,
-            $userProvisioningService,
+            $this->services()->samlConfigurationService(),
+            $this->services()->userProvisioningService(),
             $this->logger,
             $this->services()->authenticationService(),
             $this->services()->auditService(),
             $this->services()->mfaService(),
             $this->httpRequest
         );
+    }
 
-        $this->authService = $this->services()->authenticationService();
+    private function authService(): AuthenticationService
+    {
+        return $this->authService ??= $this->services()->authenticationService();
     }
 
     public function run(): void
     {
         // Check if SAML is enabled
-        if (!$this->samlService->isEnabled()) {
+        if (!$this->samlService()->isEnabled()) {
             $sessionEntity = new FlashMessage(_('SAML authentication is not enabled'), 'danger');
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
             return;
         }
 
@@ -73,10 +75,10 @@ class SamlLoginController extends BaseController
 
         // If no provider specified, get the first available provider
         if (empty($providerId)) {
-            $availableProviders = $this->samlService->getAvailableProviders();
+            $availableProviders = $this->samlService()->getAvailableProviders();
             if (empty($availableProviders)) {
                 $sessionEntity = new FlashMessage(_('No SAML providers are configured'), 'danger');
-                $this->authService->auth($sessionEntity);
+                $this->authService()->auth($sessionEntity);
                 return;
             }
 
@@ -87,20 +89,20 @@ class SamlLoginController extends BaseController
         // Validate provider
         if (!$this->validateProvider($providerId)) {
             $sessionEntity = new FlashMessage(_('Invalid SAML provider'), 'danger');
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
             return;
         }
 
         try {
             // Initiate SAML authentication flow
-            $authUrl = $this->samlService->initiateAuthFlow($providerId);
+            $authUrl = $this->samlService()->initiateAuthFlow($providerId);
 
             // Redirect to SAML IdP
             header('Location: ' . $authUrl);
             exit;
         } catch (\Exception $e) {
             $sessionEntity = new FlashMessage(_('SAML authentication failed: ') . $e->getMessage(), 'danger');
-            $this->authService->auth($sessionEntity);
+            $this->authService()->auth($sessionEntity);
         }
     }
 
@@ -112,7 +114,7 @@ class SamlLoginController extends BaseController
         }
 
         // Check if provider is actually available
-        $availableProviders = $this->samlService->getAvailableProviders();
+        $availableProviders = $this->samlService()->getAvailableProviders();
         return isset($availableProviders[$provider]);
     }
 }

@@ -30,13 +30,11 @@ use Poweradmin\Infrastructure\Logger\DbApiLogger;
  */
 class ListLogApiController extends AbstractListLogController
 {
-    private DbApiLogger $dbApiLogger;
+    private ?DbApiLogger $dbApiLogger = null;
 
-    public function __construct(array $request)
+    private function dbApiLogger(): DbApiLogger
     {
-        parent::__construct($request);
-
-        $this->dbApiLogger = $this->services()->apiLogger();
+        return $this->dbApiLogger ??= $this->services()->apiLogger();
     }
 
     protected function authorize(): bool
@@ -72,20 +70,20 @@ class ListLogApiController extends AbstractListLogController
 
     protected function countLogs(array $filters): int
     {
-        return $this->dbApiLogger->countFilteredLogs($filters);
+        return $this->dbApiLogger()->countFilteredLogs($filters);
     }
 
     protected function fetchLogs(array $filters, int $limit, int $offset): array
     {
-        return $this->dbApiLogger->getFilteredLogs($filters, $limit, $offset);
+        return $this->dbApiLogger()->getFilteredLogs($filters, $limit, $offset);
     }
 
     protected function getAdditionalRenderParams(): array
     {
         return [
             'event_type' => $this->httpRequest->getQueryParam('event_type', ''),
-            'event_types' => $this->dbApiLogger->getDistinctEventTypes(),
-            'users' => $this->dbApiLogger->getDistinctUsers(),
+            'event_types' => $this->dbApiLogger()->getDistinctEventTypes(),
+            'users' => $this->dbApiLogger()->getDistinctUsers(),
         ];
     }
 }

@@ -23,12 +23,12 @@
 namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 
 /**
@@ -36,43 +36,46 @@ use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
  */
 class ResetPasswordController extends BaseController
 {
-    private PasswordResetService $passwordResetService;
-    private PasswordPolicyService $passwordPolicyService;
-    private UserContextService $userContextService;
-    private CsrfTokenService $csrfTokenService;
-    private ClientContext $client;
+    private ?PasswordResetService $passwordResetService = null;
+    private ?PasswordPolicyService $passwordPolicyService = null;
+    private ?CsrfTokenService $csrfTokenService = null;
+    private ?ClientContext $client = null;
     private ?string $token = null;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
-        parent::__construct($request, false); // No authentication required for password reset
+        parent::__construct($request, false, $environment); // No authentication required for password reset
+        // Extract token from URL parameters
+        $this->token = $this->httpRequest->getQueryParam('token');
+    }
 
-        // Create our own CSRF token service
-        $this->csrfTokenService = new CsrfTokenService();
+    private function csrfTokenService(): CsrfTokenService
+    {
+        return $this->csrfTokenService ??= new CsrfTokenService();
+    }
 
-        // Create PasswordResetService with dependencies
-        $tokenRepository = $this->services()->passwordResetTokenRepository();
-        $userRepository = $this->services()->userRepository();
-        $mailService = $this->services()->mailService();
-        $authService = UserAuthenticationService::fromConfig($this->config);
-        $this->client = $this->services()->clientContext();
+    private function client(): ClientContext
+    {
+        return $this->client ??= $this->services()->clientContext();
+    }
 
-        $this->passwordResetService = new PasswordResetService(
-            $tokenRepository,
-            $userRepository,
-            $mailService,
+    private function passwordResetService(): PasswordResetService
+    {
+        return $this->passwordResetService ??= new PasswordResetService(
+            $this->services()->passwordResetTokenRepository(),
+            $this->services()->userRepository(),
+            $this->services()->mailService(),
             $this->config,
-            $authService,
-            $this->client,
+            UserAuthenticationService::fromConfig($this->config),
+            $this->client(),
             $this->logger,
             $this->services()->urlService()
         );
+    }
 
-        $this->passwordPolicyService = $this->services()->passwordPolicyService();
-        $this->userContextService = new UserContextService();
-
-        // Extract token from URL parameters
-        $this->token = $this->httpRequest->getQueryParam('token');
+    private function passwordPolicyService(): PasswordPolicyService
+    {
+        return $this->passwordPolicyService ??= $this->services()->passwordPolicyService();
     }
 
     /**
@@ -87,12 +90,12 @@ class ResetPasswordController extends BaseController
     public function run(): void
     {
         // Check if password reset is enabled
-        if (!$this->passwordResetService->isEnabled()) {
+        if (!$this->passwordResetService()->isEnabled()) {
             $this->logger->warning('Password reset page accessed while feature is disabled', [
-                'ip' => $this->client->ip,
-                'user_agent' => $this->client->userAgent,
-                'browser' => $this->client->browser,
-                'is_bot' => $this->client->isBot,
+                'ip' => $this->client()->ip,
+                'user_agent' => $this->client()->userAgent,
+                'browser' => $this->client()->browser,
+                'is_bot' => $this->client()->isBot,
                 'token' => $this->token ?? 'none',
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
@@ -101,11 +104,11 @@ class ResetPasswordController extends BaseController
         }
 
         // Already logged in users shouldn't access this page
-        if ($this->userContextService->isAuthenticated()) {
+        if ($this->getUserContextService()->isAuthenticated()) {
             $this->logger->info('Authenticated user attempted to access password reset page', [
-                'user_id' => $this->userContextService->getLoggedInUserId(),
-                'username' => $this->userContextService->getLoggedInUsername(),
-                'ip' => $this->client->ip,
+                'user_id' => $this->getUserContextService()->getLoggedInUserId(),
+                'username' => $this->getUserContextService()->getLoggedInUsername(),
+                'ip' => $this->client()->ip,
                 'token' => $this->token ?? 'none',
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
@@ -117,10 +120,10 @@ class ResetPasswordController extends BaseController
         // Validate token
         if (!$this->token) {
             $this->logger->warning('Password reset page accessed without token', [
-                'ip' => $this->client->ip,
-                'user_agent' => $this->client->userAgent,
-                'browser' => $this->client->browser,
-                'is_bot' => $this->client->isBot,
+                'ip' => $this->client()->ip,
+                'user_agent' => $this->client()->userAgent,
+                'browser' => $this->client()->browser,
+                'is_bot' => $this->client()->isBot,
                 'referrer' => $_SERVER['HTTP_REFERER'] ?? 'none',
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
@@ -128,13 +131,13 @@ class ResetPasswordController extends BaseController
             return;
         }
 
-        $tokenData = $this->passwordResetService->validateToken($this->token);
+        $tokenData = $this->passwordResetService()->validateToken($this->token);
         if (!$tokenData) {
             $this->logger->warning('Invalid or expired password reset token presented', [
-                'ip' => $this->client->ip,
-                'user_agent' => $this->client->userAgent,
-                'browser' => $this->client->browser,
-                'is_bot' => $this->client->isBot,
+                'ip' => $this->client()->ip,
+                'user_agent' => $this->client()->userAgent,
+                'browser' => $this->client()->browser,
+                'is_bot' => $this->client()->isBot,
                 'token_received' => $this->token,
                 'token_length' => strlen($this->token),
                 'timestamp' => date('Y-m-d H:i:s')
@@ -147,7 +150,7 @@ class ResetPasswordController extends BaseController
         $this->logger->info('Valid password reset token accessed', [
             'user_id' => $tokenData['user']['id'],
             'email' => $tokenData['user']['email'],
-            'ip' => $this->client->ip,
+            'ip' => $this->client()->ip,
             'timestamp' => date('Y-m-d H:i:s')
         ]);
 
@@ -160,7 +163,7 @@ class ResetPasswordController extends BaseController
 
     private function handlePasswordReset(array $tokenData): void
     {
-        $ipAddress = $this->client->ip;
+        $ipAddress = $this->client()->ip;
         $userId = $tokenData['user']['id'];
         $email = $tokenData['user']['email'];
 
@@ -168,7 +171,7 @@ class ResetPasswordController extends BaseController
         if ($this->config->get('security', 'global_token_validation', true)) {
             $token = $this->httpRequest->getPostParam('reset_password_token', '');
 
-            if (!$this->csrfTokenService->validateToken($token, AuthFlowSessionKeys::RESET_PASSWORD_TOKEN)) {
+            if (!$this->csrfTokenService()->validateToken($token, AuthFlowSessionKeys::RESET_PASSWORD_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
                     'user_id' => $userId,
                     'email' => $email,
@@ -199,7 +202,7 @@ class ResetPasswordController extends BaseController
         }
 
         // Validate password against policy
-        $policyErrors = $this->passwordPolicyService->validatePassword($password);
+        $policyErrors = $this->passwordPolicyService()->validatePassword($password);
         if (!empty($policyErrors)) {
             $this->logger->info('Password reset failed - password policy violation', [
                 'user_id' => $userId,
@@ -221,13 +224,13 @@ class ResetPasswordController extends BaseController
         ]);
 
         // Reset the password
-        if ($this->passwordResetService->resetPassword($this->token, $password)) {
+        if ($this->passwordResetService()->resetPassword($this->token, $password)) {
             $this->logger->info('Password reset completed via web interface', [
                 'user_id' => $userId,
                 'email' => $email,
                 'ip' => $ipAddress,
-                'user_agent' => $this->client->userAgent,
-                'browser' => $this->client->browser,
+                'user_agent' => $this->client()->userAgent,
+                'browser' => $this->client()->browser,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
 
@@ -257,13 +260,13 @@ class ResetPasswordController extends BaseController
                 'email' => $tokenData['user']['email'],
                 'error' => $error,
                 'policy_errors' => $policyErrors,
-                'ip' => $this->client->ip,
+                'ip' => $this->client()->ip,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
         }
 
         // Generate a new token for password reset
-        $resetPasswordToken = $this->csrfTokenService->generateToken();
+        $resetPasswordToken = $this->csrfTokenService()->generateToken();
         $_SESSION[AuthFlowSessionKeys::RESET_PASSWORD_TOKEN] = $resetPasswordToken;
 
         $this->render('reset_password.html', [
@@ -272,10 +275,9 @@ class ResetPasswordController extends BaseController
             'error' => $error,
             'policy_errors' => $policyErrors,
             'reset_password_token' => $resetPasswordToken,
-            'password_policy' => $this->passwordPolicyService->getPolicyConfig(),
+            'password_policy' => $this->passwordPolicyService()->getPolicyConfig(),
         ]);
     }
-
 
     private function showErrorMessage(string $message): void
     {

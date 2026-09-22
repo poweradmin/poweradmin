@@ -23,13 +23,8 @@
 namespace Poweradmin\Tests\Unit\Module\DnsWizard\Controller;
 
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Module\DnsWizard\Controller\DnsWizardFormController;
-use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Builds the wizard form controller through the ControllerEnvironment seam,
@@ -44,16 +39,7 @@ class TestableDnsWizardFormController extends DnsWizardFormController
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-
-        $this->plant('wizardRegistry', new WizardRegistry($this->getConfig()));
-        $this->plant('formStateService', new FormStateService());
-        $this->plant('recordAdd', $this->moduleServices()->recordAddService());
-    }
-
-    private function plant(string $property, object $value): void
-    {
-        (new ReflectionProperty(DnsWizardFormController::class, $property))->setValue($this, $value);
+        parent::__construct($request, true, $environment);
     }
 
     public function render(string $template, array $params): void

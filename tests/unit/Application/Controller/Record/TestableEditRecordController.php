@@ -25,19 +25,14 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 use Poweradmin\Application\Controller\Record\EditRecordController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Domain\Service\Dns\RecordTypeService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Controller\RequestHalted;
-use ReflectionMethod;
 use ReflectionProperty;
 
 /**
  * Builds the edit-record controller through the ControllerEnvironment seam.
  *
- * Its constructor reaches past the service factory into the repository factory
- * to build the comment service, so that one is handed in ready-made; the rest
- * is wired exactly as the real constructor wires it.
+ * The comment service is composed from the repository factory rather than a
+ * factory accessor, so the given one is planted into the private property.
  */
 class TestableEditRecordController extends EditRecordController
 {
@@ -47,17 +42,8 @@ class TestableEditRecordController extends EditRecordController
 
     public function __construct(array $request, ControllerEnvironment $environment, RecordCommentService $recordCommentService)
     {
-        (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
-
-        $this->plant('recordCommentService', $recordCommentService);
-        $this->plant('recordTypeService', new RecordTypeService($this->getConfig()));
-        $this->plant('userContextService', new UserContextService());
-        $this->plant('permissionService', $this->services()->permissionService());
-    }
-
-    private function plant(string $property, object $value): void
-    {
-        (new ReflectionProperty(EditRecordController::class, $property))->setValue($this, $value);
+        parent::__construct($request, true, $environment);
+        (new ReflectionProperty(EditRecordController::class, 'recordCommentService'))->setValue($this, $recordCommentService);
     }
 
     public function render(string $template, array $params): void

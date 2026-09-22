@@ -37,15 +37,17 @@ use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
  */
 class DnsWizardSelectController extends BaseController
 {
-    private DomainRepositoryInterface $domainRepository;
-    private WizardRegistry $wizardRegistry;
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?WizardRegistry $wizardRegistry = null;
 
-    public function __construct(array $request)
+    private function domainRepository(): DomainRepositoryInterface
     {
-        parent::__construct($request);
+        return $this->domainRepository ??= $this->moduleServices()->domainRepository();
+    }
 
-        $this->domainRepository = $this->moduleServices()->domainRepository();
-        $this->wizardRegistry = new WizardRegistry($this->getConfig());
+    private function wizardRegistry(): WizardRegistry
+    {
+        return $this->wizardRegistry ??= new WizardRegistry($this->getConfig());
     }
 
     public function run(): void
@@ -64,7 +66,7 @@ class DnsWizardSelectController extends BaseController
         $zone_id = (int)$zone_id;
 
         // Check if zone exists
-        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
         }
@@ -72,7 +74,7 @@ class DnsWizardSelectController extends BaseController
         // Check permissions
         $perm_edit = $this->moduleServices()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
-        $zone_type = $this->domainRepository->getDomainType($zone_id);
+        $zone_type = $this->domainRepository()->getDomainType($zone_id);
 
         if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
             $this->showError(_('You do not have permission to add records to this zone.'));
@@ -82,7 +84,7 @@ class DnsWizardSelectController extends BaseController
         $is_reverse_zone = DnsHelper::isReverseZoneName($zone_name);
 
         // Get available wizards
-        $wizards = $this->wizardRegistry->getWizardMetadata();
+        $wizards = $this->wizardRegistry()->getWizardMetadata();
 
         // Render the wizard selection page
         $this->setCurrentPage('module_dns_wizard_select');

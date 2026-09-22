@@ -37,17 +37,23 @@ use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
  */
 class DnsWizardFormController extends BaseController
 {
-    private WizardRegistry $wizardRegistry;
-    private RecordAddService $recordAdd;
-    private FormStateService $formStateService;
+    private ?WizardRegistry $wizardRegistry = null;
+    private ?RecordAddService $recordAdd = null;
+    private ?FormStateService $formStateService = null;
 
-    public function __construct(array $request)
+    private function wizardRegistry(): WizardRegistry
     {
-        parent::__construct($request);
+        return $this->wizardRegistry ??= new WizardRegistry($this->getConfig());
+    }
 
-        $this->wizardRegistry = new WizardRegistry($this->getConfig());
-        $this->formStateService = new FormStateService();
-        $this->recordAdd = $this->moduleServices()->recordAddService();
+    private function formStateService(): FormStateService
+    {
+        return $this->formStateService ??= new FormStateService();
+    }
+
+    private function recordAdd(): RecordAddService
+    {
+        return $this->recordAdd ??= $this->moduleServices()->recordAddService();
     }
 
     public function run(): void
@@ -67,7 +73,7 @@ class DnsWizardFormController extends BaseController
         $zone_id = (int)$zone_id;
 
         // Wizards write directly, so a reviewed zone sends the user to the zone editor
-        $access = $this->recordAdd->open($zone_id, (int)$this->getCurrentUserId());
+        $access = $this->recordAdd()->open($zone_id, (int)$this->getCurrentUserId());
         if (!$access->isGranted()) {
             $this->showError(match ($access->code) {
                 RecordAddAccess::ZONE_NOT_FOUND => _('Zone not found.'),
@@ -82,7 +88,7 @@ class DnsWizardFormController extends BaseController
 
         // Get wizard
         try {
-            $wizard = $this->wizardRegistry->getWizard($wizard_type);
+            $wizard = $this->wizardRegistry()->getWizard($wizard_type);
         } catch (\RuntimeException $e) {
             $this->showError(_('Invalid wizard type.'));
             return;
@@ -116,7 +122,7 @@ class DnsWizardFormController extends BaseController
         $warnings = [];
 
         if ($formId) {
-            $savedFormData = $this->formStateService->getFormData($formId);
+            $savedFormData = $this->formStateService()->getFormData($formId);
             if ($savedFormData) {
                 // Extract warnings if present
                 if (isset($savedFormData['_warnings'])) {
@@ -127,7 +133,7 @@ class DnsWizardFormController extends BaseController
                 // Merge saved data over defaults (saved data takes precedence)
                 $formData = array_merge($formData, $savedFormData);
                 // Clear the saved data now that we've used it
-                $this->formStateService->clearFormData($formId);
+                $this->formStateService()->clearFormData($formId);
             }
         }
 
@@ -174,8 +180,8 @@ class DnsWizardFormController extends BaseController
             $this->setMessage('dns_wizard_form', 'error', _('Validation failed:') . ' ' . implode(', ', $errors));
 
             // Save form data so it can be repopulated
-            $formId = $this->formStateService->generateFormId('dns_wizard_form');
-            $this->formStateService->saveFormData($formId, $formData);
+            $formId = $this->formStateService()->generateFormId('dns_wizard_form');
+            $this->formStateService()->saveFormData($formId, $formData);
 
             $this->redirect('/zones/' . $zone_id . '/wizard/' . strtolower($wizard_type), ['form_id' => $formId]);
             return;
@@ -184,8 +190,8 @@ class DnsWizardFormController extends BaseController
         // Check for warnings even if validation passed (unless user already acknowledged them)
         $warnings = $validation['warnings'] ?? [];
         if (!empty($warnings) && !$warningsAcknowledged) {
-            $formId = $this->formStateService->generateFormId('dns_wizard_form');
-            $this->formStateService->saveFormData($formId, array_merge($formData, ['_warnings' => $warnings]));
+            $formId = $this->formStateService()->generateFormId('dns_wizard_form');
+            $this->formStateService()->saveFormData($formId, array_merge($formData, ['_warnings' => $warnings]));
 
             $this->redirect('/zones/' . $zone_id . '/wizard/' . strtolower($wizard_type), ['form_id' => $formId, 'show_warnings' => '1']);
             return;
@@ -198,14 +204,14 @@ class DnsWizardFormController extends BaseController
             $this->setMessage('dns_wizard_form', 'error', _('Failed to generate record:') . ' ' . $e->getMessage());
 
             // Save form data so it can be repopulated
-            $formId = $this->formStateService->generateFormId('dns_wizard_form');
-            $this->formStateService->saveFormData($formId, $formData);
+            $formId = $this->formStateService()->generateFormId('dns_wizard_form');
+            $this->formStateService()->saveFormData($formId, $formData);
 
             $this->redirect('/zones/' . $zone_id . '/wizard/' . strtolower($wizard_type), ['form_id' => $formId]);
             return;
         }
 
-        $added = $this->recordAdd->add(
+        $added = $this->recordAdd()->add(
             $zone_id,
             $zone_name,
             (string)($recordData['name'] ?? ''),
@@ -222,8 +228,8 @@ class DnsWizardFormController extends BaseController
             $this->setMessage('dns_wizard_form', 'error', (string)$added->record->message);
 
             // Save form data so it can be repopulated
-            $formId = $this->formStateService->generateFormId('dns_wizard_form');
-            $this->formStateService->saveFormData($formId, $formData);
+            $formId = $this->formStateService()->generateFormId('dns_wizard_form');
+            $this->formStateService()->saveFormData($formId, $formData);
 
             $this->redirect('/zones/' . $zone_id . '/wizard/' . strtolower($wizard_type), ['form_id' => $formId]);
             return;

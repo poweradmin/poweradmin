@@ -34,7 +34,6 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
@@ -44,20 +43,29 @@ use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
  */
 class BatchPtrRecordController extends BaseController
 {
-    private DomainRepositoryInterface $domainRepository;
-    private BatchReverseRecordCreator $batchReverseRecordCreator;
-    private UserContextService $userContextService;
-    private ReverseTtlResolver $reverseTtlResolver;
-    private PermissionService $permissionService;
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?BatchReverseRecordCreator $batchReverseRecordCreator = null;
+    private ?ReverseTtlResolver $reverseTtlResolver = null;
+    private ?PermissionService $permissionService = null;
 
-    public function __construct(array $request)
+    private function domainRepository(): DomainRepositoryInterface
     {
-        parent::__construct($request);
-        $this->domainRepository = $this->services()->domainRepository();
-        $this->batchReverseRecordCreator = $this->services()->batchReverseRecordCreator();
-        $this->userContextService = new UserContextService();
-        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
-        $this->permissionService = $this->services()->permissionService();
+        return $this->domainRepository ??= $this->services()->domainRepository();
+    }
+
+    private function batchReverseRecordCreator(): BatchReverseRecordCreator
+    {
+        return $this->batchReverseRecordCreator ??= $this->services()->batchReverseRecordCreator();
+    }
+
+    private function reverseTtlResolver(): ReverseTtlResolver
+    {
+        return $this->reverseTtlResolver ??= $this->services()->reverseTtlResolver();
+    }
+
+    private function permissionService(): PermissionService
+    {
+        return $this->permissionService ??= $this->services()->permissionService();
     }
 
     public function run(): void
@@ -85,15 +93,15 @@ class BatchPtrRecordController extends BaseController
         if ($hasZoneId) {
             $this->checkId();
             $zone_id = (int)$id;
-            $zone_type = $this->domainRepository->getDomainType($zone_id);
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            $userId = $this->userContextService->getLoggedInUserId();
+            $zone_type = $this->domainRepository()->getDomainType($zone_id);
+            $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
+            $userId = $this->getUserContextService()->getLoggedInUserId();
 
             // Check if this is a reverse zone
             $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $this->checkCondition($isReverseZone, _("Batch PTR record creation is not available for reverse zones."));
 
-            $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zone_id);
+            $perm_edit = $this->permissionService()->getEditPermissionLevelForZone($userId, $zone_id);
 
             $this->checkCondition(
                 ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
@@ -155,15 +163,15 @@ class BatchPtrRecordController extends BaseController
         $networkPrefix = $this->httpRequest->getPostParam('network_prefix', '');
         $hostPrefix = $this->httpRequest->getPostParam('host_prefix', '');
         $domain = $this->httpRequest->getPostParam('domain', '');
-        $ttl = $this->reverseTtlResolver->resolveTtlForType('PTR', true);
+        $ttl = $this->reverseTtlResolver()->resolveTtlForType('PTR', true);
         // Forward A/AAAA records get their own per-type default (or dns.ttl).
         $forwardType = $networkType === 'ipv6' ? 'AAAA' : 'A';
-        $forwardTtl = $this->reverseTtlResolver->resolveTtlForType($forwardType, false);
+        $forwardTtl = $this->reverseTtlResolver()->resolveTtlForType($forwardType, false);
         // Matching-records mode: override each A's TTL with the configured PTR
         // default (per-type table or legacy dns.ttl_reverse); null preserves
         // historical behavior of inheriting the matched A's TTL.
-        $matchingPtrTtl = $this->reverseTtlResolver->getTypeDefaults()['PTR']
-            ?? $this->reverseTtlResolver->getConfiguredReverseTtl();
+        $matchingPtrTtl = $this->reverseTtlResolver()->getTypeDefaults()['PTR']
+            ?? $this->reverseTtlResolver()->getConfiguredReverseTtl();
         $prio = 0;
         $comment = $this->httpRequest->getPostParam('comment', '');
         $id = $this->httpRequest->getQueryParam('id');
@@ -175,7 +183,7 @@ class BatchPtrRecordController extends BaseController
 
         try {
             if ($networkType === 'ipv4') {
-                $result = $this->batchReverseRecordCreator->createIPv4Network(
+                $result = $this->batchReverseRecordCreator()->createIPv4Network(
                     $networkPrefix,
                     $hostPrefix,
                     $domain,
@@ -183,14 +191,14 @@ class BatchPtrRecordController extends BaseController
                     $ttl,
                     $prio,
                     $comment,
-                    $this->userContextService->getLoggedInUsername(),
+                    $this->getUserContextService()->getLoggedInUsername(),
                     $createForwardRecords,
                     $onlyMatchingRecords,
                     $forwardTtl,
                     $matchingPtrTtl
                 );
             } else { // IPv6
-                $result = $this->batchReverseRecordCreator->createIPv6Network(
+                $result = $this->batchReverseRecordCreator()->createIPv6Network(
                     $networkPrefix,
                     $hostPrefix,
                     $domain,
@@ -198,7 +206,7 @@ class BatchPtrRecordController extends BaseController
                     $ttl,
                     $prio,
                     $comment,
-                    $this->userContextService->getLoggedInUsername(),
+                    $this->getUserContextService()->getLoggedInUsername(),
                     $ipv6_count,
                     $createForwardRecords,
                     $forwardTtl,
@@ -232,7 +240,7 @@ class BatchPtrRecordController extends BaseController
 
         if ($hasZoneId) {
             $zone_id = (int)$id;
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+            $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
             $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $preFillDomain = $zone_name;
 
@@ -247,7 +255,7 @@ class BatchPtrRecordController extends BaseController
             'network_prefix' => $formData['network_prefix'] ?? '',
             'host_prefix' => $formData['host_prefix'] ?? '',
             'domain' => $formData['domain'] ?? $preFillDomain,
-            'ttl' => $this->reverseTtlResolver->getDefaultTtl(true),
+            'ttl' => $this->reverseTtlResolver()->getDefaultTtl(true),
             'ipv6_count' => $formData['ipv6_count'] ?? 256,
             'comment' => $formData['comment'] ?? '',
             'create_forward_records' => $formData['create_forward_records'] ?? '',
@@ -289,8 +297,8 @@ class BatchPtrRecordController extends BaseController
         $zoneRepository = $this->services()->zoneRepository();
 
         // Get permission type and user ID
-        $userId = $this->userContextService->getLoggedInUserId();
-        $perm_view = $this->permissionService->getViewPermissionLevel((int)$userId);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $perm_view = $this->permissionService()->getViewPermissionLevel((int)$userId);
 
         // Get all reverse zones (using a high limit to get all zones for the dropdown).
         // The dropdown renders neither badges nor record counts, so skip both

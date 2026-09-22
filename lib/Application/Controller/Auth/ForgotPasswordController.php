@@ -23,12 +23,12 @@
 namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 
 /**
@@ -36,39 +36,43 @@ use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
  */
 class ForgotPasswordController extends BaseController
 {
-    private PasswordResetService $passwordResetService;
-    private RecaptchaService $recaptchaService;
-    private UserContextService $userContextService;
-    private CsrfTokenService $csrfTokenService;
-    private ClientContext $client;
+    private ?PasswordResetService $passwordResetService = null;
+    private ?RecaptchaService $recaptchaService = null;
+    private ?CsrfTokenService $csrfTokenService = null;
+    private ?ClientContext $client = null;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
-        parent::__construct($request, false); // No authentication required for forgot password
+        parent::__construct($request, false, $environment); // No authentication required for forgot password
+    }
 
-        // Create our own CSRF token service
-        $this->csrfTokenService = new CsrfTokenService();
+    private function csrfTokenService(): CsrfTokenService
+    {
+        return $this->csrfTokenService ??= new CsrfTokenService();
+    }
 
-        // Create PasswordResetService with dependencies
-        $tokenRepository = $this->services()->passwordResetTokenRepository();
-        $userRepository = $this->services()->userRepository();
-        $mailService = $this->services()->mailService();
-        $authService = UserAuthenticationService::fromConfig($this->config);
-        $this->client = $this->services()->clientContext();
+    private function client(): ClientContext
+    {
+        return $this->client ??= $this->services()->clientContext();
+    }
 
-        $this->passwordResetService = new PasswordResetService(
-            $tokenRepository,
-            $userRepository,
-            $mailService,
+    private function passwordResetService(): PasswordResetService
+    {
+        return $this->passwordResetService ??= new PasswordResetService(
+            $this->services()->passwordResetTokenRepository(),
+            $this->services()->userRepository(),
+            $this->services()->mailService(),
             $this->config,
-            $authService,
-            $this->client,
+            UserAuthenticationService::fromConfig($this->config),
+            $this->client(),
             $this->logger,
             $this->services()->urlService()
         );
+    }
 
-        $this->recaptchaService = $this->services()->recaptchaService();
-        $this->userContextService = new UserContextService();
+    private function recaptchaService(): RecaptchaService
+    {
+        return $this->recaptchaService ??= $this->services()->recaptchaService();
     }
 
     /**
@@ -83,12 +87,12 @@ class ForgotPasswordController extends BaseController
     public function run(): void
     {
         // Check if password reset is enabled
-        if (!$this->passwordResetService->isEnabled()) {
+        if (!$this->passwordResetService()->isEnabled()) {
             $this->logger->warning('Password reset attempt while feature is disabled', [
-                'ip' => $this->client->ip,
-                'user_agent' => $this->client->userAgent,
-                'browser' => $this->client->browser,
-                'is_bot' => $this->client->isBot,
+                'ip' => $this->client()->ip,
+                'user_agent' => $this->client()->userAgent,
+                'browser' => $this->client()->browser,
+                'is_bot' => $this->client()->isBot,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $this->showError('Password reset functionality is disabled.');
@@ -96,11 +100,11 @@ class ForgotPasswordController extends BaseController
         }
 
         // Already logged in users shouldn't access this page
-        if ($this->userContextService->isAuthenticated()) {
+        if ($this->getUserContextService()->isAuthenticated()) {
             $this->logger->info('Authenticated user attempted to access password reset', [
-                'user_id' => $this->userContextService->getLoggedInUserId(),
-                'username' => $this->userContextService->getLoggedInUsername(),
-                'ip' => $this->client->ip,
+                'user_id' => $this->getUserContextService()->getLoggedInUserId(),
+                'username' => $this->getUserContextService()->getLoggedInUsername(),
+                'ip' => $this->client()->ip,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
@@ -117,14 +121,14 @@ class ForgotPasswordController extends BaseController
 
     private function handlePasswordResetRequest(): void
     {
-        $ipAddress = $this->client->ip;
-        $userAgent = $this->client->userAgent;
+        $ipAddress = $this->client()->ip;
+        $userAgent = $this->client()->userAgent;
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
             $token = $this->httpRequest->getPostParam('password_reset_token', '');
 
-            if (!$this->csrfTokenService->validateToken($token, AuthFlowSessionKeys::PASSWORD_RESET_TOKEN)) {
+            if (!$this->csrfTokenService()->validateToken($token, AuthFlowSessionKeys::PASSWORD_RESET_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
@@ -139,9 +143,9 @@ class ForgotPasswordController extends BaseController
         }
 
         // Verify reCAPTCHA if enabled
-        if ($this->recaptchaService->isEnabled()) {
+        if ($this->recaptchaService()->isEnabled()) {
             $recaptchaToken = $this->httpRequest->getPostParam('g-recaptcha-response', '');
-            if (!$this->recaptchaService->verify($recaptchaToken, $ipAddress, 'forgot_password')) {
+            if (!$this->recaptchaService()->verify($recaptchaToken, $ipAddress, 'forgot_password')) {
                 $this->logger->warning('Password reset failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
@@ -167,7 +171,7 @@ class ForgotPasswordController extends BaseController
         }
 
         // Check if user's authentication method allows password reset
-        $canReset = $this->passwordResetService->canUserResetPassword($email);
+        $canReset = $this->passwordResetService()->canUserResetPassword($email);
         if (!$canReset['allowed']) {
             // Respond exactly as for a normal request - revealing that the account
             // exists or which backend it uses would defeat the anti-enumeration
@@ -188,15 +192,15 @@ class ForgotPasswordController extends BaseController
             'email' => $email,
             'ip' => $ipAddress,
             'user_agent' => $userAgent,
-            'browser' => $this->client->browser,
-            'is_bot' => $this->client->isBot,
+            'browser' => $this->client()->browser,
+            'is_bot' => $this->client()->isBot,
             'referrer' => $_SERVER['HTTP_REFERER'] ?? 'none',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
 
         try {
             // Create password reset request
-            $this->passwordResetService->createResetRequest($email);
+            $this->passwordResetService()->createResetRequest($email);
 
             $this->services()->auditService()->logPasswordResetRequest($email);
 
@@ -231,21 +235,21 @@ class ForgotPasswordController extends BaseController
         if ($error) {
             $this->logger->debug('Password reset form displayed with error', [
                 'error' => $error,
-                'ip' => $this->client->ip,
+                'ip' => $this->client()->ip,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
         }
 
         // Generate a new token for password reset
-        $passwordResetToken = $this->csrfTokenService->generateToken();
+        $passwordResetToken = $this->csrfTokenService()->generateToken();
         $_SESSION[AuthFlowSessionKeys::PASSWORD_RESET_TOKEN] = $passwordResetToken;
 
         $this->render('forgot_password.html', [
             'error' => $error,
             'password_reset_token' => $passwordResetToken,
-            'recaptcha_enabled' => $this->recaptchaService->isEnabled(),
-            'recaptcha_site_key' => $this->recaptchaService->getSiteKey(),
-            'recaptcha_version' => $this->recaptchaService->getVersion(),
+            'recaptcha_enabled' => $this->recaptchaService()->isEnabled(),
+            'recaptcha_site_key' => $this->recaptchaService()->getSiteKey(),
+            'recaptcha_version' => $this->recaptchaService()->getVersion(),
         ]);
     }
 
