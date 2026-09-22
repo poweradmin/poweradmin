@@ -1,6 +1,6 @@
 includes:
-  # Grandfathered layering violations: 12 files, 46 counts ($_SESSION reads in
-  # UserContextService and four controllers, PDO::beginTransaction() in two API
+  # Grandfathered layering violations: 26 files, 68 counts ($_SESSION reads in
+  # UserContextService and four controllers, PDO calls in 17 services and API
   # controllers, module imports of Infrastructure and Application services).
   # reportUnmatchedIgnoredErrors fails the run on a stale entry, so regenerate
   # with --generate-baseline after removing one; never add to it.
@@ -466,7 +466,10 @@ parameters:
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
-  # Controllers read and write through repositories and services, never PDO.
+  # SQL lives in the repositories. Everything above lib/Infrastructure goes through
+  # a lib/Domain/Repository interface; lib/Domain/Database holds the dialect and
+  # table-name helpers that build the SQL the repositories run. Services still
+  # calling PDO directly are grandfathered in phpstan-baseline.neon.
   disallowedMethodCalls:
     -
       method:
@@ -474,7 +477,7 @@ parameters:
         - 'PDO::query()'
         - 'PDO::exec()'
         - 'PDO::beginTransaction()'
-      message: 'controllers go through a repository or service; move the SQL there'
+      message: 'SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface'
       allowIn:
         # The health probe opens its own connection and pings it.
         - lib/Application/Controller/Api/HealthController.php
@@ -485,14 +488,5 @@ parameters:
         - index.php
         - dynamic_update.php
         - bin/*
-        - lib/Application/Boot/AppManager.php
-        - lib/Application/Controller/BaseController.php
-        - lib/Application/Boot/LocaleManager.php
-        - lib/Application/Service/*
-        - lib/Application/Http/*
-        - lib/Application/Presenter/*
-        - lib/Application/Routing/*
-        - lib/Application/Config/*
-        - lib/Domain/*
+        - lib/Domain/Database/*
         - lib/Infrastructure/*
-        - lib/Module/*

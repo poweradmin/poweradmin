@@ -7,13 +7,13 @@ parameters:
 			path: lib/Application/Controller/Api/InternalApiController.php
 
 		-
-			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, controllers go through a repository or service; move the SQL there\.$#'
+			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
 			identifier: disallowed.method
 			count: 1
 			path: lib/Application/Controller/Api/V2/ZonesRRSetsController.php
 
 		-
-			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, controllers go through a repository or service; move the SQL there\.$#'
+			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
 			identifier: disallowed.method
 			count: 1
 			path: lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php
@@ -37,10 +37,106 @@ parameters:
 			path: lib/Application/Controller/Zone/ListForwardZonesController.php
 
 		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/Auth/BasicAuthenticationMiddleware.php
+
+		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 2
+			path: lib/Application/Service/Auth/LdapAuthenticator.php
+
+		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 5
+			path: lib/Application/Service/Auth/LoginAttemptService.php
+
+		-
+			message: '#^Calling PDO\:\:query\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/Auth/LoginAttemptService.php
+
+		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/Auth/SessionAuthenticator.php
+
+		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/Auth/SqlAuthenticator.php
+
+		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/User/UsernameRecoveryService.php
+
+		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 2
+			path: lib/Application/Service/Zone/ChangeRequestNotificationService.php
+
+		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/Zone/ZoneAccessNotificationService.php
+
+		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 13
 			path: lib/Domain/Service/Auth/UserContextService.php
+
+		-
+			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Service/Dns/DomainManager.php
+
+		-
+			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Service/Dns/RRSetReplaceService.php
+
+		-
+			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Service/Dns/RecordManager.php
+
+		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Service/Dns/SupermasterManager.php
+
+		-
+			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Service/Dns/ZoneTemplateApplier.php
+
+		-
+			message: '#^Calling PDO\:\:prepare\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Service/Zone/ZoneAccountSyncService.php
+
+		-
+			message: '#^Calling PDO\:\:beginTransaction\(\) is forbidden, SQL belongs in a repository under lib/Infrastructure/Repository; call it through its lib/Domain/Repository interface\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Service/Zone/ZoneChangeRequestService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Utility\\CsvFormulaEscaper is forbidden, modules do not reach lib/Infrastructure; add an accessor to ModuleServices or take the value from the request\. \[Poweradmin\\Infrastructure\\Utility\\CsvFormulaEscaper matches Poweradmin\\Infrastructure\\\*\]$#'
