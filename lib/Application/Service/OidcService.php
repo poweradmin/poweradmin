@@ -301,11 +301,6 @@ class OidcService extends LoggingService
             // Get user information
             $userInfo = $this->getUserInfo($provider, $token, $providerId);
 
-            // Log raw data to see all available fields
-            $this->logInfo('OIDC Raw User Data: {rawdata}', [
-                'rawdata' => $userInfo->getRawData()
-            ]);
-
             // Log user info details
             $this->logInfo('OIDC User Info received: {userinfo}', [
                 'userinfo' => [
