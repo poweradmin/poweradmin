@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
 /**
  * Service for managing zone-group ownership
@@ -34,15 +35,48 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
  */
 class ZoneGroupService
 {
+    /** The removal would leave the zone with no group and no user owner. */
+    public const REFUSAL_LAST_OWNER = 'last_owner';
+
     private ZoneGroupRepositoryInterface $zoneGroupRepository;
     private UserGroupRepositoryInterface $groupRepository;
+    private ?ZoneRepositoryInterface $zoneRepository;
 
     public function __construct(
         ZoneGroupRepositoryInterface $zoneGroupRepository,
-        UserGroupRepositoryInterface $groupRepository
+        UserGroupRepositoryInterface $groupRepository,
+        ?ZoneRepositoryInterface $zoneRepository = null
     ) {
         $this->zoneGroupRepository = $zoneGroupRepository;
         $this->groupRepository = $groupRepository;
+        $this->zoneRepository = $zoneRepository;
+    }
+
+    /**
+     * The last-owner rule for a group removal: a zone keeps at least one group
+     * or user owner. Callers word the code themselves.
+     *
+     * @param int $domainId Zone/Domain ID
+     * @param int $groupId Group ID
+     * @return string|null REFUSAL_LAST_OWNER, or null when the group may be removed
+     */
+    public function getGroupRemovalRefusal(int $domainId, int $groupId): ?string
+    {
+        if ($this->zoneRepository === null) {
+            return null;
+        }
+
+        $currentGroups = $this->zoneGroupRepository->findByDomainId($domainId);
+        $isCurrentGroup = in_array($groupId, array_map(fn($zg) => $zg->getGroupId(), $currentGroups), true);
+        if (!$isCurrentGroup || count($currentGroups) > 1) {
+            return null;
+        }
+
+        if (count($this->zoneRepository->getZoneOwners($domainId)) === 0) {
+            return self::REFUSAL_LAST_OWNER;
+        }
+
+        return null;
     }
 
     /**
@@ -72,7 +106,8 @@ class ZoneGroupService
     /**
      * Remove a group from zone owners
      *
-     * Note: Zones can exist without any owners
+     * Returns false without removing anything when the last-owner rule forbids
+     * it; callers can ask getGroupRemovalRefusal() for the reason.
      *
      * @param int $domainId Zone/Domain ID
      * @param int $groupId Group ID
@@ -81,6 +116,10 @@ class ZoneGroupService
      */
     public function removeGroupFromZone(int $domainId, int $groupId): bool
     {
+        if ($this->getGroupRemovalRefusal($domainId, $groupId) !== null) {
+            return false;
+        }
+
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
@@ -156,7 +195,8 @@ class ZoneGroupService
     }
 
     /**
-     * Remove multiple zones from a group
+     * Remove multiple zones from a group. A zone whose last owner is this group
+     * stays assigned and is reported in `failed` with the reason.
      *
      * @param int $groupId Group ID
      * @param int[] $domainIds Array of domain IDs
@@ -177,7 +217,9 @@ class ZoneGroupService
 
         foreach ($domainIds as $domainId) {
             try {
-                if ($this->zoneGroupRepository->remove($domainId, $groupId)) {
+                if ($this->getGroupRemovalRefusal($domainId, $groupId) !== null) {
+                    $results['failed'][$domainId] = 'Cannot remove the last owner: this would leave the zone with no ownership';
+                } elseif ($this->zoneGroupRepository->remove($domainId, $groupId)) {
                     $results['success'][] = $domainId;
                 } else {
                     $results['failed'][$domainId] = 'Group does not own this zone';

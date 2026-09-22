@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -50,7 +50,11 @@ class QuickRemoveGroupZoneController extends BaseController
 
         $groupRepository = new DbUserGroupRepository($this->db);
         $zoneRepository = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
-        $this->groupZoneService = new GroupZoneService($zoneRepository, $groupRepository);
+        $this->groupZoneService = new GroupZoneService(
+            $zoneRepository,
+            $groupRepository,
+            $this->createZoneRepository()
+        );
     }
 
     public function run(): void
@@ -83,6 +87,17 @@ class QuickRemoveGroupZoneController extends BaseController
         if ($groupId <= 0 || $zoneId <= 0) {
             $this->setMessage('edit_group', 'error', _('Invalid group or zone ID.'));
             $this->redirect('/groups');
+            return;
+        }
+
+        if ($this->groupZoneService->getZoneRemovalRefusal($groupId, $zoneId) !== null) {
+            $this->setMessage(
+                'edit_group',
+                'error',
+                _('Cannot remove the last owner: this would leave the zone with no ownership.') . ' '
+                    . _('Add another group or a user owner first.')
+            );
+            $this->redirect('/groups/' . $groupId . '/edit');
             return;
         }
 

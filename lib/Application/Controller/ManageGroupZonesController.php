@@ -62,7 +62,11 @@ class ManageGroupZonesController extends BaseController
         $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
 
         $this->groupService = new GroupService($groupRepository);
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
+        $this->zoneGroupService = new ZoneGroupService(
+            $zoneGroupRepository,
+            $groupRepository,
+            $this->createZoneRepository()
+        );
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
