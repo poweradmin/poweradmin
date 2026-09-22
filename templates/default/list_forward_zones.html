@@ -256,7 +256,9 @@
                 </table>
             </div>
 
-            {% if letter_start != 'all' %}
+            {# The API backend paginates even for 'all', so the links must show
+               whenever the page holds fewer zones than the filter matched #}
+            {% if letter_start != 'all' or count_zones_all_letterstart > zones|length %}
             <div class="py-3">
                 {% include '_partials/pagination.html' with {items: pagination_items} only %}
             </div>
