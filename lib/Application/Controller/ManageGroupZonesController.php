@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -59,7 +60,12 @@ class ManageGroupZonesController extends BaseController
         $zoneGroupRepository = $this->createZoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
+        $this->zoneGroupService = new ZoneGroupService(
+            $zoneGroupRepository,
+            $groupRepository,
+            $this->createZoneRepository(),
+            new ZoneOwnershipModeService($this->config)
+        );
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
