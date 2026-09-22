@@ -34,7 +34,7 @@ use Poweradmin\Domain\Port\RecordSearchInterface;
 /**
  * Runs the record search page query with grouping, comments, sorting and pagination.
  */
-class RecordSearch extends BaseSearch implements RecordSearchInterface
+final class RecordSearch extends BaseSearch implements RecordSearchInterface
 {
     /**
      * Search for records based on specified parameters.

@@ -31,7 +31,7 @@ use Poweradmin\Domain\Port\ZoneSearchInterface;
 /**
  * Runs the zone search page query, counting and fetching the domains that match the search string.
  */
-class ZoneSearch extends BaseSearch implements ZoneSearchInterface
+final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
 {
     /**
      * Search for zones based on specified parameters.

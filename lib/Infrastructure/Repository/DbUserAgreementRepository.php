@@ -30,7 +30,7 @@ use PDO;
 /**
  * SQL persistence for accepted user agreement versions in the user_agreements table.
  */
-class DbUserAgreementRepository implements UserAgreementRepositoryInterface
+final class DbUserAgreementRepository implements UserAgreementRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

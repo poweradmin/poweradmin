@@ -32,7 +32,7 @@ use Poweradmin\Infrastructure\Utility\ResultPaginator;
  * Record search over the PowerDNS API, enriched with the zone owner from
  * Poweradmin's zones table and filtered, sorted and paged in memory.
  */
-class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterface
+final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterface
 {
     public function searchRecords(
         array $parameters,

@@ -59,7 +59,7 @@ use Psr\Log\LoggerInterface;
  * Sessions, credentials, MFA, API keys and the audit trail. The session,
  * redirect and authentication services are one instance per request.
  */
-class AuthServices
+final class AuthServices
 {
     private PDO $db;
     private ConfigurationInterface $config;

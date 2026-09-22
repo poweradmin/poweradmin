@@ -27,7 +27,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 /**
  * Resolves a user's avatar URL from an OAuth profile picture or Gravatar, per the interface.avatar_* settings.
  */
-class AvatarService
+final class AvatarService
 {
     private ConfigurationInterface $configManager;
 

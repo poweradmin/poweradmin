@@ -68,7 +68,7 @@ use Psr\Log\LoggerInterface;
  * Zone lifecycle: creation, ownership, templates, signing, metadata and the
  * zone lists.
  */
-class ZoneServices
+final class ZoneServices
 {
     private PDO $db;
     private ConfigurationInterface $config;

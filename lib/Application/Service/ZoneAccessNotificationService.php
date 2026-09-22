@@ -37,7 +37,7 @@ use Twig\Error\SyntaxError;
  * This service handles email notifications when users are granted or revoked
  * access to DNS zones, improving collaboration awareness and audit trails.
  */
-class ZoneAccessNotificationService
+final class ZoneAccessNotificationService
 {
     private PDO $db;
     private ConfigurationInterface $config;

@@ -32,7 +32,7 @@ use Poweradmin\Domain\Database\TableNameService;
 /**
  * SQL persistence for records_zone_templ (numeric ids) and records_zone_templ_api (encoded ids).
  */
-class DbTemplateRecordLinkRepository implements TemplateRecordLinkRepositoryInterface
+final class DbTemplateRecordLinkRepository implements TemplateRecordLinkRepositoryInterface
 {
     private const RECORD_COLUMNS = 'id, name, type, content, ttl, prio, disabled';
 

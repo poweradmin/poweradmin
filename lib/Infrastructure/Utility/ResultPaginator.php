@@ -28,7 +28,7 @@ namespace Poweradmin\Infrastructure\Utility;
  * Used when the DNS backend (API) returns all results at once and
  * pagination/sorting must be handled in PHP rather than SQL.
  */
-class ResultPaginator
+final class ResultPaginator
 {
     /**
      * Sort an array of associative arrays by a given key.

@@ -35,7 +35,7 @@ use Psr\Log\NullLogger;
 /**
  * SQL persistence for API keys in the api_keys table and their zone scopes in api_key_zones.
  */
-class DbApiKeyRepository implements ApiKeyRepositoryInterface
+final class DbApiKeyRepository implements ApiKeyRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

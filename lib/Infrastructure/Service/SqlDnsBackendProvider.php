@@ -41,7 +41,7 @@ use Psr\Log\NullLogger;
  * Performs DNS data operations directly against the PowerDNS database tables.
  * This is the default backend and preserves the existing behavior.
  */
-class SqlDnsBackendProvider implements DnsBackendProviderInterface
+final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 {
     private PDO $db;
     private TableNameService $tableNameService;
@@ -58,7 +58,7 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
     // Zone operations
     // ---------------------------------------------------------------
 
-    public function createZone(string $domain, string $type, string $slaveMaster = ''): int|false
+    public function createZone(string $domain, string $type, string $slaveMaster = ''): int
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
@@ -281,7 +281,7 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return true;
     }
 
-    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): int|string|null
+    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): int
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -298,7 +298,7 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return (int)$this->db->lastInsertId('records_id_seq');
     }
 
-    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): int|string|null
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): ?int
     {
         // If already inside a caller's transaction (e.g. RRSet replace, bulk ops),
         // just do the INSERT without managing the transaction ourselves.
@@ -513,7 +513,7 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return (int)($stmt->fetchColumn() ?: 0);
     }
 
-    public function getZoneSoaHealth(string $zoneName, string $kind): ?array
+    public function getZoneSoaHealth(string $zoneName, string $kind): array
     {
         if (strtoupper($kind) === 'SLAVE') {
             return ['is_disabled' => false, 'is_missing_soa' => false];
@@ -724,7 +724,7 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return (int)$this->db->query("SELECT COUNT(*) FROM $domainsTable")->fetchColumn();
     }
 
-    public function countRecords(): ?int
+    public function countRecords(): int
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
         return (int)$this->db->query("SELECT COUNT(*) FROM $recordsTable")->fetchColumn();

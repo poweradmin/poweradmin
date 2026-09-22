@@ -28,7 +28,7 @@ use Poweradmin\Application\Http\RequestContext;
 /**
  * Answers unmatched routes with a 404 page, or a JSON error for API callers.
  */
-class NotFoundController extends BaseController
+final class NotFoundController extends BaseController
 {
     public function __construct(array $request)
     {

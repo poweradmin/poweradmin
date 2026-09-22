@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 /**
  * SQL persistence for user groups in the user_groups table, with member and zone counts.
  */
-class DbUserGroupRepository implements UserGroupRepositoryInterface
+final class DbUserGroupRepository implements UserGroupRepositoryInterface
 {
     private PDO $db;
 

@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\Validation\Refusal;
  * References are integer group IDs or exact group names. Callers are expected to have
  * already established that the requester may assign groups at all.
  */
-class GroupReferenceResolver
+final class GroupReferenceResolver
 {
     private UserGroupLookupInterface $groupRepository;
 

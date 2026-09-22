@@ -42,7 +42,7 @@ use RuntimeException;
 /**
  * Runs the OIDC login flow: builds the authorization redirect and turns the callback into a session.
  */
-class OidcService
+final class OidcService
 {
     // Carries OIDC flow state across the IdP's cross-site POST when a provider
     // uses response_mode=form_post, since the session cookie is SameSite=Lax.

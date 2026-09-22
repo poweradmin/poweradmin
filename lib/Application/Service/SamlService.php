@@ -39,7 +39,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Runs the SAML login flow: builds the IdP redirect, consumes the assertion and handles single logout.
  */
-class SamlService
+final class SamlService
 {
     private LoggerInterface $logger;
     private ConfigurationInterface $configManager;

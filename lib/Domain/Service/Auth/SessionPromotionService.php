@@ -32,7 +32,7 @@ namespace Poweradmin\Domain\Service\Auth;
  * session key and removes the pending copy. Keys that were never set stay
  * absent - nothing is written for them.
  */
-class SessionPromotionService
+final class SessionPromotionService
 {
     private UserContextService $userContextService;
 

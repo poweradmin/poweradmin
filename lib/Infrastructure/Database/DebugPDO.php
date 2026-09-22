@@ -31,7 +31,7 @@ use PDOStatement;
  * Only instantiated when database.debug is enabled. All consumers
  * type-hint PDO; the footer uses method_exists() to access getQueries().
  */
-class DebugPDO extends PDO
+final class DebugPDO extends PDO
 {
     /** @var array<string> */
     private array $queries = [];

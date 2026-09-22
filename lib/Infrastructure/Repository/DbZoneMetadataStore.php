@@ -32,7 +32,7 @@ use Poweradmin\Domain\Database\TableNameService;
 /**
  * Zone metadata in the PowerDNS domainmetadata table.
  */
-class DbZoneMetadataStore implements ZoneMetadataStoreInterface
+final class DbZoneMetadataStore implements ZoneMetadataStoreInterface
 {
     private TableNameService $tableNameService;
 

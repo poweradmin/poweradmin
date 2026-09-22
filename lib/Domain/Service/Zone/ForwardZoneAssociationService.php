@@ -27,7 +27,7 @@ use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 /**
  * Maps each reverse zone to the forward zones its PTR records point at, with a PTR count per forward zone.
  */
-class ForwardZoneAssociationService
+final class ForwardZoneAssociationService
 {
     private ZoneReadRepositoryInterface $zoneRepository;
 

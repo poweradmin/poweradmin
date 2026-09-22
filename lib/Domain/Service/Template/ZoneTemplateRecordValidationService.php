@@ -40,7 +40,7 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  * The result reports validity only. Resolved values are sample data and must never be
  * stored, so callers keep the values they were given.
  */
-class ZoneTemplateRecordValidationService
+final class ZoneTemplateRecordValidationService
 {
     private const SAMPLE_ZONE = 'example.com';
     private const SAMPLE_HOSTMASTER = 'hostmaster.example.com';

@@ -27,7 +27,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 /**
  * Value object representing SAML user information
  */
-readonly class SamlUserInfo implements UserInfoInterface
+final readonly class SamlUserInfo implements UserInfoInterface
 {
     private string $username;
     private string $email;

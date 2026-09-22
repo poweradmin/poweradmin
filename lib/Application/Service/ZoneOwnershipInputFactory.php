@@ -31,7 +31,7 @@ use Poweradmin\Domain\Service\Validation\Refusal;
  * ZoneCreateOwnershipResolver takes; a value of the wrong shape is refused
  * with the same wording and status the resolver used to give.
  */
-class ZoneOwnershipInputFactory
+final class ZoneOwnershipInputFactory
 {
     /**
      * @param array<string, mixed> $body Decoded JSON body of POST /zones

@@ -63,7 +63,7 @@ use Psr\Log\LoggerInterface;
  * Record writes and the change-approval flow around them: managers, reverse
  * record creation, comments, and the change request pipeline.
  */
-class RecordServices
+final class RecordServices
 {
     private PDO $db;
     private ConfigurationInterface $config;

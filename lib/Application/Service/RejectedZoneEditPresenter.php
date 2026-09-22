@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\Zone\ZoneEditRow;
  * Puts a zone-editor submission that was refused as stale back into the freshly
  * read record listing, so the warning does not also cost the operator their edits.
  */
-class RejectedZoneEditPresenter
+final class RejectedZoneEditPresenter
 {
     /**
      * Put a rejected submission back into the rendered rows, so warning the operator

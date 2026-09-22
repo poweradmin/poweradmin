@@ -27,7 +27,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Resolves the Twig compiled-template cache directory, creating it or falling back to uncached rendering.
  */
-readonly class TemplateCacheResolver
+final readonly class TemplateCacheResolver
 {
     public function __construct(private LoggerInterface $logger)
     {

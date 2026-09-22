@@ -42,7 +42,7 @@ use Poweradmin\Domain\Enum\ZoneSoaHealth;
 /**
  * Domain lookups for the API backend mode, read through PowerDNS.
  */
-class ApiDomainRepository implements DomainRepositoryInterface
+final class ApiDomainRepository implements DomainRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Utility;
 /**
  * Splits the bulk-registration textarea into lowercase punycode domain names, one per line.
  */
-class DomainHelper
+final class DomainHelper
 {
     private const NEWLINE_PATTERNS = '/\r\n|\r|\n/';
 

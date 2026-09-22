@@ -42,7 +42,7 @@ use Poweradmin\Domain\Enum\ZoneSoaHealth;
 /**
  * API-backend zone repository; reads zone state through PowerDNS and ownership from zones and zones_groups.
  */
-readonly class ApiZoneRepository implements ZoneRepositoryInterface
+final readonly class ApiZoneRepository implements ZoneRepositoryInterface
 {
     // Failing beats returning an empty set that reads as "this zone has none".
 
@@ -647,7 +647,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $canonical['comment'] ?? null;
     }
 
-    public function createZoneShell(int $domainId, ?int $owner, int $templateId): int|string
+    public function createZoneShell(int $domainId, ?int $owner, int $templateId): int
     {
         // createZone() already inserted the row; fill in owner and template
         // instead of duplicating it.

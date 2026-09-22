@@ -33,7 +33,7 @@ use Poweradmin\Domain\Database\CanonicalZoneSql;
 /**
  * SQL persistence for zone-to-group links in zones_groups; joins domains, or the zones table under the API backend.
  */
-class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
+final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 {
     private PDO $db;
     private ?TableNameService $tableNameService;

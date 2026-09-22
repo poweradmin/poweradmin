@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 /**
  * Tracks which zones are out of date against their template in the zone_template_sync table.
  */
-class DbZoneTemplateSyncRepository implements ZoneTemplateSyncRepositoryInterface
+final class DbZoneTemplateSyncRepository implements ZoneTemplateSyncRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

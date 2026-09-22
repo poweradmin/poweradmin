@@ -27,7 +27,7 @@ use Poweradmin\Domain\Module\ModuleInterface;
 /**
  * Module registration for the DMARC, SPF, DKIM, CAA, TLSA and SRV record wizards under /zones/{id}/wizard.
  */
-class DnsWizardModule implements ModuleInterface
+final class DnsWizardModule implements ModuleInterface
 {
     public function getName(): string
     {

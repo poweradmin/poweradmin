@@ -30,7 +30,7 @@ use Poweradmin\Domain\Service\User\UserManagementService;
  * service's own message is the API wording; password policy, field length and
  * external-auth password messages are the same on both sides and pass through.
  */
-class UserFormMessages
+final class UserFormMessages
 {
     /**
      * @param array{message?: string, code?: string} $result

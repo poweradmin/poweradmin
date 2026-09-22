@@ -30,7 +30,7 @@ use PDO;
 /**
  * SQL persistence for password reset tokens and their rate-limit counters in password_reset_tokens.
  */
-class DbPasswordResetTokenRepository implements PasswordResetTokenRepositoryInterface
+final class DbPasswordResetTokenRepository implements PasswordResetTokenRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

@@ -35,7 +35,7 @@ use Psr\Log\NullLogger;
 /**
  * SQL persistence for per-user MFA settings in the user_mfa table.
  */
-class DbUserMfaRepository implements UserMfaRepositoryInterface
+final class DbUserMfaRepository implements UserMfaRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

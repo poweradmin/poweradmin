@@ -27,7 +27,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 /**
  * Value object representing user information read from an LDAP entry
  */
-readonly class LdapUserInfo implements UserInfoInterface
+final readonly class LdapUserInfo implements UserInfoInterface
 {
     public function __construct(
         private string $username,

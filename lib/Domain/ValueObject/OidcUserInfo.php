@@ -27,7 +27,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 /**
  * Value object representing OIDC user information
  */
-readonly class OidcUserInfo implements UserInfoInterface
+final readonly class OidcUserInfo implements UserInfoInterface
 {
     private string $username;
     private string $email;

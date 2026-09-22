@@ -29,7 +29,7 @@ use Poweradmin\Domain\Utility\IpHelper;
  * Service responsible for transforming DNS records for display purposes
  * Implements the Single Responsibility Principle by focusing only on display transformations
  */
-class RecordDisplayService
+final class RecordDisplayService
 {
     private bool $displayHostnameOnly;
 

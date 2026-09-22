@@ -29,7 +29,7 @@ use Poweradmin\Infrastructure\Network\ProxyContext;
 /**
  * RDAP lookups: picks the server for a TLD from data/rdap_servers.php, queries it and formats the reply.
  */
-class RdapService
+final class RdapService
 {
     private array $rdapServers = [];
     private string $dataFile;

@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
 /**
  * SQL persistence for username recovery attempts and their rate-limit counters in username_recovery_requests.
  */
-class DbUsernameRecoveryRepository implements UsernameRecoveryRepositoryInterface
+final class DbUsernameRecoveryRepository implements UsernameRecoveryRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

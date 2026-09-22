@@ -28,7 +28,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 /**
  * Renders the MFA verification email through Twig and sends it with MailService.
  */
-class MfaVerificationMailer implements MfaVerificationMailerInterface
+final class MfaVerificationMailer implements MfaVerificationMailerInterface
 {
     private MailService $mailService;
     private EmailTemplateService $templateService;

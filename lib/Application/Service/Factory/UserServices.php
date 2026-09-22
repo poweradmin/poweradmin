@@ -58,7 +58,7 @@ use Psr\Log\LoggerInterface;
  * Users, groups, permissions and preferences. The permission service is
  * memoized so its per-user cache spans the whole request.
  */
-class UserServices
+final class UserServices
 {
     private PDO $db;
     private ConfigurationInterface $config;

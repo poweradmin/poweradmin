@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 /**
  * Validated, de-duplicated IPv4 and IPv6 address lists parsed from a DDNS request's comma-separated fields.
  */
-readonly class IpAddressList
+final readonly class IpAddressList
 {
     private array $ipv4Addresses;
     private array $ipv6Addresses;

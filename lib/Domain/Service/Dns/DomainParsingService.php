@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\Dns;
 /**
  * Splits a domain name into subdomain, domain and TLD parts.
  */
-class DomainParsingService
+final class DomainParsingService
 {
     /**
      * Parse a domain into its components (domain name and TLD)

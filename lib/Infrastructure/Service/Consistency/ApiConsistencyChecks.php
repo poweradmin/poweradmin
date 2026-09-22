@@ -36,7 +36,7 @@ use Poweradmin\Domain\Database\CanonicalZoneSql;
  * Zones PowerDNS reports but Poweradmin has not synced yet carry id 0 and have no
  * local row; every per-zone check skips them until ZoneSyncService imports them.
  */
-class ApiConsistencyChecks extends AbstractConsistencyChecks
+final class ApiConsistencyChecks extends AbstractConsistencyChecks
 {
     private bool $recordReadFailed = false;
 

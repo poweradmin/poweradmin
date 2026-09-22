@@ -27,7 +27,7 @@ use Poweradmin\Domain\Module\ModuleInterface;
 /**
  * Module registration for the RDAP lookup page and its zone-page action.
  */
-class RdapModule implements ModuleInterface
+final class RdapModule implements ModuleInterface
 {
     public function getName(): string
     {

@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
  * Adds the derived fields a stored row does not carry: admin status, effective
  * permissions, and the group memberships that grant them.
  */
-class UserProfileAssembler
+final class UserProfileAssembler
 {
     private PermissionService $permissionService;
     private UserGroupLookupInterface $groupRepository;

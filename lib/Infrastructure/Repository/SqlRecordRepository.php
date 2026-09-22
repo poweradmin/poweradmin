@@ -34,7 +34,7 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
 /**
  * Record reads on the records table.
  */
-class SqlRecordRepository implements RecordRepositoryInterface
+final class SqlRecordRepository implements RecordRepositoryInterface
 {
     private PDO $db;
     private TableNameService $tableNameService;
@@ -510,7 +510,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
-    public function getNewRecordId(int $domainId, string $name, string $type, string $content): int|string|null
+    public function getNewRecordId(int $domainId, string $name, string $type, string $content): ?int
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 

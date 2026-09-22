@@ -27,7 +27,7 @@ use Poweradmin\Domain\Module\ModuleInterface;
 /**
  * Module registration for the WHOIS lookup page and its zone-page action.
  */
-class WhoisModule implements ModuleInterface
+final class WhoisModule implements ModuleInterface
 {
     public function getName(): string
     {

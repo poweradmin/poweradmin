@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\ZoneChangeRequest;
 /**
  * Shapes change requests for the list, review and edit-page templates.
  */
-class ChangeRequestPresenter
+final class ChangeRequestPresenter
 {
     private const FIELDS = ['name', 'type', 'content', 'ttl', 'prio', 'disabled', 'comment'];
 

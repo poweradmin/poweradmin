@@ -30,7 +30,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 /**
  * Record reads for the API backend mode, served from PowerDNS RRsets.
  */
-class ApiRecordRepository implements RecordRepositoryInterface
+final class ApiRecordRepository implements RecordRepositoryInterface
 {
     private DnsBackendProviderInterface $backendProvider;
 

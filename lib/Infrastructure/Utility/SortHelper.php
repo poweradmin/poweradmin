@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ use Poweradmin\Domain\Enum\SortDirection;
 /**
  * Per-database ORDER BY clauses that sort zone and record names naturally instead of lexically.
  */
-class SortHelper
+final class SortHelper
 {
     /**
      * ORDER BY clause that sorts the name column naturally for the given driver.

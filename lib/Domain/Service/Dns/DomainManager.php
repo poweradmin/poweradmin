@@ -50,7 +50,7 @@ use Poweradmin\Domain\Service\Validation\Refusal;
 /**
  * Creates, updates and deletes zones for the web UI, including template records and DNSSEC setup.
  */
-class DomainManager implements DomainManagerInterface
+final class DomainManager implements DomainManagerInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

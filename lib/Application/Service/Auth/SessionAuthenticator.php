@@ -51,7 +51,7 @@ use Poweradmin\Application\Service\AuditService;
 /**
  * Per-request login pipeline: CSRF and reCAPTCHA on the form, session expiry, then the SQL or LDAP authenticator.
  */
-class SessionAuthenticator
+final class SessionAuthenticator
 {
     private LoggerInterface $logger;
     private AuthenticationService $authService;

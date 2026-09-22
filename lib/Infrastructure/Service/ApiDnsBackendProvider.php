@@ -44,7 +44,7 @@ use Psr\Log\NullLogger;
  * Zone metadata is stored locally in the Poweradmin zones table.
  * Records are identified by encoded composite keys (no PowerDNS DB access needed).
  */
-class ApiDnsBackendProvider implements DnsBackendProviderInterface
+final class ApiDnsBackendProvider implements DnsBackendProviderInterface
 {
     private PowerdnsApiClient $client;
     private PDO $db;
@@ -363,12 +363,12 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
         return $this->appendRecord($domainId, $name, $type, $content, $ttl, $prio, 0, null) !== null;
     }
 
-    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): int|string|null
+    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): ?string
     {
         return $this->appendRecord($domainId, $name, $type, $content, $ttl, $prio, 0, $comment);
     }
 
-    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): int|string|null
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): ?string
     {
         return $this->appendRecord($domainId, $name, $type, $content, $ttl, $prio, $disabled, $comment);
     }

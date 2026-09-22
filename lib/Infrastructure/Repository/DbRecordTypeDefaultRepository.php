@@ -29,7 +29,7 @@ use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
 /**
  * SQL persistence for per-record-type default TTLs in the record_type_defaults table.
  */
-class DbRecordTypeDefaultRepository implements RecordTypeDefaultRepositoryInterface
+final class DbRecordTypeDefaultRepository implements RecordTypeDefaultRepositoryInterface
 {
     public function __construct(private PDO $db)
     {

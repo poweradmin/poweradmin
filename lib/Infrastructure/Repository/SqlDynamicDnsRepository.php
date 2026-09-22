@@ -32,7 +32,7 @@ use Poweradmin\Domain\ValueObject\HostnameValue;
 /**
  * Dynamic DNS persistence on the records table.
  */
-readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
+final readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
     public function __construct(
         private PDO $db,

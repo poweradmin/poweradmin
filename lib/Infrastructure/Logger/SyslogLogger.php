@@ -32,7 +32,7 @@ use Stringable;
 /**
  * PSR-3 logger that writes every message to syslog under the configured identity and facility.
  */
-class SyslogLogger extends AbstractLogger
+final class SyslogLogger extends AbstractLogger
 {
     private const PRIORITIES = [
         LogLevel::EMERGENCY => LOG_EMERG,

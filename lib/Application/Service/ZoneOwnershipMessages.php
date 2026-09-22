@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
 /**
  * Words a ZoneOwnershipGuard refusal for the zone ownership page.
  */
-class ZoneOwnershipMessages
+final class ZoneOwnershipMessages
 {
     public static function userOwnerRefusal(ZoneOwnershipRefusal $refusal): string
     {

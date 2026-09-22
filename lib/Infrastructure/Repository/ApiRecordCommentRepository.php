@@ -34,7 +34,7 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
  * Comments are per-RRset (name + type), not per individual record.
  * No database fallback - the API is the single source of truth.
  */
-class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
+final class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
 {
     private PowerdnsApiClient $apiClient;
     private ZoneReadBackendInterface $backendProvider;

@@ -42,7 +42,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Session login against an LDAP directory, with lockout tracking, a cached bind result and MFA hand-off.
  */
-class LdapAuthenticator
+final class LdapAuthenticator
 {
     private LoggerInterface $logger;
     private PDO $db;

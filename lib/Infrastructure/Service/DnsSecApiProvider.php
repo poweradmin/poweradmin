@@ -33,7 +33,7 @@ use Psr\Log\LoggerInterface;
 /**
  * DnssecProviderInterface that manages zone keys, DS/DNSKEY records and rectification through the PowerDNS API.
  */
-class DnsSecApiProvider implements DnssecProviderInterface
+final class DnsSecApiProvider implements DnssecProviderInterface
 {
     private PowerdnsApiClient $client;
     private LoggerInterface $logger;

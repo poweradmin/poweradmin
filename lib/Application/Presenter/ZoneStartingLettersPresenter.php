@@ -28,7 +28,7 @@ namespace Poweradmin\Application\Presenter;
  * items() feeds templates/default/_partials/letters.html; present() is the pre-rendered
  * string still exposed as the `letters` template variable for theme forks.
  */
-class ZoneStartingLettersPresenter
+final class ZoneStartingLettersPresenter
 {
     /**
      * The digits bucket, a-z, any non-ASCII initials (IDN zones) and "Show all", in display order.

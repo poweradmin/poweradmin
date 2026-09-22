@@ -28,7 +28,7 @@ use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 /**
  * Counts the zones a user may see; the backend-specific query lives in the zone repository.
  */
-class ZoneCountService
+final class ZoneCountService
 {
     private ZoneReadRepositoryInterface $zoneRepository;
     private ActorInterface $actor;

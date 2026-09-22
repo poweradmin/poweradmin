@@ -33,7 +33,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
  * chain (AppInitializer), the Twig translator (AppManager), and the page
  * chrome (PageRenderer) - they must all agree on the active locale.
  */
-readonly class LocaleResolver
+final readonly class LocaleResolver
 {
     private const DEFAULT_LOCALE = 'en_EN';
 

@@ -49,7 +49,7 @@ use Poweradmin\Domain\Model\RecordType;
  * deferred until a template actually needs them, and so this class never
  * triggers authentication or database work on construction.
  */
-class PageRenderer
+final class PageRenderer
 {
     /** Shorter than the 46 characters the installer writes, so a generated key never trips the warning. */
     private const MIN_SESSION_KEY_LENGTH = 32;

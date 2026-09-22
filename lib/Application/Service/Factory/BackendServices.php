@@ -55,7 +55,7 @@ use Psr\Log\LoggerInterface;
  * repositories and record managers that read and write through it. Every
  * memoized instance is shared for the request so read caches are not split.
  */
-class BackendServices
+final class BackendServices
 {
     private PDO $db;
     private ConfigurationInterface $config;

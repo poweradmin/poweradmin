@@ -32,7 +32,7 @@ use Poweradmin\Domain\Enum\PermissionTemplateType;
 /**
  * SQL persistence for permission templates in perm_templ and their perm_items links in perm_templ_items.
  */
-class DbPermissionTemplateRepository implements PermissionTemplateRepositoryInterface
+final class DbPermissionTemplateRepository implements PermissionTemplateRepositoryInterface
 {
     private object $db;
 

@@ -37,7 +37,7 @@ use Poweradmin\Domain\Database\CanonicalZoneSql;
 /**
  * Dynamic DNS persistence for the API backend mode.
  */
-readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
+final readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
     public function __construct(
         private PDO $db,

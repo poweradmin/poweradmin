@@ -34,7 +34,7 @@ use Poweradmin\Domain\Module\ModuleInterface;
  * This relies on PowerDNS performing the transfer, so it is only available
  * with the API backend; it hides itself entirely in SQL-backend mode.
  */
-class SecondaryZoneImportModule implements ModuleInterface
+final class SecondaryZoneImportModule implements ModuleInterface
 {
     public function __construct(private readonly ConfigurationInterface $config)
     {

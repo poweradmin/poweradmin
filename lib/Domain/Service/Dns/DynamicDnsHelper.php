@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\Dns;
 /**
  * Helper functions for dynamic DNS updates
  */
-class DynamicDnsHelper
+final class DynamicDnsHelper
 {
 
     /**

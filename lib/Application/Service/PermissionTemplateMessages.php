@@ -27,7 +27,7 @@ use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 /**
  * Words a permission template delete outcome for the web flash messages.
  */
-class PermissionTemplateMessages
+final class PermissionTemplateMessages
 {
     public static function deleted(): string
     {

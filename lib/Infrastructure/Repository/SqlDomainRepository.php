@@ -41,7 +41,7 @@ use Poweradmin\Domain\Enum\ZoneSoaHealth;
 /**
  * Domain lookups on the domains table.
  */
-class SqlDomainRepository implements DomainRepositoryInterface
+final class SqlDomainRepository implements DomainRepositoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

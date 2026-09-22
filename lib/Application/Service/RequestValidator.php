@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * rules once and validate repeatedly; extra and missing fields are
  * tolerated to match the permissive form handling of the web UI.
  */
-class RequestValidator
+final class RequestValidator
 {
     private ValidatorInterface $validator;
     private array $constraints = [];

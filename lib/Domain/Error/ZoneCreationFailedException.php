@@ -28,6 +28,6 @@ use RuntimeException;
  * Thrown by a zone creation step once the backend zone exists, so the caller
  * can roll back and remove the zone. The message is the user-facing failure text.
  */
-class ZoneCreationFailedException extends RuntimeException
+final class ZoneCreationFailedException extends RuntimeException
 {
 }

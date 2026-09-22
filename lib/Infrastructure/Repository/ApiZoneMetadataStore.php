@@ -32,7 +32,7 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
  * endpoints, and the kinds PowerDNS exposes as zone-object properties through
  * a zone update.
  */
-class ApiZoneMetadataStore implements ZoneMetadataStoreInterface
+final class ApiZoneMetadataStore implements ZoneMetadataStoreInterface
 {
     public function __construct(private readonly PowerdnsApiClient $apiClient)
     {

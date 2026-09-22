@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
  * SQL persistence for zone_change_requests, a Poweradmin-native table that is
  * never prefixed and is shared by the SQL and API backends.
  */
-class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterface
+final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterface
 {
     private const COLUMNS = 'id, zone_id, zone_name, kind, status, requester_id, requester_name, request_comment,
         base_serial, payload, reviewer_id, reviewer_name, review_comment, created_at, reviewed_at, applied_at, error, snapshot';

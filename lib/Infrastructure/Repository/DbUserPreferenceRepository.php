@@ -29,7 +29,7 @@ use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
 /**
  * SQL persistence for per-user settings in the user_preferences table.
  */
-class DbUserPreferenceRepository implements UserPreferenceRepositoryInterface
+final class DbUserPreferenceRepository implements UserPreferenceRepositoryInterface
 {
     private PDO $db;
 

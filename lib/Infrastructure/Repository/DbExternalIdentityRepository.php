@@ -29,7 +29,7 @@ use Poweradmin\Domain\Repository\ExternalIdentityRepositoryInterface;
 /**
  * SQL persistence for the oidc_user_links and saml_user_links tables.
  */
-class DbExternalIdentityRepository implements ExternalIdentityRepositoryInterface
+final class DbExternalIdentityRepository implements ExternalIdentityRepositoryInterface
 {
     private PDO $db;
 

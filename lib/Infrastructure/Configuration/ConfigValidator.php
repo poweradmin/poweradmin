@@ -28,7 +28,7 @@ use Poweradmin\Infrastructure\Database\DbDriver;
 /**
  * Checks the loaded settings array for invalid values (syslog, session timeout, theme, PowerDNS API, pdns_db_name).
  */
-class ConfigValidator
+final class ConfigValidator
 {
     private array $config;
     private array $errors;

@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Zone\ZoneManagementService;
  * The service's own message is the API wording; a zone write refusal already
  * carries the translated reason from DomainManager.
  */
-class ZoneCreateFormMessages
+final class ZoneCreateFormMessages
 {
     /**
      * The reverse-zone form got neither a network nor a reverse zone name.

@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Zone\ZoneMetadataResult;
 /**
  * Words a refused ZoneMetadataService write for the metadata editor.
  */
-class ZoneMetadataFormMessages
+final class ZoneMetadataFormMessages
 {
     public static function errorMessage(ZoneMetadataResult $result): string
     {

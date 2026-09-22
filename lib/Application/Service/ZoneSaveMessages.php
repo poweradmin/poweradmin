@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\Zone\ZoneSaveResult;
 /**
  * Words a ZoneEditService save for the zone editor's flash message.
  */
-class ZoneSaveMessages
+final class ZoneSaveMessages
 {
     /**
      * @return array{0: string, 1: string}|null Message type and text, or null when there is nothing to say

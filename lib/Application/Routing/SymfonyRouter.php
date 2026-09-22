@@ -39,7 +39,7 @@ use Symfony\Component\Routing\Route;
 /**
  * Matches the request against routes.yaml and enabled module routes, then runs the matched controller.
  */
-class SymfonyRouter
+final class SymfonyRouter
 {
     private UrlMatcher $matcher;
     private UrlGenerator $urlGenerator;

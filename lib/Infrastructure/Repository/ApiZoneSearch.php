@@ -31,7 +31,7 @@ use Poweradmin\Infrastructure\Utility\ResultPaginator;
  * Zone search over the PowerDNS API, enriched with owners and comments from
  * Poweradmin's zones table and filtered, sorted and paged in memory.
  */
-class ApiZoneSearch extends ApiSearchBase implements ZoneSearchInterface
+final class ApiZoneSearch extends ApiSearchBase implements ZoneSearchInterface
 {
     public function searchZones(
         array $parameters,

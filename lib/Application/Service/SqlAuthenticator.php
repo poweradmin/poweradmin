@@ -40,7 +40,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Session login against the users table with lockout checks, hash upgrades and MFA hand-off.
  */
-class SqlAuthenticator
+final class SqlAuthenticator
 {
     private LoggerInterface $logger;
     private PDO $connection;

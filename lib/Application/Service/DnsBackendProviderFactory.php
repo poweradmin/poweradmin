@@ -39,7 +39,7 @@ use Psr\Log\NullLogger;
  * backends based on configuration. Follows the same pattern as
  * DnssecProviderFactory.
  */
-class DnsBackendProviderFactory
+final class DnsBackendProviderFactory
 {
     /**
      * Create a DNS backend provider instance.

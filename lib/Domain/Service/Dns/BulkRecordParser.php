@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\Dns;
 /**
  * Parses one CSV line of the bulk record form (name,type,content,prio,ttl[,disabled][,comment]) into a record.
  */
-class BulkRecordParser
+final class BulkRecordParser
 {
     /**
      * Parse a CSV line into a record array.
