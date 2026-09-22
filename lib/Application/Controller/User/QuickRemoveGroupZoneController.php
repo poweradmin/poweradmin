@@ -25,7 +25,9 @@ namespace Poweradmin\Application\Controller\User;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Application\Service\Zone\ZoneOwnershipMessages;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
 
 /**
  * Handles the POST that removes one zone from a group from the edit-group page.
@@ -65,9 +67,11 @@ class QuickRemoveGroupZoneController extends BaseController
         }
 
         try {
-            $success = $this->zoneGroupService()->removeGroupFromZone($zoneId, $groupId);
+            $result = $this->zoneGroupService()->removeGroupFromZone($zoneId, $groupId);
 
-            if ($success) {
+            if ($result instanceof ZoneOwnershipRefusal) {
+                $this->setMessage('edit_group', 'error', ZoneOwnershipMessages::groupRefusal($result));
+            } elseif ($result) {
                 $auditService = $this->services()->auditService();
                 $auditService->logZoneGroupRemove($zoneId, (string)$zoneId, $groupId);
                 $this->setMessage('edit_group', 'success', _('Zone removed from group successfully.'));

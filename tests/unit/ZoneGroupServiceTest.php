@@ -83,6 +83,27 @@ class ZoneGroupServiceTest extends TestCase
     }
 
     #[Test]
+    public function removeGroupFromZoneReturnsTheGuardRefusalAndKeepsTheRow(): void
+    {
+        $refusal = new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_OWNER, ZoneOwnershipModeService::MODE_BOTH);
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->ownershipGuard->method('refuseGroupRemoval')->with(100, 1)->willReturn($refusal);
+        $this->zoneGroupRepo->expects($this->never())->method('remove');
+
+        $this->assertSame($refusal, $this->service->removeGroupFromZone(100, 1));
+    }
+
+    #[Test]
+    public function removeGroupFromZoneAsksTheGuardBeforeLookingUpTheGroup(): void
+    {
+        $refusal = new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_OWNER, ZoneOwnershipModeService::MODE_BOTH);
+        $this->groupRepo->expects($this->never())->method('findById');
+        $this->ownershipGuard->method('refuseGroupRemoval')->with(100, 999)->willReturn($refusal);
+
+        $this->assertSame($refusal, $this->service->removeGroupFromZone(100, 999));
+    }
+
+    #[Test]
     public function removeGroupFromZoneGroupNotFoundThrows(): void
     {
         $this->groupRepo->method('findById')->with(999)->willReturn(null);

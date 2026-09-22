@@ -76,18 +76,21 @@ class ZoneGroupService
     }
 
     /**
-     * Remove a group from zone owners
-     *
-     * Note: Zones can exist without any owners
+     * Remove a group from zone owners. The guard answers before the group
+     * lookup so a refusal outranks a missing group, as the API contract orders them.
      *
      * @param int $domainId Zone/Domain ID
      * @param int $groupId Group ID
-     * @return bool
-     * @throws InvalidArgumentException If group not found
+     * @return bool|ZoneOwnershipRefusal True when removed, false when the group did not own the zone, the refusal when the last-owner rule forbids it
+     * @throws GroupNotFoundException If group not found
      */
-    public function removeGroupFromZone(int $domainId, int $groupId): bool
+    public function removeGroupFromZone(int $domainId, int $groupId): bool|ZoneOwnershipRefusal
     {
-        // Validate group exists
+        $refusal = $this->ownershipGuard->refuseGroupRemoval($domainId, $groupId);
+        if ($refusal !== null) {
+            return $refusal;
+        }
+
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
             throw new GroupNotFoundException('Group not found');

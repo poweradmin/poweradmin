@@ -29,8 +29,10 @@ use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -40,7 +42,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * DELETE /groups/{id}/zones/{zone_id} keeps its contract wording and 400
- * status for every last-owner refusal, per ownership mode.
+ * status for every last-owner refusal, per ownership mode, now that the
+ * refusal comes back from ZoneGroupService instead of a controller pre-check.
  */
 class GroupZonesControllerLastOwnerTest extends V2ControllerTestCase
 {
@@ -53,16 +56,12 @@ class GroupZonesControllerLastOwnerTest extends V2ControllerTestCase
     /** @var ZoneGroupRepositoryInterface&MockObject */
     private ZoneGroupRepositoryInterface $zoneGroupRepository;
 
-    /** @var ZoneGroupService&MockObject */
-    private ZoneGroupService $zoneGroupService;
-
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->zoneRepository = $this->createMock(ZoneOwnershipRepositoryInterface::class);
         $this->zoneGroupRepository = $this->createMock(ZoneGroupRepositoryInterface::class);
-        $this->zoneGroupService = $this->createMock(ZoneGroupService::class);
     }
 
     /**
@@ -87,7 +86,7 @@ class GroupZonesControllerLastOwnerTest extends V2ControllerTestCase
     public function testUnassignIsRefusedWithTheContractWording(string $mode, array $owners, array $groups, string $message): void
     {
         $this->givenOwnership($owners, $groups);
-        $this->zoneGroupService->expects($this->never())->method('removeGroupFromZone');
+        $this->zoneGroupRepository->expects($this->never())->method('remove');
 
         $response = $this->unassign($mode);
 
@@ -98,7 +97,7 @@ class GroupZonesControllerLastOwnerTest extends V2ControllerTestCase
     public function testAGroupWithAUserOwnerLeftIsUnassigned(): void
     {
         $this->givenOwnership([5], [3]);
-        $this->zoneGroupService->expects($this->once())->method('removeGroupFromZone')->with(self::ZONE_ID, self::GROUP_ID)->willReturn(true);
+        $this->zoneGroupRepository->expects($this->once())->method('remove')->with(self::ZONE_ID, self::GROUP_ID)->willReturn(true);
 
         $response = $this->unassign('both');
 
@@ -109,7 +108,7 @@ class GroupZonesControllerLastOwnerTest extends V2ControllerTestCase
     public function testAGroupThatDoesNotOwnTheZoneIs404WithoutTheGuard(): void
     {
         $this->givenOwnership([], [4]);
-        $this->zoneGroupService->expects($this->once())->method('removeGroupFromZone')->with(self::ZONE_ID, self::GROUP_ID)->willReturn(false);
+        $this->zoneGroupRepository->expects($this->once())->method('remove')->with(self::ZONE_ID, self::GROUP_ID)->willReturn(false);
 
         $response = $this->unassign('both');
 
@@ -149,23 +148,27 @@ class GroupZonesControllerLastOwnerTest extends V2ControllerTestCase
 
         $this->inject($controller, 'apiPermissionService', $permissions);
         $this->inject($controller, 'domainRepository', $domainRepository);
-        $this->inject($controller, 'zoneGroupService', $this->zoneGroupService);
+        $groups = $this->createMock(UserGroupRepositoryInterface::class);
+        $groups->method('findById')->with(self::GROUP_ID)->willReturn(new UserGroup(self::GROUP_ID, 'Operators', null, 1));
+        $this->inject($controller, 'zoneGroupService', new ZoneGroupService($this->zoneGroupRepository, $groups, $this->guard($config)));
         $this->inject($controller, 'pathParameters', ['id' => self::GROUP_ID, 'zone_id' => self::ZONE_ID]);
         $this->inject($controller, 'authenticatedUserId', 1);
-        $this->inject($controller, 'serviceFactory', $this->factory($config));
+        $this->inject($controller, 'serviceFactory', $this->factory());
 
         return $this->callHandler($controller, 'unassignZone');
     }
 
-    private function factory(ConfigurationInterface $config): ControllerServiceFactory
+    private function factory(): ControllerServiceFactory
     {
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
         $factory->method('userRepository')->willReturn($this->stubUsers());
-        $factory->method('zoneOwnershipGuard')->willReturn(
-            new ZoneOwnershipGuard($this->zoneRepository, $this->zoneGroupRepository, new ZoneOwnershipModeService($config))
-        );
 
         return $factory;
+    }
+
+    private function guard(ConfigurationInterface $config): ZoneOwnershipGuard
+    {
+        return new ZoneOwnershipGuard($this->zoneRepository, $this->zoneGroupRepository, new ZoneOwnershipModeService($config));
     }
 }

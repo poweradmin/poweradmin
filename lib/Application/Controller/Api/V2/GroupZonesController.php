@@ -312,14 +312,12 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            $refusal = $this->services()->zoneOwnershipGuard()->refuseGroupRemoval($zoneId, $groupId);
-            if ($refusal !== null) {
-                return $this->returnApiError(self::refusalMessage($refusal), 400);
+            $result = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
+            if ($result instanceof ZoneOwnershipRefusal) {
+                return $this->returnApiError(self::refusalMessage($result), 400);
             }
 
-            $success = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
-
-            if (!$success) {
+            if (!$result) {
                 return $this->returnApiError('Zone assignment not found', 404);
             }
 
