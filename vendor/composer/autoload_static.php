@@ -1587,6 +1587,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\AuditService' => __DIR__ . '/../..' . '/lib/Application/Service/AuditService.php',
         'Poweradmin\\Application\\Service\\Auth\\ApiKeyActor' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/ApiKeyActor.php',
         'Poweradmin\\Application\\Service\\Auth\\ApiKeyAuthenticationMiddleware' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/ApiKeyAuthenticationMiddleware.php',
+        'Poweradmin\\Application\\Service\\Auth\\AuthFlowSessionKeys' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/AuthFlowSessionKeys.php',
         'Poweradmin\\Application\\Service\\Auth\\AuthOutcome' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/AuthOutcome.php',
         'Poweradmin\\Application\\Service\\Auth\\AuthOutcomeStatus' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/AuthOutcomeStatus.php',
         'Poweradmin\\Application\\Service\\Auth\\AuthenticationService' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/AuthenticationService.php',

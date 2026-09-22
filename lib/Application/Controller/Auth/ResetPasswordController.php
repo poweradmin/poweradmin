@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 
 /**
  * Handles the password reset form reached from the emailed token link and sets the new password.
@@ -168,7 +168,7 @@ class ResetPasswordController extends BaseController
         if ($this->config->get('security', 'global_token_validation', true)) {
             $token = $this->httpRequest->getPostParam('reset_password_token', '');
 
-            if (!$this->csrfTokenService->validateToken($token, SessionKeys::RESET_PASSWORD_TOKEN)) {
+            if (!$this->csrfTokenService->validateToken($token, AuthFlowSessionKeys::RESET_PASSWORD_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
                     'user_id' => $userId,
                     'email' => $email,
@@ -180,7 +180,7 @@ class ResetPasswordController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION[SessionKeys::RESET_PASSWORD_TOKEN]);
+            unset($_SESSION[AuthFlowSessionKeys::RESET_PASSWORD_TOKEN]);
         }
 
         $password = $this->httpRequest->getPostParam('password', '');
@@ -264,7 +264,7 @@ class ResetPasswordController extends BaseController
 
         // Generate a new token for password reset
         $resetPasswordToken = $this->csrfTokenService->generateToken();
-        $_SESSION[SessionKeys::RESET_PASSWORD_TOKEN] = $resetPasswordToken;
+        $_SESSION[AuthFlowSessionKeys::RESET_PASSWORD_TOKEN] = $resetPasswordToken;
 
         $this->render('reset_password.html', [
             'token' => $this->token,

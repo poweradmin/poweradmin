@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Session;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Poweradmin\Domain\Enum\MfaSessionState;
+use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
@@ -61,10 +62,10 @@ class MfaSessionManager
             return;
         }
 
-        $_SESSION[SessionKeys::MFA_STATE] = MfaSessionState::PENDING->value;
-        $_SESSION[SessionKeys::MFA_STATUS] = 'required';
+        $_SESSION[AuthFlowSessionKeys::MFA_STATE] = MfaSessionState::PENDING->value;
+        $_SESSION[AuthFlowSessionKeys::MFA_STATUS] = 'required';
         $_SESSION[SessionKeys::AUTHENTICATED] = false;
-        $_SESSION[SessionKeys::MFA_REQUIRED] = true;
+        $_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] = true;
         $_SESSION[SessionKeys::LASTMOD] = time();
 
         self::getLogger()->debug('[MfaSessionManager] MFA required set for user: {user_id}', ['user_id' => $userId]);
@@ -81,14 +82,14 @@ class MfaSessionManager
      */
     public static function setMfaVerified(): void
     {
-        $_SESSION[SessionKeys::MFA_STATE] = MfaSessionState::VERIFIED->value;
-        $_SESSION[SessionKeys::MFA_STATUS] = 'verified';
+        $_SESSION[AuthFlowSessionKeys::MFA_STATE] = MfaSessionState::VERIFIED->value;
+        $_SESSION[AuthFlowSessionKeys::MFA_STATUS] = 'verified';
         $_SESSION[SessionKeys::AUTHENTICATED] = true;
-        $_SESSION[SessionKeys::MFA_REQUIRED] = false;
+        $_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] = false;
         $_SESSION[SessionKeys::LASTMOD] = time();
 
         // Add a special token to prevent redirect loops
-        $_SESSION[SessionKeys::MFA_VERIFICATION_TOKEN] = hash('sha256', time() . $_SESSION[SessionKeys::USERID] . 'verified' . random_bytes(16));
+        $_SESSION[AuthFlowSessionKeys::MFA_VERIFICATION_TOKEN] = hash('sha256', time() . $_SESSION[SessionKeys::USERID] . 'verified' . random_bytes(16));
 
         $userId = $_SESSION[SessionKeys::USERID] ?? 0;
         self::getLogger()->debug('[MfaSessionManager] MFA verified set for user: {user_id}', ['user_id' => $userId]);
@@ -118,27 +119,27 @@ class MfaSessionManager
      */
     public static function currentState(): MfaSessionState
     {
-        $state = MfaSessionState::tryFromSession($_SESSION[SessionKeys::MFA_STATE] ?? null);
+        $state = MfaSessionState::tryFromSession($_SESSION[AuthFlowSessionKeys::MFA_STATE] ?? null);
         if ($state !== null) {
             return $state;
         }
 
-        if (isset($_SESSION[SessionKeys::MFA_VERIFICATION_TOKEN])) {
+        if (isset($_SESSION[AuthFlowSessionKeys::MFA_VERIFICATION_TOKEN])) {
             return MfaSessionState::VERIFIED;
         }
 
-        if (($_SESSION[SessionKeys::MFA_STATUS] ?? null) === 'verified') {
+        if (($_SESSION[AuthFlowSessionKeys::MFA_STATUS] ?? null) === 'verified') {
             return MfaSessionState::VERIFIED;
         }
 
         if (
             ($_SESSION[SessionKeys::AUTHENTICATED] ?? null) === true &&
-            ($_SESSION[SessionKeys::MFA_REQUIRED] ?? null) === false
+            ($_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] ?? null) === false
         ) {
             return MfaSessionState::NOT_REQUIRED;
         }
 
-        return ($_SESSION[SessionKeys::MFA_REQUIRED] ?? null) === true
+        return ($_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] ?? null) === true
             ? MfaSessionState::PENDING
             : MfaSessionState::NOT_REQUIRED;
     }
@@ -148,8 +149,8 @@ class MfaSessionManager
      */
     public static function setMfaNotRequired(): void
     {
-        $_SESSION[SessionKeys::MFA_STATE] = MfaSessionState::NOT_REQUIRED->value;
-        $_SESSION[SessionKeys::MFA_REQUIRED] = false;
+        $_SESSION[AuthFlowSessionKeys::MFA_STATE] = MfaSessionState::NOT_REQUIRED->value;
+        $_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] = false;
     }
 
     /**
@@ -159,10 +160,10 @@ class MfaSessionManager
      */
     public static function reset(): void
     {
-        unset($_SESSION[SessionKeys::MFA_STATE]);
-        unset($_SESSION[SessionKeys::MFA_STATUS]);
-        unset($_SESSION[SessionKeys::MFA_REQUIRED]);
-        unset($_SESSION[SessionKeys::MFA_VERIFICATION_TOKEN]);
+        unset($_SESSION[AuthFlowSessionKeys::MFA_STATE]);
+        unset($_SESSION[AuthFlowSessionKeys::MFA_STATUS]);
+        unset($_SESSION[AuthFlowSessionKeys::MFA_REQUIRED]);
+        unset($_SESSION[AuthFlowSessionKeys::MFA_VERIFICATION_TOKEN]);
 
         $userId = $_SESSION[SessionKeys::USERID] ?? 0;
         self::getLogger()->debug('[MfaSessionManager] Session variables reset for user: {user_id}', ['user_id' => $userId]);

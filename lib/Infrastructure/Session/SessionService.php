@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Session;
 
 use Poweradmin\Application\Web\FlashMessage;
+use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
@@ -38,9 +39,9 @@ class SessionService
     public function endSession(): void
     {
         // Explicitly clear MFA-related session variables
-        unset($_SESSION[SessionKeys::MFA_STATE]);
-        if (isset($_SESSION[SessionKeys::MFA_REQUIRED])) {
-            unset($_SESSION[SessionKeys::MFA_REQUIRED]);
+        unset($_SESSION[AuthFlowSessionKeys::MFA_STATE]);
+        if (isset($_SESSION[AuthFlowSessionKeys::MFA_REQUIRED])) {
+            unset($_SESSION[AuthFlowSessionKeys::MFA_REQUIRED]);
         }
 
         // Clear authentication status
@@ -49,8 +50,8 @@ class SessionService
         }
 
         // Handle MFA tokens if present
-        if (isset($_SESSION[SessionKeys::MFA_TOKEN])) {
-            unset($_SESSION[SessionKeys::MFA_TOKEN]);
+        if (isset($_SESSION[AuthFlowSessionKeys::MFA_TOKEN])) {
+            unset($_SESSION[AuthFlowSessionKeys::MFA_TOKEN]);
         }
 
         // Clear user data

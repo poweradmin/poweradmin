@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 
 /**
  * Handles the forgot-password form: takes an email address and sends the password reset link.
@@ -124,7 +124,7 @@ class ForgotPasswordController extends BaseController
         if ($this->config->get('security', 'global_token_validation', true)) {
             $token = $this->httpRequest->getPostParam('password_reset_token', '');
 
-            if (!$this->csrfTokenService->validateToken($token, SessionKeys::PASSWORD_RESET_TOKEN)) {
+            if (!$this->csrfTokenService->validateToken($token, AuthFlowSessionKeys::PASSWORD_RESET_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
@@ -135,7 +135,7 @@ class ForgotPasswordController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION[SessionKeys::PASSWORD_RESET_TOKEN]);
+            unset($_SESSION[AuthFlowSessionKeys::PASSWORD_RESET_TOKEN]);
         }
 
         // Verify reCAPTCHA if enabled
@@ -238,7 +238,7 @@ class ForgotPasswordController extends BaseController
 
         // Generate a new token for password reset
         $passwordResetToken = $this->csrfTokenService->generateToken();
-        $_SESSION[SessionKeys::PASSWORD_RESET_TOKEN] = $passwordResetToken;
+        $_SESSION[AuthFlowSessionKeys::PASSWORD_RESET_TOKEN] = $passwordResetToken;
 
         $this->render('forgot_password.html', [
             'error' => $error,

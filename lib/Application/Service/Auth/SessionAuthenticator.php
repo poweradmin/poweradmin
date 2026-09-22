@@ -408,7 +408,7 @@ class SessionAuthenticator
             $this->logger->info('MFA setup required for user {userid}', ['userid' => $userId]);
 
             // Set a session flag to indicate this is an enforced setup
-            $_SESSION[SessionKeys::MFA_SETUP_ENFORCED] = true;
+            $_SESSION[AuthFlowSessionKeys::MFA_SETUP_ENFORCED] = true;
 
             // Redirect to MFA setup page
             $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');

@@ -23,7 +23,10 @@
 namespace Poweradmin\Domain\Service\Auth;
 
 /**
- * Central catalogue of $_SESSION keys.
+ * Catalogue of the login and user identity $_SESSION keys.
+ *
+ * The MFA, logout round-trip and recovery flow keys live in
+ * Application\Service\Auth\AuthFlowSessionKeys next to the flows that use them.
  *
  * Search and list views deliberately use different sort buckets so a column
  * picked in one view cannot leak into a query that does not support it.
@@ -59,9 +62,6 @@ final class SessionKeys
     public const EMAIL = 'email';
     public const LASTMOD = 'lastmod';
 
-    /** Authoritative MFA verification state; see {@see \Poweradmin\Domain\Enum\MfaSessionState}. */
-    public const MFA_STATE = 'mfa_state';
-
     // Pending identity (held during MFA verification, promoted on success)
     public const PENDING_USERID = 'pending_userid';
     public const PENDING_NAME = 'pending_name';
@@ -75,26 +75,17 @@ final class SessionKeys
     public const PENDING_SAML_NAME_ID = 'pending_saml_name_id';
     public const PENDING_SAML_SESSION_INDEX = 'pending_saml_session_index';
 
-    // MFA
-    public const MFA_REQUIRED = 'mfa_required';
-    public const MFA_STATUS = 'mfa_status';
-    public const MFA_TOKEN = 'mfa_token';
-    public const MFA_VERIFICATION_TOKEN = 'mfa_verification_token';
-    public const MFA_SETUP_ENFORCED = 'mfa_setup_enforced';
-
-    // OIDC / OAuth
+    // OIDC / OAuth identity (read by SessionPromotionService)
     public const OIDC_AUTHENTICATED = 'oidc_authenticated';
     public const OIDC_PROVIDER = 'oidc_provider';
     public const OIDC_ID_TOKEN = 'oidc_id_token';
-    public const OIDC_STATE = 'oidc_state';
     public const OAUTH_AVATAR_URL = 'oauth_avatar_url';
 
-    // SAML
+    // SAML identity (read by SessionPromotionService)
     public const SAML_AUTHENTICATED = 'saml_authenticated';
     public const SAML_PROVIDER = 'saml_provider';
     public const SAML_NAME_ID = 'saml_name_id';
     public const SAML_SESSION_INDEX = 'saml_session_index';
-    public const SAML_SLO_PENDING = 'saml_slo_pending';
 
     // LDAP rate-limit
     public const LDAP_AUTH_IP = 'ldap_auth_ip';
@@ -105,9 +96,6 @@ final class SessionKeys
     public const CSRF_TOKEN = 'csrf_token';
     public const INSTALL_TOKEN = 'install_token';
     public const LOGIN_TOKEN = 'login_token';
-    public const PASSWORD_RESET_TOKEN = 'password_reset_token';
-    public const RESET_PASSWORD_TOKEN = 'reset_password_token';
-    public const USERNAME_RECOVERY_TOKEN = 'username_recovery_token';
 
     // Flash messages
     public const LOGIN_MESSAGE = 'message';

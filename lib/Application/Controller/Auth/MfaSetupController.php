@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\Auth\MfaService;
+use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use RuntimeException;
@@ -385,11 +386,11 @@ class MfaSetupController extends BaseController
         $mfaEnforced = $this->mfaService->isMfaEnforced($userId, $this->db, $this->userContextService->getAuthMethod());
 
         // Check if this is an enforced setup from login redirect
-        $setupEnforced = isset($_SESSION[SessionKeys::MFA_SETUP_ENFORCED]) && $_SESSION[SessionKeys::MFA_SETUP_ENFORCED] === true;
+        $setupEnforced = isset($_SESSION[AuthFlowSessionKeys::MFA_SETUP_ENFORCED]) && $_SESSION[AuthFlowSessionKeys::MFA_SETUP_ENFORCED] === true;
 
         // Clear the session flag once we've read it
         if ($setupEnforced) {
-            unset($_SESSION[SessionKeys::MFA_SETUP_ENFORCED]);
+            unset($_SESSION[AuthFlowSessionKeys::MFA_SETUP_ENFORCED]);
         }
 
         $this->render('mfa_setup.html', [

@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
+use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionPromotionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
@@ -73,10 +74,10 @@ class MfaVerifyController extends BaseController
         $logout = $this->httpRequest->getQueryParam('logout');
         if (!$this->config->get('security', 'mfa.enabled', false) || $logout !== null) {
             // If MFA is disabled or this is a logout request, but we have MFA session flags, clear them
-            if ($this->userContextService->hasSessionData(SessionKeys::MFA_REQUIRED)) {
-                $this->userContextService->unsetSessionData(SessionKeys::MFA_REQUIRED);
+            if ($this->userContextService->hasSessionData(AuthFlowSessionKeys::MFA_REQUIRED)) {
+                $this->userContextService->unsetSessionData(AuthFlowSessionKeys::MFA_REQUIRED);
             }
-            $this->userContextService->unsetSessionData(SessionKeys::MFA_STATE);
+            $this->userContextService->unsetSessionData(AuthFlowSessionKeys::MFA_STATE);
 
             // If this is a logout request, do a proper logout
             if ($logout !== null) {
@@ -103,7 +104,7 @@ class MfaVerifyController extends BaseController
         // Check if we have the necessary session data
         // During MFA verification, userid is stored as pending_userid to prevent API bypass
         $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData(SessionKeys::PENDING_USERID);
-        if (!$this->userContextService->getLoggedInUsername() || !$userId || !$this->userContextService->hasSessionData(SessionKeys::MFA_REQUIRED)) {
+        if (!$this->userContextService->getLoggedInUsername() || !$userId || !$this->userContextService->hasSessionData(AuthFlowSessionKeys::MFA_REQUIRED)) {
             $this->redirect('/');
         }
 
@@ -135,7 +136,7 @@ class MfaVerifyController extends BaseController
         $mfaToken = $this->httpRequest->getPostParam('mfa_token', '');
 
         // Validate CSRF token for security
-        if (!$this->csrfTokenService->validateToken($mfaToken, SessionKeys::MFA_TOKEN)) {
+        if (!$this->csrfTokenService->validateToken($mfaToken, AuthFlowSessionKeys::MFA_TOKEN)) {
             $this->logger->warning('[MfaVerifyController] Invalid CSRF token for user ID: {user_id}', ['user_id' => $userId]);
             $this->displayMfaForm(_('Invalid security token. Please try again.'), 'danger');
             return;
@@ -316,7 +317,7 @@ class MfaVerifyController extends BaseController
 
         // Generate a new CSRF token
         $mfaToken = $this->csrfTokenService->generateToken();
-        $this->userContextService->setSessionData(SessionKeys::MFA_TOKEN, $mfaToken);
+        $this->userContextService->setSessionData(AuthFlowSessionKeys::MFA_TOKEN, $mfaToken);
 
         // Get MFA type
         $mfaType = $this->mfaService->getMfaType($userId) ?? 'app';

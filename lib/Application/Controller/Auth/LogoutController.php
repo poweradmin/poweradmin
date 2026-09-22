@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Web\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
+use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
@@ -122,7 +123,7 @@ class LogoutController extends BaseController
 
             if ($logoutUrl) {
                 // Mark session for clearing after SLO callback
-                $_SESSION[SessionKeys::SAML_SLO_PENDING] = true;
+                $_SESSION[AuthFlowSessionKeys::SAML_SLO_PENDING] = true;
 
                 // Clear user data but preserve SAML state for SLO callback
                 $this->clearUserSession();
@@ -195,7 +196,7 @@ class LogoutController extends BaseController
             $_SESSION[SessionKeys::OIDC_AUTHENTICATED],
             $_SESSION[SessionKeys::OIDC_PROVIDER],
             $_SESSION[SessionKeys::OIDC_ID_TOKEN],
-            $_SESSION[SessionKeys::OIDC_STATE]
+            $_SESSION[AuthFlowSessionKeys::OIDC_STATE]
         );
 
         // Clear SAML-specific session data
@@ -226,7 +227,7 @@ class LogoutController extends BaseController
             $_SESSION[SessionKeys::OIDC_AUTHENTICATED],
             $_SESSION[SessionKeys::OIDC_PROVIDER],
             $_SESSION[SessionKeys::OIDC_ID_TOKEN],
-            $_SESSION[SessionKeys::OIDC_STATE]
+            $_SESSION[AuthFlowSessionKeys::OIDC_STATE]
         );
 
         // Clear user session data but preserve SAML state for SLO callback

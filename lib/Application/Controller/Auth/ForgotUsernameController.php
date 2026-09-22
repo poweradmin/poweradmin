@@ -28,7 +28,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 
 /**
  * Handles the forgot-username form: sends the username to the submitted email address if it is on file.
@@ -128,7 +128,7 @@ class ForgotUsernameController extends BaseController
         if ($this->config->get('security', 'global_token_validation', true)) {
             $token = $this->httpRequest->getPostParam('username_recovery_token', '');
 
-            if (!$this->csrfTokenService->validateToken($token, SessionKeys::USERNAME_RECOVERY_TOKEN)) {
+            if (!$this->csrfTokenService->validateToken($token, AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN)) {
                 $this->logger->warning('Username recovery failed - invalid CSRF token', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
@@ -139,7 +139,7 @@ class ForgotUsernameController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION[SessionKeys::USERNAME_RECOVERY_TOKEN]);
+            unset($_SESSION[AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN]);
         }
 
         // Verify reCAPTCHA if enabled
@@ -225,7 +225,7 @@ class ForgotUsernameController extends BaseController
 
         // Generate a new token for username recovery
         $usernameRecoveryToken = $this->csrfTokenService->generateToken();
-        $_SESSION[SessionKeys::USERNAME_RECOVERY_TOKEN] = $usernameRecoveryToken;
+        $_SESSION[AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN] = $usernameRecoveryToken;
 
         $this->render('forgot_username.html', [
             'error' => $error,

@@ -1181,6 +1181,7 @@ return array(
     'Poweradmin\\Application\\Service\\AuditService' => $baseDir . '/lib/Application/Service/AuditService.php',
     'Poweradmin\\Application\\Service\\Auth\\ApiKeyActor' => $baseDir . '/lib/Application/Service/Auth/ApiKeyActor.php',
     'Poweradmin\\Application\\Service\\Auth\\ApiKeyAuthenticationMiddleware' => $baseDir . '/lib/Application/Service/Auth/ApiKeyAuthenticationMiddleware.php',
+    'Poweradmin\\Application\\Service\\Auth\\AuthFlowSessionKeys' => $baseDir . '/lib/Application/Service/Auth/AuthFlowSessionKeys.php',
     'Poweradmin\\Application\\Service\\Auth\\AuthOutcome' => $baseDir . '/lib/Application/Service/Auth/AuthOutcome.php',
     'Poweradmin\\Application\\Service\\Auth\\AuthOutcomeStatus' => $baseDir . '/lib/Application/Service/Auth/AuthOutcomeStatus.php',
     'Poweradmin\\Application\\Service\\Auth\\AuthenticationService' => $baseDir . '/lib/Application/Service/Auth/AuthenticationService.php',

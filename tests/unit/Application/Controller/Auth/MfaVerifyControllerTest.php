@@ -29,7 +29,7 @@ use Poweradmin\Application\Controller\Auth\MfaVerifyController;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Domain\Service\Auth\MfaService;
-use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Application\Service\Auth\AuthFlowSessionKeys;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -43,8 +43,8 @@ class MfaVerifyControllerTest extends SeamControllerTestCase
     public function testStaleFlowTokenRerendersTheFormThroughTheSharedMfaService(): void
     {
         $config = $this->configure(['security' => ['mfa' => ['enabled' => true]]]);
-        $_SESSION[SessionKeys::MFA_REQUIRED] = true;
-        $_SESSION[SessionKeys::MFA_TOKEN] = 'issued';
+        $_SESSION[AuthFlowSessionKeys::MFA_REQUIRED] = true;
+        $_SESSION[AuthFlowSessionKeys::MFA_TOKEN] = 'issued';
 
         $mfa = $this->createMock(MfaService::class);
         $mfa->expects($this->never())->method('verifyCode');
