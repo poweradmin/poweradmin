@@ -437,6 +437,7 @@ return [
         'enabled' => false,                   // Enable OIDC authentication
         'auto_provision' => true,             // Automatically create user accounts from OIDC
         'link_by_email' => true,              // Link OIDC accounts to existing users by email
+        'require_verified_email' => false,    // Only link by email when the provider sends email_verified (added in 4.5.0)
         'allow_superuser_provisioning' => false, // Let OIDC mappings grant user_is_ueberuser (added in 4.5.0)
         'sync_user_info' => true,             // Sync user information (name, email) from OIDC provider
         'default_permission_template' => 'Guest',  // Default permission template for new OIDC users (minimal access until assigned proper role)

@@ -638,7 +638,7 @@ class UserProvisioningServiceTest extends TestCase
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
         $method->setAccessible(true);
 
-        $this->assertSame($expected, $method->invoke($service, $userInfo));
+        $this->assertSame($expected, $method->invoke($service, $userInfo, []));
     }
 
     /**
@@ -656,7 +656,47 @@ class UserProvisioningServiceTest extends TestCase
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
         $method->setAccessible(true);
 
-        $this->assertTrue($method->invoke($service, $userInfo));
+        $this->assertTrue($method->invoke($service, $userInfo, []));
+    }
+
+    /**
+     * require_verified_email turns the permissive default around: a provider that
+     * never states email_verified may no longer match an existing account.
+     */
+    public function testAbsentClaimIsRefusedWhenVerifiedEmailIsRequired(): void
+    {
+        $service = $this->createServiceWithMocks();
+
+        $userInfo = $this->createMock(\Poweradmin\Domain\ValueObject\UserInfoInterface::class);
+        $userInfo->method('getEmail')->willReturn('admin@tenant.test');
+        $userInfo->method('getRawData')->willReturn(['sub' => 'abc']);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
+        $method->setAccessible(true);
+
+        $this->assertFalse($method->invoke($service, $userInfo, ['require_verified_email' => true]));
+        $this->assertTrue(
+            $method->invoke($service, $userInfo, ['require_verified_email' => false]),
+            'The option defaults off, so an absent claim stays linkable unless it is switched on'
+        );
+    }
+
+    /**
+     * The option only governs the absent case: a provider that says false is
+     * refused either way.
+     */
+    public function testRequireVerifiedEmailDoesNotOverrideAnExplicitClaim(): void
+    {
+        $service = $this->createServiceWithMocks();
+
+        $userInfo = $this->createMock(\Poweradmin\Domain\ValueObject\UserInfoInterface::class);
+        $userInfo->method('getEmail')->willReturn('admin@tenant.test');
+        $userInfo->method('getRawData')->willReturn(['email_verified' => true]);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
+        $method->setAccessible(true);
+
+        $this->assertTrue($method->invoke($service, $userInfo, ['require_verified_email' => true]));
     }
 
     public function testUserHoldsSuperuserPermissionFailsClosedOnDatabaseError(): void

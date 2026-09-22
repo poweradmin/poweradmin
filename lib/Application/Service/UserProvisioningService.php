@@ -129,7 +129,7 @@ class UserProvisioningService extends LoggingService
                 in_array($authMethod, self::LINKABLE_AUTH_METHODS, true)
                 && ($authConfig['link_by_email'] ?? true)
                 && !empty($userInfo->getEmail())
-                && $this->emailClaimIsLinkable($userInfo)
+                && $this->emailClaimIsLinkable($userInfo, $authConfig)
             ) {
                 $existingUserId = $this->findUserByEmail($userInfo->getEmail());
 
@@ -242,12 +242,23 @@ class UserProvisioningService extends LoggingService
      * OpenID Connect defines email_verified so a relying party can tell whether
      * the provider actually confirmed the address; a provider that says "false"
      * is stating the address is attacker-settable. SAML has no equivalent claim,
-     * so an absent value stays permissive and the superuser rule carries the load.
+     * so an absent value stays permissive and the superuser rule carries the load,
+     * unless require_verified_email asks for the claim to be present and true.
+     *
+     * @param array<string, mixed> $authConfig
      */
-    private function emailClaimIsLinkable(UserInfoInterface $userInfo): bool
+    private function emailClaimIsLinkable(UserInfoInterface $userInfo, array $authConfig): bool
     {
         $claims = $userInfo->getRawData();
         if (!array_key_exists('email_verified', $claims)) {
+            if ($authConfig['require_verified_email'] ?? false) {
+                $this->logWarning(
+                    'Provider sent no email_verified claim and require_verified_email is on; skipping email-based account linking for {email}',
+                    ['email' => $userInfo->getEmail()]
+                );
+                return false;
+            }
+
             return true;
         }
 
