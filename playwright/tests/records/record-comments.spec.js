@@ -10,6 +10,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { firstRecordIdOnZone } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -55,11 +56,10 @@ test.describe('Record Comments', () => {
         return;
       }
 
-      await page.goto(`/zones/${zoneId}/edit`);
-
-      const editLink = page.locator('a[href*="/records/"][href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
+      const recordId = await firstRecordIdOnZone(page, zoneId);
+      expect(recordId).not.toBeNull();
+      await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
+      {
 
         const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]');
         const bodyText = await page.locator('body').textContent();
@@ -178,11 +178,10 @@ test.describe('Record Comments', () => {
         return;
       }
 
-      await page.goto(`/zones/${zoneId}/edit`);
-
-      const editLink = page.locator('a[href*="/records/"][href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
+      const recordId = await firstRecordIdOnZone(page, zoneId);
+      expect(recordId).not.toBeNull();
+      await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
+      {
 
         const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
         expect(await commentField.count()).toBeGreaterThan(0);
@@ -203,11 +202,10 @@ test.describe('Record Comments', () => {
         return;
       }
 
-      await page.goto(`/zones/${zoneId}/edit`);
-
-      const editLink = page.locator('a[href*="/records/"][href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
+      const recordId = await firstRecordIdOnZone(page, zoneId);
+      expect(recordId).not.toBeNull();
+      await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
+      {
 
         const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
         expect(await commentField.count()).toBeGreaterThan(0);
@@ -228,12 +226,10 @@ test.describe('Record Comments', () => {
         return;
       }
 
-      await page.goto(`/zones/${zoneId}/edit`);
-
-      // Find an A record to edit
-      const editLink = page.locator('tr:has-text("A") a[href*="/records/"][href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
+      const recordId = await firstRecordIdOnZone(page, zoneId);
+      expect(recordId).not.toBeNull();
+      await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
+      {
 
         const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
         expect(await commentField.count()).toBeGreaterThan(0);

@@ -316,6 +316,32 @@ export async function ensureZoneExists(page, domainName, type = 'master') {
  * @param {string} recordType - Record type (e.g., 'A', 'MX', 'CNAME')
  * @returns {Promise<string|null>} - Record ID or null if not found
  */
+/**
+ * Resolve a record ID from the zone edit page.
+ *
+ * The page edits records inline and carries no per-record edit link, so the ID
+ * comes from the input names (`record[<id>][...]`) rather than from an href.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string|number} zoneId
+ * @returns {Promise<string|null>} the first record ID on the page, or null
+ */
+export async function firstRecordIdOnZone(page, zoneId) {
+  await page.goto(`/zones/${zoneId}/edit`);
+  const names = await page
+    .locator('[name^="record["]')
+    .evaluateAll(nodes => nodes.map(n => n.getAttribute('name')));
+
+  for (const name of names) {
+    const match = name && name.match(/record\[(\d+)\]/);
+    if (match) {
+      return match[1];
+    }
+  }
+
+  return null;
+}
+
 export async function findRecordId(page, zoneId, recordName, recordType = null) {
   await page.goto(`/zones/${zoneId}/edit`);
 

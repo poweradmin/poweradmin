@@ -67,11 +67,7 @@ playwright/tests/records/dns-record-types.spec.js::should hide deprecation warni
 playwright/tests/records/dns-record-types.spec.js::should show deprecation warning when selecting SPF type
 playwright/tests/records/multi-record-checkbox.spec.js::new record row should have unchecked disabled checkbox
 playwright/tests/records/multi-record-checkbox.spec.js::should handle checkbox toggle correctly
-playwright/tests/records/record-comments.spec.js::should clear record comment
-playwright/tests/records/record-comments.spec.js::should display comment column in edit record form when enabled
-playwright/tests/records/record-comments.spec.js::should edit existing record comment
 playwright/tests/records/record-comments.spec.js::should not show warning for non-root CNAME
-playwright/tests/records/record-comments.spec.js::should preserve comment on record update
 playwright/tests/records/record-comments.spec.js::should show warning when editing CNAME to root
 playwright/tests/records/record-validation.spec.js::should reject negative priority
 playwright/tests/search/empty-search.spec.js::clear button should reload the page
