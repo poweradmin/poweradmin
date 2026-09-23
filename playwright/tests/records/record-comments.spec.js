@@ -40,11 +40,11 @@ test.describe('Record Comments', () => {
       await page.goto(`/zones/${zoneId}/records/add`);
 
       const bodyText = await page.locator('body').textContent();
-      // Comment field may or may not be present depending on config
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+
       const hasCommentField = bodyText.toLowerCase().includes('comment') ||
                                await page.locator('textarea[name="comment"], input[name="comment"]').count() > 0;
-      // Test passes if comments are visible or feature is disabled
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(hasCommentField).toBe(true);
     });
 
     test('should display comment column in edit record form when enabled', async ({ page }) => {
@@ -245,10 +245,16 @@ test.describe('Record Comments', () => {
             await ttlField.fill('7200');
           }
 
+          const editUrl = page.url();
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
           // Auto-retrying assertion: the click navigation may still be in flight
           await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+          // The point of the test: editing another field leaves the comment alone
+          await page.goto(editUrl);
+          await expect(page.locator('textarea[name="comment"], input[name="comment"]').first())
+            .toHaveValue(originalComment);
         }
       }
     });
@@ -378,11 +384,11 @@ test.describe('CNAME Root Warning', () => {
     const warningDiv = page.locator('#cnameRootWarning, .alert-warning:has-text("CNAME")');
     const bodyText = await page.locator('body').textContent();
 
-    // Warning should be visible or page should have warning text
-    const hasWarning = await warningDiv.count() > 0 ||
-                       bodyText.toLowerCase().includes('cname') && bodyText.toLowerCase().includes('root');
-    // Test passes if warning is shown or feature works differently
     expect(bodyText).not.toMatch(/fatal|exception/i);
+
+    const hasWarning = await warningDiv.count() > 0 ||
+                       (bodyText.toLowerCase().includes('cname') && bodyText.toLowerCase().includes('root'));
+    expect(hasWarning).toBe(true);
   });
 
   test('should show warning when editing CNAME to root', async ({ page }) => {

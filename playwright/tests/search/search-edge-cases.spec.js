@@ -341,6 +341,9 @@ test.describe('Search Edge Cases', () => {
         // Wait a moment for any error page to settle
         await page.waitForTimeout(500);
         await page.goto('/search', { waitUntil: 'load' });
+      } else {
+        // Going back must land on the search results, not somewhere else
+        expect(page.url()).toBe(searchResultUrl);
       }
 
       await page.waitForLoadState('networkidle');

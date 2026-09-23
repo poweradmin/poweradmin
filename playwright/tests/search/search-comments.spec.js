@@ -21,10 +21,11 @@ test.describe('Search Comments Feature', () => {
       const commentsCheckbox = page.locator('input[name="comments"], input#comments_check');
       const bodyText = await page.locator('body').textContent();
 
-      // Comments option may or may not be present depending on config
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+
       const hasCommentsOption = await commentsCheckbox.count() > 0 ||
                                  bodyText.toLowerCase().includes('comment');
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(hasCommentsOption).toBe(true);
     });
 
     test('should toggle comments search option', async ({ page }) => {
@@ -207,10 +208,11 @@ test.describe('Search Comments Feature', () => {
       await page.waitForLoadState('networkidle');
 
       const bodyText = await page.locator('body').textContent();
-      // Check for comment column header or comment content
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+
       const hasCommentDisplay = bodyText.toLowerCase().includes('comment') ||
                                  await page.locator('th:has-text("Comment")').count() > 0;
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(hasCommentDisplay).toBe(true);
     });
 
     test('should show comment column in record results when enabled', async ({ page }) => {
