@@ -36,7 +36,6 @@ test.describe('Zone Logs', () => {
     test('should display logs table or no logs message', async ({ page }) => {
       await page.goto('/zones/logs');
       const table = page.locator('table').first();
-      const noLogsMsg = page.locator('body');
       expect(await table.count()).toBeGreaterThan(0);
 
       await expect(table).toBeVisible();

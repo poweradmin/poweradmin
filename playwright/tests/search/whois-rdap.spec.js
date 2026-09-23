@@ -89,7 +89,6 @@ test.describe('WHOIS Lookup Page', () => {
       await page.goto('/whois');
 
       const domainInput = page.locator('input[name="domain"]');
-      const bodyText = await page.locator('body').textContent();
 
       expect(await domainInput.count()).toBeGreaterThan(0);
 
@@ -126,7 +125,6 @@ test.describe('WHOIS Lookup Page', () => {
       await page.goto('/whois');
 
       const domainInput = page.locator('input[name="domain"]');
-      const bodyText = await page.locator('body').textContent();
 
       expect(await domainInput.count()).toBeGreaterThan(0);
 
@@ -138,7 +136,6 @@ test.describe('WHOIS Lookup Page', () => {
       await page.goto('/whois');
 
       const domainInput = page.locator('input[name="domain"]');
-      const bodyText = await page.locator('body').textContent();
 
       expect(await domainInput.count()).toBeGreaterThan(0);
 
@@ -155,7 +152,6 @@ test.describe('WHOIS Lookup Page', () => {
       await page.goto('/whois');
 
       const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
-      const bodyText = await page.locator('body').textContent();
 
       expect(await lookupBtn.count()).toBeGreaterThan(0);
 
@@ -173,7 +169,6 @@ test.describe('WHOIS Lookup Page', () => {
       await page.goto('/whois');
 
       const domainInput = page.locator('input[name="domain"]');
-      const bodyText = await page.locator('body').textContent();
 
       expect(await domainInput.count()).toBeGreaterThan(0);
 
@@ -195,7 +190,6 @@ test.describe('WHOIS Lookup Page', () => {
       await page.goto('/whois');
 
       const domainInput = page.locator('input[name="domain"]');
-      const bodyText = await page.locator('body').textContent();
 
       expect(await domainInput.count()).toBeGreaterThan(0);
 
@@ -214,7 +208,6 @@ test.describe('WHOIS Lookup Page', () => {
       await page.goto('/whois');
 
       const domainInput = page.locator('input[name="domain"]');
-      const bodyText = await page.locator('body').textContent();
 
       expect(await domainInput.count()).toBeGreaterThan(0);
 
@@ -244,7 +237,6 @@ test.describe('WHOIS Lookup Page', () => {
       await page.goto('/whois');
 
       const domainInput = page.locator('input[name="domain"]');
-      const bodyText = await page.locator('body').textContent();
 
       expect(await domainInput.count()).toBeGreaterThan(0);
 

@@ -296,7 +296,6 @@ test.describe('API Logs - Log Entries', () => {
   test('should display logs table or no logs message', async ({ page }) => {
     await page.goto('/settings/api/logs');
     const table = page.locator('table').first();
-    const bodyText = await page.locator('body').textContent();
 
     expect(await table.count()).toBeGreaterThan(0);
 

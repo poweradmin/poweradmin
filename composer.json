@@ -104,7 +104,7 @@
     ],
     "lint:themes": "failed=0; for f in $(cd templates/modern && find . -name '*.html' | sed 's|^\\./||' | sort); do if ! grep -qx \"$f\" templates/theme-specific-templates.txt; then echo \"Theme drift: templates/modern/$f is not listed in templates/theme-specific-templates.txt (identical templates live only in templates/default)\"; failed=1; elif cmp -s \"templates/default/$f\" \"templates/modern/$f\"; then echo \"Theme drift: $f is identical in both themes; delete the modern copy and its allowlist entry\"; failed=1; fi; done; for f in $(grep -v '^#' templates/theme-specific-templates.txt); do [ -f \"templates/modern/$f\" ] || { echo \"Theme drift: $f is allowlisted but missing from templates/modern\"; failed=1; }; done; exit $failed",
     "lint:e2e-assertions": "node playwright/tools/check-assertions.js",
-    "lint:js": "npx eslint playwright/",
+    "lint:js": "npx --yes eslint@^9 playwright/",
     "lint:e2e-routes": "php playwright/tools/check-route-paths.php",
     "lint:e2e-urls": "php playwright/tools/check-url-literals.php",
     "lint:no-traits": "! grep -rnE '^\\s*trait ' lib/ --include='*.php' || (echo 'ERROR: lib/ does not use traits; share behaviour through a service or an abstract class instead (the installer keeps its five legacy ones)' && false)",
