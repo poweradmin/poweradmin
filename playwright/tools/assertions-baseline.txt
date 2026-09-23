@@ -1,19 +1,11 @@
 playwright/tests/admin/email-previews.spec.js::should have target=
 playwright/tests/admin/email-previews.spec.js::should load dark mode preview
 playwright/tests/admin/email-previews.spec.js::should load light mode preview
-playwright/tests/api-keys/api-key-crud.spec.js::should access delete confirmation page
-playwright/tests/api-keys/api-key-crud.spec.js::should display API key value one time
-playwright/tests/api-keys/api-key-crud.spec.js::should display success message after creation
 playwright/tests/api-keys/api-key-crud.spec.js::should display warning message
 playwright/tests/api-keys/api-key-crud.spec.js::should have cancel button
 playwright/tests/api-keys/api-key-crud.spec.js::should have cancel option on delete page
 playwright/tests/api-keys/api-key-crud.spec.js::should have confirm delete button
-playwright/tests/api-keys/api-key-crud.spec.js::should have copy button for API key
-playwright/tests/api-keys/api-key-crud.spec.js::should have name field with maxlength attribute
-playwright/tests/api-keys/api-key-crud.spec.js::should have return to API keys link
-playwright/tests/api-keys/api-key-crud.spec.js::should include CSRF token in add form
 playwright/tests/api-keys/api-key-crud.spec.js::should include CSRF token in delete form
-playwright/tests/api-keys/api-key-crud.spec.js::should reject empty name
 playwright/tests/corner-cases/error-handling.spec.js::should properly escape HTML in user input display
 playwright/tests/dashboard/dashboard-views.spec.js::should navigate to add master zone
 playwright/tests/dashboard/dashboard-views.spec.js::should navigate to search

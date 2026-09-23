@@ -204,17 +204,17 @@ test.describe('Add API Key', () => {
 
       const submitBtn = page.locator('button[type="submit"]');
 
-      if (await submitBtn.count() > 0) {
-        await submitBtn.click();
+      expect(await submitBtn.count()).toBeGreaterThan(0);
 
-        const url = page.url();
-        const bodyText = await page.locator('body').textContent();
+      await submitBtn.click();
 
-        const hasValidationError = bodyText.toLowerCase().includes('required') ||
-                                    bodyText.toLowerCase().includes('provide') ||
-                                    url.includes('/add');
-        expect(hasValidationError).toBeTruthy();
-      }
+      const url = page.url();
+      const bodyText = await page.locator('body').textContent();
+
+      const hasValidationError = bodyText.toLowerCase().includes('required') ||
+                                  bodyText.toLowerCase().includes('provide') ||
+                                  url.includes('/add');
+      expect(hasValidationError).toBeTruthy();
     });
 
     test('should have name field with maxlength attribute', async ({ page }) => {
@@ -223,10 +223,10 @@ test.describe('Add API Key', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const maxLength = await nameInput.getAttribute('maxlength');
-        expect(maxLength === '255' || maxLength === null).toBeTruthy();
-      }
+      expect(await nameInput.count()).toBeGreaterThan(0);
+
+      const maxLength = await nameInput.getAttribute('maxlength');
+      expect(maxLength === '255' || maxLength === null).toBeTruthy();
     });
   });
 
@@ -253,17 +253,17 @@ test.describe('API Key Created', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-key-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-key-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        // Auto-retrying so the assertion waits for the post-submit render
-        // instead of racing it.
-        await expect(page.locator('body')).toContainText(/created|success|api key/i);
-      }
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
+
+      // Auto-retrying so the assertion waits for the post-submit render
+      // instead of racing it.
+      await expect(page.locator('body')).toContainText(/created|success|api key/i);
     });
 
     test('should display API key value one time', async ({ page }) => {
@@ -272,17 +272,17 @@ test.describe('API Key Created', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-key-view-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-key-view-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        // Auto-retrying assertion: the submit navigation may still be in flight
-        const keyInput = page.locator('input#api-key-value, input[readonly]');
-        await expect(keyInput.first()).toBeVisible();
-      }
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
+
+      // Auto-retrying assertion: the submit navigation may still be in flight
+      const keyInput = page.locator('input#api-key-value, input[readonly]');
+      await expect(keyInput.first()).toBeVisible();
     });
 
     test('should have copy button for API key', async ({ page }) => {
@@ -291,17 +291,17 @@ test.describe('API Key Created', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-key-copy-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-key-copy-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        // Auto-retrying assertion: the submit navigation may still be in flight
-        const copyBtn = page.locator('#copy-button, button:has-text("Copy")');
-        await expect(copyBtn.first()).toBeVisible();
-      }
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
+
+      // Auto-retrying assertion: the submit navigation may still be in flight
+      const copyBtn = page.locator('#copy-button, button:has-text("Copy")');
+      await expect(copyBtn.first()).toBeVisible();
     });
 
     test('should have return to API keys link', async ({ page }) => {
@@ -310,18 +310,18 @@ test.describe('API Key Created', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-key-return-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-key-return-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        // Link might be in breadcrumb, card, or button
-        const returnLink = page.locator('a[href*="api-keys"], a[href*="settings"]');
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(returnLink.first()).toBeAttached();
-      }
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
+
+      // Link might be in breadcrumb, card, or button
+      const returnLink = page.locator('a[href*="api-keys"], a[href*="settings"]');
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(returnLink.first()).toBeAttached();
     });
   });
 });
@@ -334,23 +334,23 @@ test.describe('Delete API Key', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-delete-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-delete-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        await page.goto('/settings/api-keys');
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
 
-        const deleteLink = page.locator('a[href*="/delete"]').first();
+      await page.goto('/settings/api-keys');
 
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
+      const deleteLink = page.locator('a[href*="/delete"]').first();
 
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).toContainText(/delete|confirm|warning/i);
-        }
+      if (await deleteLink.count() > 0) {
+        await deleteLink.click();
+
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete|confirm|warning/i);
       }
     });
 
@@ -520,10 +520,10 @@ test.describe('API Keys Security', () => {
 
       const csrfToken = page.locator('input[name="_token"]');
 
-      if (await csrfToken.count() > 0) {
-        const tokenValue = await csrfToken.getAttribute('value');
-        expect(tokenValue).toBeTruthy();
-      }
+      expect(await csrfToken.count()).toBeGreaterThan(0);
+
+      const tokenValue = await csrfToken.getAttribute('value');
+      expect(tokenValue).toBeTruthy();
     });
 
     test('should include CSRF token in delete form', async ({ page }) => {
@@ -537,10 +537,10 @@ test.describe('API Keys Security', () => {
 
         const csrfToken = page.locator('input[name="_token"]');
 
-        if (await csrfToken.count() > 0) {
-          const tokenValue = await csrfToken.getAttribute('value');
-          expect(tokenValue).toBeTruthy();
-        }
+        expect(await csrfToken.count()).toBeGreaterThan(0);
+
+        const tokenValue = await csrfToken.getAttribute('value');
+        expect(tokenValue).toBeTruthy();
       }
     });
   });
