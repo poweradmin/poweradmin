@@ -34,7 +34,6 @@ playwright/tests/logs/audit-events.spec.js::should show auth_method in login eve
 playwright/tests/logs/audit-events.spec.js::should show client_ip in log entries
 playwright/tests/logs/user-logs.spec.js::should display clear button
 playwright/tests/logs/user-logs.spec.js::should display log entries when available
-playwright/tests/logs/user-logs.spec.js::should display logs table or no logs message
 playwright/tests/logs/zone-logs.spec.js::should display clear button
 playwright/tests/logs/zone-logs.spec.js::should display color-coded operation badges
 playwright/tests/logs/zone-logs.spec.js::should display details button when logs exist
