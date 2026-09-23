@@ -324,22 +324,29 @@ export async function ensureZoneExists(page, domainName, type = 'master') {
  *
  * @param {import('@playwright/test').Page} page
  * @param {string|number} zoneId
- * @returns {Promise<string|null>} the first record ID on the page, or null
+ * @returns {Promise<string|null>} a non-SOA record ID when the zone has one, else the first ID
  */
 export async function firstRecordIdOnZone(page, zoneId) {
   await page.goto(`/zones/${zoneId}/edit`);
-  const names = await page
-    .locator('[name^="record["]')
-    .evaluateAll(nodes => nodes.map(n => n.getAttribute('name')));
+  // API backend ids encode name, type and content, so accept anything up to the bracket
+  const rows = await page
+    .locator('[name^="record["][name$="[type]"]')
+    .evaluateAll(nodes => nodes.map(n => ({ name: n.getAttribute('name'), type: n.value })));
 
-  for (const name of names) {
-    const match = name && name.match(/record\[(\d+)\]/);
-    if (match) {
+  let fallback = null;
+  for (const row of rows) {
+    const match = row.name && row.name.match(/record\[([^\]]+)\]/);
+    if (!match) {
+      continue;
+    }
+    // Saving the SOA rewrites the serial, and on the API backend that changes the record id
+    if (row.type !== 'SOA') {
       return match[1];
     }
+    fallback = fallback ?? match[1];
   }
 
-  return null;
+  return fallback;
 }
 
 export async function findRecordId(page, zoneId, recordName, recordType = null) {

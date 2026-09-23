@@ -58,7 +58,7 @@ test.describe('Record Comments', () => {
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
-      await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
+      await page.goto(`/zones/${zoneId}/records/${encodeURIComponent(recordId)}/edit`);
       {
 
         const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]');
@@ -180,7 +180,7 @@ test.describe('Record Comments', () => {
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
-      await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
+      await page.goto(`/zones/${zoneId}/records/${encodeURIComponent(recordId)}/edit`);
       {
 
         const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
@@ -204,7 +204,7 @@ test.describe('Record Comments', () => {
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
-      await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
+      await page.goto(`/zones/${zoneId}/records/${encodeURIComponent(recordId)}/edit`);
       {
 
         const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
@@ -228,7 +228,7 @@ test.describe('Record Comments', () => {
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
-      await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
+      await page.goto(`/zones/${zoneId}/records/${encodeURIComponent(recordId)}/edit`);
       {
 
         const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
