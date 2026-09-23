@@ -166,10 +166,10 @@ test.describe('Email Template Previews Page', () => {
 
       const previewLinks = page.locator('a[href*="mode=light"], a[href*="mode=dark"]');
 
-      if (await previewLinks.count() > 0) {
-        const target = await previewLinks.first().getAttribute('target');
-        expect(target).toBe('_blank');
-      }
+      expect(await previewLinks.count()).toBeGreaterThan(0);
+
+      const target = await previewLinks.first().getAttribute('target');
+      expect(target).toBe('_blank');
     });
 
     test('should have sun icon for light mode', async ({ adminPage: page }) => {

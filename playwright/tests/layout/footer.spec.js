@@ -43,9 +43,9 @@ test.describe('Footer', () => {
       const footer = page.locator('footer, .footer').first();
       await expect(footer).toBeVisible();
       const container = footer.locator('.container, .container-fluid');
-      if (await container.count() > 0) {
-        await expect(container.first()).toBeVisible();
-      }
+      expect(await container.count()).toBeGreaterThan(0);
+
+      await expect(container.first()).toBeVisible();
     });
   });
 

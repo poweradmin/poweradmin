@@ -190,37 +190,37 @@ test.describe('Dashboard Views', () => {
 
       // The add zone link may be in a dropdown menu
       const addMasterLink = page.locator('a[href*="/zones/add/master"]');
-      if (await addMasterLink.count() > 0) {
-        // Try to find and open the dropdown menu first if the link is hidden
-        const isVisible = await addMasterLink.first().isVisible();
-        if (!isVisible) {
-          // Look for the Zones dropdown button and click it
-          const zonesDropdown = page.locator('button:has-text("Zones"), [data-bs-toggle="dropdown"]:has-text("Zones")');
-          if (await zonesDropdown.count() > 0) {
-            await zonesDropdown.first().click();
-          }
-        }
-        await addMasterLink.first().click();
-        await expect(page).toHaveURL(/.*zones\/add\/master/);
+      expect(await addMasterLink.count()).toBeGreaterThan(0);
+
+      // Try to find and open the dropdown menu first if the link is hidden
+      const isVisible = await addMasterLink.first().isVisible();
+      if (!isVisible) {
+        // Look for the Zones dropdown button and click it
+        const zonesDropdown = page.locator('button:has-text("Zones"), [data-bs-toggle="dropdown"]:has-text("Zones")');
+        expect(await zonesDropdown.count()).toBeGreaterThan(0);
+
+        await zonesDropdown.first().click();
       }
+      await addMasterLink.first().click();
+      await expect(page).toHaveURL(/.*zones\/add\/master/);
     });
 
     test('should navigate to zones list', async ({ page }) => {
       await page.goto('/');
       const zonesLink = page.locator('a[href*="/zones/forward"]').first();
-      if (await zonesLink.count() > 0) {
-        await zonesLink.click();
-        await expect(page).toHaveURL(/.*zones\/forward/);
-      }
+      expect(await zonesLink.count()).toBeGreaterThan(0);
+
+      await zonesLink.click();
+      await expect(page).toHaveURL(/.*zones\/forward/);
     });
 
     test('should navigate to search', async ({ page }) => {
       await page.goto('/');
       const searchLink = page.locator('a[href*="/search"]').first();
-      if (await searchLink.count() > 0) {
-        await searchLink.click();
-        await expect(page).toHaveURL(/.*\/search/);
-      }
+      expect(await searchLink.count()).toBeGreaterThan(0);
+
+      await searchLink.click();
+      await expect(page).toHaveURL(/.*\/search/);
     });
   });
 });

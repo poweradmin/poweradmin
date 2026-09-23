@@ -1,4 +1,3 @@
-playwright/tests/admin/email-previews.spec.js::should have target=
 playwright/tests/admin/email-previews.spec.js::should load dark mode preview
 playwright/tests/admin/email-previews.spec.js::should load light mode preview
 playwright/tests/api-keys/api-key-crud.spec.js::should display warning message
@@ -7,9 +6,6 @@ playwright/tests/api-keys/api-key-crud.spec.js::should have cancel option on del
 playwright/tests/api-keys/api-key-crud.spec.js::should have confirm delete button
 playwright/tests/api-keys/api-key-crud.spec.js::should include CSRF token in delete form
 playwright/tests/corner-cases/error-handling.spec.js::should properly escape HTML in user input display
-playwright/tests/dashboard/dashboard-views.spec.js::should navigate to add master zone
-playwright/tests/dashboard/dashboard-views.spec.js::should navigate to search
-playwright/tests/dashboard/dashboard-views.spec.js::should navigate to zones list
 playwright/tests/dnssec/dnssec-key-lifecycle.spec.js::manager should access DNSSEC for own zones
 playwright/tests/errors/error-pages.spec.js::decline should link to logout
 playwright/tests/errors/error-pages.spec.js::should require checkbox to be checked
