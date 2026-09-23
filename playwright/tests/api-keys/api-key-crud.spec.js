@@ -17,6 +17,16 @@ import users from '../../fixtures/users.json' with { type: 'json' };
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
+/** Creates a key the caller owns, so delete flows never race another spec's rows. */
+async function createApiKey(page, name) {
+  await page.goto('/settings/api-keys/add');
+  await page.locator('input[name="name"]').fill(name);
+  await page.locator('button[type="submit"]').click();
+  // The add form has its own "Important Information" panel and is re-rendered on
+  // failure, so only text unique to the created page proves the key exists
+  await expect(page.locator('body')).toContainText('IMPORTANT: Save your API key now!');
+}
+
 test.describe('API Keys List', () => {
   test.describe('Page Access', () => {
     test('should access API keys page when logged in', async ({ page }) => {
@@ -528,20 +538,31 @@ test.describe('API Keys Security', () => {
 
     test('should include CSRF token in delete form', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+      // Own key, own row: picking the first delete link races with the other
+      // api-key specs, which create and delete keys of their own
+      const keyName = `csrf-delete-${Date.now()}`;
+      await createApiKey(page, keyName);
+
       await page.goto('/settings/api-keys');
+      const deleteHref = await page
+        .locator('tr', { hasText: keyName })
+        .locator('a[href*="/delete"]')
+        .getAttribute('href');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      try {
+        await page.goto(deleteHref);
 
         const csrfToken = page.locator('input[name="_token"]');
-
-        expect(await csrfToken.count()).toBeGreaterThan(0);
-
-        const tokenValue = await csrfToken.getAttribute('value');
-        expect(tokenValue).toBeTruthy();
+        await expect(csrfToken).toHaveCount(1);
+        await expect(csrfToken).toHaveValue(/.+/);
+      } finally {
+        // Without this the key outlives a failed assertion and every later run
+        await page.goto(deleteHref);
+        await page.locator('button[type="submit"]').click();
       }
+
+      await expect(page.locator('table')).not.toContainText(keyName);
     });
   });
 

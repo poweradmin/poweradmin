@@ -4,7 +4,6 @@ playwright/tests/api-keys/api-key-crud.spec.js::should display warning message
 playwright/tests/api-keys/api-key-crud.spec.js::should have cancel button
 playwright/tests/api-keys/api-key-crud.spec.js::should have cancel option on delete page
 playwright/tests/api-keys/api-key-crud.spec.js::should have confirm delete button
-playwright/tests/api-keys/api-key-crud.spec.js::should include CSRF token in delete form
 playwright/tests/corner-cases/error-handling.spec.js::should properly escape HTML in user input display
 playwright/tests/dnssec/dnssec-key-lifecycle.spec.js::manager should access DNSSEC for own zones
 playwright/tests/errors/error-pages.spec.js::decline should link to logout
