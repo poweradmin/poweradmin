@@ -43,7 +43,7 @@ test.describe('Record Comments', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
 
       const hasCommentField = bodyText.toLowerCase().includes('comment') ||
-                               await page.locator('textarea[name="comment"], input[name="comment"]').count() > 0;
+                               await page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').count() > 0;
       expect(hasCommentField).toBe(true);
     });
 
@@ -61,7 +61,7 @@ test.describe('Record Comments', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
 
-        const commentField = page.locator('textarea[name="comment"], input[name="comment"]');
+        const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]');
         const bodyText = await page.locator('body').textContent();
 
         // Comment field should be present if feature is enabled
@@ -103,10 +103,10 @@ test.describe('Record Comments', () => {
       await page.locator('input[name*="name"]').first().fill(`comment-test-${Date.now()}`);
       await page.locator('input[name*="content"]').first().fill('192.168.1.50');
 
-      const commentField = page.locator('textarea[name="comment"], input[name="comment"]').first();
-      if (await commentField.count() > 0) {
-        await commentField.fill('Test comment for A record');
-      }
+      const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
+      expect(await commentField.count()).toBeGreaterThan(0);
+
+      await commentField.fill('Test comment for A record');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -128,10 +128,10 @@ test.describe('Record Comments', () => {
       await page.locator('input[name*="name"]').first().fill(`txt-comment-${Date.now()}`);
       await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('v=spf1 -all');
 
-      const commentField = page.locator('textarea[name="comment"], input[name="comment"]').first();
-      if (await commentField.count() > 0) {
-        await commentField.fill('SPF record comment');
-      }
+      const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
+      expect(await commentField.count()).toBeGreaterThan(0);
+
+      await commentField.fill('SPF record comment');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -157,10 +157,10 @@ test.describe('Record Comments', () => {
         await prioField.fill('10');
       }
 
-      const commentField = page.locator('textarea[name="comment"], input[name="comment"]').first();
-      if (await commentField.count() > 0) {
-        await commentField.fill('Primary mail server');
-      }
+      const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
+      expect(await commentField.count()).toBeGreaterThan(0);
+
+      await commentField.fill('Primary mail server');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -184,14 +184,14 @@ test.describe('Record Comments', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
 
-        const commentField = page.locator('textarea[name="comment"], input[name="comment"]').first();
-        if (await commentField.count() > 0) {
-          await commentField.fill(`Updated comment ${Date.now()}`);
-          await page.locator('button[type="submit"], input[type="submit"]').first().click();
+        const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
+        expect(await commentField.count()).toBeGreaterThan(0);
 
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+        await commentField.fill(`Updated comment ${Date.now()}`);
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -209,14 +209,14 @@ test.describe('Record Comments', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
 
-        const commentField = page.locator('textarea[name="comment"], input[name="comment"]').first();
-        if (await commentField.count() > 0) {
-          await commentField.clear();
-          await page.locator('button[type="submit"], input[type="submit"]').first().click();
+        const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
+        expect(await commentField.count()).toBeGreaterThan(0);
 
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+        await commentField.clear();
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -235,27 +235,27 @@ test.describe('Record Comments', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
 
-        const commentField = page.locator('textarea[name="comment"], input[name="comment"]').first();
-        if (await commentField.count() > 0) {
-          const originalComment = await commentField.inputValue();
+        const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
+        expect(await commentField.count()).toBeGreaterThan(0);
 
-          // Update TTL but not comment
-          const ttlField = page.locator('input[name*="ttl"]').first();
-          if (await ttlField.count() > 0) {
-            await ttlField.fill('7200');
-          }
+        const originalComment = await commentField.inputValue();
 
-          const editUrl = page.url();
-          await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-
-          // The point of the test: editing another field leaves the comment alone
-          await page.goto(editUrl);
-          await expect(page.locator('textarea[name="comment"], input[name="comment"]').first())
-            .toHaveValue(originalComment);
+        // Update TTL but not comment
+        const ttlField = page.locator('input[name*="ttl"]').first();
+        if (await ttlField.count() > 0) {
+          await ttlField.fill('7200');
         }
+
+        const editUrl = page.url();
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+        // The point of the test: editing another field leaves the comment alone
+        await page.goto(editUrl);
+        await expect(page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first())
+          .toHaveValue(originalComment);
       }
     });
   });
@@ -275,10 +275,10 @@ test.describe('Record Comments', () => {
       await page.locator('input[name*="name"]').first().fill(`quote-test-${Date.now()}`);
       await page.locator('input[name*="content"]').first().fill('192.168.1.51');
 
-      const commentField = page.locator('textarea[name="comment"], input[name="comment"]').first();
-      if (await commentField.count() > 0) {
-        await commentField.fill('Comment with "quotes" and \'apostrophes\'');
-      }
+      const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
+      expect(await commentField.count()).toBeGreaterThan(0);
+
+      await commentField.fill('Comment with "quotes" and \'apostrophes\'');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -300,10 +300,10 @@ test.describe('Record Comments', () => {
       await page.locator('input[name*="name"]').first().fill(`html-test-${Date.now()}`);
       await page.locator('input[name*="content"]').first().fill('192.168.1.52');
 
-      const commentField = page.locator('textarea[name="comment"], input[name="comment"]').first();
-      if (await commentField.count() > 0) {
-        await commentField.fill('Comment with <brackets> & ampersand');
-      }
+      const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
+      expect(await commentField.count()).toBeGreaterThan(0);
+
+      await commentField.fill('Comment with <brackets> & ampersand');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -325,10 +325,10 @@ test.describe('Record Comments', () => {
       await page.locator('input[name*="name"]').first().fill(`multiline-${Date.now()}`);
       await page.locator('input[name*="content"]').first().fill('192.168.1.53');
 
-      const commentField = page.locator('textarea[name="comment"]').first();
-      if (await commentField.count() > 0) {
-        await commentField.fill('Line 1\nLine 2\nLine 3');
-      }
+      const commentField = page.locator('[name$="[comment]"], textarea[name="comment"]').first();
+      expect(await commentField.count()).toBeGreaterThan(0);
+
+      await commentField.fill('Line 1\nLine 2\nLine 3');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -352,11 +352,11 @@ test.describe('Record Comments', () => {
       await page.locator('input[name*="name"]').first().fill(`long-comment-${Date.now()}`);
       await page.locator('input[name*="content"]').first().fill('192.168.1.54');
 
-      const commentField = page.locator('textarea[name="comment"], input[name="comment"]').first();
-      if (await commentField.count() > 0) {
-        const longComment = 'This is a very long comment. '.repeat(20);
-        await commentField.fill(longComment);
-      }
+      const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
+      expect(await commentField.count()).toBeGreaterThan(0);
+
+      const longComment = 'This is a very long comment. '.repeat(20);
+      await commentField.fill(longComment);
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
