@@ -287,6 +287,18 @@ test.describe('DNSSEC Key Management', () => {
     });
   });
 
+  /**
+   * Every delete test needs a key of its own: they used to act on whichever key
+   * the zone already had, and the test that submits the delete form removed it,
+   * so the ones that ran afterwards found no delete link at all.
+   */
+  async function createDnssecKey(page, zoneId) {
+    await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
+    await expect(page.locator('form').first()).toBeVisible();
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+  }
+
   test.describe('Delete DNSSEC Key', () => {
     // These tests consume keys, so every one of them starts from a zone that has at least one
     test.beforeEach(async ({ page }) => {
@@ -302,6 +314,7 @@ test.describe('DNSSEC Key Management', () => {
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
+      await createDnssecKey(page, zoneId);
       await page.goto(`/zones/${zoneId}/dnssec`);
 
       const deleteLinks = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]');
@@ -313,6 +326,7 @@ test.describe('DNSSEC Key Management', () => {
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
+      await createDnssecKey(page, zoneId);
       await page.goto(`/zones/${zoneId}/dnssec`);
 
       const deleteLink = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]').first();
@@ -326,6 +340,7 @@ test.describe('DNSSEC Key Management', () => {
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
+      await createDnssecKey(page, zoneId);
       await page.goto(`/zones/${zoneId}/dnssec`);
 
       const deleteLink = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]').first();
@@ -343,6 +358,7 @@ test.describe('DNSSEC Key Management', () => {
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
+      await createDnssecKey(page, zoneId);
       await page.goto(`/zones/${zoneId}/dnssec`);
 
       const deleteLink = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]').first();
@@ -361,6 +377,7 @@ test.describe('DNSSEC Key Management', () => {
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
+      await createDnssecKey(page, zoneId);
       await page.goto(`/zones/${zoneId}/dnssec`);
 
       const deleteLink = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]').last();
