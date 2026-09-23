@@ -67,11 +67,11 @@ test.describe('Cleanup Test Zones', () => {
               deletedCount++;
               console.log(`Deleted zone matching: ${pattern}`);
             }
-          } catch (e) {
+          } catch {
             // Continue to next row
           }
         }
-      } catch (e) {
+      } catch {
         // Pattern not found, continue
       }
     }

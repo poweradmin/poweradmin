@@ -174,9 +174,9 @@ test.describe('Bulk Record Operations', () => {
 
       await page.goto(`/zones/${zoneId}/edit`);
       const checkboxes = page.locator('input[type="checkbox"][name*="record"]');
-      // Checkboxes may or may not exist depending on records present
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(await checkboxes.count()).toBeGreaterThan(0);
     });
 
     test('should have select all checkbox', async ({ page }) => {
@@ -188,10 +188,11 @@ test.describe('Bulk Record Operations', () => {
       }
 
       await page.goto(`/zones/${zoneId}/edit`);
-      const selectAllCheckbox = page.locator('input[type="checkbox"][id*="all"], input[type="checkbox"].select-all');
-      // Select all may or may not exist
+      // The control is #select_edit_records; the old id*="all" selector matched nothing
+      const selectAllCheckbox = page.locator('#select_edit_records');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(await selectAllCheckbox.count()).toBeGreaterThan(0);
     });
 
     test('should have delete selected button', async ({ page }) => {
@@ -203,10 +204,12 @@ test.describe('Bulk Record Operations', () => {
       }
 
       await page.goto(`/zones/${zoneId}/edit`);
-      const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")');
-      // Delete button may or may not be visible
+      // The control is #delete-selected-records, and it is disabled until a row
+      // is ticked, so the old text-matching selector never found it
+      const deleteBtn = page.locator('#delete-selected-records');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(await deleteBtn.count()).toBeGreaterThan(0);
     });
   });
 
@@ -292,11 +295,12 @@ test.describe('Bulk Record Operations', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
 
-        // Viewer should have limited or no edit access
-        const addRecordLink = page.locator('a[href*="/records/add"]');
-        // Either no add link or page shows read-only
         // Auto-retrying assertion: the click navigation may still be in flight
         await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+        // The point of the test: a viewer is offered no way to add a record
+        const addRecordLink = page.locator('a[href*="/records/add"]');
+        expect(await addRecordLink.count()).toBe(0);
       }
     });
   });

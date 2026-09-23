@@ -30,11 +30,10 @@ async function globalSetup(config) {
     console.log('[Global Setup] Login successful');
 
     // Create zones from fixtures
-    let created = 0;
     let existing = 0;
     let failed = 0;
 
-    for (const [key, zone] of Object.entries(zones)) {
+    for (const zone of Object.values(zones)) {
       // Skip slave zones as they require a running master
       if (zone.type.toUpperCase() === 'SLAVE') {
         console.log(`[Global Setup] Skipping slave zone: ${zone.name}`);
