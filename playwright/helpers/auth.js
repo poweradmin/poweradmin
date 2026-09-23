@@ -41,9 +41,18 @@ export async function loginAndWaitForDashboard(page, username, password, maxRetr
   const cached = sessionCache.get(username);
   if (cached) {
     await page.context().addCookies(cached);
-    await page.goto('/');
-    if (!page.url().includes('/login')) {
-      return; // Cached session still valid
+    let reusable = false;
+    try {
+      await page.goto('/');
+      reusable = !page.url().includes('/login');
+    } catch {
+      // A session another test logged out of can leave the server bouncing
+      // between / and /login, which fails the navigation instead of landing
+      // on the form; fall through to a fresh login rather than failing here
+      reusable = false;
+    }
+    if (reusable) {
+      return;
     }
     sessionCache.delete(username);
     await page.context().clearCookies();
