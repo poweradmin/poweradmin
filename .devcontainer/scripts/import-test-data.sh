@@ -883,6 +883,7 @@ main() {
         echo "  - Login attempts: 2 successful, 3 failed"
         echo "  - Group audit logs: 4 entries"
         echo "  - User preference: rows_per_page = 100 for every test user (the seeded zones fit on one page)"
+        echo "  - Password reset token: 'e2e-password-reset-token' for admin@example.com (the reset form only renders for a valid token)"
         echo ""
         exit 0
     else
