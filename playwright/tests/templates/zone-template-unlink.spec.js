@@ -71,16 +71,13 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
       // Look for template links in the main content area (table)
       const templateLinks = page.locator('table a[href*="/zones/templates"]').first();
 
-      if (await templateLinks.count() > 0) {
-        await templateLinks.click();
-        await page.waitForLoadState('networkidle');
+      expect(await templateLinks.count()).toBeGreaterThan(0);
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/zone|template|unlink/i);
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.length).toBeGreaterThan(0);
-      }
+      await templateLinks.click();
+      await page.waitForLoadState('networkidle');
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText.toLowerCase()).toMatch(/zone|template|unlink/i);
     });
   });
 
@@ -114,18 +111,18 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
       // Look for template links in table, not dropdowns
       const templateLinks = page.locator('table a[href*="/zones/templates"]').first();
 
-      if (await templateLinks.count() > 0) {
-        await templateLinks.click();
-        await page.waitForLoadState('networkidle');
+      expect(await templateLinks.count()).toBeGreaterThan(0);
 
-        const bodyText = await page.locator('body').textContent();
-        const table = page.locator('table');
+      await templateLinks.click();
+      await page.waitForLoadState('networkidle');
 
-        const hasTable = await table.count() > 0;
-        const hasZoneInfo = bodyText.toLowerCase().includes('zone');
+      const bodyText = await page.locator('body').textContent();
+      const table = page.locator('table');
 
-        expect(hasTable || hasZoneInfo).toBeTruthy();
-      }
+      const hasTable = await table.count() > 0;
+      const hasZoneInfo = bodyText.toLowerCase().includes('zone');
+
+      expect(hasTable || hasZoneInfo).toBeTruthy();
     });
 
     test('zones table should have zone name column', async ({ page }) => {
@@ -144,17 +141,13 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
       // Find a template edit link in the table body
       const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
 
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
+      expect(await editLink.count()).toBeGreaterThan(0);
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/zone|template|empty|no.*zone/i);
-      } else {
-        // No edit links found, just verify page loaded
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-      }
+      await editLink.click();
+      await page.waitForLoadState('networkidle');
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText.toLowerCase()).toMatch(/zone|template|empty|no.*zone/i);
     });
 
     test('zones table should have type column', async ({ page }) => {
@@ -172,21 +165,18 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
       // Find a template edit link in the table body
       const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
 
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
+      expect(await editLink.count()).toBeGreaterThan(0);
 
-        const bodyText = await page.locator('body').textContent();
-        const hasTypeInfo = bodyText.toLowerCase().includes('type') ||
-                            bodyText.toLowerCase().includes('master') ||
-                            bodyText.toLowerCase().includes('slave') ||
-                            bodyText.toLowerCase().includes('native');
+      await editLink.click();
+      await page.waitForLoadState('networkidle');
 
-        expect(hasTypeInfo || page.url().includes('template')).toBeTruthy();
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-      }
+      const bodyText = await page.locator('body').textContent();
+      const hasTypeInfo = bodyText.toLowerCase().includes('type') ||
+                          bodyText.toLowerCase().includes('master') ||
+                          bodyText.toLowerCase().includes('slave') ||
+                          bodyText.toLowerCase().includes('native');
+
+      expect(hasTypeInfo || page.url().includes('template')).toBeTruthy();
     });
   });
 

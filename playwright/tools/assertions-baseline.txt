@@ -43,7 +43,6 @@ playwright/tests/logs/zone-logs.spec.js::should display clear button
 playwright/tests/logs/zone-logs.spec.js::should display color-coded operation badges
 playwright/tests/logs/zone-logs.spec.js::should display details button when logs exist
 playwright/tests/logs/zone-logs.spec.js::should display log entries when available
-playwright/tests/logs/zone-logs.spec.js::should display logs table or no logs message
 playwright/tests/mfa/mfa-management.spec.js::should handle MFA verification form
 playwright/tests/mfa/mfa-setup.spec.js::should use POST for MFA actions
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on RDAP page from zone ID
@@ -91,10 +90,6 @@ playwright/tests/search/search-comprehensive.spec.js::should search by record ty
 playwright/tests/search/search-edge-cases.spec.js::should handle clicking search result link
 playwright/tests/templates/zone-template-management.spec.js::should add records to a zone template
 playwright/tests/templates/zone-template-records.spec.js::manager should access template records for own templates
-playwright/tests/templates/zone-template-unlink.spec.js::template should have proper structure for unlink warning
-playwright/tests/templates/zone-template-unlink.spec.js::template zones page should show zones in table
-playwright/tests/templates/zone-template-unlink.spec.js::zones table should have type column
-playwright/tests/templates/zone-template-unlink.spec.js::zones table should have zone name column
 playwright/tests/templates/zone-template-update-zones.spec.js::should handle template with no linked zones gracefully
 playwright/tests/templates/zone-templates.spec.js::should add records to zone template
 playwright/tests/templates/zone-templates.spec.js::should show action buttons on single line
@@ -106,8 +101,6 @@ playwright/tests/zones/zone-crud.spec.js::should cancel delete and return to pre
 playwright/tests/zones/zone-crud.spec.js::should display delete confirmation message
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have disabled kind dropdowns
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have readonly value inputs
-playwright/tests/zones/zone-metadata-readonly.spec.js::should see Metadata button (not View Metadata)
-playwright/tests/zones/zone-metadata-readonly.spec.js::should see View Metadata button on zone edit page
 playwright/tests/zones/zone-operations.spec.js::should access SOA edit page
 playwright/tests/zones/zone-operations.spec.js::should display record count for zones
 playwright/tests/zones/zone-operations.spec.js::should display slave zone master IP

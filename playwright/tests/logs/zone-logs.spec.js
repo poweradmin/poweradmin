@@ -37,12 +37,9 @@ test.describe('Zone Logs', () => {
       await page.goto('/zones/logs');
       const table = page.locator('table').first();
       const noLogsMsg = page.locator('body');
-      if (await table.count() > 0) {
-        await expect(table).toBeVisible();
-      } else {
-        const bodyText = await noLogsMsg.textContent();
-        expect(bodyText.toLowerCase()).toMatch(/no.*log|empty/i);
-      }
+      expect(await table.count()).toBeGreaterThan(0);
+
+      await expect(table).toBeVisible();
     });
 
     test('should display logs count', async ({ page }) => {

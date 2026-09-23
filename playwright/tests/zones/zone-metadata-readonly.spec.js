@@ -50,9 +50,9 @@ test.describe('Zone Metadata Read-Only View', () => {
 
       await page.goto(`/zones/${zoneId}/edit`);
       const metadataLink = page.locator('a[href*="/metadata"]');
-      if (await metadataLink.count() > 0) {
-        await expect(metadataLink.first()).toContainText('View Metadata');
-      }
+      expect(await metadataLink.count()).toBeGreaterThan(0);
+
+      await expect(metadataLink.first()).toContainText('View Metadata');
     });
 
     test('should load metadata page in read-only mode', async ({ page }) => {
@@ -142,11 +142,11 @@ test.describe('Zone Metadata Read-Only View', () => {
 
       await page.goto(`/zones/${zoneId}/edit`);
       const metadataLink = page.locator('a[href*="/metadata"]');
-      if (await metadataLink.count() > 0) {
-        await expect(metadataLink.first()).toContainText('Metadata');
-        const text = await metadataLink.first().textContent();
-        expect(text.trim()).not.toMatch(/^View Metadata$/);
-      }
+      expect(await metadataLink.count()).toBeGreaterThan(0);
+
+      await expect(metadataLink.first()).toContainText('Metadata');
+      const text = await metadataLink.first().textContent();
+      expect(text.trim()).not.toMatch(/^View Metadata$/);
     });
 
     test('should see edit controls on metadata page', async ({ page }) => {
