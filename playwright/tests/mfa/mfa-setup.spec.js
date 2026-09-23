@@ -204,11 +204,11 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
+
+      await setupAppBtn.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should display QR code when setting up app', async ({ page }) => {
@@ -217,21 +217,21 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        // The setup page is reached by a form post; wait for it before reading the body.
-        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
+      await setupAppBtn.click();
 
-        const qrCode = page.locator('img[alt*="QR"], .qr-code, canvas');
-        const bodyText = await page.locator('body').textContent();
+      // The setup page is reached by a form post; wait for it before reading the body.
+      await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
-        const hasQR = await qrCode.count() > 0;
-        const hasSecret = bodyText.toLowerCase().includes('secret') ||
-                          bodyText.toLowerCase().includes('code');
+      const qrCode = page.locator('img[alt*="QR"], .qr-code, canvas');
+      const bodyText = await page.locator('body').textContent();
 
-        expect(hasQR || hasSecret).toBeTruthy();
-      }
+      const hasQR = await qrCode.count() > 0;
+      const hasSecret = bodyText.toLowerCase().includes('secret') ||
+                        bodyText.toLowerCase().includes('code');
+
+      expect(hasQR || hasSecret).toBeTruthy();
     });
 
     test('should display manual entry key', async ({ page }) => {
@@ -240,19 +240,19 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        // The setup page is reached by a form post; wait for it before reading the body.
-        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
+      await setupAppBtn.click();
 
-        const bodyText = await page.locator('body').textContent();
-        const hasManualKey = bodyText.toLowerCase().includes('manual') ||
-                             bodyText.toLowerCase().includes('secret') ||
-                             bodyText.toLowerCase().includes('key');
+      // The setup page is reached by a form post; wait for it before reading the body.
+      await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
-        expect(hasManualKey).toBeTruthy();
-      }
+      const bodyText = await page.locator('body').textContent();
+      const hasManualKey = bodyText.toLowerCase().includes('manual') ||
+                           bodyText.toLowerCase().includes('secret') ||
+                           bodyText.toLowerCase().includes('key');
+
+      expect(hasManualKey).toBeTruthy();
     });
 
     test('should have verification code input', async ({ page }) => {
@@ -261,14 +261,12 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        const codeInput = page.locator('input[name="code"], input[name="verification_code"], input[type="text"]');
-        if (await codeInput.count() > 0) {
-          await expect(codeInput.first()).toBeVisible();
-        }
-      }
+      await setupAppBtn.click();
+
+      const codeInput = page.locator('input[name="code"], input[name="verification_code"], input[type="text"]');
+      await expect(codeInput.first()).toBeVisible();
     });
 
     test('should have copy secret button', async ({ page }) => {
@@ -277,18 +275,18 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        // The setup page is reached by a form post; wait for it before reading the body.
-        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
+      await setupAppBtn.click();
 
-        const copyBtn = page.locator('button:has(.bi-clipboard), button[onclick*="copy"]');
-        const secretInput = page.locator('input[id="secret-key"], input[readonly]');
+      // The setup page is reached by a form post; wait for it before reading the body.
+      await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
-        const hasCopyOption = await copyBtn.count() > 0 || await secretInput.count() > 0;
-        expect(hasCopyOption).toBeTruthy();
-      }
+      const copyBtn = page.locator('button:has(.bi-clipboard), button[onclick*="copy"]');
+      const secretInput = page.locator('input[id="secret-key"], input[readonly]');
+
+      const hasCopyOption = await copyBtn.count() > 0 || await secretInput.count() > 0;
+      expect(hasCopyOption).toBeTruthy();
     });
 
     test('should have verify and enable MFA button', async ({ page }) => {
@@ -297,12 +295,12 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
-        await expect(verifyBtn).toBeVisible();
-      }
+      await setupAppBtn.click();
+
+      const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
+      await expect(verifyBtn).toBeVisible();
     });
 
     test('should have cancel button', async ({ page }) => {
@@ -311,12 +309,12 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        const cancelBtn = page.locator('a:has-text("Cancel"), button:has-text("Cancel")');
-        await expect(cancelBtn).toBeVisible();
-      }
+      await setupAppBtn.click();
+
+      const cancelBtn = page.locator('a:has-text("Cancel"), button:has-text("Cancel")');
+      await expect(cancelBtn).toBeVisible();
     });
 
     test('should display recommended authenticator apps', async ({ page }) => {
@@ -325,19 +323,19 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        // The setup page is reached by a form post; wait for it before reading the body.
-        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
+      await setupAppBtn.click();
 
-        const bodyText = await page.locator('body').textContent();
-        const hasAppRecommendations = bodyText.toLowerCase().includes('google authenticator') ||
-                                       bodyText.toLowerCase().includes('microsoft authenticator') ||
-                                       bodyText.toLowerCase().includes('authy') ||
-                                       bodyText.toLowerCase().includes('recommended');
-        expect(hasAppRecommendations).toBeTruthy();
-      }
+      // The setup page is reached by a form post; wait for it before reading the body.
+      await expect(page.locator('input[name="verification_code"]')).toBeVisible();
+
+      const bodyText = await page.locator('body').textContent();
+      const hasAppRecommendations = bodyText.toLowerCase().includes('google authenticator') ||
+                                     bodyText.toLowerCase().includes('microsoft authenticator') ||
+                                     bodyText.toLowerCase().includes('authy') ||
+                                     bodyText.toLowerCase().includes('recommended');
+      expect(hasAppRecommendations).toBeTruthy();
     });
   });
 
@@ -348,19 +346,19 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
-        await verifyBtn.click();
+      await setupAppBtn.click();
 
-        const bodyText = await page.locator('body').textContent();
-        const isOnSetupPage = bodyText.toLowerCase().includes('qr') ||
-                               bodyText.toLowerCase().includes('scan') ||
-                               bodyText.toLowerCase().includes('verification code') ||
-                               bodyText.toLowerCase().includes('invalid');
-        expect(isOnSetupPage).toBeTruthy();
-      }
+      const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
+      await verifyBtn.click();
+
+      const bodyText = await page.locator('body').textContent();
+      const isOnSetupPage = bodyText.toLowerCase().includes('qr') ||
+                             bodyText.toLowerCase().includes('scan') ||
+                             bodyText.toLowerCase().includes('verification code') ||
+                             bodyText.toLowerCase().includes('invalid');
+      expect(isOnSetupPage).toBeTruthy();
     });
 
     test('should reject invalid verification code', async ({ page }) => {
@@ -369,25 +367,25 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        const codeInput = page.locator('input[name="verification_code"]');
-        await codeInput.fill('000000');
+      await setupAppBtn.click();
 
-        const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
-        await verifyBtn.click();
+      const codeInput = page.locator('input[name="verification_code"]');
+      await codeInput.fill('000000');
 
-        // Auto-retrying assertion: the verify navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/invalid|error|incorrect|verification code/i);
+      const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
+      await verifyBtn.click();
 
-        const bodyText = await page.locator('body').textContent();
-        const hasError = bodyText.toLowerCase().includes('invalid') ||
-                         bodyText.toLowerCase().includes('error') ||
-                         bodyText.toLowerCase().includes('incorrect') ||
-                         bodyText.toLowerCase().includes('verification code');
-        expect(hasError).toBeTruthy();
-      }
+      // Auto-retrying assertion: the verify navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/invalid|error|incorrect|verification code/i);
+
+      const bodyText = await page.locator('body').textContent();
+      const hasError = bodyText.toLowerCase().includes('invalid') ||
+                       bodyText.toLowerCase().includes('error') ||
+                       bodyText.toLowerCase().includes('incorrect') ||
+                       bodyText.toLowerCase().includes('verification code');
+      expect(hasError).toBeTruthy();
     });
 
     test('should enforce numeric input for verification code', async ({ page }) => {
@@ -396,16 +394,16 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        const codeInput = page.locator('input[name="verification_code"]');
+      await setupAppBtn.click();
 
-        const inputMode = await codeInput.getAttribute('inputmode');
-        const pattern = await codeInput.getAttribute('pattern');
+      const codeInput = page.locator('input[name="verification_code"]');
 
-        expect(inputMode === 'numeric' || pattern === '[0-9]*').toBeTruthy();
-      }
+      const inputMode = await codeInput.getAttribute('inputmode');
+      const pattern = await codeInput.getAttribute('pattern');
+
+      expect(inputMode === 'numeric' || pattern === '[0-9]*').toBeTruthy();
     });
 
     test('should enforce 6-digit code length', async ({ page }) => {
@@ -414,16 +412,16 @@ test.describe('MFA App Setup Flow', () => {
 
       const setupAppBtn = page.locator('button[name="setup_app"]');
 
-      if (await setupAppBtn.count() > 0) {
-        await setupAppBtn.click();
+      expect(await setupAppBtn.count()).toBeGreaterThan(0);
 
-        const codeInput = page.locator('input[name="verification_code"]');
+      await setupAppBtn.click();
 
-        const minLength = await codeInput.getAttribute('minlength');
-        const maxLength = await codeInput.getAttribute('maxlength');
+      const codeInput = page.locator('input[name="verification_code"]');
 
-        expect(minLength === '6' && maxLength === '6').toBeTruthy();
-      }
+      const minLength = await codeInput.getAttribute('minlength');
+      const maxLength = await codeInput.getAttribute('maxlength');
+
+      expect(minLength === '6' && maxLength === '6').toBeTruthy();
     });
   });
 });
@@ -436,12 +434,12 @@ test.describe('Email MFA Setup Flow', () => {
 
       const setupEmailBtn = page.locator('button[name="setup_email"]');
 
-      if (await setupEmailBtn.count() > 0) {
-        await setupEmailBtn.click();
+      expect(await setupEmailBtn.count()).toBeGreaterThan(0);
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/email|verification|code|not available/i);
-      }
+      await setupEmailBtn.click();
+
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/email|verification|code|not available/i);
     });
 
     test('should display user email address', async ({ page }) => {
@@ -450,20 +448,20 @@ test.describe('Email MFA Setup Flow', () => {
 
       const setupEmailBtn = page.locator('button[name="setup_email"]');
 
-      if (await setupEmailBtn.count() > 0) {
-        await setupEmailBtn.click();
+      expect(await setupEmailBtn.count()).toBeGreaterThan(0);
 
-        // The setup page is reached by a form post; wait for it before reading the body.
-        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
+      await setupEmailBtn.click();
 
-        const bodyText = await page.locator('body').textContent();
-        const hasEmailInfo = bodyText.includes('@') ||
-                              bodyText.toLowerCase().includes('email') ||
-                              bodyText.toLowerCase().includes('sent') ||
-                              bodyText.toLowerCase().includes('verification') ||
-                              bodyText.toLowerCase().includes('code');
-        expect(hasEmailInfo).toBeTruthy();
-      }
+      // The setup page is reached by a form post; wait for it before reading the body.
+      await expect(page.locator('input[name="verification_code"]')).toBeVisible();
+
+      const bodyText = await page.locator('body').textContent();
+      const hasEmailInfo = bodyText.includes('@') ||
+                            bodyText.toLowerCase().includes('email') ||
+                            bodyText.toLowerCase().includes('sent') ||
+                            bodyText.toLowerCase().includes('verification') ||
+                            bodyText.toLowerCase().includes('code');
+      expect(hasEmailInfo).toBeTruthy();
     });
   });
 });

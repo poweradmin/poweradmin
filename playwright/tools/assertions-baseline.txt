@@ -61,20 +61,6 @@ playwright/tests/logs/zone-logs.spec.js::should display details button when logs
 playwright/tests/logs/zone-logs.spec.js::should display log entries when available
 playwright/tests/logs/zone-logs.spec.js::should display logs table or no logs message
 playwright/tests/mfa/mfa-management.spec.js::should handle MFA verification form
-playwright/tests/mfa/mfa-setup.spec.js::should display QR code when setting up app
-playwright/tests/mfa/mfa-setup.spec.js::should display manual entry key
-playwright/tests/mfa/mfa-setup.spec.js::should display recommended authenticator apps
-playwright/tests/mfa/mfa-setup.spec.js::should display user email address
-playwright/tests/mfa/mfa-setup.spec.js::should enforce 6-digit code length
-playwright/tests/mfa/mfa-setup.spec.js::should enforce numeric input for verification code
-playwright/tests/mfa/mfa-setup.spec.js::should have cancel button
-playwright/tests/mfa/mfa-setup.spec.js::should have copy secret button
-playwright/tests/mfa/mfa-setup.spec.js::should have verification code input
-playwright/tests/mfa/mfa-setup.spec.js::should have verify and enable MFA button
-playwright/tests/mfa/mfa-setup.spec.js::should navigate to app setup after clicking setup button
-playwright/tests/mfa/mfa-setup.spec.js::should navigate to email setup when available
-playwright/tests/mfa/mfa-setup.spec.js::should reject empty verification code
-playwright/tests/mfa/mfa-setup.spec.js::should reject invalid verification code
 playwright/tests/mfa/mfa-setup.spec.js::should use POST for MFA actions
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on RDAP page from zone ID
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on WHOIS page from zone ID
