@@ -189,17 +189,17 @@ test.describe('API Logs - Navigation', () => {
 
     const toolsToggle = page.locator('a.dropdown-toggle:has-text("Tools")');
 
-    if (await toolsToggle.count() > 0) {
-      await toolsToggle.click();
-      await page.waitForTimeout(300);
+    expect(await toolsToggle.count()).toBeGreaterThan(0);
 
-      const apiLogsLink = page.locator('.dropdown-menu a[href*="/settings/api/logs"]');
+    await toolsToggle.click();
+    await page.waitForTimeout(300);
 
-      if (await apiLogsLink.count() > 0) {
-        await apiLogsLink.click();
-        await expect(page).toHaveURL(/.*settings\/api\/logs/);
-      }
-    }
+    const apiLogsLink = page.locator('.dropdown-menu a[href*="/settings/api/logs"]');
+
+    expect(await apiLogsLink.count()).toBeGreaterThan(0);
+
+    await apiLogsLink.click();
+    await expect(page).toHaveURL(/.*settings\/api\/logs/);
   });
 });
 
@@ -250,9 +250,9 @@ test.describe('API Logs - Filter Controls', () => {
 
   test('should display clear button', async ({ page }) => {
     const clearBtn = page.locator('form a.btn[href*="/settings/api/logs"]');
-    if (await clearBtn.count() > 0) {
-      await expect(clearBtn).toBeVisible();
-    }
+    expect(await clearBtn.count()).toBeGreaterThan(0);
+
+    await expect(clearBtn).toBeVisible();
   });
 
   test('should submit filter form', async ({ page }) => {
@@ -298,11 +298,9 @@ test.describe('API Logs - Log Entries', () => {
     const table = page.locator('table').first();
     const bodyText = await page.locator('body').textContent();
 
-    if (await table.count() > 0) {
-      await expect(table).toBeVisible();
-    } else {
-      expect(bodyText.toLowerCase()).toMatch(/no.*log|no logs found/i);
-    }
+    expect(await table.count()).toBeGreaterThan(0);
+
+    await expect(table).toBeVisible();
   });
 
   test('should display log entries from API key creation', async ({ page }) => {
@@ -381,17 +379,17 @@ test.describe('API Logs - Export', () => {
   test('should open export modal', async ({ page }) => {
     const exportBtn = page.locator('button[data-bs-target="#exportModal"]');
 
-    if (await exportBtn.count() > 0) {
-      await exportBtn.click();
+    expect(await exportBtn.count()).toBeGreaterThan(0);
 
-      const modal = page.locator('#exportModal');
-      await expect(modal).toBeVisible();
+    await exportBtn.click();
 
-      const modalText = await modal.textContent();
-      expect(modalText).toMatch(/Export Logs/);
-      expect(modalText).toMatch(/CSV/);
-      expect(modalText).toMatch(/JSON/);
-    }
+    const modal = page.locator('#exportModal');
+    await expect(modal).toBeVisible();
+
+    const modalText = await modal.textContent();
+    expect(modalText).toMatch(/Export Logs/);
+    expect(modalText).toMatch(/CSV/);
+    expect(modalText).toMatch(/JSON/);
   });
 });
 

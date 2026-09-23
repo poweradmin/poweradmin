@@ -31,16 +31,12 @@ playwright/tests/layout/layout-comprehensive.spec.js::should navigate to zones p
 playwright/tests/layout/layout-comprehensive.spec.js::should show supermasters link
 playwright/tests/layout/navigation.spec.js::should have access to list zones
 playwright/tests/logs/api-logs.spec.js::should delete the API key (api_key_delete)
-playwright/tests/logs/api-logs.spec.js::should display clear button
 playwright/tests/logs/api-logs.spec.js::should display export button when logs exist
 playwright/tests/logs/api-logs.spec.js::should display log entries from API key creation
-playwright/tests/logs/api-logs.spec.js::should display logs table or no logs message
 playwright/tests/logs/api-logs.spec.js::should display operation badges with colors
 playwright/tests/logs/api-logs.spec.js::should edit the API key (api_key_edit)
 playwright/tests/logs/api-logs.spec.js::should have details button for log entries
-playwright/tests/logs/api-logs.spec.js::should navigate to API logs from Tools dropdown
 playwright/tests/logs/api-logs.spec.js::should open details modal when clicking details button
-playwright/tests/logs/api-logs.spec.js::should open export modal
 playwright/tests/logs/api-logs.spec.js::should regenerate the API key (api_key_regenerate)
 playwright/tests/logs/audit-events.spec.js::should show auth_method in login events
 playwright/tests/logs/audit-events.spec.js::should show client_ip in log entries
