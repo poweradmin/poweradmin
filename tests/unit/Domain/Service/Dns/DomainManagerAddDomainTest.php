@@ -209,7 +209,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             [['id' => self::DOMAIN_ID, 'name' => 'new.example', 'type' => 'MASTER', 'owner' => self::CALLER_ID]],
             $this->loggedZones
         );
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testOwnerlessZoneWithGroupsSkipsTheAccountPushAndKeepsUniqueGroups(): void
@@ -351,7 +351,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             $this->rows('SELECT domain_id, group_id FROM zones_groups ORDER BY group_id')
         );
         $this->assertSame([], $this->rows('SELECT id FROM records_zone_templ_api'));
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testNativeRowsAreWrittenInsideTheManagerTransaction(): void
@@ -361,7 +361,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         // The SOA write runs while the transaction is open: the zones and zones_groups
         // rows must already be visible on this connection, and uncommitted.
         $this->backend->method('addRecord')->willReturnCallback(function (): bool {
-            $this->assertTrue($this->db->inTransaction());
+            $this->assertTrue((new PdoTransaction($this->db))->inTransaction());
             $this->assertSame([['domain_id' => self::DOMAIN_ID]], $this->rows('SELECT domain_id FROM zones'));
             $this->assertSame([['group_id' => 4]], $this->rows('SELECT group_id FROM zones_groups'));
             return false;
@@ -369,7 +369,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         // deleteZone() runs after the rollback and before any compensating DELETE,
         // so empty tables here prove the rows rode on the manager's transaction.
         $this->backend->expects($this->once())->method('deleteZone')->willReturnCallback(function (): bool {
-            $this->assertFalse($this->db->inTransaction());
+            $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
             $this->assertSame([], $this->rows('SELECT id FROM zones'));
             $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
             return true;
@@ -441,7 +441,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             [['record_id' => 'new.example./NS/new.example.', 'zone_templ_id' => self::TEMPLATE_ID]],
             $this->rows('SELECT record_id, zone_templ_id FROM records_zone_templ_api')
         );
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testApiBackendSoaFailureRemovesTheCommittedMetadata(): void
@@ -463,7 +463,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
         $this->assertSame([], $this->loggedZones);
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testApiBackendTemplateFailureEmptiesAllFourMetadataTables(): void
@@ -496,7 +496,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
         $this->assertSame([], $this->rows('SELECT id FROM records_zone_templ'));
         $this->assertSame([], $this->rows('SELECT id FROM records_zone_templ_api'));
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testSoaFailureRollsBackAndDeletesTheBackendZone(): void
@@ -514,7 +514,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
         $this->assertSame([], $this->loggedZones);
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testTemplateRecordFailureNamesTheTypeAndCleansUp(): void
@@ -538,7 +538,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertSame([], $this->rows('SELECT id FROM records_zone_templ'));
         $this->assertSame([], $this->rows('SELECT id FROM zone_template_sync'));
         $this->assertSame([], $this->loggedZones);
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testExceptionInsideTheTransactionRollsBackAndCleansUp(): void
@@ -556,7 +556,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
         $this->assertSame([], $this->loggedZones);
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testNonNumericTemplateIsRefusedAfterTheBackendZoneExists(): void
@@ -574,7 +574,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertSame([], $this->rows('SELECT id FROM zones'));
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
         $this->assertSame([], $this->loggedZones);
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testChangeLogFailureDoesNotFailTheCreation(): void

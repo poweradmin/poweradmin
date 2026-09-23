@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
@@ -49,14 +51,16 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
 {
     private PowerdnsApiClient $client;
     private PDO $db;
+    private TransactionInterface $transaction;
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
 
     /** @var array<string, int>|null Zone name to local id, resolved once per request. */
     private ?array $localZoneIds = null;
 
-    public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
+    public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
     {
+        $this->transaction = $transaction ?? new PdoTransaction($db);
         $this->client = $client;
         $this->db = $db;
         $this->config = $config;
@@ -114,9 +118,9 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
         // The insert and its domain_id backfill must land together. Committed apart, an
         // interrupted request strands the row at a domain_id no canonical read resolves.
-        $ownsTransaction = !$this->db->inTransaction();
+        $ownsTransaction = !$this->transaction->inTransaction();
         if ($ownsTransaction) {
-            $this->db->beginTransaction();
+            $this->transaction->begin();
         }
 
         try {
@@ -136,7 +140,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
             $stmt->execute();
 
             if ($ownsTransaction) {
-                $this->db->commit();
+                $this->transaction->commit();
             }
         } catch (\Throwable $e) {
             if ($ownsTransaction) {
@@ -157,8 +161,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
      */
     private function rollBackIfOpen(): void
     {
-        if ($this->db->inTransaction()) {
-            $this->db->rollBack();
+        if ($this->transaction->inTransaction()) {
+            $this->transaction->rollBack();
         }
     }
 

@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
@@ -40,6 +42,7 @@ use Poweradmin\Domain\Service\User\UpdateUserCommand;
 class DbUserRepository implements UserRepositoryInterface
 {
     private object $db;
+    private ?TransactionInterface $transactionPort = null;
     private ConfigurationInterface $config;
     private bool $isApiBackend;
 
@@ -719,7 +722,7 @@ class DbUserRepository implements UserRepositoryInterface
     {
         try {
             // Start transaction to ensure atomicity
-            $this->db->beginTransaction();
+            $this->transaction()->begin();
 
             // Delete related OIDC/SAML authentication links first
             $this->cleanupExternalAuthLinks($userId);
@@ -743,7 +746,7 @@ class DbUserRepository implements UserRepositoryInterface
                 $stmt->execute([':userId' => $userId]);
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (\Exception $e) {
             $this->db->rollback();
@@ -1164,5 +1167,14 @@ class DbUserRepository implements UserRepositoryInterface
             $stmt->execute([':permTemplId' => $permTemplId]);
         }
         return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

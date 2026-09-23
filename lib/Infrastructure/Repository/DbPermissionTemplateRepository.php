@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
@@ -35,6 +37,7 @@ use Poweradmin\Domain\Enum\PermissionTemplateType;
 final class DbPermissionTemplateRepository implements PermissionTemplateRepositoryInterface
 {
     private object $db;
+    private ?TransactionInterface $transactionPort = null;
 
     // $config is unused but kept so every Db*Repository is constructed alike.
     public function __construct($db, ConfigurationInterface $config)
@@ -55,7 +58,7 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
     {
         $template_type = $details['template_type'] ?? 'user';
 
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr, template_type) VALUES (:name, :descr, :template_type)");
             $stmt->execute([
@@ -77,10 +80,10 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
                 }
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             throw $e;
         }
     }
@@ -148,7 +151,7 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
     {
         $template_type = $details['template_type'] ?? 'user';
 
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $stmt = $this->db->prepare("UPDATE perm_templ SET name = :name, descr = :descr, template_type = :template_type WHERE id = :id");
             $stmt->execute([
@@ -174,10 +177,10 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
                 }
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             throw $e;
         }
     }
@@ -312,5 +315,14 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
         $stmt->execute([':id' => $id]);
 
         return PermissionTemplateDeleteResult::DELETED;
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use DateTime;
 use Exception;
 use PDO;
@@ -38,6 +40,7 @@ use Psr\Log\NullLogger;
 final class DbApiKeyRepository implements ApiKeyRepositoryInterface
 {
     private PDO $db;
+    private ?TransactionInterface $transactionPort = null;
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
 
@@ -255,7 +258,7 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
         // Wrap both deletes in one transaction: deleting the scope rows first and
         // then failing to delete the key would leave a key with no scope, i.e. an
         // unrestricted key. On failure everything rolls back.
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
 
         try {
             $zones = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :id");
@@ -267,10 +270,10 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
             $stmt->execute();
             $deleted = $stmt->rowCount() > 0;
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return $deleted;
         } catch (\Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             return false;
         }
     }
@@ -384,7 +387,7 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function saveZoneIds(int $apiKeyId, array $zoneIds): void
     {
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $delete = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :apiKeyId");
             $delete->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
@@ -400,10 +403,19 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
                 }
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

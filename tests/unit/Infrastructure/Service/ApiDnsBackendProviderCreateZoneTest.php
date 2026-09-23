@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -126,7 +127,7 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
     {
         $this->provider()->createZone('example.com', 'MASTER');
 
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testDoesNotCommitATransactionItDidNotOpen(): void
@@ -135,7 +136,7 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
 
         $zoneId = $this->provider()->createZone('example.com', 'MASTER');
 
-        $this->assertTrue($this->db->inTransaction(), 'the caller still owns its transaction');
+        $this->assertTrue((new PdoTransaction($this->db))->inTransaction(), 'the caller still owns its transaction');
         $this->db->rollBack();
         $this->assertSame([], $this->row($zoneId), 'the row must roll back with the caller');
     }
@@ -148,6 +149,6 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
 
         $this->assertSame(9, $zoneId);
         $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 }

@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use Poweradmin\Domain\Model\ZoneDetail;
 use Poweradmin\Domain\Model\ZoneSummary;
@@ -45,6 +47,7 @@ use Poweradmin\Domain\Enum\ZoneSoaHealth;
 class DbZoneRepository implements ZoneRepositoryInterface
 {
     private object $db;
+    private ?TransactionInterface $transactionPort = null;
     private string $db_type;
     private ReverseZoneSorting $reverseZoneSorting;
     private object $config;
@@ -946,7 +949,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         // Wrap the dependent deletes in one transaction so a mid-sequence failure
         // rolls back instead of leaving a half-deleted zone.
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
 
         try {
             foreach (
@@ -971,10 +974,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 $stmt->execute();
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (\Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             return false;
         }
     }
@@ -1234,5 +1237,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $owners = new DbZoneAccountOwnerRepository($this->db, $this->backendProvider?->allocatesZoneIdsLocally() ?? false);
         $accountSync = new ZoneAccountSyncService($owners, $this->config, $this->backendProvider);
         $accountSync->syncZoneAccount($domainId);
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

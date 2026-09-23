@@ -151,7 +151,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend->method('recordExists')->willReturn(false);
         $written = [];
         $this->backend->method('addRecordGetId')->willReturnCallback(function (int $domainId, string $name, string $type, string $content, int $ttl, int $prio) use (&$written) {
-            $this->assertTrue($this->db->inTransaction(), 'SQL backend writes join the open transaction');
+            $this->assertTrue((new PdoTransaction($this->db))->inTransaction(), 'SQL backend writes join the open transaction');
             $written[] = [$domainId, $name, $type, $content, $ttl, $prio];
             return 500 + count($written);
         });
@@ -184,7 +184,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->assertSame([self::ZONE_ID, self::ZONE_ID, self::ZONE_ID], array_column($this->loggedDeletes, 'zone'));
         $this->assertSame([501, 502, 503], array_column($this->loggedCreates, 'id'));
         $this->assertSame(['SOA', 'MX', 'A'], array_column($this->loggedCreates, 'type'));
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testSwitchingTemplatesLeavesThePreviousTemplateRecordsInPlace(): void
@@ -340,7 +340,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->backend->expects($this->once())->method('addRecordGetId')
             ->with(self::ZONE_ID, 'www.old.example', 'A', '192.0.2.10', self::TTL, 0)
             ->willReturnCallback(function (): string {
-                $this->assertFalse($this->db->inTransaction(), 'API writes happen after the local rows are committed');
+                $this->assertFalse((new PdoTransaction($this->db))->inTransaction(), 'API writes happen after the local rows are committed');
                 return 'www.old.example./A/192.0.2.10';
             });
 
@@ -359,7 +359,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         );
         $this->assertSame(['old.example./A/192.0.2.1'], array_column($this->loggedDeletes, 'id'));
         $this->assertSame(['www.old.example./A/192.0.2.10'], array_column($this->loggedCreates, 'id'));
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testApiBackendWithoutMappingsLeavesExistingRecordsAlone(): void
@@ -388,7 +388,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->assertSame('Failed to update zone records: disk full', $result->message);
         $this->assertSame([['id' => 101]], $this->rows('SELECT id FROM records'));
         $this->assertSame([['zone_templ_id' => self::OLD_TEMPLATE_ID]], $this->rows('SELECT zone_templ_id FROM zones'));
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     public function testChangeLogFailureDoesNotFailTheApplication(): void

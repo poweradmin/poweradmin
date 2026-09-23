@@ -293,24 +293,24 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->backend = $this->createMock(BackendCapabilitiesInterface::class);
         $this->backend->method('supportsLocalWriteTransaction')->willReturn(true);
         $this->recordManager->method('addRecordGetId')->willReturnCallback(function (): RecordWriteResult {
-            $this->assertTrue($this->db->inTransaction());
+            $this->assertTrue((new PdoTransaction($this->db))->inTransaction());
             return RecordWriteResult::ok(77);
         });
         $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
         $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
         $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID)->willReturnCallback(function (): bool {
-            $this->assertTrue($this->db->inTransaction());
+            $this->assertTrue((new PdoTransaction($this->db))->inTransaction());
             return true;
         });
         $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, false)->willReturnCallback(function (): void {
-            $this->assertFalse($this->db->inTransaction());
+            $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
         });
         $id = $this->fileThreeActions();
 
         $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
 
         $this->assertTrue($result->success, $result->message);
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
         $this->assertSame(ZoneChangeRequest::STATUS_APPROVED, $this->repository->find($id)->status);
     }
 
@@ -366,7 +366,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
 
         $this->assertFalse($result->success);
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
         $this->assertSame('Action 2 (edit) failed: Invalid IP address. Nothing was applied.', $this->repository->find($id)->error);
     }
 

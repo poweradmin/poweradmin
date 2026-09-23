@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Service\Consistency;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
@@ -34,6 +36,7 @@ use Poweradmin\Domain\Database\TableNameService;
 class SqlConsistencyChecks extends AbstractConsistencyChecks
 {
     private string $domainsTable;
+    private ?TransactionInterface $transactionPort = null;
     private string $recordsTable;
 
     public function __construct(
@@ -186,7 +189,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
 
     public function deleteSlaveZone(int $zoneId): bool
     {
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
@@ -201,10 +204,10 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             $stmt = $this->db->prepare("DELETE FROM {$this->domainsTable} WHERE id = :id");
             $stmt->execute(['id' => $zoneId]);
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             return false;
         }
     }
@@ -217,14 +220,14 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
 
     public function fixDuplicateSOA(int $zoneId): bool
     {
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $stmt = $this->db->prepare("SELECT id FROM {$this->recordsTable} WHERE domain_id = :zone_id AND type = 'SOA' ORDER BY id ASC");
             $stmt->execute(['zone_id' => $zoneId]);
             $soaRecords = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
             if (count($soaRecords) <= 1) {
-                $this->db->commit();
+                $this->transaction()->commit();
                 return true;
             }
 
@@ -233,10 +236,10 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id IN ($placeholders)");
             $stmt->execute($soaRecords);
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             return false;
         }
     }
@@ -267,5 +270,14 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         $name = $stmt->fetchColumn();
 
         return $name === false || $name === null || $name === '' ? null : (string)$name;
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

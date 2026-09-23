@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use PDOException;
 use Poweradmin\Domain\Model\MetadataDefinitions;
@@ -44,11 +46,15 @@ use Psr\Log\NullLogger;
 final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 {
     private PDO $db;
+    private TransactionInterface $transaction;
     private TableNameService $tableNameService;
     private LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
     {
+        // Ownership is decided through the port: on SQLite a transaction can be
+        // open without PDO knowing, and opening a second one then fails.
+        $this->transaction = $transaction ?? new PdoTransaction($db);
         $this->db = $db;
         $this->tableNameService = new TableNameService($config);
         $this->logger = $logger ?? new NullLogger();
@@ -90,7 +96,7 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
         // Callers run this before opening their own transaction, so wrapping the
         // dependent deletes here makes the backend cleanup atomic: a mid-sequence
         // failure rolls back instead of leaving a half-deleted zone.
-        $this->db->beginTransaction();
+        $this->transaction->begin();
 
         try {
             foreach (
@@ -105,10 +111,10 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
                 $stmt->execute([':id' => $domainId]);
             }
 
-            $this->db->commit();
+            $this->transaction->commit();
             return true;
         } catch (\Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction->rollBack();
             return false;
         }
     }
@@ -302,7 +308,7 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
     {
         // If already inside a caller's transaction (e.g. RRSet replace, bulk ops),
         // just do the INSERT without managing the transaction ourselves.
-        $ownsTransaction = !$this->db->inTransaction();
+        $ownsTransaction = !$this->transaction->inTransaction();
 
         $maxRetries = $ownsTransaction ? 3 : 1;
         $retryDelay = 50000; // 50ms in microseconds
@@ -310,7 +316,7 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
         for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
             try {
                 if ($ownsTransaction) {
-                    $this->db->beginTransaction();
+                    $this->transaction->begin();
                 }
 
                 $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -331,12 +337,12 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
                 $id = (int)$this->db->lastInsertId('records_id_seq');
 
                 if ($ownsTransaction) {
-                    $this->db->commit();
+                    $this->transaction->commit();
                 }
                 return $id;
             } catch (\Exception $e) {
-                if ($ownsTransaction && $this->db->inTransaction()) {
-                    $this->db->rollBack();
+                if ($ownsTransaction && $this->transaction->inTransaction()) {
+                    $this->transaction->rollBack();
                 }
 
                 if ($ownsTransaction && $this->isDeadlockError($e) && $attempt < $maxRetries) {

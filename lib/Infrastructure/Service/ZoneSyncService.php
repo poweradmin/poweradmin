@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
@@ -41,6 +43,7 @@ use Psr\Log\NullLogger;
 class ZoneSyncService
 {
     private PDO $db;
+    private TransactionInterface $transaction;
     private ZoneReadBackendInterface $backendProvider;
     private LoggerInterface $logger;
     private SessionInterface $session;
@@ -51,8 +54,9 @@ class ZoneSyncService
     /** @var string Session key for tracking last sync time */
     private const LAST_SYNC_KEY = 'zone_sync_last';
 
-    public function __construct(PDO $db, ZoneReadBackendInterface $backendProvider, SessionInterface $session, int $syncInterval = 300, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, ZoneReadBackendInterface $backendProvider, SessionInterface $session, int $syncInterval = 300, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
     {
+        $this->transaction = $transaction ?? new PdoTransaction($db);
         $this->session = $session;
         $this->db = $db;
         $this->backendProvider = $backendProvider;
@@ -202,9 +206,9 @@ class ZoneSyncService
         // Wrap in a single transaction so the initial sync on a large PowerDNS
         // (thousands of zones) completes in seconds instead of minutes. Without
         // this each INSERT+UPDATE pair is auto-committed individually.
-        $ownsTransaction = !$this->db->inTransaction();
+        $ownsTransaction = !$this->transaction->inTransaction();
         if ($ownsTransaction) {
-            $this->db->beginTransaction();
+            $this->transaction->begin();
         }
 
         $count = 0;
@@ -221,11 +225,11 @@ class ZoneSyncService
                 }
             }
             if ($ownsTransaction) {
-                $this->db->commit();
+                $this->transaction->commit();
             }
         } catch (\Throwable $e) {
-            if ($ownsTransaction && $this->db->inTransaction()) {
-                $this->db->rollBack();
+            if ($ownsTransaction && $this->transaction->inTransaction()) {
+                $this->transaction->rollBack();
             }
             throw $e;
         }

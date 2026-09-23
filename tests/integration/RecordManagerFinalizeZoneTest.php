@@ -83,12 +83,12 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
     {
         $soa = $this->createMock(SOARecordManagerInterface::class);
         $soa->method('updateSOASerial')->willReturnCallback(function (): bool {
-            $this->assertTrue($this->db->inTransaction(), 'the serial bump must share the insert transaction');
+            $this->assertTrue((new PdoTransaction($this->db))->inTransaction(), 'the serial bump must share the insert transaction');
             return true;
         });
 
         $this->assertTrue($this->makeRecordManager($soa, $this->createMock(RecordChangeLogger::class))->addRecordGetId(self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0)->success);
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     #[RunInSeparateProcess]
@@ -102,7 +102,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
         $result = $this->makeRecordManager($soa, $this->createMock(RecordChangeLogger::class), $backend)->addRecordGetId(self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0);
 
         $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
-        $this->assertFalse($this->db->inTransaction());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
     #[RunInSeparateProcess]

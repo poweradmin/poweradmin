@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
@@ -35,6 +37,7 @@ use Poweradmin\Domain\Database\TableNameService;
 final class DbZoneMetadataStore implements ZoneMetadataStoreInterface
 {
     private TableNameService $tableNameService;
+    private ?TransactionInterface $transactionPort = null;
 
     public function __construct(private readonly PDO $db, ConfigurationInterface $config)
     {
@@ -56,7 +59,7 @@ final class DbZoneMetadataStore implements ZoneMetadataStoreInterface
     {
         $table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $delete = $this->db->prepare("DELETE FROM $table WHERE domain_id = :domain_id");
             $delete->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
@@ -72,10 +75,10 @@ final class DbZoneMetadataStore implements ZoneMetadataStoreInterface
                 }
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (\Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             return false;
         }
     }
@@ -93,5 +96,14 @@ final class DbZoneMetadataStore implements ZoneMetadataStoreInterface
     public function replaceKind(int $zoneId, string $zoneName, string $kind, array $values, array $before): bool
     {
         return $this->replaceAll($zoneId, $zoneName, ZoneMetadataService::replaceKindIn($before, $kind, $values), $before);
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

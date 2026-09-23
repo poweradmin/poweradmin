@@ -33,15 +33,6 @@ parameters:
     # looks dead. The state genuinely changed in between and removing any of
     # these would drop a verification or, worse, a rollback. Each is scoped to
     # its file for want of a narrower hook.
-    #   SqlDnsBackendProvider, ZoneSyncService - inTransaction() in the catch,
-    #   narrowed from the call made before beginTransaction(). Deleting either
-    #   skips the rollback.
-    -
-      identifier: booleanAnd.rightAlwaysFalse
-      path: lib/Infrastructure/Service/SqlDnsBackendProvider.php
-    -
-      identifier: booleanAnd.rightAlwaysFalse
-      path: lib/Infrastructure/Service/ZoneSyncService.php
     # processIPv6() is kept alongside its commented-out call site until IPv6
     # reverse-record creation is finished; see the FIXME above that call.
     -

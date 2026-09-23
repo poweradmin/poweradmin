@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Service\Consistency;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Port\ApiStatusInterface;
@@ -39,6 +41,7 @@ use Poweradmin\Domain\Database\CanonicalZoneSql;
 final class ApiConsistencyChecks extends AbstractConsistencyChecks
 {
     private bool $recordReadFailed = false;
+    private ?TransactionInterface $transactionPort = null;
 
     public function __construct(
         private readonly PDO $db,
@@ -153,7 +156,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
             return false;
         }
 
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
@@ -162,10 +165,10 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
             $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             return false;
         }
     }
@@ -328,5 +331,14 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
     private function unlessARecordReadFailed(array $results): ?array
     {
         return $this->recordReadFailed ? null : $results;
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

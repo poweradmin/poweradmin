@@ -48,7 +48,7 @@ class PdoTransactionTest extends TestCase
         $this->assertFalse($this->transaction->inTransaction());
         $this->transaction->begin();
         $this->assertTrue($this->transaction->inTransaction());
-        $this->assertTrue($this->db->inTransaction(), 'the port drives the same handle the repositories write through');
+        $this->assertTrue($this->transaction->inTransaction(), 'the port drives the same handle the repositories write through');
 
         $this->db->exec('INSERT INTO t (id) VALUES (1)');
         $this->assertSame(1, $this->rowCount());
@@ -66,5 +66,48 @@ class PdoTransactionTest extends TestCase
 
         $this->assertFalse($this->transaction->inTransaction());
         $this->assertSame(1, $this->rowCount());
+    }
+
+    public function testASecondPortOverTheSameHandleSeesTheOpenTransaction(): void
+    {
+        // Several services wrap the same connection in their own port; they all
+        // have to agree, or one of them opens a second transaction and fails.
+        $other = new PdoTransaction($this->db);
+
+        $this->transaction->begin();
+        $this->assertTrue($other->inTransaction());
+
+        $this->transaction->rollBack();
+        $this->assertFalse($other->inTransaction());
+    }
+
+    public function testTheWriteLockIsTakenAtBeginOnSqlite(): void
+    {
+        $file = sys_get_temp_dir() . '/poweradmin-tx-lock-' . getmypid() . '.db';
+        @unlink($file);
+
+        try {
+            $owner = new PDO('sqlite:' . $file, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            $owner->exec('CREATE TABLE t (id INTEGER PRIMARY KEY)');
+            $transaction = new PdoTransaction($owner);
+            $transaction->begin();
+
+            $other = new PDO('sqlite:' . $file, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            $other->exec('PRAGMA busy_timeout = 250');
+
+            $refused = false;
+            try {
+                $other->exec('BEGIN IMMEDIATE');
+            } catch (\PDOException) {
+                $refused = true;
+            }
+
+            $transaction->rollBack();
+            $this->assertTrue($refused, 'the write lock must be held from BEGIN, not from the first write');
+        } finally {
+            foreach ([$file, $file . '-wal', $file . '-shm'] as $path) {
+                @unlink($path);
+            }
+        }
     }
 }

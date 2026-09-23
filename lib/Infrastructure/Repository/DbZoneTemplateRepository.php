@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Exception;
 use LogicException;
 use PDO;
@@ -48,6 +50,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      * Default SOA record stamped into a template that carries none.
      */
     private const DEFAULT_SOA_NAME = '[ZONE]';
+    private ?TransactionInterface $transactionPort = null;
     private const DEFAULT_SOA_CONTENT = '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400';
 
     private object $db;
@@ -441,7 +444,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         int $createdBy,
         array $records
     ): int {
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) VALUES (:name, :descr, :owner, :created_by)");
             $stmt->execute([
@@ -484,10 +487,10 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
                 ]);
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return $templateId;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             throw $e;
         }
     }
@@ -536,7 +539,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      */
     public function deleteZoneTemplate(int $id): bool
     {
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $stmt = $this->db->prepare("DELETE FROM zone_templ WHERE id = :id");
             $stmt->execute([':id' => $id]);
@@ -555,10 +558,10 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
             $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id = :id");
             $stmt->execute([':id' => $id]);
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             throw $e;
         }
     }
@@ -924,5 +927,14 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
                                     ORDER BY d.name");
         $stmt->execute($zoneIds);
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }
