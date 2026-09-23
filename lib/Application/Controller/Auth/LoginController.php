@@ -73,7 +73,10 @@ class LoginController extends BaseController
 
     public function run(): void
     {
-        if ($this->session()->has(SessionKeys::USERID)) {
+        // Must match IndexController's check exactly. A session carrying a
+        // non-positive userid is not authenticated there, and answering it with
+        // a redirect here left the browser bouncing between the two forever.
+        if ($this->getUserContextService()->isAuthenticated()) {
             $this->redirect('/');
             return;
         }
