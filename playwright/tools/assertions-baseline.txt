@@ -81,11 +81,8 @@ playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain o
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on WHOIS page from zone ID
 playwright/tests/modules/zone-file-export.spec.js::should show Zone File option in Export dropdown when module is enabled
 playwright/tests/navigation/dashboard-navigation.spec.js::should have functional zone navigation links
-playwright/tests/navigation/pagination.spec.js::should display correct page numbers in pagination
 playwright/tests/navigation/pagination.spec.js::should display items per page selector if available
 playwright/tests/navigation/pagination.spec.js::should maintain pagination when filtering zones
-playwright/tests/navigation/pagination.spec.js::should navigate to next page of zones
-playwright/tests/navigation/pagination.spec.js::should navigate to previous page of zones
 playwright/tests/navigation/pagination.spec.js::should preserve sort order across pages
 playwright/tests/password-recovery/forgot-password.spec.js::should navigate to login page
 playwright/tests/password-recovery/forgot-username.spec.js::should navigate back to login page
@@ -138,8 +135,6 @@ playwright/tests/templates/zone-template-unlink.spec.js::template zones page sho
 playwright/tests/templates/zone-template-unlink.spec.js::zones table should have type column
 playwright/tests/templates/zone-template-unlink.spec.js::zones table should have zone name column
 playwright/tests/templates/zone-template-update-zones.spec.js::should handle template with no linked zones gracefully
-playwright/tests/templates/zone-template-update-zones.spec.js::should handle update with multiple zones linked to template
-playwright/tests/templates/zone-template-update-zones.spec.js::should update zones from template without fatal error (issue #944/#945)
 playwright/tests/templates/zone-templates.spec.js::should add records to zone template
 playwright/tests/templates/zone-templates.spec.js::should show action buttons on single line
 playwright/tests/templates/zone-templates.spec.js::should verify template records applied to new zone

@@ -161,29 +161,25 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       await page.goto(`/zones/templates/${templateId}/edit`);
 
       const updateBtn = page.locator('button[name="update_zones"], input[name="update_zones"]').first();
+      await expect(updateBtn).toBeVisible();
 
-      if (await updateBtn.count() > 0) {
-        await updateBtn.scrollIntoViewIfNeeded();
-        await updateBtn.click();
-        await page.waitForLoadState('networkidle');
+      await updateBtn.scrollIntoViewIfNeeded();
+      // Applying a template rewrites every linked zone, which on the API backend
+      // is a round trip per zone, so the submission outlives the action timeout.
+      await updateBtn.click({ timeout: 60000 });
+      // Not networkidle: the API-backed instances keep connections open and
+      // never reach it
+      await page.waitForLoadState('domcontentloaded');
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
 
-        const hasSuccess = bodyText.toLowerCase().includes('success') ||
-                          bodyText.toLowerCase().includes('updated') ||
-                          bodyText.toLowerCase().includes('zone');
-        const stayedOnPage = page.url().includes('templates');
+      const hasSuccess = bodyText.toLowerCase().includes('success') ||
+                        bodyText.toLowerCase().includes('updated') ||
+                        bodyText.toLowerCase().includes('zone');
+      const stayedOnPage = page.url().includes('templates');
 
-        expect(hasSuccess || stayedOnPage).toBeTruthy();
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
-        test.info().annotations.push({
-          type: 'note',
-          description: 'No update zones button found - zone may not be linked to template'
-        });
-      }
+      expect(hasSuccess || stayedOnPage).toBeTruthy();
     });
 
     test('should verify zone records after template update', async ({ page }) => {
@@ -237,6 +233,10 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
     });
 
     test('should handle update with multiple zones linked to template', async ({ page }) => {
+      // Creating a zone, rewriting two linked zones and cleaning up is more than
+      // one test's budget on the API backend, where each zone is a round trip.
+      test.slow();
+
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       test.skip(!templateId, 'Template was not created');
 
@@ -261,19 +261,20 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       }
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       await page.goto(`/zones/templates/${templateId}/edit`);
 
       const updateBtn = page.locator('button[name="update_zones"], input[name="update_zones"]').first();
-      if (await updateBtn.count() > 0) {
-        await updateBtn.scrollIntoViewIfNeeded();
-        await updateBtn.click();
-        await page.waitForLoadState('networkidle');
+      await expect(updateBtn).toBeVisible();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
-      }
+      await updateBtn.scrollIntoViewIfNeeded();
+      // Two linked zones now, so the rewrite takes even longer on the API backend
+      await updateBtn.click({ timeout: 60000 });
+      await page.waitForLoadState('domcontentloaded');
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
 
       // Clean up second zone
       const secondZoneId = await findZoneIdByName(page, secondZoneName);
