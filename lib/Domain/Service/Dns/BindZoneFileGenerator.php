@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Poweradmin\Domain\Model\RecordRow;
+
 /**
  * Generates standard BIND zone files from DNS records.
  * Output is compatible with Cloudflare import and pdnsutil load-zone.
@@ -34,6 +36,9 @@ class BindZoneFileGenerator
      * @param string $zoneName The zone name
      * @param array $records Array of record arrays with keys: name, type, content, ttl, prio
      * @return string The zone file content
+     */
+    /**
+     * @param list<array<string, mixed>|RecordRow> $records The zone's records, as the listing returns them
      */
     public function generate(string $zoneName, array $records): string
     {
@@ -98,7 +103,10 @@ class BindZoneFileGenerator
         return implode("\n", $output) . "\n";
     }
 
-    private function formatRecord(array $record, string $zoneName): string
+    /**
+     * @param array<string, mixed>|RecordRow $record
+     */
+    private function formatRecord(array|RecordRow $record, string $zoneName): string
     {
         $name = $record['name'];
         $ttl = (int)$record['ttl'];

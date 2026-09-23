@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Domain\Service\Dns\BindZoneFileGenerator;
 
 class BindZoneFileGeneratorTest extends TestCase
@@ -132,5 +133,25 @@ class BindZoneFileGeneratorTest extends TestCase
 
         $this->assertStringContainsString('$ORIGIN example.com.', $output);
         $this->assertStringContainsString('$TTL 86400', $output);
+    }
+
+    /**
+     * The zone export and the change-request snapshot both feed this the zone
+     * listing, which hands over read models rather than rows.
+     */
+    public function testAReadModelFromTheListingIsRendered(): void
+    {
+        $records = [
+            RecordRow::fromRow(['id' => 1, 'name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1.example.com hostmaster.example.com 1 10800 3600 604800 3600', 'ttl' => 3600]),
+            RecordRow::fromRow(['id' => 2, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 300]),
+            RecordRow::fromRow(['id' => 3, 'name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'ttl' => 3600, 'prio' => 10]),
+        ];
+
+        $output = (new BindZoneFileGenerator())->generate('example.com', $records);
+
+        $this->assertStringContainsString('$ORIGIN example.com.', $output);
+        $this->assertStringContainsString('www.example.com.', $output);
+        $this->assertStringContainsString('192.0.2.1', $output);
+        $this->assertStringContainsString('10 mail.example.com.', $output);
     }
 }
