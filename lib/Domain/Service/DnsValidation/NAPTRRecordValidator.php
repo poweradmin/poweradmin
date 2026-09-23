@@ -323,7 +323,9 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
         // the separator only, never part of a segment - allowing it in both made
         // the pattern ambiguous and backtrack exponentially on inputs like "a+a+a...".
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9:\-]{0,31}(\+[a-zA-Z][a-zA-Z0-9:\-]{0,31})*$/', $service)) {
-            return ValidationResult::failure(_('NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol and rs start with a letter and contain alphanumeric characters, hyphens, colons, or plus signs (max 32 chars each).'));
+            return ValidationResult::failure(_(
+                'NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol and rs are separated by plus signs, each start with a letter and contain only letters, digits, hyphens or colons (max 32 chars each).'
+            ));
         }
 
         return ValidationResult::success(true);
