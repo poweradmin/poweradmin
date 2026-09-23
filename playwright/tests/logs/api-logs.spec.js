@@ -428,31 +428,31 @@ test.afterAll(async ({ browser }) => {
 
   await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
+  // The cleanup walks every leftover key, so it needs more than a hook's budget
+  test.setTimeout(120000);
+
   const testKeyNames = ['test-api-logs-key'];
 
   for (const prefix of testKeyNames) {
-    let found = true;
-    while (found) {
+    // Collect the delete links once per pass rather than re-reading the list per key
+    for (let pass = 0; pass < 20; pass++) {
       await page.goto('/settings/api-keys');
 
-      const row = page.locator(`tr:has-text("${prefix}")`).first();
+      const deleteHrefs = await page
+        .locator(`tr:has-text("${prefix}") a[href*="/delete"]`)
+        .evaluateAll(links => links.map(link => link.getAttribute('href')));
 
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]');
+      if (deleteHrefs.length === 0) {
+        break;
+      }
 
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-
-          const confirmBtn = page.locator('button[type="submit"]').first();
-
-          if (await confirmBtn.count() > 0) {
-            await confirmBtn.click();
-          }
-        } else {
-          found = false;
+      for (const href of deleteHrefs) {
+        await page.goto(href);
+        const confirmBtn = page.locator('button[type="submit"]').first();
+        if (await confirmBtn.count() > 0) {
+          await confirmBtn.click();
+          await page.waitForLoadState('domcontentloaded');
         }
-      } else {
-        found = false;
       }
     }
   }

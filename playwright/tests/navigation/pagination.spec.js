@@ -4,36 +4,42 @@ import { deleteZoneById, findZoneIdByName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
- * Helper to create zones via UI if pagination is not already present.
- * Returns the list of zone names created (empty if none were needed).
+ * Producing a paginated zone list takes two things. The page size is a stored
+ * per-user preference that the query parameter writes, and the seeding sets it
+ * to 100, so it is shrunk here and restored afterwards for the specs that
+ * follow in this worker. And the list has to be filtered to one letter: the SQL
+ * backend returns every zone for letter=all, so that view never paginates.
  */
-async function ensurePaginationZones(page, prefix, count) {
-  await page.goto('/zones/forward');
-  const paginationExists = await page.locator('.pagination, [data-testid*="pagination"], nav[aria-label*="pagination"]').count() > 0;
+const PAGE_SIZE = 5;
+const SEEDED_PAGE_SIZE = 100;
+const LETTER = 'p';
+const FILLER_COUNT = 7;
 
-  if (paginationExists) {
-    return [];
-  }
+async function setZoneListPageSize(page, size) {
+  await page.goto(`/zones/forward?rows_per_page=${size}`);
+  await page.waitForLoadState('domcontentloaded');
+}
 
+async function openPaginatedList(page) {
+  await page.goto(`/zones/forward?letter=${LETTER}&start=1`);
+  await page.waitForLoadState('domcontentloaded');
+}
+
+/** Enough zones under one letter to fill more than one page of PAGE_SIZE. */
+async function createFillerZones(page, prefix) {
   const zones = [];
-  for (let i = 1; i <= count; i++) {
-    const zoneName = `${prefix}-${i}.com`;
+  for (let i = 1; i <= FILLER_COUNT; i++) {
+    const zoneName = `${prefix}-${i}.example.com`;
     zones.push(zoneName);
-
     await page.goto('/zones/add/master');
     await page.locator('[data-testid="zone-name-input"]').fill(zoneName);
     await page.locator('[data-testid="add-zone-button"]').click();
+    await page.waitForLoadState('domcontentloaded');
   }
   return zones;
 }
 
-/**
- * Helper to cleanup zones created during test.
- *
- * Resolving each zone by name covers the paginated list, which the previous
- * row lookup did not - it left every created zone behind on each run.
- */
-async function cleanupZones(page, zones) {
+async function removeZones(page, zones) {
   for (const zone of zones) {
     const zoneId = await findZoneIdByName(page, zone);
     if (zoneId) {
@@ -47,87 +53,70 @@ test.describe('Pagination Functionality', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
+  let fillerZones = [];
+
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await setZoneListPageSize(page, PAGE_SIZE);
+    fillerZones = await createFillerZones(page, `${LETTER}aginated`);
+    await page.close();
+  });
+
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    test.setTimeout(120000);
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await removeZones(page, fillerZones);
+    await setZoneListPageSize(page, SEEDED_PAGE_SIZE);
+    await page.close();
+  });
+
   test('should display pagination controls when zone list exceeds page size', async ({ page }) => {
-    // Creating and removing the filler zones one page load at a time does not
-    // fit the default per-test budget.
-    test.slow();
+    await openPaginatedList(page);
 
-    const zones = await ensurePaginationZones(page, 'pagination-test', 25);
-
-    await page.goto('/zones/forward');
-
-    const paginationExists = await page.locator('.pagination, [data-testid*="pagination"], nav[aria-label*="pagination"]').count() > 0;
-
-    if (paginationExists) {
-      // The letter strip is a .pagination list too, so scope to the first match
-      await expect(page.locator('.pagination, [data-testid*="pagination"]').first()).toBeVisible();
-    }
-
-    await cleanupZones(page, zones);
+    // The letter strip is a .pagination list too, so scope to the last match,
+    // which is the pager below the table
+    await expect(page.locator('.pagination').last()).toBeVisible();
   });
 
   test('should navigate to next page of zones', async ({ page }) => {
-    test.slow();
-
-    const zones = await ensurePaginationZones(page, 'page-test', 15);
-
-    await page.goto('/zones/forward');
+    await openPaginatedList(page);
 
     const nextButton = page.locator('a:has-text("Next"), button:has-text("Next"), a:has-text("›"), a:has-text("»")').first();
+    await expect(nextButton).toBeVisible();
 
-    if (await nextButton.count() > 0 && await nextButton.isEnabled()) {
-      await nextButton.click();
+    await nextButton.click();
+    await page.waitForLoadState('domcontentloaded');
 
-      // The zone list paginates with ?start=<page number>
-      const currentUrl = page.url();
-      expect(currentUrl).toMatch(/[?&]start=2\b/);
-    }
-
-    await cleanupZones(page, zones);
+    // The zone list paginates with ?start=<page number>
+    expect(page.url()).toMatch(/[?&]start=2\b/);
   });
 
   test('should navigate to previous page of zones', async ({ page }) => {
-    test.slow();
-
-    const zones = await ensurePaginationZones(page, 'prev-test', 15);
-
-    await page.goto('/zones/forward');
+    await openPaginatedList(page);
 
     const nextButton = page.locator('a:has-text("Next"), button:has-text("Next"), a:has-text("›")').first();
-    if (await nextButton.count() > 0 && await nextButton.isEnabled()) {
-      await nextButton.click();
+    await expect(nextButton).toBeVisible();
+    await nextButton.click();
+    await page.waitForLoadState('domcontentloaded');
 
-      const prevButton = page.locator('a:has-text("Previous"), button:has-text("Previous"), a:has-text("‹"), a:has-text("«")').first();
-      if (await prevButton.count() > 0 && await prevButton.isEnabled()) {
-        await prevButton.click();
+    const prevButton = page.locator('a:has-text("Previous"), button:has-text("Previous"), a:has-text("‹"), a:has-text("«")').first();
+    await expect(prevButton).toBeVisible();
+    await prevButton.click();
+    await page.waitForLoadState('domcontentloaded');
 
-        const currentUrl = page.url();
-        expect(currentUrl).not.toMatch(/[?&]start=2\b/);
-      }
-    }
-
-    await cleanupZones(page, zones);
+    expect(page.url()).not.toMatch(/[?&]start=2\b/);
   });
 
   test('should display correct page numbers in pagination', async ({ page }) => {
-    test.slow();
+    await openPaginatedList(page);
 
-    const zones = await ensurePaginationZones(page, 'num-test', 20);
+    const pager = page.locator('.pagination').last();
+    const pageLinks = pager.locator('a, button').filter({ hasText: /^[0-9]+$/ });
 
-    await page.goto('/zones/forward');
-
-    const paginationContainer = page.locator('.pagination, [data-testid*="pagination"]').first();
-
-    if (await paginationContainer.count() > 0) {
-      const pageLinks = paginationContainer.locator('a, button').filter({ hasText: /^[0-9]+$/ });
-      const linkCount = await pageLinks.count();
-
-      if (linkCount > 0) {
-        await expect(pageLinks.first()).toBeVisible();
-      }
-    }
-
-    await cleanupZones(page, zones);
+    await expect(pageLinks.first()).toBeVisible();
+    expect(await pageLinks.count()).toBeGreaterThan(1);
   });
 
   test('should maintain pagination when filtering zones', async ({ page }) => {
