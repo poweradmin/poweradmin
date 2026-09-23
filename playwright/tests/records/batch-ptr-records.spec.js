@@ -87,6 +87,8 @@ test.describe('Batch PTR Records (Issue #968)', () => {
       const prefixInput = page.locator('input[name*="prefix"], select[name*="prefix"], input[name*="network"]');
       const bodyText = await page.locator('body').textContent();
 
+      expect(await prefixInput.count()).toBeGreaterThan(0);
+
       // Page should load without errors
       expect(bodyText).not.toMatch(/fatal|exception|404/i);
     });
@@ -107,6 +109,7 @@ test.describe('Batch PTR Records (Issue #968)', () => {
                         bodyText.toLowerCase().includes('forward') ||
                         bodyText.toLowerCase().includes('ptr');
       expect(bodyText).not.toMatch(/fatal|exception|404/i);
+      expect(hasOptions).toBe(true);
     });
   });
 
@@ -180,6 +183,8 @@ test.describe('Batch PTR Records (Issue #968)', () => {
       // Look for batch PTR link
       const batchPtrLink = page.locator('a[href*="batch-ptr"]');
       const bodyText = await page.locator('body').textContent();
+
+      expect(await batchPtrLink.count()).toBeGreaterThan(0);
 
       // Page should load
       expect(bodyText).not.toMatch(/fatal|exception/i);
@@ -340,10 +345,10 @@ test.describe('Batch PTR with Forward Zone', () => {
 
     await page.goto(`/zones/batch-ptr?id=${zoneId}`);
 
-    // Look for option to create PTRs from forward zone
-    const forwardOption = page.locator('input[type="checkbox"], input[type="radio"]').filter({
-      has: page.locator('+ label:has-text("forward"), + span:has-text("forward")')
-    });
+    // The form offers the forward-record option by name; the old sibling-label
+    // filter matched nothing, so this test never checked anything
+    const forwardOption = page.locator('input[name="create_forward_records"]');
+    expect(await forwardOption.count()).toBeGreaterThan(0);
 
     const bodyText = await page.locator('body').textContent();
     expect(bodyText).not.toMatch(/fatal|exception/i);
@@ -360,9 +365,12 @@ test.describe('Batch PTR with Forward Zone', () => {
     await page.goto(`/zones/batch-ptr?id=${zoneId}`);
 
     // Look for zone selection dropdown
-    const zoneSelect = page.locator('select[name*="zone"], select[name*="domain"]');
+    // The zone is carried by a text field, not a select; the select locator
+    // matched nothing and the test passed regardless
+    const zoneField = page.locator('input[name="domain"]');
     const bodyText = await page.locator('body').textContent();
 
     expect(bodyText).not.toMatch(/fatal|exception/i);
+    expect(await zoneField.count()).toBeGreaterThan(0);
   });
 });
