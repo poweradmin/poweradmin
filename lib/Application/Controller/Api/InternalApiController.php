@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
-use Poweradmin\Domain\Service\Auth\SessionKeys;
 
 /**
  * Base for session-authenticated internal API endpoints: requires a login and the X-CSRF-Token header on writes.
@@ -73,7 +72,9 @@ abstract class InternalApiController extends AbstractApiController
      */
     protected function validateAuthentication(): void
     {
-        if (!$this->session()->has(SessionKeys::USERID)) {
+        // Same definition of "logged in" as the web controllers: a session whose
+        // userid is not a positive int is not authenticated anywhere else either
+        if (!$this->getUserContextService()->isAuthenticated()) {
             $response = $this->returnErrorResponse('Unauthorized access', 401);
             $this->sendAndHalt($response);
         }
