@@ -96,16 +96,16 @@ test.describe('DNS Wizard', () => {
       if (found) {
         // Click first available wizard type
         const wizardLink = page.locator('a[href*="/wizard/"]').first();
-        if (await wizardLink.count() > 0) {
-          await wizardLink.click();
-          await page.waitForLoadState('domcontentloaded');
+        expect(await wizardLink.count()).toBeGreaterThan(0);
 
-          // Should have form fields
-          const wizardFields = page.locator('#wizardFields');
-          if (await wizardFields.count() > 0) {
-            const inputs = page.locator('.wizard-field');
-            expect(await inputs.count()).toBeGreaterThan(0);
-          }
+        await wizardLink.click();
+        await page.waitForLoadState('domcontentloaded');
+
+        // Should have form fields
+        const wizardFields = page.locator('#wizardFields');
+        if (await wizardFields.count() > 0) {
+          const inputs = page.locator('.wizard-field');
+          expect(await inputs.count()).toBeGreaterThan(0);
         }
       }
     });
@@ -116,13 +116,13 @@ test.describe('DNS Wizard', () => {
       const found = await navigateToWizard(page, 'admin-zone');
       if (found) {
         const wizardLink = page.locator('a[href*="/wizard/"]').first();
-        if (await wizardLink.count() > 0) {
-          await wizardLink.click();
-          await page.waitForLoadState('domcontentloaded');
+        expect(await wizardLink.count()).toBeGreaterThan(0);
 
-          const csrfToken = page.locator('input[name="_token"]');
-          expect(await csrfToken.count()).toBeGreaterThan(0);
-        }
+        await wizardLink.click();
+        await page.waitForLoadState('domcontentloaded');
+
+        const csrfToken = page.locator('input[name="_token"]');
+        expect(await csrfToken.count()).toBeGreaterThan(0);
       }
     });
 
@@ -132,13 +132,13 @@ test.describe('DNS Wizard', () => {
       const found = await navigateToWizard(page, 'admin-zone');
       if (found) {
         const wizardLink = page.locator('a[href*="/wizard/"]').first();
-        if (await wizardLink.count() > 0) {
-          await wizardLink.click();
-          await page.waitForLoadState('domcontentloaded');
+        expect(await wizardLink.count()).toBeGreaterThan(0);
 
-          const submitBtn = page.locator('button[type="submit"], button:has-text("Create Record")');
-          expect(await submitBtn.count()).toBeGreaterThan(0);
-        }
+        await wizardLink.click();
+        await page.waitForLoadState('domcontentloaded');
+
+        const submitBtn = page.locator('button[type="submit"], button:has-text("Create Record")');
+        expect(await submitBtn.count()).toBeGreaterThan(0);
       }
     });
 
@@ -148,13 +148,13 @@ test.describe('DNS Wizard', () => {
       const found = await navigateToWizard(page, 'admin-zone');
       if (found) {
         const wizardLink = page.locator('a[href*="/wizard/"]').first();
-        if (await wizardLink.count() > 0) {
-          await wizardLink.click();
-          await page.waitForLoadState('domcontentloaded');
+        expect(await wizardLink.count()).toBeGreaterThan(0);
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText.toLowerCase()).toMatch(/back|cancel/i);
-        }
+        await wizardLink.click();
+        await page.waitForLoadState('domcontentloaded');
+
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText.toLowerCase()).toMatch(/back|cancel/i);
       }
     });
   });

@@ -56,10 +56,10 @@ test.describe('Layout - Navigation', () => {
       await page.goto('/');
 
       const zonesLink = page.locator('a[href*="/zones/forward"]').first();
-      if (await zonesLink.count() > 0) {
-        await zonesLink.click();
-        await expect(page).toHaveURL(/.*zones\/forward/);
-      }
+      expect(await zonesLink.count()).toBeGreaterThan(0);
+
+      await zonesLink.click();
+      await expect(page).toHaveURL(/.*zones\/forward/);
     });
 
     test('should navigate to users page', async ({ page }) => {
@@ -67,10 +67,10 @@ test.describe('Layout - Navigation', () => {
       await page.goto('/');
 
       const usersLink = page.locator('a[href="/users"]').first();
-      if (await usersLink.count() > 0) {
-        await usersLink.click();
-        await expect(page).toHaveURL(/.*\/users/);
-      }
+      expect(await usersLink.count()).toBeGreaterThan(0);
+
+      await usersLink.click();
+      await expect(page).toHaveURL(/.*\/users/);
     });
 
     test('should logout successfully', async ({ page }) => {
@@ -162,9 +162,9 @@ test.describe('Layout - Navigation', () => {
       expect(await activeLink.count()).toBeGreaterThan(0);
 
       const zonesLink = page.locator('a[href*="/zones"]').first();
-      if (await zonesLink.count() > 0) {
-        await expect(zonesLink).toBeVisible();
-      }
+      expect(await zonesLink.count()).toBeGreaterThan(0);
+
+      await expect(zonesLink).toBeVisible();
     });
   });
 
@@ -220,16 +220,16 @@ test.describe('Layout - Breadcrumbs', () => {
     await page.goto('/zones/forward?letter=all');
     const editLink = page.locator('table a[href*="/edit"]').first();
 
-    if (await editLink.count() > 0) {
-      await editLink.click();
+    expect(await editLink.count()).toBeGreaterThan(0);
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await editLink.click();
 
-      // Auto-retrying: count() would read the list page if the click is still in flight
-      const breadcrumbs = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
-      await expect(breadcrumbs.first()).toBeVisible();
-    }
+    // Auto-retrying assertion: the click navigation may still be in flight
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+    // Auto-retrying: count() would read the list page if the click is still in flight
+    const breadcrumbs = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
+    await expect(breadcrumbs.first()).toBeVisible();
   });
 
   test('should display breadcrumbs on add record page', async ({ page }) => {
@@ -237,16 +237,16 @@ test.describe('Layout - Breadcrumbs', () => {
     await page.goto('/zones/forward?letter=all');
     const editLink = page.locator('table a[href*="/edit"]').first();
 
-    if (await editLink.count() > 0) {
-      await editLink.click();
+    expect(await editLink.count()).toBeGreaterThan(0);
 
-      const addRecordLink = page.locator('a[href*="/records/add"]').first();
-      if (await addRecordLink.count() > 0) {
-        await addRecordLink.click();
+    await editLink.click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+    const addRecordLink = page.locator('a[href*="/records/add"]').first();
+    if (await addRecordLink.count() > 0) {
+      await addRecordLink.click();
+
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     }
   });
 });

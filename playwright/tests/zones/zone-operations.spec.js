@@ -18,11 +18,11 @@ async function getTestZoneId(page) {
   // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
   // which carries no zone id, so this helper used to return null for every test.
   const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-  if (await editLink.count() > 0) {
-    const href = await editLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
-  }
+  expect(await editLink.count()).toBeGreaterThan(0);
+
+  const href = await editLink.getAttribute('href');
+  const match = href.match(/\/zones\/(\d+)\/edit/);
+  return match ? match[1] : null;
   return null;
 }
 
@@ -144,13 +144,13 @@ test.describe('Zone Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]');
-        if (await commentField.count() > 0) {
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+      expect(await editLink.count()).toBeGreaterThan(0);
+
+      await editLink.click();
+      const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]');
+      if (await commentField.count() > 0) {
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -158,18 +158,18 @@ test.describe('Zone Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const commentLink = page.locator('a[href*="comment"]').first();
-        if (await commentLink.count() > 0) {
-          await commentLink.click();
-          const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]').first();
-          if (await commentField.count() > 0) {
-            await commentField.fill(`Updated comment ${Date.now()}`);
-            await page.locator('button[type="submit"], input[type="submit"]').first().click();
-            // Auto-retrying assertion: the click navigation may still be in flight
-            await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-          }
+      expect(await editLink.count()).toBeGreaterThan(0);
+
+      await editLink.click();
+      const commentLink = page.locator('a[href*="comment"]').first();
+      if (await commentLink.count() > 0) {
+        await commentLink.click();
+        const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]').first();
+        if (await commentField.count() > 0) {
+          await commentField.fill(`Updated comment ${Date.now()}`);
+          await page.locator('button[type="submit"], input[type="submit"]').first().click();
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -187,14 +187,14 @@ test.describe('Zone Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const ownerLink = page.locator('a[href*="owner"]').first();
-        if (await ownerLink.count() > 0) {
-          await ownerLink.click();
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+      expect(await editLink.count()).toBeGreaterThan(0);
+
+      await editLink.click();
+      const ownerLink = page.locator('a[href*="owner"]').first();
+      if (await ownerLink.count() > 0) {
+        await ownerLink.click();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -202,15 +202,15 @@ test.describe('Zone Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
-        const addOwnerLink = page.locator('a[href*="/ownership"]').first();
-        if (await addOwnerLink.count() > 0) {
-          await addOwnerLink.click();
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+      expect(await editLink.count()).toBeGreaterThan(0);
+
+      await editLink.click();
+      await page.waitForLoadState('networkidle');
+      const addOwnerLink = page.locator('a[href*="/ownership"]').first();
+      if (await addOwnerLink.count() > 0) {
+        await addOwnerLink.click();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });

@@ -23,11 +23,7 @@ playwright/tests/groups/group-zones.spec.js::should display selection count badg
 playwright/tests/groups/group-zones.spec.js::should have select all checkbox for owned zones
 playwright/tests/layout/footer.spec.js::should display theme switcher button
 playwright/tests/layout/footer.spec.js::should have clickable theme switcher if present
-playwright/tests/layout/layout-comprehensive.spec.js::should display breadcrumbs on add record page
-playwright/tests/layout/layout-comprehensive.spec.js::should display breadcrumbs on zone edit page
 playwright/tests/layout/layout-comprehensive.spec.js::should logout successfully
-playwright/tests/layout/layout-comprehensive.spec.js::should navigate to users page
-playwright/tests/layout/layout-comprehensive.spec.js::should navigate to zones page
 playwright/tests/layout/layout-comprehensive.spec.js::should show supermasters link
 playwright/tests/layout/navigation.spec.js::should have access to list zones
 playwright/tests/logs/api-logs.spec.js::should delete the API key (api_key_delete)
@@ -106,10 +102,6 @@ playwright/tests/templates/zone-templates.spec.js::should verify template record
 playwright/tests/utilities/search-and-tools.spec.js::should show WHOIS form fields
 playwright/tests/workflows/complete-domain-management.spec.js::should verify domain resolution and records
 playwright/tests/zones/dns-wizard.spec.js::should access SPF wizard form
-playwright/tests/zones/dns-wizard.spec.js::should display CSRF token
-playwright/tests/zones/dns-wizard.spec.js::should display back/cancel links
-playwright/tests/zones/dns-wizard.spec.js::should display submit button
-playwright/tests/zones/dns-wizard.spec.js::should display wizard form fields
 playwright/tests/zones/zone-crud.spec.js::should cancel delete and return to previous page
 playwright/tests/zones/zone-crud.spec.js::should display delete confirmation message
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have disabled kind dropdowns
@@ -117,11 +109,7 @@ playwright/tests/zones/zone-metadata-readonly.spec.js::should have readonly valu
 playwright/tests/zones/zone-metadata-readonly.spec.js::should see Metadata button (not View Metadata)
 playwright/tests/zones/zone-metadata-readonly.spec.js::should see View Metadata button on zone edit page
 playwright/tests/zones/zone-operations.spec.js::should access SOA edit page
-playwright/tests/zones/zone-operations.spec.js::should add multiple owners
-playwright/tests/zones/zone-operations.spec.js::should change zone owner
 playwright/tests/zones/zone-operations.spec.js::should display record count for zones
 playwright/tests/zones/zone-operations.spec.js::should display slave zone master IP
-playwright/tests/zones/zone-operations.spec.js::should display zone comment
 playwright/tests/zones/zone-operations.spec.js::should update SOA serial on record change
-playwright/tests/zones/zone-operations.spec.js::should update zone comment
 playwright/tests/zones/zone-sorting.spec.js::should toggle sort direction on header click
