@@ -852,10 +852,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function getBestMatchingReverseZoneId(string $reverseName): int
     {
-        // Read zones.id here rather than the provider's zone list, which reports
-        // domain_id: callers feed this straight back in as a zone id, and the two
-        // numbering schemes collide, silently landing records in another zone.
-        $stmt = $this->db->query("SELECT id, zone_name FROM zones WHERE zone_name IS NOT NULL");
+        // Return the canonical id, the value every other zone id in this backend
+        // carries. Returning zones.id let the resolver prefer an unrelated row
+        // whose domain_id happened to equal it, writing the PTR into that zone.
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
+        $stmt = $this->db->query("SELECT $canonicalId AS id, zone_name FROM zones WHERE zone_name IS NOT NULL");
         $foundId = -1;
         $bestLength = -1;
 
