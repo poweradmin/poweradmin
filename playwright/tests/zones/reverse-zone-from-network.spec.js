@@ -18,6 +18,10 @@ test.describe('Reverse zone creation from network input (#1323)', () => {
   const ipv4ReverseZone = `${octet}.250.10.in-addr.arpa`;
   const ipv6Network = '2001:db8:beef::/48';
   const ipv6Display = '2001:db8:beef';
+  // The zone the network expands to. Cleanup resolves zones by name, and the
+  // display string above is not one, so the zone would otherwise be left behind
+  // and the next run would fail because it already exists.
+  const ipv6ReverseZone = 'f.e.e.b.8.b.d.0.1.0.0.2.ip6.arpa';
   const createdZones = [];
 
   test.beforeEach(async ({ page }) => {
@@ -59,7 +63,7 @@ test.describe('Reverse zone creation from network input (#1323)', () => {
   });
 
   test('IPv6 network creates the matching ip6.arpa reverse zone', async ({ page }) => {
-    createdZones.push(ipv6Display);
+    createdZones.push(ipv6ReverseZone);
 
     await page.goto('/zones/add/master?type=reverse');
     await page.waitForLoadState('networkidle');
