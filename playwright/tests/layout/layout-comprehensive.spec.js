@@ -159,6 +159,8 @@ test.describe('Layout - Navigation', () => {
       await page.goto('/zones/forward?letter=all');
 
       const activeLink = page.locator('.active, .current, [aria-current="page"]');
+      expect(await activeLink.count()).toBeGreaterThan(0);
+
       const zonesLink = page.locator('a[href*="/zones"]').first();
       if (await zonesLink.count() > 0) {
         await expect(zonesLink).toBeVisible();
@@ -221,9 +223,12 @@ test.describe('Layout - Breadcrumbs', () => {
     if (await editLink.count() > 0) {
       await editLink.click();
 
-      const breadcrumbs = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
       // Auto-retrying assertion: the click navigation may still be in flight
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+      // Auto-retrying: count() would read the list page if the click is still in flight
+      const breadcrumbs = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
+      await expect(breadcrumbs.first()).toBeVisible();
     }
   });
 

@@ -116,6 +116,7 @@ test.describe('Dashboard and Navigation', () => {
 
   test('should show appropriate error pages for invalid URLs', async ({ page }) => {
     const response = await page.goto('/nonexistent-page', { waitUntil: 'networkidle' });
+    expect(response?.status()).toBe(404);
 
     const bodyText = await page.locator('body').textContent();
     const has404 = bodyText?.includes('404') || bodyText?.includes('not found');

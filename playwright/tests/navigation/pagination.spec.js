@@ -169,7 +169,7 @@ test.describe('Pagination Functionality', () => {
     const bodyText = await page.locator('body').textContent();
     const hasTotalInfo = bodyText.match(/showing|total|of \d+|displaying/i);
 
-    expect(bodyText).toBeTruthy();
+    expect(hasTotalInfo).not.toBeNull();
   });
 
   test('should handle pagination with records list', async ({ page }) => {
