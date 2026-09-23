@@ -148,6 +148,8 @@ test.describe('Input Validation Edge Cases', () => {
     });
 
     test('should reject invalid IP addresses for A records', async ({ page }) => {
+      test.skip(!zoneCreated, 'The test zone was not created');
+
       await page.goto('/zones/forward?letter=all');
       await page.waitForLoadState('networkidle');
 

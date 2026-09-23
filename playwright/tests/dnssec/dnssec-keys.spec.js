@@ -405,6 +405,7 @@ test.describe('DNSSEC Key Management', () => {
       const dsLink = page.locator('a[href*="/ds-dnskey"]');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(await dsLink.count()).toBeGreaterThan(0);
     });
 
     test('should navigate to DS records from DNSSEC page', async ({ page }) => {

@@ -84,6 +84,11 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
                           afterDeleteText.toLowerCase().includes('deleted') ||
                           afterDeleteText.toLowerCase().includes('zone');
 
+        // Without an error the page must actually say the deletion happened
+        if (!hasError) {
+          expect(hasSuccess).toBe(true);
+        }
+
         // If we see "error occurred" but deletion actually worked, that's the bug
         if (hasError) {
           // Verify zones were actually deleted

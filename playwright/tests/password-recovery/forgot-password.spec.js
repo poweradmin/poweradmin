@@ -218,8 +218,6 @@ test.describe('Forgot Password Success State', () => {
 
       // Template shows: <div class="alert alert-success" role="alert">
       // when success is true
-      const bodyText = await page.locator('body').textContent();
-
       // Initially, should show form, not success
       const hasForm = await page.locator('form').count() > 0;
       expect(hasForm).toBeTruthy();

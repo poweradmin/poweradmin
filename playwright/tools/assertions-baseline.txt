@@ -33,7 +33,6 @@ playwright/tests/layout/footer.spec.js::should display theme switcher button
 playwright/tests/layout/footer.spec.js::should have clickable theme switcher if present
 playwright/tests/layout/layout-comprehensive.spec.js::should display breadcrumbs on add record page
 playwright/tests/layout/layout-comprehensive.spec.js::should display breadcrumbs on zone edit page
-playwright/tests/layout/layout-comprehensive.spec.js::should highlight current page in menu
 playwright/tests/layout/layout-comprehensive.spec.js::should logout successfully
 playwright/tests/layout/layout-comprehensive.spec.js::should navigate to users page
 playwright/tests/layout/layout-comprehensive.spec.js::should navigate to zones page

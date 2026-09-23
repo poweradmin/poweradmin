@@ -103,8 +103,10 @@ test.describe('Matching Record Creation (Issue #1104)', () => {
       const resultText = await page.locator('body').textContent();
       expect(resultText).not.toMatch(/fatal|exception/i);
 
-      // Check success message mentions matching record
+      // The page must say a matching record was created, and it must be true:
+      // reporting success for a PTR that was never written was a real defect
       const hasMatchingMessage = resultText.includes('matching') || resultText.includes('PTR');
+      expect(hasMatchingMessage).toBe(true);
       // Even without specific message, verify the PTR was created
       const ptrExists = await recordExistsInZone(
         page, reverseZoneId,

@@ -31,9 +31,9 @@ export default [
         rules: {
             // A typo'd global is always a bug, so it fails the run.
             'no-undef': 'error',
-            // Warns for now: most current hits are conditions a test computed
-            // and never asserted, which need strengthening rather than deleting.
-            'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+            // A computed-but-unused value in a spec is almost always an assertion
+            // that was never made, so it fails the run like an undefined global.
+            'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
             'no-empty': ['error', { allowEmptyCatch: true }],
         },
     },

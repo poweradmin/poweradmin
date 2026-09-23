@@ -227,9 +227,12 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     const expectedFullName = zoneName ? `${uniqueHostname}.${zoneName}` : uniqueHostname;
     const isHostnameOnly = nameValue === uniqueHostname;
     const isFullFqdn = nameValue === expectedFullName;
-    // Be more lenient - just verify no fatal errors and name contains our hostname
+
     const bodyText = await page.locator('body').textContent();
     expect(bodyText).not.toMatch(/fatal|exception/i);
     expect(nameValue).toContain(uniqueHostname);
+    // The field shows either the host on its own or the full name, per the
+    // display_hostname_only setting; anything else is a formatting bug
+    expect(isHostnameOnly || isFullFqdn).toBe(true);
   });
 });

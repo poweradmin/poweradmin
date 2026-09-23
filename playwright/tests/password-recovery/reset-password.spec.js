@@ -218,14 +218,14 @@ test.describe('Reset Password Policy', () => {
     });
   });
 
-  test.describe('Policy Error Display', () => {
-    test('should display policy errors when password does not meet requirements', async ({ page }) => {
+  test.describe('Invalid Token Handling', () => {
+    // Renamed from a policy-error test: an unknown token never reaches the
+    // password form, so policy errors could not be what this exercises.
+    test('should refuse an unknown token instead of offering the form', async ({ page }) => {
       await page.goto('/password/reset?token=test');
 
-      const bodyText = await page.locator('body').textContent();
-
-      const hasAlertStructure = await page.locator('.alert').count() >= 0;
-      expect(hasAlertStructure).toBeTruthy();
+      await expect(page.locator('.alert')).toContainText(/invalid|expired/i);
+      expect(await page.locator('form').count()).toBe(0);
     });
   });
 });

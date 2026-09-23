@@ -129,6 +129,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
+      expect(hasUpdateBtn).toBe(true);
     });
 
     test('should add a new record to template', async ({ page }) => {

@@ -42,7 +42,8 @@ test.describe('User Permission Combinations', () => {
 
     test('should access supermaster management', async ({ page }) => {
       await page.goto('/supermasters');
-      const url = page.url();
+      expect(page.url()).toContain('/supermasters');
+
       const bodyText = await page.locator('body').textContent();
       const hasAccessError = bodyText.match(/you do not have|access denied|not authorized/i);
       expect(hasAccessError).toBeFalsy();

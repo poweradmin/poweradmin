@@ -214,9 +214,9 @@ test.describe('Zone CRUD Operations', () => {
       // Client may or may not have zone add permissions depending on configuration
       const mainContent = page.locator('main, .content, #content, .container-fluid > .row').first();
       const addMasterBtn = mainContent.locator('a[href*="/zones/add/master"]');
-      // Test passes if no add buttons in main content, or if page loads without error
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(await addMasterBtn.count()).toBe(0);
     });
 
     test('viewer should not have delete zone buttons', async ({ page }) => {
