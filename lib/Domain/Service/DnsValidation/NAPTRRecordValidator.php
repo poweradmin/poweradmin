@@ -318,10 +318,11 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::success(true);
         }
 
-        // Service field format with 3GPP extensions
-        // Must start with a letter, can contain alphanumeric, hyphens, colons, plus signs
-        // Maximum 32 characters per segment when split by plus signs
-        if (!preg_match('/^([a-zA-Z][a-zA-Z0-9:+\-]{0,31})(\+[a-zA-Z][a-zA-Z0-9:+\-]{0,31})*$/', $service)) {
+        // Service field format with 3GPP extensions: segments separated by plus
+        // signs, each starting with a letter, max 32 characters. The plus sign is
+        // the separator only, never part of a segment - allowing it in both made
+        // the pattern ambiguous and backtrack exponentially on inputs like "a+a+a...".
+        if (!preg_match('/^[a-zA-Z][a-zA-Z0-9:\-]{0,31}(\+[a-zA-Z][a-zA-Z0-9:\-]{0,31})*$/', $service)) {
             return ValidationResult::failure(_('NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol and rs start with a letter and contain alphanumeric characters, hyphens, colons, or plus signs (max 32 chars each).'));
         }
 
