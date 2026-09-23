@@ -358,3 +358,14 @@ ORDER BY la.`timestamp`;
 -- Login Attempts: 2 successful, 3 failed (including brute force IPs)
 --
 -- =============================================================================
+
+-- Password reset token for the e2e suite. The plaintext is
+-- 'e2e-password-reset-token'; the column stores its sha256 the way
+-- DbPasswordResetTokenRepository::hashToken() writes it. Without a valid token
+-- the reset form never renders and its tests cannot assert anything.
+INSERT INTO `password_reset_tokens` (`email`, `token`, `expires_at`, `ip_address`, `used`)
+SELECT 'admin@example.com', 'sha256$74d4fcd56b4b86538b903e4c31d861254f231652f409e9a6b7f145ff5123903c', '2037-12-31 23:59:59', '127.0.0.1', 0
+FROM DUAL
+WHERE NOT EXISTS (
+    SELECT 1 FROM `password_reset_tokens` WHERE `token` = 'sha256$74d4fcd56b4b86538b903e4c31d861254f231652f409e9a6b7f145ff5123903c'
+);
