@@ -18,10 +18,10 @@ test.describe('User Form Autofill Prevention', () => {
 
       const form = page.locator('form[action*="add"]');
 
-      if (await form.count() > 0) {
-        const autocomplete = await form.getAttribute('autocomplete');
-        expect(autocomplete).toBe('off');
-      }
+      expect(await form.count()).toBeGreaterThan(0);
+
+      const autocomplete = await form.getAttribute('autocomplete');
+      expect(autocomplete).toBe('off');
     });
 
     test('username field should have autocomplete="off"', async ({ page }) => {
@@ -31,10 +31,10 @@ test.describe('User Form Autofill Prevention', () => {
 
       const usernameInput = page.locator('input[name="username"]');
 
-      if (await usernameInput.count() > 0) {
-        const autocomplete = await usernameInput.getAttribute('autocomplete');
-        expect(autocomplete).toBe('off');
-      }
+      expect(await usernameInput.count()).toBeGreaterThan(0);
+
+      const autocomplete = await usernameInput.getAttribute('autocomplete');
+      expect(autocomplete).toBe('off');
     });
 
     test('password field should have autocomplete="new-password"', async ({ page }) => {
@@ -44,10 +44,10 @@ test.describe('User Form Autofill Prevention', () => {
 
       const passwordInput = page.locator('input[name="password"]');
 
-      if (await passwordInput.count() > 0) {
-        const autocomplete = await passwordInput.getAttribute('autocomplete');
-        expect(autocomplete).toBe('new-password');
-      }
+      expect(await passwordInput.count()).toBeGreaterThan(0);
+
+      const autocomplete = await passwordInput.getAttribute('autocomplete');
+      expect(autocomplete).toBe('new-password');
     });
 
     test('email field should exist in add user form', async ({ page }) => {
@@ -71,13 +71,10 @@ test.describe('User Form Autofill Prevention', () => {
 
       const passwordInput = page.locator('input[name="password"], input[type="password"]');
 
-      if (await passwordInput.count() > 0) {
-        const autocomplete = await passwordInput.getAttribute('autocomplete');
-        expect(['new-password', 'off', null]).toContain(autocomplete);
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/user|edit|profile/i);
-      }
+      expect(await passwordInput.count()).toBeGreaterThan(0);
+
+      const autocomplete = await passwordInput.getAttribute('autocomplete');
+      expect(['new-password', 'off', null]).toContain(autocomplete);
     });
   });
 
@@ -89,10 +86,10 @@ test.describe('User Form Autofill Prevention', () => {
 
       const passwordInput = page.locator('input[name="password"]');
 
-      if (await passwordInput.count() > 0) {
-        const type = await passwordInput.getAttribute('type');
-        expect(type).toBe('password');
-      }
+      expect(await passwordInput.count()).toBeGreaterThan(0);
+
+      const type = await passwordInput.getAttribute('type');
+      expect(type).toBe('password');
     });
 
     test('password toggle button should exist', async ({ page }) => {
@@ -115,10 +112,10 @@ test.describe('User Form Autofill Prevention', () => {
 
       const usernameInput = page.locator('input[name="username"]');
 
-      if (await usernameInput.count() > 0) {
-        const required = await usernameInput.getAttribute('required');
-        expect(required !== null || required === '').toBeTruthy();
-      }
+      expect(await usernameInput.count()).toBeGreaterThan(0);
+
+      const required = await usernameInput.getAttribute('required');
+      expect(required !== null || required === '').toBeTruthy();
     });
 
     test('form should have novalidate for custom validation', async ({ page }) => {

@@ -91,12 +91,10 @@ test.describe('WHOIS Lookup Page', () => {
       const domainInput = page.locator('input[name="domain"]');
       const bodyText = await page.locator('body').textContent();
 
-      if (await domainInput.count() > 0) {
-        const placeholder = await domainInput.getAttribute('placeholder');
-        expect(placeholder).toBeTruthy();
-      } else {
-        expect(bodyText.toLowerCase()).toContain('disabled');
-      }
+      expect(await domainInput.count()).toBeGreaterThan(0);
+
+      const placeholder = await domainInput.getAttribute('placeholder');
+      expect(placeholder).toBeTruthy();
     });
 
     test('should display help text or disabled message', async ({ page }) => {
@@ -130,12 +128,10 @@ test.describe('WHOIS Lookup Page', () => {
       const domainInput = page.locator('input[name="domain"]');
       const bodyText = await page.locator('body').textContent();
 
-      if (await domainInput.count() > 0) {
-        await domainInput.fill('example.com');
-        await expect(domainInput).toHaveValue('example.com');
-      } else {
-        expect(bodyText.toLowerCase()).toContain('disabled');
-      }
+      expect(await domainInput.count()).toBeGreaterThan(0);
+
+      await domainInput.fill('example.com');
+      await expect(domainInput).toHaveValue('example.com');
     });
 
     test('should submit lookup request when enabled', async ({ page }) => {
@@ -144,17 +140,15 @@ test.describe('WHOIS Lookup Page', () => {
       const domainInput = page.locator('input[name="domain"]');
       const bodyText = await page.locator('body').textContent();
 
-      if (await domainInput.count() > 0) {
-        await domainInput.fill('example.com');
+      expect(await domainInput.count()).toBeGreaterThan(0);
 
-        const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
-        await lookupBtn.click();
+      await domainInput.fill('example.com');
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/result|error|whois|domain/i);
-      } else {
-        expect(bodyText.toLowerCase()).toContain('disabled');
-      }
+      const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
+      await lookupBtn.click();
+
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/result|error|whois|domain/i);
     });
 
     test('should handle empty domain submission when enabled', async ({ page }) => {
@@ -163,12 +157,10 @@ test.describe('WHOIS Lookup Page', () => {
       const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
       const bodyText = await page.locator('body').textContent();
 
-      if (await lookupBtn.count() > 0) {
-        await lookupBtn.click();
-        await expect(page).toHaveURL(/.*\/whois/);
-      } else {
-        expect(bodyText.toLowerCase()).toContain('disabled');
-      }
+      expect(await lookupBtn.count()).toBeGreaterThan(0);
+
+      await lookupBtn.click();
+      await expect(page).toHaveURL(/.*\/whois/);
     });
   });
 
@@ -183,22 +175,20 @@ test.describe('WHOIS Lookup Page', () => {
       const domainInput = page.locator('input[name="domain"]');
       const bodyText = await page.locator('body').textContent();
 
-      if (await domainInput.count() > 0) {
-        await domainInput.fill('google.com');
+      expect(await domainInput.count()).toBeGreaterThan(0);
 
-        const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
-        await lookupBtn.click();
+      await domainInput.fill('google.com');
 
-        await page.waitForLoadState('networkidle');
+      const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
+      await lookupBtn.click();
 
-        const resultText = await page.locator('body').textContent();
-        const hasResultsOrError = resultText.toLowerCase().includes('result') ||
-                                   resultText.toLowerCase().includes('error') ||
-                                   resultText.toLowerCase().includes('google');
-        expect(hasResultsOrError).toBeTruthy();
-      } else {
-        expect(bodyText.toLowerCase()).toContain('disabled');
-      }
+      await page.waitForLoadState('networkidle');
+
+      const resultText = await page.locator('body').textContent();
+      const hasResultsOrError = resultText.toLowerCase().includes('result') ||
+                                 resultText.toLowerCase().includes('error') ||
+                                 resultText.toLowerCase().includes('google');
+      expect(hasResultsOrError).toBeTruthy();
     });
 
     test('should handle invalid domain when enabled', async ({ page }) => {
@@ -207,19 +197,17 @@ test.describe('WHOIS Lookup Page', () => {
       const domainInput = page.locator('input[name="domain"]');
       const bodyText = await page.locator('body').textContent();
 
-      if (await domainInput.count() > 0) {
-        await domainInput.fill('invalid-domain-12345.tld');
+      expect(await domainInput.count()).toBeGreaterThan(0);
 
-        const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
-        await lookupBtn.click();
+      await domainInput.fill('invalid-domain-12345.tld');
 
-        await page.waitForLoadState('networkidle');
+      const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
+      await lookupBtn.click();
 
-        const resultText = await page.locator('body').textContent();
-        expect(resultText.length).toBeGreaterThan(100);
-      } else {
-        expect(bodyText.toLowerCase()).toContain('disabled');
-      }
+      await page.waitForLoadState('networkidle');
+
+      const resultText = await page.locator('body').textContent();
+      expect(resultText.length).toBeGreaterThan(100);
     });
 
     test('should show results or alert when enabled', async ({ page }) => {
@@ -228,24 +216,22 @@ test.describe('WHOIS Lookup Page', () => {
       const domainInput = page.locator('input[name="domain"]');
       const bodyText = await page.locator('body').textContent();
 
-      if (await domainInput.count() > 0) {
-        await domainInput.fill('example.com');
+      expect(await domainInput.count()).toBeGreaterThan(0);
 
-        const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
-        await lookupBtn.click();
+      await domainInput.fill('example.com');
 
-        await page.waitForLoadState('networkidle');
+      const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
+      await lookupBtn.click();
 
-        const preElement = page.locator('.whois-results pre, pre');
-        const alertElement = page.locator('.alert');
+      await page.waitForLoadState('networkidle');
 
-        const hasResults = await preElement.count() > 0;
-        const hasAlert = await alertElement.count() > 0;
+      const preElement = page.locator('.whois-results pre, pre');
+      const alertElement = page.locator('.alert');
 
-        expect(hasResults || hasAlert).toBeTruthy();
-      } else {
-        expect(bodyText.toLowerCase()).toContain('disabled');
-      }
+      const hasResults = await preElement.count() > 0;
+      const hasAlert = await alertElement.count() > 0;
+
+      expect(hasResults || hasAlert).toBeTruthy();
     });
   });
 
@@ -260,12 +246,10 @@ test.describe('WHOIS Lookup Page', () => {
       const domainInput = page.locator('input[name="domain"]');
       const bodyText = await page.locator('body').textContent();
 
-      if (await domainInput.count() > 0) {
-        await domainInput.fill('beispiel.de');
-        await expect(domainInput).toHaveValue('beispiel.de');
-      } else {
-        expect(bodyText.toLowerCase()).toContain('disabled');
-      }
+      expect(await domainInput.count()).toBeGreaterThan(0);
+
+      await domainInput.fill('beispiel.de');
+      await expect(domainInput).toHaveValue('beispiel.de');
     });
   });
 

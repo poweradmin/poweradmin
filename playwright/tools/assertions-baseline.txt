@@ -93,14 +93,6 @@ playwright/tests/search/search-comprehensive.spec.js::should have type filter dr
 playwright/tests/search/search-comprehensive.spec.js::should navigate to zone from search results
 playwright/tests/search/search-comprehensive.spec.js::should search by record type
 playwright/tests/search/search-edge-cases.spec.js::should handle clicking search result link
-playwright/tests/search/whois-rdap.spec.js::should accept domain input when enabled
-playwright/tests/search/whois-rdap.spec.js::should accept internationalized domain names when enabled
-playwright/tests/search/whois-rdap.spec.js::should display results section after lookup when enabled
-playwright/tests/search/whois-rdap.spec.js::should handle empty domain submission when enabled
-playwright/tests/search/whois-rdap.spec.js::should handle invalid domain when enabled
-playwright/tests/search/whois-rdap.spec.js::should have placeholder text or disabled message
-playwright/tests/search/whois-rdap.spec.js::should show results or alert when enabled
-playwright/tests/search/whois-rdap.spec.js::should submit lookup request when enabled
 playwright/tests/templates/zone-template-management.spec.js::should add records to a zone template
 playwright/tests/templates/zone-template-records.spec.js::manager should access template records for own templates
 playwright/tests/templates/zone-template-unlink.spec.js::template should have proper structure for unlink warning
@@ -111,12 +103,6 @@ playwright/tests/templates/zone-template-update-zones.spec.js::should handle tem
 playwright/tests/templates/zone-templates.spec.js::should add records to zone template
 playwright/tests/templates/zone-templates.spec.js::should show action buttons on single line
 playwright/tests/templates/zone-templates.spec.js::should verify template records applied to new zone
-playwright/tests/users/user-form-autofill.spec.js::edit user form should prevent password autofill
-playwright/tests/users/user-form-autofill.spec.js::form should have autocomplete=
-playwright/tests/users/user-form-autofill.spec.js::password field should have autocomplete=
-playwright/tests/users/user-form-autofill.spec.js::password fields should be type=
-playwright/tests/users/user-form-autofill.spec.js::username field should have autocomplete=
-playwright/tests/users/user-form-autofill.spec.js::username should be required
 playwright/tests/utilities/search-and-tools.spec.js::should show WHOIS form fields
 playwright/tests/workflows/complete-domain-management.spec.js::should verify domain resolution and records
 playwright/tests/zones/dns-wizard.spec.js::should access SPF wizard form
