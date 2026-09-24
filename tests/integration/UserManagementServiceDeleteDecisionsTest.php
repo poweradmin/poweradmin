@@ -76,6 +76,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
                 "CREATE TABLE user_preferences (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_mfa (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, user_id INTEGER)",
+                "CREATE TABLE api_keys (id INTEGER PRIMARY KEY, name TEXT, created_by INTEGER)",
                 "CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)",
                 "CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER)",
             ] as $sql
