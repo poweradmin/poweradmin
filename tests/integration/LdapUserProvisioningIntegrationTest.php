@@ -216,9 +216,11 @@ class LdapUserProvisioningIntegrationTest extends TestCase
                 'sync_user_info' => true,
                 'auto_provision' => true,
                 'default_permission_template' => 'Guest',
-                // Keyed by the group RDN (self::GROUP_CN); the directory returns the full DN.
-                'permission_template_mapping' => [self::GROUP_CN => 'Administrator'],
-                'group_mapping' => [self::GROUP_CN => ['Administrators', 'Editors']],
+                // The mapped template grants user_is_ueberuser, which provisioning refuses unless allowed
+                'allow_superuser_provisioning' => true,
+                // Mappings match the whole memberOf value, so they are keyed by the group DN
+                'permission_template_mapping' => [self::groupDn(self::GROUP_CN) => 'Administrator'],
+                'group_mapping' => [self::groupDn(self::GROUP_CN) => ['Administrators', 'Editors']],
             ],
         ];
 
@@ -235,7 +237,6 @@ class LdapUserProvisioningIntegrationTest extends TestCase
     private function userInfo(string $uid): LdapUserInfo
     {
         $entry = $this->fetchEntry($uid);
-        // 'dns-admins' is keyed by the group's RDN; the directory returns the full DN.
         return LdapUserInfo::fromLdapEntry($entry, $uid, 'displayName', 'mail', 'memberOf');
     }
 
