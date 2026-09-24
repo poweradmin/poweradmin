@@ -5,7 +5,6 @@ playwright/tests/dnssec/dnssec-key-lifecycle.spec.js::manager should access DNSS
 playwright/tests/errors/error-pages.spec.js::decline should link to logout
 playwright/tests/errors/error-pages.spec.js::should require checkbox to be checked
 playwright/tests/errors/error-pages.spec.js::should show validation error when checkbox not checked
-playwright/tests/groups/group-logs.spec.js::should clear search and show all logs
 playwright/tests/groups/group-members.spec.js::should display search functionality for available users
 playwright/tests/groups/group-members.spec.js::should display selection count badge
 playwright/tests/groups/group-members.spec.js::should have select all checkbox
@@ -19,9 +18,7 @@ playwright/tests/layout/layout-comprehensive.spec.js::should show supermasters l
 playwright/tests/layout/navigation.spec.js::should have access to list zones
 playwright/tests/logs/audit-events.spec.js::should show auth_method in login events
 playwright/tests/logs/audit-events.spec.js::should show client_ip in log entries
-playwright/tests/logs/user-logs.spec.js::should display clear button
 playwright/tests/logs/user-logs.spec.js::should display log entries when available
-playwright/tests/logs/zone-logs.spec.js::should display clear button
 playwright/tests/logs/zone-logs.spec.js::should display color-coded operation badges
 playwright/tests/logs/zone-logs.spec.js::should display details button when logs exist
 playwright/tests/logs/zone-logs.spec.js::should display log entries when available

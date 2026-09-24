@@ -65,10 +65,8 @@ test.describe('Zone Logs', () => {
 
     test('should display clear button', async ({ page }) => {
       await page.goto('/zones/logs');
-      const clearBtn = page.locator('a:has-text("Clear"), button:has-text("Clear")').first();
-      if (await clearBtn.count() > 0) {
-        await expect(clearBtn).toBeVisible();
-      }
+      // The control is icon-only, so it is found by its title rather than its text
+      await expect(page.locator('a[title="Clear"]')).toBeVisible();
     });
 
     test('should display log entries when available', async ({ page }) => {
