@@ -74,25 +74,19 @@ test.describe('Zone Operations', () => {
       await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(testDomain);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Get initial SOA
+      // The zone was just created above, so its row and edit link must be there
       await page.goto('/zones/forward?letter=all');
       const row = page.locator(`tr:has-text("${testDomain}")`);
-      if (await row.count() > 0) {
-        const editLink = row.locator('a[href*="/edit"]').first();
-        await editLink.click();
+      await expect(row).toHaveCount(1);
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await row.locator('a[href*="/edit"]').first().click();
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-        // Cleanup
-        await page.goto('/zones/forward?letter=all');
-        const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="/delete"]`).first();
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-          const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-          if (await yesBtn.count() > 0) await yesBtn.click();
-        }
-      }
+      // Cleanup
+      await page.goto('/zones/forward?letter=all');
+      await page.locator(`tr:has-text("${testDomain}") a[href*="/delete"]`).first().click();
+      await page.locator('[data-testid="confirm-delete-zone"]').click();
+      await expect(page.locator('table')).not.toContainText(testDomain);
     });
   });
 
@@ -249,12 +243,10 @@ test.describe('Zone Operations', () => {
     test('should display record count for zones', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
+      // The seeded zones always fill the list, so the table and its counts are there
       const table = page.locator('table').first();
-      if (await table.count() > 0) {
-        const bodyText = await table.textContent();
-        // Table should contain numeric record counts
-        expect(bodyText).toMatch(/\d+/);
-      }
+      await expect(table).toBeVisible();
+      await expect(table).toContainText(/\d+/);
     });
   });
 });

@@ -63,6 +63,4 @@ playwright/tests/zones/dns-wizard.spec.js::should access SPF wizard form
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have disabled kind dropdowns
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have readonly value inputs
 playwright/tests/zones/zone-operations.spec.js::should access SOA edit page
-playwright/tests/zones/zone-operations.spec.js::should display record count for zones
 playwright/tests/zones/zone-operations.spec.js::should display slave zone master IP
-playwright/tests/zones/zone-operations.spec.js::should update SOA serial on record change
