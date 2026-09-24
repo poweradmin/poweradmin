@@ -8516,17 +8516,12 @@ msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "帶有正則表達式的 NAPTR 記錄必須將 \".\" 作為替換。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "NAPTR 服務必須遵循以下格式：[protocol][+rs][+rs]... 其中 protocol 和 rs 以加號分隔，各自以字母開頭，且只能包含字母、數字、連字號或冒號（每段最多 32 個字元）。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

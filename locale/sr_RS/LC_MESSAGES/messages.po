@@ -9129,17 +9129,12 @@ msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "NAPTR запис са regexp мора имати \".\" као замену."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "NAPTR service мора пратити формат: [protocol][+rs][+rs]... где се protocol и rs раздвајају знаковима плус, сваки почиње словом и садржи само слова, бројеве, цртице или двотачке (највише 32 знака сваки)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

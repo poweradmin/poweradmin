@@ -9241,17 +9241,12 @@ msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "Bản ghi NAPTR có regexp phải dùng \".\" làm giá trị replacement."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "Dịch vụ NAPTR phải theo định dạng: [protocol][+rs][+rs]... trong đó protocol và rs được phân tách bằng dấu cộng, mỗi phần bắt đầu bằng một chữ cái và chỉ chứa chữ cái, chữ số, dấu gạch nối hoặc dấu hai chấm (tối đa 32 ký tự mỗi phần)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

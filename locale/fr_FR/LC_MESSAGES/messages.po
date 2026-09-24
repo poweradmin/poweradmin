@@ -9701,17 +9701,12 @@ msgstr ""
 "Un enregistrement NAPTR avec une regexp doit avoir \".\" comme remplacement."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "Le service NAPTR doit suivre le format : [protocole][+rs][+rs]... où protocole et rs sont séparés par des signes plus, commencent chacun par une lettre et ne contiennent que des lettres, des chiffres, des traits d'union ou des deux-points (32 caractères maximum chacun)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

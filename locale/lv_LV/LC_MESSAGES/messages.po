@@ -9102,17 +9102,12 @@ msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "NAPTR ierakstam ar regexp aizstāšanai jābūt \".\""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "NAPTR pakalpojumam jāatbilst formātam: [protocol][+rs][+rs]... kur protocol un rs atdala ar plusa zīmēm, katrs sākas ar burtu un satur tikai burtus, ciparus, defises vai kolus (ne vairāk kā 32 rakstzīmes katram)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

@@ -9677,17 +9677,12 @@ msgstr ""
 "O înregistrare NAPTR cu regexp trebuie să aibă \".\" ca valoare replacement."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "Serviciul NAPTR trebuie să respecte formatul: [protocol][+rs][+rs]... unde protocol și rs sunt separate prin semne plus, fiecare începe cu o literă și conține doar litere, cifre, cratime sau două puncte (maximum 32 de caractere fiecare)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

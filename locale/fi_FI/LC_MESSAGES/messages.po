@@ -9156,17 +9156,12 @@ msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "NAPTR-tietueen regexp:n kanssa korvauksen on oltava \".\""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "NAPTR-palvelun on noudatettava muotoa: [protocol][+rs][+rs]... jossa protocol ja rs erotetaan plusmerkeillä, kumpikin alkaa kirjaimella ja sisältää vain kirjaimia, numeroita, väliviivoja tai kaksoispisteitä (enintään 32 merkkiä kumpikin)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

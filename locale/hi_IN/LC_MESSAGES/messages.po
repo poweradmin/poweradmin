@@ -9112,17 +9112,12 @@ msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "regexp वाले NAPTR रिकॉर्ड में प्रतिस्थापन के रूप में \".\" होना चाहिए।"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "NAPTR सेवा को इस प्रारूप का पालन करना चाहिए: [protocol][+rs][+rs]... जहां protocol और rs को धन चिह्नों से अलग किया जाता है, प्रत्येक अक्षर से शुरू होता है और इसमें केवल अक्षर, अंक, हाइफ़न या कोलन होते हैं (प्रत्येक अधिकतम 32 वर्ण)।"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

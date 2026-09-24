@@ -9676,17 +9676,12 @@ msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "Μια εγγραφή NAPTR με regexp πρέπει να έχει \".\" ως αντικατάσταση."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "Η υπηρεσία NAPTR πρέπει να ακολουθεί τη μορφή: [protocol][+rs][+rs]... όπου το protocol και το rs διαχωρίζονται με σύμβολα συν, ξεκινούν με γράμμα και περιέχουν μόνο γράμματα, ψηφία, παύλες ή άνω κάτω τελείες (έως 32 χαρακτήρες το καθένα)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

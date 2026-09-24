@@ -9168,17 +9168,12 @@ msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "regexp가 있는 NAPTR 레코드의 replacement는 \".\"이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "NAPTR service는 [protocol][+rs][+rs]... 형식을 따라야 합니다. 여기서 protocol과 rs는 더하기 기호로 구분되며, 각각 문자로 시작하고 문자, 숫자, 하이픈 또는 콜론만 포함합니다(각각 최대 32자)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

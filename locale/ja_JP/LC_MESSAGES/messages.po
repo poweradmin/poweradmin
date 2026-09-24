@@ -9308,17 +9308,12 @@ msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "正規表現を含むNAPTRレコードは、置換として「.」を持つ必要があります。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "NAPTRサービスは次の形式に従う必要があります：[protocol][+rs][+rs]... ここで、protocolとrsはプラス記号で区切られ、それぞれ文字で始まり、英字、数字、ハイフン、コロンのみを含みます（それぞれ最大32文字）。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

@@ -9600,17 +9600,12 @@ msgstr ""
 "aige."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
-#, auto-english-fallback
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
 "protocol and rs are separated by plus signs, each start with a letter "
 "and contain only letters, digits, hyphens or colons (max 32 chars "
 "each)."
-msgstr ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
+msgstr "Ní mór don tseirbhís NAPTR an fhormáid seo a leanúint: [protocol][+rs][+rs]... áit a scartar protocol agus rs le comharthaí plus, tosaíonn gach ceann le litir agus ní bhíonn iontu ach litreacha, digití, fleiscíní nó idirstadanna (uasmhéid 32 carachtar an ceann)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""
