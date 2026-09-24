@@ -167,19 +167,18 @@ test.describe('Reset Password Validation', () => {
     test('should reject mismatched passwords', async ({ page }) => {
       await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
+      // The seeded token renders the real form, so both fields are always present
       const passwordInput = page.locator('input[name="password"]');
       const confirmInput = page.locator('input[name="confirm_password"]');
+      await expect(passwordInput).toHaveCount(1);
+      await expect(confirmInput).toHaveCount(1);
 
-      if (await passwordInput.count() > 0 && await confirmInput.count() > 0) {
-        await passwordInput.fill('Password123!');
-        await confirmInput.fill('DifferentPassword123!');
+      await passwordInput.fill('Password123!');
+      await confirmInput.fill('DifferentPassword123!');
+      await page.locator('button[type="submit"]').click();
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/match|reset|password/i);
-      }
+      // The page says "password" either way, so assert the mismatch message itself
+      await expect(page.locator('body')).toContainText(/Passwords do not match/i);
     });
 
     test('should have client-side password match validation', async ({ page }) => {

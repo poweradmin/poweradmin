@@ -29,7 +29,6 @@ playwright/tests/navigation/pagination.spec.js::should maintain pagination when 
 playwright/tests/navigation/pagination.spec.js::should preserve sort order across pages
 playwright/tests/password-recovery/forgot-password.spec.js::should navigate to login page
 playwright/tests/password-recovery/forgot-username.spec.js::should navigate back to login page
-playwright/tests/password-recovery/reset-password.spec.js::should reject mismatched passwords
 playwright/tests/records/batch-ptr-records.spec.js::should handle empty batch PTR submission
 playwright/tests/records/batch-ptr-records.spec.js::should return to zone list from batch PTR page
 playwright/tests/records/batch-ptr-records.spec.js::should submit batch PTR form without 404 error
