@@ -27,6 +27,18 @@ async function createApiKey(page, name) {
   await expect(page.locator('body')).toContainText('IMPORTANT: Save your API key now!');
 }
 
+/** Opens the delete confirmation for a key this test owns, and returns its href so it can be removed. */
+async function openOwnKeyDeletePage(page, name) {
+  await createApiKey(page, name);
+  await page.goto('/settings/api-keys');
+  const href = await page
+    .locator('tr', { hasText: name })
+    .locator('a[href*="/delete"]')
+    .getAttribute('href');
+  await page.goto(href);
+  return href;
+}
+
 test.describe('API Keys List', () => {
   test.describe('Page Access', () => {
     test('should access API keys page when logged in', async ({ page }) => {
@@ -368,44 +380,38 @@ test.describe('Delete API Key', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const href = await openOwnKeyDeletePage(page, `delete-warning-${Date.now()}`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(page.locator('body')).toContainText(/warning|cannot be undone/i);
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/warning|cannot be undone/i);
-      }
+      await page.goto(href);
+      await page.locator('button[type="submit"]').first().click();
     });
 
     test('should have confirm delete button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const href = await openOwnKeyDeletePage(page, `delete-confirm-${Date.now()}`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      const confirmBtn = page.locator('button[type="submit"]:has-text("Yes"), button:has-text("delete")');
+      await expect(confirmBtn.first()).toBeVisible();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        const confirmBtn = page.locator('button[type="submit"]:has-text("Yes"), button:has-text("delete")');
-        await expect(confirmBtn.first()).toBeVisible();
-      }
+      await page.goto(href);
+      await page.locator('button[type="submit"]').first().click();
     });
 
     test('should have cancel button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const href = await openOwnKeyDeletePage(page, `delete-cancel-${Date.now()}`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
+      await expect(cancelBtn.first()).toBeVisible();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        await expect(cancelBtn.first()).toBeVisible();
-      }
+      await page.goto(href);
+      await page.locator('button[type="submit"]').first().click();
     });
   });
 
@@ -414,18 +420,12 @@ test.describe('Delete API Key', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const href = await openOwnKeyDeletePage(page, `delete-options-${Date.now()}`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await page.waitForLoadState('networkidle');
+      await expect(page.locator('body')).toContainText(/delete|confirm/i);
 
-        // Verify we're on delete confirmation page and have options
-        const bodyText = await page.locator('body').textContent();
-        const hasDeletePage = bodyText.toLowerCase().includes('delete') ||
-                              bodyText.toLowerCase().includes('confirm');
-        expect(hasDeletePage).toBeTruthy();
-      }
+      await page.goto(href);
+      await page.locator('button[type="submit"]').first().click();
     });
   });
 });
