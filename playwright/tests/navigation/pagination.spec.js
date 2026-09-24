@@ -150,17 +150,13 @@ test.describe('Pagination Functionality', () => {
   test('should display items per page selector if available', async ({ page }) => {
     await page.goto('/zones/forward');
 
-    const perPageSelector = page.locator('select[name*="per_page"], select[name*="limit"], [data-testid*="per-page"]').first();
+    // The control is an id-only select with no name attribute
+    const perPageSelector = page.locator('#rows-per-page');
+    await expect(perPageSelector).toBeVisible();
 
-    if (await perPageSelector.count() > 0) {
-      await expect(perPageSelector).toBeVisible();
-
-      const options = await perPageSelector.locator('option').count();
-      if (options > 1) {
-        await perPageSelector.selectOption({ index: 1 });
-        await expect(page.locator('body')).toBeVisible();
-      }
-    }
+    const options = perPageSelector.locator('option');
+    await expect(options.first()).toBeAttached();
+    expect(await options.count()).toBeGreaterThan(1);
   });
 
   test('should show total count of items', async ({ page }) => {

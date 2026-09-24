@@ -24,7 +24,6 @@ playwright/tests/mfa/mfa-setup.spec.js::should use POST for MFA actions
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on RDAP page from zone ID
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on WHOIS page from zone ID
 playwright/tests/modules/zone-file-export.spec.js::should show Zone File option in Export dropdown when module is enabled
-playwright/tests/navigation/pagination.spec.js::should display items per page selector if available
 playwright/tests/navigation/pagination.spec.js::should maintain pagination when filtering zones
 playwright/tests/navigation/pagination.spec.js::should preserve sort order across pages
 playwright/tests/password-recovery/forgot-password.spec.js::should navigate to login page
@@ -41,8 +40,6 @@ playwright/tests/records/multi-record-checkbox.spec.js::should handle checkbox t
 playwright/tests/records/record-comments.spec.js::should not show warning for non-root CNAME
 playwright/tests/records/record-comments.spec.js::should show warning when editing CNAME to root
 playwright/tests/records/record-validation.spec.js::should reject negative priority
-playwright/tests/search/empty-search.spec.js::clear button should reload the page
-playwright/tests/search/empty-search.spec.js::empty search should not submit form
 playwright/tests/search/search-comments.spec.js::should find records by comment text
 playwright/tests/search/search-comments.spec.js::should persist comments checkbox state after search
 playwright/tests/search/search-comments.spec.js::should toggle comments search option

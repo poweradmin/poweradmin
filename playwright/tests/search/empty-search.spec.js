@@ -19,19 +19,15 @@ test.describe('Search Form Empty Submission', () => {
       await page.goto('/search?query=test');
       await page.waitForLoadState('networkidle');
 
-      // Look for clear/reset button
-      const clearButton = page.locator('button:has-text("Clear"), a:has-text("Clear"), button[onclick*="clearSearch"]');
+      // The control is an icon-only anchor calling clearSearch(), with no text
+      const clearButton = page.locator('a[onclick*="clearSearch"]');
+      await expect(clearButton).toBeVisible();
 
-      if (await clearButton.count() > 0) {
-        await clearButton.click();
-        await page.waitForLoadState('networkidle');
+      await clearButton.click();
+      await page.waitForLoadState('networkidle');
 
-        // Should redirect to clean search page
-        const url = page.url();
-        expect(url).toMatch(/\/search/);
-        // Query parameter should be removed or empty
-        expect(url).not.toMatch(/query=test/);
-      }
+      expect(page.url()).toMatch(/\/search/);
+      expect(page.url()).not.toMatch(/query=test/);
     });
 
     test('search page should have clear search function', async ({ page }) => {
@@ -52,19 +48,13 @@ test.describe('Search Form Empty Submission', () => {
       await page.waitForLoadState('networkidle');
 
       const searchInput = page.locator('input[name="query"]');
-      const searchButton = page.locator('button[type="submit"]').first();
+      await expect(searchInput).toBeVisible();
+      await expect(page.locator('button[type="submit"]').first()).toBeVisible();
 
-      if (await searchInput.count() > 0 && await searchButton.count() > 0) {
-        // Clear the input and try to submit
-        await searchInput.fill('');
+      await searchInput.fill('');
 
-        // Check for validation or empty handling
-        const hasRequiredAttr = await searchInput.getAttribute('required');
-        const hasMinLength = await searchInput.getAttribute('minlength');
-
-        // Either has validation or the page handles empty gracefully
-        expect(hasRequiredAttr !== null || hasMinLength !== null || true).toBeTruthy();
-      }
+      // The query field carries the required attribute, so the browser blocks submit
+      await expect(searchInput).toHaveAttribute('required', /.*/);
     });
 
     test('search page should load without query parameter', async ({ page }) => {
