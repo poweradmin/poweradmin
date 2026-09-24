@@ -8772,15 +8772,18 @@ msgstr ""
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "บันทึก NAPTR ที่มี regexp ต้องใช้ \".\" เป็นค่า replacement"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:329
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
+#, auto-english-fallback
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain alphanumeric characters, hyphens, "
-"colons, or plus signs (max 32 chars each)."
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
+"protocol and rs are separated by plus signs, each start with a letter "
+"and contain only letters, digits, hyphens or colons (max 32 chars "
+"each)."
 msgstr ""
-"service ของ NAPTR ต้องเป็นไปตามรูปแบบ: [protocol][+rs][+rs]... โดยที่ protocol "
-"และ rs ต้องขึ้นต้นด้วยตัวอักษร และประกอบด้วยอักขระตัวอักษรและตัวเลข ยัติภังค์ ทวิภาค "
-"หรือเครื่องหมายบวก (ยาวได้สูงสุดส่วนละ 32 อักขระ)"
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
+"protocol and rs are separated by plus signs, each start with a letter "
+"and contain only letters, digits, hyphens or colons (max 32 chars "
+"each)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""

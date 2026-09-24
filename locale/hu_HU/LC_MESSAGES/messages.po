@@ -9455,16 +9455,18 @@ msgstr ""
 "A regexp-et tartalmazó NAPTR rekordnál a replacement értékének \".\" "
 "karakternek kell lennie."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:329
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:327
+#, auto-english-fallback
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain alphanumeric characters, hyphens, "
-"colons, or plus signs (max 32 chars each)."
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
+"protocol and rs are separated by plus signs, each start with a letter "
+"and contain only letters, digits, hyphens or colons (max 32 chars "
+"each)."
 msgstr ""
-"A NAPTR szolgáltatásnak a következő formátumot kell követnie: [protocol][+rs]"
-"[+rs]... ahol a protocol és az rs betűvel kezdődik, és alfanumerikus "
-"karaktereket, kötőjelet, kettőspontot vagy pluszjelet tartalmaz (egyenként "
-"legfeljebb 32 karakter)."
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
+"protocol and rs are separated by plus signs, each start with a letter "
+"and contain only letters, digits, hyphens or colons (max 32 chars "
+"each)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
 msgid ""
