@@ -31,17 +31,11 @@ test.describe('Dashboard and Navigation', () => {
   });
 
   test('should have functional zone navigation links', async ({ page }) => {
-    // Forward zones link
-    const forwardLink = page.locator('a').filter({ hasText: 'Forward' });
-    if (await forwardLink.count() > 0) {
-      await expect(forwardLink.first()).toHaveAttribute('href', /.+/);
-    }
-
-    // Add zone links
-    const addZoneLink = page.locator('a').filter({ hasText: /Add.*Zone/i });
-    if (await addZoneLink.count() > 0) {
-      await expect(addZoneLink.first()).toHaveAttribute('href', /.+/);
-    }
+    // The dashboard repeats these as cards, so scope to the header's Zones dropdown
+    await expect(page.locator('header [data-testid="list-forward-zones-link"]'))
+      .toHaveAttribute('href', /\/zones\/forward$/);
+    await expect(page.locator('header [data-testid="add-master-zone-link"]'))
+      .toHaveAttribute('href', /\/zones\/add\/master$/);
   });
 
   test('should navigate to forward zones page', async ({ page }) => {

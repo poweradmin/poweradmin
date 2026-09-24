@@ -102,16 +102,13 @@ test.describe('Zone List Sorting', () => {
       await page.goto('/zones/forward?letter=all');
       await page.waitForLoadState('networkidle');
 
+      // The name column header is always a sort link on the zone list
       const sortLink = page.locator('th a[href*="zone_sort_by=name"]').first();
+      await expect(sortLink).toBeVisible();
 
-      if (await sortLink.count() > 0) {
-        await sortLink.click();
-        await page.waitForLoadState('networkidle');
-
-        // URL should contain sort parameters
-        const url = page.url();
-        expect(url).toMatch(/zone_sort_by=name/);
-      }
+      await sortLink.click();
+      await page.waitForLoadState('networkidle');
+      expect(page.url()).toMatch(/zone_sort_by=name/);
     });
   });
 

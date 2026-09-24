@@ -77,20 +77,14 @@ test.describe('Layout - Navigation', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/');
 
-      const logoutLink = page.locator('a[href*="logout"]');
-      if (await logoutLink.count() > 0) {
-        const isVisible = await logoutLink.first().isVisible();
-        if (!isVisible) {
-          const accountDropdown = page.locator('button:has-text("Account"), [data-bs-toggle="dropdown"]:has-text("Account")');
-          if (await accountDropdown.count() > 0) {
-            await accountDropdown.first().click();
-          }
-        }
-        await logoutLink.first().click();
-        await page.waitForLoadState('networkidle');
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/login|password|username/i);
-      }
+      // The logout link lives in the Account dropdown, so open that first
+      await page.locator('a.dropdown-toggle:has-text("Account")').click();
+
+      const logoutLink = page.locator('a[href*="logout"]').first();
+      await expect(logoutLink).toBeVisible();
+
+      await logoutLink.click();
+      await expect(page).toHaveURL(/login/);
     });
   });
 

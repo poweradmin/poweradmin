@@ -13,7 +13,6 @@ playwright/tests/groups/group-zones.spec.js::should display selection count badg
 playwright/tests/groups/group-zones.spec.js::should have select all checkbox for owned zones
 playwright/tests/layout/footer.spec.js::should display theme switcher button
 playwright/tests/layout/footer.spec.js::should have clickable theme switcher if present
-playwright/tests/layout/layout-comprehensive.spec.js::should logout successfully
 playwright/tests/layout/layout-comprehensive.spec.js::should show supermasters link
 playwright/tests/layout/navigation.spec.js::should have access to list zones
 playwright/tests/logs/audit-events.spec.js::should show auth_method in login events
@@ -27,7 +26,6 @@ playwright/tests/mfa/mfa-setup.spec.js::should use POST for MFA actions
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on RDAP page from zone ID
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on WHOIS page from zone ID
 playwright/tests/modules/zone-file-export.spec.js::should show Zone File option in Export dropdown when module is enabled
-playwright/tests/navigation/dashboard-navigation.spec.js::should have functional zone navigation links
 playwright/tests/navigation/pagination.spec.js::should display items per page selector if available
 playwright/tests/navigation/pagination.spec.js::should maintain pagination when filtering zones
 playwright/tests/navigation/pagination.spec.js::should preserve sort order across pages
@@ -72,4 +70,3 @@ playwright/tests/zones/zone-operations.spec.js::should access SOA edit page
 playwright/tests/zones/zone-operations.spec.js::should display record count for zones
 playwright/tests/zones/zone-operations.spec.js::should display slave zone master IP
 playwright/tests/zones/zone-operations.spec.js::should update SOA serial on record change
-playwright/tests/zones/zone-sorting.spec.js::should toggle sort direction on header click
