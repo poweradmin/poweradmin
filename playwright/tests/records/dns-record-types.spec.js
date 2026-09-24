@@ -147,14 +147,14 @@ test.describe('DNS Record Types Management', () => {
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
 
+    // SPF is in the default domain_record_types, so the option is always offered here
     const typeSelect = page.locator('select[name*="type"]').first();
-    const spfOption = page.locator('select[name*="type"] option[value="SPF"]').first();
-    if (await spfOption.count() > 0) {
-      await typeSelect.selectOption('SPF');
-      const warning = page.locator('.deprecated-type-warning').first();
-      await expect(warning).toBeVisible();
-      await expect(warning).toContainText('deprecated');
-    }
+    await expect(page.locator('select[name*="type"] option[value="SPF"]').first()).toHaveCount(1);
+
+    await typeSelect.selectOption('SPF');
+    const warning = page.locator('.deprecated-type-warning').first();
+    await expect(warning).toBeVisible();
+    await expect(warning).toContainText('deprecated');
   });
 
   test('should hide deprecation warning when switching to non-deprecated type', async ({ page }) => {
@@ -164,15 +164,14 @@ test.describe('DNS Record Types Management', () => {
     await page.waitForLoadState('networkidle');
 
     const typeSelect = page.locator('select[name*="type"]').first();
-    const spfOption = page.locator('select[name*="type"] option[value="SPF"]').first();
-    if (await spfOption.count() > 0) {
-      await typeSelect.selectOption('SPF');
-      const warning = page.locator('.deprecated-type-warning').first();
-      await expect(warning).toBeVisible();
+    await expect(page.locator('select[name*="type"] option[value="SPF"]').first()).toHaveCount(1);
 
-      await typeSelect.selectOption('A');
-      await expect(warning).not.toBeVisible();
-    }
+    await typeSelect.selectOption('SPF');
+    const warning = page.locator('.deprecated-type-warning').first();
+    await expect(warning).toBeVisible();
+
+    await typeSelect.selectOption('A');
+    await expect(warning).not.toBeVisible();
   });
 
   test('should cleanup test zone', async ({ page }) => {

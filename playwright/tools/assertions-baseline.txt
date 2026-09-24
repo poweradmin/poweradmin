@@ -15,8 +15,6 @@ playwright/tests/layout/footer.spec.js::should display theme switcher button
 playwright/tests/layout/footer.spec.js::should have clickable theme switcher if present
 playwright/tests/layout/layout-comprehensive.spec.js::should show supermasters link
 playwright/tests/layout/navigation.spec.js::should have access to list zones
-playwright/tests/logs/audit-events.spec.js::should show auth_method in login events
-playwright/tests/logs/audit-events.spec.js::should show client_ip in log entries
 playwright/tests/logs/user-logs.spec.js::should display log entries when available
 playwright/tests/logs/zone-logs.spec.js::should display color-coded operation badges
 playwright/tests/logs/zone-logs.spec.js::should display details button when logs exist
@@ -39,8 +37,6 @@ playwright/tests/records/bulk-records.spec.js::should reject empty record conten
 playwright/tests/records/bulk-records.spec.js::should submit multiple records at once
 playwright/tests/records/bulk-records.spec.js::should validate IP address for A records
 playwright/tests/records/bulk-records.spec.js::viewer should not add records
-playwright/tests/records/dns-record-types.spec.js::should hide deprecation warning when switching to non-deprecated type
-playwright/tests/records/dns-record-types.spec.js::should show deprecation warning when selecting SPF type
 playwright/tests/records/multi-record-checkbox.spec.js::new record row should have unchecked disabled checkbox
 playwright/tests/records/multi-record-checkbox.spec.js::should handle checkbox toggle correctly
 playwright/tests/records/record-comments.spec.js::should not show warning for non-root CNAME

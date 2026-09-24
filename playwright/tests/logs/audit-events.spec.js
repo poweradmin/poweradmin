@@ -133,28 +133,22 @@ test.describe('Audit Events - Verify in User Logs', () => {
     await eventSelect.selectOption('login_success');
     await page.locator('button[type="submit"]').first().click();
 
-    const rows = page.locator('table tbody tr');
-    if (await rows.count() > 0) {
-      // Click details button on first row to see full event
-      const detailsBtn = page.locator('table button[data-bs-toggle="modal"]').first();
-      await detailsBtn.click();
+    // The seeded login attempts plus this suite's own logins guarantee login_success rows
+    await expect(page.locator('table tbody tr').first()).toBeVisible();
 
-      const modal = page.locator('#userLogModal');
-      await expect(modal).toBeVisible();
+    await page.locator('table button[data-bs-toggle="modal"]').first().click();
 
-      const modalText = await modal.textContent();
-      expect(modalText).toMatch(/auth_method:/);
-    }
+    const modal = page.locator('#userLogModal');
+    await expect(modal).toBeVisible();
+    await expect(modal).toContainText(/auth_method:/);
   });
 
   test('should show client_ip in log entries', async ({ page }) => {
     await page.goto('/users/logs');
 
-    const rows = page.locator('table tbody tr');
-    if (await rows.count() > 0) {
-      // client_ip should now be visible in the table (not just in details)
-      const tableText = await page.locator('table').textContent();
-      expect(tableText).toMatch(/client_ip/);
-    }
+    await expect(page.locator('table tbody tr').first()).toBeVisible();
+
+    // client_ip is shown in the table itself, not only in the details modal
+    await expect(page.locator('table')).toContainText(/client_ip/);
   });
 });
