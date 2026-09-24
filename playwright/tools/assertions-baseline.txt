@@ -11,9 +11,6 @@ playwright/tests/groups/group-members.spec.js::should have select all checkbox
 playwright/tests/groups/group-zones.spec.js::should display search for available zones
 playwright/tests/groups/group-zones.spec.js::should display selection count badge
 playwright/tests/groups/group-zones.spec.js::should have select all checkbox for owned zones
-playwright/tests/layout/footer.spec.js::should display theme switcher button
-playwright/tests/layout/footer.spec.js::should have clickable theme switcher if present
-playwright/tests/layout/layout-comprehensive.spec.js::should show supermasters link
 playwright/tests/layout/navigation.spec.js::should have access to list zones
 playwright/tests/logs/user-logs.spec.js::should display log entries when available
 playwright/tests/logs/zone-logs.spec.js::should display color-coded operation badges

@@ -33,10 +33,8 @@ test.describe('Footer', () => {
     });
 
     test('should display theme switcher button', async ({ page }) => {
-      const themeSwitcher = page.locator('#theme-switcher, button[id*="theme"], [data-testid="theme-switcher"]').first();
-      if (await themeSwitcher.count() > 0) {
-        await expect(themeSwitcher).toBeVisible();
-      }
+      // The control is #style-switcher; it renders whenever the style is light or dark
+      await expect(page.locator('#style-switcher')).toBeVisible();
     });
 
     test('should have footer container structure', async ({ page }) => {
@@ -82,10 +80,7 @@ test.describe('Footer', () => {
   test.describe('Theme Switching', () => {
     test('should have clickable theme switcher if present', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const themeSwitcher = page.locator('#theme-switcher, button[id*="theme"]').first();
-      if (await themeSwitcher.count() > 0) {
-        await expect(themeSwitcher).toBeEnabled();
-      }
+      await expect(page.locator('#style-switcher')).toBeEnabled();
     });
 
     test('should store theme preference in localStorage', async ({ page }) => {

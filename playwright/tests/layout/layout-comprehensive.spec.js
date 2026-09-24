@@ -37,10 +37,8 @@ test.describe('Layout - Navigation', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/');
 
-      const supermastersLink = page.locator('a[href*="supermaster"], a:has-text("Supermaster")');
-      if (await supermastersLink.count() > 0) {
-        await expect(supermastersLink.first()).toBeVisible();
-      }
+      // The dashboard shows this card to anyone holding supermaster_view
+      await expect(page.locator('[data-testid="list-supermasters-link"]')).toBeVisible();
     });
 
     test('should show permission templates link', async ({ page }) => {
