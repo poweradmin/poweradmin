@@ -66,8 +66,6 @@ playwright/tests/templates/zone-templates.spec.js::should verify template record
 playwright/tests/utilities/search-and-tools.spec.js::should show WHOIS form fields
 playwright/tests/workflows/complete-domain-management.spec.js::should verify domain resolution and records
 playwright/tests/zones/dns-wizard.spec.js::should access SPF wizard form
-playwright/tests/zones/zone-crud.spec.js::should cancel delete and return to previous page
-playwright/tests/zones/zone-crud.spec.js::should display delete confirmation message
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have disabled kind dropdowns
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have readonly value inputs
 playwright/tests/zones/zone-operations.spec.js::should access SOA edit page

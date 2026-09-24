@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { createZone } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -175,33 +176,27 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should display delete confirmation message', async ({ page }) => {
-      await page.goto('/zones/forward?letter=all');
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      // Own zone: the first delete link on the list belongs to whichever spec got there first
+      const zoneId = await createZone(page, `delete-confirm-${Date.now()}.example.com`);
+      await page.goto(`/zones/${zoneId}/delete`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
 
-        // Auto-retrying assertion: the click navigation may still be in flight.
-        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
-      }
+      await page.locator('button[type="submit"]').first().click();
     });
 
     test('should cancel delete and return to previous page', async ({ page }) => {
-      await page.goto('/zones/forward?letter=all');
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const zoneName = `delete-cancel-${Date.now()}.example.com`;
+      const zoneId = await createZone(page, zoneName);
+      await page.goto(`/zones/${zoneId}/delete`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await page.locator('[data-testid="cancel-delete-zone"]').click();
+      await expect(page).toHaveURL(/zones\/forward/);
 
-        const noBtn = page.locator('a:has-text("No"), button:has-text("No")').first();
-        if (await noBtn.count() > 0) {
-          await noBtn.click();
-
-          const url = page.url();
-          const validReturn = url.includes('zones/forward') || url.includes('/edit');
-          expect(validReturn).toBeTruthy();
-        }
-      }
+      // Cancelling must leave the zone alone
+      await page.goto(`/zones/${zoneId}/delete`);
+      await expect(page.locator('body')).toContainText(zoneName);
+      await page.locator('button[type="submit"]').first().click();
     });
   });
 
