@@ -43,13 +43,18 @@ test.describe('Zone Operations', () => {
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
+      // The zone page edits records inline and has no per-record edit link, so the
+      // record id comes from the row's input names and the page is opened directly
       await page.goto(`/zones/${zoneId}/edit`);
-      const soaEditLink = page.locator('a[href*="/records/"][href*="/edit"]:has-text("SOA"), tr:has-text("SOA") a[href*="/edit"]').first();
-      if (await soaEditLink.count() > 0) {
-        await soaEditLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      const soaId = await page.locator('[name^="record["][name$="[type]"]').evaluateAll(nodes => {
+        const soa = nodes.find(node => node.value === 'SOA');
+        return soa ? soa.getAttribute('name').match(/record\[([^\]]+)\]/)[1] : null;
+      });
+      expect(soaId).not.toBeNull();
+
+      await page.goto(`/zones/${zoneId}/records/${encodeURIComponent(soaId)}/edit`);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expect(page.locator('[name$="[type]"], select[name*="type"]').first()).toBeVisible();
     });
 
     test('should display SOA serial number', async ({ page }) => {

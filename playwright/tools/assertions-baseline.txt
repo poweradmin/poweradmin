@@ -11,7 +11,6 @@ playwright/tests/groups/group-members.spec.js::should have select all checkbox
 playwright/tests/groups/group-zones.spec.js::should display search for available zones
 playwright/tests/groups/group-zones.spec.js::should display selection count badge
 playwright/tests/groups/group-zones.spec.js::should have select all checkbox for owned zones
-playwright/tests/layout/navigation.spec.js::should have access to list zones
 playwright/tests/logs/user-logs.spec.js::should display log entries when available
 playwright/tests/logs/zone-logs.spec.js::should display color-coded operation badges
 playwright/tests/logs/zone-logs.spec.js::should display details button when logs exist
@@ -53,5 +52,4 @@ playwright/tests/utilities/search-and-tools.spec.js::should show WHOIS form fiel
 playwright/tests/zones/dns-wizard.spec.js::should access SPF wizard form
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have disabled kind dropdowns
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have readonly value inputs
-playwright/tests/zones/zone-operations.spec.js::should access SOA edit page
 playwright/tests/zones/zone-operations.spec.js::should display slave zone master IP

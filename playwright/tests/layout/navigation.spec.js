@@ -53,10 +53,9 @@ test.describe('Header Navigation', () => {
     });
 
     test('should have access to list zones', async ({ page }) => {
-      const listZonesLink = page.locator('a[href*="/zones/forward?letter=all"]').first();
-      if (await listZonesLink.count() > 0) {
-        await expect(listZonesLink).toBeVisible();
-      }
+      // The nav link points at /zones/forward with no query string
+      await expect(page.locator('header [data-testid="list-forward-zones-link"]'))
+        .toHaveAttribute('href', /\/zones\/forward$/);
     });
 
     test('should have access to add master zone', async ({ page }) => {
