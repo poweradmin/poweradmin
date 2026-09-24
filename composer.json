@@ -127,7 +127,8 @@
         "@lint:all",
         "@analyse:phpstan",
         "@compat:8.2",
-        "@tests"
+        "@tests",
+        "@tests:integration"
     ],
     "lint:all": [
         "@lint:twig",
