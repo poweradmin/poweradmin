@@ -52,12 +52,10 @@ playwright/tests/search/search-comprehensive.spec.js::should search by record ty
 playwright/tests/search/search-edge-cases.spec.js::should handle clicking search result link
 playwright/tests/templates/zone-template-management.spec.js::should add records to a zone template
 playwright/tests/templates/zone-template-records.spec.js::manager should access template records for own templates
-playwright/tests/templates/zone-template-update-zones.spec.js::should handle template with no linked zones gracefully
 playwright/tests/templates/zone-templates.spec.js::should add records to zone template
 playwright/tests/templates/zone-templates.spec.js::should show action buttons on single line
 playwright/tests/templates/zone-templates.spec.js::should verify template records applied to new zone
 playwright/tests/utilities/search-and-tools.spec.js::should show WHOIS form fields
-playwright/tests/workflows/complete-domain-management.spec.js::should verify domain resolution and records
 playwright/tests/zones/dns-wizard.spec.js::should access SPF wizard form
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have disabled kind dropdowns
 playwright/tests/zones/zone-metadata-readonly.spec.js::should have readonly value inputs

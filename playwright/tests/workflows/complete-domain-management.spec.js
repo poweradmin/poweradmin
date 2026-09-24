@@ -122,25 +122,15 @@ test.describe('Complete Domain Management Workflow', () => {
     await page.goto('/zones/forward?letter=all');
     await page.waitForLoadState('networkidle');
 
-    // Check if domain exists
+    // The first test in this serial file creates testDomain, so its row is there
     const domainRow = page.locator(`tr:has-text("${testDomain}")`).first();
-    if (await domainRow.count() === 0) {
-      // Domain doesn't exist, just verify page loaded
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
+    await expect(domainRow).toBeVisible();
 
-    // Find and click on test domain
-    const editLink = domainRow.locator('a[href*="edit"]').first();
-    if (await editLink.count() > 0) {
-      await editLink.click();
-      await page.waitForLoadState('networkidle');
+    await domainRow.locator('a[href*="edit"]').first().click();
+    await page.waitForLoadState('networkidle');
 
-      // Verify we can see the page without errors
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    }
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page.locator('body')).toContainText(testDomain);
   });
 
   test('should handle domain search functionality', async ({ page }) => {

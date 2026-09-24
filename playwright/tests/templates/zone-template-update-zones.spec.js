@@ -209,28 +209,19 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       await page.waitForLoadState('networkidle');
 
       // Get template ID
+      // The template was created just above, so its row and links are there
       await page.goto('/zones/templates');
       const row = page.locator(`tr:has-text("${isolatedTemplateName}")`);
-      if (await row.count() > 0) {
-        const editLink = row.locator('a[href*="/edit"]').first();
-        if (await editLink.count() > 0) {
-          await editLink.click();
+      await expect(row).toHaveCount(1);
 
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(FATAL_ERROR_PATTERN);
-        }
+      await row.locator('a[href*="/edit"]').first().click();
+      await expect(page.locator('body')).not.toContainText(FATAL_ERROR_PATTERN);
 
-        // Clean up
-        await page.goto('/zones/templates');
-        const deleteLink = page.locator(`tr:has-text("${isolatedTemplateName}") a[href*="/delete"]`).first();
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-          const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-          if (await yesBtn.count() > 0) {
-            await yesBtn.click();
-          }
-        }
-      }
+      // Clean up
+      await page.goto('/zones/templates');
+      await page.locator(`tr:has-text("${isolatedTemplateName}") a[href*="/delete"]`).first().click();
+      await page.locator('button[type="submit"][name="confirm"]').click();
+      await expect(page.locator('table')).not.toContainText(isolatedTemplateName);
     });
 
     test('should handle update with multiple zones linked to template', async ({ page }) => {
