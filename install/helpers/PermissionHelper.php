@@ -70,6 +70,7 @@ class PermissionHelper
             [77, 'zone_metadata_view_others', 'User is allowed to see the meta data of zones he does not own.'],
             [78, 'zone_ownership_view_own', 'User is allowed to see the owners of zones he owns.'],
             [79, 'zone_ownership_view_others', 'User is allowed to see the owners of zones he does not own.'],
+            [80, 'server_status_view', 'User is allowed to view the PowerDNS server status, e.g. for monitoring.'],
         ];
     }
 }

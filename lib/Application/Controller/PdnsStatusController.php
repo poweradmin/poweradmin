@@ -59,9 +59,9 @@ class PdnsStatusController extends BaseController
             return;
         }
 
-        // Only allow administrators to view server status
-        if (!$this->hasPermission('user_is_ueberuser')) {
-            $this->showError(_('You do not have permission to view PowerDNS server status. Only administrators can access this feature.'));
+        // Administrators pass implicitly; server_status_view grants read-only access for monitoring users
+        if (!$this->hasPermission('server_status_view')) {
+            $this->showError(_('You do not have permission to view PowerDNS server status.'));
             return;
         }
 

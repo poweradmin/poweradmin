@@ -88,6 +88,7 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (76,	'zone_metadata_view
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (80,	'server_status_view',	'User is allowed to view the PowerDNS server status, e.g. for monitoring.');
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 
