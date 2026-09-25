@@ -1,6 +1,46 @@
 import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { loginAndWaitForDashboard, login } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
+
+/**
+ * Changing a password invalidates the session it belongs to. Doing that to admin
+ * broke every other worker, which shares one server-side session for that account,
+ * and left / and /login redirecting to each other until the browser gave up. So the
+ * change is exercised on a user this test creates and removes again.
+ */
+async function createThrowawayUser(page, username, password) {
+  await page.goto('/users/add');
+  await page.locator('input[name="username"]').fill(username);
+  await page.locator('input[name="fullname"]').fill('Password Test User');
+  await page.locator('input[name="email"]').fill(`${username}@example.com`);
+  await page.locator('input[name="password"]').fill(password);
+
+  const permTempl = page.locator('select[name="perm_templ"]');
+  const options = permTempl.locator('option:not([disabled])');
+  await expect(options).not.toHaveCount(0);
+  await permTempl.selectOption(await options.first().getAttribute('value'));
+
+  await page.locator('button[type="submit"], input[type="submit"]').first().click();
+  await page.waitForLoadState('domcontentloaded');
+
+  // The list is filtered rather than scanned, and the username renders as an
+  // input value rather than row text, so :has-text would never match it
+  await page.goto(`/users?search=${username}`);
+  await expect(page.locator(`tr:has(input[value="${username}"])`)).toHaveCount(1);
+}
+
+async function deleteThrowawayUser(page, username) {
+  await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+  await page.goto(`/users?search=${username}`);
+  const row = page.locator(`tr:has(input[value="${username}"])`);
+  await expect(row).toHaveCount(1);
+
+  await row.locator('a[href*="/delete"]').first().click();
+  await page.locator('button[type="submit"][name="commit"]').click();
+
+  await page.goto(`/users?search=${username}`);
+  await expect(page.locator(`tr:has(input[value="${username}"])`)).toHaveCount(0);
+}
 
 test.describe('Password Management', () => {
   test.beforeEach(async ({ page }) => {
@@ -26,72 +66,39 @@ test.describe('Password Management', () => {
   });
 
   test('should change password successfully', async ({ page }) => {
-    await page.goto('/password/change');
-    await page.waitForLoadState('networkidle');
+    const username = `pwchange-${Date.now()}`;
+    const firstPassword = 'SecurePass123!@#';
+    const secondPassword = 'AnotherPass456!@#';
 
-    // Find password fields
-    const passwordFields = page.locator('input[type="password"]');
-    const fieldCount = await passwordFields.count();
+    try {
+      await createThrowawayUser(page, username, firstPassword);
 
-    if (fieldCount < 3) {
-      // Not enough password fields, might be different form structure
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // Fill in current password (first password field)
-    await passwordFields.nth(0).fill(users.admin.password);
-
-    // Fill in new password - use a strong password that meets policy
-    const newPassword = 'SecurePass123!@#';
-    await passwordFields.nth(1).fill(newPassword);
-
-    // Confirm new password
-    await passwordFields.nth(2).fill(newPassword);
-
-    // Submit form
-    const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-    await submitBtn.click();
-    await page.waitForLoadState('networkidle');
-
-    // Check result - might show success or stay on page
-    const bodyText = await page.locator('body').textContent();
-    const hasSuccess = bodyText.toLowerCase().includes('success') ||
-                       bodyText.toLowerCase().includes('changed') ||
-                       bodyText.toLowerCase().includes('updated');
-
-    if (hasSuccess) {
-      // Password changed, change it back for other tests
+      // Act as that user from here on, so admin's session is never disturbed
       await page.goto('/logout');
-      await page.waitForLoadState('networkidle');
+      await login(page, username, firstPassword);
+      await expect(page).not.toHaveURL(/login/);
 
-      await page.goto('/');
-      await page.waitForLoadState('networkidle');
-
-      // Login with new password
-      const usernameField = page.locator('input[name*="username"], input[name*="user"]').first();
-      const passwordField = page.locator('input[type="password"]').first();
-
-      await usernameField.fill(users.admin.username);
-      await passwordField.fill(newPassword);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.waitForLoadState('networkidle');
-
-      // Change back to original password
       await page.goto('/password/change');
-      await page.waitForLoadState('networkidle');
+      const passwordFields = page.locator('input[type="password"]');
+      await expect(passwordFields).toHaveCount(3);
 
-      const resetFields = page.locator('input[type="password"]');
-      if (await resetFields.count() >= 3) {
-        await resetFields.nth(0).fill(newPassword);
-        await resetFields.nth(1).fill(users.admin.password);
-        await resetFields.nth(2).fill(users.admin.password);
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      }
-    } else {
-      // Password change might have failed or page behaves differently
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await passwordFields.nth(0).fill(firstPassword);
+      await passwordFields.nth(1).fill(secondPassword);
+      await passwordFields.nth(2).fill(secondPassword);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.waitForLoadState('domcontentloaded');
+
+      // The new password must be the one that works
+      await page.goto('/logout');
+      await login(page, username, secondPassword);
+      await expect(page).not.toHaveURL(/login/);
+
+      // And the old one must not
+      await page.goto('/logout');
+      await login(page, username, firstPassword);
+      await expect(page).toHaveURL(/login/);
+    } finally {
+      await deleteThrowawayUser(page, username);
     }
   });
 
