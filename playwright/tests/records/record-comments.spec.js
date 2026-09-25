@@ -395,18 +395,16 @@ test.describe('CNAME Root Warning', () => {
       return;
     }
 
-    await page.goto(`/zones/${zoneId}/edit`);
+    // The warning lives on the record edit page, which is opened directly because
+    // the zone page edits inline and carries no per-record edit link
+    const recordId = await firstRecordIdOnZone(page, zoneId);
+    expect(recordId).not.toBeNull();
+    await page.goto(`/zones/${zoneId}/records/${encodeURIComponent(recordId)}/edit`);
 
-    // Find a CNAME record if exists
-    const cnameEditLink = page.locator('tr:has-text("CNAME") a[href*="/records/"][href*="/edit"]').first();
-    if (await cnameEditLink.count() > 0) {
-      await cnameEditLink.click();
+    await page.locator('select[name*="type"]').first().selectOption('CNAME');
+    await page.locator('input[name*="name"]').first().fill('@');
 
-      await page.locator('input[name*="name"]').first().fill('@');
-
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-    }
+    await expect(page.locator('#cnameRootWarning')).toBeVisible();
   });
 
   test('should not show warning for non-root CNAME', async ({ page }) => {
@@ -417,16 +415,14 @@ test.describe('CNAME Root Warning', () => {
       return;
     }
 
-    await page.goto(`/zones/${zoneId}/records/add`);
+    // Same page as the root case: the add-record form carries no such warning
+    const recordId = await firstRecordIdOnZone(page, zoneId);
+    expect(recordId).not.toBeNull();
+    await page.goto(`/zones/${zoneId}/records/${encodeURIComponent(recordId)}/edit`);
 
     await page.locator('select[name*="type"]').first().selectOption('CNAME');
     await page.locator('input[name*="name"]').first().fill('www');
 
-    // Warning should not be visible for non-root
-    const warningDiv = page.locator('#cnameRootWarning');
-    if (await warningDiv.count() > 0) {
-      const isHidden = await warningDiv.isHidden();
-      expect(isHidden).toBeTruthy();
-    }
+    await expect(page.locator('#cnameRootWarning')).toBeHidden();
   });
 });

@@ -119,23 +119,6 @@ test.describe('Pagination Functionality', () => {
     expect(await pageLinks.count()).toBeGreaterThan(1);
   });
 
-  test('should maintain pagination when filtering zones', async ({ page }) => {
-    await page.goto('/zones/forward');
-
-    const filterInput = page.locator('input[name*="filter"], input[name*="search"], input[placeholder*="filter"]').first();
-
-    if (await filterInput.count() > 0) {
-      await filterInput.fill('example');
-
-      const filterButton = page.locator('button[type="submit"], button:has-text("Filter"), button:has-text("Search")').first();
-      if (await filterButton.count() > 0) {
-        await filterButton.click();
-      }
-
-      await expect(page.locator('body')).toBeVisible();
-    }
-  });
-
   test('should handle direct page navigation via URL', async ({ page }) => {
     await page.goto('/zones/forward');
 
