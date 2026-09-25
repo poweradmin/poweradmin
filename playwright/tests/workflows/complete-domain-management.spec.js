@@ -114,8 +114,7 @@ test.describe('Complete Domain Management Workflow', () => {
       }
     }
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should verify domain resolution and records', async ({ page }) => {

@@ -49,8 +49,7 @@ test.describe('Bulk and Batch Operations', () => {
       await page.waitForLoadState('networkidle');
 
       // Verify bulk registration success
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/success|created|registered/i);
+      await expect(page.locator('body')).toContainText(/success|created|registered/i);
     }
   });
 

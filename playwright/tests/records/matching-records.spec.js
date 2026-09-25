@@ -160,8 +160,7 @@ test.describe('Matching Record Creation (Issue #1104)', () => {
       await page.waitForLoadState('domcontentloaded');
 
       // Verify no errors
-      const resultText = await page.locator('body').textContent();
-      expect(resultText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
       // Verify the A record was created in the forward zone
       const aRecordExists = await recordExistsInZone(

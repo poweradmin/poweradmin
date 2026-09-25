@@ -33,20 +33,14 @@ test.describe('Master Zone Management', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify no errors occurred
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Verify zone was created by checking zones list
     await page.goto('/zones/forward?letter=all');
     await page.waitForLoadState('networkidle');
 
-    const zoneRow = page.locator(`tr:has-text("${masterZone}")`);
-    if (await zoneRow.count() > 0) {
-      await expect(zoneRow.first()).toBeVisible();
-    } else {
-      // Zone may have been created but not visible - check for success message
-      expect(bodyText.toLowerCase()).toMatch(/success|added|created|zone/i);
-    }
+    // The zone was just created above, so its row must be in the list
+    await expect(page.locator(`tr:has-text("${masterZone}")`)).toHaveCount(1);
   });
 
   test('should add a reverse zone successfully', async ({ page }) => {
@@ -67,8 +61,7 @@ test.describe('Master Zone Management', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify no errors occurred
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Verify zone was created
     await page.goto('/zones/reverse?reverse_type=all');
@@ -117,8 +110,7 @@ test.describe('Master Zone Management', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should delete a master zone successfully', async ({ page }) => {
@@ -149,8 +141,7 @@ test.describe('Master Zone Management', () => {
       await page.waitForLoadState('networkidle');
     }
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should delete a reverse zone successfully', async ({ page }) => {
@@ -181,7 +172,6 @@ test.describe('Master Zone Management', () => {
       await page.waitForLoadState('networkidle');
     }
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 });

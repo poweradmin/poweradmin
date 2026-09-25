@@ -61,8 +61,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
     await page.waitForLoadState('networkidle');
 
     // After adding, the app redirects to zone edit page
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception|error occurred/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception|error occurred/i);
 
     // Records are in input fields on the zone edit page, so check for the input value
     const contentInput = page.locator(`input[value="${ptrContent}"]`);
@@ -172,8 +171,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
     await page.locator('button[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should clean up test PTR records', async ({ page }) => {
@@ -217,7 +215,6 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
       }
     }
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 });

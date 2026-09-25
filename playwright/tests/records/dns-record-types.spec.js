@@ -46,8 +46,7 @@ test.describe('DNS Record Types Management', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should add AAAA record successfully', async ({ page }) => {
@@ -62,8 +61,7 @@ test.describe('DNS Record Types Management', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should add MX record successfully', async ({ page }) => {
@@ -84,8 +82,7 @@ test.describe('DNS Record Types Management', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should add CNAME record successfully', async ({ page }) => {
@@ -100,8 +97,7 @@ test.describe('DNS Record Types Management', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should add TXT record successfully', async ({ page }) => {
@@ -116,8 +112,7 @@ test.describe('DNS Record Types Management', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should show deprecated label for SPF record type in dropdown', async ({ page }) => {
@@ -137,8 +132,7 @@ test.describe('DNS Record Types Management', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should show deprecation warning when selecting SPF type', async ({ page }) => {

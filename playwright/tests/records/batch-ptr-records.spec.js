@@ -162,9 +162,8 @@ test.describe('Batch PTR Records (Issue #968)', () => {
         await submitBtn.click();
         await page.waitForLoadState('networkidle');
 
-        const bodyText = await page.locator('body').textContent();
         // Should handle gracefully, not crash
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -208,8 +207,7 @@ test.describe('Batch PTR Records (Issue #968)', () => {
           // If click fails, just navigate directly
         });
         await page.waitForLoadState('networkidle');
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });

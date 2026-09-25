@@ -90,8 +90,7 @@ test.describe('Search Edge Cases', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle whitespace-only search', async ({ page }) => {
@@ -106,8 +105,7 @@ test.describe('Search Edge Cases', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle search after clearing results', async ({ page }) => {
@@ -128,8 +126,7 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -145,8 +142,7 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle percent wildcard', async ({ page }) => {
@@ -160,8 +156,7 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle underscore character', async ({ page }) => {
@@ -175,8 +170,7 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle SQL injection attempt', async ({ page }) => {
@@ -190,8 +184,7 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle XSS attempt in search', async ({ page }) => {
@@ -222,8 +215,7 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle very long search query', async ({ page }) => {
@@ -237,8 +229,7 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -261,8 +252,7 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle all checkboxes checked', async ({ page }) => {
@@ -283,8 +273,7 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -306,8 +295,7 @@ test.describe('Search Edge Cases', () => {
         await resultLink.click();
         await page.waitForLoadState('networkidle');
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 

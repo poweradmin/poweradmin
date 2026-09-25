@@ -194,8 +194,7 @@ test.describe('Group CRUD Operations', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       await page.waitForLoadState('domcontentloaded');
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject empty group name', async ({ page }) => {
@@ -273,8 +272,7 @@ test.describe('Group CRUD Operations', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       await page.waitForLoadState('domcontentloaded');
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -340,8 +338,7 @@ test.describe('Group CRUD Operations', () => {
         await yesBtn.click();
 
         await page.waitForLoadState('domcontentloaded');
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });

@@ -255,8 +255,7 @@ test.describe('Zone Metadata Editor', () => {
     await page.locator('[data-testid="save-zone-metadata"]').click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should have CSRF token in form', async ({ page }) => {

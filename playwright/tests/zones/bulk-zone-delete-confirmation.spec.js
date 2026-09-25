@@ -65,8 +65,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await page.waitForLoadState('networkidle');
 
       // Should be on confirmation page, not error page
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/error occurred|fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/error occurred|fatal|exception/i);
 
       // Confirm deletion
       const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();

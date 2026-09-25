@@ -329,8 +329,7 @@ test.describe('Zone Template Records', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
         await page.waitForLoadState('networkidle');
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });

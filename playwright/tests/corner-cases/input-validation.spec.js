@@ -142,8 +142,7 @@ test.describe('Input Validation Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       zoneCreated = true;
     });
 
@@ -298,8 +297,7 @@ test.describe('Input Validation Edge Cases', () => {
         await page.waitForLoadState('networkidle');
       }
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should clean up test zone', async ({ page }) => {
@@ -321,8 +319,7 @@ test.describe('Input Validation Edge Cases', () => {
         }
       }
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -363,8 +360,7 @@ test.describe('Input Validation Edge Cases', () => {
       await page.waitForLoadState('networkidle');
 
       // Should show error or stay on form
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject mismatched passwords', async ({ page }) => {
@@ -439,8 +435,7 @@ test.describe('Input Validation Edge Cases', () => {
       await page.waitForLoadState('networkidle');
 
       // Check if password policy is enforced - either error or stays on form
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 });

@@ -97,8 +97,7 @@ test.describe('Zone Templates Management', () => {
       await page.locator('button[type="submit"]').click();
       await page.waitForLoadState('networkidle');
 
-      const result = await page.locator('body').textContent();
-      expect(result).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     }
   });
 
@@ -159,8 +158,7 @@ test.describe('Zone Templates Management', () => {
       await page.waitForLoadState('networkidle');
 
       // Verify page loaded without errors
-      const result = await page.locator('body').textContent();
-      expect(result).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     }
   });
 
@@ -186,8 +184,7 @@ test.describe('Zone Templates Management', () => {
     await page.waitForLoadState('networkidle');
 
     // Just verify the edit page loads without errors
-    const result = await page.locator('body').textContent();
-    expect(result).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should validate template form fields', async ({ page }) => {

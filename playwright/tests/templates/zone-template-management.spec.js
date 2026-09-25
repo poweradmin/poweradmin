@@ -39,8 +39,7 @@ test.describe('Zone Template Management', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify success - should redirect to templates list or show success message
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/success|added|template/i);
+    await expect(page.locator('body')).toContainText(/success|added|template/i);
   });
 
   test('should add records to a zone template', async ({ page }) => {
@@ -119,8 +118,7 @@ test.describe('Zone Template Management', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify zone creation
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/success|added|created|already exists/i);
+    await expect(page.locator('body')).toContainText(/success|added|created|already exists/i);
   });
 
   test('should edit a zone template', async ({ page }) => {
@@ -145,8 +143,7 @@ test.describe('Zone Template Management', () => {
     await page.waitForLoadState('networkidle');
 
     // Just verify the edit page loads without errors
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should delete a zone template', async ({ page }) => {
@@ -194,7 +191,6 @@ test.describe('Zone Template Management', () => {
       await page.waitForLoadState('networkidle');
     }
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 });

@@ -65,8 +65,7 @@ test.describe('Catalog consumer zones', () => {
     await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
-    const body = await page.locator('body').textContent();
-    expect(body).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     await openZoneListPageFor(page, consumerZone);
 

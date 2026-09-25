@@ -136,8 +136,7 @@ test.describe('Subfolder Navigation', () => {
     if (linkExists) {
       await letterLink.click();
       await expect(page).toHaveURL(new RegExp(`${PREFIX}/zones/forward\\?letter=`));
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|not found/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception|not found/i);
     }
   });
 

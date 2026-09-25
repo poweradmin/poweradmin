@@ -87,8 +87,7 @@ test.describe('Language Selector - Limited Configuration', () => {
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/Zonen|Suche|Abmelden|Benutzer/i);
+    await expect(page.locator('body')).toContainText(/Zonen|Suche|Abmelden|Benutzer/i);
   });
 
   test('should switch to French and show French interface', async ({ page }) => {
@@ -101,8 +100,7 @@ test.describe('Language Selector - Limited Configuration', () => {
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/Zones|Recherche|Déconnexion|Utilisateurs/i);
+    await expect(page.locator('body')).toContainText(/Zones|Recherche|Déconnexion|Utilisateurs/i);
   });
 
   test('should switch to Japanese and show Japanese interface', async ({ page }) => {
@@ -115,8 +113,7 @@ test.describe('Language Selector - Limited Configuration', () => {
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/ゾーン|検索|ログアウト|ユーザー/i);
+    await expect(page.locator('body')).toContainText(/ゾーン|検索|ログアウト|ユーザー/i);
   });
 
   test('should switch to Polish and show Polish interface', async ({ page }) => {
@@ -129,8 +126,7 @@ test.describe('Language Selector - Limited Configuration', () => {
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/Strefy|Szukaj|Wyloguj|Użytkownicy/i);
+    await expect(page.locator('body')).toContainText(/Strefy|Szukaj|Wyloguj|Użytkownicy/i);
   });
 
   test('should persist limited language selection across navigation', async ({ page }) => {

@@ -65,8 +65,7 @@ test.describe('Language Selector', () => {
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/Zonen|Suche|Abmelden|Benutzer/i);
+    await expect(page.locator('body')).toContainText(/Zonen|Suche|Abmelden|Benutzer/i);
   });
 
   test('should change interface language to French after login', async ({ page }) => {
@@ -84,8 +83,7 @@ test.describe('Language Selector', () => {
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/Zones|Recherche|Déconnexion|Utilisateurs/i);
+    await expect(page.locator('body')).toContainText(/Zones|Recherche|Déconnexion|Utilisateurs/i);
   });
 
   test('should display English interface with default language', async ({ page }) => {
@@ -94,8 +92,7 @@ test.describe('Language Selector', () => {
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/Zones|Search|Log out|Users/i);
+    await expect(page.locator('body')).toContainText(/Zones|Search|Log out|Users/i);
   });
 
   test('should persist language selection across page navigation', async ({ page }) => {

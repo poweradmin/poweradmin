@@ -61,8 +61,7 @@ test.describe('Search Functionality', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify no fatal errors occurred
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Search functionality should work (may or may not find results depending on wildcards)
     // At minimum, the search page should still be displayed
@@ -81,8 +80,7 @@ test.describe('Search Functionality', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify no fatal errors occurred
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Should show search page or results
     await expect(page.locator('body')).toContainText(/search|DNS|zones|records|no results/i);
@@ -106,8 +104,7 @@ test.describe('Search Functionality', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify no fatal errors occurred
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Should show search page or results
     await expect(page.locator('body')).toContainText(/search|DNS|zones|records|no results/i);
@@ -125,8 +122,7 @@ test.describe('Search Functionality', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify no fatal errors occurred
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Should show "no results" or remain on search page
     await expect(page.locator('body')).toContainText(/no results|search|not found|DNS/i);
@@ -144,8 +140,7 @@ test.describe('Search Functionality', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify no fatal errors occurred
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Should show search page or results
     await expect(page.locator('body')).toContainText(/search|DNS|zones|records|no results/i);

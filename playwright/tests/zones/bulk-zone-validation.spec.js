@@ -31,8 +31,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify no errors occurred
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Verify zone was created by checking zones list
     expect(await zoneExists(page, zoneName)).toBe(true);
@@ -50,8 +49,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify no errors occurred
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Verify zones were created
     for (const zone of zones) {
@@ -73,8 +71,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     await page.waitForLoadState('networkidle');
 
     // Application may allow any TLD - check that page processed without fatal error
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Clean up if zone was created
     await cleanupZone(page, zoneName);
@@ -99,8 +96,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     await page.waitForLoadState('networkidle');
 
     // Application may process all zones or show partial results
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
     // Cleanup any zones that were created
     await cleanupZone(page, validZone);

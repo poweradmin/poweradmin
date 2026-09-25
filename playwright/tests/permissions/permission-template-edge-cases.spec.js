@@ -36,8 +36,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle duplicate template name gracefully (regression #942)', async ({ page }) => {
@@ -52,9 +51,8 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
       // Should show error message, not crash with duplicate key error
-      expect(bodyText).not.toMatch(/duplicate key|fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/duplicate key|fatal|exception/i);
     });
 
     test('should handle case-insensitive duplicate names', async ({ page }) => {
@@ -69,8 +67,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -86,8 +83,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle template name with special chars', async ({ page }) => {
@@ -101,8 +97,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject template name with SQL injection', async ({ page }) => {
@@ -116,8 +111,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle very long template name', async ({ page }) => {
@@ -131,8 +125,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle empty template name', async ({ page }) => {
@@ -144,8 +137,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -168,8 +160,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle selecting no permissions', async ({ page }) => {
@@ -190,8 +181,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle rapid checkbox toggling', async ({ page }) => {
@@ -243,8 +233,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle editing template to existing name', async ({ page }) => {
@@ -289,8 +278,7 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       // Try to rename to first template's name - use visible text input
       const nameInput = page.locator('input[type="text"][name*="name"], input[type="text"][name*="templ"]').first();
       if (await nameInput.count() === 0 || !firstName) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         return;
       }
       await nameInput.fill(firstName.trim());
@@ -299,9 +287,8 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
       // Should handle gracefully
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -319,9 +306,8 @@ test.describe('Permission Template Edge Cases (Issue #942)', () => {
       await deleteLink.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
       // Should show confirmation or warning, not crash
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 

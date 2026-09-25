@@ -73,8 +73,7 @@ test.describe('Error Handling and Edge Cases', () => {
       await page.waitForLoadState('networkidle');
 
       // Check we end up on a valid page - no crashes
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
       // Clean up
       await page.goto('/zones/forward?letter=all');
@@ -246,8 +245,7 @@ test.describe('Error Handling and Edge Cases', () => {
             await page.waitForLoadState('networkidle');
 
             // HTML should be escaped in the display (not executed)
-            const bodyText = await page.locator('body').textContent();
-            expect(bodyText).not.toMatch(/fatal|exception/i);
+            await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
           }
         }
       }

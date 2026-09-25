@@ -163,8 +163,7 @@ test.describe('Complete DNS Management Workflow Integration', () => {
       await page.waitForLoadState('networkidle');
 
       // Verify some records are present
-      const recordsText = await page.locator('body').textContent();
-      expect(recordsText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     }
   });
 
@@ -188,7 +187,6 @@ test.describe('Complete DNS Management Workflow Integration', () => {
       }
     }
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 });

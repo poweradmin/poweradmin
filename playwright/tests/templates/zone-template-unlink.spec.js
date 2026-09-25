@@ -76,8 +76,7 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
       await templateLinks.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/zone|template|unlink/i);
+      await expect(page.locator('body')).toContainText(/zone|template|unlink/i);
     });
   });
 
@@ -146,8 +145,7 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
       await editLink.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/zone|template|empty|no.*zone/i);
+      await expect(page.locator('body')).toContainText(/zone|template|empty|no.*zone/i);
     });
 
     test('zones table should have type column', async ({ page }) => {

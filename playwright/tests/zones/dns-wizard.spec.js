@@ -153,8 +153,7 @@ test.describe('DNS Wizard', () => {
         await wizardLink.click();
         await page.waitForLoadState('domcontentloaded');
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/back|cancel/i);
+        await expect(page.locator('body')).toContainText(/back|cancel/i);
       }
     });
   });

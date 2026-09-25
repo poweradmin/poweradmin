@@ -265,8 +265,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       await updateBtn.click({ timeout: 60000 });
       await page.waitForLoadState('domcontentloaded');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
+      await expect(page.locator('body')).not.toContainText(FATAL_ERROR_PATTERN);
 
       // Clean up second zone
       const secondZoneId = await findZoneIdByName(page, secondZoneName);

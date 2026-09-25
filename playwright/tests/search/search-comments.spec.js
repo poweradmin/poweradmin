@@ -94,8 +94,7 @@ test.describe('Search Comments Feature', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should display zone comments in search results', async ({ page }) => {
@@ -113,9 +112,8 @@ test.describe('Search Comments Feature', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
       // Results should be displayed
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -141,8 +139,7 @@ test.describe('Search Comments Feature', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should display record comments in search results', async ({ page }) => {
@@ -160,8 +157,7 @@ test.describe('Search Comments Feature', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should find records by comment text', async ({ page }) => {
@@ -185,8 +181,7 @@ test.describe('Search Comments Feature', () => {
 
         await page.waitForLoadState('networkidle');
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -230,8 +225,7 @@ test.describe('Search Comments Feature', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -262,8 +256,7 @@ test.describe('Search Comments Feature', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should search with wildcards and comments enabled', async ({ page }) => {
@@ -292,8 +285,7 @@ test.describe('Search Comments Feature', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -314,8 +306,7 @@ test.describe('Search Comments Feature', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('viewer should search with comments', async ({ page }) => {
@@ -334,8 +325,7 @@ test.describe('Search Comments Feature', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 });

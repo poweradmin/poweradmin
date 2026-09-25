@@ -186,8 +186,7 @@ test.describe('Forgot Password Form Validation', () => {
 
       // Should not reveal whether email exists (security best practice)
       // Either shows success message or generic message
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/sent|email|check|error|link/i);
+      await expect(page.locator('body')).toContainText(/sent|email|check|error|link/i);
     });
   });
 });

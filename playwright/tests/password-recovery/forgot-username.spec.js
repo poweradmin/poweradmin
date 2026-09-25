@@ -100,8 +100,7 @@ test.describe('Forgot Username', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       await page.waitForLoadState('domcontentloaded');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|500/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception|500/i);
     });
   });
 

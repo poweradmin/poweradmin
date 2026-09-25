@@ -234,8 +234,7 @@ test.describe('Zone Template CRUD Operations', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should update template description', async ({ page }) => {

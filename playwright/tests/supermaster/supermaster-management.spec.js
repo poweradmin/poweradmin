@@ -137,8 +137,7 @@ test.describe('Supermaster Management', () => {
     await page.waitForLoadState('networkidle');
 
     // Just verify the edit page loads
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should delete a supermaster', async ({ page }) => {
@@ -173,8 +172,7 @@ test.describe('Supermaster Management', () => {
     }
 
     // Verify page loaded without errors
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should validate supermaster form', async ({ page }) => {

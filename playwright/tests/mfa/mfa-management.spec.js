@@ -104,8 +104,7 @@ test.describe('MFA Management', () => {
     }
 
     // Should show validation error or remain on page
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should handle empty MFA code submission', async ({ page }) => {
@@ -125,7 +124,6 @@ test.describe('MFA Management', () => {
     await page.waitForLoadState('networkidle');
 
     // Should show validation error or remain on page
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 });

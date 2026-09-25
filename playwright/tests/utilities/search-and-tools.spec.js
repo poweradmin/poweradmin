@@ -37,8 +37,7 @@ test.describe('Search and Utility Tools', () => {
     await page.waitForLoadState('networkidle');
 
     // Should stay on search page or show validation
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should perform search with query', async ({ page }) => {
@@ -112,8 +111,7 @@ test.describe('Search and Utility Tools', () => {
     }
 
     // Should stay on form or show validation
-    const newBodyText = await page.locator('body').textContent();
-    expect(newBodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should perform WHOIS lookup', async ({ page }) => {
@@ -140,8 +138,7 @@ test.describe('Search and Utility Tools', () => {
     await page.waitForLoadState('networkidle');
 
     // Should show WHOIS results or error message
-    const resultText = await page.locator('body').textContent();
-    expect(resultText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should access RDAP tool if enabled', async ({ page }) => {
