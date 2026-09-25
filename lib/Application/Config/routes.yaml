@@ -618,6 +618,11 @@ api_v2_dynamic_dns:
   controller: Poweradmin\Application\Controller\Api\V2\DynamicDnsController::run
   methods: [POST]
 
+api_v2_server_status:
+  path: /api/v2/server/status
+  controller: Poweradmin\Application\Controller\Api\V2\ServerStatusController::run
+  methods: [GET]
+
 api_v2_users:
   path: /api/v2/users
   controller: Poweradmin\Application\Controller\Api\V2\UsersController::run

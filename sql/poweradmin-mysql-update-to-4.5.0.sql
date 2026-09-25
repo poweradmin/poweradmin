@@ -271,3 +271,12 @@ DELETE FROM `log_users` WHERE `event` LIKE '%operation:api_key_%';
 -- Index the API log timestamp so per-request logging (closes #1137) can prune
 -- old rows by retention date without a full scan.
 ALTER TABLE `log_api` ADD INDEX `idx_log_api_created_at` (`created_at`);
+
+-- Register a dedicated permission for viewing the PowerDNS server status in
+-- the web UI and via GET /api/v2/server/status (#1580, #1581), so monitoring
+-- users no longer need full administrator rights. Opt-in: no template is
+-- granted it automatically; administrators already have it implicitly.
+INSERT INTO `perm_items` (`name`, `descr`)
+SELECT 'server_status_view', 'User is allowed to view the PowerDNS server status, e.g. for monitoring.'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM `perm_items` WHERE `name` = 'server_status_view');

@@ -221,3 +221,11 @@ CREATE INDEX IF NOT EXISTS "idx_log_api_created_at" ON "public"."log_api" USING 
 -- longer than six characters (NSEC3PARAM, OPENPGPKEY, IPSECKEY, CDNSKEY,
 -- RESINFO) are offered in the UI but could not be stored as template records.
 ALTER TABLE "public"."zone_templ_records" ALTER COLUMN "type" TYPE character varying(10);
+
+-- Register a dedicated permission for viewing the PowerDNS server status in
+-- the web UI and via GET /api/v2/server/status (#1580, #1581), so monitoring
+-- users no longer need full administrator rights. Opt-in: no template is
+-- granted it automatically; administrators already have it implicitly.
+INSERT INTO "perm_items" ("name", "descr")
+SELECT 'server_status_view', 'User is allowed to view the PowerDNS server status, e.g. for monitoring.'
+WHERE NOT EXISTS (SELECT 1 FROM "perm_items" WHERE "name" = 'server_status_view');
