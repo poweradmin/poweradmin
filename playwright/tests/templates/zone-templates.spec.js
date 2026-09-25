@@ -132,11 +132,10 @@ test.describe('Zone Templates Management', () => {
     }
 
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
 
-    // Verify zone creation (may fail if zone already exists)
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toMatch(/success|created|added|already exists/i);
+    // Auto-retrying: a one-shot textContent() here read the pre-submit page and
+    // reported no flash message, which showed up as a flake on the API backend
+    await expect(page.locator('body')).toContainText(/success|created|added|already exists/i);
   });
 
   test('should verify template records applied to new zone', async ({ page }) => {
