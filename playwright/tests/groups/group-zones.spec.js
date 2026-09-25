@@ -48,6 +48,15 @@ test.describe('Group Zones Management', () => {
     return false;
   }
 
+  /** Opens the zones page of a seeded group, which the test data always provides. */
+  async function openSeededGroupZones(page, groupName) {
+    await page.goto('/groups');
+    const row = page.locator(`tr:has-text("${groupName}")`);
+    await expect(row).not.toHaveCount(0);
+    await row.locator('a[href*="/zones"]').first().click();
+    await expect(page).toHaveURL(/\/zones/);
+  }
+
   test.describe('Access Zones Page', () => {
     test('admin should access group zones page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -110,13 +119,9 @@ test.describe('Group Zones Management', () => {
     test('should display search for available zones', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupZones(page, 'Zone Managers');
-      if (found) {
-        const searchInput = page.locator('#search-available');
-        if (await searchInput.count() > 0) {
-          await expect(searchInput).toBeVisible();
-        }
-      }
+      await openSeededGroupZones(page, 'Zone Managers');
+
+      await expect(page.locator('#search-available')).toBeVisible();
     });
   });
 
@@ -145,33 +150,24 @@ test.describe('Group Zones Management', () => {
     test('should have select all checkbox for owned zones', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupZones(page, 'Editors');
-      if (found) {
-        const selectAll = page.locator('#select-all-owned');
-        if (await selectAll.count() > 0) {
-          await expect(selectAll).toBeVisible();
-        }
-      }
+      // Editors owns client-zone and shared-zone in the test data
+      await openSeededGroupZones(page, 'Editors');
+
+      await expect(page.locator('#select-all-owned')).toBeVisible();
     });
 
     test('should display selection count badge', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupZones(page, 'Editors');
-      if (found) {
-        const countBadge = page.locator('#zone-remove-count');
-        if (await countBadge.count() > 0) {
-          await expect(countBadge).toBeVisible();
-          await expect(countBadge).toContainText('0');
+      await openSeededGroupZones(page, 'Editors');
 
-          // Check a zone and verify count updates
-          const checkbox = page.locator('.owned-checkbox').first();
-          if (await checkbox.count() > 0) {
-            await checkbox.check();
-            await expect(countBadge).toContainText('1');
-          }
-        }
-      }
+      const countBadge = page.locator('#zone-remove-count');
+      await expect(countBadge).toBeVisible();
+      await expect(countBadge).toContainText('0');
+
+      // Checking a zone must move the counter
+      await page.locator('.owned-checkbox').first().check();
+      await expect(countBadge).toContainText('1');
     });
   });
 
