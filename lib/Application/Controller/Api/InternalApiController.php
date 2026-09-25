@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class InternalApiController extends AbstractApiController
@@ -81,7 +80,9 @@ abstract class InternalApiController extends AbstractApiController
      */
     protected function validateAuthentication(): void
     {
-        if (!isset($_SESSION[SessionKeys::USERID])) {
+        // Same definition of "logged in" as the web controllers: a session whose
+        // userid is not a positive int is not authenticated anywhere else either
+        if (!$this->getUserContextService()->isAuthenticated()) {
             $response = $this->returnErrorResponse('Unauthorized access', 401);
             $response->send();
             exit;
