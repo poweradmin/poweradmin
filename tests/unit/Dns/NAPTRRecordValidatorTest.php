@@ -305,6 +305,42 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
         $this->assertEmpty($result->getErrors());
     }
 
+    public function testValidateRejectsServiceWithEmptySegment()
+    {
+        // "a++b" has no resolution service between the separators
+        $content = '100 10 "s" "aaa++diameter" "" next.example.com.';
+
+        $result = $this->validator->validate($content, 'test.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('service must follow the format', $result->getFirstError());
+    }
+
+    public function testValidateRejectsServiceWithTrailingSeparator()
+    {
+        $content = '100 10 "s" "E2U+" "" next.example.com.';
+
+        $result = $this->validator->validate($content, 'test.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('service must follow the format', $result->getFirstError());
+    }
+
+    /**
+     * The service pattern must stay unambiguous: a segment that could also be read
+     * as a separator makes matching exponential and trips the PCRE backtrack limit.
+     */
+    public function testValidateServiceWithManySeparatorsFinishesWithoutBacktrackLimit()
+    {
+        $service = 'E' . str_repeat('+a', 30) . '!';
+        $content = sprintf('100 10 "s" "%s" "" next.example.com.', $service);
+
+        $result = $this->validator->validate($content, 'test.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertSame(PREG_NO_ERROR, preg_last_error());
+    }
+
     public function testValidateWithInvalidServiceFormat()
     {
         // Test invalid service format (starts with number)
