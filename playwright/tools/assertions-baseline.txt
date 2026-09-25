@@ -14,7 +14,6 @@ playwright/tests/mfa/mfa-setup.spec.js::should use POST for MFA actions
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on RDAP page from zone ID
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on WHOIS page from zone ID
 playwright/tests/modules/zone-file-export.spec.js::should show Zone File option in Export dropdown when module is enabled
-playwright/tests/navigation/pagination.spec.js::should preserve sort order across pages
 playwright/tests/password-recovery/forgot-password.spec.js::should navigate to login page
 playwright/tests/password-recovery/forgot-username.spec.js::should navigate back to login page
 playwright/tests/records/batch-ptr-records.spec.js::should handle empty batch PTR submission

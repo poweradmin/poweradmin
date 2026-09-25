@@ -196,32 +196,34 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should preserve sort order across pages', async ({ page }) => {
+    // The unfiltered view never paginates on the SQL backend, so the sort is chosen
+    // there and the comparison is made on the letter-filtered list that does
     await page.goto('/zones/forward');
+    const sortableHeader = page.locator('th a').first();
+    await expect(sortableHeader).toBeVisible();
+    await sortableHeader.click();
+    await page.waitForLoadState('domcontentloaded');
 
-    const sortableHeader = page.locator('th[data-sortable], th a, th.sortable').first();
+    await openPaginatedList(page);
 
-    if (await sortableHeader.count() > 0) {
-      await sortableHeader.click();
-      await page.waitForLoadState('domcontentloaded');
+    const firstColumn = () => page.locator('table tbody tr td:first-child')
+      .evaluateAll(cells => cells.map(c => c.innerText.trim().toLowerCase()));
 
-      const firstColumn = () => page.locator('table tbody tr td:first-child')
-        .evaluateAll(cells => cells.map(c => c.innerText.trim().toLowerCase()));
+    const firstPage = await firstColumn();
+    expect(firstPage.length).toBeGreaterThan(0);
 
-      const firstPage = await firstColumn();
+    const nextButton = page.locator('a:has-text("Next"), button:has-text("Next")').first();
+    await expect(nextButton).toBeVisible();
 
-      const nextButton = page.locator('a:has-text("Next"), button:has-text("Next")').first();
-      if (firstPage.length > 0 && await nextButton.count() > 0 && await nextButton.isEnabled()) {
-        await nextButton.click();
-        await page.waitForLoadState('domcontentloaded');
+    await nextButton.click();
+    await page.waitForLoadState('domcontentloaded');
 
-        // The chosen sort lives in the session, not in the pagination link, so
-        // assert the data order rather than the query string.
-        const secondPage = await firstColumn();
-        const ascending = [...firstPage].sort().join('|') === firstPage.join('|');
-        const expected = ascending ? [...secondPage].sort() : [...secondPage].sort().reverse();
+    // The chosen sort lives in the session, not in the pagination link, so
+    // assert the data order rather than the query string.
+    const secondPage = await firstColumn();
+    const ascending = [...firstPage].sort().join('|') === firstPage.join('|');
+    const expected = ascending ? [...secondPage].sort() : [...secondPage].sort().reverse();
 
-        expect(secondPage.join('|')).toBe(expected.join('|'));
-      }
-    }
+    expect(secondPage.join('|')).toBe(expected.join('|'));
   });
 });
