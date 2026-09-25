@@ -36,9 +36,7 @@ playwright/tests/records/record-validation.spec.js::should reject negative prior
 playwright/tests/search/search-comments.spec.js::should find records by comment text
 playwright/tests/search/search-comments.spec.js::should persist comments checkbox state after search
 playwright/tests/search/search-comments.spec.js::should toggle comments search option
-playwright/tests/search/search-comprehensive.spec.js::should have type filter dropdown
 playwright/tests/search/search-comprehensive.spec.js::should navigate to zone from search results
-playwright/tests/search/search-comprehensive.spec.js::should search by record type
 playwright/tests/search/search-edge-cases.spec.js::should handle clicking search result link
 playwright/tests/templates/zone-template-management.spec.js::should add records to a zone template
 playwright/tests/templates/zone-template-records.spec.js::manager should access template records for own templates

@@ -151,15 +151,13 @@ test.describe('Search Functionality', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/search');
 
-      const typeFilter = page.locator('select[name*="type"]');
-      if (await typeFilter.count() > 0) {
-        await typeFilter.first().selectOption('A');
-        await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('*');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      // There is no type dropdown; the record type is given in the query as "type:a"
+      await page.locator('input[name="query"]').fill('example type:a');
+      await page.locator('button[name="do_search"]').click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      // SearchCriteria lifts the type out of the query and into the hidden field
+      await expect(page.locator('#type_filter')).toHaveValue('A');
     });
   });
 
@@ -261,14 +259,5 @@ test.describe('Search Functionality', () => {
       await expect(breadcrumb).toBeVisible();
     });
 
-    test('should have type filter dropdown', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/search');
-
-      const typeFilter = page.locator('select[name*="type"], select#type_filter');
-      if (await typeFilter.count() > 0) {
-        await expect(typeFilter.first()).toBeVisible();
-      }
-    });
   });
 });
