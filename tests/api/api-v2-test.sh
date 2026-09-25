@@ -1949,6 +1949,34 @@ test_zone_dnssec() {
 
 TEST_CRUD_USER_ID=""
 
+test_server_status() {
+    print_section "Server Status API Tests"
+
+    # 501 means the PowerDNS API is not configured; the live checks need it.
+    local probe_code
+    probe_code=$(curl -s -o /dev/null -w "%{http_code}" \
+        -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        --max-time 30 \
+        "${API_BASE_URL}/api/v2/server/status")
+
+    if [[ "$probe_code" == "501" ]]; then
+        print_info "Server status endpoint returns 501 (PowerDNS API not configured) - skipping live checks"
+        return 0
+    fi
+
+    api_request_v2 "GET" "/server/status" "" 200 "Get PowerDNS server status"
+    assert_json "Server reports running" "$LAST_RESPONSE_BODY" '.data.running' "true"
+    assert_json_exists "Server status contains version" "$LAST_RESPONSE_BODY" '.data.version'
+    assert_json_exists "Server status contains daemon_type" "$LAST_RESPONSE_BODY" '.data.daemon_type'
+    assert_json "Slaves are omitted by default" "$LAST_RESPONSE_BODY" '.data | has("slaves")' "false"
+
+    api_request_v2 "GET" "/server/status?metrics=uptime" "" 200 "Get server status filtered to one metric"
+    assert_json "Metric filter returns only the requested metric" "$LAST_RESPONSE_BODY" '.data.metrics | keys | join(",")' "uptime"
+
+    api_request_v2 "GET" "/server/status?include=slaves" "" 200 "Get server status including slaves"
+    assert_json "Slaves are an array when requested" "$LAST_RESPONSE_BODY" '.data.slaves | type' "array"
+}
+
 test_users_crud() {
     print_section "Users CRUD API Tests"
 
@@ -2870,6 +2898,7 @@ main() {
     test_zone_owners
     test_zone_metadata
     test_zone_dnssec
+    test_server_status
     test_users_crud
     test_zone_templates
     test_users_ldap_sync
