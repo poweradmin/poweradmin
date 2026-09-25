@@ -73,7 +73,13 @@ class PowerdnsStatusService
         return $this->apiEnabled;
     }
 
-    public function getServerStatus(): array
+    /**
+     * @param bool $includePrometheusMetrics Also fetch the Prometheus endpoint and merge its
+     *                                       metrics. The web UI wants them for its categories;
+     *                                       API clients get the plain statistics only, because
+     *                                       the Prometheus names duplicate them under a prefix.
+     */
+    public function getServerStatus(bool $includePrometheusMetrics = true): array
     {
         if (!$this->apiEnabled) {
             return [
@@ -104,7 +110,7 @@ class PowerdnsStatusService
                 }
 
                 // Try to fetch and parse raw Prometheus metrics if available
-                if (!empty($this->apiUrl)) {
+                if ($includePrometheusMetrics && !empty($this->apiUrl)) {
                     $metricsUrl = $this->buildMetricsUrl();
 
                     // Fetch metrics in Prometheus format with optional Basic Auth
