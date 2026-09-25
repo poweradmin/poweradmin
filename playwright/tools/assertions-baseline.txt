@@ -5,9 +5,6 @@ playwright/tests/dnssec/dnssec-key-lifecycle.spec.js::manager should access DNSS
 playwright/tests/errors/error-pages.spec.js::decline should link to logout
 playwright/tests/errors/error-pages.spec.js::should require checkbox to be checked
 playwright/tests/errors/error-pages.spec.js::should show validation error when checkbox not checked
-playwright/tests/groups/group-members.spec.js::should display search functionality for available users
-playwright/tests/groups/group-members.spec.js::should display selection count badge
-playwright/tests/groups/group-members.spec.js::should have select all checkbox
 playwright/tests/groups/group-zones.spec.js::should display search for available zones
 playwright/tests/groups/group-zones.spec.js::should display selection count badge
 playwright/tests/groups/group-zones.spec.js::should have select all checkbox for owned zones

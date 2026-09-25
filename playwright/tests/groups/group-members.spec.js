@@ -49,6 +49,15 @@ test.describe('Group Members Management', () => {
     return false;
   }
 
+  /** Opens the members page of a seeded group, which the test data always provides. */
+  async function openSeededGroupMembers(page, groupName) {
+    await page.goto('/groups');
+    const row = page.locator(`tr:has-text("${groupName}")`);
+    await expect(row).not.toHaveCount(0);
+    await row.locator('a[href*="/members"]').first().click();
+    await expect(page).toHaveURL(/\/members/);
+  }
+
   test.describe('Access Members Page', () => {
     test('admin should access group members page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -115,13 +124,9 @@ test.describe('Group Members Management', () => {
     test('should display search functionality for available users', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupMembers(page, 'Zone Managers');
-      if (found) {
-        const searchInput = page.locator('#search-available');
-        if (await searchInput.count() > 0) {
-          await expect(searchInput).toBeVisible();
-        }
-      }
+      await openSeededGroupMembers(page, 'Zone Managers');
+
+      await expect(page.locator('#search-available')).toBeVisible();
     });
   });
 
@@ -150,33 +155,24 @@ test.describe('Group Members Management', () => {
     test('should have select all checkbox', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupMembers(page, 'Editors');
-      if (found) {
-        const selectAll = page.locator('#select-all-current');
-        if (await selectAll.count() > 0) {
-          await expect(selectAll).toBeVisible();
-        }
-      }
+      // Editors is seeded with manager and client, so the members table renders
+      await openSeededGroupMembers(page, 'Editors');
+
+      await expect(page.locator('#select-all-current')).toBeVisible();
     });
 
     test('should display selection count badge', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupMembers(page, 'Editors');
-      if (found) {
-        const countBadge = page.locator('#member-remove-count');
-        if (await countBadge.count() > 0) {
-          await expect(countBadge).toBeVisible();
-          await expect(countBadge).toContainText('0');
+      await openSeededGroupMembers(page, 'Editors');
 
-          // Check a member and verify count updates
-          const checkbox = page.locator('.member-checkbox').first();
-          if (await checkbox.count() > 0) {
-            await checkbox.check();
-            await expect(countBadge).toContainText('1');
-          }
-        }
-      }
+      const countBadge = page.locator('#member-remove-count');
+      await expect(countBadge).toBeVisible();
+      await expect(countBadge).toContainText('0');
+
+      // Checking a member must move the counter
+      await page.locator('.member-checkbox').first().check();
+      await expect(countBadge).toContainText('1');
     });
   });
 });
