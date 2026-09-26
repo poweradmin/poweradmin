@@ -22,7 +22,7 @@ class MergeJsonContent
 
         foreach ($annotations as $jsonContent) {
             $parent = $jsonContent->_context->nested;
-            if (!($parent instanceof OA\Response) && !($parent instanceof OA\RequestBody) && !($parent instanceof OA\Parameter)) {
+            if (!($parent instanceof OA\Response) && !($parent instanceof OA\RequestBody) && !($parent instanceof OA\Parameter) && !($parent instanceof OA\Header)) {
                 if ($parent) {
                     $jsonContent->_context->logger->warning('Unexpected ' . $jsonContent->identity() . ' in ' . $parent->identity() . ' in ' . $parent->_context);
                 } else {
@@ -41,9 +41,7 @@ class MergeJsonContent
                 '_context' => new Context(['generated' => true], $jsonContent->_context),
             ]);
             $analysis->addAnnotation($mediaType, $mediaType->_context);
-            if (!$parent instanceof OA\Parameter) {
-                $parent->content['application/json']->mediaType = 'application/json';
-            }
+            $parent->content['application/json']->mediaType = 'application/json';
             $jsonContent->example = Undefined::UNDEFINED;
             $jsonContent->examples = Undefined::UNDEFINED;
             /* @phpstan-ignore assign.propertyType */

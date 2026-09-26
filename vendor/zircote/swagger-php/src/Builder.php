@@ -9,8 +9,8 @@ namespace OpenApi;
 use OpenApi\Builder\Mode;
 use OpenApi\Builder\Result;
 use OpenApi\Contracts\CompilerInterface;
+use OpenApi\Loggers\CollectingLogger;
 use OpenApi\Utils\AttributeFactory;
-use OpenApi\Utils\CollectingLogger;
 use OpenApi\Utils\PipeInterface;
 use OpenApi\Utils\SourceScanner;
 use Psr\Log\LoggerInterface;
@@ -283,10 +283,7 @@ class Builder
             $generator->setVersion($this->version);
         }
 
-        $generator->setProcessorPipeline(new Utils\Pipeline([
-            new Processors\MergeJsonContent(),
-            new Processors\MergeXmlContent(),
-        ]));
+        $generator->setProcessorPipeline(new Utils\Pipeline([]));
 
         if ($this->generatorHook !== null) {
             $generator = ($this->generatorHook)($generator) ?? $generator;

@@ -8,11 +8,11 @@ namespace OpenApi\Compiler;
 
 use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Contracts\CompilerInterface;
+use OpenApi\Loggers\CollectingLogger;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
 use OpenApi\Specification\ComponentName;
 use OpenApi\Undefined;
-use OpenApi\Utils\CollectingLogger;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -30,7 +30,7 @@ class OpenApi31Compiler implements CompilerInterface
      */
     protected const SCHEMA_TYPES = ['string', 'number', 'integer', 'boolean', 'array', 'object', 'null'];
 
-    protected const RESPONSE_KEY = '/^(default|[1-5][0-9]{2}|[1-5]XX)$/';
+    protected const RESPONSE_KEY = OA\Response::STATUS_CODE_PATTERN;
 
     /**
      * Maps nested in another object, as container => [property => the member field keying it].
@@ -546,6 +546,7 @@ class OpenApi31Compiler implements CompilerInterface
             'pattern' => $schema->pattern,
             'contentMediaType' => $schema->contentMediaType,
             'contentEncoding' => $schema->contentEncoding,
+            'contentSchema' => $schema->contentSchema instanceof OA\Schema ? $this->compileSchema($schema->contentSchema) : null,
 
             // Numeric
             'minimum' => $this->compileMinimum($schema),
@@ -873,7 +874,7 @@ class OpenApi31Compiler implements CompilerInterface
 
         foreach ($allSchemas as $schema) {
             if ($schema->type !== null && (is_array($schema->type) ? in_array('array', $schema->type, true) : $schema->type === 'array')) {
-                if ($schema->items === null) {
+                if ($schema->items === null && $schema->prefixItems === null && $schema->contains === null) {
                     $this->logger->warning('Schema' . ($schema->schema ? " \"$schema->schema\"" : '') . ' has type "array" but no items in ' . $schema->getSourceLocation());
                 }
             }

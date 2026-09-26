@@ -6,6 +6,10 @@ namespace GuzzleHttp\Promise;
 
 final class Utils
 {
+    private function __construct()
+    {
+    }
+
     /**
      * Get the global task queue used for promise resolution.
      *
@@ -35,10 +39,14 @@ final class Utils
     }
 
     /**
-     * Adds a function to run in the task queue when it is next `run()` and
-     * returns a promise that is fulfilled or rejected with the result.
+     * Adds a task to the global queue and returns a promise that is fulfilled
+     * or rejected with the task result.
      *
-     * @param callable $task Task function to run.
+     * @template TValue
+     *
+     * @param callable(): TValue $task Task function to run.
+     *
+     * @return PromiseInterface<TValue, \Throwable>
      */
     public static function task(callable $task): PromiseInterface
     {
@@ -58,7 +66,7 @@ final class Utils
     }
 
     /**
-     * Synchronously waits on a promise to resolve and returns an inspection
+     * Synchronously waits on a promise to settle and returns an inspection
      * state array.
      *
      * Returns a state associative array containing a "state" key mapping to a
@@ -67,42 +75,75 @@ final class Utils
      * promise. If the promise is rejected, the array will contain a "reason"
      * key mapping to the rejection reason of the promise.
      *
-     * @param PromiseInterface $promise Promise or value.
+     * @template TValue
+     * @template TReason
+     *
+     * @param PromiseInterface<TValue, TReason> $promise Promise to inspect.
+     *
+     * @return array{state: PromiseInterface::FULFILLED, value: TValue}|array{state: PromiseInterface::REJECTED, reason: TReason|\Throwable}|array{state: PromiseInterface::PENDING}
      */
     public static function inspect(PromiseInterface $promise): array
     {
+        $result = null;
+        $getResult = static function () use (&$result): ?array {
+            return $result;
+        };
+
+        $inspection = $promise->then(
+            static function ($value) use (&$result): void {
+                $result = ['state' => PromiseInterface::FULFILLED, 'value' => $value];
+            },
+            static function ($reason) use (&$result): void {
+                $result = ['state' => PromiseInterface::REJECTED, 'reason' => $reason];
+            }
+        );
+
         try {
-            return [
-                'state' => PromiseInterface::FULFILLED,
-                'value' => $promise->wait(),
-            ];
+            $inspection->wait(false);
         } catch (\Throwable $e) {
-            if ($e instanceof AggregateException) {
-                return ['state' => PromiseInterface::REJECTED, 'reason' => $e];
+            $settled = $getResult();
+            if (null !== $settled) {
+                return $settled;
             }
 
-            if ($e instanceof RejectionException) {
-                return ['state' => PromiseInterface::REJECTED, 'reason' => $e->getReason()];
+            if (Is::settled($promise)) {
+                try {
+                    self::queue()->run();
+                } catch (\Throwable $queueError) {
+                    return ['state' => PromiseInterface::REJECTED, 'reason' => $queueError];
+                }
+
+                $settled = $getResult();
+                if (null !== $settled) {
+                    return $settled;
+                }
             }
 
             return ['state' => PromiseInterface::REJECTED, 'reason' => $e];
         }
+
+        return $getResult() ?? ['state' => $promise->getState()];
     }
 
     /**
      * Waits on all of the provided promises, but does not unwrap rejected
-     * promises as thrown exception.
+     * promises as a thrown exception.
      *
-     * Returns an array of inspection state arrays.
+     * Returns an array of inspection state arrays keyed like the input
+     * iterable.
      *
      * @see inspect for the inspection state array format.
      *
-     * @param PromiseInterface[] $promises Traversable of promises to wait upon.
+     * @template TKey of array-key
+     * @template TValue
+     * @template TReason
+     *
+     * @param iterable<TKey, PromiseInterface<TValue, TReason>> $promises Traversable of promises to wait upon.
+     *
+     * @return array<TKey, array{state: PromiseInterface::FULFILLED, value: TValue}|array{state: PromiseInterface::REJECTED, reason: TReason|\Throwable}|array{state: PromiseInterface::PENDING}>
      */
-    public static function inspectAll($promises): array
+    public static function inspectAll(iterable $promises): array
     {
-        $promises = self::prepareIterable($promises, __FUNCTION__);
-
         $results = [];
         foreach ($promises as $key => $promise) {
             $results[$key] = self::inspect($promise);
@@ -118,14 +159,18 @@ final class Utils
      * order the promises were provided). An exception is thrown if any of the
      * promises are rejected.
      *
-     * @param iterable<PromiseInterface> $promises Iterable of PromiseInterface objects to wait on.
+     * @template TKey of array-key
+     * @template TValue
+     * @template TReason
+     *
+     * @param iterable<TKey, PromiseInterface<TValue, TReason>> $promises Iterable of PromiseInterface objects to wait on.
+     *
+     * @return array<TKey, TValue>
      *
      * @throws \Throwable on error
      */
-    public static function unwrap($promises): array
+    public static function unwrap(iterable $promises): array
     {
-        $promises = self::prepareIterable($promises, __FUNCTION__);
-
         $results = [];
         foreach ($promises as $key => $promise) {
             $results[$key] = $promise->wait();
@@ -142,24 +187,33 @@ final class Utils
      * respective positions to the original array. If any promise in the array
      * rejects, the returned promise is rejected with the rejection reason.
      *
-     * @param mixed $promises  Promises or values.
-     * @param bool  $recursive If true, resolves new promises that might have been added to the stack during its own resolution.
+     * The config array accepts a concurrency option for lazy iterables. Other
+     * config keys are ignored by this wrapper.
+     *
+     * @template TKey of array-key
+     * @template TValue
+     * @template TReason
+     *
+     * @param iterable<TKey, TValue|PromiseInterface<TValue, TReason>> $promises  Promises or values.
+     * @param bool                                                     $recursive If true, resolves newly-added entries until no unprocessed entries or pending promises remain.
+     * @param array{concurrency?: int|(callable(int): int)}            $config    Configuration options.
+     *
+     * @return PromiseInterface<array<TKey, TValue>, TReason|\Throwable>
      */
-    public static function all($promises, bool $recursive = false): PromiseInterface
+    public static function all(iterable $promises, bool $recursive = false, array $config = []): PromiseInterface
     {
-        $promises = self::prepareIterable($promises, __FUNCTION__);
-
         $results = [];
         $promise = Each::of(
             $promises,
             function ($value, $idx) use (&$results): void {
                 $results[$idx] = $value;
             },
-            function ($reason, $idx, Promise $aggregate): void {
+            function ($reason, $idx, PromiseInterface $aggregate): void {
                 if (Is::pending($aggregate)) {
                     $aggregate->reject($reason);
                 }
-            }
+            },
+            $config
         )->then(function () use (&$results) {
             ksort($results);
 
@@ -167,17 +221,9 @@ final class Utils
         });
 
         if (true === $recursive) {
-            $promise = $promise->then(function ($results) use ($recursive, &$promises) {
-                // A consumed generator cannot be traversed again, so a
-                // recursive pass has nothing further to observe.
-                if ($promises instanceof \Generator) {
-                    return $results;
-                }
-
-                foreach ($promises as $promise) {
-                    if (Is::pending($promise)) {
-                        return self::all($promises, $recursive);
-                    }
+            $promise = $promise->then(function ($results) use (&$promises, $config) {
+                if (self::shouldRecurse($promises, $results)) {
+                    return self::all($promises, true, $config);
                 }
 
                 return $results;
@@ -193,22 +239,25 @@ final class Utils
      *
      * When count amount of promises have been fulfilled, the returned promise
      * is fulfilled with an array that contains the fulfillment values of the
-     * winners in order of resolution.
+     * winners, in the order they appear in the input.
      *
      * This promise is rejected with a {@see AggregateException} if the number
      * of fulfilled promises is less than the desired $count.
      *
-     * @param int   $count    Total number of promises.
-     * @param mixed $promises Promises or values.
+     * @template TValue
+     * @template TReason
+     *
+     * @param int                                                $count    Total number of promises.
+     * @param iterable<TValue|PromiseInterface<TValue, TReason>> $promises Promises or values.
+     *
+     * @return PromiseInterface<list<TValue>, \Throwable>
      */
-    public static function some(int $count, $promises): PromiseInterface
+    public static function some(int $count, iterable $promises): PromiseInterface
     {
-        $promises = self::prepareIterable($promises, __FUNCTION__);
-
         $results = [];
         $rejections = [];
 
-        return Each::of(
+        $promise = Each::of(
             $promises,
             function ($value, $idx, PromiseInterface $p) use (&$results, $count): void {
                 if (Is::settled($p)) {
@@ -235,77 +284,107 @@ final class Utils
                 return array_values($results);
             }
         );
+
+        /** @var PromiseInterface<list<TValue>, \Throwable> $promise */
+        return $promise;
     }
 
     /**
      * Like some(), with 1 as count. However, if the promise fulfills, the
      * fulfillment value is not an array of 1 but the value directly.
      *
-     * @param mixed $promises Promises or values.
+     * @template TValue
+     * @template TReason
+     *
+     * @param iterable<TValue|PromiseInterface<TValue, TReason>> $promises Promises or values.
+     *
+     * @return PromiseInterface<TValue, \Throwable>
      */
-    public static function any($promises): PromiseInterface
+    public static function any(iterable $promises): PromiseInterface
     {
-        $promises = self::prepareIterable($promises, __FUNCTION__);
-
-        return self::some(1, $promises)->then(function ($values) {
+        return self::some(1, $promises)->then(function (array $values) {
             return $values[0];
         });
     }
 
     /**
-     * Returns a promise that is fulfilled when all of the provided promises have
-     * been fulfilled or rejected.
+     * Returns a promise that is fulfilled when all of the provided promises
+     * have been fulfilled or rejected.
      *
-     * The returned promise is fulfilled with an array of inspection state arrays.
+     * The returned promise is fulfilled with an array of inspection state
+     * arrays.
+     *
+     * The config array accepts a concurrency option for lazy iterables. Other
+     * config keys are ignored by this wrapper.
      *
      * @see inspect for the inspection state array format.
      *
-     * @param mixed $promises Promises or values.
+     * @template TKey of array-key
+     * @template TValue
+     * @template TReason
+     *
+     * @param iterable<TKey, TValue|PromiseInterface<TValue, TReason>> $promises  Promises or values.
+     * @param bool                                                     $recursive If true, settles newly-added entries until no unprocessed entries or pending promises remain.
+     * @param array{concurrency?: int|(callable(int): int)}            $config    Configuration options.
+     *
+     * @return PromiseInterface<array<TKey, array{state: PromiseInterface::FULFILLED, value: TValue}|array{state: PromiseInterface::REJECTED, reason: TReason|\Throwable}>, \Throwable>
      */
-    public static function settle($promises): PromiseInterface
+    public static function settle(iterable $promises, bool $recursive = false, array $config = []): PromiseInterface
     {
-        $promises = self::prepareIterable($promises, __FUNCTION__);
-
         $results = [];
 
-        return Each::of(
+        $promise = Each::of(
             $promises,
             function ($value, $idx) use (&$results): void {
                 $results[$idx] = ['state' => PromiseInterface::FULFILLED, 'value' => $value];
             },
             function ($reason, $idx) use (&$results): void {
                 $results[$idx] = ['state' => PromiseInterface::REJECTED, 'reason' => $reason];
-            }
+            },
+            $config
         )->then(function () use (&$results) {
             ksort($results);
 
             return $results;
         });
-    }
 
-    private static function prepareIterable($promises, string $method): iterable
-    {
-        if (is_iterable($promises)) {
-            return $promises;
+        if (true === $recursive) {
+            $promise = $promise->then(function ($results) use (&$promises, $config) {
+                if (self::shouldRecurse($promises, $results)) {
+                    return self::settle($promises, true, $config);
+                }
+
+                return $results;
+            });
         }
 
-        self::triggerNonIterableDeprecation($promises, $method);
-
-        return [$promises];
+        return $promise;
     }
 
-    private static function triggerNonIterableDeprecation($promises, string $method): void
+    /**
+     * @template TKey of array-key
+     *
+     * @param iterable<TKey, mixed> $promises Promises or values.
+     * @param array<TKey, mixed>    $results  Results already collected for a pass.
+     */
+    private static function shouldRecurse(iterable $promises, array $results): bool
     {
-        if (is_iterable($promises)) {
-            return;
+        // A consumed generator cannot be traversed again, so a recursive
+        // pass has nothing further to observe.
+        if ($promises instanceof \Generator) {
+            return false;
         }
 
-        \trigger_deprecation(
-            'guzzlehttp/promises',
-            '2.5',
-            'Passing a non-iterable to %s::%s() is deprecated; guzzlehttp/promises 3.0 will require an iterable.',
-            self::class,
-            $method
-        );
+        foreach ($promises as $key => $promise) {
+            if (!array_key_exists($key, $results)) {
+                return true;
+            }
+
+            if ($promise instanceof PromiseInterface && Is::pending($promise)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

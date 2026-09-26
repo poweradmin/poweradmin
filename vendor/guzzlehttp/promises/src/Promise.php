@@ -7,22 +7,40 @@ namespace GuzzleHttp\Promise;
 /**
  * Promises/A+ implementation that avoids recursion when possible.
  *
+ * @template TValue = mixed
+ * @template TReason = mixed
+ *
+ * @implements PromiseInterface<TValue, TReason>
+ *
  * @see https://promisesaplus.com/
  *
  * @final
  */
 class Promise implements PromiseInterface
 {
-    private $state = self::PENDING;
+    use NonSerializableTrait;
+
+    /** @var self::PENDING|self::FULFILLED|self::REJECTED */
+    private string $state = self::PENDING;
+
+    /** @var TValue|TReason|PromiseInterface<TValue, TReason>|null */
     private $result;
+
+    /** @var (callable(): void)|null */
     private $cancelFn;
+
+    /** @var (callable(bool): void)|null */
     private $waitFn;
-    private $waitList;
-    private $handlers = [];
+
+    /** @var list<Promise<mixed, mixed>>|null */
+    private ?array $waitList = null;
+
+    /** @var list<array{0: PromiseInterface<mixed, mixed>, 1: callable|null, 2: callable|null}>|null */
+    private ?array $handlers = [];
 
     /**
-     * @param callable $waitFn   Fn that when invoked resolves the promise.
-     * @param callable $cancelFn Fn that when invoked cancels the promise.
+     * @param (callable(bool): void)|null $waitFn   Fn that when invoked resolves the promise.
+     * @param (callable(): void)|null     $cancelFn Fn that when invoked cancels the promise.
      */
     public function __construct(
         ?callable $waitFn = null,
@@ -32,6 +50,17 @@ class Promise implements PromiseInterface
         $this->cancelFn = $cancelFn;
     }
 
+    /**
+     * @template TFulfilledValue = never
+     * @template TFulfilledReason = never
+     * @template TRejectedValue = never
+     * @template TRejectedReason = never
+     *
+     * @param (callable(TValue): (TFulfilledValue|PromiseInterface<TFulfilledValue, TFulfilledReason>))|null $onFulfilled Invoked when the promise fulfills.
+     * @param (callable(TReason): (TRejectedValue|PromiseInterface<TRejectedValue, TRejectedReason>))|null   $onRejected  Invoked when the promise is rejected.
+     *
+     * @return PromiseInterface<($onFulfilled is null ? TValue : TFulfilledValue)|($onRejected is null ? never : TRejectedValue), ($onFulfilled is null ? never : TFulfilledReason|\Throwable)|($onRejected is null ? TReason : TRejectedReason|\Throwable)>
+     */
     public function then(
         ?callable $onFulfilled = null,
         ?callable $onRejected = null
@@ -49,16 +78,27 @@ class Promise implements PromiseInterface
         if ($this->state === self::FULFILLED) {
             $promise = Create::promiseFor($this->result);
 
-            return $onFulfilled ? $promise->then($onFulfilled) : $promise;
+            return $promise->then($onFulfilled, $onRejected);
         }
 
         // It's either cancelled or rejected, so return a rejected promise
         // and immediately invoke any callbacks.
         $rejection = Create::rejectionFor($this->result);
 
-        return $onRejected ? $rejection->then(null, $onRejected) : $rejection;
+        /** @var PromiseInterface<($onFulfilled is null ? TValue : TFulfilledValue)|($onRejected is null ? never : TRejectedValue), ($onFulfilled is null ? never : TFulfilledReason|\Throwable)|($onRejected is null ? TReason : TRejectedReason|\Throwable)> $promise */
+        $promise = $onRejected ? $rejection->then(null, $onRejected) : $rejection;
+
+        return $promise;
     }
 
+    /**
+     * @template TRejectedValue = never
+     * @template TRejectedReason = never
+     *
+     * @param callable(TReason): (TRejectedValue|PromiseInterface<TRejectedValue, TRejectedReason>) $onRejected Invoked when the promise is rejected.
+     *
+     * @return PromiseInterface<TValue|TRejectedValue, TRejectedReason|\Throwable>
+     */
     public function otherwise(callable $onRejected): PromiseInterface
     {
         return $this->then(null, $onRejected);
@@ -78,6 +118,8 @@ class Promise implements PromiseInterface
             // It's rejected so "unwrap" and throw an exception.
             throw Create::exceptionFor($this->result);
         }
+
+        return null;
     }
 
     public function getState(): string
@@ -110,7 +152,7 @@ class Promise implements PromiseInterface
         }
     }
 
-    public function resolve($value): void
+    public function resolve($value = null): void
     {
         $this->settle(self::FULFILLED, $value);
     }
@@ -187,7 +229,7 @@ class Promise implements PromiseInterface
      */
     private static function callHandler(int $index, $value, array $handler): void
     {
-        /** @var PromiseInterface $promise */
+        /** @var PromiseInterface<mixed, mixed> $promise */
         $promise = $handler[0];
 
         // The promise may have been cancelled or resolved before placing
