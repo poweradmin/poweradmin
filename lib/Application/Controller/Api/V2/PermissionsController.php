@@ -83,15 +83,21 @@ class PermissionsController extends PublicApiController
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
                         'data' => new OA\Property(
                             property: 'data',
-                            type: 'array',
-                            items: new OA\Items(
-                                type: 'object',
-                                properties: [
-                                    'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    'name' => new OA\Property(property: 'name', type: 'string', example: 'zone_content_view_own'),
-                                    'descr' => new OA\Property(property: 'descr', type: 'string', example: 'User may view the content of zones he owns')
-                                ]
-                            )
+                            type: 'object',
+                            properties: [
+                                new OA\Property(
+                                    property: 'permissions',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        type: 'object',
+                                        properties: [
+                                            'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
+                                            'name' => new OA\Property(property: 'name', type: 'string', example: 'zone_content_view_own'),
+                                            'descr' => new OA\Property(property: 'descr', type: 'string', example: 'User may view the content of zones he owns')
+                                        ]
+                                    )
+                                )
+                            ]
                         )
                     ]
                 )

@@ -190,38 +190,44 @@ class GroupsController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Group retrieved successfully'),
                 new OA\Property(
                     property: 'data',
+                    type: 'object',
                     properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 1),
-                        new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
-                        new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
-                        new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
-                        new OA\Property(property: 'member_count', type: 'integer', example: 5),
-                        new OA\Property(property: 'zone_count', type: 'integer', example: 10),
                         new OA\Property(
-                            property: 'members',
-                            type: 'array',
-                            items: new OA\Items(
-                                properties: [
-                                    new OA\Property(property: 'user_id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'username', type: 'string', example: 'admin'),
-                                ],
-                                type: 'object'
-                            )
-                        ),
-                        new OA\Property(
-                            property: 'zones',
-                            type: 'array',
-                            items: new OA\Items(
-                                properties: [
-                                    new OA\Property(property: 'zone_id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'zone_name', type: 'string', example: 'example.com'),
-                                ],
-                                type: 'object'
-                            )
-                        ),
-                        new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
-                    ],
-                    type: 'object'
+                            property: 'group',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
+                                new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
+                                new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'member_count', type: 'integer', example: 5),
+                                new OA\Property(property: 'zone_count', type: 'integer', example: 10),
+                                new OA\Property(
+                                    property: 'members',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: 'user_id', type: 'integer', example: 1),
+                                            new OA\Property(property: 'username', type: 'string', example: 'admin'),
+                                        ],
+                                        type: 'object'
+                                    )
+                                ),
+                                new OA\Property(
+                                    property: 'zones',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: 'zone_id', type: 'integer', example: 1),
+                                            new OA\Property(property: 'zone_name', type: 'string', example: 'example.com'),
+                                        ],
+                                        type: 'object'
+                                    )
+                                ),
+                                new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
+                            ],
+                            type: 'object'
+                        )
+                    ]
                 )
             ],
             type: 'object'
@@ -315,11 +321,17 @@ class GroupsController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Group created successfully'),
                 new OA\Property(
                     property: 'data',
+                    type: 'object',
                     properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 1),
-                        new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
-                    ],
-                    type: 'object'
+                        new OA\Property(
+                            property: 'group',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
+                            ],
+                            type: 'object'
+                        )
+                    ]
                 )
             ],
             type: 'object'
@@ -404,15 +416,21 @@ class GroupsController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Group updated successfully'),
                 new OA\Property(
                     property: 'data',
+                    type: 'object',
                     properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 1),
-                        new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
-                        new OA\Property(property: 'description', type: 'string', nullable: true, example: 'DNS Administration Group'),
-                        new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
-                        new OA\Property(property: 'created_at', type: 'string', nullable: true),
-                        new OA\Property(property: 'updated_at', type: 'string', nullable: true),
-                    ],
-                    type: 'object'
+                        new OA\Property(
+                            property: 'group',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
+                                new OA\Property(property: 'description', type: 'string', nullable: true, example: 'DNS Administration Group'),
+                                new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'created_at', type: 'string', nullable: true),
+                                new OA\Property(property: 'updated_at', type: 'string', nullable: true),
+                            ],
+                            type: 'object'
+                        )
+                    ]
                 )
             ],
             type: 'object'
