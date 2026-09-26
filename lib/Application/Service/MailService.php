@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -69,6 +69,12 @@ class MailService implements MailServiceInterface
             return false;
         }
 
+        // The sendmail and php transports write these values as raw header lines
+        if ($this->hasLineBreak($to, $subject, $headers)) {
+            $this->logWarning('Mail sending refused: recipient, subject or header contains a line break');
+            return false;
+        }
+
         // Determine which transport to use
         $transportType = $this->config->get('mail', 'transport', 'smtp');
 
@@ -95,6 +101,24 @@ class MailService implements MailServiceInterface
             $this->logError('Mail sending failed: ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * @param array<string, string> $headers
+     */
+    private function hasLineBreak(string $to, string $subject, array $headers): bool
+    {
+        $values = [$to, $subject];
+        foreach ($headers as $name => $value) {
+            $values[] = (string)$name;
+            $values[] = (string)$value;
+        }
+        foreach ($values as $value) {
+            if (strpbrk($value, "\r\n") !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

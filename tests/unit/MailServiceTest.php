@@ -20,6 +20,48 @@ class MailServiceTest extends TestCase
         $this->mailService = new MailService($this->config, $this->logger);
     }
 
+    private function loggerTransport(): void
+    {
+        $this->config->expects($this->any())->method('get')->willReturnMap([
+            ['mail', 'enabled', false, true],
+            ['mail', 'transport', 'smtp', 'logger'],
+            ['mail', 'from', 'poweradmin@example.com', 'poweradmin@example.com'],
+            ['mail', 'from_name', '', ''],
+        ]);
+    }
+
+    public static function lineBreakProvider(): array
+    {
+        return [
+            'recipient' => ["victim@example.com\r\nBcc: other@example.net", 'Subject', []],
+            'subject' => ['victim@example.com', "Subject\nBcc: other@example.net", []],
+            'header value' => ['victim@example.com', 'Subject', ['Reply-To' => "a@example.com\r\nBcc: other@example.net"]],
+            'header name' => ['victim@example.com', 'Subject', ["X-A\r\nBcc" => 'other@example.net']],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('lineBreakProvider')]
+    public function testRefusesLineBreaksBeforeAnyTransportWritesHeaders(string $to, string $subject, array $headers): void
+    {
+        $this->loggerTransport();
+        $this->logger->expects($this->once())->method('warning');
+
+        $this->assertFalse($this->mailService->sendMail($to, $subject, '<p>body</p>', '', $headers));
+    }
+
+    public function testSendsWhenNoValueHasALineBreak(): void
+    {
+        $this->loggerTransport();
+        $previous = ini_set('error_log', '/dev/null');
+        try {
+            $sent = $this->mailService->sendMail('user@example.com', 'Subject', '<p>body</p>', '', ['Reply-To' => 'a@example.com']);
+        } finally {
+            ini_set('error_log', (string)$previous);
+        }
+
+        $this->assertTrue($sent);
+    }
+
     public function testBoundaryGenerationConsistency(): void
     {
         // Configure mock to enable mail and use PHP transport
