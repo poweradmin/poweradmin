@@ -44,6 +44,11 @@ implementation — followed by a **Changes** list of the key changes, kept high 
 free of code snippets unless one is genuinely unavoidable. Wrap class names, method calls,
 file paths and other identifiers in backticks.
 
+A **Changes** entry names what moved, in one line; the diff is what says how. A condition,
+a count, a signature or a renamed method's new behaviour is something the reader gets by
+opening the diff, and restating it buries the one or two entries that carry the shape of
+the change. The Overview holds the reasoning, so an entry needs no *because*.
+
 Keep the description to the changes at hand. History that lives elsewhere — earlier
 attempts, abandoned branches, related work in other pull requests — belongs in the issue
 or commit trail, not here, unless it has a direct bearing on the change being reviewed.
@@ -52,8 +57,9 @@ The prose rules in [Writing documentation](docs/dev/writing-docs.md) apply to de
 and commit messages as well as to pages: state a fact once, do not claim what you have not
 verified, no marketing filler, no volatile values, no line-number citations.
 
-A commit message body documents what the diff does; the reasoning belongs in the pull
-request description.
+Commit subjects follow the same `type(Scope): subject` shape as the title, with `type` one
+of `feat`, `fix`, `docs`, `test`, `chore` or `refactor`. A commit message body documents
+what the diff does; the reasoning belongs in the pull request description.
 
 ## Documentation
 

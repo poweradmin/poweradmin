@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace GuzzleHttp\Promise;
 
 use Generator;
-use Throwable;
 
 /**
  * Creates a promise that is resolved using a generator that yields values or
@@ -37,29 +36,35 @@ use Throwable;
  *     // Outputs "abc"
  *     $promise->then(function ($v) { echo $v; });
  *
- * @param callable $generatorFn Generator function to wrap into a promise.
+ * @template TValue = mixed
+ * @template TReason = mixed
  *
- * @return Promise
+ * @implements PromiseInterface<TValue, TReason>
  *
  * @see https://github.com/petkaantonov/bluebird/blob/master/API.md#generators inspiration
  */
 final class Coroutine implements PromiseInterface
 {
-    /**
-     * @var PromiseInterface|null
-     */
-    private $currentPromise;
+    use NonSerializableTrait;
 
     /**
-     * @var Generator
+     * @var PromiseInterface<mixed, mixed>|null
      */
-    private $generator;
+    private ?PromiseInterface $currentPromise = null;
 
     /**
-     * @var Promise
+     * @var Generator<mixed, mixed, mixed, mixed>
      */
-    private $result;
+    private Generator $generator;
 
+    /**
+     * @var Promise<TValue, TReason>
+     */
+    private PromiseInterface $result;
+
+    /**
+     * @param callable(): Generator<mixed, mixed, mixed, mixed> $generatorFn
+     */
     public function __construct(callable $generatorFn)
     {
         $this->generator = $generatorFn();
@@ -70,19 +75,34 @@ final class Coroutine implements PromiseInterface
         });
         try {
             $this->nextCoroutine($this->generator->current());
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             $this->result->reject($throwable);
         }
     }
 
     /**
      * Create a new coroutine.
+     *
+     * @param callable(): Generator<mixed, mixed, mixed, mixed> $generatorFn
+     *
+     * @return self<mixed, mixed>
      */
     public static function of(callable $generatorFn): self
     {
         return new self($generatorFn);
     }
 
+    /**
+     * @template TFulfilledValue = never
+     * @template TFulfilledReason = never
+     * @template TRejectedValue = never
+     * @template TRejectedReason = never
+     *
+     * @param (callable(TValue): (TFulfilledValue|PromiseInterface<TFulfilledValue, TFulfilledReason>))|null $onFulfilled Invoked when the promise fulfills.
+     * @param (callable(TReason): (TRejectedValue|PromiseInterface<TRejectedValue, TRejectedReason>))|null   $onRejected  Invoked when the promise is rejected.
+     *
+     * @return PromiseInterface<($onFulfilled is null ? TValue : TFulfilledValue)|($onRejected is null ? never : TRejectedValue), ($onFulfilled is null ? never : TFulfilledReason|\Throwable)|($onRejected is null ? TReason : TRejectedReason|\Throwable)>
+     */
     public function then(
         ?callable $onFulfilled = null,
         ?callable $onRejected = null
@@ -90,6 +110,14 @@ final class Coroutine implements PromiseInterface
         return $this->result->then($onFulfilled, $onRejected);
     }
 
+    /**
+     * @template TRejectedValue = never
+     * @template TRejectedReason = never
+     *
+     * @param callable(TReason): (TRejectedValue|PromiseInterface<TRejectedValue, TRejectedReason>) $onRejected Invoked when the promise is rejected.
+     *
+     * @return PromiseInterface<TValue|TRejectedValue, TRejectedReason|\Throwable>
+     */
     public function otherwise(callable $onRejected): PromiseInterface
     {
         return $this->result->otherwise($onRejected);
@@ -105,7 +133,7 @@ final class Coroutine implements PromiseInterface
         return $this->result->getState();
     }
 
-    public function resolve($value): void
+    public function resolve($value = null): void
     {
         $this->result->resolve($value);
     }
@@ -135,7 +163,8 @@ final class Coroutine implements PromiseInterface
      */
     public function _handleSuccess($value): void
     {
-        unset($this->currentPromise);
+        $this->currentPromise = null;
+
         try {
             $next = $this->generator->send($value);
             if ($this->generator->valid()) {
@@ -143,7 +172,7 @@ final class Coroutine implements PromiseInterface
             } else {
                 $this->result->resolve($value);
             }
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             $this->result->reject($throwable);
         }
     }
@@ -153,12 +182,13 @@ final class Coroutine implements PromiseInterface
      */
     public function _handleFailure($reason): void
     {
-        unset($this->currentPromise);
+        $this->currentPromise = null;
+
         try {
             $nextYield = $this->generator->throw(Create::exceptionFor($reason));
             // The throw was caught, so keep iterating on the coroutine
             $this->nextCoroutine($nextYield);
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             $this->result->reject($throwable);
         }
     }

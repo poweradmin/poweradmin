@@ -22,7 +22,7 @@ class MergeXmlContent
 
         foreach ($annotations as $xmlContent) {
             $parent = $xmlContent->_context->nested;
-            if (!($parent instanceof OA\Response) && !($parent instanceof OA\RequestBody) && !($parent instanceof OA\Parameter)) {
+            if (!($parent instanceof OA\Response) && !($parent instanceof OA\RequestBody) && !($parent instanceof OA\Parameter) && !($parent instanceof OA\Header)) {
                 if ($parent) {
                     $xmlContent->_context->logger->warning('Unexpected ' . $xmlContent->identity() . ' in ' . $parent->identity() . ' in ' . $parent->_context);
                 } else {
@@ -40,9 +40,7 @@ class MergeXmlContent
                 '_context' => new Context(['generated' => true], $xmlContent->_context),
             ]);
             $analysis->addAnnotation($mediaType, $mediaType->_context);
-            if (!$parent instanceof OA\Parameter) {
-                $parent->content['application/xml']->mediaType = 'application/xml';
-            }
+            $parent->content['application/xml']->mediaType = 'application/xml';
             $xmlContent->example = Undefined::UNDEFINED;
             $xmlContent->examples = Undefined::UNDEFINED;
             $xmlContent->_context = new Context(['nested' => $mediaType, 'generated' => true], $mediaType->_context);

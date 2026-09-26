@@ -1,21 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GuzzleHttp\Cookie;
+
+use GuzzleHttp\NonSerializableTrait;
 
 /**
  * Persists cookies in the client session
  */
 class SessionCookieJar extends CookieJar
 {
+    use NonSerializableTrait;
+
     /**
      * @var string session key
      */
-    private $sessionKey;
+    private string $sessionKey;
 
     /**
      * @var bool Control whether to persist session cookies or not.
      */
-    private $storeSessionCookies;
+    private bool $storeSessionCookies;
+
+    /**
+     * @var bool Whether to save the cookie jar on destruction.
+     *
+     * Disabled by __wakeup() to prevent SessionCookieJar from being used as a
+     * PHP object injection $_SESSION-write gadget when an application
+     * unserializes attacker-controlled data.
+     */
+    private bool $autoSave = false;
 
     /**
      * Create a new SessionCookieJar object
@@ -24,6 +39,8 @@ class SessionCookieJar extends CookieJar
      *                                    data in session
      * @param bool   $storeSessionCookies Set to true to store session cookies
      *                                    in the cookie jar.
+     *
+     * @throws \RuntimeException if the session contains invalid cookie data
      */
     public function __construct(string $sessionKey, bool $storeSessionCookies = false)
     {
@@ -31,6 +48,7 @@ class SessionCookieJar extends CookieJar
         $this->sessionKey = $sessionKey;
         $this->storeSessionCookies = $storeSessionCookies;
         $this->load();
+        $this->autoSave = true;
     }
 
     /**
@@ -38,11 +56,30 @@ class SessionCookieJar extends CookieJar
      */
     public function __destruct()
     {
-        $this->save();
+        if ($this->autoSave) {
+            $this->save();
+        }
     }
 
     /**
-     * Save cookies to the client session
+     * Disable automatic persistence after unserialization.
+     */
+    public function __wakeup(): void
+    {
+        $this->autoSave = false;
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->autoSave = false;
+
+        throw new \LogicException(static::class.' should never be unserialized');
+    }
+
+    /**
+     * Save cookies to the client session.
+     *
+     * @throws \RuntimeException if the cookie data cannot be encoded
      */
     public function save(): void
     {
@@ -56,16 +93,19 @@ class SessionCookieJar extends CookieJar
             }
         }
 
-        $json = \json_encode($json);
-        if (false === $json) {
-            throw new \RuntimeException('Unable to encode cookie data');
+        try {
+            $json = \json_encode($json, \JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new \RuntimeException('Unable to encode cookie data', 0, $e);
         }
 
         $_SESSION[$this->sessionKey] = $json;
     }
 
     /**
-     * Load the contents of the client session into the data array
+     * Load cookies from the client session.
+     *
+     * @throws \RuntimeException if the session contains invalid cookie data
      */
     protected function load(): void
     {
@@ -73,27 +113,38 @@ class SessionCookieJar extends CookieJar
             return;
         }
 
+        $message = 'Invalid cookie data';
         $json = $_SESSION[$this->sessionKey];
         if (!\is_string($json)) {
-            throw new \RuntimeException('Invalid cookie data');
+            throw new \RuntimeException($message);
         }
 
-        $data = \json_decode($json, true);
-        if (\is_array($data)) {
-            $cookies = [];
-            foreach ($data as $cookie) {
-                if (!\is_array($cookie) || !\array_key_exists('HostOnly', $cookie) || !\is_bool($cookie['HostOnly'])) {
-                    throw new \RuntimeException('Invalid cookie data');
-                }
+        try {
+            $data = \json_decode($json, true, 512, \JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new \RuntimeException($message, 0, $e);
+        }
 
+        // Associative decoding turns JSON objects into arrays, so inspect the root syntax too.
+        if (!\is_array($data) || \substr($json, \strspn($json, " \t\n\r"), 1) !== '[') {
+            throw new \RuntimeException($message);
+        }
+
+        $cookies = [];
+        foreach ($data as $cookie) {
+            if (!\is_array($cookie) || !\array_key_exists('HostOnly', $cookie) || !\is_bool($cookie['HostOnly'])) {
+                throw new \RuntimeException($message);
+            }
+
+            try {
                 $cookies[] = new SetCookie($cookie);
+            } catch (\InvalidArgumentException $e) {
+                throw new \RuntimeException($message, 0, $e);
             }
+        }
 
-            foreach ($cookies as $cookie) {
-                $this->setCookie($cookie);
-            }
-        } elseif (\is_scalar($data) && \strlen((string) $data)) {
-            throw new \RuntimeException('Invalid cookie data');
+        foreach ($cookies as $cookie) {
+            $this->setCookie($cookie);
         }
     }
 }
