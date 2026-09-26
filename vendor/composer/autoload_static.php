@@ -1461,6 +1461,8 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/PermissionsController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/UsersController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneDnssecController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZoneDnssecController.php',
+        'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneDnssecKeysController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZoneDnssecKeysController.php',
+        'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneDnssecRectifyController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZoneDnssecRectifyController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneMetadataController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZoneMetadataController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneOwnersController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZoneOwnersController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneTemplateRecordsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZoneTemplateRecordsController.php',
