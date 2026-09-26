@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -724,6 +724,50 @@ class UserManagementServiceTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertEquals('User not found', $result['message']);
         $this->assertSame(404, $result['status']);
+    }
+
+    #[Test]
+    public function testCreateUserRefusesAMalformedEmail(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->method('getUserByEmail')->willReturn(null);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->service->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+            'email' => "new@example.com\r\nBcc: other@example.net",
+            'perm_templ' => 3
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(400, $result['status']);
+    }
+
+    #[Test]
+    public function testUpdateUserRefusesAChangedMalformedEmail(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql', 'email' => 'old@example.com']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->service->updateUser(1, ['email' => "old@example.com\nBcc: other@example.net"]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(400, $result['status']);
+    }
+
+    #[Test]
+    public function testUpdateUserKeepsAnUnchangedEmail(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql', 'email' => 'idp-user@localhost']);
+        $this->userRepository->method('updateUser')->willReturn(true);
+
+        $result = $this->service->updateUser(1, ['email' => 'idp-user@localhost']);
+
+        $this->assertTrue($result['success']);
     }
 
     #[Test]

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -214,6 +214,10 @@ class UserManagementService
             ];
         }
 
+        if (!empty($userData['email']) && ($emailError = $this->invalidEmailError($userData['email'])) !== null) {
+            return $emailError;
+        }
+
         // Check if email already exists (if provided)
         if (!empty($userData['email']) && $this->userRepository->getUserByEmail($userData['email'])) {
             return [
@@ -306,6 +310,13 @@ class UserManagementService
                     'message' => 'Username already exists',
                     'status' => 409
                 ];
+            }
+        }
+
+        // Only a changed address is checked, so a client echoing back a stored value still passes
+        if (!empty($userData['email']) && strcasecmp((string)$userData['email'], (string)($this->userRepository->getUserById($userId)['email'] ?? '')) !== 0) {
+            if (($emailError = $this->invalidEmailError($userData['email'])) !== null) {
+                return $emailError;
             }
         }
 
@@ -573,6 +584,21 @@ class UserManagementService
     private function permissionTemplateExists(int $permTemplId, ?string $templateType = null): bool
     {
         return $this->userRepository->permissionTemplateExists($permTemplId, $templateType);
+    }
+
+    /**
+     * Reject a malformed address; it is later written into mail headers.
+     */
+    private function invalidEmailError(mixed $email): ?array
+    {
+        if (is_string($email) && filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
+            return null;
+        }
+        return [
+            'success' => false,
+            'message' => 'Invalid email address',
+            'status' => 400
+        ];
     }
 
     /**
