@@ -1949,6 +1949,88 @@ test_zone_dnssec() {
 
 TEST_CRUD_USER_ID=""
 
+test_zone_dnssec_keys() {
+    print_section "Zone DNSSEC Key API Tests"
+
+    local zone_id zone_name="dnssec-keys-test.example.com"
+    if api_request_v2 "POST" "/zones" "{\"name\":\"${zone_name}\",\"type\":\"MASTER\"}" 201 "Create test zone for DNSSEC key tests"; then
+        zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    else
+        print_fail "Failed to create test zone - skipping DNSSEC key tests"
+        return 1
+    fi
+
+    # Non-existent zone is reported before the PowerDNS API is needed
+    api_request_v2 "GET" "/zones/999999/dnssec/keys" "" 404 "List keys of non-existent zone"
+    api_request_v2 "POST" "/zones/999999/dnssec/rectify" "" 404 "Rectify non-existent zone"
+
+    local probe_code
+    probe_code=$(curl -s -o /dev/null -w "%{http_code}" \
+        -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        --max-time 30 \
+        "${API_BASE_URL}/api/v2/zones/${zone_id}/dnssec/keys")
+
+    if [[ "$probe_code" == "501" ]]; then
+        print_info "DNSSEC key endpoints return 501 (PowerDNS API not configured) - skipping live key tests"
+    else
+        api_request_v2 "POST" "/zones/${zone_id}/records" \
+            "{\"name\":\"${zone_name}\",\"type\":\"NS\",\"content\":\"ns1.example.com\"}" 201 "Add apex NS1 record"
+        api_request_v2 "POST" "/zones/${zone_id}/records" \
+            "{\"name\":\"${zone_name}\",\"type\":\"NS\",\"content\":\"ns2.example.com\"}" 201 "Add apex NS2 record"
+
+        # Rectify needs a signed zone
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/rectify" "" 409 "Reject rectify on unsigned zone"
+
+        api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys" "" 200 "List keys of unsigned zone"
+        increment_test
+        if [[ "$(echo "$LAST_RESPONSE_BODY" | jq '.data | length' 2>/dev/null)" == "0" ]]; then
+            print_pass "Unsigned zone has no keys"
+        else
+            print_fail "Expected no keys on unsigned zone"
+        fi
+
+        # Input validation
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"algorithm":"ecdsa256","bits":256}' 400 "Reject key without type"
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"foo","algorithm":"ecdsa256","bits":256}' 400 "Reject invalid key type"
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"zsk","algorithm":"md5","bits":256}' 400 "Reject unsupported algorithm"
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"zsk","algorithm":"ecdsa256","bits":384}' 400 "Reject algorithm/bits mismatch"
+
+        # Add a key
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"csk","algorithm":"ecdsa256","bits":256}' 201 "Add CSK"
+        local key_id
+        key_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id' 2>/dev/null)
+        increment_test
+        if [[ "$key_id" =~ ^[0-9]+$ ]] && [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.algorithm')" == "ecdsa256" ]]; then
+            print_pass "Added key $key_id is returned with its algorithm"
+        else
+            print_fail "Add key response incomplete: $LAST_RESPONSE_BODY"
+        fi
+
+        api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys/${key_id}" "" 200 "Get single key"
+        api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys/999999" "" 404 "Get non-existent key"
+
+        # Deactivate / activate
+        api_request_v2 "PATCH" "/zones/${zone_id}/dnssec/keys/${key_id}" '{"active":"no"}' 400 "Reject non-boolean active"
+        api_request_v2 "PATCH" "/zones/${zone_id}/dnssec/keys/${key_id}" '{"active":false}' 200 "Deactivate key"
+        increment_test
+        if [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.active')" == "false" ]]; then
+            print_pass "Key reported inactive after deactivation"
+        else
+            print_fail "Expected inactive key after deactivation"
+        fi
+        api_request_v2 "PATCH" "/zones/${zone_id}/dnssec/keys/${key_id}" '{"active":true}' 200 "Activate key"
+
+        # Rectify a signed zone
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/rectify" "" 200 "Rectify signed zone"
+
+        # Delete
+        api_request_v2 "DELETE" "/zones/${zone_id}/dnssec/keys/${key_id}" "" 200 "Delete key"
+        api_request_v2 "DELETE" "/zones/${zone_id}/dnssec/keys/${key_id}" "" 404 "Delete already deleted key"
+    fi
+
+    api_request_v2 "DELETE" "/zones/${zone_id}" "" 204 "Delete DNSSEC key test zone" || true
+}
+
 test_users_crud() {
     print_section "Users CRUD API Tests"
 
@@ -2870,6 +2952,7 @@ main() {
     test_zone_owners
     test_zone_metadata
     test_zone_dnssec
+    test_zone_dnssec_keys
     test_users_crud
     test_zone_templates
     test_users_ldap_sync
