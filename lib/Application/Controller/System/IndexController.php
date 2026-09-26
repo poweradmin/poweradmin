@@ -73,14 +73,15 @@ class IndexController extends BaseController
             Permission::PERM_ZONE_LOGS_VIEW_OTHERS,
             Permission::PERM_USER_LOGS_VIEW,
             Permission::PERM_GROUP_LOGS_VIEW,
+            Permission::PERM_SERVER_STATUS_VIEW,
         ]);
 
-        // Check PowerDNS server status if API is enabled and user is admin
+        // Check PowerDNS server status if API is enabled and user can view it
         $pdnsServerStatus = null;
         $pdnsApiEnabled = !empty($this->config->get('pdns_api', 'url', '')) && !empty($this->config->get('pdns_api', 'key', ''));
         $showPdnsStatus = $this->config->get('interface', 'show_pdns_status', false);
 
-        if ($pdnsApiEnabled && $showPdnsStatus && $permissions[Permission::PERM_USER_IS_UEBERUSER]) {
+        if ($pdnsApiEnabled && $showPdnsStatus && $permissions[Permission::PERM_SERVER_STATUS_VIEW]) {
             $statusService = $this->services()->powerdnsStatusService();
             $serverStatus = $statusService->getServerStatus();
             $pdnsServerStatus = [
@@ -131,7 +132,7 @@ class IndexController extends BaseController
         // Card decisions the template used to combine from the raw permission map
         $isUeberuser = $permissions[Permission::PERM_USER_IS_UEBERUSER];
         $isApiBackend = $this->isApiBackend();
-        $showPdnsStatusCard = $isUeberuser && $pdnsApiEnabled && $showPdnsStatus;
+        $showPdnsStatusCard = $permissions[Permission::PERM_SERVER_STATUS_VIEW] && $pdnsApiEnabled && $showPdnsStatus;
         $showApiKeysCard = ($isUeberuser || $permissions[Permission::PERM_API_MANAGE_KEYS]) && $apiEnabled;
 
         $hasDnsManagement = $showPdnsStatusCard

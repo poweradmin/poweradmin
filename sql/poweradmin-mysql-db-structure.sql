@@ -159,10 +159,11 @@ INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.'),
                                                      (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.'),
                                                      (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.'),
-                                                     (80,	'zone_change_request_own',	'User is allowed to request changes to zones they own'),
-                                                     (81,	'zone_change_request_others',	'User is allowed to request changes to any zone'),
-                                                     (82,	'zone_change_approve_own',	'User is allowed to review change requests for zones they own'),
-                                                     (83,	'zone_change_approve_others',	'User is allowed to review change requests for any zone');
+                                                     (80,	'server_status_view',	'User is allowed to view the PowerDNS server status, e.g. for monitoring.'),
+                                                     (81,	'zone_change_request_own',	'User is allowed to request changes to zones they own'),
+                                                     (82,	'zone_change_request_others',	'User is allowed to request changes to any zone'),
+                                                     (83,	'zone_change_approve_own',	'User is allowed to review change requests for zones they own'),
+                                                     (84,	'zone_change_approve_others',	'User is allowed to review change requests for any zone');
 -- END generated seed: perm_items
 
 CREATE TABLE `perm_templ` (

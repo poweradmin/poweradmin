@@ -56,9 +56,9 @@ class PdnsStatusController extends BaseController
             return;
         }
 
-        // Only allow administrators to view server status
-        if (!$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
-            $this->showError(_('You do not have permission to view PowerDNS server status. Only administrators can access this feature.'));
+        // Administrators pass implicitly; server_status_view grants read-only access for monitoring users
+        if (!$this->hasPermission(Permission::PERM_SERVER_STATUS_VIEW)) {
+            $this->showError(_('You do not have permission to view PowerDNS server status.'));
             return;
         }
 
@@ -78,9 +78,9 @@ class PdnsStatusController extends BaseController
     {
         $serverStatus = $this->statusService()->getServerStatus();
 
-        // Get slave servers if any
+        // The autoprimary list is supermaster data, so it follows supermaster_view
         $slaveStatus = [];
-        $slaveServers = $this->supermasterManager()->getSlaveServerIPs();
+        $slaveServers = $this->hasPermission(Permission::PERM_SUPERMASTER_VIEW) ? $this->supermasterManager()->getSlaveServerIPs() : [];
         if (!empty($slaveServers)) {
             $slaveStatus = $this->statusService()->checkSlaveServerStatus($slaveServers);
         }

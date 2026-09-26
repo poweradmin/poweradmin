@@ -223,3 +223,11 @@ CREATE INDEX IF NOT EXISTS idx_log_api_created_at ON log_api(created_at);
 -- The template record type is widened to varchar(10) in the structure file so
 -- new installs match PowerDNS's own records.type. SQLite does not enforce
 -- VARCHAR lengths, so existing databases need no change here.
+
+-- Register a dedicated permission for viewing the PowerDNS server status in
+-- the web UI and via GET /api/v2/server/status (#1580, #1581), so monitoring
+-- users no longer need full administrator rights. Opt-in: no template is
+-- granted it automatically; administrators already have it implicitly.
+INSERT INTO perm_items (name, descr)
+SELECT 'server_status_view', 'User is allowed to view the PowerDNS server status, e.g. for monitoring.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'server_status_view');

@@ -80,6 +80,7 @@ class Permission
     public const PERM_ZONE_CHANGE_REQUEST_OTHERS = 'zone_change_request_others';
     public const PERM_ZONE_CHANGE_APPROVE_OWN = 'zone_change_approve_own';
     public const PERM_ZONE_CHANGE_APPROVE_OTHERS = 'zone_change_approve_others';
+    public const PERM_SERVER_STATUS_VIEW = 'server_status_view';
 
     /**
      * Every permission name known to perm_items, for validation and lint tooling.
@@ -127,6 +128,7 @@ class Permission
         self::PERM_ZONE_CHANGE_REQUEST_OTHERS,
         self::PERM_ZONE_CHANGE_APPROVE_OWN,
         self::PERM_ZONE_CHANGE_APPROVE_OTHERS,
+        self::PERM_SERVER_STATUS_VIEW,
     ];
 
     /**

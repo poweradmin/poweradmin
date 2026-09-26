@@ -50,8 +50,8 @@ class PermissionCatalogueTest extends TestCase
         $this->assertIsString($sql);
 
         $permItems = self::parseInsertRows($sql, 'perm_items');
-        $this->assertCount(42, $permItems);
-        $expectedIds = array_merge(range(41, 65), range(67, 83));
+        $this->assertCount(43, $permItems);
+        $expectedIds = array_merge(range(41, 65), range(67, 84));
         $this->assertSame($expectedIds, array_column($permItems, 0));
 
         $templates = self::parseInsertRows($sql, 'perm_templ');
