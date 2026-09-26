@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ class ListLogGroupsController extends BaseController
         $selected_page = 1;
         if (isset($_GET['start'])) {
             is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die("Unknown page.");
-            if ($selected_page < 0) {
+            if ($selected_page < 1) {
                 die('Unknown page.');
             }
         }

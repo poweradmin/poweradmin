@@ -102,7 +102,7 @@ class ListReverseZonesController extends BaseController
 
         $row_start = 0;
         if (isset($_GET['start'])) {
-            $start = (int)htmlspecialchars($_GET['start']);
+            $start = max(1, (int)htmlspecialchars($_GET['start']));
             $row_start = ($start - 1) * $iface_rowamount;
         }
 
