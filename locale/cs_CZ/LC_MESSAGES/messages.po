@@ -3207,12 +3207,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Funkce PowerDNS stavu je v systémové konfiguraci zakázána."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Nemáte oprávnění zobrazit stav PowerDNS serveru. Pouze administrátoři mohou "
-"přistupovat k této funkci."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Nemáte oprávnění zobrazit stav PowerDNS serveru."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

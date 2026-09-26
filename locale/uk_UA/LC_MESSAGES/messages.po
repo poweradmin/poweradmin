@@ -3219,12 +3219,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Функцію статусу PowerDNS вимкнено в конфігурації системи."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"У вас немає дозволу на перегляд статусу сервера PowerDNS. Тільки "
-"адміністратори мають доступ до цієї функції."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "У вас немає дозволу на перегляд статусу сервера PowerDNS."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

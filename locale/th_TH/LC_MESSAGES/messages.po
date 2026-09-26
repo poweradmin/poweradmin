@@ -3077,11 +3077,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "ปิดการใช้งานคุณสมบัติสถานะ PowerDNS ในการปรับแต่งระบบ"
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"คุณไม่มีสิทธิ์แสดงสถานะเซิร์ฟเวอร์ PowerDNS ผู้ดูแลระบบเท่านั้นที่สามารถเข้าใช้งานคุณสมบัตินี้ได้"
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "คุณไม่มีสิทธิ์แสดงสถานะเซิร์ฟเวอร์ PowerDNS"
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

@@ -3164,10 +3164,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS oleku funktsioon on süsteemi seadistustes keelatud."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr "Teil pole õigust PowerDNS oleku vaatamiseks. Ainult administraatorid."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Teil pole õigust PowerDNS oleku vaatamiseks."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

@@ -3218,12 +3218,8 @@ msgstr ""
 "A PowerDNS állapot funkció ki van kapcsolva a rendszer konfigurációjában."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Nincs engedélye a PowerDNS szerver állapotának megtekintésére. Ehhez a "
-"funkcióhoz csak rendszergazdák férhetnek hozzá."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Nincs engedélye a PowerDNS szerver állapotának megtekintésére."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

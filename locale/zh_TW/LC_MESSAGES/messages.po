@@ -3062,10 +3062,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS 狀態功能在系統設定中已停用。"
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr "您沒有查看 PowerDNS 伺服器狀態的權限。只有管理員可以存取此功能。"
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "您沒有查看 PowerDNS 伺服器狀態的權限。"
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

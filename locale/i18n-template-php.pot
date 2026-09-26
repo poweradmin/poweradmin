@@ -3014,9 +3014,7 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr ""
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
+msgid "You do not have permission to view PowerDNS server status."
 msgstr ""
 
 #: lib/Application/Controller/PdnsStatusController.php:70

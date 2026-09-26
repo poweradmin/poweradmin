@@ -3176,12 +3176,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Tính năng trạng thái PowerDNS đã bị tắt trong cấu hình hệ thống."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Bạn không có quyền xem trạng thái máy chủ PowerDNS. Chỉ quản trị viên mới có "
-"thể truy cập tính năng này."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Bạn không có quyền xem trạng thái máy chủ PowerDNS."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

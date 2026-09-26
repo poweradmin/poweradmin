@@ -3249,12 +3249,8 @@ msgstr ""
 "sistema."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Non si dispone del permesso di visualizzare lo stato del server PowerDNS. "
-"Solo gli amministratori possono accedere a questa funzione."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Non si dispone del permesso di visualizzare lo stato del server PowerDNS."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

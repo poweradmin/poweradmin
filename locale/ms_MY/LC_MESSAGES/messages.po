@@ -3216,12 +3216,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Ciri status PowerDNS dilumpuhkan dalam konfigurasi sistem."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Anda tidak mempunyai kebenaran untuk melihat status pelayan PowerDNS. Hanya "
-"pentadbir boleh mengakses ciri ini."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat status pelayan PowerDNS."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

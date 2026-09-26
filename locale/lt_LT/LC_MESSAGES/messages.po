@@ -3221,12 +3221,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS būsenos funkcija išjungta sistemos konfigūracijoje."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Neturite leidimo peržiūrėti PowerDNS serverio būsenos. Tik administratoriai "
-"gali pasiekti šią funkciją."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Neturite leidimo peržiūrėti PowerDNS serverio būsenos."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

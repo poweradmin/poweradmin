@@ -3169,12 +3169,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS-tilan toiminto on poistettu käytöstä määrityksissä."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Sinulla ei ole oikeutta tarkastella PowerDNS-palvelimen tilaa. Vain "
-"ylläpitäjät voivat käyttää tätä ominaisuutta."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Sinulla ei ole oikeutta tarkastella PowerDNS-palvelimen tilaa."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

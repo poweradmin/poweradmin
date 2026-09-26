@@ -3309,12 +3309,8 @@ msgstr ""
 "La fonction de statut PowerDNS est désactivée dans la configuration système."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Vous n'avez pas l'autorisation de voir le statut du serveur PowerDNS. Seuls "
-"les administrateurs peuvent accéder à cette fonction."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Vous n'avez pas l'autorisation de voir le statut du serveur PowerDNS."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

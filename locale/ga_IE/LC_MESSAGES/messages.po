@@ -3301,12 +3301,8 @@ msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Tá gné stádais PowerDNS díchumasaithe i gcumraíocht an chórais."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Níl cead agat stádas an fhreastalaí PowerDNS a fheiceáil. Ní féidir ach le "
-"riarthóirí rochtain a fháil ar an ngné seo."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Níl cead agat stádas an fhreastalaí PowerDNS a fheiceáil."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""

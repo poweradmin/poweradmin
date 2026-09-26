@@ -3244,12 +3244,8 @@ msgstr ""
 "sistemit."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
-msgid ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
-msgstr ""
-"Nuk ke të drejtë të shohësh statusin e serverit PowerDNS. Vetëm "
-"administratorët mund të hyjnë në këtë funksion."
+msgid "You do not have permission to view PowerDNS server status."
+msgstr "Nuk ke të drejtë të shohësh statusin e serverit PowerDNS."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""
