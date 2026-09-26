@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -249,7 +249,8 @@ class GroupsController extends PublicApiController
             }
 
             $details = $this->groupService->getGroupDetails($groupId);
-            $members = $this->membershipService->listGroupMembers($groupId);
+            // Only administrators see the member roster, matching listMembers and the web UI.
+            $members = $isAdmin ? $this->membershipService->listGroupMembers($groupId) : [];
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
             $data = [
