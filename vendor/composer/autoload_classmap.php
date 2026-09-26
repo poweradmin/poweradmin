@@ -1362,6 +1362,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Dns\\SOARecordManagerInterface' => $baseDir . '/lib/Domain/Service/Dns/SOARecordManagerInterface.php',
     'Poweradmin\\Domain\\Service\\Dns\\SupermasterManager' => $baseDir . '/lib/Domain/Service/Dns/SupermasterManager.php',
     'Poweradmin\\Domain\\Service\\Dns\\SupermasterManagerInterface' => $baseDir . '/lib/Domain/Service/Dns/SupermasterManagerInterface.php',
+    'Poweradmin\\Domain\\Service\\DnssecKeySpecValidator' => $baseDir . '/lib/Domain/Service/DnssecKeySpecValidator.php',
     'Poweradmin\\Domain\\Service\\DnssecProvider' => $baseDir . '/lib/Domain/Service/DnssecProvider.php',
     'Poweradmin\\Domain\\Service\\DomainParsingService' => $baseDir . '/lib/Domain/Service/DomainParsingService.php',
     'Poweradmin\\Domain\\Service\\DomainRecordCreator' => $baseDir . '/lib/Domain/Service/DomainRecordCreator.php',

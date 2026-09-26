@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Enum\DnssecKeyType;
+use Poweradmin\Domain\Service\DnssecKeySpecValidator;
 
 class DnssecAddKeyController extends BaseController
 {
@@ -106,8 +107,7 @@ class DnssecAddKeyController extends BaseController
         if ($this->request->getPostParam('bits') !== null) {
             $bits = $this->request->getPostParam('bits');
 
-            $valid_values = array('2048', '1024', '768', '384', '256');
-            if (!in_array($bits, $valid_values)) {
+            if (!is_string($bits) || !DnssecKeySpecValidator::isValidBits($bits)) {
                 $this->showError(_('Invalid or unexpected input given.'));
             }
         }
@@ -126,47 +126,15 @@ class DnssecAddKeyController extends BaseController
             }
         }
 
-        // Function to validate algorithm and bit combinations
-        $validateAlgorithmBitCombination = function ($algorithm, $bits) {
-            // ECDSA algorithms should only use 256 or 384 bits
-            if ($algorithm === 'ecdsa256' && $bits !== '256') {
-                return ['valid' => false, 'message' => _('ECDSA P-256 algorithm must use 256 bits')];
-            }
-            if ($algorithm === 'ecdsa384' && $bits !== '384') {
-                return ['valid' => false, 'message' => _('ECDSA P-384 algorithm must use 384 bits')];
-            }
-
-            // EdDSA algorithms have fixed bit sizes
-            if ($algorithm === 'ed25519') {
-                if ($bits !== '256') {
-                    return ['valid' => false, 'message' => _('ED25519 algorithm must use 256 bits')];
-                }
-            }
-            if ($algorithm === 'ed448') {
-                if ($bits !== '456') {
-                    return ['valid' => false, 'message' => _('ED448 algorithm must use 456 bits (unsupported in this UI)')];
-                }
-            }
-
-            // RSA algorithms should use appropriate bit lengths
-            if (in_array($algorithm, ['rsasha1', 'rsasha1-nsec3-sha1', 'rsasha256', 'rsasha512'])) {
-                if (!in_array($bits, ['1024', '2048'])) {
-                    return ['valid' => false, 'message' => _('RSA algorithms should use 1024 or 2048 bits for adequate security')];
-                }
-            }
-
-            return ['valid' => true, 'message' => ''];
-        };
-
         if ($this->request->getPostParam('submit') !== null) {
             $this->validateCsrfToken();
 
             // Validate combination of algorithm and bits before attempting to add the key
             if (!empty($algorithm) && !empty($bits)) {
-                $validation = $validateAlgorithmBitCombination($algorithm, $bits);
-                if (!$validation['valid']) {
-                    $this->logger->warning('Invalid DNSSEC algorithm/bits combination: algorithm={algorithm}, bits={bits} - {message}', ['algorithm' => $algorithm, 'bits' => $bits, 'message' => $validation['message']]);
-                    $this->setMessage('dnssec_add_key', 'error', $validation['message']);
+                $validationError = DnssecKeySpecValidator::validateAlgorithmBits($algorithm, $bits);
+                if ($validationError !== null) {
+                    $this->logger->warning('Invalid DNSSEC algorithm/bits combination: algorithm={algorithm}, bits={bits} - {message}', ['algorithm' => $algorithm, 'bits' => $bits, 'message' => $validationError]);
+                    $this->setMessage('dnssec_add_key', 'error', $validationError);
                     // Don't redirect, let the form display again with the error message
                 } else {
                     try {
