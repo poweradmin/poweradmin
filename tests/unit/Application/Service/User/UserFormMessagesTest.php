@@ -35,6 +35,7 @@ class UserFormMessagesTest extends TestCase
     {
         $this->assertSame('Username exist already, please choose another one.', UserFormMessages::errorMessage(['message' => 'Username already exists', 'code' => UserManagementService::ERR_USERNAME_EXISTS]));
         $this->assertSame('Email address already exists, please choose another one.', UserFormMessages::errorMessage(['message' => 'Email already exists', 'code' => UserManagementService::ERR_EMAIL_EXISTS]));
+        $this->assertSame('Enter a valid email address.', UserFormMessages::errorMessage(['message' => 'Invalid email address', 'code' => UserManagementService::ERR_INVALID_EMAIL]));
     }
 
     public function testAWriteFailureHidesTheDriverText(): void

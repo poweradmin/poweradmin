@@ -72,6 +72,12 @@ class MailService
             return false;
         }
 
+        // The sendmail and php transports write these values as raw header lines
+        if ($this->hasLineBreak($to, $subject, $headers)) {
+            $this->logger->warning('Mail sending refused: recipient, subject or header contains a line break');
+            return false;
+        }
+
         // Determine which transport to use
         $transportType = $this->config->get('mail', 'transport', 'php');
 
@@ -98,6 +104,24 @@ class MailService
             $this->logger->error('Mail sending failed: ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * @param array<string, string> $headers
+     */
+    private function hasLineBreak(string $to, string $subject, array $headers): bool
+    {
+        $values = [$to, $subject];
+        foreach ($headers as $name => $value) {
+            $values[] = (string)$name;
+            $values[] = (string)$value;
+        }
+        foreach ($values as $value) {
+            if (strpbrk($value, "\r\n") !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

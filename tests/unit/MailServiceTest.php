@@ -76,6 +76,38 @@ class MailServiceTest extends TestCase
         return $method->invoke($service);
     }
 
+    public static function lineBreakProvider(): array
+    {
+        return [
+            'recipient' => ["victim@example.com\r\nBcc: other@example.net", 'Subject', []],
+            'subject' => ['victim@example.com', "Subject\nBcc: other@example.net", []],
+            'header value' => ['victim@example.com', 'Subject', ['Reply-To' => "a@example.com\r\nBcc: other@example.net"]],
+            'header name' => ['victim@example.com', 'Subject', ["X-A\r\nBcc" => 'other@example.net']],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('lineBreakProvider')]
+    public function testRefusesLineBreaksBeforeAnyTransportWritesHeaders(string $to, string $subject, array $headers): void
+    {
+        $this->logger->expects($this->once())->method('warning');
+        $service = $this->service(['enabled' => true, 'transport' => 'logger']);
+
+        $this->assertFalse($service->sendMail($to, $subject, '<p>body</p>', '', $headers));
+    }
+
+    public function testSendsWhenNoValueHasALineBreak(): void
+    {
+        $service = $this->service(['enabled' => true, 'transport' => 'logger']);
+        $previous = ini_set('error_log', '/dev/null');
+        try {
+            $sent = $service->sendMail('user@example.com', 'Subject', '<p>body</p>', '', ['Reply-To' => 'a@example.com']);
+        } finally {
+            ini_set('error_log', (string)$previous);
+        }
+
+        $this->assertTrue($sent);
+    }
+
     public function testReplyToBecomesAnAddressHeaderOnSmtpMessages(): void
     {
         $service = new MailService(new FakeConfiguration(), $this->logger);

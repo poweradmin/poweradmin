@@ -41,6 +41,7 @@ final class UserFormMessages
             UserManagementService::ERR_USERNAME_REQUIRED => _('Enter a valid user name.'),
             UserManagementService::ERR_USERNAME_EXISTS => _('Username exist already, please choose another one.'),
             UserManagementService::ERR_EMAIL_EXISTS => _('Email address already exists, please choose another one.'),
+            UserManagementService::ERR_INVALID_EMAIL => _('Enter a valid email address.'),
             UserManagementService::ERR_PASSWORD_REQUIRED => _('Please fill in all required fields correctly.'),
             UserManagementService::ERR_NO_TEMPLATE => _('No non-superuser permission template is available to assign.'),
             UserManagementService::ERR_TEMPLATE_NOT_FOUND => _('Invalid permission template: must be a user template'),

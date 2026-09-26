@@ -48,6 +48,7 @@ class UserManagementService
     public const ERR_FIELD_LENGTH = 'field_length';
     public const ERR_USERNAME_EXISTS = 'username_exists';
     public const ERR_EMAIL_EXISTS = 'email_exists';
+    public const ERR_INVALID_EMAIL = 'invalid_email';
     public const ERR_NO_TEMPLATE = 'no_template';
     public const ERR_TEMPLATE_NOT_FOUND = 'template_not_found';
     public const ERR_NOT_FOUND = 'not_found';
@@ -214,6 +215,10 @@ class UserManagementService
             ];
         }
 
+        if ($command->email !== '' && ($emailError = $this->invalidEmailError($command->email)) !== null) {
+            return $emailError;
+        }
+
         // Check if email already exists (if provided)
         if ($command->email !== '' && $this->userRepository->getUserByEmail($command->email)) {
             return [
@@ -356,6 +361,9 @@ class UserManagementService
         // A changed email must be free; an unchanged one stays editable even where
         // older data already holds duplicates.
         if ($command->email !== null && $command->email !== '' && strcasecmp($command->email, (string)($user['email'] ?? '')) !== 0) {
+            if (($emailError = $this->invalidEmailError($command->email)) !== null) {
+                return $emailError;
+            }
             $existingUser = $this->userRepository->getUserByEmail($command->email);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return [
@@ -721,6 +729,22 @@ class UserManagementService
     private function permissionTemplateExists(int $permTemplId, ?string $templateType = null): bool
     {
         return $this->userRepository->permissionTemplateExists($permTemplId, $templateType);
+    }
+
+    /**
+     * Reject a malformed address; it is later written into mail headers.
+     */
+    private function invalidEmailError(string $email): ?array
+    {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
+            return null;
+        }
+        return [
+            'success' => false,
+            'message' => 'Invalid email address',
+            'refusal' => Refusal::INVALID_INPUT,
+            'code' => self::ERR_INVALID_EMAIL,
+        ];
     }
 
     /**

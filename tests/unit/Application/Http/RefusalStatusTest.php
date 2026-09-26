@@ -145,6 +145,7 @@ class RefusalStatusTest extends TestCase
             UserManagementService::ERR_FIELD_LENGTH => [400],
             UserManagementService::ERR_USERNAME_EXISTS => [409],
             UserManagementService::ERR_EMAIL_EXISTS => [409],
+            UserManagementService::ERR_INVALID_EMAIL => [400],
             UserManagementService::ERR_NO_TEMPLATE => [400],
             UserManagementService::ERR_TEMPLATE_NOT_FOUND => [400],
             UserManagementService::ERR_NOT_FOUND => [404],
