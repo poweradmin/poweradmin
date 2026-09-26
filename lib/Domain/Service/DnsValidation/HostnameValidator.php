@@ -83,12 +83,12 @@ class HostnameValidator
         foreach ($hostname_labels as $hostname_label) {
             if ($allowWildcard && !isset($first)) {
                 if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
-                    $errors[] = _('You have invalid characters in your zone name.');
+                    $errors[] = _('Invalid characters in hostname.');
                 }
                 $first = 1;
             } else {
                 if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
-                    $errors[] = _('You have invalid characters in your zone name.');
+                    $errors[] = _('Invalid characters in hostname.');
                 }
             }
 
