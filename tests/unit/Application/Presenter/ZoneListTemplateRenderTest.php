@@ -118,10 +118,13 @@ class ZoneListTemplateRenderTest extends TestCase
         return $rows;
     }
 
-    public function testForwardListRendersEveryOptionalColumnFromTheReadModel(): void
+    /**
+     * @param list<array<string, mixed>>|null $rows
+     */
+    private function renderForwardList(?array $rows = null, bool $batchPtr = true): string
     {
-        $html = $this->twig->render('list_forward_zones.html', [
-            'zones' => $this->decoratedRows(),
+        return $this->twig->render('list_forward_zones.html', [
+            'zones' => $rows ?? $this->decoratedRows(),
             'pending_change_requests_by_zone' => [7 => 1],
             'count_zones_all_letterstart' => 2,
             'count_zones_view' => 2,
@@ -156,8 +159,13 @@ class ZoneListTemplateRenderTest extends TestCase
             'perm_zone_slave_add' => true,
             'perm_is_godlike' => true,
             'is_api_backend' => true,
-            'nav' => ['batch_ptr' => true],
+            'nav' => ['batch_ptr' => $batchPtr],
         ]);
+    }
+
+    public function testForwardListRendersEveryOptionalColumnFromTheReadModel(): void
+    {
+        $html = $this->renderForwardList();
 
         $this->assertStringContainsString('signed.example', $html);
         $this->assertStringContainsString('2024010101', $html);
@@ -166,6 +174,17 @@ class ZoneListTemplateRenderTest extends TestCase
         $this->assertStringContainsString('NOTIFY pending', $html);
         $this->assertStringContainsString('Alice A', $html);
         $this->assertStringContainsString('plain.example', $html);
+    }
+
+    public function testThePtrLinkShowsOnlyOnEditableZonesWhenBatchPtrIsOffered(): void
+    {
+        $this->assertStringContainsString('/zones/batch-ptr?id=7', $this->renderForwardList());
+
+        $rows = $this->decoratedRows();
+        $rows[0]['user_can_edit'] = false;
+        $this->assertStringNotContainsString('/zones/batch-ptr?id=', $this->renderForwardList($rows));
+
+        $this->assertStringNotContainsString('/zones/batch-ptr?id=', $this->renderForwardList(null, false));
     }
 
     public function testDeleteUserPageReadsTheModelsThroughArrayAccess(): void
