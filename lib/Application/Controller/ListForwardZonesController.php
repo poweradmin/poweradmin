@@ -194,6 +194,15 @@ class ListForwardZonesController extends BaseController
         $deleteSources = $perm_delete === 'own'
             ? $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_delete_own')
             : ['has_direct' => false, 'group_ids' => []];
+        // Same for editing, which the per-row batch PTR link needs
+        $editSources = ['has_direct' => false, 'group_ids' => []];
+        if ($perm_edit === 'own' || $perm_edit === 'own_as_client') {
+            foreach (['zone_content_edit_own', 'zone_content_edit_own_as_client'] as $editPermission) {
+                $sources = $hybridPermissions->getPermissionSourcesForUser($userId, $editPermission);
+                $editSources['has_direct'] = $editSources['has_direct'] || $sources['has_direct'];
+                $editSources['group_ids'] = array_merge($editSources['group_ids'], $sources['group_ids']);
+            }
+        }
         $username = $_SESSION['userlogin'];
 
         foreach ($zones as &$zone) {
@@ -222,6 +231,10 @@ class ListForwardZonesController extends BaseController
             } else {
                 $zone['user_can_delete'] = false;
             }
+
+            $zone['user_can_edit'] = $perm_edit === 'all'
+                || ($editSources['has_direct'] && in_array($username, $zone['users'] ?? [], true))
+                || !empty(array_intersect($editSources['group_ids'], $zoneGroupIds));
         }
         unset($zone); // Break the reference
 
