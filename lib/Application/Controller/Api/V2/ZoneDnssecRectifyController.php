@@ -36,6 +36,7 @@ use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -103,6 +104,7 @@ class ZoneDnssecRectifyController extends PublicApiController
     #[OA\Response(response: 409, description: 'Zone is not DNSSEC signed, is presigned or is a secondary zone')]
     #[OA\Response(response: 500, description: 'Failed to rectify zone')]
     #[OA\Response(response: 501, description: 'Rectifying requires the PowerDNS API')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function rectify(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -128,6 +130,11 @@ class ZoneDnssecRectifyController extends PublicApiController
         // instead of passing on a generic backend error.
         if (strtoupper($this->domainRepository->getDomainType($zoneId)) === 'SLAVE') {
             return $this->returnApiError('Secondary zones cannot be rectified', 409);
+        }
+
+        // The signed and presigned checks read a failed PowerDNS request as "no", so rule that out first
+        if ($this->apiClient->fetchZoneKeys(new Zone($zoneName)) === null) {
+            return $this->returnApiError('Failed to retrieve DNSSEC keys from PowerDNS', 502);
         }
 
         try {

@@ -247,4 +247,112 @@ class ZoneDnssecKeysControllerTest extends TestCase
 
         $this->assertSame(200, $this->controller(['id' => 1, 'key_id' => 3])->callDeleteKey()->getStatusCode());
     }
+
+    public function testAViewOnlyUserCanReadKeysButNotChangeThem(): void
+    {
+        $this->permissionService->method('canViewZone')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(false);
+        $this->apiClient->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
+        $this->apiClient->expects($this->never())->method('createZoneKey');
+        $this->apiClient->expects($this->never())->method('deactivateZoneKey');
+        $this->apiClient->expects($this->never())->method('removeZoneKey');
+
+        $this->assertSame(200, $this->controller()->callListKeys()->getStatusCode());
+        $this->assertSame(200, $this->controller(['id' => 1, 'key_id' => 3])->callGetKey()->getStatusCode());
+        $this->assertSame(403, $this->controller(['id' => 1], '{"type":"csk","algorithm":"ecdsa256","bits":256}')->callAddKey()->getStatusCode());
+        $this->assertSame(403, $this->controller(['id' => 1, 'key_id' => 3], '{"active":false}')->callUpdateKey()->getStatusCode());
+        $this->assertSame(403, $this->controller(['id' => 1, 'key_id' => 3])->callDeleteKey()->getStatusCode());
+    }
+
+    public function testActivatingReportsTheNewStateAndAudits(): void
+    {
+        $this->allowManage();
+        $this->apiClient->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'ksk', 256, 'ECDSAP256SHA256', false, '257 3 13 AAAA', ['1 13 2 AB'])]);
+        $this->apiClient->expects($this->once())->method('activateZoneKey')->willReturn(true);
+        $this->audit->expects($this->once())->method('logDnssecToggleKey')->with(1, 'example.com', 3, 'activate');
+
+        [$status, $body] = self::decode($this->controller(['id' => 1, 'key_id' => 3], '{"active":true}')->callUpdateKey());
+
+        $this->assertSame(200, $status);
+        $this->assertTrue($body['data']['active']);
+        $this->assertSame('id', array_key_first($body['data']), 'the field order matches list and get');
+    }
+
+    public function testAKeyChangeAsksPowerDnsForTheKeysOnce(): void
+    {
+        $this->allowManage();
+        $this->apiClient->expects($this->exactly(2))->method('fetchZoneKeys')
+            ->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
+        $this->apiClient->method('deactivateZoneKey')->willReturn(true);
+        $this->apiClient->method('removeZoneKey')->willReturn(true);
+
+        $this->controller(['id' => 1, 'key_id' => 3], '{"active":false}')->callUpdateKey();
+        $this->controller(['id' => 1, 'key_id' => 3])->callDeleteKey();
+    }
+
+    /** @return array<string, array{0: string}> */
+    public static function backendFailureProvider(): array
+    {
+        return [
+            'add' => ['add'],
+            'deactivate' => ['deactivate'],
+            'delete' => ['delete'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('backendFailureProvider')]
+    public function testARefusedPowerDnsWriteIsAServerErrorAndIsNotAudited(string $operation): void
+    {
+        $this->allowManage();
+        $this->apiClient->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
+        $this->apiClient->method('createZoneKey')->willReturn(null);
+        $this->apiClient->method('deactivateZoneKey')->willReturn(false);
+        $this->apiClient->method('removeZoneKey')->willReturn(false);
+        $this->audit->expects($this->never())->method($this->anything());
+
+        $response = match ($operation) {
+            'add' => $this->controller(['id' => 1], '{"type":"csk","algorithm":"ecdsa256","bits":256}')->callAddKey(),
+            'deactivate' => $this->controller(['id' => 1, 'key_id' => 3], '{"active":false}')->callUpdateKey(),
+            default => $this->controller(['id' => 1, 'key_id' => 3])->callDeleteKey(),
+        };
+
+        $this->assertSame(500, $response->getStatusCode());
+    }
+
+    public function testAServerWithoutDnssecRefusesKeyChanges(): void
+    {
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $provider = $this->createMock(\Poweradmin\Domain\Port\ZoneSigningInterface::class);
+        $provider->method('isDnssecEnabled')->willReturn(false);
+        $this->apiClient->method('fetchZoneKeys')->willReturn([]);
+        $controller = $this->controller(['id' => 1], '{"type":"csk","algorithm":"ecdsa256","bits":256}');
+        $controller->setDnssecProvider($provider);
+
+        [$status, $body] = self::decode($controller->callAddKey());
+
+        $this->assertSame(400, $status);
+        $this->assertSame('DNSSEC is not enabled on the server', $body['message']);
+    }
+
+    public function testABadBodyIsRefusedBeforePowerDnsIsAsked(): void
+    {
+        $this->allowManage();
+        $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
+        $this->apiClient->expects($this->never())->method('fetchZoneKeys');
+
+        $this->assertSame(400, $this->controller(['id' => 1], '{"type":"csk","algorithm":"ecdsa256","bits":384}')->callAddKey()->getStatusCode());
+        $this->assertSame(400, $this->controller(['id' => 1, 'key_id' => 3], '{"active":"no"}')->callUpdateKey()->getStatusCode());
+    }
+
+    public function testAnOlderServerIsNotOfferedEd448(): void
+    {
+        $this->allowManage();
+        $controller = $this->controller(['id' => 1], '{"type":"csk","algorithm":"ed448","bits":456}');
+        $controller->capabilities = \Poweradmin\Domain\Model\PdnsCapabilities::fromServerInfo(['version' => '4.4.0']);
+
+        [$status, $body] = self::decode($controller->callAddKey());
+
+        $this->assertSame(400, $status);
+        $this->assertStringNotContainsString('ed448', $body['message']);
+    }
 }

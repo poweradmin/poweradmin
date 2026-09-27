@@ -36,6 +36,7 @@ use Symfony\Component\HttpFoundation\Request;
 class TestableZoneDnssecKeysController extends ZoneDnssecKeysController
 {
     private AuditService $audit;
+    public ?PdnsCapabilities $capabilities = null;
 
     /**
      * @phpstan-ignore-next-line constructor.unusedParameter
@@ -110,6 +111,6 @@ class TestableZoneDnssecKeysController extends ZoneDnssecKeysController
 
     protected function getPdnsCapabilities(): PdnsCapabilities
     {
-        return PdnsCapabilities::fromServerInfo(['version' => '4.9.0']);
+        return $this->capabilities ?? PdnsCapabilities::fromServerInfo(['version' => '4.9.0']);
     }
 }

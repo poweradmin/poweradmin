@@ -55,7 +55,7 @@ class ZoneDnssecRectifyControllerTest extends TestCase
         $provider->method('isZonePresigned')->willReturn($presigned);
         $provider->expects($status === 200 ? $this->once() : $this->never())->method('rectifyZone')->willReturn(true);
 
-        $controller = new TestableZoneDnssecRectifyController($domains, $permissions, $provider, $this->createMock(PowerdnsApiClient::class));
+        $controller = new TestableZoneDnssecRectifyController($domains, $permissions, $provider, $this->reachableApiClient());
         $response = $controller->callRectify();
 
         $this->assertSame($status, $response->getStatusCode());
@@ -74,5 +74,57 @@ class ZoneDnssecRectifyControllerTest extends TestCase
         $controller = new TestableZoneDnssecRectifyController($domains, $permissions, $provider, $this->createMock(PowerdnsApiClient::class));
 
         $this->assertSame(403, $controller->callRectify()->getStatusCode());
+    }
+
+    private function reachableApiClient(): PowerdnsApiClient
+    {
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('fetchZoneKeys')->willReturn([]);
+
+        return $client;
+    }
+
+    /**
+     * @param array{type?: string, zone?: ?string, rectified?: bool, client?: ?PowerdnsApiClient} $setup
+     */
+    private function rectifyWith(array $setup): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainNameById')->willReturn(array_key_exists('zone', $setup) ? $setup['zone'] : 'example.com');
+        $domains->method('getDomainType')->willReturn($setup['type'] ?? 'MASTER');
+        $permissions = $this->createMock(ApiPermissionService::class);
+        $permissions->method('canManageDnssec')->willReturn(true);
+        $provider = $this->createMock(DnssecProviderInterface::class);
+        $provider->method('isZoneSecured')->willReturn(true);
+        $provider->method('rectifyZone')->willReturn($setup['rectified'] ?? true);
+        $client = array_key_exists('client', $setup) ? $setup['client'] : $this->reachableApiClient();
+
+        return (new TestableZoneDnssecRectifyController($domains, $permissions, $provider, $client))->callRectify();
+    }
+
+    public function testAnUnreachablePowerDnsIsNotReportedAsAnUnsignedZone(): void
+    {
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('fetchZoneKeys')->willReturn(null);
+
+        $response = $this->rectifyWith(['client' => $client]);
+
+        $this->assertSame(502, $response->getStatusCode());
+        $this->assertSame('Failed to retrieve DNSSEC keys from PowerDNS', json_decode((string)$response->getContent(), true)['message']);
+    }
+
+    public function testRectifyingNeedsThePowerDnsApi(): void
+    {
+        $this->assertSame(501, $this->rectifyWith(['client' => null])->getStatusCode());
+    }
+
+    public function testARefusedRectifyIsAServerError(): void
+    {
+        $this->assertSame(500, $this->rectifyWith(['rectified' => false])->getStatusCode());
+    }
+
+    public function testAnUnknownZoneIsNotFound(): void
+    {
+        $this->assertSame(404, $this->rectifyWith(['zone' => null])->getStatusCode());
     }
 }

@@ -82,6 +82,9 @@ class ZoneDnssecKeysController extends PublicApiController
     protected ZoneSigningInterface $dnssecProvider;
     protected ?PowerdnsApiClient $apiClient = null;
 
+    /** @var CryptoKey[]|null The zone's keys, once a write has fetched them */
+    private ?array $zoneKeys = null;
+
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
@@ -290,6 +293,10 @@ class ZoneDnssecKeysController extends PublicApiController
             return $this->returnApiError('Invalid field: active (boolean)', 400);
         }
 
+        if (($refused = $this->checkWritable($zoneName)) !== null) {
+            return $refused;
+        }
+
         try {
             // PowerDNS answers with the key it created, so the id returned is always the new key's
             $created = $this->apiClient?->createZoneKey(new Zone($zoneName), new CryptoKey(null, $type, $bits, $algorithm), $active);
@@ -360,6 +367,10 @@ class ZoneDnssecKeysController extends PublicApiController
             return $this->returnApiError('Missing or invalid required field: active (boolean)', 400);
         }
 
+        if (($refused = $this->checkWritable($zoneName)) !== null) {
+            return $refused;
+        }
+
         $keyId = $this->keyIdFromPath();
 
         try {
@@ -382,8 +393,9 @@ class ZoneDnssecKeysController extends PublicApiController
 
             $this->auditService()->logDnssecToggleKey($zoneId, $zoneName, $keyId, $active ? 'activate' : 'deactivate');
 
+            $active ? $key->activate() : $key->deactivate();
             $message = $active ? 'DNSSEC key activated successfully' : 'DNSSEC key deactivated successfully';
-            return $this->returnApiResponse(['active' => $active] + $this->formatKey($key), true, $message);
+            return $this->returnApiResponse($this->formatKey($key), true, $message);
         } catch (Exception $e) {
             return $this->handleException($e, 'ZoneDnssecKeysController::updateKey', 'Failed to update DNSSEC key');
         }
@@ -428,6 +440,10 @@ class ZoneDnssecKeysController extends PublicApiController
             return $zoneName;
         }
 
+        if (($refused = $this->checkWritable($zoneName)) !== null) {
+            return $refused;
+        }
+
         $keyId = $this->keyIdFromPath();
 
         try {
@@ -462,8 +478,7 @@ class ZoneDnssecKeysController extends PublicApiController
      * the error response to send.
      *
      * Reading keys needs view access to the zone (the keys are public DNSKEY
-     * data); changing them needs the DNSSEC management permission and is
-     * refused for presigned zones and servers without DNSSEC.
+     * data); changing them needs the DNSSEC management permission.
      */
     private function resolveZone(bool $modify): string|JsonResponse
     {
@@ -492,26 +507,34 @@ class ZoneDnssecKeysController extends PublicApiController
             return $this->returnApiError('DNSSEC key management requires the PowerDNS API to be configured', 501);
         }
 
-        if ($modify) {
-            // Ask for the keys first: the server-settings lookup below reads a failed request as "DNSSEC off"
-            $keys = $this->loadKeys($zoneName);
-            if ($keys instanceof JsonResponse) {
-                return $keys;
-            }
+        return $zoneName;
+    }
 
-            try {
-                if (!$this->dnssecProvider->isDnssecEnabled()) {
-                    return $this->returnApiError('DNSSEC is not enabled on the server', 400);
-                }
-                if ($this->dnssecProvider->isZonePresigned($zoneName)) {
-                    return $this->returnApiError('DNSSEC for this zone is presigned and managed at the primary server', 409);
-                }
-            } catch (Exception $e) {
-                return $this->handleException($e, 'ZoneDnssecKeysController::resolveZone', 'Failed to check DNSSEC state');
+    /**
+     * Refuse a key change for a presigned zone or a server without DNSSEC, or
+     * return null when the change may go ahead.
+     */
+    private function checkWritable(string $zoneName): ?JsonResponse
+    {
+        // Ask for the keys first: the server-settings lookup below reads a failed request as "DNSSEC off"
+        $keys = $this->loadKeys($zoneName);
+        if ($keys instanceof JsonResponse) {
+            return $keys;
+        }
+        $this->zoneKeys = $keys;
+
+        try {
+            if (!$this->dnssecProvider->isDnssecEnabled()) {
+                return $this->returnApiError('DNSSEC is not enabled on the server', 400);
             }
+            if ($this->dnssecProvider->isZonePresigned($zoneName)) {
+                return $this->returnApiError('DNSSEC for this zone is presigned and managed at the primary server', 409);
+            }
+        } catch (Exception $e) {
+            return $this->handleException($e, 'ZoneDnssecKeysController::checkWritable', 'Failed to check DNSSEC state');
         }
 
-        return $zoneName;
+        return null;
     }
 
     private function keyIdFromPath(): int
@@ -531,7 +554,7 @@ class ZoneDnssecKeysController extends PublicApiController
 
     private function findKey(string $zoneName, int $keyId): CryptoKey|JsonResponse
     {
-        $keys = $this->loadKeys($zoneName);
+        $keys = $this->zoneKeys ?? $this->loadKeys($zoneName);
         if ($keys instanceof JsonResponse) {
             return $keys;
         }
