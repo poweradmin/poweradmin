@@ -104,7 +104,9 @@ class DnssecEditKeyController extends BaseController
         }
 
         if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
-            $this->showError(_('Invalid or unexpected input given.'));
+            $this->showError($dnssecProvider->isKeyListAvailable($domain_name)
+                ? _('Invalid or unexpected input given.')
+                : _('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
             return;
         }
 

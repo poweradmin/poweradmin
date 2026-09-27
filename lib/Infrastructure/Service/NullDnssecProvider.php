@@ -95,6 +95,11 @@ class NullDnssecProvider implements DnssecProvider
         return false;
     }
 
+    public function isKeyListAvailable(string $zoneName): bool
+    {
+        return false;
+    }
+
     public function getZoneKey(string $zoneName, int $keyId): array
     {
         return [];

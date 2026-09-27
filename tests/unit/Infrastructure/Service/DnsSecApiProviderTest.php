@@ -386,4 +386,18 @@ class DnsSecApiProviderTest extends TestCase
         $mock->method('getId')->willReturn($id);
         return $mock;
     }
+
+    public function testKeyListIsAvailableWhenPowerDnsAnswersEvenWithoutKeys(): void
+    {
+        $this->mockApiClient->method('fetchZoneKeys')->willReturn([]);
+
+        $this->assertTrue($this->provider->isKeyListAvailable('example.com'));
+    }
+
+    public function testKeyListIsUnavailableWhenPowerDnsDoesNotAnswer(): void
+    {
+        $this->mockApiClient->method('fetchZoneKeys')->willReturn(null);
+
+        $this->assertFalse($this->provider->isKeyListAvailable('example.com'));
+    }
 }

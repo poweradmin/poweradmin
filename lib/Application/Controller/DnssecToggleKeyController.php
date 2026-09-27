@@ -104,7 +104,9 @@ class DnssecToggleKeyController extends BaseController
             $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
             if (empty($key_info) || !isset($key_info[5])) {
-                $this->showError(_('DNSSEC key not found or no longer exists.'));
+                $this->showError($dnssecProvider->isKeyListAvailable($domain_name)
+                    ? _('DNSSEC key not found or no longer exists.')
+                    : _('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
                 return;
             }
 

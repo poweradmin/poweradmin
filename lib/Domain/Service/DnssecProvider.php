@@ -42,6 +42,11 @@ interface DnssecProvider
     public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool;
     public function removeZoneKey(string $zoneName, int $keyId): bool;
     public function keyExists(string $zoneName, int $keyId): bool;
+
+    /**
+     * Whether PowerDNS answered the zone's key list, so a missing key is not mistaken for an outage.
+     */
+    public function isKeyListAvailable(string $zoneName): bool;
     public function getZoneKey(string $zoneName, int $keyId): array;
     public function isDnssecEnabled(): bool;
 

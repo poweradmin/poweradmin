@@ -180,6 +180,11 @@ class DnsSecApiProvider implements DnssecProvider
         return false;
     }
 
+    public function isKeyListAvailable(string $zoneName): bool
+    {
+        return $this->client->fetchZoneKeys(new Zone($zoneName)) !== null;
+    }
+
     public function getZoneKey(string $zoneName, int $keyId): array
     {
         $zone = new Zone($zoneName);
