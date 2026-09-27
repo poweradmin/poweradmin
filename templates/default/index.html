@@ -403,6 +403,23 @@
 {# Non-ueberuser roles have few tiles - a single flat grid of larger cards fills the
    row without the half-empty look that grouped sections produce when sparse. #}
 <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-2">
+    {% if permissions['server_status_view'] and pdns_api_enabled and show_pdns_status %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/tools/pdns-status" class="card h-100 shadow-sm text-decoration-none text-body {% if pdns_server_status is defined %}{% if pdns_server_status.running %}border-success{% else %}border-danger{% endif %}{% endif %}" data-testid="pdns-status-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-server display-5 mb-2"></i>
+                {% if pdns_server_status is defined %}
+                    {% if pdns_server_status.running %}
+                    <span class="badge bg-success" style="font-size: .6rem; position: absolute; top: 4px; right: 4px;">{% trans %}Online{% endtrans %}</span>
+                    {% else %}
+                    <span class="badge bg-danger" style="font-size: .6rem; position: absolute; top: 4px; right: 4px;">{% trans %}Offline{% endtrans %}</span>
+                    {% endif %}
+                {% endif %}
+                <span class="text-truncate">{{ pdns_server_status.display }}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
     {% if permissions['search'] %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/search" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="search-link">
