@@ -139,7 +139,7 @@ class ZoneDnssecKeysController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
     #[OA\Response(response: 501, description: 'DNSSEC key management requires the PowerDNS API')]
-    #[OA\Response(response: 502, description: 'PowerDNS could not be reached')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function listKeys(): JsonResponse
     {
         $zoneName = $this->resolveZone(false);
@@ -186,7 +186,7 @@ class ZoneDnssecKeysController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone or key not found')]
     #[OA\Response(response: 501, description: 'DNSSEC key management requires the PowerDNS API')]
-    #[OA\Response(response: 502, description: 'PowerDNS could not be reached')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function getKey(): JsonResponse
     {
         $zoneName = $this->resolveZone(false);
@@ -208,7 +208,7 @@ class ZoneDnssecKeysController extends PublicApiController
     #[OA\Post(
         path: '/v2/zones/{id}/dnssec/keys',
         operationId: 'v2AddZoneDnssecKey',
-        description: 'Adds a new DNSSEC key to a zone. Algorithm and bits follow the same rules as the web UI (e.g. ecdsa256 requires 256 bits).',
+        description: 'Adds a new DNSSEC key to a zone. Each algorithm has fixed key sizes: RSA algorithms take 1024 or 2048 bits, ecdsa256 and ed25519 256, ecdsa384 384 and ed448 456.',
         summary: 'Add a zone DNSSEC key',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         requestBody: new OA\RequestBody(
@@ -247,7 +247,7 @@ class ZoneDnssecKeysController extends PublicApiController
     #[OA\Response(response: 409, description: 'Zone is presigned; DNSSEC is managed at the primary server')]
     #[OA\Response(response: 500, description: 'Failed to add DNSSEC key')]
     #[OA\Response(response: 501, description: 'DNSSEC key management requires the PowerDNS API')]
-    #[OA\Response(response: 502, description: 'PowerDNS could not be reached')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function addKey(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -348,7 +348,7 @@ class ZoneDnssecKeysController extends PublicApiController
     #[OA\Response(response: 409, description: 'Zone is presigned; DNSSEC is managed at the primary server')]
     #[OA\Response(response: 500, description: 'Failed to update DNSSEC key')]
     #[OA\Response(response: 501, description: 'DNSSEC key management requires the PowerDNS API')]
-    #[OA\Response(response: 502, description: 'PowerDNS could not be reached')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function updateKey(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -422,7 +422,7 @@ class ZoneDnssecKeysController extends PublicApiController
     #[OA\Response(response: 409, description: 'Zone is presigned; DNSSEC is managed at the primary server')]
     #[OA\Response(response: 500, description: 'Failed to delete DNSSEC key')]
     #[OA\Response(response: 501, description: 'DNSSEC key management requires the PowerDNS API')]
-    #[OA\Response(response: 502, description: 'PowerDNS could not be reached')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function deleteKey(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -492,6 +492,12 @@ class ZoneDnssecKeysController extends PublicApiController
         }
 
         if ($modify) {
+            // Ask for the keys first: the server-settings lookup below reads a failed request as "DNSSEC off"
+            $keys = $this->loadKeys($zoneName);
+            if ($keys instanceof JsonResponse) {
+                return $keys;
+            }
+
             try {
                 if (!$this->dnssecProvider->isDnssecEnabled()) {
                     return $this->returnApiError('DNSSEC is not enabled on the server', 400);

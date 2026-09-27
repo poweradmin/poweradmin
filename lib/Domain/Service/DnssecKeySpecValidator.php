@@ -25,8 +25,8 @@ namespace Poweradmin\Domain\Service;
 /**
  * Validates the algorithm and key size of a new DNSSEC key.
  *
- * Shared by the web UI and the REST API so both accept exactly the same
- * combinations.
+ * The web UI and the REST API share the per-algorithm size rules; the UI
+ * additionally limits sizes to the ones its form offers.
  */
 class DnssecKeySpecValidator
 {
@@ -74,7 +74,7 @@ class DnssecKeySpecValidator
             'ecdsa384' => 'ecdsa384 requires 384 bits',
             'ed25519' => 'ed25519 requires 256 bits',
             'ed448' => 'ed448 requires 456 bits',
-            default => 'RSA algorithms require 1024 or 2048 bits',
+            default => $algorithm . ' requires 1024 or 2048 bits',
         };
     }
 
