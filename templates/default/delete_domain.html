@@ -29,6 +29,7 @@
                 <strong>{% trans %}Zone Details{% endtrans %}</strong>
             </div>
             <div class="card-body">
+                {% if show_zone_owners %}
                 <div class="row">
                     <div class="col-md-3">
                         <p class="mb-0"><strong>{% trans %}Owner{% endtrans %}:</strong></p>
@@ -38,6 +39,7 @@
                     </div>
                 </div>
                 <hr>
+                {% endif %}
                 <div class="row">
                     <div class="col-md-3">
                         <p class="mb-0"><strong>{% trans %}Type{% endtrans %}:</strong></p>

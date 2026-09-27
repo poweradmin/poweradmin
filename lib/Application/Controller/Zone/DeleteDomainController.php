@@ -139,7 +139,9 @@ class DeleteDomainController extends BaseController
     {
         $domainRepository = $this->services()->domainRepository();
         $zone_info = $this->canViewZones() ? $domainRepository->getZoneInfoFromId($zone_id) : [];
-        $zone_owners = $this->services()->userRepository()->getZoneOwnerFullNames($zone_id);
+        $ownershipView = $this->services()->permissionService()->getZoneOwnershipViewPermissionLevel((int)$this->getCurrentUserId());
+        $show_zone_owners = $ownershipView === 'all' || ($ownershipView === 'own' && $this->isZoneOwner($zone_id));
+        $zone_owners = $show_zone_owners ? $this->services()->userRepository()->getZoneOwnerFullNames($zone_id) : '';
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {
@@ -166,6 +168,7 @@ class DeleteDomainController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_display_name' => DnsIdnService::toDisplay($zone_info['name']),
             'zone_owners' => $zone_owners,
+            'show_zone_owners' => $show_zone_owners,
             'slave_master_exists' => $slave_master_exists,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_info['name']),
             'requests_deletion' => $requestsDeletion,

@@ -25,7 +25,9 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>{% trans %}Name{% endtrans %}</th>
+                                    {% if show_zone_owners %}
                                     <th>{% trans %}Owner{% endtrans %}</th>
+                                    {% endif %}
                                     <th>{% trans %}Type{% endtrans %}</th>
                                     <th>{% trans %}Note{% endtrans %}</th>
                                 </tr>
@@ -41,7 +43,9 @@
                                         {{ zone['name'] }}
                                         {% endif %}
                                     </td>
+                                    {% if show_zone_owners %}
                                     <td>{{ zone['owner'] }}</td>
+                                    {% endif %}
                                     <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span></td>
                                     <td>
                                         {% if not zone['user_can_delete'] %}
