@@ -38,6 +38,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Utility\DomainUtility;
@@ -258,6 +259,16 @@ class AddZoneMasterController extends BaseController
                     return;
                 }
             }
+        }
+
+        // Refuse before creating, as the API does, so the zone is not left behind unsigned
+        if (
+            $pdnssec_use && !$replicates && $this->request->getPostParam('dnssec') !== null
+            && !(new ApiPermissionService($this->db))->canManageDnssecForNewZone((int)$callerId, $owner, $selected_groups)
+        ) {
+            $this->setMessage('add_zone_master', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
+            $this->showForm();
+            return;
         }
 
         $domainRepository = $this->createDomainRepository();
