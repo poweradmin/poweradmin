@@ -151,29 +151,35 @@ class ZonesRRSetsController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'RRSets retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'name', type: 'string', example: 'www.example.com', description: 'Fully qualified domain name'),
-                            new OA\Property(property: 'type', type: 'string', example: 'A', description: 'Record type'),
-                            new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live in seconds'),
-                            new OA\Property(
-                                property: 'records',
-                                type: 'array',
-                                items: new OA\Items(
-                                    properties: [
-                                        new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
-                                        new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
-                                        new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag')
-                                    ],
-                                    type: 'object'
-                                ),
-                                description: 'Array of record data with same name and type'
-                            )
-                        ],
-                        type: 'object'
-                    ),
-                    description: 'Array of RRSets in the zone'
+                    type: 'object',
+                    properties: [
+                        new OA\Property(
+                            property: 'rrsets',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'name', type: 'string', example: 'www.example.com', description: 'Fully qualified domain name'),
+                                    new OA\Property(property: 'type', type: 'string', example: 'A', description: 'Record type'),
+                                    new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live in seconds'),
+                                    new OA\Property(
+                                        property: 'records',
+                                        type: 'array',
+                                        items: new OA\Items(
+                                            properties: [
+                                                new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
+                                                new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
+                                                new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag')
+                                            ],
+                                            type: 'object'
+                                        ),
+                                        description: 'Array of record data with same name and type'
+                                    )
+                                ],
+                                type: 'object'
+                            ),
+                            description: 'Array of RRSets in the zone'
+                        )
+                    ]
                 )
             ]
         )
@@ -405,24 +411,30 @@ class ZonesRRSetsController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'RRSet replaced successfully'),
                 new OA\Property(
                     property: 'data',
+                    type: 'object',
                     properties: [
-                        new OA\Property(property: 'name', type: 'string', example: 'www'),
-                        new OA\Property(property: 'type', type: 'string', example: 'A'),
-                        new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                         new OA\Property(
-                            property: 'records',
-                            type: 'array',
-                            items: new OA\Items(
-                                properties: [
-                                    new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
-                                    new OA\Property(property: 'priority', type: 'integer', example: 0),
-                                    new OA\Property(property: 'disabled', type: 'boolean', example: false)
-                                ],
-                                type: 'object'
-                            )
+                            property: 'rrset',
+                            properties: [
+                                new OA\Property(property: 'name', type: 'string', example: 'www'),
+                                new OA\Property(property: 'type', type: 'string', example: 'A'),
+                                new OA\Property(property: 'ttl', type: 'integer', example: 3600),
+                                new OA\Property(
+                                    property: 'records',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
+                                            new OA\Property(property: 'priority', type: 'integer', example: 0),
+                                            new OA\Property(property: 'disabled', type: 'boolean', example: false)
+                                        ],
+                                        type: 'object'
+                                    )
+                                )
+                            ],
+                            type: 'object'
                         )
-                    ],
-                    type: 'object'
+                    ]
                 )
             ]
         )

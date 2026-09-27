@@ -117,6 +117,13 @@ class ZonesController extends PublicApiController
         in: 'query',
         schema: new OA\Schema(type: 'integer', default: 0)
     )]
+    #[OA\Parameter(
+        name: 'name',
+        description: 'Filter by exact zone name (optional)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'example.com')
+    )]
     #[OA\Response(
         response: 200,
         description: 'Zones retrieved successfully',
@@ -126,16 +133,22 @@ class ZonesController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Zones retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'id', type: 'integer', example: 1),
-                            new OA\Property(property: 'name', type: 'string', example: 'example.com'),
-                            new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
-                            new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00')
-                        ],
-                        type: 'object'
-                    )
+                    type: 'object',
+                    properties: [
+                        new OA\Property(
+                            property: 'zones',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'name', type: 'string', example: 'example.com'),
+                                    new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
+                                    new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00')
+                                ],
+                                type: 'object'
+                            )
+                        )
+                    ]
                 ),
                 new OA\Property(
                     property: 'pagination',
@@ -275,6 +288,9 @@ class ZonesController extends PublicApiController
                                 new OA\Property(property: 'id', type: 'integer', example: 1),
                                 new OA\Property(property: 'name', type: 'string', example: 'example.com'),
                                 new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
+                                new OA\Property(property: 'masters', type: 'string', nullable: true, example: null),
+                                new OA\Property(property: 'account', type: 'string', nullable: true, example: null),
+                                new OA\Property(property: 'description', type: 'string', nullable: true, example: 'Production DNS zone'),
                                 new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00')
                             ],
                             type: 'object'
@@ -372,6 +388,18 @@ class ZonesController extends PublicApiController
                         'IPv6 with port needs brackets: "[2001:db8::1]:5300"',
                     type: 'string',
                     example: '192.168.1.1:5300,192.168.1.2:5300'
+                ),
+                new OA\Property(
+                    property: 'description',
+                    description: 'Zone description or comment',
+                    type: 'string',
+                    example: 'Production DNS zone'
+                ),
+                new OA\Property(
+                    property: 'account',
+                    description: 'PowerDNS account for the zone. Can only be set on creation.',
+                    type: 'string',
+                    example: 'customer-42'
                 ),
                 new OA\Property(
                     property: 'template',

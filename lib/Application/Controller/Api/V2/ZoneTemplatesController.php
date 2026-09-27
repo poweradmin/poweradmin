@@ -89,18 +89,24 @@ class ZoneTemplatesController extends PublicApiController
                         new OA\Property(property: 'success', type: 'boolean', example: true),
                         new OA\Property(
                             property: 'data',
-                            type: 'array',
-                            items: new OA\Items(
-                                type: 'object',
-                                properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
-                                    new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
-                                    new OA\Property(property: 'owner', type: 'integer', example: 1),
-                                    new OA\Property(property: 'is_global', type: 'boolean', example: false),
-                                    new OA\Property(property: 'zones_linked', type: 'integer', example: 3)
-                                ]
-                            )
+                            type: 'object',
+                            properties: [
+                                new OA\Property(
+                                    property: 'templates',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        type: 'object',
+                                        properties: [
+                                            new OA\Property(property: 'id', type: 'integer', example: 1),
+                                            new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
+                                            new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
+                                            new OA\Property(property: 'owner', type: 'integer', example: 1),
+                                            new OA\Property(property: 'is_global', type: 'boolean', example: false),
+                                            new OA\Property(property: 'zones_linked', type: 'integer', example: 3)
+                                        ]
+                                    )
+                                )
+                            ]
                         )
                     ]
                 )
@@ -165,25 +171,31 @@ class ZoneTemplatesController extends PublicApiController
                             property: 'data',
                             type: 'object',
                             properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 1),
-                                new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
-                                new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
-                                new OA\Property(property: 'owner', type: 'integer', example: 1),
-                                new OA\Property(property: 'is_global', type: 'boolean', example: false),
                                 new OA\Property(
-                                    property: 'records',
-                                    type: 'array',
-                                    items: new OA\Items(
-                                        type: 'object',
-                                        properties: [
-                                            new OA\Property(property: 'id', type: 'integer', example: 1),
-                                            new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
-                                            new OA\Property(property: 'type', type: 'string', example: 'SOA'),
-                                            new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
-                                            new OA\Property(property: 'ttl', type: 'integer', example: 86400),
-                                            new OA\Property(property: 'priority', type: 'integer', example: 0)
-                                        ]
-                                    )
+                                    property: 'template',
+                                    type: 'object',
+                                    properties: [
+                                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                                        new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
+                                        new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
+                                        new OA\Property(property: 'owner', type: 'integer', example: 1),
+                                        new OA\Property(property: 'is_global', type: 'boolean', example: false),
+                                        new OA\Property(
+                                            property: 'records',
+                                            type: 'array',
+                                            items: new OA\Items(
+                                                type: 'object',
+                                                properties: [
+                                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                                    new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
+                                                    new OA\Property(property: 'type', type: 'string', example: 'SOA'),
+                                                    new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
+                                                    new OA\Property(property: 'ttl', type: 'integer', example: 86400),
+                                                    new OA\Property(property: 'priority', type: 'integer', example: 0)
+                                                ]
+                                            )
+                                        )
+                                    ]
                                 )
                             ]
                         )

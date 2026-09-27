@@ -310,30 +310,36 @@ class UsersController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Users retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'user_id', type: 'integer', example: 1),
-                            new OA\Property(property: 'username', type: 'string', example: 'admin'),
-                            new OA\Property(property: 'fullname', type: 'string', example: 'Administrator'),
-                            new OA\Property(property: 'email', type: 'string', example: 'admin@example.com'),
-                            new OA\Property(property: 'description', type: 'string', example: 'System Administrator'),
-                            new OA\Property(property: 'active', type: 'boolean', example: true),
-                            new OA\Property(property: 'zone_count', type: 'integer', example: 5),
-                            new OA\Property(property: 'is_admin', type: 'boolean', example: true),
-                            new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
-                            new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
-                            new OA\Property(
-                                property: 'groups',
-                                type: 'array',
-                                items: new OA\Items(properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 3),
-                                    new OA\Property(property: 'name', type: 'string', example: 'dns-operators')
-                                ], type: 'object')
+                    type: 'object',
+                    properties: [
+                        new OA\Property(
+                            property: 'users',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'user_id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'username', type: 'string', example: 'admin'),
+                                    new OA\Property(property: 'fullname', type: 'string', example: 'Administrator'),
+                                    new OA\Property(property: 'email', type: 'string', example: 'admin@example.com'),
+                                    new OA\Property(property: 'description', type: 'string', example: 'System Administrator'),
+                                    new OA\Property(property: 'active', type: 'boolean', example: true),
+                                    new OA\Property(property: 'zone_count', type: 'integer', example: 5),
+                                    new OA\Property(property: 'is_admin', type: 'boolean', example: true),
+                                    new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
+                                    new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
+                                    new OA\Property(
+                                        property: 'groups',
+                                        type: 'array',
+                                        items: new OA\Items(properties: [
+                                            new OA\Property(property: 'id', type: 'integer', example: 3),
+                                            new OA\Property(property: 'name', type: 'string', example: 'dns-operators')
+                                        ], type: 'object')
+                                    )
+                                ],
+                                type: 'object'
                             )
-                        ],
-                        type: 'object'
-                    )
+                        )
+                    ]
                 ),
                 new OA\Property(
                     property: 'pagination',

@@ -90,20 +90,28 @@ class PermissionTemplatesController extends PublicApiController
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
                         'data' => new OA\Property(
                             property: 'data',
-                            type: 'array',
-                            items: new OA\Items(
-                                type: 'object',
-                                properties: [
-                                    'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    'name' => new OA\Property(property: 'name', type: 'string', example: 'Zone Administrator'),
-                                    'descr' => new OA\Property(property: 'descr', type: 'string', example: 'Administrator for zones')
-                                ]
-                            )
+                            type: 'object',
+                            properties: [
+                                'templates' => new OA\Property(
+                                    property: 'templates',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        type: 'object',
+                                        properties: [
+                                            'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
+                                            'name' => new OA\Property(property: 'name', type: 'string', example: 'Zone Administrator'),
+                                            'descr' => new OA\Property(property: 'descr', type: 'string', example: 'Administrator for zones'),
+                                            'template_type' => new OA\Property(property: 'template_type', type: 'string', enum: ['user', 'group'], example: 'user')
+                                        ]
+                                    )
+                                )
+                            ]
                         )
                     ]
                 )
             ),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
     )]
@@ -164,6 +172,7 @@ class PermissionTemplatesController extends PublicApiController
                                         'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
                                         'name' => new OA\Property(property: 'name', type: 'string', example: 'Zone Administrator'),
                                         'descr' => new OA\Property(property: 'descr', type: 'string', example: 'Administrator for zones'),
+                                        'template_type' => new OA\Property(property: 'template_type', type: 'string', enum: ['user', 'group'], example: 'user'),
                                         'permissions' => new OA\Property(
                                             property: 'permissions',
                                             type: 'array',
@@ -184,6 +193,7 @@ class PermissionTemplatesController extends PublicApiController
                 )
             ),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 404, description: 'Permission template not found'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
@@ -257,12 +267,14 @@ class PermissionTemplatesController extends PublicApiController
                     type: 'object',
                     properties: [
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Permission template created successfully')
+                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Permission template created successfully'),
+                        'data' => new OA\Property(property: 'data', type: 'object', nullable: true, example: null)
                     ]
                 )
             ),
             new OA\Response(response: 400, description: 'Bad Request'),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
     )]
@@ -368,12 +380,14 @@ class PermissionTemplatesController extends PublicApiController
                     type: 'object',
                     properties: [
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Permission template updated successfully')
+                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Permission template updated successfully'),
+                        'data' => new OA\Property(property: 'data', type: 'object', nullable: true, example: null)
                     ]
                 )
             ),
             new OA\Response(response: 400, description: 'Bad Request'),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 404, description: 'Permission template not found'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
@@ -467,11 +481,13 @@ class PermissionTemplatesController extends PublicApiController
                     type: 'object',
                     properties: [
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Permission template deleted successfully')
+                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Permission template deleted successfully'),
+                        'data' => new OA\Property(property: 'data', type: 'object', nullable: true, example: null)
                     ]
                 )
             ),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 404, description: 'Permission template not found'),
             new OA\Response(response: 409, description: 'Conflict - Template is in use'),
             new OA\Response(response: 500, description: 'Internal Server Error')
