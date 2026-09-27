@@ -129,7 +129,7 @@ class DnssecAddKeyController extends DnssecKeyController
             return;
         }
 
-        $this->endOnRefusedKeyChange($result, $zone_id);
+        $this->endOnUnavailableKeys($result, $zone_id);
 
         switch ($result->outcome) {
             case DnssecKeyOutcome::ADDED:

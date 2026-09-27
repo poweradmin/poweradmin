@@ -49,7 +49,9 @@ class DnssecEditKeyController extends DnssecKeyController
         // so it requires the dedicated DNSSEC management permission.
         [$domain_name] = $this->requireManagedDnssecZone($zone_id);
 
-        $key = $this->services()->dnssecKeyService()->findKey($domain_name, $key_id)->key;
+        $found = $this->services()->dnssecKeyService()->findKey($domain_name, $key_id);
+        $this->endOnUnavailableKeys($found, $zone_id);
+        $key = $found->key;
         if ($key === null) {
             $this->showError(_('Invalid or unexpected input given.'));
             return;

@@ -53,7 +53,7 @@ class DnssecDeleteKeyController extends DnssecKeyController
                 return;
             }
 
-            $this->endOnRefusedKeyChange($result, $zone_id);
+            $this->endOnUnavailableKeys($result, $zone_id);
             if ($result->key === null) {
                 $this->showError(_('Invalid or unexpected input given.'));
                 return;
@@ -70,7 +70,9 @@ class DnssecDeleteKeyController extends DnssecKeyController
             return;
         }
 
-        $key = $keyService->findKey($domain_name, $key_id)->key;
+        $found = $keyService->findKey($domain_name, $key_id);
+        $this->endOnUnavailableKeys($found, $zone_id);
+        $key = $found->key;
         if ($key === null) {
             $this->showError(_('Invalid or unexpected input given.'));
             return;

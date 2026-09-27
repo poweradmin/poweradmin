@@ -64,12 +64,12 @@ abstract class DnssecKeyController extends BaseController
     }
 
     /**
-     * Ends the request when a key change was refused for a reason other than the
-     * key itself: DNSSEC is off on the server, or the zone became presigned.
+     * Ends the request when the keys could not be read or changed for a reason other
+     * than the key itself: PowerDNS out of reach, DNSSEC off, or the zone became presigned.
      */
-    protected function endOnRefusedKeyChange(DnssecKeyResult $result, int $zoneId): void
+    protected function endOnUnavailableKeys(DnssecKeyResult $result, int $zoneId): void
     {
-        if ($result->outcome === DnssecKeyOutcome::SERVER_DISABLED) {
+        if ($result->outcome === DnssecKeyOutcome::UNREACHABLE || $result->outcome === DnssecKeyOutcome::SERVER_DISABLED) {
             $this->showError(_('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
         }
         if ($result->outcome === DnssecKeyOutcome::PRESIGNED) {

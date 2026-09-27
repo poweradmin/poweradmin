@@ -59,16 +59,14 @@ class DnssecKeyPagesTest extends SeamControllerTestCase
     /** @var AuditService&MockObject */
     private AuditService $audit;
 
-    /** @var CryptoKey[] */
-    private array $keys;
+    /** @var CryptoKey[]|null Null when PowerDNS cannot be reached */
+    private ?array $keys;
 
     private bool $enabled = true;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->keys = [new CryptoKey(self::KEY_ID, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])];
 
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('canViewZone')->willReturn(true);
@@ -79,9 +77,10 @@ class DnssecKeyPagesTest extends SeamControllerTestCase
         $domains->method('getDomainNameById')->willReturn('example.com');
 
         $this->dnssec = $this->createMock(DnssecProviderInterface::class);
-        $this->dnssec->method('fetchZoneKeys')->willReturnCallback(fn(): array => $this->keys);
+        $this->dnssec->method('fetchZoneKeys')->willReturnCallback(fn(): ?array => $this->keys);
         $this->dnssec->method('isDnssecEnabled')->willReturnCallback(fn(): bool => $this->enabled);
         $this->audit = $this->createMock(AuditService::class);
+        $this->keys = [new CryptoKey(self::KEY_ID, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])];
 
         $this->factory->method('permissionService')->willReturn($permissions);
         $this->factory->method('domainRepository')->willReturn($domains);
@@ -283,6 +282,42 @@ class DnssecKeyPagesTest extends SeamControllerTestCase
         $this->dnssec->expects($this->never())->method('deactivateZoneKey');
         $this->dnssec->expects($this->never())->method('removeZoneKey');
         $this->submitKey('ecdsa256', '256');
+
+        $halt = $this->haltOf($this->page($class));
+
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
+        $this->assertSame(self::OUTAGE, $halt->target);
+    }
+
+    // ---------------------------------------------------------------- PowerDNS out of reach
+
+    /** @return array<string, array{0: class-string<BaseController>, 1: bool}> */
+    public static function everyKeyPageProvider(): array
+    {
+        return [
+            'add' => [DnssecAddKeyController::class, true],
+            'toggle' => [DnssecToggleKeyController::class, true],
+            'delete' => [DnssecDeleteKeyController::class, true],
+            'delete confirmation' => [DnssecDeleteKeyController::class, false],
+            'edit' => [DnssecEditKeyController::class, false],
+        ];
+    }
+
+    /**
+     * @param class-string<BaseController> $class
+     */
+    #[DataProvider('everyKeyPageProvider')]
+    public function testAnUnreachablePowerDnsIsNotAMissingKey(string $class, bool $post): void
+    {
+        $this->keys = null;
+        $this->dnssec->expects($this->never())->method('createZoneKey');
+        $this->dnssec->expects($this->never())->method('activateZoneKey');
+        $this->dnssec->expects($this->never())->method('deactivateZoneKey');
+        $this->dnssec->expects($this->never())->method('removeZoneKey');
+        $this->audit->expects($this->never())->method($this->anything());
+        if ($post) {
+            $this->submitKey('ecdsa256', '256');
+        }
 
         $halt = $this->haltOf($this->page($class));
 

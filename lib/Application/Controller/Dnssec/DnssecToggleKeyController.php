@@ -51,12 +51,7 @@ class DnssecToggleKeyController extends DnssecKeyController
             return;
         }
 
-        // PowerDNS out of reach used to fail the "DNSSEC enabled" check that ran first, so it keeps that message.
-        if ($result->outcome === DnssecKeyOutcome::UNREACHABLE) {
-            $this->showError(_('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
-            return;
-        }
-        $this->endOnRefusedKeyChange($result, $zone_id);
+        $this->endOnUnavailableKeys($result, $zone_id);
         if ($result->key === null) {
             $this->showError(_('DNSSEC key not found or no longer exists.'));
             return;
