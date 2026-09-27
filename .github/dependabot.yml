@@ -168,6 +168,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      # 2.9.1 accepts Guzzle 8, which drops the getallheaders polyfill these lines need
+      - dependency-name: "league/oauth2-client"
+        versions: [">=2.9.1"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -220,6 +223,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      # 2.9.1 accepts Guzzle 8, which drops the getallheaders polyfill these lines need
+      - dependency-name: "league/oauth2-client"
+        versions: [">=2.9.1"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -272,6 +278,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      # 2.9.1 accepts Guzzle 8, which drops the getallheaders polyfill these lines need
+      - dependency-name: "league/oauth2-client"
+        versions: [">=2.9.1"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
