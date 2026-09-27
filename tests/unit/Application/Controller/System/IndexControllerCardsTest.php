@@ -26,7 +26,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\System\IndexController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\Translation\Translator;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Characterizes the dashboard variables that decide which cards render for a
@@ -136,5 +141,44 @@ class IndexControllerCardsTest extends SeamControllerTestCase
         $params = $this->runAndRender();
         $this->assertFalse($params['is_limited_user']);
         $this->assertFalse($params['show_edit_profile_card']);
+    }
+
+    /**
+     * Renders the dashboard with strict variables, so a card that reads a
+     * variable the controller does not pass fails here too.
+     *
+     * @param array<string, mixed> $params
+     */
+    private function renderDashboard(array $params): string
+    {
+        $twig = new Environment(new FilesystemLoader(dirname(__DIR__, 5) . '/templates/default'), ['strict_variables' => true]);
+        $twig->addExtension(new TranslationExtension(new Translator('en')));
+        $twig->addExtension(new BadgeTwigExtension());
+        $twig->addGlobal('base_url_prefix', '');
+        $twig->addGlobal('nav', array_fill_keys([
+            'batch_ptr', 'bulk_registration', 'database_consistency', 'group_logs', 'permissions', 'record_changes',
+            'search', 'templates', 'user_list', 'user_logs', 'zone_add_master', 'zone_add_slave', 'zone_list', 'zone_logs',
+        ], false));
+
+        return $twig->render('index.html', $params);
+    }
+
+    public function testTheStatusCardRendersInBothDashboardLayouts(): void
+    {
+        // The admin sections and the non-admin grid are separate markup; the card must be in each
+        foreach ([[Permission::PERM_SERVER_STATUS_VIEW], [Permission::PERM_USER_IS_UEBERUSER, Permission::PERM_SERVER_STATUS_VIEW]] as $granted) {
+            $this->granted = $granted;
+            $this->output->rendered = [];
+            $params = $this->runAndRender();
+
+            // What the controller passes once pdns_api is configured and the page is enabled
+            $params['show_pdns_status_card'] = true;
+            $params['has_dns_management'] = true;
+            $params['pdns_server_status'] = ['display' => 'PowerDNS', 'running' => true, 'version' => '5.0.0'];
+            $this->assertStringContainsString('data-testid="pdns-status-link"', $this->renderDashboard($params), implode(',', $granted));
+
+            $params['show_pdns_status_card'] = false;
+            $this->assertStringNotContainsString('data-testid="pdns-status-link"', $this->renderDashboard($params), implode(',', $granted));
+        }
     }
 }
