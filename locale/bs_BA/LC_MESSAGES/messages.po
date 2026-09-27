@@ -10863,10 +10863,6 @@ msgstr "Ne, zadrži trenutni ključ"
 msgid "Reset Password"
 msgstr "Poništi lozinku"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Idi na prijavu"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Zatraži novi link za resetiranje"
@@ -15154,5 +15150,3 @@ msgid ""
 msgstr ""
 "Postavljanje lokalizacije nije uspjelo. Odabrana lokalizacija možda nije "
 "podržana na ovom sistemu. Kontaktirajte svog administratora."
-
-

@@ -11308,10 +11308,6 @@ msgstr "Tidak, pertahankan kunci saat ini"
 msgid "Reset Password"
 msgstr "Atur Ulang Kata Sandi"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Ke Halaman Login"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Minta Tautan Atur Ulang Baru"
@@ -15656,5 +15652,3 @@ msgid ""
 msgstr ""
 "Gagal menyetel locale. Locale yang dipilih mungkin tidak didukung pada "
 "sistem ini. Silakan hubungi administrator Anda."
-
-

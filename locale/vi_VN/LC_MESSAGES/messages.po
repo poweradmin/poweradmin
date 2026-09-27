@@ -11119,10 +11119,6 @@ msgstr "Không, giữ khóa hiện tại"
 msgid "Reset Password"
 msgstr "Đặt lại mật khẩu"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Đến trang đăng nhập"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Yêu cầu liên kết đặt lại mới"
@@ -15440,5 +15436,3 @@ msgid ""
 msgstr ""
 "Không thể thiết lập locale. Locale đã chọn có thể không được hỗ trợ trên hệ "
 "thống này. Vui lòng liên hệ quản trị viên của bạn."
-
-

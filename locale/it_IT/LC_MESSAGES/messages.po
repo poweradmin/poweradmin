@@ -11429,10 +11429,6 @@ msgstr "No, mantieni la chiave attuale"
 msgid "Reset Password"
 msgstr "Ripristina Password"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Vai al Login"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Richiedi Nuovo Link di Ripristino"
@@ -15812,5 +15808,3 @@ msgid ""
 msgstr ""
 "Impostazione della lingua non riuscita. La lingua selezionata potrebbe non "
 "essere supportata su questo sistema. Contatta il tuo amministratore."
-
-

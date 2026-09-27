@@ -11366,10 +11366,6 @@ msgstr "Não, manter chave actual"
 msgid "Reset Password"
 msgstr "Redefinir Palavra-passe"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Ir para Login"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Solicitar Novo Link de Redefinição"
@@ -15755,5 +15751,3 @@ msgid ""
 msgstr ""
 "Não foi possível definir a configuração regional. A configuração regional "
 "escolhida pode não ser suportada neste sistema. Contacte o seu administrador."
-
-

@@ -11316,10 +11316,6 @@ msgstr "Nie, zachowaj obecny klucz"
 msgid "Reset Password"
 msgstr "Resetuj hasło"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Przejdź do logowania"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Poproś o nowy link resetowania"
@@ -15669,5 +15665,3 @@ msgid ""
 msgstr ""
 "Nie udało się ustawić ustawień regionalnych. Wybrane ustawienia regionalne "
 "mogą nie być obsługiwane w tym systemie. Skontaktuj się z administratorem."
-
-

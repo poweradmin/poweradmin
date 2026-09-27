@@ -11362,10 +11362,6 @@ msgstr "Не, запази текущия ключ."
 msgid "Reset Password"
 msgstr "Нулиране на паролата"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Отиди към входа"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Заявка за нова връзка за нулиране"
@@ -15745,5 +15741,3 @@ msgid ""
 msgstr ""
 "Задаването на локала не бе успешно. Избраният локал може да не е поддържан "
 "на тази система. Свържете се с вашия администратор."
-
-

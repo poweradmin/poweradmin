@@ -11329,10 +11329,6 @@ msgstr "Нет, оставить текущий ключ"
 msgid "Reset Password"
 msgstr "Сбросить Пароль"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Перейти к Входу"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Запросить Новую Ссылку для Сброса"
@@ -15674,5 +15670,3 @@ msgid ""
 msgstr ""
 "Не удалось установить локаль. Выбранная локаль может не поддерживаться в "
 "этой системе. Обратитесь к администратору."
-
-

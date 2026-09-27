@@ -10302,10 +10302,6 @@ msgstr "不，保留当前密钥"
 msgid "Reset Password"
 msgstr "重置密码"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "前往登录"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "请求新的重置链接"
@@ -14477,5 +14473,3 @@ msgid ""
 "Please contact your administrator."
 msgstr ""
 "无法设置区域语言。所选区域语言可能在此系统上不受支持。请联系您的管理员。"
-
-

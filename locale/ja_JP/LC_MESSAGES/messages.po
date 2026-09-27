@@ -11180,10 +11180,6 @@ msgstr "いいえ、現在のキーを保持します"
 msgid "Reset Password"
 msgstr "パスワードをリセット"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "ログインへ移動"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "新しいリセットリンクを要求"
@@ -15509,5 +15505,3 @@ msgid ""
 msgstr ""
 "ロケールを設定できませんでした。選択したロケールはこのシステムでサポートされ"
 "ていない可能性があります。管理者にお問い合わせください。"
-
-

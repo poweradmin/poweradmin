@@ -10950,10 +10950,6 @@ msgstr "لا، احتفظ بالمفتاح الحالي"
 msgid "Reset Password"
 msgstr "إعادة تعيين كلمة المرور"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "الذهاب إلى تسجيل الدخول"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "طلب رابط إعادة تعيين جديد"
@@ -15226,5 +15222,3 @@ msgid ""
 msgstr ""
 "تعذر تعيين الإعدادات المحلية. قد تكون الإعدادات المحلية المحددة غير مدعومة "
 "على هذا النظام. يُرجى الاتصال بالمسؤول."
-
-

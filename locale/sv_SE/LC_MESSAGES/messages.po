@@ -11164,10 +11164,6 @@ msgstr "Nej, behåll nuvarande nyckel"
 msgid "Reset Password"
 msgstr "Återställ lösenord"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Gå till inloggning"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Begär ny återställningslänk"
@@ -15508,5 +15504,3 @@ msgid ""
 msgstr ""
 "Kunde inte ställa in locale. Det valda locale-värdet stöds kanske inte på "
 "detta system. Kontakta din administratör."
-
-

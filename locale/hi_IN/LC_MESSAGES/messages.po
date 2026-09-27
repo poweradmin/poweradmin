@@ -10971,10 +10971,6 @@ msgstr "नहीं, वर्तमान कुंजी रखना"
 msgid "Reset Password"
 msgstr "पासवर्ड रीसेट करें"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "लॉग इन करें"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "नए रीसेट लिंक का अनुरोध करें"
@@ -15252,5 +15248,3 @@ msgid ""
 msgstr ""
 "लोकेल सेट करने में विफल। चयनित लोकेल इस सिस्टम पर समर्थित नहीं हो सकता है। कृपया अपने "
 "प्रशासक से संपर्क करें।"
-
-

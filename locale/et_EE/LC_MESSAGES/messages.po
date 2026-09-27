@@ -10920,10 +10920,6 @@ msgstr "Ei, säilita praegune võti"
 msgid "Reset Password"
 msgstr "Lähtesta parool"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Mine sisselogimisse"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Küsi uut lähtestamise linki"
@@ -15206,5 +15202,3 @@ msgid ""
 msgstr ""
 "Lokaadi määramine ebaõnnestus. Valitud lokaat ei pruugi selles süsteemis "
 "olla toetatud. Palun võtke ühendust administraatoriga."
-
-

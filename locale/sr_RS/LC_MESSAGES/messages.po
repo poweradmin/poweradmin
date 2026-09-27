@@ -10988,10 +10988,6 @@ msgstr "Не, задржи тренутни кључ"
 msgid "Reset Password"
 msgstr "Ресетуј лозинку"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Иди на пријаву"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Затражи нови линк за ресетовање"
@@ -15307,5 +15303,3 @@ msgid ""
 msgstr ""
 "Постављање локализације није успело. Изабрана локализација можда није "
 "подржана на овом систему. Обратите се администратору."
-
-

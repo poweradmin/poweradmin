@@ -11455,10 +11455,6 @@ msgstr "Jo, mbaje çelësin aktual"
 msgid "Reset Password"
 msgstr "Rivendos fjalëkalimin"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Shko tek hyrja"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Kërko lidhje të re rivendosjeje"
@@ -15842,5 +15838,3 @@ msgid ""
 msgstr ""
 "Vendosja e parametrave gjuhësorë dështoi. Gjuha e zgjedhur mund të mos "
 "mbështetet në këtë sistem. Ju lutemi kontaktoni administratorin tuaj."
-
-

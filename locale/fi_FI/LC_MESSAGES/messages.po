@@ -11013,10 +11013,6 @@ msgstr "Ei, säilytä nykyinen avain"
 msgid "Reset Password"
 msgstr "Nollaa salasana"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Siirry kirjautumiseen"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Pyydä uusi palautuslinkki"
@@ -15315,5 +15311,3 @@ msgid ""
 msgstr ""
 "Kieliasetuksen määrittäminen epäonnistui. Valittua kieliasetusta ei ehkä "
 "tueta tässä järjestelmässä. Ota yhteyttä ylläpitäjään."
-
-

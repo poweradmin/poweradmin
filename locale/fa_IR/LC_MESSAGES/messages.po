@@ -11068,10 +11068,6 @@ msgstr "نه، کلید فعلی را نگه دارید"
 msgid "Reset Password"
 msgstr "بازنشانی رمز عبور"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "رفتن به ورود"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "درخواست New Reset Link"
@@ -15391,5 +15387,3 @@ msgid ""
 msgstr ""
 "تنظیم زبان و منطقه انجام نشد. ممکن است زبان و منطقه انتخاب‌شده در این سیستم "
 "پشتیبانی نشود. لطفاً با مدیر سیستم خود تماس بگیرید."
-
-

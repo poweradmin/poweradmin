@@ -10316,10 +10316,6 @@ msgstr "不，保留目前金鑰"
 msgid "Reset Password"
 msgstr "重設密碼"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "前往登入"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "請求新的重設連結"
@@ -14493,5 +14489,3 @@ msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
 msgstr "設定地區設定失敗。所選的地區設定可能不受此系統支援。請聯絡您的管理員。"
-
-

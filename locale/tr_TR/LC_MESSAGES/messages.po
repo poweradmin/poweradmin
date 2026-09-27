@@ -11204,10 +11204,6 @@ msgstr "Hayır, mevcut anahtarı tut"
 msgid "Reset Password"
 msgstr "Şifre Sıfırla"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Girişe Git"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Yeni Sıfırlama Bağlantısı İste"
@@ -15548,5 +15544,3 @@ msgid ""
 msgstr ""
 "Yerel ayar uygulanamadı. Seçilen yerel ayar bu sistemde desteklenmiyor "
 "olabilir. Lütfen yöneticinizle iletişime geçin."
-
-

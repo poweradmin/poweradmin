@@ -10599,10 +10599,6 @@ msgstr "ไม่, เก็บกุญแจปัจจุบันไว้"
 msgid "Reset Password"
 msgstr "ตั้งค่ารหัสผ่านใหม่"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "ไปยังล็อกอิน"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "ขอลิงก์รีเซ็ตใหม่"
@@ -14814,5 +14810,3 @@ msgid ""
 "Please contact your administrator."
 msgstr ""
 "ไม่สามารถตั้งค่า locale ได้. locale ที่เลือกอาจไม่รองรับบนระบบนี้. กรุณาติดต่อผู้ดูแลระบบของคุณ."
-
-

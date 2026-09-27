@@ -11379,10 +11379,6 @@ msgstr "Não, manter chave actual"
 msgid "Reset Password"
 msgstr "Redefinir Senha"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Ir para Login"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Solicitar Novo Link de Redefinição"
@@ -15761,5 +15757,3 @@ msgid ""
 msgstr ""
 "Falha ao definir o locale. O locale selecionado pode não ser compatível com "
 "este sistema. Entre em contato com o administrador."
-
-

@@ -11636,10 +11636,6 @@ msgstr "Non, garder la clé actuelle"
 msgid "Reset Password"
 msgstr "Réinitialiser le Mot de Passe"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Aller à la Connexion"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Demander un Nouveau Lien de Réinitialisation"
@@ -16076,5 +16072,3 @@ msgid ""
 msgstr ""
 "Échec de la définition de la locale. La locale sélectionnée n'est peut-être "
 "pas prise en charge sur ce système. Veuillez contacter votre administrateur."
-
-

@@ -11523,10 +11523,6 @@ msgstr "Níl, coinnigh an eochair reatha"
 msgid "Reset Password"
 msgstr "Athshocraigh Pasfhocal"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Téigh chuig Logáil isteach"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Iarr Nasc Athshocraithe Nua"
@@ -15931,5 +15927,3 @@ msgid ""
 msgstr ""
 "Theip ar shocrú an locale. Seans nach bhfuil tacaíocht ar an gcóras seo don "
 "locale roghnaithe. Déan teagmháil le do riarthóir."
-
-

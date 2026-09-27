@@ -11222,10 +11222,6 @@ msgstr "Ne, obdrži trenutni ključ"
 msgid "Reset Password"
 msgstr "Ponastavi geslo"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Pojdi k prijavi"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Zahtevaj novo povezavo za ponastavitev"
@@ -15560,5 +15556,3 @@ msgid ""
 msgstr ""
 "Nastavitev jezikovnega okolja ni uspela. Izbrano jezikovno okolje v tem "
 "sistemu morda ni podprto. Obrnite se na skrbnika."
-
-

@@ -11283,10 +11283,6 @@ msgstr "Tidak, simpan kunci semasa"
 msgid "Reset Password"
 msgstr "Set Semula Kata Laluan"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Pergi ke Log Masuk"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Minta Pautan Set Semula Baru"
@@ -15629,5 +15625,3 @@ msgid ""
 msgstr ""
 "Gagal menetapkan lokal. Lokal yang dipilih mungkin tidak disokong pada "
 "sistem ini. Sila hubungi pentadbir anda."
-
-

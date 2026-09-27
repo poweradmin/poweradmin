@@ -11200,10 +11200,6 @@ msgstr "Nej, behold den nuværende nøgle"
 msgid "Reset Password"
 msgstr "Nulstil adgangskode"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Gå til login"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Anmod om nyt nulstillingslink"
@@ -15536,5 +15532,3 @@ msgid ""
 msgstr ""
 "Kunne ikke angive sprogindstilling. Den valgte sprogindstilling understøttes "
 "muligvis ikke på dette system. Kontakt din administrator."
-
-

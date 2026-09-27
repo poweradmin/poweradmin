@@ -10955,10 +10955,6 @@ msgstr "Nē, paturēt pašreizējo atslēgu"
 msgid "Reset Password"
 msgstr "Atiestatīt paroli"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Pāriet uz pieteikšanos"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Pieprasīt jaunu atiestatīšanas saiti"
@@ -15258,5 +15254,3 @@ msgid ""
 msgstr ""
 "Neizdevās iestatīt lokalizāciju. Izvēlētā lokalizācija, iespējams, nav "
 "atbalstīta šajā sistēmā. Lūdzu, sazinieties ar savu administratoru."
-
-

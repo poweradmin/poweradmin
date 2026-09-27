@@ -10818,10 +10818,6 @@ msgstr "לא, שמור על המפתח הנוכחי"
 msgid "Reset Password"
 msgstr "איפוס סיסמה"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "מעבר לדף ההתחברות"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "בקש קישור איפוס חדש"
@@ -15071,5 +15067,3 @@ msgid ""
 msgstr ""
 "הגדרת השפה נכשלה. ייתכן שהשפה שנבחרה אינה נתמכת במערכת זו. יש לפנות למנהל "
 "המערכת."
-
-

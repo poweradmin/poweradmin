@@ -11611,10 +11611,6 @@ msgstr "Όχι, κρατήστε το τρέχον κλειδί"
 msgid "Reset Password"
 msgstr "Επαναφορά κωδικού πρόσβασης"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Μετάβαση στην είσοδο"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Αίτηση νέου συνδέσμου επαναφοράς"
@@ -16046,5 +16042,3 @@ msgid ""
 msgstr ""
 "Η ρύθμιση του locale απέτυχε. Το επιλεγμένο locale μπορεί να μην "
 "υποστηρίζεται σε αυτό το σύστημα. Επικοινωνήστε με τον διαχειριστή σας."
-
-

@@ -11121,10 +11121,6 @@ msgstr "Nei, behold nåværende nøkkel"
 msgid "Reset Password"
 msgstr "Tilbakestill passord"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Gå til innlogging"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Be om ny tilbakestillingslenke"
@@ -15453,5 +15449,3 @@ msgid ""
 msgstr ""
 "Klarte ikke å angi språkinnstilling. Den valgte språkinnstillingen støttes "
 "kanskje ikke på dette systemet. Kontakt administratoren din."
-
-

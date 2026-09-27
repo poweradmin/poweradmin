@@ -11596,10 +11596,6 @@ msgstr "Nu, păstrează cheia curentă"
 msgid "Reset Password"
 msgstr "Resetează parola"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Mergi la autentificare"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Solicită link nou de resetare"
@@ -15998,5 +15994,3 @@ msgid ""
 msgstr ""
 "Setarea localizării a eșuat. Localizarea selectată poate să nu fie acceptată "
 "pe acest sistem. Contactați administratorul."
-
-

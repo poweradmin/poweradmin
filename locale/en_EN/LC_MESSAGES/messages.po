@@ -11108,10 +11108,6 @@ msgstr "No, keep current key"
 msgid "Reset Password"
 msgstr "Reset Password"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Go to Login"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Request New Reset Link"
@@ -15428,3 +15424,4 @@ msgid ""
 msgstr ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
+
