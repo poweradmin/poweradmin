@@ -1794,11 +1794,11 @@ test_zone_metadata() {
     # Test 8: Reject multiple values for single-value kind
     api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" '{"values":["0","1"]}' 400 "Reject multiple values for single-value kind"
 
-    # Test 9: Reject write to read-only kind
-    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/SOA-EDIT" '{"values":["INCEPTION-INCREMENT"]}' 403 "Reject write to read-only metadata kind"
+    # Test 9: Reject write to a kind PowerDNS maintains itself (SOA-EDIT is writable through the zone object)
+    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/CATALOG-HASH" '{"values":["abc"]}' 403 "Reject write to server-managed metadata kind"
 
-    # Test 10: Reject delete of read-only kind
-    api_request_v2 "DELETE" "/zones/${TEST_METADATA_ZONE_ID}/metadata/SOA-EDIT" "" 403 "Reject delete of read-only metadata kind"
+    # Test 10: Reject delete of a server-managed kind
+    api_request_v2 "DELETE" "/zones/${TEST_METADATA_ZONE_ID}/metadata/CATALOG-HASH" "" 403 "Reject delete of server-managed metadata kind"
 
     # Test 11: Reject empty values array
     api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" '{"values":[]}' 400 "Reject empty values array"
