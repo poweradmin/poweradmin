@@ -81,6 +81,10 @@ class ZoneDnssecKeysController extends PublicApiController
 
     public function run(): void
     {
+        if (($this->pathParameters['action'] ?? null) === 'import') {
+            $this->sendAndHalt($this->request->getMethod() === 'POST' ? $this->importKey() : $this->methodNotAllowed(['POST']));
+        }
+
         $hasKeyId = isset($this->pathParameters['key_id']);
 
         $response = match ($this->request->getMethod()) {
@@ -398,6 +402,103 @@ class ZoneDnssecKeysController extends PublicApiController
     protected function keyService(): DnssecKeyService
     {
         return $this->services()->dnssecKeyService();
+    }
+
+    #[OA\Post(
+        path: '/v2/zones/{id}/dnssec/keys/import',
+        operationId: 'v2ImportZoneDnssecKey',
+        description: 'Imports a DNSSEC key from an existing private key in the ISC/BIND format '
+            . '("Private-key-format: v1.x", as written by dnssec-keygen or pdnsutil export-zone-key). '
+            . 'PowerDNS derives algorithm and size from the key. PEM keys are not accepted by the PowerDNS HTTP API; '
+            . 'import them with pdnsutil import-zone-key-pem or convert them first. '
+            . 'The private key is never returned, logged or audited.',
+        summary: 'Import a zone DNSSEC key',
+        security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['type', 'privatekey'],
+                properties: [
+                    new OA\Property(property: 'type', type: 'string', enum: ['ksk', 'zsk', 'csk'], example: 'csk'),
+                    new OA\Property(
+                        property: 'privatekey',
+                        type: 'string',
+                        example: "Private-key-format: v1.2\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: Lt0v0Gol5Q6tsaPsYv6dcdeFk5yKzKjWMrhhm3E8wqU=\n",
+                        description: 'Private key in the ISC/BIND format'
+                    ),
+                    new OA\Property(property: 'active', type: 'boolean', example: false, description: 'Create the key active; defaults to false'),
+                ]
+            )
+        ),
+        tags: ['zones'],
+        parameters: [
+            new OA\Parameter(name: 'id', description: 'Zone ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ]
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'DNSSEC key imported successfully',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', example: 'DNSSEC key imported successfully'),
+                new OA\Property(property: 'data', ref: '#/components/schemas/DnssecKey'),
+            ],
+            type: 'object'
+        )
+    )]
+    #[OA\Response(response: 400, description: 'Invalid input, a private key PowerDNS rejected, or DNSSEC not enabled on the server')]
+    #[OA\Response(response: 401, description: 'Unauthorized')]
+    #[OA\Response(response: 403, description: 'Forbidden')]
+    #[OA\Response(response: 404, description: 'Zone not found')]
+    #[OA\Response(response: 409, description: 'Zone is presigned; DNSSEC is managed at the primary server')]
+    #[OA\Response(response: 500, description: 'Failed to import DNSSEC key')]
+    #[OA\Response(response: 501, description: 'DNSSEC key management requires the PowerDNS API')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
+    protected function importKey(): JsonResponse
+    {
+        $zoneId = (int)$this->pathParameters['id'];
+        $zoneName = $this->resolveZone(true);
+        if ($zoneName instanceof JsonResponse) {
+            return $zoneName;
+        }
+
+        $data = $this->getValidatedJsonBody();
+        if ($data === null) {
+            return $this->returnApiError('Invalid JSON body', 400);
+        }
+
+        $type = $data['type'] ?? null;
+        $type = is_string($type) ? strtolower($type) : '';
+        $privateKey = $data['privatekey'] ?? null;
+        $privateKey = is_string($privateKey) ? $privateKey : '';
+
+        $active = $this->inputBool($data, 'active', false);
+        if ($active === null) {
+            return $this->returnApiError('Invalid field: active (boolean)', 400);
+        }
+
+        try {
+            $result = $this->keyService()->importKey($zoneId, $zoneName, $type, $privateKey, $active);
+            if ($result->key !== null) {
+                return $this->returnApiResponse($this->formatKey($result->key), true, 'DNSSEC key imported successfully', 201);
+            }
+
+            // Fixed English texts: none of them may echo the private key
+            $message = match ($result->outcome) {
+                DnssecKeyOutcome::INVALID_TYPE => 'Missing or invalid required field: type (ksk, zsk or csk)',
+                DnssecKeyOutcome::INVALID_PRIVATE_KEY => 'Missing or invalid required field: privatekey (an ISC/BIND private key with "Private-key-format: v1.x"; PEM keys can be imported with pdnsutil import-zone-key-pem)',
+                DnssecKeyOutcome::KEY_REJECTED => 'PowerDNS rejected the private key',
+                default => null,
+            };
+            if ($message !== null) {
+                return $this->returnApiError($message, RefusalStatus::of($result->refusal ?? Refusal::INVALID_INPUT));
+            }
+
+            return $this->refused($result, 'Failed to import DNSSEC key');
+        } catch (Exception $e) {
+            return $this->handleException($e, 'ZoneDnssecKeysController::importKey', 'Failed to import DNSSEC key');
+        }
     }
 
     /**

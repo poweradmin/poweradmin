@@ -573,6 +573,15 @@ api_v2_zone_dnssec_keys:
     id: '\d+'
   methods: [GET, POST]
 
+api_v2_zone_dnssec_key_import:
+  path: /api/v2/zones/{id}/dnssec/keys/import
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneDnssecKeysController::run
+  requirements:
+    id: '\d+'
+  defaults:
+    action: import
+  methods: [POST]
+
 api_v2_zone_dnssec_key:
   path: /api/v2/zones/{id}/dnssec/keys/{key_id}
   controller: Poweradmin\Application\Controller\Api\V2\ZoneDnssecKeysController::run
