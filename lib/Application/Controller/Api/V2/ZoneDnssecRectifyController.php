@@ -37,6 +37,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -79,7 +80,7 @@ class ZoneDnssecRectifyController extends PublicApiController
     #[OA\Post(
         path: '/v2/zones/{id}/dnssec/rectify',
         operationId: 'v2RectifyZone',
-        description: 'Rectifies a DNSSEC signed zone (recalculates ordername and auth fields). Only works for signed primary zones.',
+        description: 'Rectifies a DNSSEC signed zone (recalculates ordername and auth fields). Only works for signed zones that are not secondary or catalog consumer zones.',
         summary: 'Rectify a DNSSEC signed zone',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['zones'],
@@ -126,10 +127,9 @@ class ZoneDnssecRectifyController extends PublicApiController
             return $this->returnApiError('Rectifying requires the PowerDNS API to be configured', 501);
         }
 
-        // PowerDNS refuses to rectify secondary and unsigned zones; report that clearly
-        // instead of passing on a generic backend error.
-        if (strtoupper($this->domainRepository->getDomainType($zoneId)) === 'SLAVE') {
-            return $this->returnApiError('Secondary zones cannot be rectified', 409);
+        // Secondary and consumer zones take their records from elsewhere, so there is nothing of ours to rectify
+        if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zoneId))) {
+            return $this->returnApiError('Secondary and consumer zones cannot be rectified', 409);
         }
 
         // The signed and presigned checks read a failed PowerDNS request as "no", so rule that out first

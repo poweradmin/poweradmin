@@ -36,7 +36,8 @@ class ZoneDnssecRectifyControllerTest extends TestCase
     {
         return [
             'signed primary' => ['MASTER', true, false, 200, 'Zone rectified successfully'],
-            'secondary' => ['SLAVE', true, false, 409, 'Secondary zones cannot be rectified'],
+            'secondary' => ['SLAVE', true, false, 409, 'Secondary and consumer zones cannot be rectified'],
+            'catalog consumer' => ['CONSUMER', true, false, 409, 'Secondary and consumer zones cannot be rectified'],
             'unsigned' => ['MASTER', false, false, 409, 'Zone is not DNSSEC signed'],
             'presigned' => ['MASTER', true, true, 409, 'DNSSEC for this zone is presigned and managed at the primary server'],
         ];
