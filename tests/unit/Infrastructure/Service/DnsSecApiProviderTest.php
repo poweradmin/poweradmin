@@ -400,4 +400,30 @@ class DnsSecApiProviderTest extends TestCase
 
         $this->assertFalse($this->provider->isKeyListAvailable('example.com'));
     }
+
+    /** @return array<string, array{0: list<array{name: string, value: string}>, 1: bool}> */
+    public static function serverConfigProvider(): array
+    {
+        return [
+            'gmysql with dnssec' => [[['name' => 'launch', 'value' => 'gmysql'], ['name' => 'gmysql-dnssec', 'value' => 'yes']], true],
+            'gmysql without dnssec' => [[['name' => 'launch', 'value' => 'gmysql'], ['name' => 'gmysql-dnssec', 'value' => 'no']], false],
+            'lmdb only' => [[['name' => 'launch', 'value' => 'lmdb']], true],
+            'named lmdb instance next to gsqlite3' => [[['name' => 'launch', 'value' => 'gsqlite3,lmdb:second'], ['name' => 'gsqlite3-dnssec', 'value' => 'no']], true],
+            'space separated launch list' => [[['name' => 'launch', 'value' => 'gmysql lmdb']], true],
+            'backend name merely containing lmdb' => [[['name' => 'launch', 'value' => 'notlmdb']], false],
+            'bind with a dnssec db' => [[['name' => 'launch', 'value' => 'bind'], ['name' => 'bind-dnssec-db', 'value' => '/var/lib/pdns/dnssec.db']], true],
+            'bind without a dnssec db' => [[['name' => 'launch', 'value' => 'bind'], ['name' => 'bind-dnssec-db', 'value' => '']], false],
+            'geoip with a key directory' => [[['name' => 'launch', 'value' => 'geoip'], ['name' => 'geoip-dnssec-keydir', 'value' => '/etc/pdns/keys']], true],
+            'config not readable' => [[], false],
+        ];
+    }
+
+    /** @param list<array{name: string, value: string}> $config */
+    #[\PHPUnit\Framework\Attributes\DataProvider('serverConfigProvider')]
+    public function testDnssecIsEnabledBySqlSwitchOrByTheLmdbBackend(array $config, bool $expected): void
+    {
+        $this->mockApiClient->method('getConfig')->willReturn($config);
+
+        $this->assertSame($expected, $this->provider->isDnssecEnabled());
+    }
 }
