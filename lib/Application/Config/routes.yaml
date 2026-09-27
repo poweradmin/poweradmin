@@ -555,6 +555,28 @@ api_v2_zone_dnssec:
     id: '\d+'
   methods: [GET, POST]
 
+api_v2_zone_dnssec_keys:
+  path: /api/v2/zones/{id}/dnssec/keys
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneDnssecKeysController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_v2_zone_dnssec_key:
+  path: /api/v2/zones/{id}/dnssec/keys/{key_id}
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneDnssecKeysController::run
+  requirements:
+    id: '\d+'
+    key_id: '\d+'
+  methods: [GET, PATCH, DELETE]
+
+api_v2_zone_dnssec_rectify:
+  path: /api/v2/zones/{id}/dnssec/rectify
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneDnssecRectifyController::run
+  requirements:
+    id: '\d+'
+  methods: [POST]
+
 api_v2_zone_owners:
   path: /api/v2/zones/{id}/owners
   controller: Poweradmin\Application\Controller\Api\V2\ZoneOwnersController::run
