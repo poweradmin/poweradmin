@@ -1099,6 +1099,8 @@ return array(
     'Poweradmin\\Application\\Controller\\Api\\V2\\ServerStatusController' => $baseDir . '/lib/Application/Controller/Api/V2/ServerStatusController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\UsersController' => $baseDir . '/lib/Application/Controller/Api/V2/UsersController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneDnssecController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneDnssecController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneDnssecKeysController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneDnssecKeysController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneDnssecRectifyController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneDnssecRectifyController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneMetadataController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneMetadataController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneOwnersController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneOwnersController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneTemplateRecordsController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneTemplateRecordsController.php',
