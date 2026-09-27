@@ -39,6 +39,7 @@ class DnssecKeyServiceTest extends TestCase
 {
     private const ZONE_ID = 7;
     private const ZONE = 'example.com';
+    private const ISC_KEY = "Private-key-format: v1.2\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: 8oJBqwnnl8Tnp7LrlF26dio/Wl/qIuxVmtCCjVFqsbs=\n";
 
     /** @var DnssecProviderInterface&MockObject */
     private DnssecProviderInterface $dnssec;
@@ -347,5 +348,81 @@ class DnssecKeyServiceTest extends TestCase
         $this->audit->expects($this->once())->method('logDnssecDeleteKey')->with(self::ZONE_ID, self::ZONE, 3);
 
         $this->assertSame(DnssecKeyOutcome::REMOVED, $this->service()->removeKey(self::ZONE_ID, self::ZONE, 3)->outcome);
+    }
+
+    public static function privateKeys(): array
+    {
+        return [
+            'isc v1.2' => [self::ISC_KEY, true],
+            'isc v1.3 with surrounding whitespace' => ["\n  Private-key-format: v1.3\nAlgorithm: 8 (RSASHA256)\nModulus: AA==\n\n", true],
+            'empty' => ['', false],
+            'pem' => ["-----BEGIN PRIVATE KEY-----\nMIGHAgEA\n-----END PRIVATE KEY-----\n", false],
+            'no algorithm line' => ["Private-key-format: v1.3\nPrivateKey: AA==\n", false],
+            'no format line' => ["Algorithm: 13 (ECDSAP256SHA256)\nPrivateKey: AA==\n", false],
+            'too long' => [self::ISC_KEY . str_repeat('A', 16384), false],
+        ];
+    }
+
+    #[DataProvider('privateKeys')]
+    public function testRecognisesIscPrivateKeys(string $privateKey, bool $expected): void
+    {
+        $this->assertSame($expected, DnssecKeyService::isIscPrivateKey($privateKey));
+    }
+
+    public function testImportRefusesInvalidInputWithoutAskingPowerDns(): void
+    {
+        $this->dnssec->expects($this->never())->method('importZoneKeyFromPrivateKey');
+        $this->audit->expects($this->never())->method('logDnssecAddKey');
+
+        $badType = $this->service()->importKey(self::ZONE_ID, self::ZONE, 'foo', self::ISC_KEY, false);
+        $this->assertSame(DnssecKeyOutcome::INVALID_TYPE, $badType->outcome);
+
+        $badKey = $this->service()->importKey(self::ZONE_ID, self::ZONE, 'zsk', '-----BEGIN PRIVATE KEY-----', false);
+        $this->assertSame(DnssecKeyOutcome::INVALID_PRIVATE_KEY, $badKey->outcome);
+        $this->assertSame(Refusal::INVALID_INPUT, $badKey->refusal);
+    }
+
+    public function testImportRefusesPresignedZonesAndOutages(): void
+    {
+        $this->dnssec->expects($this->never())->method('importZoneKeyFromPrivateKey');
+
+        $this->presigned = true;
+        $this->assertSame(DnssecKeyOutcome::PRESIGNED, $this->service()->importKey(self::ZONE_ID, self::ZONE, 'zsk', self::ISC_KEY, false)->outcome);
+
+        $this->presigned = false;
+        $this->keys = null;
+        $this->assertSame(DnssecKeyOutcome::UNREACHABLE, $this->service()->importKey(self::ZONE_ID, self::ZONE, 'zsk', self::ISC_KEY, false)->outcome);
+    }
+
+    public function testImportPassesOnlyTypeKeyAndActiveAndAuditsTheCreatedKey(): void
+    {
+        $created = new CryptoKey(5, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', []);
+        $this->dnssec->expects($this->once())
+            ->method('importZoneKeyFromPrivateKey')
+            ->with(self::ZONE, 'zsk', self::ISC_KEY, true)
+            ->willReturn($created);
+        $this->audit->expects($this->once())
+            ->method('logDnssecAddKey')
+            ->with(self::ZONE_ID, self::ZONE, 'zsk', '256', 'ecdsa256');
+
+        $result = $this->service()->importKey(self::ZONE_ID, self::ZONE, 'zsk', "  " . self::ISC_KEY . "\n\n", true);
+
+        $this->assertSame(DnssecKeyOutcome::ADDED, $result->outcome);
+        $this->assertSame($created, $result->key);
+        $this->assertNull($result->refusal);
+    }
+
+    public function testImportTellsARejectedKeyApartFromAFailure(): void
+    {
+        $this->audit->expects($this->never())->method('logDnssecAddKey');
+        $this->dnssec->method('importZoneKeyFromPrivateKey')->willReturnOnConsecutiveCalls(DnssecKeyOutcome::KEY_REJECTED, DnssecKeyOutcome::FAILED);
+
+        $rejected = $this->service()->importKey(self::ZONE_ID, self::ZONE, 'zsk', self::ISC_KEY, false);
+        $this->assertSame(DnssecKeyOutcome::KEY_REJECTED, $rejected->outcome);
+        $this->assertSame(Refusal::INVALID_INPUT, $rejected->refusal);
+
+        $failed = $this->service()->importKey(self::ZONE_ID, self::ZONE, 'zsk', self::ISC_KEY, false);
+        $this->assertSame(DnssecKeyOutcome::FAILED, $failed->outcome);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $failed->refusal);
     }
 }
