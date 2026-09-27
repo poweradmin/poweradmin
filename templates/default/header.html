@@ -220,10 +220,10 @@
                 </li>
                 {% endif %}
                 {% set is_ueberuser = can('user_is_ueberuser') %}
-                {% if ((is_ueberuser or can('api_manage_keys')) and api_enabled) or (is_ueberuser and enable_consistency_checks) or (module_nav_items is defined and module_nav_items|length > 0) %}
+                {% if is_ueberuser or (can('api_manage_keys') and api_enabled) or (module_nav_items is defined and module_nav_items|length > 0) %}
                 <li class="p-2">
-                    <a href="#" class="nav-link text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-center"><i class="bi bi-tools fs-5"></i></a>
-                    <a class="text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="#" class="nav-link text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency', 'record_type_defaults'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-center"><i class="bi bi-tools fs-5"></i></a>
+                    <a class="text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency', 'record_type_defaults'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                         href="#"
                         role="button">{% trans %}Tools{% endtrans %}</a>
                     <ul class="dropdown-menu">
@@ -245,6 +245,11 @@
                         {% if can('user_is_ueberuser') and enable_consistency_checks %}
                         <li><a class="dropdown-item {{ current_page == 'database_consistency' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/database-consistency">
                             <i class="bi bi-database-check me-2"></i>{% trans %}Database Consistency{% endtrans %}
+                        </a></li>
+                        {% endif %}
+                        {% if can('user_is_ueberuser') %}
+                        <li><a class="dropdown-item {{ current_page == 'record_type_defaults' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/record-type-defaults">
+                            <i class="bi bi-clock-history me-2"></i>{% trans %}TTL defaults{% endtrans %}
                         </a></li>
                         {% endif %}
                         {% if module_nav_items is defined and module_nav_items|length > 0 %}

@@ -159,8 +159,9 @@ class IndexController extends BaseController
         $hasAdministration = $permissions['user_view_others'] || $permissions['user_edit_others']
             || $permissions['user_add_new'] || $permissions['user_is_ueberuser']
             || $permissions['templ_perm_edit'];
-        $hasTools = ($permissions['user_is_ueberuser'] && $enableConsistencyChecks)
-            || (($permissions['user_is_ueberuser'] || $permissions['api_manage_keys']) && $apiEnabled)
+        // Admins always get the TTL defaults card
+        $hasTools = $permissions['user_is_ueberuser']
+            || ($permissions['api_manage_keys'] && $apiEnabled)
             || count($moduleNavItems) > 0;
 
         $this->render("index.html", [
