@@ -350,10 +350,13 @@ class BatchReverseRecordCreator
         if ($failCount > 0) {
             $message .= " ($failCount failed)";
         }
+        if ($errors !== []) {
+            $message .= '. ' . implode(' ', array_slice($errors, 0, 3)) . (count($errors) > 3 ? '...' : '');
+        }
 
         return [
             'success' => true,
-            'type' => 'success',
+            'type' => $errors === [] ? 'success' : 'warning',
             'message' => $message,
             'errors' => $errors
         ];
@@ -590,10 +593,13 @@ class BatchReverseRecordCreator
         if ($failCount > 0) {
             $message .= " ($failCount failed)";
         }
+        if ($errors !== []) {
+            $message .= '. ' . implode(' ', array_slice($errors, 0, 3)) . (count($errors) > 3 ? '...' : '');
+        }
 
         return [
             'success' => true,
-            'type' => 'success',
+            'type' => $errors === [] ? 'success' : 'warning',
             'message' => $message,
             'errors' => $errors
         ];
