@@ -1207,6 +1207,8 @@ return array(
     'Poweradmin\\Application\\Controller\\Zone\\ZoneOwnershipController' => $baseDir . '/lib/Application/Controller/Zone/ZoneOwnershipController.php',
     'Poweradmin\\Application\\Http\\BootstrapErrorResponder' => $baseDir . '/lib/Application/Http/BootstrapErrorResponder.php',
     'Poweradmin\\Application\\Http\\ClientContext' => $baseDir . '/lib/Application/Http/ClientContext.php',
+    'Poweradmin\\Application\\Http\\ListPaging' => $baseDir . '/lib/Application/Http/ListPaging.php',
+    'Poweradmin\\Application\\Http\\ListSort' => $baseDir . '/lib/Application/Http/ListSort.php',
     'Poweradmin\\Application\\Http\\RefusalStatus' => $baseDir . '/lib/Application/Http/RefusalStatus.php',
     'Poweradmin\\Application\\Http\\Request' => $baseDir . '/lib/Application/Http/Request.php',
     'Poweradmin\\Application\\Http\\RequestContext' => $baseDir . '/lib/Application/Http/RequestContext.php',

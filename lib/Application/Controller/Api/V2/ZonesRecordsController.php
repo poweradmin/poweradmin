@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
 use Poweradmin\Application\Service\Record\RecordAddResult;
@@ -47,6 +49,9 @@ use Poweradmin\Domain\Service\Validation\Refusal;
  */
 class ZonesRecordsController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /zones/{id}/records */
+    private const RECORD_SORT_FIELDS = ['name', 'type', 'content', 'ttl', 'priority'];
+
     private ZoneReadRepositoryInterface $zoneRepository;
     private RecordLookupInterface&RecordListingInterface $recordRepository;
     private RecordManagerInterface $recordManager;
@@ -109,6 +114,42 @@ class ZonesRecordsController extends PublicApiController
         description: 'Filter by record type',
         schema: new OA\Schema(type: 'string', example: 'A')
     )]
+    #[OA\Parameter(
+        name: 'name',
+        in: 'query',
+        description: 'Case-insensitive substring filter on the record name',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'www')
+    )]
+    #[OA\Parameter(
+        name: 'content',
+        in: 'query',
+        description: 'Case-insensitive substring filter on the record content',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: '192.0.2.')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        in: 'query',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, content, ttl, priority. Default: backend order',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'type,name')
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        in: 'query',
+        description: 'Page number, starting at 1 (only used together with per_page)',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        in: 'query',
+        description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(
         response: 200,
         description: 'Records retrieved successfully',
@@ -116,6 +157,17 @@ class ZonesRecordsController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Records retrieved successfully'),
+                new OA\Property(
+                    property: 'pagination',
+                    description: 'Only present when per_page is given',
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 100),
+                        new OA\Property(property: 'total', type: 'integer', example: 250),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 3),
+                    ],
+                    type: 'object'
+                ),
                 new OA\Property(
                     property: 'data',
                     properties: [
@@ -148,6 +200,11 @@ class ZonesRecordsController extends PublicApiController
             $userId = $this->getAuthenticatedUserId();
             $zoneId = $this->pathParameters['id'];
             $recordType = $this->request->query->get('type');
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::RECORD_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
 
             if (($scopeError = $this->enforceApiKeyZoneScope((int)$zoneId)) !== null) {
                 return $scopeError;
@@ -178,7 +235,14 @@ class ZonesRecordsController extends PublicApiController
 
             $formattedRecords = array_map(fn(array $record): array => RecordResource::listItem($record, $this->formatRecordId(...)), $validRecords);
 
-            return $this->returnApiResponse(['records' => $formattedRecords], true, 'Records retrieved successfully', 200);
+            // Records come from the database or the PowerDNS API depending on the
+            // backend, so filtering, sorting and paging happen here, on the values
+            // the client sees, and behave the same for both.
+            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('name', ''), static fn(array $r): array => [$r['name']]);
+            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('content', ''), static fn(array $r): array => [$r['content']]);
+            [$formattedRecords, $extra] = ListPaging::paginate($sort->sortRows($formattedRecords), $page, $perPage);
+
+            return $this->returnApiResponse(['records' => $formattedRecords], true, 'Records retrieved successfully', 200, $extra);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesRecordsController::listRecords', 'Failed to retrieve records');
         }
