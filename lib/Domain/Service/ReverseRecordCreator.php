@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Exception;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -103,6 +104,9 @@ class ReverseRecordCreator
         $hasExistingRecords = !empty($existingPtrRecords);
 
         $isRecordAdded = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account);
+        if (is_string($isRecordAdded)) {
+            return $this->createErrorResponse($isRecordAdded);
+        }
 
         if ($isRecordAdded) {
             if ($hasExistingRecords) {
@@ -320,14 +324,24 @@ class ReverseRecordCreator
         return null;
     }
 
-    private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
+    /**
+     * @return bool|string true when added, or the refusal message when the reverse zone may not be edited
+     */
+    private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool|string
     {
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
         $fqdn_name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         // Duplicate check moved to the main createReverseRecord method
 
-        if ($this->dnsRecord->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+        try {
+            $isAdded = $this->dnsRecord->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio);
+        } catch (Exception $e) {
+            // Permission refusals are thrown before the write; the forward record already exists, so report instead of failing
+            return $e->getMessage();
+        }
+
+        if ($isAdded) {
             // Determine username for logging - API auth uses userid without userlogin
             $username = $this->userContextService->getLoggedInUsername() ?? 'api_user_' . ($this->userContextService->getLoggedInUserId() ?? 'unknown');
 

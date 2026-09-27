@@ -1006,10 +1006,6 @@ class EditController extends BaseController
             $this->userContextService->getLoggedInUsername()
         );
 
-        if (isset($result['success']) && !$result['success']) {
-            $this->setMessage('edit', 'error', $result['message']);
-        }
-
         return $result;
     }
 

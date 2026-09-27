@@ -382,10 +382,6 @@ class AddRecordController extends BaseController
             $this->userContextService->getLoggedInUsername()
         );
 
-        if (isset($result['success']) && !$result['success']) {
-            $this->setMessage('add_record', 'error', $result['message']);
-        }
-
         return $result;
     }
 
@@ -502,6 +498,8 @@ class AddRecordController extends BaseController
                     }
                     if (isset($reverseResult['type']) && $reverseResult['type'] === 'warning') {
                         $ptrWarnings[] = $reverseResult['message'];
+                    } elseif (isset($reverseResult['success'], $reverseResult['message']) && !$reverseResult['success']) {
+                        $ptrWarnings[] = _('Record successfully added, but PTR record creation failed: ') . $reverseResult['message'];
                     }
                 } elseif (isset($record['create_domain_record']) && $record['create_domain_record']) {
                     if ($this->createDomainRecord($name, $type, $content, $zone_id, $comment)) {
@@ -550,7 +548,7 @@ class AddRecordController extends BaseController
                 return;
             } elseif (!empty($ptrWarnings)) {
                 // Success with PTR warnings
-                $message .= ' ' . implode(' ', $ptrWarnings);
+                $message .= ' ' . implode(' ', array_unique($ptrWarnings));
                 $this->setMessage('edit', 'warning', $message);
             } else {
                 $this->setMessage('edit', 'success', $message);
