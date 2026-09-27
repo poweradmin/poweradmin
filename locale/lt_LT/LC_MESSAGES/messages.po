@@ -334,10 +334,6 @@ msgstr "Zonos raktas sėkmingai išjungtas."
 msgid "Zone key has been successfully activated."
 msgstr "Zonos raktas sėkmingai įjungtas."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr "Nepavyko ištrinti DNSSEC rakto."
-
 #: lib/Application/Controller/DnssecDeleteKeyController.php:88
 msgid "Zone key has been deleted successfully."
 msgstr "Zonos raktas sėkmingai ištrintas."
@@ -3091,3 +3087,4 @@ msgstr "Neturite leidimo redaguoti supervartotojo paskyros."
 #: lib/Domain/Model/UserManager.php:236
 msgid "You do not have permission to delete a superuser account."
 msgstr "Neturite leidimo ištrinti supervartotojo paskyros."
+

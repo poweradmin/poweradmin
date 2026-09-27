@@ -332,10 +332,6 @@ msgstr "Klíč zóny byl úspěšně deaktivován."
 msgid "Zone key has been successfully activated."
 msgstr "Klíč zóny byl úspěšně aktivován."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr "Nepodařilo se smazat DNSSEC klíč."
-
 #: lib/Application/Controller/DnssecDeleteKeyController.php:88
 msgid "Zone key has been deleted successfully."
 msgstr "Klíč zóny byl úspěšně smazán."
@@ -3046,3 +3042,4 @@ msgstr "Nemáte oprávnění upravovat účet superuživatele."
 #: lib/Domain/Model/UserManager.php:236
 msgid "You do not have permission to delete a superuser account."
 msgstr "Nemáte oprávnění smazat účet superuživatele."
+

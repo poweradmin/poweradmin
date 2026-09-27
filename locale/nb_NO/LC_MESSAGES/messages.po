@@ -338,10 +338,6 @@ msgstr "Sonenøkkel har blitt deaktivert."
 msgid "Zone key has been successfully activated."
 msgstr "Sonenøkkel har blitt aktivert."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr "Kunne ikke slette DNSSEC-nøkkel."
-
 #: lib/Application/Controller/DnssecDeleteKeyController.php:88
 msgid "Zone key has been deleted successfully."
 msgstr "Sonenøkkel har blitt slettet."
@@ -3063,3 +3059,4 @@ msgstr "Du har ikke tillatelse til å redigere en superbrukerkonto."
 #: lib/Domain/Model/UserManager.php:236
 msgid "You do not have permission to delete a superuser account."
 msgstr "Du har ikke tillatelse til å slette en superbrukerkonto."
+

@@ -333,10 +333,6 @@ msgstr "Ключ зоны успешно отключен."
 msgid "Zone key has been successfully activated."
 msgstr "Ключ зоны успешно включен."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr "Не удалось удалить ключ DNSSEC."
-
 #: lib/Application/Controller/DnssecDeleteKeyController.php:88
 msgid "Zone key has been deleted successfully."
 msgstr "Ключ зоны успешно удален."
@@ -3090,3 +3086,4 @@ msgstr "У вас нет прав на редактирование учетно
 #: lib/Domain/Model/UserManager.php:236
 msgid "You do not have permission to delete a superuser account."
 msgstr "У вас нет прав на удаление учетной записи суперпользователя."
+

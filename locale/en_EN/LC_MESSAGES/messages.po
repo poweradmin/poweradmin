@@ -331,10 +331,6 @@ msgstr "Zone key has been successfully deactivated."
 msgid "Zone key has been successfully activated."
 msgstr "Zone key has been successfully activated."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr "Failed to delete DNSSEC key."
-
 #: lib/Application/Controller/DnssecDeleteKeyController.php:88
 msgid "Zone key has been deleted successfully."
 msgstr "Zone key has been deleted successfully."
@@ -3042,3 +3038,4 @@ msgstr "You do not have permission to edit a superuser account."
 #: lib/Domain/Model/UserManager.php:236
 msgid "You do not have permission to delete a superuser account."
 msgstr "You do not have permission to delete a superuser account."
+

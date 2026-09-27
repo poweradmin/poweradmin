@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Poweradmin 3.9.12\n"
+"Project-Id-Version: Poweradmin 3.9.13\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:21+0300\n"
+"POT-Creation-Date: 2026-09-27 21:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,19 +27,19 @@ msgstr ""
 msgid "Invalid CSRF token."
 msgstr ""
 
-#: lib/BaseController.php:294
+#: lib/BaseController.php:297
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 
-#: lib/BaseController.php:298
+#: lib/BaseController.php:301
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 msgstr ""
 
-#: lib/BaseController.php:321
+#: lib/BaseController.php:326
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -63,7 +63,7 @@ msgstr ""
 msgid "Show all"
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:89
+#: lib/Application/Controller/BulkRegistrationController.php:94
 msgid "Invalid or unexpected input given."
 msgstr ""
 
@@ -71,11 +71,15 @@ msgstr ""
 msgid "You do not have the permission to delete this user."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:135
+#: lib/Domain/Model/UserManager.php:236
+msgid "You do not have permission to delete a superuser account."
+msgstr ""
+
+#: lib/Application/Controller/EditUserController.php:139
 msgid "User does not exist."
 msgstr ""
 
-#: lib/Application/Controller/DeleteUserController.php:79
+#: lib/Application/Controller/DeleteUserController.php:83
 msgid "The user has been deleted successfully."
 msgstr ""
 
@@ -91,11 +95,11 @@ msgstr ""
 msgid "The comment has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:60
+#: lib/Application/Controller/DnssecAddKeyController.php:61
 msgid "There is no zone with this ID."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:397 lib/Domain/Service/DnsRecord.php:415
+#: lib/Domain/Model/ZoneTemplate.php:397 lib/Domain/Service/DnsRecord.php:423
 msgid "You do not have the permission to edit this record."
 msgstr ""
 
@@ -137,7 +141,7 @@ msgstr ""
 msgid "You do not have the permission to perform searches."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:917
+#: lib/Domain/Model/UserManager.php:964
 msgid "You do not have the permission to add a new user."
 msgstr ""
 
@@ -145,7 +149,7 @@ msgstr ""
 msgid "The user has been created successfully."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:455 lib/Domain/Service/DnsRecord.php:699
+#: lib/Domain/Service/DnsRecord.php:723
 msgid "You do not have the permission to delete this record."
 msgstr ""
 
@@ -157,7 +161,7 @@ msgstr ""
 msgid "Unknown page."
 msgstr ""
 
-#: lib/Application/Controller/UsersController.php:61
+#: lib/Application/Controller/UsersController.php:66
 msgid "User details updated"
 msgstr ""
 
@@ -169,7 +173,7 @@ msgstr ""
 msgid "There is no zone template with this ID."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:86
+#: lib/Application/Controller/EditZoneTemplRecordController.php:92
 msgid "Zone template has been updated successfully."
 msgstr ""
 
@@ -177,31 +181,31 @@ msgstr ""
 msgid "Zones have been updated successfully."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:1060 lib/Domain/Service/DnsRecord.php:1297
+#: lib/Domain/Service/DnsRecord.php:1084 lib/Domain/Service/DnsRecord.php:1321
 msgid "You do not have the permission to view this zone."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:1779
+#: lib/Domain/Service/DnsRecord.php:404 lib/Domain/Service/DnsRecord.php:1803
 msgid "You do not have the permission to edit this zone."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:173
+#: lib/Application/Controller/EditController.php:174
 msgid "Zone has been signed successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:176
+#: lib/Application/Controller/EditController.php:177
 msgid "DNSSEC is not enabled on the server."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:193
+#: lib/Application/Controller/EditController.php:194
 msgid "Zone has been unsigned successfully."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:135 lib/Domain/Model/ZoneTemplate.php:646
+#: lib/Domain/Model/ZoneTemplate.php:135 lib/Domain/Model/ZoneTemplate.php:685
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:453
+#: lib/Application/Controller/EditController.php:463
 msgid "Template name can't be an empty string."
 msgstr ""
 
@@ -209,23 +213,23 @@ msgstr ""
 msgid "Zone template has been added successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:516
+#: lib/Application/Controller/EditController.php:526
 msgid "Request has expired, please try again."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:521
+#: lib/Application/Controller/EditController.php:531
 msgid "Zone has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:523
+#: lib/Application/Controller/EditController.php:533
 msgid "Zone did not have any record changes."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:532
+#: lib/Application/Controller/EditController.php:542
 msgid "Zone has not been updated successfully."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:333 lib/Domain/Service/DnsRecord.php:474
+#: lib/Domain/Service/DnsRecord.php:490
 msgid "You do not have the permission to add a record to this zone."
 msgstr ""
 
@@ -249,16 +253,16 @@ msgstr ""
 msgid "No zone selected for deletion."
 msgstr ""
 
+#: lib/Domain/Service/DnsRecord.php:909 lib/Domain/Service/DnsRecord.php:1942
+msgid "You do not have the permission to delete a zone."
+msgstr ""
+
 #: lib/Application/Controller/DeleteDomainController.php:110
 msgid "Zone has been deleted successfully."
 msgstr ""
 
-#: lib/Application/Controller/DeleteDomainsController.php:98
+#: lib/Application/Controller/DeleteDomainsController.php:107
 msgid "Zones have been deleted successfully."
-msgstr ""
-
-#: lib/Domain/Service/DnsRecord.php:885 lib/Domain/Service/DnsRecord.php:1916
-msgid "You do not have the permission to delete a zone."
 msgstr ""
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:60
@@ -281,19 +285,23 @@ msgid ""
 "the necessary permissions to create and alter tables."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:853
+#: lib/Domain/Service/DnsRecord.php:877
 msgid "You do not have the permission to add a master zone."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:430 lib/Domain/Service/DnsRecord.php:557
+#: lib/Application/Controller/BulkRegistrationController.php:89
+msgid "You do not have permission to create zones for other users."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:441 lib/Domain/Service/DnsRecord.php:573
 msgid "Invalid hostname."
 msgstr ""
 
-#: lib/Application/Controller/BulkRegistrationController.php:91
+#: lib/Application/Controller/BulkRegistrationController.php:103
 msgid "There is already a zone with this name."
 msgstr ""
 
-#: lib/Application/Controller/AddZoneSlaveController.php:109
+#: lib/Application/Controller/AddZoneSlaveController.php:119
 msgid "Zone has been added successfully."
 msgstr ""
 
@@ -305,19 +313,15 @@ msgstr ""
 msgid "You do not have the permission to see any zones."
 msgstr ""
 
-#: lib/Application/Controller/DnssecEditKeyController.php:85
+#: lib/Application/Controller/DnssecEditKeyController.php:86
 msgid "Zone key has been successfully deactivated."
 msgstr ""
 
-#: lib/Application/Controller/DnssecEditKeyController.php:90
+#: lib/Application/Controller/DnssecEditKeyController.php:91
 msgid "Zone key has been successfully activated."
 msgstr ""
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr ""
-
-#: lib/Application/Controller/DnssecDeleteKeyController.php:88
+#: lib/Application/Controller/DnssecDeleteKeyController.php:89
 msgid "Zone key has been deleted successfully."
 msgstr ""
 
@@ -337,7 +341,7 @@ msgstr ""
 msgid "You have logged out."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:640
+#: lib/Domain/Model/ZoneTemplate.php:679
 msgid "You do not have the permission to add a zone template."
 msgstr ""
 
@@ -345,7 +349,7 @@ msgstr ""
 msgid "You do not have the permission to add a slave zone."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:548
+#: lib/Domain/Service/DnsRecord.php:564
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr ""
 
@@ -369,15 +373,19 @@ msgstr ""
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:415 lib/Domain/Model/UserManager.php:895
+#: lib/Domain/Model/UserManager.php:437 lib/Domain/Model/UserManager.php:942
 msgid "You do not have the permission to edit this user."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:121
+#: lib/Domain/Model/UserManager.php:314 lib/Domain/Model/UserManager.php:801
+msgid "You do not have permission to edit a superuser account."
+msgstr ""
+
+#: lib/Application/Controller/EditUserController.php:125
 msgid "The user has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:127
+#: lib/Application/Controller/EditUserController.php:131
 msgid "The user could not be updated."
 msgstr ""
 
@@ -405,7 +413,7 @@ msgstr ""
 msgid "Password has been changed, please login."
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:101
+#: lib/Application/Controller/DnssecAddKeyController.php:102
 msgid "Zone key has been added successfully."
 msgstr ""
 
@@ -413,7 +421,7 @@ msgstr ""
 msgid "Failed to add new DNSSEC key."
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:107
+#: lib/Application/Controller/DnssecAddKeyController.php:108
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr ""
 
@@ -437,19 +445,19 @@ msgstr ""
 msgid "The supermaster has been deleted successfully."
 msgstr ""
 
-#: lib/Application/Controller/BulkRegistrationController.php:106
+#: lib/Application/Controller/BulkRegistrationController.php:118
 msgid "Zones has been added successfully."
 msgstr ""
 
-#: lib/Application/Controller/BulkRegistrationController.php:109
+#: lib/Application/Controller/BulkRegistrationController.php:121
 msgid "Some zone(s) could not be added."
 msgstr ""
 
-#: lib/Application/Service/SqlAuthenticator.php:104
+#: lib/Application/Service/SqlAuthenticator.php:118
 msgid "The user account is disabled."
 msgstr ""
 
-#: lib/Application/Service/SqlAuthenticator.php:143
+#: lib/Application/Service/SqlAuthenticator.php:159
 msgid "Authentication failed!"
 msgstr ""
 
@@ -473,16 +481,16 @@ msgstr ""
 msgid "Failed to authenticate against LDAP."
 msgstr ""
 
-#: lib/Application/Service/LdapAuthenticator.php:177
+#: lib/Application/Service/LdapAuthenticator.php:178
 msgid "LDAP Authentication failed!"
 msgstr ""
 
-#: lib/Application/Query/RecordSearch.php:158
+#: lib/Application/Query/RecordSearch.php:163
 #: templates/dnssec_delete_key.html:46
 msgid "Yes"
 msgstr ""
 
-#: lib/Application/Query/RecordSearch.php:158
+#: lib/Application/Query/RecordSearch.php:163
 #: templates/dnssec_delete_key.html:48
 msgid "No"
 msgstr ""
@@ -491,7 +499,7 @@ msgstr ""
 msgid "Unknown database type."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:269
+#: lib/Domain/Model/UserManager.php:275
 msgid "This template is assigned to at least one user."
 msgstr ""
 
@@ -533,48 +541,48 @@ msgstr ""
 msgid "Failed to remove DNSSEC key."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:935
+#: lib/Domain/Model/UserManager.php:982
 msgid "Enter a valid email address."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:923
+#: lib/Domain/Model/UserManager.php:970
 msgid "Username exist already, please choose another one."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:941
+#: lib/Domain/Model/UserManager.php:988
 msgid "Email address already exists, please choose another one."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:456
+#: lib/Domain/Model/UserManager.php:478
 msgid "The two new password fields do not match."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:467
+#: lib/Domain/Model/UserManager.php:489
 msgid "You can not change your password as LDAP user."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:487
+#: lib/Domain/Model/UserManager.php:509
 msgid "You did not enter the correct current password."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:691
+#: lib/Domain/Model/UserManager.php:713
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:695
+#: lib/Domain/Model/UserManager.php:717
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:749
+#: lib/Domain/Model/UserManager.php:781
 msgid ""
 "You do not have permission to edit an account with administrator rights."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:929
+#: lib/Domain/Model/UserManager.php:976
 msgid "Enter a valid user name."
 msgstr ""
 
@@ -583,11 +591,11 @@ msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:349 lib/Domain/Service/Dns.php:185
+#: lib/Domain/Service/Dns.php:196
 msgid "Your content field doesnt have a legit value."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:316
+#: lib/Domain/Service/Dns.php:327
 msgid "Invalid value for prio field."
 msgstr ""
 
@@ -597,1012 +605,1012 @@ msgid ""
 "template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:556
+#: lib/Domain/Model/ZoneTemplate.php:595
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:279
+#: lib/Domain/Service/Dns.php:290
 msgid "The content of the SPF record is invalid"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:303
+#: lib/Domain/Service/Dns.php:314
 msgid "Unknown record type."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:350 lib/Domain/Service/Dns.php:874
+#: lib/Domain/Service/Dns.php:361 lib/Domain/Service/Dns.php:888
 msgid "The hostname is too long."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:370 lib/Domain/Service/Dns.php:379
+#: lib/Domain/Service/Dns.php:381 lib/Domain/Service/Dns.php:390
 msgid "You have invalid characters in your hostname."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:387 lib/Domain/Service/Dns.php:394
+#: lib/Domain/Service/Dns.php:398 lib/Domain/Service/Dns.php:405
 msgid "A hostname can not start or end with a dash."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:401
+#: lib/Domain/Service/Dns.php:412
 msgid "Given hostname or one of the labels is too short or too long."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:438
+#: lib/Domain/Service/Dns.php:449
 msgid "Given hostname has too many slashes."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:447
+#: lib/Domain/Service/Dns.php:458
 msgid "You are using an invalid top level domain."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:470
+#: lib/Domain/Service/Dns.php:481
 msgid "This is not a valid IPv4 address."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:493
+#: lib/Domain/Service/Dns.php:504
 msgid "This is not a valid IPv6 address."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:547
+#: lib/Domain/Service/Dns.php:558
 msgid "Invalid characters have been used in this record."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:575
+#: lib/Domain/Service/Dns.php:586
 msgid "Backslashes must precede all quotes (\") in TXT content"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:597
+#: lib/Domain/Service/Dns.php:608
 msgid "Add quotes around TXT record content."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:627
+#: lib/Domain/Service/Dns.php:638
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:656
+#: lib/Domain/Service/Dns.php:667
 msgid ""
 "This is not a valid record. There is already exists a CNAME with this name."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:683
+#: lib/Domain/Service/Dns.php:694
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:703
+#: lib/Domain/Service/Dns.php:714
 msgid "Empty CNAME records are not allowed."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:729
+#: lib/Domain/Service/Dns.php:740
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:755
+#: lib/Domain/Service/Dns.php:768
 msgid "Invalid value for content field of HINFO record."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:842
+#: lib/Domain/Service/Dns.php:856
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:883
+#: lib/Domain/Service/Dns.php:897
 msgid "Invalid service value in name field of SRV record."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:890
+#: lib/Domain/Service/Dns.php:904
 msgid "Invalid protocol value in name field of SRV record."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:897
+#: lib/Domain/Service/Dns.php:911
 msgid "Invalid FQDN value in name field of SRV record."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:917
+#: lib/Domain/Service/Dns.php:931
 msgid "Invalid value for the priority field of the SRV record."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:924
+#: lib/Domain/Service/Dns.php:938
 msgid "Invalid value for the weight field of the SRV record."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:931
+#: lib/Domain/Service/Dns.php:945
 msgid "Invalid SRV target."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:955
+#: lib/Domain/Service/Dns.php:969
 msgid "Invalid value for TTL field. It should be numeric."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1034
+#: lib/Domain/Service/Dns.php:1048
 msgid ""
 "Invalid CDNSKEY record format. Expected: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
 "(e.g., 257 3 5 AwEA...)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1049
+#: lib/Domain/Service/Dns.php:1063
 msgid "CDNSKEY flags must be between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1059
+#: lib/Domain/Service/Dns.php:1073
 msgid "CDNSKEY protocol must be between 0 and 255."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1069
+#: lib/Domain/Service/Dns.php:1083
 msgid "CDNSKEY algorithm must be between 0 and 255."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1079
+#: lib/Domain/Service/Dns.php:1093
 msgid "CDNSKEY public key cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1089
+#: lib/Domain/Service/Dns.php:1103
 msgid "CDNSKEY public key must be valid Base64."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1100
+#: lib/Domain/Service/Dns.php:1114
 msgid "CDNSKEY public key contains invalid Base64 encoding."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1154
+#: lib/Domain/Service/Dns.php:1168
 #, php-format
 msgid "Invalid APL element format: %s. Expected: [!]FAMILY:ADDRESS/PREFIX"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1170
+#: lib/Domain/Service/Dns.php:1184
 #, php-format
 msgid "Invalid IPv4 address in APL: %s"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1178
+#: lib/Domain/Service/Dns.php:1192
 msgid "IPv4 prefix must be between 0 and 32."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1188
+#: lib/Domain/Service/Dns.php:1202
 #, php-format
 msgid "Invalid IPv6 address in APL: %s"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1196
+#: lib/Domain/Service/Dns.php:1210
 msgid "IPv6 prefix must be between 0 and 128."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1204
+#: lib/Domain/Service/Dns.php:1218
 #, php-format
 msgid "Unknown address family in APL: %d. Must be 1 (IPv4) or 2 (IPv6)."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1237
+#: lib/Domain/Service/Dns.php:1251
 msgid "ALIAS target hostname cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1248
+#: lib/Domain/Service/Dns.php:1262
 msgid "ALIAS target must be a valid hostname."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1280
+#: lib/Domain/Service/Dns.php:1294
 msgid ""
 "Invalid AFSDB record format. Expected: SUBTYPE HOSTNAME (e.g., 1 afs-"
 "server.example.com)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1293
+#: lib/Domain/Service/Dns.php:1307
 msgid "AFSDB subtype must be between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1303
+#: lib/Domain/Service/Dns.php:1317
 msgid "AFSDB hostname cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1336
+#: lib/Domain/Service/Dns.php:1350
 msgid ""
 "Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "
 "\"letsencrypt.org\")"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1350
+#: lib/Domain/Service/Dns.php:1364
 msgid "CAA flags must be between 0 and 255."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1361
+#: lib/Domain/Service/Dns.php:1375
 msgid "CAA tag must be alphanumeric."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1371
+#: lib/Domain/Service/Dns.php:1385
 msgid ""
 "CAA value must be enclosed in quotes (e.g., \"letsencrypt.org\" or \"\")."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1385
+#: lib/Domain/Service/Dns.php:1399
 msgid "Quotes inside CAA value must be escaped with backslash."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1422
+#: lib/Domain/Service/Dns.php:1436
 msgid ""
 "Invalid CDS record format. Expected: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
 "(e.g., 20642 8 2 04443ABE...)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1437
+#: lib/Domain/Service/Dns.php:1451
 msgid "CDS keytag must be between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1447
+#: lib/Domain/Service/Dns.php:1461
 msgid "CDS algorithm must be between 0 and 255."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1457
+#: lib/Domain/Service/Dns.php:1471
 msgid "CDS digest type must be between 0 and 255."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1467
+#: lib/Domain/Service/Dns.php:1481
 msgid "CDS digest cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1484
+#: lib/Domain/Service/Dns.php:1498
 msgid ""
 "CDS digest has unexpected length. Expected 40 (SHA-1), 64 (SHA-256), or 96 "
 "(SHA-384) hex characters."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1530
+#: lib/Domain/Service/Dns.php:1544
 msgid ""
 "Invalid CERT record format. Expected: TYPE KEYTAG ALGORITHM CERTIFICATE "
 "(e.g., 1 0 0 MIIB9D...)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1545
+#: lib/Domain/Service/Dns.php:1559
 msgid "CERT type must be between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1555
+#: lib/Domain/Service/Dns.php:1569
 msgid "CERT keytag must be between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1565
+#: lib/Domain/Service/Dns.php:1579
 msgid "CERT algorithm must be between 0 and 255."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1575
+#: lib/Domain/Service/Dns.php:1589
 msgid "CERT certificate cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1585
+#: lib/Domain/Service/Dns.php:1599
 msgid "CERT certificate must be valid Base64."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1596
+#: lib/Domain/Service/Dns.php:1610
 msgid "CERT certificate contains invalid Base64 encoding."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1633
+#: lib/Domain/Service/Dns.php:1647
 msgid "DNAME target cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1644
+#: lib/Domain/Service/Dns.php:1658
 msgid "DNAME target cannot contain spaces."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1654
+#: lib/Domain/Service/Dns.php:1668
 msgid ""
 "DNAME target contains invalid characters. Only alphanumeric, dots, hyphens, "
 "and underscores are allowed."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1689
+#: lib/Domain/Service/Dns.php:1703
 msgid ""
 "Invalid L32 record format. Expected: PREFERENCE LOCATOR32 (e.g., 513 "
 "192.0.2.1)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1702
+#: lib/Domain/Service/Dns.php:1716
 msgid "L32 preference must be between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1712
+#: lib/Domain/Service/Dns.php:1726
 msgid "L32 locator32 must be a valid IPv4 address."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1747
+#: lib/Domain/Service/Dns.php:1761
 msgid ""
 "Invalid L64 record format. Expected: PREFERENCE LOCATOR64 (e.g., 255 "
 "2001:0DB8:1234:ABCD)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1760
+#: lib/Domain/Service/Dns.php:1774
 msgid "L64 preference must be between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1771
+#: lib/Domain/Service/Dns.php:1785
 msgid ""
 "L64 locator64 must be in format XXXX:XXXX:XXXX:XXXX (e.g., "
 "2001:0DB8:1234:ABCD)."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1809
+#: lib/Domain/Service/Dns.php:1823
 msgid "LUA record content cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1820
+#: lib/Domain/Service/Dns.php:1834
 msgid ""
 "Invalid LUA record format. Expected: TYPE LUA_CODE (e.g., A \"ifportup(443, "
 "{'192.0.2.1'})\")"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1839
+#: lib/Domain/Service/Dns.php:1853
 msgid ""
 "LUA record type must be a valid DNS record type (e.g., A, AAAA, TXT, MX, "
 "etc.)."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1849
+#: lib/Domain/Service/Dns.php:1863
 msgid "LUA code cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1888
+#: lib/Domain/Service/Dns.php:1902
 msgid ""
 "Invalid LP record format. Expected: PREFERENCE FQDN (e.g., 512 "
 "foo.powerdns.org.)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1901
+#: lib/Domain/Service/Dns.php:1915
 msgid "LP preference must be between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1911
+#: lib/Domain/Service/Dns.php:1925
 msgid "LP FQDN cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1922
+#: lib/Domain/Service/Dns.php:1936
 msgid ""
 "LP FQDN contains invalid characters. Only alphanumeric, dots, hyphens, and "
 "underscores are allowed."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1955
+#: lib/Domain/Service/Dns.php:1969
 #, php-format
 msgid ""
 "%s is a meta-query type and cannot be used as a zone record. It is only used "
 "in DNS queries."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1988
+#: lib/Domain/Service/Dns.php:2002
 msgid "OPENPGPKEY content cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:1998
+#: lib/Domain/Service/Dns.php:2012
 msgid "OPENPGPKEY must be valid Base64-encoded data."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2009
+#: lib/Domain/Service/Dns.php:2023
 msgid "OPENPGPKEY contains invalid Base64 encoding."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2055
+#: lib/Domain/Service/Dns.php:2069
 msgid ""
 "Invalid SIG record format. Expected: TYPE_COVERED ALGORITHM LABELS "
 "ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2075
+#: lib/Domain/Service/Dns.php:2089
 msgid "SIG type covered must be a valid DNS record type."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2085
+#: lib/Domain/Service/Dns.php:2099
 msgid "SIG algorithm must be between 0 and 255."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2095
+#: lib/Domain/Service/Dns.php:2109
 msgid "SIG labels must be between 0 and 255."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2105
+#: lib/Domain/Service/Dns.php:2119
 msgid "SIG original TTL must be a positive integer."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2115
+#: lib/Domain/Service/Dns.php:2129
 msgid "SIG key tag must be between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2125
+#: lib/Domain/Service/Dns.php:2139
 msgid "SIG signer name cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2134
+#: lib/Domain/Service/Dns.php:2148
 msgid "SIG signer name must be a valid domain name."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2144
+#: lib/Domain/Service/Dns.php:2158
 msgid "SIG signature cannot be empty."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2153
+#: lib/Domain/Service/Dns.php:2167
 msgid "SIG signature must be valid Base64."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2163
+#: lib/Domain/Service/Dns.php:2177
 msgid "SIG signature contains invalid Base64 encoding."
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2193
+#: lib/Domain/Service/Dns.php:2207
 msgid "DHCID record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2207
+#: lib/Domain/Service/Dns.php:2221
 msgid "DHCID record must contain valid Base64-encoded data"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2217
+#: lib/Domain/Service/Dns.php:2231
 msgid "DHCID record data is too short (minimum 35 bytes required)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2249
+#: lib/Domain/Service/Dns.php:2263
 msgid "SMIMEA record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2260
+#: lib/Domain/Service/Dns.php:2274
 msgid ""
 "SMIMEA record must have at least 4 fields: usage, selector, matching-type, "
 "and certificate data"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2275
+#: lib/Domain/Service/Dns.php:2289
 msgid "SMIMEA usage must be an integer between 0 and 255"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2285
+#: lib/Domain/Service/Dns.php:2299
 msgid "SMIMEA selector must be an integer between 0 and 255"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2295
+#: lib/Domain/Service/Dns.php:2309
 msgid "SMIMEA matching type must be an integer between 0 and 255"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2305
+#: lib/Domain/Service/Dns.php:2319
 msgid "SMIMEA certificate data is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2314
+#: lib/Domain/Service/Dns.php:2328
 msgid "SMIMEA certificate data must be a valid hexadecimal string"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2324
+#: lib/Domain/Service/Dns.php:2338
 msgid ""
 "SMIMEA certificate data must be at least 2 hexadecimal characters (1 byte)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2334
+#: lib/Domain/Service/Dns.php:2348
 msgid ""
 "SMIMEA certificate data must have an even number of hexadecimal characters"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2371
+#: lib/Domain/Service/Dns.php:2385
 msgid "TKEY record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2384
+#: lib/Domain/Service/Dns.php:2398
 msgid ""
 "TKEY record must have at least 6 fields: algorithm, inception, expiration, "
 "mode, error, and keysize"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2401
+#: lib/Domain/Service/Dns.php:2415
 msgid "TKEY algorithm must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2411
+#: lib/Domain/Service/Dns.php:2425
 msgid "TKEY inception must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2421
+#: lib/Domain/Service/Dns.php:2435
 msgid "TKEY expiration must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2431
+#: lib/Domain/Service/Dns.php:2445
 msgid "TKEY mode must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2441
+#: lib/Domain/Service/Dns.php:2455
 msgid "TKEY error must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2451
+#: lib/Domain/Service/Dns.php:2465
 msgid "TKEY keysize must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2465
+#: lib/Domain/Service/Dns.php:2479
 msgid "TKEY keydata is required when keysize > 0"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2477
+#: lib/Domain/Service/Dns.php:2491
 msgid "TKEY keydata must be valid Base64-encoded data"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2490
+#: lib/Domain/Service/Dns.php:2504
 msgid "TKEY othersize field is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2502
+#: lib/Domain/Service/Dns.php:2516
 msgid "TKEY othersize must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2516
+#: lib/Domain/Service/Dns.php:2530
 msgid "TKEY otherdata is required when othersize > 0"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2528
+#: lib/Domain/Service/Dns.php:2542
 msgid "TKEY otherdata must be valid Base64-encoded data"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2560
+#: lib/Domain/Service/Dns.php:2574
 msgid "URI record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2571
+#: lib/Domain/Service/Dns.php:2585
 msgid ""
 "URI record must have format: <priority> <weight> \"<target>\" (target must "
 "be in quotes)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2585
+#: lib/Domain/Service/Dns.php:2599
 msgid "URI priority must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2595
+#: lib/Domain/Service/Dns.php:2609
 msgid "URI weight must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2605
+#: lib/Domain/Service/Dns.php:2619
 msgid "URI target cannot be empty"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2615
+#: lib/Domain/Service/Dns.php:2629
 #, php-format
 msgid "URI target must be a valid URI with a scheme (e.g., %s, %s, %s)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2664
+#: lib/Domain/Service/Dns.php:2678
 msgid "SSHFP record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2675
+#: lib/Domain/Service/Dns.php:2689
 msgid "SSHFP record must have 3 fields: algorithm, fptype, and fingerprint"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2689
+#: lib/Domain/Service/Dns.php:2703
 msgid "SSHFP algorithm must be an 8-bit integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2699
+#: lib/Domain/Service/Dns.php:2713
 msgid "SSHFP fingerprint type must be an 8-bit integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2709
+#: lib/Domain/Service/Dns.php:2723
 msgid "SSHFP fingerprint is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2718
+#: lib/Domain/Service/Dns.php:2732
 msgid "SSHFP fingerprint must be a valid hexadecimal string"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2728
+#: lib/Domain/Service/Dns.php:2742
 msgid "SSHFP fingerprint must have an even number of hexadecimal characters"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2754
+#: lib/Domain/Service/Dns.php:2768
 msgid "NAPTR record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2764
+#: lib/Domain/Service/Dns.php:2778
 msgid ""
 "NAPTR record must have format: <order> <preference> \"<flags>\" "
 "\"<services>\" \"<regexp>\" <replacement>"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2781
+#: lib/Domain/Service/Dns.php:2795
 msgid "NAPTR order must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2791
+#: lib/Domain/Service/Dns.php:2805
 msgid "NAPTR preference must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2802
+#: lib/Domain/Service/Dns.php:2816
 msgid "NAPTR replacement must be a valid domain name or \".\""
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2828
+#: lib/Domain/Service/Dns.php:2842
 msgid "RP record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2839
+#: lib/Domain/Service/Dns.php:2853
 msgid "RP record must have 2 fields: mbox-dname and txt-dname"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2852
+#: lib/Domain/Service/Dns.php:2866
 msgid "RP mbox-dname must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2862
+#: lib/Domain/Service/Dns.php:2876
 msgid "RP txt-dname must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2888
+#: lib/Domain/Service/Dns.php:2902
 msgid "DNSKEY record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2899
+#: lib/Domain/Service/Dns.php:2913
 msgid ""
 "DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and "
 "public key"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2914
+#: lib/Domain/Service/Dns.php:2928
 msgid "DNSKEY flags must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2924
+#: lib/Domain/Service/Dns.php:2938
 msgid "DNSKEY protocol must be 3"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2934
+#: lib/Domain/Service/Dns.php:2948
 msgid "DNSKEY algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2944
+#: lib/Domain/Service/Dns.php:2958
 msgid "DNSKEY public key is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2953
+#: lib/Domain/Service/Dns.php:2967
 msgid "DNSKEY public key must be valid Base64-encoded data"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2979
+#: lib/Domain/Service/Dns.php:2993
 msgid "NSEC record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:2990
+#: lib/Domain/Service/Dns.php:3004
 msgid "NSEC record must have at least 2 fields: next domain name and type list"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3002
+#: lib/Domain/Service/Dns.php:3016
 msgid "NSEC next domain must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3015
+#: lib/Domain/Service/Dns.php:3029
 msgid "NSEC type list must contain valid DNS record type names"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3042
+#: lib/Domain/Service/Dns.php:3056
 msgid "NSEC3 record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3053
+#: lib/Domain/Service/Dns.php:3067
 msgid ""
 "NSEC3 record must have at least 5 fields: algorithm, flags, iterations, "
 "salt, and next hash"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3069
+#: lib/Domain/Service/Dns.php:3083
 msgid "NSEC3 algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3079
+#: lib/Domain/Service/Dns.php:3093
 msgid "NSEC3 flags must be an 8-bit unsigned integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3089
+#: lib/Domain/Service/Dns.php:3103
 msgid "NSEC3 iterations must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3099
+#: lib/Domain/Service/Dns.php:3113
 msgid "NSEC3 salt must be hexadecimal or \"-\" for no salt"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3109
+#: lib/Domain/Service/Dns.php:3123
 msgid "NSEC3 next hash must be Base32hex-encoded (0-9, A-V)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3122
+#: lib/Domain/Service/Dns.php:3136
 msgid "NSEC3 type list must contain uppercase type names"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3150
+#: lib/Domain/Service/Dns.php:3164
 msgid "NSEC3PARAM record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3161
+#: lib/Domain/Service/Dns.php:3175
 msgid ""
 "NSEC3PARAM record must have 4 fields: algorithm, flags, iterations, and salt"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3176
+#: lib/Domain/Service/Dns.php:3190
 msgid "NSEC3PARAM algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3186
+#: lib/Domain/Service/Dns.php:3200
 msgid "NSEC3PARAM flags must be an 8-bit unsigned integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3196
+#: lib/Domain/Service/Dns.php:3210
 msgid "NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3206
+#: lib/Domain/Service/Dns.php:3220
 msgid "NSEC3PARAM salt must be hexadecimal or \"-\" for no salt"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3250
+#: lib/Domain/Service/Dns.php:3264
 msgid "TSIG record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3262
+#: lib/Domain/Service/Dns.php:3276
 msgid ""
 "TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-"
 "size, mac, original-id, error, and other-len"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3281
+#: lib/Domain/Service/Dns.php:3295
 msgid "TSIG algorithm must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3291
+#: lib/Domain/Service/Dns.php:3305
 msgid "TSIG time-signed must be a non-negative integer"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3301
+#: lib/Domain/Service/Dns.php:3315
 msgid "TSIG fudge must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3311
+#: lib/Domain/Service/Dns.php:3325
 msgid "TSIG mac-size must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3321
+#: lib/Domain/Service/Dns.php:3335
 msgid "TSIG MAC must be valid Base64-encoded data"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3331
+#: lib/Domain/Service/Dns.php:3345
 msgid "TSIG original-id must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3341
+#: lib/Domain/Service/Dns.php:3355
 msgid "TSIG error must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3351
+#: lib/Domain/Service/Dns.php:3365
 msgid "TSIG other-len must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3362
+#: lib/Domain/Service/Dns.php:3376
 msgid "TSIG other-data is required when other-len > 0"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3372
+#: lib/Domain/Service/Dns.php:3386
 msgid "TSIG other-data must be valid Base64-encoded data"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3398
+#: lib/Domain/Service/Dns.php:3412
 msgid "EUI48 record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3408
+#: lib/Domain/Service/Dns.php:3422
 msgid "EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3433
+#: lib/Domain/Service/Dns.php:3447
 msgid "EUI64 record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3443
+#: lib/Domain/Service/Dns.php:3457
 msgid ""
 "EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3468
+#: lib/Domain/Service/Dns.php:3482
 msgid "NID record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3479
+#: lib/Domain/Service/Dns.php:3493
 msgid "NID record must have 2 fields: preference and node-id"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3492
+#: lib/Domain/Service/Dns.php:3506
 msgid "NID preference must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3502
+#: lib/Domain/Service/Dns.php:3516
 msgid ""
 "NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3527
+#: lib/Domain/Service/Dns.php:3541
 msgid "KX record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3538
+#: lib/Domain/Service/Dns.php:3552
 msgid "KX record must have 2 fields: preference and exchanger"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3551
+#: lib/Domain/Service/Dns.php:3565
 msgid "KX preference must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3562
+#: lib/Domain/Service/Dns.php:3576
 msgid "KX exchanger must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3587
+#: lib/Domain/Service/Dns.php:3601
 msgid "IPSECKEY record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3598
+#: lib/Domain/Service/Dns.php:3612
 msgid ""
 "IPSECKEY record must have at least 3 fields: precedence, gateway-type, and "
 "algorithm"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3612
+#: lib/Domain/Service/Dns.php:3626
 msgid "IPSECKEY precedence must be an 8-bit unsigned integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3622
+#: lib/Domain/Service/Dns.php:3636
 msgid "IPSECKEY gateway-type must be 0-3 (0=none, 1=IPv4, 2=IPv6, 3=domain)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3632
+#: lib/Domain/Service/Dns.php:3646
 msgid "IPSECKEY algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3711 lib/Domain/Service/Dns.php:3743
+#: lib/Domain/Service/Dns.php:3725 lib/Domain/Service/Dns.php:3757
 msgid "IPSECKEY public key must be Base64-encoded"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3660
+#: lib/Domain/Service/Dns.php:3674
 msgid "IPSECKEY with gateway-type 1 requires an IPv4 address"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3669
+#: lib/Domain/Service/Dns.php:3683
 msgid "IPSECKEY gateway must be a valid IPv4 address"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3691
+#: lib/Domain/Service/Dns.php:3705
 msgid "IPSECKEY with gateway-type 2 requires an IPv6 address"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3700
+#: lib/Domain/Service/Dns.php:3714
 msgid "IPSECKEY gateway must be a valid IPv6 address"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3722
+#: lib/Domain/Service/Dns.php:3736
 msgid "IPSECKEY with gateway-type 3 requires a domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3732
+#: lib/Domain/Service/Dns.php:3746
 msgid "IPSECKEY gateway must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3815
+#: lib/Domain/Service/Dns.php:3829
 msgid "MINFO record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3826
+#: lib/Domain/Service/Dns.php:3840
 msgid "MINFO record must have 2 fields: rmailbx and emailbx"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3839
+#: lib/Domain/Service/Dns.php:3853
 msgid "MINFO rmailbx must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3849
+#: lib/Domain/Service/Dns.php:3863
 msgid "MINFO emailbx must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3874
+#: lib/Domain/Service/Dns.php:3888
 msgid "MR record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3884
+#: lib/Domain/Service/Dns.php:3898
 msgid "MR newname must be a valid domain name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3909
+#: lib/Domain/Service/Dns.php:3923
 msgid "WKS record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3920
+#: lib/Domain/Service/Dns.php:3934
 msgid "WKS record must have at least 3 fields: address, protocol, and services"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3933
+#: lib/Domain/Service/Dns.php:3947
 msgid "WKS address must be a valid IPv4 address"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3944 lib/Domain/Service/Dns.php:3954
+#: lib/Domain/Service/Dns.php:3958 lib/Domain/Service/Dns.php:3968
 msgid "WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:3968 lib/Domain/Service/Dns.php:3978
+#: lib/Domain/Service/Dns.php:3982 lib/Domain/Service/Dns.php:3992
 msgid "WKS service must be a 16-bit port number (0-65535) or service name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4005
+#: lib/Domain/Service/Dns.php:4019
 msgid "A6 record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4018
+#: lib/Domain/Service/Dns.php:4032
 msgid ""
 "A6 record must have at least 2 fields: prefix-length and address-suffix or "
 "prefix-name"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4030
+#: lib/Domain/Service/Dns.php:4044
 msgid "A6 prefix length must be an integer (0-128)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4055
+#: lib/Domain/Service/Dns.php:4069
 msgid "CSYNC record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4066
+#: lib/Domain/Service/Dns.php:4080
 msgid ""
 "CSYNC record must have at least 3 fields: SOA-serial, flags, and type-list"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4079
+#: lib/Domain/Service/Dns.php:4093
 msgid "CSYNC SOA serial must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4089
+#: lib/Domain/Service/Dns.php:4103
 msgid "CSYNC flags must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4101
+#: lib/Domain/Service/Dns.php:4115
 msgid "CSYNC type list must contain uppercase type names"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4127
+#: lib/Domain/Service/Dns.php:4141
 msgid "ZONEMD record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4138
+#: lib/Domain/Service/Dns.php:4152
 msgid "ZONEMD record must have 4 fields: serial, scheme, algorithm, and digest"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4153
+#: lib/Domain/Service/Dns.php:4167
 msgid "ZONEMD serial must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4163
+#: lib/Domain/Service/Dns.php:4177
 msgid "ZONEMD scheme must be an 8-bit unsigned integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4173
+#: lib/Domain/Service/Dns.php:4187
 msgid "ZONEMD algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4183
+#: lib/Domain/Service/Dns.php:4197
 msgid "ZONEMD digest must be hexadecimal"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4223
+#: lib/Domain/Service/Dns.php:4237
 msgid "SVCB record content is required"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4234
+#: lib/Domain/Service/Dns.php:4248
 msgid "SVCB record must have at least 2 fields: priority and target"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4247
+#: lib/Domain/Service/Dns.php:4261
 msgid "SVCB priority must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
 
-#: lib/Domain/Service/Dns.php:4258
+#: lib/Domain/Service/Dns.php:4272
 msgid "SVCB target must be a valid domain name or \".\""
 msgstr ""
 
@@ -1623,7 +1631,7 @@ msgstr ""
 msgid "The domain record was successfully added."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:374 lib/Domain/Service/DnsRecord.php:676
+#: lib/Domain/Service/DnsRecord.php:374 lib/Domain/Service/DnsRecord.php:692
 msgid "Record not found."
 msgstr ""
 
@@ -1635,43 +1643,43 @@ msgstr ""
 msgid "You do not have the permission to edit this NS record."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:459
+#: lib/Domain/Service/DnsRecord.php:467
 msgid "You do not have the permission to add SOA record."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:466
+#: lib/Domain/Service/DnsRecord.php:474
 msgid "You do not have the permission to add NS record."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:1911
+#: lib/Domain/Service/DnsRecord.php:1937
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:572
+#: lib/Domain/Service/DnsRecord.php:588
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:686
+#: lib/Domain/Service/DnsRecord.php:702
 msgid ""
 "You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:847 lib/Domain/Service/DnsRecord.php:1562
+#: lib/Domain/Service/DnsRecord.php:871 lib/Domain/Service/DnsRecord.php:1586
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:934
+#: lib/Domain/Service/DnsRecord.php:958
 msgid "The selected user already owns the zone."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:964
+#: lib/Domain/Service/DnsRecord.php:988
 msgid "There must be at least one owner for a zone."
 msgstr ""
 
-#: lib/Domain/Service/DnsRecord.php:1186
+#: lib/Domain/Service/DnsRecord.php:1210
 msgid "This is an invalid zone name."
 msgstr ""
 
@@ -1772,7 +1780,7 @@ msgstr ""
 msgid "Provide content"
 msgstr ""
 
-#: templates/edit_zone_templ.html:148 templates/edit_perm_templ.html:55
+#: templates/edit_perm_templ.html:55
 msgid "Update"
 msgstr ""
 

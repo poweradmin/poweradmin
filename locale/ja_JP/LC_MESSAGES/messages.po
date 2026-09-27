@@ -340,10 +340,6 @@ msgstr "ゾーンキーが正常に無効化されました。"
 msgid "Zone key has been successfully activated."
 msgstr "ゾーンキーが正常に有効化されました。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr "DNSSECキーの削除に失敗しました。"
-
 #: lib/Application/Controller/DnssecDeleteKeyController.php:88
 msgid "Zone key has been deleted successfully."
 msgstr "ゾーンキーが正常に削除されました。"
@@ -3079,3 +3075,4 @@ msgstr "スーパーユーザーアカウントを編集する権限がありま
 #: lib/Domain/Model/UserManager.php:236
 msgid "You do not have permission to delete a superuser account."
 msgstr "スーパーユーザーアカウントを削除する権限がありません。"
+

@@ -328,10 +328,6 @@ msgstr "区域密钥已成功停用。"
 msgid "Zone key has been successfully activated."
 msgstr "区域密钥已成功激活。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr "删除DNSSEC密钥失败。"
-
 #: lib/Application/Controller/DnssecDeleteKeyController.php:88
 msgid "Zone key has been deleted successfully."
 msgstr "区域密钥已成功删除。"
@@ -2973,3 +2969,4 @@ msgstr "您没有权限编辑超级用户帐户。"
 #: lib/Domain/Model/UserManager.php:236
 msgid "You do not have permission to delete a superuser account."
 msgstr "您没有权限删除超级用户帐户。"
+
