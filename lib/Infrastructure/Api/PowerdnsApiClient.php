@@ -358,49 +358,54 @@ class PowerdnsApiClient
      */
     public function getZoneKeys(Zone $zone): array
     {
+        // Return an empty list instead of breaking the UI when PowerDNS cannot be reached
+        return $this->fetchZoneKeys($zone) ?? [];
+    }
+
+    /**
+     * Get the DNSSEC keys of a zone, telling a failed request apart from a zone without keys.
+     *
+     * @return CryptoKey[]|null The keys, or null when PowerDNS could not be asked
+     */
+    public function fetchZoneKeys(Zone $zone): ?array
+    {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
             $response = $this->request('GET', $endpoint);
 
-            if ($response && $response['responseCode'] === 200) {
-                $keys = [];
-                foreach ($response['data'] as $keyData) {
-                    // Normalize optional fields from PowerDNS API
-                    // ZSK keys don't have DS records, only KSK/CSK do
-                    $dsRecords = [];
-                    if (array_key_exists('ds', $keyData) && is_array($keyData['ds'])) {
-                        $dsRecords = $keyData['ds'];
-                    }
-
-                    $keys[] = new CryptoKey(
-                        $keyData['id'],
-                        $keyData['keytype'],
-                        $keyData['bits'],
-                        $keyData['algorithm'],
-                        $keyData['active'],
-                        $keyData['dnskey'],
-                        $dsRecords,
-                    );
-                }
-                return $keys;
+            if ($response && $response['responseCode'] === 200 && is_array($response['data'])) {
+                return array_map(fn(array $keyData): CryptoKey => $this->cryptoKeyFromData($keyData), $response['data']);
             }
 
-            return [];
+            return null;
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get DNSSEC keys for zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
-
-            // Return empty array instead of breaking the UI
-            return [];
+            return null;
         }
     }
 
     /**
-     * Add a DNSSEC key to a zone
-     *
-     * @param Zone $zone
-     * @param CryptoKey $key
-     * @return bool
+     * @param array<string, mixed> $keyData A cryptokey object from the PowerDNS API
      */
+    private function cryptoKeyFromData(array $keyData): CryptoKey
+    {
+        // ZSK keys don't have DS records, only KSK/CSK do
+        $dsRecords = [];
+        if (array_key_exists('ds', $keyData) && is_array($keyData['ds'])) {
+            $dsRecords = $keyData['ds'];
+        }
+
+        return new CryptoKey(
+            $keyData['id'],
+            $keyData['keytype'],
+            $keyData['bits'],
+            $keyData['algorithm'],
+            $keyData['active'],
+            $keyData['dnskey'],
+            $dsRecords,
+        );
+    }
+
     public function addZoneKey(Zone $zone, CryptoKey $key): bool
     {
         try {
@@ -416,6 +421,34 @@ class PowerdnsApiClient
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to add key to zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
+        }
+    }
+
+    /**
+     * Add a DNSSEC key and return the key PowerDNS created.
+     *
+     * @return CryptoKey|null The created key, or null when PowerDNS refused or could not be asked
+     */
+    public function createZoneKey(Zone $zone, CryptoKey $key, bool $active = false): ?CryptoKey
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
+            $data = [
+                'keytype' => $key->getType(),
+                'bits' => $key->getSize(),
+                'algorithm' => $key->getAlgorithm(),
+                'active' => $active,
+            ];
+            $response = $this->request('POST', $endpoint, $data);
+
+            if ($response && $response['responseCode'] === 201 && is_array($response['data']) && isset($response['data']['id'])) {
+                return $this->cryptoKeyFromData($response['data']);
+            }
+
+            return null;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to add key to zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
+            return null;
         }
     }
 

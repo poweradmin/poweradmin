@@ -45,29 +45,52 @@ class DnssecKeySpecValidator
     /**
      * Check that the key size fits the algorithm.
      *
-     * @return string|null An error message, or null when the combination is valid
+     * @return string|null A translated error message, or null when the combination is valid
      */
     public static function validateAlgorithmBits(string $algorithm, string $bits): ?string
     {
-        // ECDSA algorithms have a fixed curve size
-        if ($algorithm === 'ecdsa256' && $bits !== '256') {
-            return _('ECDSA P-256 algorithm must use 256 bits');
-        }
-        if ($algorithm === 'ecdsa384' && $bits !== '384') {
-            return _('ECDSA P-384 algorithm must use 384 bits');
+        $problem = self::checkAlgorithmBits($algorithm, $bits);
+
+        return match ($problem) {
+            null => null,
+            'ecdsa256' => _('ECDSA P-256 algorithm must use 256 bits'),
+            'ecdsa384' => _('ECDSA P-384 algorithm must use 384 bits'),
+            'ed25519' => _('ED25519 algorithm must use 256 bits'),
+            'ed448' => _('ED448 algorithm must use 456 bits (unsupported in this UI)'),
+            default => _('RSA algorithms should use 1024 or 2048 bits for adequate security'),
+        };
+    }
+
+    /**
+     * The same check with fixed English wording, for the API where messages are part of the contract.
+     */
+    public static function apiErrorForAlgorithmBits(string $algorithm, string $bits): ?string
+    {
+        $problem = self::checkAlgorithmBits($algorithm, $bits);
+
+        return match ($problem) {
+            null => null,
+            'ecdsa256' => 'ecdsa256 requires 256 bits',
+            'ecdsa384' => 'ecdsa384 requires 384 bits',
+            'ed25519' => 'ed25519 requires 256 bits',
+            'ed448' => 'ed448 requires 456 bits',
+            default => 'RSA algorithms require 1024 or 2048 bits',
+        };
+    }
+
+    /**
+     * @return string|null The algorithm group whose size rule is broken, or null when the combination is valid
+     */
+    private static function checkAlgorithmBits(string $algorithm, string $bits): ?string
+    {
+        // ECDSA and EdDSA algorithms have a fixed key size
+        $fixed = ['ecdsa256' => '256', 'ecdsa384' => '384', 'ed25519' => '256', 'ed448' => '456'];
+        if (isset($fixed[$algorithm])) {
+            return $bits === $fixed[$algorithm] ? null : $algorithm;
         }
 
-        // EdDSA algorithms have fixed bit sizes
-        if ($algorithm === 'ed25519' && $bits !== '256') {
-            return _('ED25519 algorithm must use 256 bits');
-        }
-        if ($algorithm === 'ed448' && $bits !== '456') {
-            return _('ED448 algorithm must use 456 bits (unsupported in this UI)');
-        }
-
-        // RSA algorithms should use appropriate bit lengths
         if (in_array($algorithm, self::RSA_ALGORITHMS, true) && !in_array($bits, ['1024', '2048'], true)) {
-            return _('RSA algorithms should use 1024 or 2048 bits for adequate security');
+            return 'rsa';
         }
 
         return null;

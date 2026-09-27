@@ -2060,6 +2060,13 @@ test_zone_dnssec_keys() {
         api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"foo","algorithm":"ecdsa256","bits":256}' 400 "Reject invalid key type"
         api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"zsk","algorithm":"md5","bits":256}' 400 "Reject unsupported algorithm"
         api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"zsk","algorithm":"ecdsa256","bits":384}' 400 "Reject algorithm/bits mismatch"
+        increment_test
+        if [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.message')" == "ecdsa256 requires 256 bits" ]]; then
+            print_pass "Algorithm/bits error has the fixed API wording"
+        else
+            print_fail "Unexpected algorithm/bits error: $LAST_RESPONSE_BODY"
+        fi
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"zsk","algorithm":"ecdsa256","bits":256,"active":"yes"}' 400 "Reject non-boolean active on create"
 
         # Add a key
         api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"csk","algorithm":"ecdsa256","bits":256}' 201 "Add CSK"
@@ -2071,6 +2078,35 @@ test_zone_dnssec_keys() {
         else
             print_fail "Add key response incomplete: $LAST_RESPONSE_BODY"
         fi
+        increment_test
+        local add_body="$LAST_RESPONSE_BODY"
+        if [[ "$(echo "$add_body" | jq -r '.data.active')" == "false" ]] \
+            && [[ "$(echo "$add_body" | jq -r '.data.dnskey')" == 257\ 3\ 13\ * ]] \
+            && [[ "$(echo "$add_body" | jq -r '.data.ds | length')" -gt 0 ]] \
+            && [[ "$(echo "$add_body" | jq -r '.data.ds[0] | split(" ")[0]')" == "$(echo "$add_body" | jq -r '.data.keytag')" ]]; then
+            print_pass "New CSK is inactive and carries its DNSKEY, DS and matching key tag"
+        else
+            print_fail "New CSK details wrong: $add_body"
+        fi
+
+        api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys" "" 200 "List keys after adding one"
+        increment_test
+        if [[ "$(echo "$LAST_RESPONSE_BODY" | jq --argjson id "$key_id" '[.data[] | select(.id == $id)] | length')" == "1" ]]; then
+            print_pass "Returned key id $key_id is the listed key"
+        else
+            print_fail "Key $key_id not in the key list: $LAST_RESPONSE_BODY"
+        fi
+
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys" '{"type":"zsk","algorithm":"ecdsa256","bits":256,"active":true}' 201 "Add active ZSK"
+        local zsk_id
+        zsk_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id' 2>/dev/null)
+        increment_test
+        if [[ "$zsk_id" != "$key_id" ]] && [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.active')" == "true" ]]; then
+            print_pass "ZSK $zsk_id created active in one call"
+        else
+            print_fail "Expected a new active ZSK: $LAST_RESPONSE_BODY"
+        fi
+        api_request_v2 "DELETE" "/zones/${zone_id}/dnssec/keys/${zsk_id}" "" 200 "Delete active ZSK"
 
         api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys/${key_id}" "" 200 "Get single key"
         api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys/999999" "" 404 "Get non-existent key"
