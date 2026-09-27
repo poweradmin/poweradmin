@@ -498,6 +498,26 @@ class AddRecordControllerTest extends SeamControllerTestCase
         );
     }
 
+    public function testRefusedPtrsAreReportedOnceInTheSummary(): void
+    {
+        $refusal = 'You do not have the permission to add a record to this zone.';
+        $this->addResults = [
+            self::added(RecordAddResult::COMPANION_PTR, false, false, $refusal),
+            self::added(RecordAddResult::COMPANION_PTR, false, false, $refusal),
+        ];
+        $this->post(['multi_record_mode' => '1', 'records' => [
+            ['name' => 'a', 'type' => 'A', 'content' => '192.0.2.1', 'reverse' => '1'],
+            ['name' => 'b', 'type' => 'A', 'content' => '192.0.2.2', 'reverse' => '1'],
+        ]]);
+
+        $this->haltOf($this->makeController());
+
+        $this->assertSame(
+            [['warning', '2 record(s) have been added successfully. Record successfully added, but PTR record creation failed: ' . $refusal]],
+            $this->messagesFor('edit')
+        );
+    }
+
     public function testAPartialFailureWarnsAndStillGoesToTheZoneEditor(): void
     {
         $this->addResults = [self::added(), self::refused('Invalid IPv4 address.')];
