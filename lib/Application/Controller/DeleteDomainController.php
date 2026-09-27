@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -147,7 +147,9 @@ class DeleteDomainController extends BaseController
     {
         $domainRepository = $this->createDomainRepository();
         $zone_info = $domainRepository->getZoneInfoFromId($zone_id);
-        $zone_owners = $this->createUserRepository()->getZoneOwnerFullNames($zone_id);
+        $ownershipView = $this->createPermissionService()->getZoneOwnershipViewPermissionLevel((int)$this->userContextService->getLoggedInUserId());
+        $show_zone_owners = $ownershipView === 'all' || ($ownershipView === 'own' && $this->isZoneOwner($zone_id));
+        $zone_owners = $show_zone_owners ? $this->createUserRepository()->getZoneOwnerFullNames($zone_id) : '';
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {
@@ -174,6 +176,7 @@ class DeleteDomainController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_display_name' => DnsIdnService::toDisplay($zone_info['name']),
             'zone_owners' => $zone_owners,
+            'show_zone_owners' => $show_zone_owners,
             'slave_master_exists' => $slave_master_exists,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_info['name']),
         ]);

@@ -206,6 +206,7 @@ class DeleteDomainsController extends BaseController
         $this->render('delete_domains.html', [
             'perm_delete' => $perm_delete,
             'zones' => $zones,
+            'show_zone_owners' => $permissionService->getZoneOwnershipViewPermissionLevel((int)$userId) !== 'none',
             'error' => _("You do not have the permission to delete a zone."),
             'is_reverse_zone' => $all_reverse, // If all zones are reverse, use reverse breadcrumb
             'is_mixed_zones' => (!$all_reverse && !$all_forward) // Flag for mixed zone types
@@ -225,10 +226,12 @@ class DeleteDomainsController extends BaseController
         }
 
         $userRepository = $this->createUserRepository();
+        $ownershipView = $this->createPermissionService()->getZoneOwnershipViewPermissionLevel((int)$this->userContextService->getLoggedInUserId());
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id] = $zoneInfos[$zone_id] ?? ['id' => $zone_id];
-            $zones[$zone_id]['owner'] = $userRepository->getZoneOwnerFullNames($zone_id);
             $zones[$zone_id]['is_owner'] = $this->isZoneOwner($zone_id);
+            $showOwner = $ownershipView === 'all' || ($ownershipView === 'own' && $zones[$zone_id]['is_owner']);
+            $zones[$zone_id]['owner'] = $showOwner ? $userRepository->getZoneOwnerFullNames($zone_id) : '';
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
