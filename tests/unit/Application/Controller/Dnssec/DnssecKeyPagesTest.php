@@ -248,6 +248,17 @@ class DnssecKeyPagesTest extends SeamControllerTestCase
         $this->assertSame([['error', 'ECDSA P-256 algorithm must use 256 bits']], $this->messagesFor('dnssec_add_key'));
     }
 
+    public function testAnAddWithoutAKeyTypeIsRefused(): void
+    {
+        $this->dnssec->expects($this->never())->method('createZoneKey');
+        $this->post(['algorithm' => 'ecdsa256', 'bits' => '256', 'submit' => '1']);
+
+        $halt = $this->haltOf($this->page(DnssecAddKeyController::class));
+
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
+        $this->assertSame('Invalid or unexpected input given.', $halt->target);
+    }
+
     public function testARefusedAddIsReportedOnTheForm(): void
     {
         $this->dnssec->method('createZoneKey')->willReturn(null);

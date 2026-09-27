@@ -162,6 +162,8 @@ class ZoneDnssecKeysControllerTest extends TestCase
             'curve size mismatch' => ['{"type":"zsk","algorithm":"ecdsa256","bits":384}', 'ecdsa256 requires 256 bits'],
             'rsa size' => ['{"type":"zsk","algorithm":"rsasha256","bits":768}', 'rsasha256 requires 1024 or 2048 bits'],
             'bits not a number' => ['{"type":"zsk","algorithm":"ecdsa256","bits":"big"}', 'Missing or invalid required field: bits (integer)'],
+            'digit string bits of the wrong size' => ['{"type":"zsk","algorithm":"ecdsa256","bits":"384"}', 'ecdsa256 requires 256 bits'],
+            'unknown algorithm' => ['{"type":"zsk","algorithm":"md5","bits":256}', 'Missing or invalid required field: algorithm (one of: rsasha1, rsasha1-nsec3-sha1, rsasha256, rsasha512, ecdsa256, ecdsa384, ed25519, ed448)'],
             'active not a boolean' => ['{"type":"zsk","algorithm":"ecdsa256","bits":256,"active":"yes"}', 'Invalid field: active (boolean)'],
         ];
     }
@@ -235,6 +237,16 @@ class ZoneDnssecKeysControllerTest extends TestCase
 
         $this->assertSame(200, $status);
         $this->assertSame('DNSSEC key already active', $body['message']);
+
+        $this->dnssecProvider = $this->createMock(\Poweradmin\Domain\Port\DnssecProviderInterface::class);
+        $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', false, '256 3 13 AAAA', [])]);
+        $this->dnssecProvider->expects($this->never())->method('deactivateZoneKey');
+
+        [$status, $body] = self::decode($this->controller(['id' => 1, 'key_id' => 3], '{"active":false}')->callUpdateKey());
+
+        $this->assertSame(200, $status);
+        $this->assertSame('DNSSEC key already inactive', $body['message']);
     }
 
     public function testDeletingRemovesTheListedKeyAndAudits(): void
