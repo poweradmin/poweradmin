@@ -153,7 +153,13 @@ final class BackendServices
 
     public function dnssecProvider(): DnssecProviderInterface
     {
-        return $this->dnssecProvider ??= DnssecProviderFactory::create($this->db, $this->config, $this->actor, $this->apiClient());
+        if ($this->dnssecProvider === null) {
+            // SQL mode has no backend client; build one that honours pdns_api.timeout and logs to the app log
+            $apiClient = $this->apiClient() ?? DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+            $this->dnssecProvider = DnssecProviderFactory::create($this->db, $this->config, $this->actor, $apiClient);
+        }
+
+        return $this->dnssecProvider;
     }
 
     public function dnsDataService(): DnsDataService
