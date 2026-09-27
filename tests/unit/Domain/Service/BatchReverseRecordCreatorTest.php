@@ -367,4 +367,33 @@ class BatchReverseRecordCreatorTest extends TestCase
         $this->assertEquals(0, $addCount);
         $this->assertStringContainsString('skipped', $result['message']);
     }
+
+    public function testCreateIPv6NetworkReportsWhyPartOfTheBatchFailed(): void
+    {
+        $dnsRecord = $this->createMock(DnsRecord::class);
+        $dnsRecord->method('getBestMatchingZoneIdFromName')
+            ->willReturn(42);
+
+        $addCount = 0;
+        $dnsRecord->method('addRecord')
+            ->willReturnCallback(function () use (&$addCount) {
+                $addCount++;
+                if ($addCount === 2) {
+                    throw new \Exception('You do not have the permission to add a record to this zone.');
+                }
+                return true;
+            });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+
+        $service = $this->createService($dnsRecord, null, $recordRepo);
+
+        $result = $service->createIPv6Network('2001:db8:1:1', '', 'example.com', '1', 3600, 0, '', '', 4, false);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('warning', $result['type']);
+        $this->assertStringContainsString('(1 failed)', $result['message']);
+        $this->assertStringContainsString('You do not have the permission to add a record to this zone.', $result['message']);
+    }
 }
