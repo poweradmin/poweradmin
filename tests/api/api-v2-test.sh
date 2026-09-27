@@ -328,6 +328,63 @@ test_rrsets() {
 }
 
 ##############################################################################
+# Test: Record and RRSet Listing (filter, sort, paging)
+##############################################################################
+
+test_record_listing() {
+    print_section "Record and RRSet Listing Tests (filter, sort, paging)"
+
+    local zone_id
+    if api_request_v2 "POST" "/zones" '{"name":"listing-test.example.com","type":"MASTER"}' 201 "Create zone for listing tests"; then
+        zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    else
+        print_fail "Failed to create zone - skipping listing tests"
+        return 1
+    fi
+
+    api_request_v2 "PUT" "/zones/${zone_id}/rrsets" '{"name":"www","type":"A","ttl":3600,"records":[{"content":"192.0.2.1","disabled":false},{"content":"192.0.2.2","disabled":false}]}' 200 "Create www A RRSet"
+    api_request_v2 "PUT" "/zones/${zone_id}/rrsets" '{"name":"mail","type":"A","ttl":300,"records":[{"content":"198.51.100.7","disabled":false}]}' 200 "Create mail A RRSet"
+    api_request_v2 "PUT" "/zones/${zone_id}/rrsets" '{"name":"api","type":"AAAA","ttl":600,"records":[{"content":"2001:db8::10","disabled":false}]}' 200 "Create api AAAA RRSet"
+
+    local base="/zones/${zone_id}"
+
+    # Without per_page nothing changes: no pagination object
+    api_request_v2 "GET" "${base}/records" "" 200 "List records without paging"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+
+    # Substring filters, case-insensitive
+    api_request_v2 "GET" "${base}/records?name=WWW" "" 200 "Filter records by name"
+    assert_json "Name filter keeps the two www records" "$LAST_RESPONSE_BODY" '.data.records | length' "2"
+    api_request_v2 "GET" "${base}/records?content=db8" "" 200 "Filter records by content"
+    assert_json "Content filter finds the AAAA record" "$LAST_RESPONSE_BODY" '.data.records | map(.type) | unique | join(",")' "AAAA"
+
+    # Sorting
+    api_request_v2 "GET" "${base}/records?type=A&sort=ttl,content:desc" "" 200 "Sort A records by ttl, content desc"
+    assert_json "Sorted by ttl, then content descending" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "198.51.100.7,192.0.2.2,192.0.2.1"
+    api_request_v2 "GET" "${base}/records?sort=owner" "" 400 "Reject unknown record sort field"
+    api_request_v2 "GET" "${base}/records?sort=name:up" "" 400 "Reject unknown sort direction"
+
+    # Paging after filter and sort
+    api_request_v2 "GET" "${base}/records?type=A&sort=content&per_page=2&page=2" "" 200 "Second page of A records"
+    assert_json "Second page holds the last A record" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "198.51.100.7"
+    assert_json "Pagination total counts the filtered records" "$LAST_RESPONSE_BODY" '.pagination.total' "3"
+    assert_json "Pagination last_page" "$LAST_RESPONSE_BODY" '.pagination.last_page' "2"
+    assert_json "Pagination current_page" "$LAST_RESPONSE_BODY" '.pagination.current_page' "2"
+    api_request_v2 "GET" "${base}/records?per_page=2&page=99999999999999999999" "" 200 "A huge page number is an empty page"
+    assert_json "Huge page holds no records" "$LAST_RESPONSE_BODY" '.data.records | length' "0"
+
+    # RRSets
+    api_request_v2 "GET" "${base}/rrsets?content=192.0.2.2" "" 200 "Filter RRSets by member content"
+    assert_json "Content filter keeps the whole www RRSet" "$LAST_RESPONSE_BODY" '[.data.rrsets[] | select(.type == "A") | .records | length] | join(",")' "2"
+    api_request_v2 "GET" "${base}/rrsets?type=A&sort=ttl:desc&per_page=1" "" 200 "First page of A RRSets by ttl desc"
+    assert_json "Highest TTL first" "$LAST_RESPONSE_BODY" '.data.rrsets[0].ttl' "3600"
+    assert_json "RRSet pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "${base}/rrsets?sort=content" "" 400 "Reject unknown RRSet sort field"
+
+    api_request_v2 "DELETE" "/zones/${zone_id}" "" 204 "Delete listing test zone" || true
+}
+
+##############################################################################
 # Test: PTR Auto-Creation
 ##############################################################################
 
@@ -3541,6 +3598,7 @@ main() {
     test_api_documentation
     test_v1_removed
     test_rrsets
+    test_record_listing
     test_ptr_autocreation
     test_ptr_update
     test_ttl_defaults
