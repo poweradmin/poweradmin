@@ -177,7 +177,17 @@ final class DnsSecApiProvider implements DnssecProviderInterface
         $serverConfig = $this->client->getConfig();
 
         foreach ($serverConfig as $item) {
-            if (str_ends_with($item['name'], '-dnssec') && $item['value'] !== 'no') {
+            $name = (string)($item['name'] ?? '');
+            $value = (string)($item['value'] ?? '');
+            if (str_ends_with($name, '-dnssec') && $value !== 'no') {
+                return true;
+            }
+            // bind and geoip turn DNSSEC on by naming a key store rather than with a *-dnssec switch
+            if (in_array($name, ['bind-dnssec-db', 'geoip-dnssec-keydir'], true) && $value !== '') {
+                return true;
+            }
+            // The LMDB backend stores DNSSEC data natively and has no *-dnssec switch
+            if ($name === 'launch' && preg_match('/(^|[\s,])lmdb(:|[\s,]|$)/', $value) === 1) {
                 return true;
             }
         }
