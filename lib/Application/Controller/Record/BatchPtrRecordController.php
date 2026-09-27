@@ -77,8 +77,9 @@ class BatchPtrRecordController extends BaseController
         // Check if user has permission to use this feature
         $perm_edit_own = $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OWN);
         $perm_edit_others = $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS);
+        $perm_edit_as_client = $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT);
         $this->checkCondition(
-            !$perm_edit_own && !$perm_edit_others,
+            !$perm_edit_own && !$perm_edit_others && !$perm_edit_as_client,
             _("You do not have permission to edit DNS records.")
         );
 

@@ -62,7 +62,8 @@ final class NavigationVisibility
             'bulk_registration' => $can(Permission::PERM_ZONE_MASTER_ADD),
             // The batch PTR page itself requires an edit grant.
             'batch_ptr' => (bool)$config->get('interface', 'add_reverse_record', false)
-                && ($can(Permission::PERM_ZONE_CONTENT_EDIT_OWN) || $can(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS)),
+                && ($can(Permission::PERM_ZONE_CONTENT_EDIT_OWN) || $can(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS)
+                    || $can(Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT)),
             'zone_logs' => $zoneLogs,
             'record_changes' => $zoneLogs && $ueberuser,
             'change_requests' => $changeRequests,

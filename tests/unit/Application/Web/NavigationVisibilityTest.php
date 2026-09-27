@@ -125,4 +125,12 @@ class NavigationVisibilityTest extends TestCase
         $this->assertTrue($this->build([Permission::PERM_ZONE_CONTENT_EDIT_OWN], $reverse)['batch_ptr']);
         $this->assertFalse($this->build([Permission::PERM_ZONE_CONTENT_EDIT_OWN])['batch_ptr']);
     }
+
+    public function testBatchPtrIsOfferedToClientEditors(): void
+    {
+        $reverse = ['interface' => ['add_reverse_record' => true]];
+
+        $this->assertTrue($this->build([Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT], $reverse)['batch_ptr']);
+        $this->assertFalse($this->build([Permission::PERM_ZONE_CONTENT_VIEW_OWN], $reverse)['batch_ptr']);
+    }
 }

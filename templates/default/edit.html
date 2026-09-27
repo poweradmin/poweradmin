@@ -628,7 +628,7 @@
             </ul>
         </div>
         {% endif %}
-        {% if not is_reverse_zone and can_edit_records %}
+        {% if not is_reverse_zone and can_edit_records and nav.batch_ptr %}
         <a href="{{ base_url_prefix }}/zones/batch-ptr?id={{ zone_id }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-repeat me-1 text-secondary"></i>{% trans %}Generate PTR{% endtrans %}
         </a>

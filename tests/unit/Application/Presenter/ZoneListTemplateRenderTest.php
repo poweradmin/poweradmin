@@ -155,6 +155,7 @@ class ZoneListTemplateRenderTest extends TestCase
             'perm_zone_slave_add' => true,
             'perm_is_godlike' => true,
             'is_api_backend' => true,
+            'nav' => ['batch_ptr' => true],
         ]);
 
         $this->assertStringContainsString('signed.example', $html);
