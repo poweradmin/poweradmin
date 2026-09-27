@@ -86,7 +86,7 @@ class DnssecAddKeyController extends BaseController
         }
 
         $domain_name = $domainRepository->getDomainNameById($zone_id);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig(), null, $this->logger);
 
         if ($dnssecProvider->isZonePresigned($domain_name)) {
             $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));

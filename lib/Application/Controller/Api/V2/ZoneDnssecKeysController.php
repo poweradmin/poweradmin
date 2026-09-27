@@ -93,7 +93,7 @@ class ZoneDnssecKeysController extends PublicApiController
 
         $this->zoneRepository = $this->createZoneRepository();
         $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+        $this->dnssecProvider = DnssecProviderFactory::create($this->db, $this->config, null, $this->logger);
 
         // Key management needs the PowerDNS API; createApiClient() returns null when it is not configured.
         $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);

@@ -96,7 +96,7 @@ class DnssecController extends BaseController
             $this->validateCsrfToken();
 
             $zone_name = $domainRepository->getDomainNameById($zone_id);
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig(), null, $this->logger);
 
             // Check if zone is secured before attempting to unsecure
             if ($zone_name === null) {
@@ -140,7 +140,7 @@ class DnssecController extends BaseController
         $domain_name = $domainRepository->getDomainNameById($zone_id);
         $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig(), null, $this->logger);
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $permissionService = $this->createPermissionService();
         $can_manage_dnssec = $permissionService->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id);

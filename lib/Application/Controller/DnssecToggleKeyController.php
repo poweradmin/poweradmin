@@ -85,7 +85,7 @@ class DnssecToggleKeyController extends BaseController
         }
 
         $domain_name = $domainRepository->getDomainNameById($zone_id);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig(), null, $this->logger);
 
         // Check if DNSSEC is available
         if (!$dnssecProvider->isDnssecEnabled()) {

@@ -136,7 +136,7 @@ class ControllerServiceFactory
 
     public function dnssecProvider(): DnssecProvider
     {
-        return $this->dnssecProvider ??= DnssecProviderFactory::create($this->db, $this->config, $this->apiClient());
+        return $this->dnssecProvider ??= DnssecProviderFactory::create($this->db, $this->config, $this->apiClient(), $this->logger);
     }
 
     public function dnsDataService(): DnsDataService

@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Logger\CompositeLegacyLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\NullDnssecProvider;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
@@ -89,7 +90,7 @@ class DnssecProviderFactory
      * @return DnssecProvider DNSSEC provider instance
      * @throws Exception When PowerDNS API is not configured
      */
-    public static function create(PDO $db, ConfigurationInterface $config, ?PowerdnsApiClient $apiClient = null): DnssecProvider
+    public static function create(PDO $db, ConfigurationInterface $config, ?PowerdnsApiClient $apiClient = null, ?LoggerInterface $logger = null): DnssecProvider
     {
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');
@@ -98,15 +99,8 @@ class DnssecProviderFactory
             return new NullDnssecProvider();
         }
 
-        if ($apiClient === null) {
-            $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey);
-
-            // Get the server name, with a default if not found
-            $serverNameFromConfig = $config->get('pdns_api', 'server_name');
-            $serverName = $serverNameFromConfig ?: 'localhost';
-
-            $apiClient = new PowerdnsApiClient($httpClient, $serverName);
-        }
+        // Honour pdns_api.timeout; a fixed 10 s cut off slow key generation mid-request
+        $apiClient ??= DnsBackendProviderFactory::createApiClient($config, $logger);
 
         $logger = new CompositeLegacyLogger();
 

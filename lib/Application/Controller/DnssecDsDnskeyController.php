@@ -86,7 +86,7 @@ class DnssecDsDnskeyController extends BaseController
         $record_count = $this->createRecordRepository()->countZoneRecords($zone_id);
         $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
 
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig(), null, $this->logger);
         $dnskey_records = $dnssecProvider->getDnsKeyRecords($domain_name);
         $ds_records = $dnssecProvider->getDsRecords($domain_name);
 

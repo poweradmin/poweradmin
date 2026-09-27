@@ -84,7 +84,7 @@ class DnssecDeleteKeyController extends BaseController
         }
 
         $domain_name = $domainRepository->getDomainNameById($zone_id);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig(), null, $this->logger);
 
         if ($dnssecProvider->isZonePresigned($domain_name)) {
             $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
@@ -135,7 +135,7 @@ class DnssecDeleteKeyController extends BaseController
 
     public function showKeyInfo($domain_name, $key_id, int $zone_id): void
     {
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig(), null, $this->logger);
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
         $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
