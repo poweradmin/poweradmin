@@ -62,7 +62,7 @@ class ServerStatusControllerTest extends TestCase
             [7, Permission::PERM_SUPERMASTER_VIEW, $canViewAutoprimaries],
         ]);
         $this->statusService->method('isApiEnabled')->willReturn(true);
-        $this->statusService->method('getServerStatus')->with(false)->willReturn($status);
+        $this->statusService->method('getServerStatus')->willReturn($status);
     }
 
     private static function runningStatus(): array

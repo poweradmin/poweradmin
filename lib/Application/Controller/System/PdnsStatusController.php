@@ -76,7 +76,7 @@ class PdnsStatusController extends BaseController
      */
     private function showStatus(): void
     {
-        $serverStatus = $this->statusService()->getServerStatus();
+        $serverStatus = $this->statusService()->getDetailedServerStatus();
 
         // The autoprimary list is supermaster data, so it follows supermaster_view
         $slaveStatus = [];
