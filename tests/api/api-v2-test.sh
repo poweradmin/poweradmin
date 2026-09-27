@@ -2109,6 +2109,25 @@ test_zone_dnssec_keys() {
         fi
         api_request_v2 "DELETE" "/zones/${zone_id}/dnssec/keys/${zsk_id}" "" 200 "Delete active ZSK"
 
+        # Import from an ISC/BIND private key (test-only ECDSA P-256 key)
+        local isc_key='Private-key-format: v1.2\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: 8oJBqwnnl8Tnp7LrlF26dio/Wl/qIuxVmtCCjVFqsbs=\n'
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys/import" '{"privatekey":"x"}' 400 "Reject import without type"
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys/import" '{"type":"zsk","privatekey":"not a key"}' 400 "Reject import of a non-ISC key"
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys/import" '{"type":"zsk","privatekey":"-----BEGIN PRIVATE KEY-----\nMIGHAgEA\n-----END PRIVATE KEY-----\n"}' 400 "Reject import of a PEM key"
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys/import" "{\"type\":\"zsk\",\"privatekey\":\"${isc_key}\"}" 201 "Import ZSK from ISC private key"
+        local imported_id
+        imported_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id' 2>/dev/null)
+        increment_test
+        if [[ "$imported_id" =~ ^[0-9]+$ ]] \
+            && [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.algorithm')" == "ecdsa256" ]] \
+            && [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.dnskey')" == 256\ 3\ 13\ * ]] \
+            && [[ "$(echo "$LAST_RESPONSE_BODY" | jq '.data | has("privatekey")')" == "false" ]]; then
+            print_pass "Imported key $imported_id takes its algorithm from the key and never echoes it"
+        else
+            print_fail "Import response wrong: $LAST_RESPONSE_BODY"
+        fi
+        api_request_v2 "DELETE" "/zones/${zone_id}/dnssec/keys/${imported_id}" "" 200 "Delete imported key"
+
         api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys/${key_id}" "" 200 "Get single key"
         api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys/999999" "" 404 "Get non-existent key"
 

@@ -98,6 +98,11 @@ class TestableZoneDnssecKeysController extends ZoneDnssecKeysController
         return $this->deleteKey();
     }
 
+    public function callImportKey(): JsonResponse
+    {
+        return $this->importKey();
+    }
+
     protected function keyService(): DnssecKeyService
     {
         return $this->keyService;

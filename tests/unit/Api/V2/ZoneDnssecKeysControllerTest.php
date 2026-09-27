@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 use Poweradmin\Domain\Service\Zone\DnssecKeyService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
@@ -36,6 +37,9 @@ class ZoneDnssecKeysControllerTest extends TestCase
 {
     // The DNSKEY from RFC 4034 section 5.4, whose key tag is 60485
     private const RFC_DNSKEY = '256 3 5 AQOeiiR0GOMYkDshWoSKz9XzfwJr1AYtsmx3TGkJaNXVbfi/2pHm822aJ5iI9BMzNXxeYCmZDRD99WYwYqUSdjMmmAphXdvxegXd/M5+X7OrzKBaMbCVdFLUUh6DhweJBjEVv5f2wwjM9XzcnOf+EPbtG9DMBmADjFDc2w/rljwvFw==';
+
+    // A test-only ECDSA P-256 key in the ISC/BIND format
+    private const ISC_KEY = "Private-key-format: v1.2\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: 8oJBqwnnl8Tnp7LrlF26dio/Wl/qIuxVmtCCjVFqsbs=\n";
 
     private MockObject $domainRepository;
     private MockObject $permissionService;
@@ -367,5 +371,95 @@ class ZoneDnssecKeysControllerTest extends TestCase
 
         $this->assertSame(400, $status);
         $this->assertStringNotContainsString('ed448', $body['message']);
+    }
+
+    private static function importBody(string $type = 'csk', ?string $privateKey = null): string
+    {
+        return (string)json_encode(['type' => $type, 'privatekey' => $privateKey ?? self::ISC_KEY, 'active' => true]);
+    }
+
+    public function testImportReturnsTheKeyPowerDnsCreatedWithoutThePrivateKey(): void
+    {
+        $this->allowManage();
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([]);
+        $this->dnssecProvider->expects($this->once())->method('importZoneKeyFromPrivateKey')
+            ->with('example.com', 'csk', self::ISC_KEY, true)
+            ->willReturn(new CryptoKey(9, 'csk', 256, 'ECDSAP256SHA256', true, '257 3 13 AAAA', ['1 13 2 ABCD']));
+        $this->audit->expects($this->once())->method('logDnssecAddKey')->with(1, 'example.com', 'csk', '256', 'ecdsa256');
+
+        $response = $this->controller(['id' => 1, 'action' => 'import'], self::importBody())->callImportKey();
+        [$status, $body] = self::decode($response);
+
+        $this->assertSame(201, $status);
+        $this->assertSame(9, $body['data']['id']);
+        $this->assertSame('ecdsa256', $body['data']['algorithm']);
+        $this->assertArrayNotHasKey('privatekey', $body['data']);
+        $this->assertStringNotContainsString('PrivateKey:', (string)$response->getContent());
+    }
+
+    public function testImportingNeedsTheDnssecManagePermission(): void
+    {
+        $this->permissionService->method('canViewZone')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(false);
+        $this->dnssecProvider->expects($this->never())->method('importZoneKeyFromPrivateKey');
+
+        $response = $this->controller(['id' => 1, 'action' => 'import'], self::importBody())->callImportKey();
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertStringNotContainsString('PrivateKey:', (string)$response->getContent());
+    }
+
+    public function testARejectedKeyIsA400WithoutTheKeyText(): void
+    {
+        $this->allowManage();
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([]);
+        $this->dnssecProvider->method('importZoneKeyFromPrivateKey')->willReturn(DnssecKeyOutcome::KEY_REJECTED);
+        $this->audit->expects($this->never())->method('logDnssecAddKey');
+
+        $response = $this->controller(['id' => 1, 'action' => 'import'], self::importBody())->callImportKey();
+        [$status, $body] = self::decode($response);
+
+        $this->assertSame(400, $status);
+        $this->assertSame('PowerDNS rejected the private key', $body['message']);
+        $this->assertStringNotContainsString('PrivateKey:', (string)$response->getContent());
+        $this->assertStringNotContainsString('8oJBqwnnl8', (string)$response->getContent());
+    }
+
+    public function testAFailedImportIsAServerErrorAndIsNotAudited(): void
+    {
+        $this->allowManage();
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([]);
+        $this->dnssecProvider->method('importZoneKeyFromPrivateKey')->willReturn(DnssecKeyOutcome::FAILED);
+        $this->audit->expects($this->never())->method('logDnssecAddKey');
+
+        $this->assertSame(500, $this->controller(['id' => 1, 'action' => 'import'], self::importBody())->callImportKey()->getStatusCode());
+    }
+
+    /** @return array<string, array{0: string, 1: string}> */
+    public static function invalidImportProvider(): array
+    {
+        return [
+            'missing type' => [(string)json_encode(['privatekey' => self::ISC_KEY]), 'Missing or invalid required field: type (ksk, zsk or csk)'],
+            'pem key' => [
+                self::importBody('csk', "-----BEGIN PRIVATE KEY-----\nMIGHAgEA\n-----END PRIVATE KEY-----\n"),
+                'Missing or invalid required field: privatekey (an ISC/BIND private key with "Private-key-format: v1.x"; PEM keys can be imported with pdnsutil import-zone-key-pem)',
+            ],
+            'active not a boolean' => [(string)json_encode(['type' => 'csk', 'privatekey' => self::ISC_KEY, 'active' => 'yes']), 'Invalid field: active (boolean)'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidImportProvider')]
+    public function testInvalidImportsAreRefusedBeforePowerDnsIsAsked(string $body, string $message): void
+    {
+        $this->allowManage();
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([]);
+        $this->dnssecProvider->expects($this->never())->method('importZoneKeyFromPrivateKey');
+
+        $response = $this->controller(['id' => 1, 'action' => 'import'], $body)->callImportKey();
+        [$status, $decoded] = self::decode($response);
+
+        $this->assertSame(400, $status);
+        $this->assertSame($message, $decoded['message']);
+        $this->assertStringNotContainsString('MIGHAgEA', (string)$response->getContent());
     }
 }
