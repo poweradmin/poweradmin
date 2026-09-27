@@ -157,7 +157,7 @@ class ServerStatusController extends PublicApiController
         }
 
         try {
-            $status = $this->statusService->getServerStatus(false);
+            $status = $this->statusService->getServerStatus();
         } catch (Exception $e) {
             return $this->handleException($e, 'Failed to retrieve PowerDNS server status', 'Failed to retrieve server status');
         }

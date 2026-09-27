@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\PowerdnsStatusService;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use ReflectionClass;
 
 class PowerdnsStatusServiceTest extends TestCase
@@ -177,5 +178,59 @@ class PowerdnsStatusServiceTest extends TestCase
         $this->assertSame('unreachable', $results['192.0.2.1']['status']);
         $this->assertSame('skipped', $results['192.0.2.25']['status']);
         $this->assertSame('', $results['192.0.2.25']['lastChecked'], 'a skipped host was never checked');
+    }
+
+    private function stubApiClient(PowerdnsStatusService $service): void
+    {
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('getServerInfo')->willReturn(['id' => 'localhost', 'daemon_type' => 'authoritative', 'version' => '4.9.4']);
+        $client->method('getMetrics')->willReturn([['name' => 'udp-queries', 'value' => '42']]);
+        $this->enableApi($service);
+        foreach (['apiClient' => $client, 'apiUrl' => 'http://127.0.0.1:8081'] as $name => $value) {
+            $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty($name);
+            $property->setAccessible(true);
+            $property->setValue($service, $value);
+        }
+    }
+
+    public function testServerStatusSkipsThePrometheusEndpoint(): void
+    {
+        $service = new class () extends PowerdnsStatusService {
+            public int $prometheusFetches = 0;
+
+            protected function fetchMetricsWithAuth(string $url): string
+            {
+                $this->prometheusFetches++;
+                return '';
+            }
+        };
+        $this->stubApiClient($service);
+
+        $status = $service->getServerStatus();
+
+        $this->assertSame(0, $service->prometheusFetches);
+        $this->assertTrue($status['running']);
+        $this->assertSame(['udp-queries' => '42'], $status['metrics']);
+        $this->assertArrayNotHasKey('metric_info', $status);
+    }
+
+    public function testDetailedServerStatusAttachesDescriptionsWithoutDuplicatingMetrics(): void
+    {
+        $service = new class () extends PowerdnsStatusService {
+            protected function fetchMetricsWithAuth(string $url): string
+            {
+                return "# HELP pdns_auth_udp_queries Number of UDP queries received\n"
+                    . "# TYPE pdns_auth_udp_queries counter\npdns_auth_udp_queries 42\n";
+            }
+        };
+        $this->stubApiClient($service);
+
+        $status = $service->getDetailedServerStatus();
+
+        $this->assertSame(['udp-queries' => '42'], $status['metrics']);
+        $this->assertSame(
+            ['description' => 'Number of UDP queries received', 'type' => 'counter'],
+            $status['metric_info']['udp-queries']
+        );
     }
 }

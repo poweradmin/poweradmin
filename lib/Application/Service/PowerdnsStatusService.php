@@ -74,12 +74,23 @@ class PowerdnsStatusService
     }
 
     /**
-     * @param bool $includePrometheusMetrics Also fetch the Prometheus endpoint and merge its
-     *                                       metrics. The web UI wants them for its categories;
-     *                                       API clients get the plain statistics only, because
-     *                                       the Prometheus names duplicate them under a prefix.
+     * Server info and the PowerDNS API statistics, without the Prometheus endpoint.
      */
-    public function getServerStatus(bool $includePrometheusMetrics = true): array
+    public function getServerStatus(): array
+    {
+        return $this->collectServerStatus(false);
+    }
+
+    /**
+     * Server status plus a description per metric, taken from the Prometheus endpoint's
+     * HELP lines, for the status page tooltips.
+     */
+    public function getDetailedServerStatus(): array
+    {
+        return $this->collectServerStatus(true);
+    }
+
+    private function collectServerStatus(bool $includeMetricInfo): array
     {
         if (!$this->apiEnabled) {
             return [
@@ -109,19 +120,13 @@ class PowerdnsStatusService
                     }
                 }
 
-                // Try to fetch and parse raw Prometheus metrics if available
-                if ($includePrometheusMetrics && !empty($this->apiUrl)) {
+                // The Prometheus values duplicate the statistics above; only its HELP text is used
+                if ($includeMetricInfo && !empty($this->apiUrl)) {
                     $metricsUrl = $this->buildMetricsUrl();
 
-                    // Fetch metrics in Prometheus format with optional Basic Auth
                     // URL validation happens inside fetchMetricsWithAuth()
                     $rawMetrics = $this->fetchMetricsWithAuth($metricsUrl);
                     if ($rawMetrics !== false) {
-                        // Parse Prometheus-style metrics
-                        $prometheusMetrics = $this->parsePrometheusMetrics($rawMetrics);
-                        // Merge with existing metrics, with Prometheus metrics taking precedence
-                        $metrics = array_merge($metrics, $prometheusMetrics);
-                        // Store metric metadata for UI display
                         $metricInfo = $this->getMetricInfo($rawMetrics);
                     } else {
                         // Log failure to fetch Prometheus metrics (may require Basic Auth)
@@ -276,35 +281,8 @@ class PowerdnsStatusService
     }
 
     /**
-     * Parse Prometheus-format metrics into a associative array
-     *
-     * @param string $rawMetricsText Raw Prometheus metrics text
-     * @return array Parsed metrics as name => value
-     */
-    private function parsePrometheusMetrics(string $rawMetricsText): array
-    {
-        $metrics = [];
-        $lines = explode("\n", $rawMetricsText);
-
-        foreach ($lines as $line) {
-            // Skip empty lines, comments, and HELP/TYPE lines
-            if (empty($line) || str_starts_with($line, '#')) {
-                continue;
-            }
-
-            // Extract metric name and value
-            if (preg_match('/^([a-zA-Z0-9_]+)(?:\{.*?\})?\s+([0-9e\.\+\-]+)$/', $line, $matches)) {
-                $metricName = $matches[1];
-                $metricValue = $matches[2];
-                $metrics[$metricName] = $metricValue;
-            }
-        }
-
-        return $metrics;
-    }
-
-    /**
-     * Extract metric metadata (description and type) from Prometheus metrics
+     * Extract metric metadata (description and type) from Prometheus metrics, keyed by the
+     * statistics name (pdns_auth_udp_queries becomes udp-queries)
      *
      * @param string $rawMetricsText Raw Prometheus metrics text
      * @return array Metric info as name => [description, type]
@@ -317,7 +295,7 @@ class PowerdnsStatusService
         foreach ($lines as $line) {
             // Extract HELP lines
             if (preg_match('/^# HELP ([a-zA-Z0-9_]+) (.+)$/', $line, $matches)) {
-                $metricName = $matches[1];
+                $metricName = self::statisticName($matches[1]);
                 $description = $matches[2];
                 if (!isset($metricInfo[$metricName])) {
                     $metricInfo[$metricName] = ['description' => '', 'type' => ''];
@@ -327,7 +305,7 @@ class PowerdnsStatusService
 
             // Extract TYPE lines
             if (preg_match('/^# TYPE ([a-zA-Z0-9_]+) (.+)$/', $line, $matches)) {
-                $metricName = $matches[1];
+                $metricName = self::statisticName($matches[1]);
                 $type = $matches[2];
                 if (!isset($metricInfo[$metricName])) {
                     $metricInfo[$metricName] = ['description' => '', 'type' => ''];
@@ -337,6 +315,11 @@ class PowerdnsStatusService
         }
 
         return $metricInfo;
+    }
+
+    private static function statisticName(string $prometheusName): string
+    {
+        return str_replace('_', '-', (string)preg_replace('/^pdns_auth_/', '', $prometheusName));
     }
 
     /**
@@ -544,7 +527,7 @@ class PowerdnsStatusService
      * @param string $url The metrics URL to fetch
      * @return string|false The metrics content or false on failure
      */
-    private function fetchMetricsWithAuth(string $url): string|false
+    protected function fetchMetricsWithAuth(string $url): string|false
     {
         // Validate URL before fetching to prevent SSRF and path traversal
         if (!$this->isValidMetricsUrl($url)) {
