@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\Domain\Model\CryptoKey;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 
 /**
@@ -104,6 +105,15 @@ class NullDnssecProvider implements DnssecProviderInterface
     public function getEditedSerial(string $zoneName): ?int
     {
         return null;
+    }
+
+    public function importZoneKeyFromPrivateKey(
+        string $zoneName,
+        string $keyType,
+        #[\SensitiveParameter] string $privateKey,
+        bool $active
+    ): CryptoKey|DnssecKeyOutcome {
+        return DnssecKeyOutcome::FAILED;
     }
 
     public function importZoneKey(string $zoneName, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool

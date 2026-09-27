@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Port;
 
 use Poweradmin\Domain\Model\CryptoKey;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 
 /**
  * DNSSEC key lifecycle for a zone, plus the DS and DNSKEY records derived from its keys.
@@ -48,6 +49,21 @@ interface ZoneKeyManagementInterface
      * Create a key and return it as the server created it, or null when it was refused or could not be asked.
      */
     public function createZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm, bool $active): ?CryptoKey;
+
+    /**
+     * Create a key from an existing ISC/BIND private key ("Private-key-format: v1.x")
+     * and return it as the server created it. The server derives algorithm and
+     * size from the key.
+     *
+     * @return CryptoKey|DnssecKeyOutcome The created key, KEY_REJECTED when the server
+     *                                    could not use the key, or FAILED
+     */
+    public function importZoneKeyFromPrivateKey(
+        string $zoneName,
+        string $keyType,
+        #[\SensitiveParameter] string $privateKey,
+        bool $active
+    ): CryptoKey|DnssecKeyOutcome;
 
     /**
      * Import a DNSSEC key from a PEM-encoded private key. Requires PowerDNS

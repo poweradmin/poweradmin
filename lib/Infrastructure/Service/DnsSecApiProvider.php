@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
@@ -203,6 +204,18 @@ final class DnsSecApiProvider implements DnssecProviderInterface
             return null;
         }
         return (int)$zoneData['edited_serial'];
+    }
+
+    public function importZoneKeyFromPrivateKey(
+        string $zoneName,
+        string $keyType,
+        #[\SensitiveParameter] string $privateKey,
+        bool $active
+    ): CryptoKey|DnssecKeyOutcome {
+        $created = $this->client->createZoneKeyFromPrivateKey(new Zone($zoneName), $keyType, $privateKey, $active);
+        // Never log the private key itself
+        $this->logAction('dnssec_import_zone_key', $zoneName, ['type' => $keyType, 'active' => $active ? 'yes' : 'no', 'result' => $created instanceof CryptoKey]);
+        return $created;
     }
 
     public function importZoneKey(string $zoneName, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool

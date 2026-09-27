@@ -26,6 +26,7 @@ use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -476,6 +477,47 @@ class PowerdnsApiClient
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to import DNSSEC key into zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
+        }
+    }
+
+    /**
+     * Create a DNSSEC key from an existing private key and return the key
+     * PowerDNS created.
+     *
+     * The private key is in the ISC/BIND format ("Private-key-format: v1.x"),
+     * which PowerDNS accepts on POST /cryptokeys since 4.1. Only keytype,
+     * privatekey and active are sent: PowerDNS derives algorithm and size from
+     * the key and answers 422 when algorithm or bits are sent as well. The
+     * private key is never logged.
+     *
+     * @return CryptoKey|DnssecKeyOutcome The created key, KEY_REJECTED when PowerDNS
+     *                                    could not parse the key (HTTP 422), or FAILED
+     */
+    public function createZoneKeyFromPrivateKey(
+        Zone $zone,
+        string $keyType,
+        #[\SensitiveParameter] string $privateKey,
+        bool $active = false
+    ): CryptoKey|DnssecKeyOutcome {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
+            $data = [
+                'keytype' => $keyType,
+                'privatekey' => $privateKey,
+                'active' => $active,
+            ];
+            $response = $this->request('POST', $endpoint, $data);
+
+            if ($response && $response['responseCode'] === 201 && is_array($response['data']) && isset($response['data']['id'])) {
+                return $this->cryptoKeyFromData($response['data']);
+            }
+
+            return DnssecKeyOutcome::FAILED;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to import DNSSEC key into zone {zone}: HTTP {code}', ['zone' => $zone->getName(), 'code' => $e->getCode()]);
+            // Only 422 means PowerDNS could not use the key. Any other status, e.g. 401/403
+            // for a wrong PowerDNS API key or 404, is a failure on our side, not a bad key.
+            return $e->getCode() === 422 ? DnssecKeyOutcome::KEY_REJECTED : DnssecKeyOutcome::FAILED;
         }
     }
 

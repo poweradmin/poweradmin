@@ -38,6 +38,9 @@ use Poweradmin\Domain\Port\ZoneSigningInterface;
  */
 class DnssecKeyService
 {
+    /** Generous upper bound for an ISC private key; an RSA-4096 key is about 3.3 KB */
+    private const MAX_PRIVATE_KEY_BYTES = 16384;
+
     public function __construct(
         private readonly ZoneKeyManagementInterface&ZoneSigningInterface $dnssec,
         private readonly AuditLoggerInterface $audit
@@ -115,6 +118,65 @@ class DnssecKeyService
         }
 
         $this->audit->logDnssecAddKey($zoneId, $zoneName, $type, (string)$bits, $algorithm);
+
+        return new DnssecKeyResult(DnssecKeyOutcome::ADDED, $created);
+    }
+
+    /**
+     * Check that a private key looks like the ISC/BIND format PowerDNS imports
+     * ("Private-key-format: v1.x" and an "Algorithm:" line), without asking
+     * PowerDNS. PEM keys are refused: the PowerDNS HTTP API does not take them.
+     */
+    public static function isIscPrivateKey(#[\SensitiveParameter] string $privateKey): bool
+    {
+        $privateKey = trim($privateKey);
+        if ($privateKey === '' || strlen($privateKey) > self::MAX_PRIVATE_KEY_BYTES) {
+            return false;
+        }
+
+        return preg_match('/^Private-key-format:\s*v1\.\d+\s*$/mi', $privateKey) === 1
+            && preg_match('/^Algorithm:\s*\d+/mi', $privateKey) === 1;
+    }
+
+    /**
+     * Import a key from an existing ISC/BIND private key. PowerDNS derives the
+     * algorithm and size from the key; the created key carries them.
+     *
+     * The private key is only passed on to PowerDNS: it is not audited, logged
+     * or part of the result.
+     */
+    public function importKey(
+        int $zoneId,
+        string $zoneName,
+        string $type,
+        #[\SensitiveParameter] string $privateKey,
+        bool $active
+    ): DnssecKeyResult {
+        if (!DnssecKeyType::isValid($type)) {
+            return new DnssecKeyResult(DnssecKeyOutcome::INVALID_TYPE);
+        }
+        if (!self::isIscPrivateKey($privateKey)) {
+            return new DnssecKeyResult(DnssecKeyOutcome::INVALID_PRIVATE_KEY);
+        }
+
+        $keys = $this->writableKeys($zoneName);
+        if ($keys instanceof DnssecKeyResult) {
+            return $keys;
+        }
+
+        $created = $this->dnssec->importZoneKeyFromPrivateKey($zoneName, $type, trim($privateKey) . "\n", $active);
+        if ($created instanceof DnssecKeyOutcome) {
+            // Only KEY_REJECTED or FAILED; anything else would be a provider bug, so treat it as a failure
+            return new DnssecKeyResult($created === DnssecKeyOutcome::KEY_REJECTED ? DnssecKeyOutcome::KEY_REJECTED : DnssecKeyOutcome::FAILED);
+        }
+
+        $this->audit->logDnssecAddKey(
+            $zoneId,
+            $zoneName,
+            $type,
+            (string)$created->getSize(),
+            DnssecAlgorithmName::fromAlgorithmId($created->getAlgorithmId()) ?? (string)$created->getAlgorithmId()
+        );
 
         return new DnssecKeyResult(DnssecKeyOutcome::ADDED, $created);
     }
