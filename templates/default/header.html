@@ -123,7 +123,7 @@
                                href="{{ base_url_prefix }}/zones/bulk-registration"><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</a>
                         </li>
                         {% endif %}
-                        {% if iface_add_reverse_record and (can('zone_content_view_own') or can('zone_content_view_others')) %}
+                        {% if can_batch_ptr %}
                         <li><a class="dropdown-item {{ current_page == 'batch_ptr_record' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/zones/batch-ptr"><i class="bi bi-arrow-repeat me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</a>
                         </li>

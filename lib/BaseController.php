@@ -257,6 +257,7 @@ abstract class BaseController
         $params['message'] ??= false;
         $params['is_reverse_zone'] ??= false;
         $params['success'] ??= false;
+        $params['can_batch_ptr'] ??= $this->getPageRenderer()->canUseBatchPtr();
 
         $this->app()->render($template, $params);
         $this->renderFooter();

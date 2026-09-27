@@ -58,6 +58,7 @@ class PageRenderer
     private CsrfTokenService $csrfTokenService;
     private UserContextService $userContextService;
     private Closure $hasPermission;
+    private ?bool $canUseBatchPtr = null;
     private Closure $getDebugQueries;
     private bool $wideLayout;
 
@@ -299,6 +300,7 @@ class PageRenderer
                 'request' => $requestData,
                 'dblog_use' => $dblog_use,
                 'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
+                'can_batch_ptr' => $this->canUseBatchPtr(),
                 'api_enabled' => $this->config->get('api', 'enabled', false),
                 'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
                 'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
@@ -359,6 +361,17 @@ class PageRenderer
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
             'is_rtl' => LanguageCode::isRtl($this->resolveActiveLocale()),
         ]);
+    }
+
+    /**
+     * Whether batch PTR links are offered: the same rule the batch PTR page enforces.
+     */
+    public function canUseBatchPtr(): bool
+    {
+        return $this->canUseBatchPtr ??= $this->userContextService->isAuthenticated()
+            && $this->config->get('interface', 'add_reverse_record', false)
+            && ($this->hasPermission('zone_content_edit_own') || $this->hasPermission('zone_content_edit_others')
+                || $this->hasPermission('zone_content_edit_own_as_client'));
     }
 
     /**

@@ -189,7 +189,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
+                {% if can_batch_ptr %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/batch-ptr" class="card h-100 text-decoration-none text-body" data-testid="batch-ptr-records-link">
                         <div class="card-body text-center py-2 px-1">
@@ -493,7 +493,7 @@
         </a>
     </div>
     {% endif %}
-    {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
+    {% if can_batch_ptr %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/zones/batch-ptr" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="batch-ptr-records-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
