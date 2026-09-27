@@ -1617,6 +1617,8 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Controller\\Zone\\ZoneOwnershipController' => __DIR__ . '/../..' . '/lib/Application/Controller/Zone/ZoneOwnershipController.php',
         'Poweradmin\\Application\\Http\\BootstrapErrorResponder' => __DIR__ . '/../..' . '/lib/Application/Http/BootstrapErrorResponder.php',
         'Poweradmin\\Application\\Http\\ClientContext' => __DIR__ . '/../..' . '/lib/Application/Http/ClientContext.php',
+        'Poweradmin\\Application\\Http\\ListPaging' => __DIR__ . '/../..' . '/lib/Application/Http/ListPaging.php',
+        'Poweradmin\\Application\\Http\\ListSort' => __DIR__ . '/../..' . '/lib/Application/Http/ListSort.php',
         'Poweradmin\\Application\\Http\\RefusalStatus' => __DIR__ . '/../..' . '/lib/Application/Http/RefusalStatus.php',
         'Poweradmin\\Application\\Http\\Request' => __DIR__ . '/../..' . '/lib/Application/Http/Request.php',
         'Poweradmin\\Application\\Http\\RequestContext' => __DIR__ . '/../..' . '/lib/Application/Http/RequestContext.php',

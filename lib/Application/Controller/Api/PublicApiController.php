@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
+use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
 use Poweradmin\Application\Service\Auth\ApiKeyActor;
 use Poweradmin\Application\Service\Backend\PdnsVersionService;
@@ -355,6 +356,20 @@ abstract class PublicApiController extends AbstractApiController
         $this->logApiRequest($status);
 
         return parent::returnJsonResponse($data, $status, $headers);
+    }
+
+    /**
+     * The opt-in paging parameters of a list request, see ListPaging.
+     *
+     * @return array{0: int, 1: int} [page, perPage]; perPage 0 means "return everything"
+     */
+    protected function pagingParameters(): array
+    {
+        return ListPaging::parameters(
+            $this->request->query->get('page', 1),
+            $this->request->query->get('per_page', 0),
+            self::MAX_PAGE_SIZE
+        );
     }
 
     /**

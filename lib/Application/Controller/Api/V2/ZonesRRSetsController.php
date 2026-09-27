@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
 use Poweradmin\Domain\Model\ApiKeyScope;
@@ -42,6 +44,9 @@ use Poweradmin\Application\Http\RefusalStatus;
  */
 class ZonesRRSetsController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /zones/{id}/rrsets */
+    private const RRSET_SORT_FIELDS = ['name', 'type', 'ttl'];
+
     private ZoneReadRepositoryInterface $zoneRepository;
     private RecordListingInterface $recordRepository;
     private RecordManagerInterface $recordManager;
@@ -120,6 +125,42 @@ class ZonesRRSetsController extends PublicApiController
         description: 'Filter by record type (e.g., A, AAAA, CNAME)',
         schema: new OA\Schema(type: 'string', example: 'A')
     )]
+    #[OA\Parameter(
+        name: 'name',
+        in: 'query',
+        description: 'Case-insensitive substring filter on the RRSet name',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'www')
+    )]
+    #[OA\Parameter(
+        name: 'content',
+        in: 'query',
+        description: 'Case-insensitive substring filter: keeps RRSets with at least one record whose content matches',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: '192.0.2.')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        in: 'query',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, ttl. Default: backend order',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'name,type')
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        in: 'query',
+        description: 'Page number, starting at 1 (only used together with per_page)',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        in: 'query',
+        description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(
         response: 200,
         description: 'RRSets retrieved successfully',
@@ -127,6 +168,17 @@ class ZonesRRSetsController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'RRSets retrieved successfully'),
+                new OA\Property(
+                    property: 'pagination',
+                    description: 'Only present when per_page is given',
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 100),
+                        new OA\Property(property: 'total', type: 'integer', example: 250),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 3),
+                    ],
+                    type: 'object'
+                ),
                 new OA\Property(
                     property: 'data',
                     type: 'object',
@@ -168,6 +220,11 @@ class ZonesRRSetsController extends PublicApiController
             $userId = $this->getAuthenticatedUserId();
             $zoneId = $this->pathParameters['id'];
             $recordType = $this->request->query->get('type');
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::RRSET_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
 
             if (($scopeError = $this->enforceApiKeyZoneScope((int)$zoneId)) !== null) {
                 return $scopeError;
@@ -190,7 +247,13 @@ class ZonesRRSetsController extends PublicApiController
             // Group records into RRSets (by name + type)
             $rrsets = $this->groupIntoRRSets($records);
 
-            return $this->returnApiResponse(['rrsets' => $rrsets], true, 'RRSets retrieved successfully', 200);
+            // Records may come from the PowerDNS API, so filtering, sorting and
+            // paging happen here and behave the same for every backend.
+            $rrsets = ListPaging::filterContains($rrsets, (string)$this->request->query->get('name', ''), static fn(array $r): array => [$r['name']]);
+            $rrsets = ListPaging::filterContains($rrsets, (string)$this->request->query->get('content', ''), static fn(array $r): array => array_column($r['records'], 'content'));
+            [$rrsets, $extra] = ListPaging::paginate($sort->sortRows($rrsets), $page, $perPage);
+
+            return $this->returnApiResponse(['rrsets' => $rrsets], true, 'RRSets retrieved successfully', 200, $extra);
         } catch (\Throwable $e) {
             return $this->returnApiError('Failed to retrieve RRSets: ' . $e->getMessage(), 500);
         }

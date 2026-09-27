@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Application\Http\ListPaging;
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\ApiKeyScope;
@@ -204,25 +205,19 @@ class ChangeRequestsController extends PublicApiController
                 return $this->returnApiError('Invalid status filter', 400);
             }
             $zoneId = (int)$this->request->query->get('zone_id', 0);
-            $perPage = (int)$this->request->query->get('per_page', 0);
-            $page = $perPage > 0 ? max(1, (int)$this->request->query->get('page', 1)) : 1;
-            $perPage = $perPage > 0 ? min(self::MAX_PAGE_SIZE, $perPage) : 0;
+            [$page, $perPage] = $this->pagingParameters();
 
             $filters = $this->visibilityFilters($this->getAuthenticatedUserId(), $status === 'all' ? [] : ['status' => $status], $zoneId > 0 ? $zoneId : null);
             $total = $this->requests->count($filters);
-            $requests = $perPage > 0
-                ? $this->requests->list($filters, ($page - 1) * $perPage, $perPage)
-                : $this->requests->list($filters, 0, self::MAX_PAGE_SIZE);
-
-            $extra = [];
-            if ($perPage > 0) {
-                $extra['pagination'] = [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total' => $total,
-                    'last_page' => max(1, (int)ceil($total / $perPage)),
-                ];
+            if ($perPage === 0) {
+                $requests = $this->requests->list($filters, 0, self::MAX_PAGE_SIZE);
+            } elseif (ListPaging::isPastEnd($page, $perPage, $total)) {
+                $requests = [];
+            } else {
+                $requests = $this->requests->list($filters, ($page - 1) * $perPage, $perPage);
             }
+
+            $extra = ListPaging::extra($page, $perPage, $total);
 
             return $this->returnApiResponse(
                 ['change_requests' => array_map($this->serialize(...), $requests)],
