@@ -34,4 +34,6 @@ enum Refusal
     case FORBIDDEN;
     case PAYLOAD_TOO_LARGE;
     case BACKEND_FAILURE;
+    /** The backend could not be asked at all, as opposed to refusing the write */
+    case BACKEND_UNREACHABLE;
 }

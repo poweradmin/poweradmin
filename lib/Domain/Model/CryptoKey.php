@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -97,5 +97,52 @@ class CryptoKey
     public function getDs(): array
     {
         return $this->ds;
+    }
+
+    /**
+     * The algorithm number of the DNSKEY record, or 0 without one.
+     */
+    public function getAlgorithmId(): int
+    {
+        $fields = $this->dnskeyFields();
+
+        return count($fields) >= 3 ? (int)$fields[2] : 0;
+    }
+
+    /**
+     * The key tag of the DNSKEY record (RFC 4034, appendix B), or 0 without a
+     * readable one. Computed rather than read off a DS record, which a ZSK lacks.
+     */
+    public function getKeyTag(): int
+    {
+        $fields = $this->dnskeyFields();
+        if (count($fields) < 4) {
+            return 0;
+        }
+
+        $publicKey = base64_decode(implode('', array_slice($fields, 3)), true);
+        if ($publicKey === false) {
+            return 0;
+        }
+
+        $rdata = pack('nCC', (int)$fields[0], (int)$fields[1], (int)$fields[2]) . $publicKey;
+        $sum = 0;
+        $length = strlen($rdata);
+        for ($i = 0; $i < $length; $i++) {
+            $sum += ($i & 1) ? ord($rdata[$i]) : ord($rdata[$i]) << 8;
+        }
+        $sum += ($sum >> 16) & 0xFFFF;
+
+        return $sum & 0xFFFF;
+    }
+
+    /**
+     * @return list<string> Flags, protocol, algorithm and the public key chunks
+     */
+    private function dnskeyFields(): array
+    {
+        $dnskey = trim((string)$this->dnskey);
+
+        return $dnskey === '' ? [] : (preg_split('/\s+/', $dnskey) ?: []);
     }
 }

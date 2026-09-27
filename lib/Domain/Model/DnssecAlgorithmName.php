@@ -138,6 +138,21 @@ final class DnssecAlgorithmName
     }
 
     /**
+     * The PowerDNS name of an algorithm number, for the algorithms offered for
+     * new keys only; null for any other number.
+     */
+    public static function fromAlgorithmId(int $id): ?string
+    {
+        $displayName = DnssecAlgorithm::ALGORITHMS[$id] ?? null;
+        foreach (self::SUPPORTED_ALGORITHMS as $alg) {
+            if (self::ALGORITHM_NAMES[$alg] === $displayName) {
+                return $alg;
+            }
+        }
+        return null;
+    }
+
+    /**
      * id => display-name map for use in dropdowns. Mirrors
      * getSupportedAlgorithmsForCapabilities() so the dropdown and the
      * controller allowlist never drift.

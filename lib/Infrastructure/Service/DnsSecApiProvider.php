@@ -151,15 +151,6 @@ final class DnsSecApiProvider implements DnssecProviderInterface
         return array_map([$this->transformer, 'transformKey'], $keys);
     }
 
-    public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool
-    {
-        $zone = new Zone($zoneName);
-        $key = new CryptoKey(null, $keyType, $keySize, $algorithm);
-        $result = $this->client->addZoneKey($zone, $key);
-        $this->logAction('dnssec_add_zone_key', $zoneName, ['type' => $keyType, 'bits' => $keySize, 'algorithm' => $algorithm, 'result' => $result]);
-        return $result;
-    }
-
     public function removeZoneKey(string $zoneName, int $keyId): bool
     {
         $zone = new Zone($zoneName);
@@ -169,32 +160,16 @@ final class DnsSecApiProvider implements DnssecProviderInterface
         return $result;
     }
 
-    public function keyExists(string $zoneName, int $keyId): bool
+    public function fetchZoneKeys(string $zoneName): ?array
     {
-        $zone = new Zone($zoneName);
-        $keys = $this->client->getZoneKeys($zone);
-        foreach ($keys as $key) {
-            // Use loose comparison (==) instead of strict (===) to handle potential
-            // type mismatches between PowerDNS API responses and PHP type casting
-            if ($key->getId() == $keyId) {
-                return true;
-            }
-        }
-        return false;
+        return $this->client->fetchZoneKeys(new Zone($zoneName));
     }
 
-    public function getZoneKey(string $zoneName, int $keyId): array
+    public function createZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm, bool $active): ?CryptoKey
     {
-        $zone = new Zone($zoneName);
-        $keys = $this->client->getZoneKeys($zone);
-        foreach ($keys as $key) {
-            // Use loose comparison (==) instead of strict (===) to handle potential
-            // type mismatches between PowerDNS API responses and PHP type casting
-            if ($key->getId() == $keyId) {
-                return $this->transformer->transformKey($key);
-            }
-        }
-        return [];
+        $created = $this->client->createZoneKey(new Zone($zoneName), new CryptoKey(null, $keyType, $keySize, $algorithm), $active);
+        $this->logAction('dnssec_add_zone_key', $zoneName, ['type' => $keyType, 'bits' => $keySize, 'algorithm' => $algorithm, 'result' => $created !== null]);
+        return $created;
     }
 
     public function isDnssecEnabled(): bool

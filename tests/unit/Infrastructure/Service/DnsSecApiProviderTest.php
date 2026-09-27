@@ -32,121 +32,6 @@ class DnsSecApiProviderTest extends TestCase
         );
     }
 
-    /**
-     * Test that keyExists works correctly with integer comparison
-     * This tests the core functionality that should work after bug fixes
-     */
-    public function testKeyExistsWithIntegerComparison(): void
-    {
-        // Mock keys with integer IDs (proper scenario)
-        $key1 = $this->createMockCryptoKey(5);
-        $key2 = $this->createMockCryptoKey(6);
-        $mockKeys = [$key1, $key2];
-
-        $this->mockApiClient
-            ->expects($this->once())
-            ->method('getZoneKeys')
-            ->willReturn($mockKeys);
-
-        // Test with integer keyId
-        $result = $this->provider->keyExists('example.com', 6);
-
-        $this->assertTrue($result, 'keyExists should return true when key ID matches');
-    }
-
-    /**
-     * Test that keyExists returns false when key doesn't exist
-     */
-    public function testKeyExistsReturnsFalseWhenKeyNotFound(): void
-    {
-        $key1 = $this->createMockCryptoKey(5);
-        $mockKeys = [$key1];
-
-        $this->mockApiClient
-            ->expects($this->once())
-            ->method('getZoneKeys')
-            ->willReturn($mockKeys);
-
-        $result = $this->provider->keyExists('example.com', 999);
-
-        $this->assertFalse($result, 'keyExists should return false when key ID not found');
-    }
-
-    /**
-     * Test that getZoneKey works correctly
-     */
-    public function testGetZoneKeyReturnsCorrectKey(): void
-    {
-        $targetKey = $this->createMockCryptoKey(6);
-        $mockKeys = [
-            $this->createMockCryptoKey(5),
-            $targetKey
-        ];
-
-        $expectedTransformedKey = ['id' => 6, 'type' => 'ksk', 'active' => true];
-
-        $this->mockApiClient
-            ->expects($this->once())
-            ->method('getZoneKeys')
-            ->willReturn($mockKeys);
-
-        $this->mockTransformer
-            ->expects($this->once())
-            ->method('transformKey')
-            ->with($targetKey)
-            ->willReturn($expectedTransformedKey);
-
-        $result = $this->provider->getZoneKey('example.com', 6);
-
-        $this->assertEquals($expectedTransformedKey, $result);
-    }
-
-    /**
-     * Test that getZoneKey returns empty array when key not found
-     */
-    public function testGetZoneKeyReturnsEmptyArrayWhenKeyNotFound(): void
-    {
-        $mockKeys = [
-            $this->createMockCryptoKey(5),
-            $this->createMockCryptoKey(7)
-        ];
-
-        $this->mockApiClient
-            ->expects($this->once())
-            ->method('getZoneKeys')
-            ->willReturn($mockKeys);
-
-        $this->mockTransformer
-            ->expects($this->never())
-            ->method('transformKey');
-
-        $result = $this->provider->getZoneKey('example.com', 6);
-
-        $this->assertEquals([], $result);
-    }
-
-    /**
-     * Test that keyExists works with multiple keys
-     */
-    public function testKeyExistsWithMultipleKeys(): void
-    {
-        $key1 = $this->createMockCryptoKey(5);
-        $key2 = $this->createMockCryptoKey(6);
-        $mockKeys = [$key1, $key2];
-
-        $this->mockApiClient
-            ->expects($this->exactly(2))
-            ->method('getZoneKeys')
-            ->willReturn($mockKeys);
-
-        // Test finding first key
-        $this->assertTrue($this->provider->keyExists('example.com', 5));
-
-        // Test finding second key
-        $this->assertTrue($this->provider->keyExists('example.com', 6));
-    }
-
-
     public function testGetDsRecordsWithKeysWithoutDsRecords(): void
     {
         $zskKey = new CryptoKey(
@@ -377,13 +262,42 @@ class DnsSecApiProviderTest extends TestCase
         $this->assertNull($this->provider->getEditedSerial('example.com'));
     }
 
-    /**
-     * Helper method to create mock CryptoKey with specific ID
-     */
-    private function createMockCryptoKey(int $id): CryptoKey
+    public function testFetchZoneKeysPassesAnOutageOnAsNull(): void
     {
-        $mock = $this->createMock(CryptoKey::class);
-        $mock->method('getId')->willReturn($id);
-        return $mock;
+        $this->mockApiClient->method('fetchZoneKeys')->willReturn(null);
+
+        $this->assertNull($this->provider->fetchZoneKeys('example.com'));
+    }
+
+    public function testFetchZoneKeysReturnsTheZonesKeys(): void
+    {
+        $keys = [new CryptoKey(5, 'ksk'), new CryptoKey(6, 'zsk')];
+        $this->mockApiClient->expects($this->once())->method('fetchZoneKeys')
+            ->with($this->callback(fn(Zone $zone): bool => $zone->getName() === 'example.com'))
+            ->willReturn($keys);
+
+        $this->assertSame($keys, $this->provider->fetchZoneKeys('example.com'));
+    }
+
+    public function testCreateZoneKeyReturnsTheCreatedKeyAndLogsIt(): void
+    {
+        $created = new CryptoKey(9, 'csk', 256, 'ECDSAP256SHA256', true);
+        $this->mockApiClient->expects($this->once())->method('createZoneKey')
+            ->with(
+                $this->callback(fn(Zone $zone): bool => $zone->getName() === 'example.com'),
+                $this->callback(fn(CryptoKey $key): bool => $key->getType() === 'csk' && $key->getSize() === 256 && $key->getAlgorithm() === 'ecdsa256'),
+                true
+            )
+            ->willReturn($created);
+        $this->mockLogger->expects($this->once())->method('info')->with($this->stringContains('operation:dnssec_add_zone_key zone:example.com'));
+
+        $this->assertSame($created, $this->provider->createZoneKey('example.com', 'csk', 256, 'ecdsa256', true));
+    }
+
+    public function testCreateZoneKeyReturnsNullWhenRefused(): void
+    {
+        $this->mockApiClient->method('createZoneKey')->willReturn(null);
+
+        $this->assertNull($this->provider->createZoneKey('example.com', 'csk', 256, 'ecdsa256', false));
     }
 }

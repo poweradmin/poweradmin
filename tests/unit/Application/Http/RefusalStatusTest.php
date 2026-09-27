@@ -53,6 +53,7 @@ class RefusalStatusTest extends TestCase
         yield 'CONFLICT' => [Refusal::CONFLICT, 409];
         yield 'PAYLOAD_TOO_LARGE' => [Refusal::PAYLOAD_TOO_LARGE, 413];
         yield 'BACKEND_FAILURE' => [Refusal::BACKEND_FAILURE, 500];
+        yield 'BACKEND_UNREACHABLE' => [Refusal::BACKEND_UNREACHABLE, 502];
     }
 
     #[DataProvider('refusals')]

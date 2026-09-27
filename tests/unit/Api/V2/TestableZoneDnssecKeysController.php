@@ -23,11 +23,10 @@
 namespace Poweradmin\Tests\Unit\Api\V2;
 
 use Poweradmin\Application\Controller\Api\V2\ZoneDnssecKeysController;
-use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
-use Poweradmin\Domain\Port\ZoneSigningInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\DnssecKeyService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,7 +34,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TestableZoneDnssecKeysController extends ZoneDnssecKeysController
 {
-    private AuditService $audit;
+    private DnssecKeyService $keyService;
     public ?PdnsCapabilities $capabilities = null;
 
     /**
@@ -59,19 +58,14 @@ class TestableZoneDnssecKeysController extends ZoneDnssecKeysController
         $this->apiPermissionService = $service;
     }
 
-    public function setDnssecProvider(ZoneSigningInterface $provider): void
-    {
-        $this->dnssecProvider = $provider;
-    }
-
     public function setApiClient(?PowerdnsApiClient $client): void
     {
         $this->apiClient = $client;
     }
 
-    public function setAuditService(AuditService $audit): void
+    public function setKeyService(DnssecKeyService $keyService): void
     {
-        $this->audit = $audit;
+        $this->keyService = $keyService;
     }
 
     public function setRequestBody(string $content): void
@@ -104,9 +98,9 @@ class TestableZoneDnssecKeysController extends ZoneDnssecKeysController
         return $this->deleteKey();
     }
 
-    protected function auditService(): AuditService
+    protected function keyService(): DnssecKeyService
     {
-        return $this->audit;
+        return $this->keyService;
     }
 
     protected function getPdnsCapabilities(): PdnsCapabilities

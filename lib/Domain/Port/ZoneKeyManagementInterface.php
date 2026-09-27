@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Port;
 
+use Poweradmin\Domain\Model\CryptoKey;
+
 /**
  * DNSSEC key lifecycle for a zone, plus the DS and DNSKEY records derived from its keys.
  */
@@ -32,15 +34,20 @@ interface ZoneKeyManagementInterface
     public function activateZoneKey(string $zoneName, int $keyId): bool;
     public function deactivateZoneKey(string $zoneName, int $keyId): bool;
     public function getKeys(string $zoneName): array;
-    public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool;
     public function removeZoneKey(string $zoneName, int $keyId): bool;
+
     /**
-     * Asks the server each time; a key can vanish between two calls, so the result is not remembered.
+     * The zone's keys, telling a server that could not be asked apart from a zone without keys.
      *
+     * @return CryptoKey[]|null Null when the server could not be asked
      * @phpstan-impure
      */
-    public function keyExists(string $zoneName, int $keyId): bool;
-    public function getZoneKey(string $zoneName, int $keyId): array;
+    public function fetchZoneKeys(string $zoneName): ?array;
+
+    /**
+     * Create a key and return it as the server created it, or null when it was refused or could not be asked.
+     */
+    public function createZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm, bool $active): ?CryptoKey;
 
     /**
      * Import a DNSSEC key from a PEM-encoded private key. Requires PowerDNS

@@ -44,4 +44,18 @@ class DnssecAlgorithmNameBitsTest extends TestCase
         $this->assertArrayNotHasKey(DnssecAlgorithmName::ED448, $bits);
         $this->assertArrayHasKey(DnssecAlgorithmName::ED25519, $bits);
     }
+
+    public function testAlgorithmNumbersMapToThePowerDnsNamesOfOfferedAlgorithms(): void
+    {
+        $this->assertSame([
+            5 => 'rsasha1',
+            7 => 'rsasha1-nsec3-sha1',
+            8 => 'rsasha256',
+            10 => 'rsasha512',
+            13 => 'ecdsa256',
+            14 => 'ecdsa384',
+            15 => 'ed25519',
+            16 => 'ed448',
+        ], array_filter(array_map(DnssecAlgorithmName::fromAlgorithmId(...), array_combine(range(0, 255), range(0, 255)))));
+    }
 }

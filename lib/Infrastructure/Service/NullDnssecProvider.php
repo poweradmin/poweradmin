@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 
 /**
@@ -80,24 +81,19 @@ class NullDnssecProvider implements DnssecProviderInterface
         return [];
     }
 
-    public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool
-    {
-        return false;
-    }
-
     public function removeZoneKey(string $zoneName, int $keyId): bool
     {
         return false;
     }
 
-    public function keyExists(string $zoneName, int $keyId): bool
+    public function fetchZoneKeys(string $zoneName): ?array
     {
-        return false;
+        return null;
     }
 
-    public function getZoneKey(string $zoneName, int $keyId): array
+    public function createZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm, bool $active): ?CryptoKey
     {
-        return [];
+        return null;
     }
 
     public function isDnssecEnabled(): bool

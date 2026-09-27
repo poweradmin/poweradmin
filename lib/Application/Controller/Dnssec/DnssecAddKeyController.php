@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Application\Service\Backend\DnssecProviderFactory;
 use Poweradmin\Domain\Enum\DnssecKeyType;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 
 /**
  * Handles the add-DNSSEC-key form for a zone: validates key type, bits and algorithm, then creates the key.
@@ -37,7 +38,7 @@ class DnssecAddKeyController extends DnssecKeyController
     public function run(): void
     {
         $zone_id = $this->requireNumericParam('id');
-        [$domain_name, $dnssecProvider] = $this->requireManagedDnssecZone($zone_id);
+        [$domain_name] = $this->requireManagedDnssecZone($zone_id);
 
         $key_type = "";
         if ($this->httpRequest->getPostParam('key_type') !== null) {
@@ -75,46 +76,10 @@ class DnssecAddKeyController extends DnssecKeyController
             }
         }
 
-        // The accepted sizes come from the algorithm map; only the wording is per algorithm.
-        $validateAlgorithmBitCombination = function (string $algorithm, string $bits) use ($algorithmBits): array {
-            $allowed = $algorithmBits[$algorithm] ?? [];
-            if ($allowed === [] || in_array((int)$bits, $allowed, true)) {
-                return ['valid' => true, 'message' => ''];
-            }
-            $message = match ($algorithm) {
-                DnssecAlgorithmName::ECDSA256 => _('ECDSA P-256 algorithm must use 256 bits'),
-                DnssecAlgorithmName::ECDSA384 => _('ECDSA P-384 algorithm must use 384 bits'),
-                DnssecAlgorithmName::ED25519 => _('ED25519 algorithm must use 256 bits'),
-                DnssecAlgorithmName::ED448 => _('ED448 algorithm must use 456 bits (unsupported in this UI)'),
-                default => _('RSA algorithms should use 1024 or 2048 bits for adequate security'),
-            };
-            return ['valid' => false, 'message' => $message];
-        };
-
         if ($this->httpRequest->getPostParam('submit') !== null) {
-            // Validate combination of algorithm and bits before attempting to add the key
             if (!empty($algorithm) && !empty($bits)) {
-                $validation = $validateAlgorithmBitCombination($algorithm, $bits);
-                if (!$validation['valid']) {
-                    $this->logger->warning('Invalid DNSSEC algorithm/bits combination: algorithm={algorithm}, bits={bits} - {message}', ['algorithm' => $algorithm, 'bits' => $bits, 'message' => $validation['message']]);
-                    $this->setMessage('dnssec_add_key', 'error', $validation['message']);
-                    // Don't redirect, let the form display again with the error message
-                } else {
-                    try {
-                        if ($dnssecProvider->addZoneKey($domain_name, $key_type, (int)$bits, $algorithm)) {
-                            $auditService = $this->services()->auditService();
-                            $auditService->logDnssecAddKey($zone_id, $domain_name, $key_type, (string)$bits, $algorithm);
-                            $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
-                            $this->redirect('/zones/' . $zone_id . '/dnssec');
-                        } else {
-                            $this->logger->error('Failed to add DNSSEC key: domain={domain}, key_type={key_type}, bits={bits}, algorithm={algorithm}', ['domain' => $domain_name, 'key_type' => $key_type, 'bits' => $bits, 'algorithm' => $algorithm]);
-                            $this->setMessage('dnssec_add_key', 'error', _('Failed to add new DNSSEC key.'));
-                        }
-                    } catch (Exception $e) {
-                        $this->logger->error('Exception adding DNSSEC key: {error}', ['error' => $e->getMessage()]);
-                        $this->setMessage('dnssec_add_key', 'error', _('An error occurred while adding the DNSSEC key: ') . $e->getMessage());
-                    }
-                }
+                $this->addKey($zone_id, $domain_name, (string)$key_type, $algorithm, (string)$bits);
+                // Don't redirect on a refusal, let the form display again with the error message
             } else {
                 $this->setMessage('dnssec_add_key', 'error', _('Please select both algorithm and bits'));
             }
@@ -152,6 +117,53 @@ class DnssecAddKeyController extends DnssecKeyController
             'algorithm_bits' => $algorithmBits,
             'bits_algorithms' => $this->algorithmsByBits($algorithmBits, $offeredBits),
         ]);
+    }
+
+    private function addKey(int $zone_id, string $domain_name, string $key_type, string $algorithm, string $bits): void
+    {
+        try {
+            $result = $this->services()->dnssecKeyService()->addKey($zone_id, $domain_name, $key_type, $algorithm, (int)$bits, false, $this->getPdnsCapabilities());
+        } catch (Exception $e) {
+            $this->logger->error('Exception adding DNSSEC key: {error}', ['error' => $e->getMessage()]);
+            $this->setMessage('dnssec_add_key', 'error', _('An error occurred while adding the DNSSEC key: ') . $e->getMessage());
+            return;
+        }
+
+        $this->endOnRefusedKeyChange($result, $zone_id);
+
+        switch ($result->outcome) {
+            case DnssecKeyOutcome::ADDED:
+                $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
+                $this->redirect('/zones/' . $zone_id . '/dnssec');
+                return;
+            case DnssecKeyOutcome::INVALID_TYPE:
+            case DnssecKeyOutcome::INVALID_ALGORITHM:
+                $this->logger->warning('Invalid DNSSEC key type or algorithm: key_type={key_type}, algorithm={algorithm}', ['key_type' => $key_type, 'algorithm' => $algorithm]);
+                $this->showError(_('Invalid or unexpected input given.'));
+                return;
+            case DnssecKeyOutcome::INVALID_BITS:
+                $message = self::bitsMessage($algorithm);
+                $this->logger->warning('Invalid DNSSEC algorithm/bits combination: algorithm={algorithm}, bits={bits} - {message}', ['algorithm' => $algorithm, 'bits' => $bits, 'message' => $message]);
+                $this->setMessage('dnssec_add_key', 'error', $message);
+                return;
+            default:
+                $this->logger->error('Failed to add DNSSEC key: domain={domain}, key_type={key_type}, bits={bits}, algorithm={algorithm}', ['domain' => $domain_name, 'key_type' => $key_type, 'bits' => $bits, 'algorithm' => $algorithm]);
+                $this->setMessage('dnssec_add_key', 'error', _('Failed to add new DNSSEC key.'));
+        }
+    }
+
+    /**
+     * The accepted sizes come from the algorithm map; only the wording is per algorithm.
+     */
+    private static function bitsMessage(string $algorithm): string
+    {
+        return match ($algorithm) {
+            DnssecAlgorithmName::ECDSA256 => _('ECDSA P-256 algorithm must use 256 bits'),
+            DnssecAlgorithmName::ECDSA384 => _('ECDSA P-384 algorithm must use 384 bits'),
+            DnssecAlgorithmName::ED25519 => _('ED25519 algorithm must use 256 bits'),
+            DnssecAlgorithmName::ED448 => _('ED448 algorithm must use 456 bits (unsupported in this UI)'),
+            default => _('RSA algorithms should use 1024 or 2048 bits for adequate security'),
+        };
     }
 
     /**

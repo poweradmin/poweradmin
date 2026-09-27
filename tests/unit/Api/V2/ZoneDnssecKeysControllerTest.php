@@ -26,9 +26,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\CryptoKey;
-use Poweradmin\Domain\Port\ZoneSigningInterface;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\DnssecKeyService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 class ZoneDnssecKeysControllerTest extends TestCase
@@ -47,7 +48,7 @@ class ZoneDnssecKeysControllerTest extends TestCase
         $this->domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $this->domainRepository->method('getDomainNameById')->willReturnCallback(fn(int $id): ?string => $id === 1 ? 'example.com' : null);
         $this->permissionService = $this->createMock(ApiPermissionService::class);
-        $this->dnssecProvider = $this->createMock(ZoneSigningInterface::class);
+        $this->dnssecProvider = $this->createMock(DnssecProviderInterface::class);
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         $this->apiClient = $this->createMock(PowerdnsApiClient::class);
         $this->audit = $this->createMock(AuditService::class);
@@ -58,9 +59,8 @@ class ZoneDnssecKeysControllerTest extends TestCase
         $controller = new TestableZoneDnssecKeysController([], $pathParameters);
         $controller->setDomainRepository($this->domainRepository);
         $controller->setApiPermissionService($this->permissionService);
-        $controller->setDnssecProvider($this->dnssecProvider);
+        $controller->setKeyService(new DnssecKeyService($this->dnssecProvider, $this->audit));
         $controller->setApiClient($withApiClient ? $this->apiClient : null);
-        $controller->setAuditService($this->audit);
         if ($body !== null) {
             $controller->setRequestBody($body);
         }
@@ -83,7 +83,7 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testListNamesEveryFieldAndComputesTheKeyTag(): void
     {
         $this->allowManage();
-        $this->apiClient->method('fetchZoneKeys')->willReturn([
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([
             new CryptoKey(3, 'zsk', 1024, 'RSASHA1', true, self::RFC_DNSKEY, []),
         ]);
 
@@ -106,8 +106,8 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testAnUnreachablePowerDnsIsNotAnEmptyListOrAMissingKey(): void
     {
         $this->allowManage();
-        $this->apiClient->method('fetchZoneKeys')->willReturn(null);
-        $this->apiClient->expects($this->never())->method('removeZoneKey');
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn(null);
+        $this->dnssecProvider->expects($this->never())->method('removeZoneKey');
 
         $this->assertSame(502, $this->controller()->callListKeys()->getStatusCode());
         $this->assertSame(502, $this->controller(['id' => 1, 'key_id' => 3])->callGetKey()->getStatusCode());
@@ -117,8 +117,8 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testAnUnreachablePowerDnsIsNotReportedAsDnssecDisabled(): void
     {
         $this->allowManage();
-        $this->apiClient->method('fetchZoneKeys')->willReturn(null);
-        $this->apiClient->expects($this->never())->method('createZoneKey');
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn(null);
+        $this->dnssecProvider->expects($this->never())->method('createZoneKey');
 
         [$status, $body] = self::decode($this->controller(['id' => 1], '{"type":"csk","algorithm":"ecdsa256","bits":256}')->callAddKey());
 
@@ -129,7 +129,7 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testAnUnknownKeyIsNotFound(): void
     {
         $this->allowManage();
-        $this->apiClient->method('fetchZoneKeys')->willReturn([]);
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([]);
 
         [$status, $body] = self::decode($this->controller(['id' => 1, 'key_id' => 9])->callGetKey());
 
@@ -140,10 +140,10 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testAddReturnsTheKeyPowerDnsCreatedAndAuditsIt(): void
     {
         $this->allowManage();
-        $this->apiClient->expects($this->once())->method('createZoneKey')
-            ->with($this->anything(), $this->callback(fn(CryptoKey $k): bool => $k->getType() === 'csk' && $k->getSize() === 256 && $k->getAlgorithm() === 'ecdsa256'), true)
+        $this->dnssecProvider->expects($this->once())->method('createZoneKey')
+            ->with('example.com', 'csk', 256, 'ecdsa256', true)
             ->willReturn(new CryptoKey(7, 'csk', 256, 'ECDSAP256SHA256', true, '257 3 13 AAAA', ['1 13 2 ABCD']));
-        $this->apiClient->method('fetchZoneKeys')->willReturn([]);
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([]);
         $this->audit->expects($this->once())->method('logDnssecAddKey')->with(1, 'example.com', 'csk', '256', 'ecdsa256');
 
         [$status, $body] = self::decode($this->controller(['id' => 1], '{"type":"CSK","algorithm":"ecdsa256","bits":256,"active":true}')->callAddKey());
@@ -170,8 +170,8 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testInvalidKeysAreRefusedWithFixedEnglishMessages(string $body, string $message): void
     {
         $this->allowManage();
-        $this->apiClient->method('fetchZoneKeys')->willReturn([]);
-        $this->apiClient->expects($this->never())->method('createZoneKey');
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([]);
+        $this->dnssecProvider->expects($this->never())->method('createZoneKey');
 
         [$status, $decoded] = self::decode($this->controller(['id' => 1], $body)->callAddKey());
 
@@ -182,7 +182,7 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testAddingNeedsTheDnssecManagePermission(): void
     {
         $this->permissionService->method('canManageDnssec')->willReturn(false);
-        $this->apiClient->expects($this->never())->method('createZoneKey');
+        $this->dnssecProvider->expects($this->never())->method('createZoneKey');
 
         $this->assertSame(403, $this->controller(['id' => 1], '{"type":"csk","algorithm":"ecdsa256","bits":256}')->callAddKey()->getStatusCode());
     }
@@ -190,7 +190,7 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testPresignedZonesAreRefused(): void
     {
         $this->allowManage();
-        $this->apiClient->method('fetchZoneKeys')->willReturn([]);
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([]);
         $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
 
         $this->assertSame(409, $this->controller(['id' => 1], '{"type":"csk","algorithm":"ecdsa256","bits":256}')->callAddKey()->getStatusCode());
@@ -214,8 +214,8 @@ class ZoneDnssecKeysControllerTest extends TestCase
     {
         $this->allowManage();
         $key = new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', []);
-        $this->apiClient->method('fetchZoneKeys')->willReturn([$key]);
-        $this->apiClient->expects($this->once())->method('deactivateZoneKey')->willReturn(true);
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([$key]);
+        $this->dnssecProvider->expects($this->once())->method('deactivateZoneKey')->with('example.com', 3)->willReturn(true);
         $this->audit->expects($this->once())->method('logDnssecToggleKey')->with(1, 'example.com', 3, 'deactivate');
 
         [$status, $body] = self::decode($this->controller(['id' => 1, 'key_id' => 3], '{"active":false}')->callUpdateKey());
@@ -228,8 +228,8 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testRequestingTheCurrentStateChangesNothing(): void
     {
         $this->allowManage();
-        $this->apiClient->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
-        $this->apiClient->expects($this->never())->method('activateZoneKey');
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
+        $this->dnssecProvider->expects($this->never())->method('activateZoneKey');
 
         [$status, $body] = self::decode($this->controller(['id' => 1, 'key_id' => 3], '{"active":true}')->callUpdateKey());
 
@@ -241,8 +241,8 @@ class ZoneDnssecKeysControllerTest extends TestCase
     {
         $this->allowManage();
         $key = new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', false, '256 3 13 AAAA', []);
-        $this->apiClient->method('fetchZoneKeys')->willReturn([$key]);
-        $this->apiClient->expects($this->once())->method('removeZoneKey')->with($this->anything(), $key)->willReturn(true);
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([$key]);
+        $this->dnssecProvider->expects($this->once())->method('removeZoneKey')->with('example.com', 3)->willReturn(true);
         $this->audit->expects($this->once())->method('logDnssecDeleteKey')->with(1, 'example.com', 3);
 
         $this->assertSame(200, $this->controller(['id' => 1, 'key_id' => 3])->callDeleteKey()->getStatusCode());
@@ -252,10 +252,10 @@ class ZoneDnssecKeysControllerTest extends TestCase
     {
         $this->permissionService->method('canViewZone')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(false);
-        $this->apiClient->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
-        $this->apiClient->expects($this->never())->method('createZoneKey');
-        $this->apiClient->expects($this->never())->method('deactivateZoneKey');
-        $this->apiClient->expects($this->never())->method('removeZoneKey');
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
+        $this->dnssecProvider->expects($this->never())->method('createZoneKey');
+        $this->dnssecProvider->expects($this->never())->method('deactivateZoneKey');
+        $this->dnssecProvider->expects($this->never())->method('removeZoneKey');
 
         $this->assertSame(200, $this->controller()->callListKeys()->getStatusCode());
         $this->assertSame(200, $this->controller(['id' => 1, 'key_id' => 3])->callGetKey()->getStatusCode());
@@ -267,8 +267,8 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testActivatingReportsTheNewStateAndAudits(): void
     {
         $this->allowManage();
-        $this->apiClient->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'ksk', 256, 'ECDSAP256SHA256', false, '257 3 13 AAAA', ['1 13 2 AB'])]);
-        $this->apiClient->expects($this->once())->method('activateZoneKey')->willReturn(true);
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'ksk', 256, 'ECDSAP256SHA256', false, '257 3 13 AAAA', ['1 13 2 AB'])]);
+        $this->dnssecProvider->expects($this->once())->method('activateZoneKey')->with('example.com', 3)->willReturn(true);
         $this->audit->expects($this->once())->method('logDnssecToggleKey')->with(1, 'example.com', 3, 'activate');
 
         [$status, $body] = self::decode($this->controller(['id' => 1, 'key_id' => 3], '{"active":true}')->callUpdateKey());
@@ -281,10 +281,10 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testAKeyChangeAsksPowerDnsForTheKeysOnce(): void
     {
         $this->allowManage();
-        $this->apiClient->expects($this->exactly(2))->method('fetchZoneKeys')
+        $this->dnssecProvider->expects($this->exactly(2))->method('fetchZoneKeys')
             ->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
-        $this->apiClient->method('deactivateZoneKey')->willReturn(true);
-        $this->apiClient->method('removeZoneKey')->willReturn(true);
+        $this->dnssecProvider->method('deactivateZoneKey')->willReturn(true);
+        $this->dnssecProvider->method('removeZoneKey')->willReturn(true);
 
         $this->controller(['id' => 1, 'key_id' => 3], '{"active":false}')->callUpdateKey();
         $this->controller(['id' => 1, 'key_id' => 3])->callDeleteKey();
@@ -304,10 +304,10 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testARefusedPowerDnsWriteIsAServerErrorAndIsNotAudited(string $operation): void
     {
         $this->allowManage();
-        $this->apiClient->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
-        $this->apiClient->method('createZoneKey')->willReturn(null);
-        $this->apiClient->method('deactivateZoneKey')->willReturn(false);
-        $this->apiClient->method('removeZoneKey')->willReturn(false);
+        $this->dnssecProvider->method('fetchZoneKeys')->willReturn([new CryptoKey(3, 'zsk', 256, 'ECDSAP256SHA256', true, '256 3 13 AAAA', [])]);
+        $this->dnssecProvider->method('createZoneKey')->willReturn(null);
+        $this->dnssecProvider->method('deactivateZoneKey')->willReturn(false);
+        $this->dnssecProvider->method('removeZoneKey')->willReturn(false);
         $this->audit->expects($this->never())->method($this->anything());
 
         $response = match ($operation) {
@@ -322,11 +322,12 @@ class ZoneDnssecKeysControllerTest extends TestCase
     public function testAServerWithoutDnssecRefusesKeyChanges(): void
     {
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $provider = $this->createMock(\Poweradmin\Domain\Port\ZoneSigningInterface::class);
+        $provider = $this->createMock(DnssecProviderInterface::class);
         $provider->method('isDnssecEnabled')->willReturn(false);
-        $this->apiClient->method('fetchZoneKeys')->willReturn([]);
+        $provider->method('fetchZoneKeys')->willReturn([]);
+        $provider->expects($this->never())->method('createZoneKey');
         $controller = $this->controller(['id' => 1], '{"type":"csk","algorithm":"ecdsa256","bits":256}');
-        $controller->setDnssecProvider($provider);
+        $controller->setKeyService(new DnssecKeyService($provider, $this->audit));
 
         [$status, $body] = self::decode($controller->callAddKey());
 
@@ -338,7 +339,7 @@ class ZoneDnssecKeysControllerTest extends TestCase
     {
         $this->allowManage();
         $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
-        $this->apiClient->expects($this->never())->method('fetchZoneKeys');
+        $this->dnssecProvider->expects($this->never())->method('fetchZoneKeys');
 
         $this->assertSame(400, $this->controller(['id' => 1], '{"type":"csk","algorithm":"ecdsa256","bits":384}')->callAddKey()->getStatusCode());
         $this->assertSame(400, $this->controller(['id' => 1, 'key_id' => 3], '{"active":"no"}')->callUpdateKey()->getStatusCode());

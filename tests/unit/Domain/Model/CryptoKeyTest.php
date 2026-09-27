@@ -118,4 +118,32 @@ class CryptoKeyTest extends TestCase
         $this->assertCount(2, $key->getDs());
         $this->assertEquals($dsRecords, $key->getDs());
     }
+
+    // The DNSKEY from RFC 4034 section 5.4, whose key tag is 60485
+    private const RFC_DNSKEY = '256 3 5 AQOeiiR0GOMYkDshWoSKz9XzfwJr1AYtsmx3TGkJaNXVbfi/2pHm822aJ5iI9BMzNXxeYCmZDRD99WYwYqUSdjMmmAphXdvxegXd/M5+X7OrzKBaMbCVdFLUUh6DhweJBjEVv5f2wwjM9XzcnOf+EPbtG9DMBmADjFDc2w/rljwvFw==';
+
+    public function testKeyTagIsComputedFromTheDnskey(): void
+    {
+        $key = new CryptoKey(1, 'zsk', 1024, 'RSASHA1', true, self::RFC_DNSKEY, []);
+
+        $this->assertSame(60485, $key->getKeyTag());
+        $this->assertSame(5, $key->getAlgorithmId());
+    }
+
+    public function testKeyTagIgnoresSpacesInsideThePublicKey(): void
+    {
+        $split = substr(self::RFC_DNSKEY, 0, 40) . ' ' . substr(self::RFC_DNSKEY, 40);
+
+        $this->assertSame(60485, (new CryptoKey(1, dnskey: $split))->getKeyTag());
+    }
+
+    public function testAKeyWithoutAReadableDnskeyHasNoKeyTag(): void
+    {
+        $this->assertSame(0, (new CryptoKey(1))->getKeyTag());
+        $this->assertSame(0, (new CryptoKey(1))->getAlgorithmId());
+        $this->assertSame(0, (new CryptoKey(1, dnskey: '257 3'))->getKeyTag());
+        $this->assertSame(0, (new CryptoKey(1, dnskey: '257 3'))->getAlgorithmId());
+        $this->assertSame(0, (new CryptoKey(1, dnskey: '257 3 13 !!!'))->getKeyTag());
+        $this->assertSame(13, (new CryptoKey(1, dnskey: '257 3 13 !!!'))->getAlgorithmId());
+    }
 }

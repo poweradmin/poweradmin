@@ -39,6 +39,7 @@ final class RefusalStatus
             Refusal::CONFLICT => 409,
             Refusal::PAYLOAD_TOO_LARGE => 413,
             Refusal::BACKEND_FAILURE => 500,
+            Refusal::BACKEND_UNREACHABLE => 502,
         };
     }
 

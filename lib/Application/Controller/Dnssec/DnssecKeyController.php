@@ -24,6 +24,8 @@ namespace Poweradmin\Application\Controller\Dnssec;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
+use Poweradmin\Domain\Service\Zone\DnssecKeyResult;
 
 /**
  * Base for the pages that add, edit, toggle, delete, import and export DNSSEC keys: one shared gate.
@@ -59,5 +61,20 @@ abstract class DnssecKeyController extends BaseController
         }
 
         return [$domainName, $provider];
+    }
+
+    /**
+     * Ends the request when a key change was refused for a reason other than the
+     * key itself: DNSSEC is off on the server, or the zone became presigned.
+     */
+    protected function endOnRefusedKeyChange(DnssecKeyResult $result, int $zoneId): void
+    {
+        if ($result->outcome === DnssecKeyOutcome::SERVER_DISABLED) {
+            $this->showError(_('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
+        }
+        if ($result->outcome === DnssecKeyOutcome::PRESIGNED) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zoneId . '/dnssec');
+        }
     }
 }

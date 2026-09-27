@@ -71,6 +71,15 @@ interface AuditLoggerInterface
 
     public function logDnssecUnsignZone(int $zoneId, string $zoneName): void;
 
+    public function logDnssecAddKey(int $zoneId, string $zoneName, string $keyType, string $bits, string $algorithm): void;
+
+    /**
+     * @param string $action 'activate' or 'deactivate'
+     */
+    public function logDnssecToggleKey(int $zoneId, string $zoneName, int $keyId, string $action): void;
+
+    public function logDnssecDeleteKey(int $zoneId, string $zoneName, int $keyId): void;
+
     /**
      * @param int $records Number of records the new set holds
      */

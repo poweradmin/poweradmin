@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Application\Controller\Dnssec;
 
+use Exception;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
+
 /**
  * Handles the POST that activates or deactivates a DNSSEC key, then returns to the zone's DNSSEC page.
  */
@@ -37,50 +40,33 @@ class DnssecToggleKeyController extends DnssecKeyController
             return;
         }
 
-        // Validate permissions
-        [$domain_name, $dnssecProvider] = $this->requireManagedDnssecZone($zone_id);
+        [$domain_name] = $this->requireManagedDnssecZone($zone_id);
 
-        // Check if DNSSEC is available
-        if (!$dnssecProvider->isDnssecEnabled()) {
-            $this->showError(_('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
+        try {
+            $result = $this->services()->dnssecKeyService()->toggleKey($zone_id, $domain_name, $key_id);
+        } catch (Exception $e) {
+            $this->logger->error('DNSSEC key toggle failed for zone {domain}, key {key_id}: {error}', ['domain' => $domain_name, 'key_id' => $key_id, 'error' => $e->getMessage()]);
+            $this->setMessage('dnssec', 'error', _('An error occurred while toggling the DNSSEC key. Please try again.'));
+            $this->redirect('/zones/' . $zone_id . '/dnssec');
             return;
         }
 
-        // Get current key information
-        try {
-            $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
+        // PowerDNS out of reach used to fail the "DNSSEC enabled" check that ran first, so it keeps that message.
+        if ($result->outcome === DnssecKeyOutcome::UNREACHABLE) {
+            $this->showError(_('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
+            return;
+        }
+        $this->endOnRefusedKeyChange($result, $zone_id);
+        if ($result->key === null) {
+            $this->showError(_('DNSSEC key not found or no longer exists.'));
+            return;
+        }
 
-            if (empty($key_info) || !isset($key_info[5])) {
-                $this->showError(_('DNSSEC key not found or no longer exists.'));
-                return;
-            }
-
-            $is_active = $key_info[5];
-            $action = $is_active ? 'deactivate' : 'activate';
-            $result = false;
-
-            // Perform the toggle operation
-            if ($is_active) {
-                $result = $dnssecProvider->deactivateZoneKey($domain_name, $key_id);
-                $success_message = _('Zone key has been successfully deactivated.');
-                $error_message = _('Failed to deactivate zone key.');
-            } else {
-                $result = $dnssecProvider->activateZoneKey($domain_name, $key_id);
-                $success_message = _('Zone key has been successfully activated.');
-                $error_message = _('Failed to activate zone key.');
-            }
-
-            // Set appropriate message and redirect
-            if ($result) {
-                $auditService = $this->services()->auditService();
-                $auditService->logDnssecToggleKey($zone_id, $domain_name, $key_id, $action);
-                $this->setMessage('dnssec', 'success', $success_message);
-            } else {
-                $this->setMessage('dnssec', 'error', $error_message);
-            }
-        } catch (\Exception $e) {
-            $this->logger->error('DNSSEC key toggle failed for zone {domain}, key {key_id}: {error}', ['domain' => $domain_name, 'key_id' => $key_id, 'error' => $e->getMessage()]);
-            $this->setMessage('dnssec', 'error', _('An error occurred while toggling the DNSSEC key. Please try again.'));
+        $isActive = $result->key->isActive();
+        if ($result->outcome === DnssecKeyOutcome::UPDATED) {
+            $this->setMessage('dnssec', 'success', $isActive ? _('Zone key has been successfully activated.') : _('Zone key has been successfully deactivated.'));
+        } else {
+            $this->setMessage('dnssec', 'error', $isActive ? _('Failed to deactivate zone key.') : _('Failed to activate zone key.'));
         }
 
         $this->redirect('/zones/' . $zone_id . '/dnssec');

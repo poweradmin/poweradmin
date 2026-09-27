@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\DnssecDataTransformer;
 
 /**
  * Renders the DNSSEC key detail page that confirms activating or deactivating a key.
@@ -46,18 +47,11 @@ class DnssecEditKeyController extends DnssecKeyController
 
         // Early permission check - this page is the confirmation entry for toggling a key,
         // so it requires the dedicated DNSSEC management permission.
-        [$domain_name, $dnssecProvider] = $this->requireManagedDnssecZone($zone_id);
+        [$domain_name] = $this->requireManagedDnssecZone($zone_id);
 
-        if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
+        $key = $this->services()->dnssecKeyService()->findKey($domain_name, $key_id)->key;
+        if ($key === null) {
             $this->showError(_('Invalid or unexpected input given.'));
-            return;
-        }
-
-        $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
-
-        // Validate that we got valid key information
-        if (empty($key_info) || !isset($key_info[5])) {
-            $this->showError(_('DNSSEC key not found or no longer exists.'));
             return;
         }
 
@@ -68,7 +62,7 @@ class DnssecEditKeyController extends DnssecKeyController
             'idn_zone_name' => $idn_zone_name,
             'zone_display_name' => DnsIdnService::toDisplay($domain_name),
             'key_id' => $key_id,
-            'key_info' => $dnssecProvider->getZoneKey($domain_name, $key_id),
+            'key_info' => (new DnssecDataTransformer())->transformKey($key),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'user_is_zone_owner' => $this->isZoneOwner($zone_id),
             'zone_id' => $zone_id,

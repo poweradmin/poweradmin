@@ -114,6 +114,7 @@ use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
+use Poweradmin\Domain\Service\Zone\DnssecKeyService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplateRecordService;
@@ -509,6 +510,11 @@ class ControllerServiceFactory implements ModuleServices
     public function zoneSigningService(): ZoneSigningService
     {
         return $this->zones->zoneSigningService();
+    }
+
+    public function dnssecKeyService(): DnssecKeyService
+    {
+        return $this->zones->dnssecKeyService();
     }
 
     public function zoneOwnershipModeService(): ZoneOwnershipModeService
