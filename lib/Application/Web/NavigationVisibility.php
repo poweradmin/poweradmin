@@ -78,11 +78,12 @@ final class NavigationVisibility
             'perm_templ_add' => $can(Permission::PERM_TEMPL_PERM_ADD),
             'templates' => $can(Permission::PERM_ZONE_TEMPL_ADD) || $can(Permission::PERM_ZONE_TEMPL_EDIT),
             Permission::PERM_ZONE_TEMPL_ADD => $can(Permission::PERM_ZONE_TEMPL_ADD),
-            'tools' => $apiKeys || $consistency || $hasModuleItems,
+            'tools' => $ueberuser || $apiKeys || $consistency || $hasModuleItems,
             'api_keys' => $apiKeys,
             'api_logs' => $ueberuser && $apiEnabled && $dbLog,
             'api_docs' => $apiEnabled && (bool)$config->get('api', 'docs_enabled', false),
             'database_consistency' => $consistency,
+            'record_type_defaults' => $ueberuser,
         ];
     }
 }

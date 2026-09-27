@@ -95,6 +95,9 @@ class NavigationVisibilityTest extends TestCase
         $this->assertTrue($this->build([Permission::PERM_API_MANAGE_KEYS], ['api' => ['enabled' => true]])['tools']);
         $this->assertTrue($this->build([Permission::PERM_USER_IS_UEBERUSER], ['interface' => ['enable_consistency_checks' => true]])['database_consistency']);
         $this->assertTrue($this->build([], [], true)['tools']);
+        $this->assertTrue($this->build([Permission::PERM_USER_IS_UEBERUSER])['tools']);
+        $this->assertTrue($this->build([Permission::PERM_USER_IS_UEBERUSER])['record_type_defaults']);
+        $this->assertFalse($this->build([Permission::PERM_ZONE_MASTER_ADD])['record_type_defaults']);
     }
 
     public function testApiDocsFollowTheApiAndDocsSettings(): void

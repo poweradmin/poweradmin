@@ -326,7 +326,7 @@
 
                     {% if nav.tools %}
                     <!-- Tools Section -->
-                    {% set tools_active = current_page in ['api_keys', 'list_log_api', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') %}
+                    {% set tools_active = current_page in ['api_keys', 'list_log_api', 'database_consistency', 'record_type_defaults'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') %}
                     <li class="nav-item">
                         <div class="nav-section-header {{ tools_active ? 'text-primary' : '' }}" role="button" data-bs-target="#navTools" aria-expanded="{{ tools_active ? 'true' : 'false' }}" aria-controls="navTools">
                             <i class="bi bi-tools me-2"></i>{% trans %}Tools{% endtrans %}
@@ -358,6 +358,13 @@
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'database_consistency' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/database-consistency">
                                     <i class="bi bi-database-check me-2"></i>{% trans %}Database Consistency{% endtrans %}
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if nav.record_type_defaults %}
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'record_type_defaults' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/record-type-defaults">
+                                    <i class="bi bi-clock-history me-2"></i>{% trans %}TTL defaults{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}

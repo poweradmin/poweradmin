@@ -227,8 +227,8 @@
                 {% endif %}
                 {% if nav.tools %}
                 <li class="p-2">
-                    <a href="#" class="nav-link text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-center"><i class="bi bi-tools fs-5"></i></a>
-                    <a class="text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="#" class="nav-link text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency', 'record_type_defaults'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-center"><i class="bi bi-tools fs-5"></i></a>
+                    <a class="text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency', 'record_type_defaults'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                         href="#"
                         role="button">{% trans %}Tools{% endtrans %}</a>
                     <ul class="dropdown-menu">
@@ -250,6 +250,11 @@
                         {% if nav.database_consistency %}
                         <li><a class="dropdown-item {{ current_page == 'database_consistency' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/database-consistency">
                             <i class="bi bi-database-check me-2"></i>{% trans %}Database Consistency{% endtrans %}
+                        </a></li>
+                        {% endif %}
+                        {% if nav.record_type_defaults %}
+                        <li><a class="dropdown-item {{ current_page == 'record_type_defaults' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/record-type-defaults">
+                            <i class="bi bi-clock-history me-2"></i>{% trans %}TTL defaults{% endtrans %}
                         </a></li>
                         {% endif %}
                         {% if module_nav_items is defined and module_nav_items|length > 0 %}

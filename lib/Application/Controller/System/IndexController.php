@@ -150,7 +150,8 @@ class IndexController extends BaseController
             || ($dblogUse && ($permissions[Permission::PERM_ZONE_LOGS_VIEW_OWN] || $permissions[Permission::PERM_ZONE_LOGS_VIEW_OTHERS]
                 || $permissions[Permission::PERM_USER_LOGS_VIEW]
                 || ($permissions[Permission::PERM_GROUP_LOGS_VIEW] && $showGroupAccessTemplates)));
-        $hasTools = ($isUeberuser && $enableConsistencyChecks)
+        // Admins always get the TTL defaults card
+        $hasTools = $isUeberuser
             || $showApiKeysCard
             || count($moduleNavItems) > 0;
 
