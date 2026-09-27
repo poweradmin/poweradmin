@@ -4,6 +4,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Api;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Error\ApiErrorException;
+use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -54,6 +56,91 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertEquals('zsk', $keys[0]->getType());
         $this->assertIsArray($keys[0]->getDs());
         $this->assertEmpty($keys[0]->getDs());
+    }
+
+    public function testFetchZoneKeysReturnsTheKeys(): void
+    {
+        $this->mockHttpClient->expects($this->once())->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com/cryptokeys')
+            ->willReturn(['responseCode' => 200, 'data' => [[
+                'id' => 4, 'keytype' => 'csk', 'bits' => 256, 'algorithm' => 'ECDSAP256SHA256',
+                'active' => false, 'dnskey' => '257 3 13 AAAA', 'ds' => ['1 13 2 AB'],
+            ]]]);
+
+        $keys = $this->apiClient->fetchZoneKeys(new Zone('example.com'));
+
+        $this->assertCount(1, $keys);
+        $this->assertSame(4, $keys[0]->getId());
+        $this->assertSame(['1 13 2 AB'], $keys[0]->getDs());
+    }
+
+    public function testFetchZoneKeysReturnsAnEmptyListForAZoneWithoutKeys(): void
+    {
+        $this->mockHttpClient->method('makeRequest')->willReturn(['responseCode' => 200, 'data' => []]);
+
+        $this->assertSame([], $this->apiClient->fetchZoneKeys(new Zone('example.com')));
+    }
+
+    /** @return array<string, array{0: array<string, mixed>|null}> */
+    public static function failedKeyListProvider(): array
+    {
+        return [
+            'not found' => [['responseCode' => 404, 'data' => []]],
+            'server error' => [['responseCode' => 500, 'data' => []]],
+            'no body' => [['responseCode' => 200, 'data' => null]],
+            'request failed' => [null],
+        ];
+    }
+
+    /** @param array<string, mixed>|null $response */
+    #[\PHPUnit\Framework\Attributes\DataProvider('failedKeyListProvider')]
+    public function testFetchZoneKeysTellsAFailureApartFromNoKeys(?array $response): void
+    {
+        $call = $this->mockHttpClient->method('makeRequest');
+        $response === null ? $call->willThrowException(new ApiErrorException('down')) : $call->willReturn($response);
+
+        $this->assertNull($this->apiClient->fetchZoneKeys(new Zone('example.com')));
+        $this->assertSame([], $this->apiClient->getZoneKeys(new Zone('example.com')), 'the web UI keeps its empty list');
+    }
+
+    public function testCreateZoneKeyPostsTheKeyAndReturnsWhatPowerDnsCreated(): void
+    {
+        $this->mockHttpClient->expects($this->once())->method('makeRequest')
+            ->with('POST', '/api/v1/servers/localhost/zones/0%2F26.1.168.192.in-addr.arpa./cryptokeys', [
+                'keytype' => 'ksk', 'bits' => 256, 'algorithm' => 'ecdsa256', 'active' => true,
+            ])
+            ->willReturn(['responseCode' => 201, 'data' => [
+                'id' => 9, 'keytype' => 'ksk', 'bits' => 256, 'algorithm' => 'ECDSAP256SHA256',
+                'active' => true, 'dnskey' => '257 3 13 BBBB', 'ds' => ['2 13 2 CD'], 'privatekey' => 'secret',
+            ]]);
+
+        $created = $this->apiClient->createZoneKey(new Zone('0/26.1.168.192.in-addr.arpa.'), new CryptoKey(null, 'ksk', 256, 'ecdsa256'), true);
+
+        $this->assertNotNull($created);
+        $this->assertSame(9, $created->getId());
+        $this->assertTrue($created->isActive());
+        $this->assertSame('257 3 13 BBBB', $created->getDnskey());
+    }
+
+    /** @return array<string, array{0: array<string, mixed>|null}> */
+    public static function failedCreateProvider(): array
+    {
+        return [
+            'refused' => [['responseCode' => 422, 'data' => ['error' => 'bad']]],
+            'created without a key' => [['responseCode' => 201, 'data' => null]],
+            'key without an id' => [['responseCode' => 201, 'data' => ['keytype' => 'ksk']]],
+            'request failed' => [null],
+        ];
+    }
+
+    /** @param array<string, mixed>|null $response */
+    #[\PHPUnit\Framework\Attributes\DataProvider('failedCreateProvider')]
+    public function testCreateZoneKeyReturnsNullWhenNoKeyCameBack(?array $response): void
+    {
+        $call = $this->mockHttpClient->method('makeRequest');
+        $response === null ? $call->willThrowException(new ApiErrorException('down')) : $call->willReturn($response);
+
+        $this->assertNull($this->apiClient->createZoneKey(new Zone('example.com'), new CryptoKey(null, 'zsk', 256, 'ecdsa256')));
     }
 
     public function testRetrieveZoneTriggersAxfrRetrieve(): void
