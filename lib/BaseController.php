@@ -280,6 +280,18 @@ abstract class BaseController
     }
 
     /**
+     * Whether batch PTR links are offered: the same rule the batch PTR page enforces.
+     */
+    private function canUseBatchPtr(): bool
+    {
+        return $this->userContextService->isAuthenticated()
+            && $this->config->get('interface', 'add_reverse_record', false)
+            && (UserManager::verifyPermission($this->db, 'zone_content_edit_own')
+                || UserManager::verifyPermission($this->db, 'zone_content_edit_others')
+                || UserManager::verifyPermission($this->db, 'zone_content_edit_own_as_client'));
+    }
+
+    /**
      * Renders a template with the given parameters.
      *
      * @param string $template The template to render.
@@ -312,6 +324,7 @@ abstract class BaseController
         if (!array_key_exists('pdns_server_info', $params)) {
             $params['pdns_server_info'] = PdnsVersionService::getCachedInfo();
         }
+        $params['can_batch_ptr'] ??= $this->canUseBatchPtr();
 
         $this->app->render($template, $params);
         $this->renderFooter();
@@ -788,6 +801,7 @@ abstract class BaseController
                 'request' => $this->requestData,
                 'dblog_use' => $dblog_use,
                 'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
+                'can_batch_ptr' => $this->canUseBatchPtr(),
                 'api_enabled' => $this->config->get('api', 'enabled', false),
                 'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
                 'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
