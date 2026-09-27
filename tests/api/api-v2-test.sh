@@ -2876,6 +2876,22 @@ test_api_key_scopes() {
         fi
     fi
 
+    # DNSSEC key endpoints (gh #1314) follow the same scopes. Reads answer 501 without the PowerDNS API.
+    local keys_read_code
+    keys_read_code=$(curl -s -o /dev/null -w "%{http_code}" -H "X-API-Key: $API_KEY" --max-time 30 \
+        "${API_BASE_URL}/api/v2/zones/${zone_a}/dnssec/keys")
+    [[ "$keys_read_code" == "501" ]] || keys_read_code=200
+    api_request_v2_with_key "$ro_secret" "GET" "/zones/${zone_a}/dnssec/keys" "" "$keys_read_code" "Read-only key may list DNSSEC keys"
+    api_request_v2_with_key "$ro_secret" "POST" "/zones/${zone_a}/dnssec/keys" '{"type":"csk","algorithm":"ecdsa256","bits":256}' 403 "Read-only key may not add a DNSSEC key"
+    api_request_v2_with_key "$ro_secret" "PATCH" "/zones/${zone_a}/dnssec/keys/1" '{"active":false}' 403 "Read-only key may not toggle a DNSSEC key"
+    api_request_v2_with_key "$ro_secret" "DELETE" "/zones/${zone_a}/dnssec/keys/1" "" 403 "Read-only key may not delete a DNSSEC key"
+    api_request_v2_with_key "$ro_secret" "POST" "/zones/${zone_a}/dnssec/rectify" "" 403 "Read-only key may not rectify"
+    api_request_v2_with_key "$ops_secret" "PATCH" "/zones/${zone_a}/dnssec/keys/1" '{"active":false}' 403 "Ops key (view+create) may not toggle a DNSSEC key"
+    api_request_v2_with_key "$ops_secret" "DELETE" "/zones/${zone_a}/dnssec/keys/1" "" 403 "Ops key (view+create) may not delete a DNSSEC key"
+    api_request_v2_with_key "$ops_secret" "POST" "/zones/${zone_a}/dnssec/rectify" "" 403 "Ops key (view+create) may not rectify, an update"
+    api_request_v2_with_key "$zone_secret" "GET" "/zones/${zone_b}/dnssec/keys" "" 403 "Zone-scoped key may not list another zone's DNSSEC keys"
+    api_request_v2_with_key "$zone_secret" "POST" "/zones/${zone_b}/dnssec/rectify" "" 403 "Zone-scoped key may not rectify another zone"
+
     # Cleanup seeded keys (api_key_zones rows cascade / are removed with the key)
     # and the two test zones.
     db_exec "DELETE FROM api_key_zones WHERE api_key_id IN (SELECT id FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone'));" >/dev/null 2>&1 || true
