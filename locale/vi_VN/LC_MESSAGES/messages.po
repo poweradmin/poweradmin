@@ -10480,10 +10480,6 @@ msgstr "Không, giữ khóa hiện tại"
 msgid "Reset Password"
 msgstr "Đặt lại mật khẩu"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Đến trang đăng nhập"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Yêu cầu liên kết đặt lại mới"
@@ -14576,6 +14572,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Error"
-
-
-

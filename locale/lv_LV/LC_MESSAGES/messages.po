@@ -9841,10 +9841,6 @@ msgstr "Nē, paturēt pašreizējo atslēgu"
 msgid "Reset Password"
 msgstr "Atiestatīt paroli"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Pāriet uz pieteikšanos"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Pieprasīt jaunu atiestatīšanas saiti"
@@ -13827,6 +13823,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Kļūda"
-
-
-

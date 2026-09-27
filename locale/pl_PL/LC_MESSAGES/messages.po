@@ -11028,10 +11028,6 @@ msgstr "Nie, zachowaj obecny klucz"
 msgid "Reset Password"
 msgstr "Resetuj hasło"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Przejdź do logowania"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Poproś o nowy link resetowania"
@@ -15166,6 +15162,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Error"
-
-
-

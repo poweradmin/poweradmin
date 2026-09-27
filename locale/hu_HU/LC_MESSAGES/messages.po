@@ -9717,10 +9717,6 @@ msgstr "Nem, jelenlegi kulcs megtartása"
 msgid "Reset Password"
 msgstr "Jelszó visszaállítása"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Ugrás a bejelentkezéshez"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Új visszaállító link kérése"
@@ -13700,6 +13696,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Hiba"
-
-
-

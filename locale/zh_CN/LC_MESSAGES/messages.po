@@ -10043,10 +10043,6 @@ msgstr "不，保留当前密钥"
 msgid "Reset Password"
 msgstr "重置密码"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "前往登录"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "请求新的重置链接"
@@ -14020,6 +14016,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "错误"
-
-
-

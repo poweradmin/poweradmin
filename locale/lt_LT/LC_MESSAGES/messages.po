@@ -10941,10 +10941,6 @@ msgstr "Ne, palikti dabartinį raktą"
 msgid "Reset Password"
 msgstr "Atkurti slaptažodį"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Eiti į prisijungimą"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Prašyti naujos atkūrimo nuorodos"
@@ -15074,6 +15070,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Klaida"
-
-
-

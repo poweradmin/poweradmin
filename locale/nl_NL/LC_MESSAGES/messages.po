@@ -11033,10 +11033,6 @@ msgstr "Nee, huidige sleutel behouden"
 msgid "Reset Password"
 msgstr "Wachtwoord Resetten"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Ga naar Inloggen"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Nieuwe Reset Link Aanvragen"
@@ -15196,6 +15192,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Fout"
-
-
-

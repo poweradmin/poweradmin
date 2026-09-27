@@ -11126,10 +11126,6 @@ msgstr "No, mantener clave actual"
 msgid "Reset Password"
 msgstr "Restablecer Contraseña"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Ir al Inicio de Sesión"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Solicitar Nuevo Enlace de Restablecimiento"
@@ -15307,6 +15303,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Error"
-
-
-

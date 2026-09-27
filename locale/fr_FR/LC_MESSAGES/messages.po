@@ -11326,10 +11326,6 @@ msgstr "Non, garder la clé actuelle"
 msgid "Reset Password"
 msgstr "Réinitialiser le Mot de Passe"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Aller à la Connexion"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Demander un Nouveau Lien de Réinitialisation"
@@ -15540,6 +15536,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Erreur"
-
-
-

@@ -9719,10 +9719,6 @@ msgstr "Nie, ponechať súčasný kľúč"
 msgid "Reset Password"
 msgstr "Obnoviť heslo"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Prejsť na prihlásenie"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Požiadať o nový odkaz na reset"
@@ -13685,6 +13681,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Chyba"
-
-
-

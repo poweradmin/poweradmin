@@ -10837,10 +10837,6 @@ msgstr "No, keep current key"
 msgid "Reset Password"
 msgstr "Reset Password"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Go to Login"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Request New Reset Link"
@@ -14906,5 +14902,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Error"
-
-

@@ -11037,10 +11037,6 @@ msgstr "Ні, залишити поточний ключ"
 msgid "Reset Password"
 msgstr "Скинути пароль"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Перейти до входу"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Запросити нове посилання для скидання"
@@ -15171,6 +15167,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "Помилка"
-
-
-

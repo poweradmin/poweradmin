@@ -10207,10 +10207,6 @@ msgstr "아니요, 현재 키를 유지합니다"
 msgid "Reset Password"
 msgstr "비밀번호 재설정"
 
-#: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "로그인으로 이동"
-
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "새 재설정 링크 요청"
@@ -14271,6 +14267,3 @@ msgstr ""
 
 # OBSOLETE: msgid "Error"
 # OBSOLETE: msgstr "오류"
-
-
-
