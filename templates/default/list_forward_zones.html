@@ -234,7 +234,7 @@
                         {% endif %}
                         <td class="text-end">
                             <div class="gap-2">
-                                {% if nav.batch_ptr and not zone_is_read_only(zone['type']) %}
+                                {% if nav.batch_ptr and zone['user_can_edit'] and not zone_is_read_only(zone['type']) %}
                                 <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}/zones/batch-ptr?id={{ zone['id'] }}">
                                     <i class="bi bi-arrow-repeat text-secondary"></i>
                                     <span class="d-none d-md-inline">{% trans %}PTR{% endtrans %}</span>

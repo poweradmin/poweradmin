@@ -211,6 +211,7 @@ class ListForwardZonesController extends BaseController
             $zoneId = (int)$zone['id'];
             $zone['groups'] = array_map(fn(int $groupId): string => $groupNames[$groupId] ?? 'Group #' . $groupId, $ownership->groupIds($zoneId));
             $zone['user_can_delete'] = $ownership->allows($perm_delete, $zoneId);
+            $zone['user_can_edit'] = $ownership->allows($perm_edit, $zoneId);
 
             // At the "own" ownership view level, owner and group cells stay
             // visible only for zones the user owns directly or via a group.

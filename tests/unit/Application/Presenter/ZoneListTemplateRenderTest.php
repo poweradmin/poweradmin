@@ -109,6 +109,7 @@ class ZoneListTemplateRenderTest extends TestCase
             $row = $zone->toArray();
             $row['groups'] = $zone->id === 7 ? ['ops'] : [];
             $row['user_can_delete'] = true;
+            $row['user_can_edit'] = true;
             $row['owners_display'] = OwnerGroupColumnPresenter::presentOwners($row['owners'], $row['full_names']);
             $row['groups_display'] = OwnerGroupColumnPresenter::presentGroups($row['groups']);
             $rows[] = $row;
