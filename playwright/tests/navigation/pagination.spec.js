@@ -9,7 +9,13 @@ import users from '../../fixtures/users.json' with { type: 'json' };
  * to 100, so it is shrunk here and restored afterwards for the specs that
  * follow in this worker. And the list has to be filtered to one letter: the SQL
  * backend returns every zone for letter=all, so that view never paginates.
+ *
+ * Both of those are shared state, so the file has to stay on one worker: in
+ * parallel mode one worker's afterAll restores the size of 100 while another is
+ * still paginating, and the pager disappears mid-test.
  */
+test.describe.configure({ mode: 'serial' });
+
 const PAGE_SIZE = 5;
 const SEEDED_PAGE_SIZE = 100;
 const LETTER = 'p';
