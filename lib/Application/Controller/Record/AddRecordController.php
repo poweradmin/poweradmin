@@ -270,6 +270,8 @@ class AddRecordController extends BaseController
             }
             if ($added->companionWarning) {
                 $ptrWarnings[] = $added->companionMessage;
+            } elseif ($added->companion === RecordAddResult::COMPANION_PTR && !$added->companionCreated && $added->companionMessage !== null) {
+                $ptrWarnings[] = _('Record successfully added, but PTR record creation failed: ') . $added->companionMessage;
             }
         }
 
@@ -307,7 +309,7 @@ class AddRecordController extends BaseController
                 return;
             } elseif (!empty($ptrWarnings)) {
                 // Success with PTR warnings
-                $message .= ' ' . implode(' ', $ptrWarnings);
+                $message .= ' ' . implode(' ', array_unique($ptrWarnings));
                 $this->setMessage('edit', 'warning', $message);
             } else {
                 $this->setMessage('edit', 'success', $message);
