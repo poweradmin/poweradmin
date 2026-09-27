@@ -380,7 +380,8 @@ class ZoneTemplatesController extends PublicApiController
                     type: 'object',
                     properties: [
                         new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(property: 'message', type: 'string', example: 'Zone template updated successfully')
+                        new OA\Property(property: 'message', type: 'string', example: 'Zone template updated successfully'),
+                        new OA\Property(property: 'data', type: 'object', nullable: true, example: null)
                     ]
                 )
             ),
@@ -485,7 +486,8 @@ class ZoneTemplatesController extends PublicApiController
                     type: 'object',
                     properties: [
                         new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(property: 'message', type: 'string', example: 'Zone template deleted successfully')
+                        new OA\Property(property: 'message', type: 'string', example: 'Zone template deleted successfully'),
+                        new OA\Property(property: 'data', type: 'object', nullable: true, example: null)
                     ]
                 )
             ),

@@ -224,7 +224,7 @@ class ZonesRecordsController extends PublicApiController
                             property: 'record',
                             properties: [
                                 new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 1),
-                                new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
+                                new OA\Property(property: 'name', type: 'string', example: 'www'),
                                 new OA\Property(property: 'type', type: 'string', example: 'A'),
                                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),
@@ -333,7 +333,7 @@ class ZonesRecordsController extends PublicApiController
                             properties: [
                                 new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 456, nullable: true),
                                 new OA\Property(property: 'zone_id', type: 'integer', example: 1),
-                                new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
+                                new OA\Property(property: 'name', type: 'string', example: 'www'),
                                 new OA\Property(property: 'type', type: 'string', example: 'A'),
                                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),
@@ -589,7 +589,7 @@ class ZonesRecordsController extends PublicApiController
                             property: 'record',
                             properties: [
                                 new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 1),
-                                new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
+                                new OA\Property(property: 'name', type: 'string', example: 'www'),
                                 new OA\Property(property: 'type', type: 'string', example: 'A'),
                                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),

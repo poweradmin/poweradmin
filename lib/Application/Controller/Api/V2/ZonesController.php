@@ -420,7 +420,8 @@ class ZonesController extends PublicApiController
                 new OA\Property(
                     property: 'data',
                     properties: [
-                        new OA\Property(property: 'zone_id', type: 'integer', example: 123)
+                        new OA\Property(property: 'zone_id', type: 'integer', example: 123),
+                        new OA\Property(property: 'dnssec', type: 'string', example: 'signed', description: 'Only when enable_dnssec was requested: the signing outcome, e.g. signed, server_disabled or secure_failed')
                     ],
                     type: 'object'
                 ),

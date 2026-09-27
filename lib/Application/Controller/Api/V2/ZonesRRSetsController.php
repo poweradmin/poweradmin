@@ -136,7 +136,7 @@ class ZonesRRSetsController extends PublicApiController
                             type: 'array',
                             items: new OA\Items(
                                 properties: [
-                                    new OA\Property(property: 'name', type: 'string', example: 'www.example.com', description: 'Fully qualified domain name'),
+                                    new OA\Property(property: 'name', type: 'string', example: 'www', description: 'Name relative to the zone'),
                                     new OA\Property(property: 'type', type: 'string', example: 'A', description: 'Record type'),
                                     new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live in seconds'),
                                     new OA\Property(
