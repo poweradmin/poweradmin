@@ -56,14 +56,6 @@ msgstr "Provjera nije uspjela:"
 msgid "Failed to generate record:"
 msgstr "Generiranje zapisa nije uspjelo:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Ovaj zapis nije bio valjan i nije se mogao dodati. Možda već postoji ili "
-"sadrži nevažeće podatke."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Zapis je uspješno dodan."
@@ -1243,10 +1235,6 @@ msgstr "Već postoji zona s ovim imenom."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Ovo nije valjana IPv4 ili IPv6 adresa."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Stvaranje sekundarne zone nije uspjelo."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Nevažeća zona."
@@ -1354,10 +1342,6 @@ msgstr "Naziv zone je obavezan."
 msgid "This is an invalid zone name."
 msgstr "Ovo je nevažeći naziv zone."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Zona s ovim imenom već postoji."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Nevažeća vrsta zone."
@@ -1369,14 +1353,6 @@ msgid ""
 msgstr ""
 "Nije moguće stvoriti novu zonu uvozom: odaberite barem jednu grupu ili "
 "ostavite \"Nema korisničkog vlasnika\" neoznačeno."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Nije uspjelo stvaranje zone."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Nije uspjelo dohvaćanje stvorene zone."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1932,10 +1908,6 @@ msgstr "Unesite barem jedan zapis"
 msgid "Invalid record type."
 msgstr "Nevažeća vrsta zapisa."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Zapis se ne može dodati."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2076,10 +2048,6 @@ msgstr "Ispunite sva obavezna polja ispravno."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Nemate dozvolu za brisanje ovog zapisa."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Zapis se nije mogao obrisati."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2508,14 +2476,6 @@ msgstr "Stvoreno je i %d podudarajućih zapisa."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d zapisa nije dodano."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Neki zapisi nisu mogli biti dodani. Možda već postoje ili sadrže nevažeće "
-"podatke."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3122,10 +3082,6 @@ msgstr "Vaš profil je uspješno ažuriran."
 msgid "The user has been updated successfully."
 msgstr "Korisnik je uspješno ažuriran."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Korisnik se nije mogao ažurirati."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Nemate dozvolu za uređivanje ovog korisnika."
@@ -3202,10 +3158,6 @@ msgstr "Nemate dozvolu za brisanje predložaka dozvola."
 msgid "The permission template has been deleted successfully."
 msgstr "Predložak dozvola je uspješno obrisan."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Predložak dozvola se nije mogao obrisati."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Funkcija PowerDNS statusa je onemogućena u konfiguraciji sustava."
@@ -3221,22 +3173,6 @@ msgid ""
 msgstr ""
 "Značajka PowerDNS API nije konfigurirana. Postavite API URL i ključ u "
 "konfiguraciji sustava."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Nemate dozvolu za pristup ovoj funkciji."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Operacija je uspješno završena."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Obrada zahtjeva nije uspjela. Pokušajte ponovno."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Došlo je do neočekivane greške. Obratite se administratoru."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3371,14 +3307,6 @@ msgstr "Supermaster je uspješno obrisan."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Skupna registracija"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Vlasnik mora biti numerički ID korisnika."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Dodavanje zone nije uspjelo."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3894,17 +3822,9 @@ msgstr "Greška pri uklanjanju zadanog predloška zone: "
 msgid "Error creating zone template: "
 msgstr "Greška pri stvaranju predloška zone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Greška pri dodavanju zadanog SOA zapisa u predložak: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Greška pri brisanju predloška zone: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Greška pri brisanju korisničkih predložaka zona: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3945,10 +3865,6 @@ msgstr "Nemate dozvolu za brisanje ove vrste zapisa iz predloška zone."
 msgid "Error deleting zone template record: "
 msgstr "Greška pri brisanju zapisa predloška zone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Greška pri provjeri vlasništva predloška: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3957,37 +3873,9 @@ msgid ""
 msgstr ""
 "Ove vrste zapisa izostavljene su iz predloška jer ih ne smijete dodavati: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Greška pri dohvaćanju zona koje koriste predložak: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Neuspjelo dohvaćanje popisa zona koje koriste predložak: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nemate dozvolu za uređivanje predloška zone."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Greška pri odspajanju zone od predloška: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Greška pri dohvaćanju zona: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Greška pri provjeri postojanja imena predloška: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Greška pri traženju predloška po imenu: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Greška pri provjeri postojanja predloška: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7630,10 +7518,6 @@ msgstr "Ime poslužitelja je predugo."
 msgid "Single-label hostnames are not allowed."
 msgstr "Imena poslužitelja s jednom oznakom nisu dopuštena."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Imate nevažeće znakove u nazivu zone."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Ime poslužitelja ne može početi ili završiti crticom."
@@ -7698,14 +7582,6 @@ msgstr "Dano ime poslužitelja ima previše kosih crta."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Koristite nevažeći TLD."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"SOA parametri validacije nisu postavljeni. Prvo pozovite setSOAParams() ili "
-"ih navedite kao argumente."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9594,20 +9470,6 @@ msgstr "Stvaranje %s zapisa za zonu nije uspjelo."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Nevažeći argument(i) funkciji %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Brisanje zone iz DNS pozadine nije uspjelo."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Neuspjelo čišćenje metapodataka zone: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Neuspjelo brisanje metapodataka zone: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Ažuriranje vrste zone u DNS pozadini nije uspjelo."
@@ -9615,10 +9477,6 @@ msgstr "Ažuriranje vrste zone u DNS pozadini nije uspjelo."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Ažuriranje glavnog poslužitelja zone u DNS pozadini nije uspjelo."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Odabrani korisnik već posjeduje zonu."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9907,10 +9765,6 @@ msgstr "Primjer: [ZONE] za zonu ili subdomain.[ZONE] za poddomenu"
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Valjani raspon: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Samo za MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15509,5 +15363,3 @@ msgid ""
 msgstr ""
 "Postavljanje lokalizacije nije uspjelo. Odabrana lokalizacija možda nije "
 "podržana na ovom sustavu. Obratite se svom administratoru."
-
-

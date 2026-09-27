@@ -54,14 +54,6 @@ msgstr "اعتبارسنجی ناموفق بود:"
 msgid "Failed to generate record:"
 msgstr "شکست در تولید رکورد:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"این رکورد معتبر نبود و نمی توانست اضافه شود. ممکن است در حال حاضر وجود داشته "
-"باشد یا حاوی داده های نامعتبر باشد."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "این رکورد با موفقیت اضافه شد."
@@ -1244,10 +1236,6 @@ msgstr "منطقه ای با این نام وجود دارد."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "این یک آدرس IPv4 یا IPv6 معتبر نیست."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "ایجاد منطقه ثانویه ناموفق بود."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "منطقه نامعتبر."
@@ -1355,10 +1343,6 @@ msgstr "نام منطقه لازم است."
 msgid "This is an invalid zone name."
 msgstr "این یک نام منطقه نامعتبر است."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "منطقه ای با این نام در حال حاضر وجود دارد."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "نوع منطقه نامعتبر است."
@@ -1370,14 +1354,6 @@ msgid ""
 msgstr ""
 "نمی‌توان از طریق وارد کردن، منطقه جدیدی ایجاد کرد: حداقل یک گروه را انتخاب "
 "کنید یا \"هیچ مالک کاربر\" را بدون تیک بگذارید."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "ایجاد منطقه ناموفق بود."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "بازیابی منطقه ایجاد شده ناموفق بود."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1921,10 +1897,6 @@ msgstr "ارائه حداقل یک رکورد"
 msgid "Invalid record type."
 msgstr "نوع رکورد نامعتبر است."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "رکورد نمی تواند اضافه شود."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2059,10 +2031,6 @@ msgstr "لطفا تمام زمینه های مورد نیاز را به درست
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "شما اجازه حذف این رکورد را ندارید."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "رکورد را نمی توان حذف کرد."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2485,14 +2453,6 @@ msgstr "%d رکورد منطبق نیز ایجاد شد."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "اضافه کردن %d رکورد ناموفق بود."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"برخی از رکوردها را نمی توان اضافه کرد. آنها ممکن است در حال حاضر وجود داشته "
-"باشند یا حاوی داده های نامعتبر باشند."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3092,10 +3052,6 @@ msgstr "پروفایل شما با موفقیت به روز شده است."
 msgid "The user has been updated successfully."
 msgstr "کاربر با موفقیت به روز شده است."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "کاربر نمی تواند به روز شود."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "شما اجازه ویرایش این کاربر را ندارید."
@@ -3166,10 +3122,6 @@ msgstr "شما اجازه حذف قالب های اجازه را ندارید."
 msgid "The permission template has been deleted successfully."
 msgstr "قالب مجوز با موفقیت حذف شده است."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "قالب اجازه را نمی توان حذف کرد."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "ویژگی وضعیت PowerDNS در پیکربندی سیستم غیرفعال است."
@@ -3185,22 +3137,6 @@ msgid ""
 msgstr ""
 "ویژگی PowerDNS API پیکربندی نشده است. لطفا URL API و کلید را در پیکربندی "
 "سیستم تنظیم کنید."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "شما اجازه دسترسی به این ویژگی را ندارید."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "عملیات تکمیل شده با موفقیت"
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "شکست در پردازش درخواست لطفا دوباره امتحان کنید."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "یک خطای غیرمنتظره رخ داد. لطفا با مدیر تماس بگیرید."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3334,14 +3270,6 @@ msgstr "supermaster با موفقیت حذف شده است."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "ثبت انبوه"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "مالک باید یک شناسه کاربری عددی باشد."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "افزودن منطقه ناموفق بود."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3842,17 +3770,9 @@ msgstr "خطا در پاک کردن قالب پیش‌فرض منطقه: "
 msgid "Error creating zone template: "
 msgstr "خطای ایجاد قالب منطقه: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "خطای اضافه کردن رکورد پیش فرض SOA به قالب: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "خطا در حذف قالب منطقه: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "خطای حذف قالب های منطقه کاربر: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3893,10 +3813,6 @@ msgstr "شما اجازه حذف این نوع رکورد از قالب منطق
 msgid "Error deleting zone template record: "
 msgstr "خطای حذف رکورد قالب منطقه: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "خطای چک کردن مالکیت قالب: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3906,37 +3822,9 @@ msgstr ""
 "این انواع رکورد در قالب گنجانده نشدند، زیرا شما اجازه افزودن آن‌ها را ندارید: "
 "%s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "خطا در دریافت مناطق با استفاده از قالب: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "شکست در دریافت لیست مناطق با استفاده از قالب: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "شما اجازه ویرایش یک قالب منطقه را ندارید."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "خطا در جدا کردن منطقه از قالب: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "خطا در دریافت مناطق: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "خطا در بررسی وجود نام قالب: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "خطا در جستجوی قالب بر اساس نام: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "خطای چک کردن وجود الگو: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7600,10 +7488,6 @@ msgstr "نام میزبان خیلی طولانی است."
 msgid "Single-label hostnames are not allowed."
 msgstr "نام‌های میزبان تک‌برچسبی مجاز نیستند."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "در نام منطقه شما کاراکترهای نامعتبر وجود دارد."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "نام میزبان نمی‌تواند با خط تیره شروع یا تمام شود."
@@ -7671,14 +7555,6 @@ msgstr "نام میزبان داده‌شده اسلش‌های بیش از حد
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "شما از یک دامنه سطح بالای نامعتبر استفاده می کنید."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"پارامترهای اعتبارسنجی SOA تنظیم نشده است. ابتدا setSOAParams() را فراخوانی "
-"کنید یا آنها را به عنوان آرگومان ارائه دهید."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9568,20 +9444,6 @@ msgstr "ایجاد رکورد %s برای منطقه ناموفق بود."
 msgid "Invalid argument(s) given to function %s"
 msgstr "آرگومان(های) نامعتبر به تابع %s داده شده است"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "شکست در حذف منطقه از DNS backend"
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "پاکسازی متادیتای منطقه ناموفق بود: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "حذف متادیتای منطقه ناموفق بود: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "شکست در به‌روزرسانی نوع منطقه در DNS backend"
@@ -9589,10 +9451,6 @@ msgstr "شکست در به‌روزرسانی نوع منطقه در DNS backend
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "شکست در به‌روزرسانی master منطقه در DNS backend"
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "کاربر منتخب در حال حاضر دارای منطقه است."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9879,10 +9737,6 @@ msgstr "نمونه: [ZONE] برای خود منطقه، یا subdomain.[ZONE] ب
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "محدوده معتبر: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "فقط برای MX، SRV، KX، NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15481,5 +15335,3 @@ msgid ""
 msgstr ""
 "تنظیم زبان و منطقه انجام نشد. ممکن است زبان و منطقه انتخاب‌شده در این سیستم "
 "پشتیبانی نشود. لطفاً با مدیر سیستم خود تماس بگیرید."
-
-

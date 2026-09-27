@@ -55,14 +55,6 @@ msgstr "Η επικύρωση απέτυχε:"
 msgid "Failed to generate record:"
 msgstr "Αποτυχία δημιουργίας εγγραφής:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Αυτή η εγγραφή δεν ήταν έγκυρη και δεν μπορούσε να προστεθεί. Μπορεί να "
-"υπάρχει ήδη ή να περιέχει μη έγκυρα δεδομένα."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Η εγγραφή προστέθηκε με επιτυχία."
@@ -1281,10 +1273,6 @@ msgstr "Υπάρχει ήδη μια ζώνη με αυτό το όνομα."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Αυτή δεν είναι μια έγκυρη διεύθυνση IPv4 ή IPv6."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Αποτυχία δημιουργίας της δευτερεύουσας ζώνης."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Μη έγκυρη ζώνη."
@@ -1394,10 +1382,6 @@ msgstr "Απαιτείται όνομα ζώνης."
 msgid "This is an invalid zone name."
 msgstr "Αυτό είναι ένα άκυρο όνομα ζώνης."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Μια ζώνη με αυτό το όνομα υπάρχει ήδη."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Μη έγκυρος τύπος ζώνης."
@@ -1409,14 +1393,6 @@ msgid ""
 msgstr ""
 "Αδύνατη η δημιουργία μιας νέας ζώνης μέσω εισαγωγής: επιλέξτε τουλάχιστον "
 "μία ομάδα, ή αφήστε το \"Κανένας ιδιοκτήτης χρήστη\" μη επιλεγμένο."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Αποτυχία δημιουργίας ζώνης."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Αποτυχία ανάκτησης της δημιουργημένης ζώνης."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1989,10 +1965,6 @@ msgstr "Δώστε τουλάχιστον μία εγγραφή"
 msgid "Invalid record type."
 msgstr "Μη έγκυρος τύπος εγγραφής."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Δεν ήταν δυνατό να προστεθεί εγγραφή."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2134,10 +2106,6 @@ msgstr "Παρακαλώ συμπληρώστε όλα τα απαιτούμεν
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Δεν έχετε την άδεια να διαγράψετε αυτή την εγγραφή."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Η εγγραφή δεν μπορεί να διαγραφεί."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2574,14 +2542,6 @@ msgstr "Δημιουργήθηκαν επίσης %d αντίστοιχη(-ες)
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Απέτυχε η προσθήκη %d εγγραφής(-ών)."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Μερικές εγγραφές δεν ήταν δυνατόν να προστεθούν. Μπορεί να υπάρχουν ήδη ή να "
-"περιέχουν μη έγκυρα δεδομένα."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3195,10 +3155,6 @@ msgstr "Το προφίλ σας έχει ενημερωθεί με επιτυχ
 msgid "The user has been updated successfully."
 msgstr "Ο χρήστης έχει ενημερωθεί με επιτυχία."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Ο χρήστης δεν μπόρεσε να ενημερωθεί."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Δεν έχετε την άδεια να επεξεργαστείτε αυτόν τον χρήστη."
@@ -3271,10 +3227,6 @@ msgstr "Δεν έχετε την άδεια να διαγράψετε τα πρ�
 msgid "The permission template has been deleted successfully."
 msgstr "Το πρότυπο άδειας έχει διαγραφεί με επιτυχία."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Το πρότυπο άδειας δεν μπορεί να διαγραφεί."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr ""
@@ -3292,23 +3244,6 @@ msgid ""
 msgstr ""
 "Η λειτουργία PowerDNS API δεν έχει ρυθμιστεί. Παρακαλώ ρυθμίστε το URL API "
 "και το κλειδί στις ρυθμίσεις του συστήματος."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Δεν έχετε την άδεια να αποκτήσετε πρόσβαση σε αυτό το χαρακτηριστικό."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Η λειτουργία ολοκληρώθηκε με επιτυχία."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Αποτυχία επεξεργασίας της αίτησης. Παρακαλώ προσπαθήστε ξανά."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr ""
-"Συνέβη ένα απροσδόκητο σφάλμα. Παρακαλώ επικοινωνήστε με τον διαχειριστή."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3447,14 +3382,6 @@ msgstr "Ο supermaster έχει διαγραφεί με επιτυχία."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Μαζική καταχώριση"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Ο ιδιοκτήτης πρέπει να είναι αριθμητική ταυτότητα χρήστη."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Αποτυχία προσθήκης ζώνης."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3984,17 +3911,9 @@ msgstr "Σφάλμα εκκαθάρισης προεπιλεγμένου προ�
 msgid "Error creating zone template: "
 msgstr "Σφάλμα δημιουργίας προτύπου ζώνης: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Σφάλμα προσθήκης προκαθορισμένης εγγραφής SOA στο πρότυπο: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Σφάλμα διαγραφής προτύπου ζώνης: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Σφάλμα διαγραφής προτύπων ζώνης χρήστη: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -4042,10 +3961,6 @@ msgstr ""
 msgid "Error deleting zone template record: "
 msgstr "Σφάλμα διαγραφής εγγραφής προτύπου ζώνης: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Σφάλμα ελέγχου ιδιοκτησίας προτύπου: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -4055,37 +3970,9 @@ msgstr ""
 "Αυτοί οι τύποι εγγραφών παραλείφθηκαν από το πρότυπο επειδή δεν επιτρέπεται "
 "να τους προσθέσετε: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Σφάλμα ανάκτησης ζωνών που χρησιμοποιούν το πρότυπο: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Αποτυχία λήψης λίστας ζωνών που χρησιμοποιούν το πρότυπο: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Δεν έχετε την άδεια να επεξεργαστείτε ένα πρότυπο ζώνης."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Σφάλμα αποσύνδεσης ζώνης από το πρότυπο: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Σφάλμα ανάκτησης ζωνών: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Σφάλμα ελέγχου ύπαρξης ονόματος προτύπου: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Σφάλμα αναζήτησης προτύπου με βάση το όνομα: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Σφάλμα ελέγχου ύπαρξης προτύπου: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7976,10 +7863,6 @@ msgstr "Το όνομα υπολογιστή είναι πολύ μεγάλο."
 msgid "Single-label hostnames are not allowed."
 msgstr "Δεν επιτρέπονται ονόματα υπολογιστή με μία μόνο ετικέτα."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Έχετε μη έγκυρους χαρακτήρες στο όνομα ζώνης σας."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr ""
@@ -8055,14 +7938,6 @@ msgstr "Το δοθέν όνομα υπολογιστή έχει πάρα πολ
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Χρησιμοποιείτε έναν μη έγκυρο τομέα ανωτάτου επιπέδου."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"Οι παράμετροι επικύρωσης SOA δεν έχουν οριστεί. Καλέστε πρώτα το "
-"setSOAParams() ή δώστε τις ως ορίσματα."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -10065,20 +9940,6 @@ msgstr "Αποτυχία δημιουργίας εγγραφής %s για τη 
 msgid "Invalid argument(s) given to function %s"
 msgstr "Μη έγκυρο(-α) όρισμα(-τα) δόθηκαν στη συνάρτηση %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Αποτυχία διαγραφής ζώνης από το σύστημα υποστήριξης DNS."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Αποτυχία καθαρισμού μεταδεδομένων ζώνης: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Αποτυχία διαγραφής μεταδεδομένων ζώνης: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Αποτυχία ενημέρωσης του τύπου ζώνης στο σύστημα υποστήριξης DNS."
@@ -10086,10 +9947,6 @@ msgstr "Αποτυχία ενημέρωσης του τύπου ζώνης στ�
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Αποτυχία ενημέρωσης του master ζώνης στο σύστημα υποστήριξης DNS."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Ο επιλεγμένος χρήστης κατέχει ήδη τη ζώνη."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -10382,10 +10239,6 @@ msgstr ""
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Έγκυρο εύρος: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Μόνο για MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -16137,5 +15990,3 @@ msgid ""
 msgstr ""
 "Η ρύθμιση του locale απέτυχε. Το επιλεγμένο locale μπορεί να μην "
 "υποστηρίζεται σε αυτό το σύστημα. Επικοινωνήστε με τον διαχειριστή σας."
-
-

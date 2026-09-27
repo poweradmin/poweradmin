@@ -54,14 +54,6 @@ msgstr "Xác thực thất bại:"
 msgid "Failed to generate record:"
 msgstr "Không thể tạo bản ghi:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Bản ghi này không hợp lệ và không thể được thêm. Nó có thể đã tồn tại hoặc "
-"chứa dữ liệu không hợp lệ."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Bản ghi đã được thêm thành công."
@@ -1241,10 +1233,6 @@ msgstr "Đã tồn tại một vùng với tên này."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Đây không phải là địa chỉ IPv4 hoặc IPv6 hợp lệ."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Không thể tạo vùng secondary."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Vùng không hợp lệ."
@@ -1353,10 +1341,6 @@ msgstr "Tên vùng là bắt buộc."
 msgid "This is an invalid zone name."
 msgstr "Đây là tên vùng không hợp lệ."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Một vùng với tên này đã tồn tại."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Loại vùng không hợp lệ."
@@ -1368,14 +1352,6 @@ msgid ""
 msgstr ""
 "Không thể tạo vùng mới qua nhập: chọn ít nhất một nhóm hoặc bỏ chọn \"Không "
 "có người dùng sở hữu\"."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Không thể tạo vùng."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Không thể truy xuất vùng đã tạo."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1928,10 +1904,6 @@ msgstr "Cung cấp ít nhất một bản ghi"
 msgid "Invalid record type."
 msgstr "Loại bản ghi không hợp lệ."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Không thể thêm bản ghi."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2069,10 +2041,6 @@ msgstr "Vui lòng điền đúng tất cả các trường bắt buộc."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Bạn không có quyền xóa bản ghi này."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Không thể xóa bản ghi."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2489,14 +2457,6 @@ msgstr "%d bản ghi trùng khớp cũng đã được tạo."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d bản ghi thêm thất bại."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Một số bản ghi không thể được thêm. Chúng có thể đã tồn tại hoặc chứa dữ "
-"liệu không hợp lệ."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3095,10 +3055,6 @@ msgstr "Hồ sơ của bạn đã được cập nhật thành công."
 msgid "The user has been updated successfully."
 msgstr "Người dùng đã được cập nhật thành công."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Không thể cập nhật người dùng."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Bạn không có quyền chỉnh sửa người dùng này."
@@ -3167,10 +3123,6 @@ msgstr "Bạn không có quyền xóa mẫu quyền hạn."
 msgid "The permission template has been deleted successfully."
 msgstr "Mẫu quyền hạn đã được xóa thành công."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Không thể xóa mẫu quyền."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Tính năng trạng thái PowerDNS đã bị tắt trong cấu hình hệ thống."
@@ -3186,22 +3138,6 @@ msgid ""
 msgstr ""
 "Tính năng API PowerDNS chưa được cấu hình. Vui lòng thiết lập URL và khóa "
 "API trong cấu hình hệ thống."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Bạn không có quyền truy cập tính năng này."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Thao tác đã hoàn thành thành công."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Không thể xử lý yêu cầu. Vui lòng thử lại."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Đã xảy ra lỗi không mong đợi. Vui lòng liên hệ quản trị viên."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3337,14 +3273,6 @@ msgstr "Supermaster đã được xóa thành công."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Đăng ký hàng loạt"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Chủ sở hữu phải là ID người dùng dạng số."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Không thể thêm vùng."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3857,17 +3785,9 @@ msgstr "Lỗi khi xóa mẫu vùng mặc định: "
 msgid "Error creating zone template: "
 msgstr "Lỗi khi tạo mẫu vùng: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Lỗi khi thêm bản ghi SOA mặc định vào mẫu: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Lỗi khi xóa mẫu vùng: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Lỗi khi xóa mẫu vùng của người dùng: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3908,10 +3828,6 @@ msgstr "Bạn không có quyền xóa loại bản ghi này khỏi mẫu vùng."
 msgid "Error deleting zone template record: "
 msgstr "Lỗi khi xóa bản ghi mẫu vùng: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Lỗi khi kiểm tra quyền sở hữu mẫu: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3920,37 +3836,9 @@ msgid ""
 msgstr ""
 "Các loại bản ghi sau đã bị bỏ khỏi mẫu vì bạn không được phép thêm chúng: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Lỗi khi truy xuất vùng sử dụng mẫu: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Không thể lấy danh sách vùng sử dụng mẫu: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Bạn không có quyền chỉnh sửa mẫu vùng."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Lỗi khi hủy liên kết vùng khỏi mẫu: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Lỗi khi truy xuất vùng: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Lỗi khi kiểm tra tên mẫu đã tồn tại: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Lỗi khi tìm kiếm mẫu theo tên: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Lỗi khi kiểm tra mẫu tồn tại: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7622,10 +7510,6 @@ msgstr "Tên máy chủ quá dài."
 msgid "Single-label hostnames are not allowed."
 msgstr "Không cho phép tên máy chủ chỉ có một nhãn."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Tên vùng của bạn có chứa ký tự không hợp lệ."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Tên máy chủ không thể bắt đầu hoặc kết thúc bằng dấu gạch ngang."
@@ -7693,14 +7577,6 @@ msgstr "Tên máy chủ đã cho có quá nhiều dấu gạch chéo."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Bạn đang dùng một tên miền cấp cao không hợp lệ."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"Chưa đặt các tham số kiểm tra SOA. Hãy gọi setSOAParams() trước hoặc truyền "
-"chúng làm đối số."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9613,20 +9489,6 @@ msgstr "Không thể tạo bản ghi %s cho vùng."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Đối số không hợp lệ được truyền cho hàm %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Không thể xóa vùng khỏi backend DNS."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Không thể dọn dẹp siêu dữ liệu vùng: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Không thể xóa siêu dữ liệu vùng: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Không thể cập nhật loại vùng trong backend DNS."
@@ -9634,10 +9496,6 @@ msgstr "Không thể cập nhật loại vùng trong backend DNS."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Không thể cập nhật máy chủ chính của vùng trong backend DNS."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Người dùng đã chọn vốn đã sở hữu vùng này."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9924,10 +9782,6 @@ msgstr ""
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Khoảng hợp lệ: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Chỉ dành cho MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15530,5 +15384,3 @@ msgid ""
 msgstr ""
 "Không thể thiết lập locale. Locale đã chọn có thể không được hỗ trợ trên hệ "
 "thống này. Vui lòng liên hệ quản trị viên của bạn."
-
-

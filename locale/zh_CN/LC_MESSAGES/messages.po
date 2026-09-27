@@ -54,12 +54,6 @@ msgstr "验证失败："
 msgid "Failed to generate record:"
 msgstr "无法生成记录："
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr "此记录无效，无法添加。它可能已存在或包含无效数据。"
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "记录已成功添加。"
@@ -1173,10 +1167,6 @@ msgstr "已存在同名区域。"
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "这不是有效的 IPv4 或 IPv6 地址。"
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "创建 Secondary 区域失败。"
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "无效的区域。"
@@ -1282,10 +1272,6 @@ msgstr "区域名称是必需的。"
 msgid "This is an invalid zone name."
 msgstr "这是无效的区域名称。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "具有此名称的区域已存在。"
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "区域类型无效。"
@@ -1295,14 +1281,6 @@ msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
 msgstr "无法通过导入创建新区域: 至少选择一个组,或取消勾选\"无用户所有者\"。"
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "创建区域失败。"
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "获取已创建的区域失败。"
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1834,10 +1812,6 @@ msgstr "至少提供一个记录"
 msgid "Invalid record type."
 msgstr "记录类型无效。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "无法添加记录。"
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -1972,10 +1946,6 @@ msgstr "请正确填写所有必填字段。"
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "您没有删除此记录的权限。"
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "无法删除记录。"
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2388,12 +2358,6 @@ msgstr "同时创建了 %d 条匹配的记录。"
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d 条记录添加失败。"
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr "某些记录无法添加。它们可能已存在或包含无效数据。"
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -2981,10 +2945,6 @@ msgstr "您的个人资料已成功更新。"
 msgid "The user has been updated successfully."
 msgstr "用户已成功更新。"
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "用户无法更新。"
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "您没有编辑此用户的权限。"
@@ -3053,10 +3013,6 @@ msgstr "您没有删除权限模板的权限。"
 msgid "The permission template has been deleted successfully."
 msgstr "权限模板已成功删除。"
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "无法删除权限模板。"
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS 状态功能在系统配置中已禁用。"
@@ -3070,22 +3026,6 @@ msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
 msgstr "PowerDNS API 功能未配置。请在系统配置中设置 API URL 和密钥。"
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "您无权访问此功能。"
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "操作已成功完成。"
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "请求处理失败。请重试。"
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "发生意外错误。请联系管理员。"
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3214,14 +3154,6 @@ msgstr "Supermaster 已成功删除。"
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "批量注册"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "所有者必须为数字用户 ID。"
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "添加区域失败。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3712,17 +3644,9 @@ msgstr "清除默认区域模板时出错: "
 msgid "Error creating zone template: "
 msgstr "创建区域模板错误： "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "向模板添加默认 SOA 记录错误： "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "删除区域模板错误： "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "删除用户区域模板错误： "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3763,10 +3687,6 @@ msgstr "您没有从区域模板中删除此记录类型的权限。"
 msgid "Error deleting zone template record: "
 msgstr "删除区域模板记录错误： "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "检查模板所有权错误： "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3774,37 +3694,9 @@ msgid ""
 "them: %s"
 msgstr "以下记录类型未包含在模板中，因为您无权添加它们：%s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "检索使用模板的区域错误： "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "获取使用模板的区域列表失败： "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "您没有编辑区域模板的权限。"
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "从模板取消链接区域错误： "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "检索区域错误： "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "检查模板名称存在性错误： "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "按名称查找模板时出错： "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "检查模板存在性错误： "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7071,10 +6963,6 @@ msgstr "主机名太长。"
 msgid "Single-label hostnames are not allowed."
 msgstr "不允许单标签主机名。"
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "您的区域名称中有无效字符。"
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "主机名不能以破折号开头或结尾。"
@@ -7134,12 +7022,6 @@ msgstr "给定的主机名有太多斜杠。"
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "您正在使用无效的顶级域。"
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr "SOA 验证参数未设置。请先调用 setSOAParams() 或将它们作为参数提供。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -8847,20 +8729,6 @@ msgstr "为区域创建 %s 记录失败。"
 msgid "Invalid argument(s) given to function %s"
 msgstr "给函数 %s 提供了无效参数"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "从 DNS 后端删除区域失败。"
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "清理区域元数据失败：%s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "删除区域元数据失败：%s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "在 DNS 后端更新区域类型失败。"
@@ -8868,10 +8736,6 @@ msgstr "在 DNS 后端更新区域类型失败。"
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "在 DNS 后端更新区域主服务器失败。"
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "选定的用户已拥有该区域。"
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9151,10 +9015,6 @@ msgstr "示例：[ZONE] 表示区域本身，或 subdomain.[ZONE] 表示子域"
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "有效范围：0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "仅适用于 MX、SRV、KX、NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -14565,5 +14425,3 @@ msgid ""
 "Please contact your administrator."
 msgstr ""
 "无法设置区域语言。所选区域语言可能在此系统上不受支持。请联系您的管理员。"
-
-

@@ -56,14 +56,6 @@ msgstr "Patikrinimas nepavyko:"
 msgid "Failed to generate record:"
 msgstr "Nepavyko sugeneruoti įrašo:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Šis įrašas neteisingas ir negali būti pridėtas. Jis gali jau egzistuoti arba "
-"turėti neteisingų duomenų."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Įrašas sėkmingai pridėtas."
@@ -1254,10 +1246,6 @@ msgstr "Jau egzistuoja zona su šiuo pavadinimu."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Tai nėra teisingas IPv4 ar IPv6 adresas."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Nepavyko sukurti antrinės zonos."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Neteisinga zona."
@@ -1367,10 +1355,6 @@ msgstr "Zonos pavadinimas yra privalomas."
 msgid "This is an invalid zone name."
 msgstr "Tai neteisingas zonos pavadinimas."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Zona su šiuo pavadinimu jau egzistuoja."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Netinkamas zonos tipas."
@@ -1382,14 +1366,6 @@ msgid ""
 msgstr ""
 "Nepavyksta sukurti naujos zonos importavimu: pasirinkite bent vieną grupę "
 "arba palikite \"Nėra naudotojo savininko\" nepažymėtą."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Nepavyko sukurti zonos."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Nepavyko gauti sukurtos zonos."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1947,10 +1923,6 @@ msgstr "Pateikite bent vieną įrašą"
 msgid "Invalid record type."
 msgstr "Neteisingas įrašo tipas."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Įrašo pridėti nepavyko."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2090,10 +2062,6 @@ msgstr "Prašome teisingai užpildyti visus privalomus laukus."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Neturite leidimo ištrinti šio įrašo."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Įrašo ištrinti nepavyko."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2521,14 +2489,6 @@ msgstr "Taip pat sukurta %d atitinkančių įrašų."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d įrašo(-ų) pridėti nepavyko."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Kai kurių įrašų pridėti nepavyko. Jie gali jau egzistuoti arba turėti "
-"neteisingų duomenų."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3135,10 +3095,6 @@ msgstr "Jūsų profilis sėkmingai atnaujintas."
 msgid "The user has been updated successfully."
 msgstr "Vartotojas sėkmingai atnaujintas."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Vartotojo atnaujinti nepavyko."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Neturite leidimo redaguoti šio vartotojo."
@@ -3212,10 +3168,6 @@ msgstr "Neturite leidimo ištrinti leidimų šablonų."
 msgid "The permission template has been deleted successfully."
 msgstr "Leidimų šablonas sėkmingai ištrintas."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Nepavyko ištrinti teisių šablono."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS būsenos funkcija išjungta sistemos konfigūracijoje."
@@ -3231,22 +3183,6 @@ msgid ""
 msgstr ""
 "PowerDNS API funkcija nesukonfigūruota. Nustatykite API URL ir raktą "
 "sistemos konfigūracijoje."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Neturite leidimo naudotis šia funkcija."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Operacija sėkmingai užbaigta."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Nepavyko apdoroti užklausos. Bandykite dar kartą."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Įvyko netikėta klaida. Susisiekite su administratoriumi."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3380,14 +3316,6 @@ msgstr "Supermaster sėkmingai ištrintas."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Masinis registravimas"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Savininkas turi būti skaitinis naudotojo ID."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Nepavyko pridėti zonos."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3904,17 +3832,9 @@ msgstr "Klaida šalinant numatytąjį zonos šabloną: "
 msgid "Error creating zone template: "
 msgstr "Klaida kuriant zonos šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Klaida pridedant numatytąjį SOA įrašą į šabloną: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Klaida trinant zonos šabloną: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Klaida trinant vartotojo zonų šablonus: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3955,10 +3875,6 @@ msgstr "Neturite teisės ištrinti šio tipo įrašo iš zonos šablono."
 msgid "Error deleting zone template record: "
 msgstr "Klaida trinant zonos šablono įrašą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Klaida tikrinant šablono priklausomybę: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3966,37 +3882,9 @@ msgid ""
 "them: %s"
 msgstr "Šie įrašų tipai neįtraukti į šabloną, nes jų pridėti negalite: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Klaida gaunant zonas, naudojančias šabloną: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Nepavyko gauti zonų, naudojančių šabloną, sąrašo: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Neturite leidimo redaguoti zonos šablono."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Klaida atskiriant zoną nuo šablono: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Klaida gaunant zonas: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Klaida tikrinant šablono pavadinimo egzistavimą: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Klaida ieškant šablono pagal pavadinimą: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Klaida tikrinant šablono egzistavimą: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7727,10 +7615,6 @@ msgstr "Hostname per ilgas."
 msgid "Single-label hostnames are not allowed."
 msgstr "Vienos žymės hostname neleidžiami."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Jūsų zonos varde yra neteisingų simbolių."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Hostname negali prasidėti ar baigtis brūkšneliu."
@@ -7799,14 +7683,6 @@ msgstr "Duotas hostname turi per daug pasvirųjų brūkšnių."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Naudojate neteisingą aukščiausiojo lygio domeną."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"SOA validacijos parametrai nenustatyti. Pirmiau iškvieskite setSOAParams() "
-"arba pateikite juos kaip argumentus."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9723,20 +9599,6 @@ msgstr "Nepavyko sukurti %s įrašo zonai."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Neteisingi argumentai pateikti funkcijai %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Nepavyko ištrinti zonos iš DNS posistemės."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Nepavyko išvalyti zonos metaduomenų: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Nepavyko ištrinti zonos metaduomenų: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Nepavyko atnaujinti zonos tipo DNS posistemėje."
@@ -9744,10 +9606,6 @@ msgstr "Nepavyko atnaujinti zonos tipo DNS posistemėje."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Nepavyko atnaujinti zonos pagrindinio serverio DNS posistemėje."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Pasirinktas naudotojas jau valdo zoną."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -10035,10 +9893,6 @@ msgstr "Pavyzdys: [ZONE] pačiai zonai, arba subdomain.[ZONE] podomeniui"
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Teisingas diapazonas: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Tik MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15657,5 +15511,3 @@ msgid ""
 msgstr ""
 "Nepavyko nustatyti lokalės. Pasirinkta lokalė šioje sistemoje gali būti "
 "nepalaikoma. Kreipkitės į savo administratorių."
-
-

@@ -55,14 +55,6 @@ msgstr "Vlefshmëria dështoi:"
 msgid "Failed to generate record:"
 msgstr "Dështoi gjenerimi i regjistrimit:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Ky regjistrim nuk ishte i vlefshëm dhe nuk mund të shtohej. Mund të "
-"ekzistojë tashmë ose të përmbajë të dhëna të pavlefshme."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Regjistrimi u shtua me sukses."
@@ -1260,10 +1252,6 @@ msgstr "Ka një zonë me këtë emër."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Kjo nuk është një adresë e vlefshme IPv4 ose IPv6."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Dështoi krijimi i zonës sekondare."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Zonë e pavlefshme."
@@ -1372,10 +1360,6 @@ msgstr "Emri i zonës është i domosdoshëm."
 msgid "This is an invalid zone name."
 msgstr "Ky është një emër zone i pavlefshëm."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Një zonë me këtë emër ekziston."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Lloj i pavlefshëm zone."
@@ -1387,14 +1371,6 @@ msgid ""
 msgstr ""
 "Nuk mund të krijohet një zonë e re me anë të importimit: zgjidh të paktën "
 "një grup, ose lëre të pashënuar \"Nuk ka pronar përdoruesi\"."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "I pamundur krijimi i zonës."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "I pamundur rikuperimi i zonës së krijuar."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1959,10 +1935,6 @@ msgstr "Jep të paktën një regjistrim"
 msgid "Invalid record type."
 msgstr "Lloj i pavlefshëm regjistrimi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Regjistrimi nuk mund të shtohet."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2104,10 +2076,6 @@ msgstr "Plotëso si duhet të gjitha fushat e kërkuara."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Ti nuk ke të drejtë të eleminosh këtë regjistrim."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Regjistrimi nuk mund të fshihej."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2538,14 +2506,6 @@ msgstr "%d regjistrim(e) përkatëse u krijuan gjithashtu."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d regjistrim(e) dështuan të shtohen."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Disa regjistrime nuk mund të shtohen. Ato mund të ekzistojnë ose përmbajnë "
-"të dhëna të pavlefshme."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3158,10 +3118,6 @@ msgstr "Profili juaj është përditësuar me sukses."
 msgid "The user has been updated successfully."
 msgstr "Përdoruesi është përditësuar me sukses."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Përdoruesi nuk mund të rifreskohet."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Ti nuk ke të drejta për të ndryshuar këtë përdorues."
@@ -3233,10 +3189,6 @@ msgstr "Nuk ke leje të fshish modelet e lejeve."
 msgid "The permission template has been deleted successfully."
 msgstr "Modeli i të drejtës është fshirë me sukses."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Modeli i të drejtës nuk mund të eleminohet."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr ""
@@ -3254,22 +3206,6 @@ msgid ""
 msgstr ""
 "Karakteristika e API-t të PowerDNS nuk është konfiguruar. Të lutem cakto URL-"
 "në dhe çelësin API tek konfigurimi i sistemit."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Nuk ke të drejtë të hysh në këtë funksion."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Operacioni përfundoi me sukses."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "I pamundur proçesimi i kërkesës. Të lutem provoje përsëri."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "U ndesh një gabim i papritur. Vihu në kontakt me administratorin."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3405,14 +3341,6 @@ msgstr "Supermasteri është fshirë me sukses."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Regjistrim masiv"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Pronari duhet të jetë një ID numerike e përdoruesit."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Dështoi shtimi i zonës."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3936,17 +3864,9 @@ msgstr "Gabim gjatë heqjes së modelit të parazgjedhur të zonës: "
 msgid "Error creating zone template: "
 msgstr "Gabim gjatë krijimit të shabllonit të zonës: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Gabim gjatë shtimit të regjistrimit të parazgjedhur SOA në shabllon: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Gabim gjatë fshirjes së shabllonit të zonës: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Gabim gjatë fshirjes së shabllonve të zonës së përdoruesit: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3988,10 +3908,6 @@ msgstr "Nuk keni leje të fshini këtë lloj regjistrimi nga një model zone."
 msgid "Error deleting zone template record: "
 msgstr "Gabim gjatë fshirjes së regjistrimit të shabllonit të zonës: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Gabim gjatë kontrollit të pronësisë së shabllonit: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -4000,37 +3916,9 @@ msgid ""
 msgstr ""
 "Këto lloje regjistrimesh u lanë jashtë modelit sepse nuk mund t'i shtoni: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Gabim gjatë marrjes së zonave që përdorin shabllonin: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "E pamundur marrja e listës së zonave duke përdorur modelin: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Ti nuk ke të drejta për të ndryshuar një model zone."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Gabim gjatë shkëputjes së zonës nga shablloni: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Gabim gjatë marrjes së zonave: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Gabim gjatë kontrollit të ekzistencës së emrit të shabllonit: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Gabim gjatë kërkimit të shabllonit sipas emrit: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Gabim gjatë kontrollit të ekzistencës së shabllonit: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7873,10 +7761,6 @@ msgstr "Emri i host është shumë i gjatë."
 msgid "Single-label hostnames are not allowed."
 msgstr "Emrat e hostit me një etiketë të vetme nuk lejohen."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Keni shkronja të pavlefshme në emrin e zonës suaj."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Emri i host nuk mund të fillojë ose të përfundojë me një vizë."
@@ -7951,14 +7835,6 @@ msgstr "Emri i dhënë i hostit ka shumë vija të pjerrëta."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Ju jeni duke përdorur një domain të nivelit të lartë të pavlefshëm."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"Parametrat e verifikimit SOA nuk janë përcaktuar. Thirrni së pari "
-"setSOAParams() ose jepini ato si argumente."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9935,20 +9811,6 @@ msgstr "Dështoi krijimi i regjistrimit %s për zonën."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Argument(e) të pavlefshëm dhënë funksionit %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Fshirja e zonës nga backend DNS dështoi."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Dështoi pastrimi i metadata-s së zonës: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Dështoi fshirja e metadata-s së zonës: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "I pamundur rifreskimi i llojit të zonës në backend DNS."
@@ -9956,10 +9818,6 @@ msgstr "I pamundur rifreskimi i llojit të zonës në backend DNS."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "I pamundur rifreskimi i masterit të zonës në backend DNS."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Përdoruesi i zgjedhur tashmë e zotëron zonën."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -10247,10 +10105,6 @@ msgstr "Shembull: [ZONE] për vetë zonën, ose subdomain.[ZONE] për një nënd
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Intervali i vlefshëm: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Vetëm për MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15932,5 +15786,3 @@ msgid ""
 msgstr ""
 "Vendosja e parametrave gjuhësorë dështoi. Gjuha e zgjedhur mund të mos "
 "mbështetet në këtë sistem. Ju lutemi kontaktoni administratorin tuaj."
-
-

@@ -54,14 +54,6 @@ msgstr "Validering misslyckades:"
 msgid "Failed to generate record:"
 msgstr "Kunde inte generera post:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Posten var inte giltig och kunde inte läggas till. Den kanske redan finns "
-"eller innehåller ogiltiga data."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Posten lades till."
@@ -1243,10 +1235,6 @@ msgstr "Det finns redan en zon med detta namn."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Detta är inte en giltig IPv4- eller IPv6-adress."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Det gick inte att skapa den sekundära zonen."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Ogiltig zon."
@@ -1355,10 +1343,6 @@ msgstr "Zonnamn krävs."
 msgid "This is an invalid zone name."
 msgstr "Detta är ett ogiltigt zonnamn."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "En zon med detta namn finns redan."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Ogiltig zontyp."
@@ -1370,14 +1354,6 @@ msgid ""
 msgstr ""
 "Kan inte skapa en ny zon via import: välj minst en grupp eller låt \"Ingen "
 "användarägare\" vara omarkerad."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Kunde inte skapa zonen."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Kunde inte hämta den skapade zonen."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1930,10 +1906,6 @@ msgstr "Ange minst en post"
 msgid "Invalid record type."
 msgstr "Ogiltig posttyp."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Posten kunde inte läggas till."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2073,10 +2045,6 @@ msgstr "Fyll i alla obligatoriska fält korrekt."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Du har inte behörighet att radera denna post."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Posten kunde inte raderas."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2498,14 +2466,6 @@ msgstr "%d matchande post(er) skapades också."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d post(er) kunde inte läggas till."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Vissa poster kunde inte läggas till. De kanske redan finns eller innehåller "
-"ogiltiga data."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3107,10 +3067,6 @@ msgstr "Din profil har uppdaterats."
 msgid "The user has been updated successfully."
 msgstr "Användaren har uppdaterats."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Användaren kunde inte uppdateras."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Du har inte behörighet att redigera denna användare."
@@ -3183,10 +3139,6 @@ msgstr "Du har inte behörighet att radera behörighetsmallar."
 msgid "The permission template has been deleted successfully."
 msgstr "Behörighetsmallen har raderats."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Behörighetsmallen kunde inte tas bort."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS-statusfunktionen är inaktiverad i systemkonfigurationen."
@@ -3202,22 +3154,6 @@ msgid ""
 msgstr ""
 "PowerDNS API-funktionen är inte konfigurerad. Ange API-URL och nyckel i "
 "systemkonfigurationen."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Du har inte behörighet att komma åt denna funktion."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Åtgärden slutfördes."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Kunde inte behandla förfrågan. Försök igen."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Ett oväntat fel uppstod. Kontakta administratören."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3352,14 +3288,6 @@ msgstr "Supermastern har raderats."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Massregistrering"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Ägare måste vara ett numeriskt användar-ID."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Det gick inte att lägga till zonen."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3872,17 +3800,9 @@ msgstr "Fel vid borttagning av standardzonmall: "
 msgid "Error creating zone template: "
 msgstr "Fel vid skapande av zonmall: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Fel vid tillägg av standard SOA-post till mall: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Fel vid radering av zonmall: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Fel vid radering av användarens zonmallar: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3923,10 +3843,6 @@ msgstr "Du har inte behörighet att ta bort denna posttyp från en zonmall."
 msgid "Error deleting zone template record: "
 msgstr "Fel vid radering av zonmallspost: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Fel vid kontroll av mallägarskap: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3936,37 +3852,9 @@ msgstr ""
 "Dessa posttyper utelämnades från mallen eftersom du inte får lägga till dem: "
 "%s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Fel vid hämtning av zoner som använder mallen: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Kunde inte hämta lista över zoner som använder mallen: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Du har inte behörighet att redigera en zonmall."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Fel vid bortkoppling av zon från mall: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Fel vid hämtning av zoner: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Fel vid kontroll av mallnamn: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Fel vid sökning av mall efter namn: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Fel vid kontroll av mallens existens: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7669,10 +7557,6 @@ msgstr "Värdnamnet är för långt."
 msgid "Single-label hostnames are not allowed."
 msgstr "Värdnamn med en enda etikett är inte tillåtna."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Du har ogiltiga tecken i zonnamnet."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Ett värdnamn får inte börja eller sluta med bindestreck."
@@ -7740,14 +7624,6 @@ msgstr "Det angivna värdnamnet har för många snedstreck."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Du använder en ogiltig toppdomän."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"SOA-valideringsparametrarna är inte satta. Anropa setSOAParams() först eller "
-"skicka dem som argument."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9649,20 +9525,6 @@ msgstr "Kunde inte skapa %s-post för zonen."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Ogiltiga argument angivna till funktionen %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Kunde inte radera zon från DNS-backend."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Kunde inte rensa zonmetadata: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Kunde inte radera zonmetadata: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Kunde inte uppdatera zontyp i DNS-backend."
@@ -9670,10 +9532,6 @@ msgstr "Kunde inte uppdatera zontyp i DNS-backend."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Kunde inte uppdatera zonens master i DNS-backend."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Den valda användaren äger redan zonen."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9963,10 +9821,6 @@ msgstr ""
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Giltigt intervall: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Endast för MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15598,5 +15452,3 @@ msgid ""
 msgstr ""
 "Kunde inte ställa in locale. Det valda locale-värdet stöds kanske inte på "
 "detta system. Kontakta din administratör."
-
-

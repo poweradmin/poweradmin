@@ -55,14 +55,6 @@ msgstr "Validare eșuată:"
 msgid "Failed to generate record:"
 msgstr "Generare înregistrare eșuată:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Această înregistrare nu a fost validă și nu a putut fi adăugată. Este "
-"posibil să existe deja sau să conțină date invalide."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Înregistrarea a fost adăugată cu succes."
@@ -1268,10 +1260,6 @@ msgstr "Există deja o zonă cu acest nume."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Aceasta nu este o adresă IPv4 sau IPv6 validă."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Nu s-a putut crea zona secundară."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Zonă invalidă."
@@ -1380,10 +1368,6 @@ msgstr "Numele zonei este obligatoriu."
 msgid "This is an invalid zone name."
 msgstr "Acesta este un nume de zonă invalid."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "O zonă cu acest nume există deja."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Tip de zonă invalid."
@@ -1395,14 +1379,6 @@ msgid ""
 msgstr ""
 "Nu se poate crea o zonă nouă prin import: selectați cel puțin un grup sau "
 "lăsați \"Niciun proprietar utilizator\" nebifat."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Nu s-a putut crea zona."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Obținerea zonei create a eșuat."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1977,10 +1953,6 @@ msgstr "Furnizați cel puțin o înregistrare"
 msgid "Invalid record type."
 msgstr "Tip înregistrare invalid."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Înregistrarea nu a putut fi adăugată."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2123,10 +2095,6 @@ msgstr "Completați corect toate câmpurile obligatorii."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Nu aveți permisiunea de a șterge înregistrarea."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Înregistrarea nu a putut fi ștearsă."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2566,14 +2534,6 @@ msgstr "Au fost create și %d înregistrări potrivite."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Adăugarea a %d înregistrări a eșuat."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Unele înregistrări nu au putut fi adăugate. Este posibil să existe deja sau "
-"să conțină date invalide."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3190,10 +3150,6 @@ msgstr "Profilul dumneavoastră a fost actualizat cu succes."
 msgid "The user has been updated successfully."
 msgstr "Utilizatorul a fost actualizat cu succes."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Utilizatorul nu a putut fi actualizat."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Nu aveți permisiunea de a edita acest utilizator."
@@ -3271,10 +3227,6 @@ msgstr "Nu aveți permisiunea de a șterge șabloane de permisiuni."
 msgid "The permission template has been deleted successfully."
 msgstr "Șablonul de permisiuni a fost șters cu succes."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Șablonul de permisiuni nu a putut fi șters."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr ""
@@ -3292,22 +3244,6 @@ msgid ""
 msgstr ""
 "Funcționalitatea API PowerDNS nu este configurată. Vă rugăm să setați URL-ul "
 "și cheia API în configurația sistemului."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Nu aveți permisiunea de a accesa această funcționalitate."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Operațiune finalizată cu succes."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Procesarea cererii a eșuat. Încercați din nou."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "A apărut o eroare neașteptată. Vă rugăm să contactați administratorul."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3447,14 +3383,6 @@ msgstr "Supermasterul a fost șters cu succes."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Înregistrare în masă"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Proprietarul trebuie să fie un ID de utilizator numeric."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Nu s-a putut adăuga zona."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3978,17 +3906,9 @@ msgstr "Eroare la eliminarea șablonului de zonă implicit: "
 msgid "Error creating zone template: "
 msgstr "Eroare la crearea șablonului de zonă: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Eroare la adăugarea înregistrării SOA implicite în șablon: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Eroare la ștergerea șablonului de zonă: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Eroare la ștergerea șabloanelor de zonă ale utilizatorului: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -4036,10 +3956,6 @@ msgstr ""
 msgid "Error deleting zone template record: "
 msgstr "Eroare la ștergerea înregistrării din șablonul de zonă: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Eroare la verificarea proprietarului șablonului: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -4049,37 +3965,9 @@ msgstr ""
 "Aceste tipuri de înregistrări au fost omise din șablon deoarece nu aveți "
 "dreptul să le adăugați: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Eroare la obținerea zonelor care folosesc șablonul: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Obținerea listei de zone care folosesc șablonul a eșuat: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nu aveți permisiunea de a edita un șablon de zonă."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Eroare la deconectarea zonei de șablon: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Eroare la obținerea zonelor: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Eroare la verificarea existenței numelui șablonului: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Eroare la căutarea șablonului după nume: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Eroare la verificarea existenței șablonului: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7982,10 +7870,6 @@ msgstr "Numele gazdă este prea lung."
 msgid "Single-label hostnames are not allowed."
 msgstr "Numele gazdă cu etichetă unică nu sunt permise."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Aveți caractere invalide în numele zonei."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Numele gazdă nu poate începe/sfârși cu cratimă."
@@ -8061,14 +7945,6 @@ msgstr "Numele gazdă are prea multe bare oblice."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Folosiți un TLD invalid."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"Parametrii de validare SOA nu sunt setați. Apelați mai întâi setSOAParams() "
-"sau furnizați-i ca argumente."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -10068,20 +9944,6 @@ msgstr "Crearea înregistrării %s pentru zonă a eșuat."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Argument(e) invalid(e) dat(e) funcției %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Ștergerea zonei din backend-ul DNS a eșuat."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Curățarea metadatelor zonei a eșuat: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Eroare la ștergerea metadatelor zonei: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Actualizarea tipului zonei în backend-ul DNS a eșuat."
@@ -10089,10 +9951,6 @@ msgstr "Actualizarea tipului zonei în backend-ul DNS a eșuat."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Actualizarea master-ului zonei în backend-ul DNS a eșuat."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Utilizatorul selectat deține deja zona."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -10381,10 +10239,6 @@ msgstr ""
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Interval valid: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Doar pentru MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -16088,5 +15942,3 @@ msgid ""
 msgstr ""
 "Setarea localizării a eșuat. Localizarea selectată poate să nu fie acceptată "
 "pe acest sistem. Contactați administratorul."
-
-

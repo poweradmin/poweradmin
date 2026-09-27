@@ -54,12 +54,6 @@ msgstr "การตรวจสอบความถูกต้องล้ม
 msgid "Failed to generate record:"
 msgstr "สร้างเรกคอร์ดไม่สำเร็จ:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr "เรกคอร์ดนี้ไม่ถูกต้องและไม่สามารถเพิ่มได้ อาจมีอยู่แล้วหรือมีข้อมูลที่ไม่ถูกต้อง"
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "เพิ่มเรกคอร์ดเรียบร้อยแล้ว"
@@ -1199,10 +1193,6 @@ msgstr "มีโซนที่ชื่อนี้อยู่แล้ว"
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "นี่ไม่ใช่ที่อยู่ IPv4 หรือ IPv6 ที่ถูกต้อง"
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "ไม่สามารถสร้างโซนรองได้"
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "โซนไม่ถูกต้อง"
@@ -1308,10 +1298,6 @@ msgstr "ต้องระบุชื่อโซน"
 msgid "This is an invalid zone name."
 msgstr "นี่เป็นชื่อโซนที่ใช้ไม่ได้"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "มีโซนที่มีชื่อนี้อยู่แล้ว"
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "ประเภทโซนไม่ถูกต้อง"
@@ -1323,14 +1309,6 @@ msgid ""
 msgstr ""
 "ไม่สามารถสร้างโซนใหม่ผ่านการนำเข้าได้: เลือกอย่างน้อยหนึ่งกลุ่ม หรือไม่ต้องติ๊ก "
 "\"ไม่มีเจ้าของที่เป็นผู้ใช้\""
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "ล้มเหลวในการสร้างโซน"
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "ล้มเหลวในการดึงข้อมูลโซนที่ถูกสร้าง"
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1858,10 +1836,6 @@ msgstr "โปรดระบุเรกคอร์ดอย่างน้อ
 msgid "Invalid record type."
 msgstr "ชนิดของเรกคอร์ดไม่ถูกต้อง"
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "ไม่สามารถเพิ่มเรกคอร์ดได้"
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -1996,10 +1970,6 @@ msgstr "โปรดกรอกข้อมูลในช่องที่จ
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "คุณไม่มีสิทธิ์ลบเรกคอร์ดนี้"
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "ไม่สามารถลบเรกคอร์ดได้"
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2409,12 +2379,6 @@ msgstr "สร้างเรกคอร์ดที่ตรงกัน %d �
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "เพิ่มเรกคอร์ด %d รายการล้มเหลว"
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr "ไม่สามารถเพิ่มเรกคอร์ดบางรายการได้ อาจมีอยู่แล้วหรือมีข้อมูลที่ไม่ถูกต้อง"
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -2998,10 +2962,6 @@ msgstr "โพรไฟล์ของคุณถูกปรับปรุง
 msgid "The user has been updated successfully."
 msgstr "ผู้ใช้ได้ทำการอัปเดตเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "ไม่สามารถปรับปรุงผู้ใช้ได้"
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "คุณไม่มีสิทธิ์ในการแก้ไขผู้ใช้นี้"
@@ -3068,10 +3028,6 @@ msgstr "คุณไม่มีสิทธิ์ในการลบแม่
 msgid "The permission template has been deleted successfully."
 msgstr "ลบแม่แบบการอนุญาตเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "ไม่สามารถลบแม่แบบการอนุญาตได้"
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "ปิดการใช้งานคุณสมบัติสถานะ PowerDNS ในการปรับแต่งระบบ"
@@ -3087,22 +3043,6 @@ msgid ""
 msgstr ""
 "คุณสมบัติ PowerDNS API ไม่ได้รับการปรับแต่ง โปรดตั้งค่าที่อยู่ URL และกุญแจ API "
 "ในการปรับแต่งของระบบ"
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "คุณไม่ได้รับอนุญาตให้ใช้งานคุณสมบัตินี้"
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "ปฏิบัติการเสร็จสมบูรณ์แล้ว"
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "ล้มเหลวในการประมวลผลการร้องขอ กรุณาลองอีกครั้ง"
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "เกิดข้อผิดพลาดที่ไม่คาดคิดขึ้น กรุณาติดต่อผู้ดูแลระบบ"
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3232,14 +3172,6 @@ msgstr "Supermaster ถูกลบเรียบร้อยแล้ว"
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "การลงทะเบียนแบบกลุ่ม"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "เจ้าของต้องเป็นหมายเลขผู้ใช้"
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "ไม่สามารถเพิ่มโซนได้"
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3732,17 +3664,9 @@ msgstr "เกิดข้อผิดพลาดในการล้างแ
 msgid "Error creating zone template: "
 msgstr "เกิดข้อผิดพลาดในการสร้างแม่แบบโซน: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "เกิดข้อผิดพลาดในการเพิ่มบันทึก SOA ปริยายไปยังแม่แบบ: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "เกิดข้อผิดพลาดในการลบแม่แบบโซน: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "เกิดข้อผิดพลาดในการลบแม่แบบโซนของผู้ใช้: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3783,10 +3707,6 @@ msgstr "คุณไม่มีสิทธิ์ลบเรกคอร์ด
 msgid "Error deleting zone template record: "
 msgstr "เกิดข้อผิดพลาดในการลบเรกคอร์ดของแม่แบบโซน: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "เกิดข้อผิดพลาดในการตรวจสอบเจ้าของแม่แบบ: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3794,37 +3714,9 @@ msgid ""
 "them: %s"
 msgstr "เรกคอร์ดชนิดต่อไปนี้ไม่ได้ถูกใส่ไว้ในเทมเพลต เนื่องจากคุณไม่มีสิทธิ์เพิ่ม: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "เกิดข้อผิดพลาดในการรับค่าโซนที่ใช้แม่แบบ: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "ล้มเหลวในการรับรายการโซนที่ใช้แม่แบบ: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "คุณไม่มีสิทธิ์แก้ไขแม่แบบโซน"
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "เกิดข้อผิดพลาดในการยกเลิกการเชื่อมโยงโซนออกจากแม่แบบ: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "เกิดข้อผิดพลาดในการรับค่าโซน: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "การตรวจสอบชื่อแม่แบบผิดพลาด: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "เกิดข้อผิดพลาดในการค้นชื่อต้นแบบ: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "เกิดข้อผิดพลาดในการตรวจสอบการมีอยู่ของต้นแบบ: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7269,10 +7161,6 @@ msgstr "ชื่อโฮสต์ยาวเกินไป"
 msgid "Single-label hostnames are not allowed."
 msgstr "ไม่อนุญาตให้ใช้ชื่อโฮสต์ที่มีเลเบลเดียว"
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "คุณมีอักขระที่ไม่ถูกต้องในชื่อโซนของคุณ"
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "ชื่อโฮสต์ต้องไม่ขึ้นต้นหรือลงท้ายด้วยเครื่องหมายขีดกลาง"
@@ -7334,14 +7222,6 @@ msgstr "ชื่อโฮสต์ที่ระบุมีเครื่อ
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "คุณกำลังใช้โดเมนของระดับบนสุดไม่ถูกต้อง"
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"ไม่ได้ตั้งค่าพารามิเตอร์การตรวจสอบ SOA เรียก setSOAParams() ก่อน "
-"หรือส่งค่าเหล่านั้นเป็นอาร์กิวเมนต์"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9128,20 +9008,6 @@ msgstr "ไม่สามารถสร้างเรกคอร์ด %s �
 msgid "Invalid argument(s) given to function %s"
 msgstr "อาร์กิวเมนต์ที่ไม่ถูกต้องสำหรับฟังก์ชัน %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "ล้มเหลวในการลบโซนออกจากแบ็คเอนด์ DNS"
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "ไม่สามารถล้างเมตาดาต้าของโซน: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "ไม่สามารถลบเมตาดาต้าของโซน: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "ล้มเหลวในการอัปเดตชนิดของโซนในแบ็คเอนด์ DNS"
@@ -9149,10 +9015,6 @@ msgstr "ล้มเหลวในการอัปเดตชนิดขอ
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "ล้มเหลวในการอัปเดตตัวหลักของโซนในโปรแกรมเบื้องหลัง DNS"
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "ผู้ใช้ที่เลือกเป็นเจ้าของโซนนี้อยู่แล้ว"
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9433,10 +9295,6 @@ msgstr "ตัวอย่าง: [ZONE] สำหรับตัวโซนเ
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "ช่วงที่ใช้ได้: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "เฉพาะสำหรับ MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -14902,5 +14760,3 @@ msgid ""
 "Please contact your administrator."
 msgstr ""
 "ไม่สามารถตั้งค่า locale ได้. locale ที่เลือกอาจไม่รองรับบนระบบนี้. กรุณาติดต่อผู้ดูแลระบบของคุณ."
-
-

@@ -55,14 +55,6 @@ msgstr "Érvényesítés sikertelen:"
 msgid "Failed to generate record:"
 msgstr "Rekord generálás sikertelen:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"A rekord érvénytelen volt, ezért nem sikerült hozzáadni. Lehet, hogy már "
-"létezik, vagy érvénytelen adatokat tartalmaz."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "A rekord sikeresen hozzáadva."
@@ -1250,10 +1242,6 @@ msgstr "Már van zóna ezzel a névvel."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Ez nem érvényes IPv4 vagy IPv6 cím."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Nem sikerült létrehozni a másodlagos zónát."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Érvénytelen zóna."
@@ -1364,10 +1352,6 @@ msgstr "A zóna neve kötelező."
 msgid "This is an invalid zone name."
 msgstr "Ez egy érvénytelen zónanév."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Ilyen nevű zóna már létezik."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Érvénytelen zónatípus."
@@ -1379,14 +1363,6 @@ msgid ""
 msgstr ""
 "Új zóna nem hozható létre importálással: válasszon ki legalább egy "
 "csoportot, vagy hagyja a \"Nincs felhasználó-tulajdonos\" jelölést üresen."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Nem sikerült létrehozni a zónát."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Nem sikerült lekérni a létrehozott zónát."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1946,10 +1922,6 @@ msgstr "Adjon meg legalább egy rekordot"
 msgid "Invalid record type."
 msgstr "Érvénytelen rekord típus."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "A rekord nem adható hozzá."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2089,10 +2061,6 @@ msgstr "Töltse ki helyesen az összes kötelező mezőt."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Nincs jogosultsága a rekord törlésére."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "A rekord nem volt törölhető."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2516,14 +2484,6 @@ msgstr "%d egyező rekord is létrejött."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d rekord hozzáadása sikertelen."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Néhány rekordot nem sikerült hozzáadni. Lehet, hogy már léteznek, vagy "
-"érvénytelen adatokat tartalmaznak."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3132,10 +3092,6 @@ msgstr "A profilja sikeresen frissítve."
 msgid "The user has been updated successfully."
 msgstr "A felhasználó sikeresen frissítve."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "A felhasználó nem frissíthető."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Nincs jogosultsága a felhasználó szerkesztésére."
@@ -3208,10 +3164,6 @@ msgstr "Nincs jogosultsága engedély sablonok törlésére."
 msgid "The permission template has been deleted successfully."
 msgstr "Az engedély sablon sikeresen törölve."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Az engedély sablon nem törölhető."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr ""
@@ -3228,22 +3180,6 @@ msgid ""
 msgstr ""
 "A PowerDNS API funkció nincs beállítva. Adja meg az API URL-t és az API "
 "kulcsot a rendszerbeállításokban."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Nincs jogosultsága a funkció eléréséhez."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "A művelet sikeresen befejeződött."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "A kérés feldolgozása sikertelen. Próbálja újra."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Váratlan hiba történt. Forduljon az adminisztrátorhoz."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3379,14 +3315,6 @@ msgstr "A supermaster sikeresen törölve."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Tömeges regisztráció"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "A tulajdonosnak numerikus felhasználói azonosítónak kell lennie."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Nem sikerült hozzáadni a zónát."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3905,17 +3833,9 @@ msgstr "Hiba az alapértelmezett zónasablon törlésekor: "
 msgid "Error creating zone template: "
 msgstr "Hiba a zóna sablon létrehozásakor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Hiba az alapértelmezett SOA rekord hozzáadásakor: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Hiba a zóna sablon törlésekor: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Hiba a felhasználói zóna sablonok törlésekor: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3959,10 +3879,6 @@ msgstr ""
 msgid "Error deleting zone template record: "
 msgstr "Hiba a zóna sablon rekord törlésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Hiba a sablon tulajdonosának ellenőrzésekor: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3972,37 +3888,9 @@ msgstr ""
 "A következő rekordtípusok kimaradtak a sablonból, mert nem adhatja hozzá "
 "őket: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Hiba a sablont használó zónák lekérésekor: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Nem sikerült lekérni a sablont használó zónák listáját: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nincs jogosultsága zóna sablon szerkesztésére."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Hiba a zóna sablonról való leválasztásakor: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Hiba a zónák lekérésekor: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Hiba a sablon név létezésének ellenőrzésekor: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Hiba a sablon név szerinti keresésekor: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Hiba a sablon létezésének ellenőrzésekor: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7793,10 +7681,6 @@ msgstr "A gazdanév túl hosszú."
 msgid "Single-label hostnames are not allowed."
 msgstr "Egy címkés gazdanevek nem engedélyezettek."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Érvénytelen karakterek vannak a zóna nevében."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "A gazdanév nem kezdődhet és nem végződhet kötőjellel."
@@ -7866,14 +7750,6 @@ msgstr "A megadott gazdanévben túl sok perjel van."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Érvénytelen legfelső szintű tartományt használ."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"A SOA ellenőrzési paraméterek nincsenek beállítva. Előbb hívja meg a "
-"setSOAParams() metódust, vagy adja meg őket argumentumként."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9827,20 +9703,6 @@ msgstr "Nem sikerült létrehozni %s rekordot a zónához."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Érvénytelen argumentum(ok) a %s függvénynek"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Nem sikerült törölni a zónát a DNS backendből."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Nem sikerült kitakarítani a zóna metaadatait: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Nem sikerült törölni a zóna metaadatait: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Nem sikerült frissíteni a zóna típust a DNS backendben."
@@ -9848,10 +9710,6 @@ msgstr "Nem sikerült frissíteni a zóna típust a DNS backendben."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Nem sikerült frissíteni a zóna elsődlegesét a DNS backendben."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "A kiválasztott felhasználó már birtokolja a zónát."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -10138,10 +9996,6 @@ msgstr "Példa: [ZONE] magához a zónához, vagy subdomain.[ZONE] egy aldomainh
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Érvényes tartomány: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Csak MX, SRV, KX, NAPTR esetén"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15781,5 +15635,3 @@ msgstr ""
 "A területi beállítás alkalmazása nem sikerült. A kiválasztott területi "
 "beállítást ez a rendszer valószínűleg nem támogatja. Kérjük, vegye fel a "
 "kapcsolatot a rendszergazdával."
-
-

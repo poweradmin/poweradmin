@@ -54,14 +54,6 @@ msgstr "Validering mislykkedes:"
 msgid "Failed to generate record:"
 msgstr "Kunne ikke generere record:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Denne rekord var ikke gyldig og kunne ikke tilføjes. Det kan allerede "
-"eksistere eller indeholde ugyldige data."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Recorden blev tilføjet med succes."
@@ -1254,10 +1246,6 @@ msgstr "Der er allerede en zone med dette navn."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Dette er ikke en gyldig IPv4- eller IPv6- adresse."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Kunne ikke oprette den sekundære zone."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Ugyldig zone."
@@ -1366,10 +1354,6 @@ msgstr "Zonens navn er påkrævet."
 msgid "This is an invalid zone name."
 msgstr "Dette er et ugyldigt zonenavn."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Der findes allerede en zone med dette navn."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Ugyldig zonetype."
@@ -1381,14 +1365,6 @@ msgid ""
 msgstr ""
 "Kan ikke oprette en ny zone via import: Vælg mindst én gruppe, eller lad "
 "\"Ingen bruger ejer\" være umarkeret."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Kunne ikke oprette zone."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Kunne ikke hente oprettet zone."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1946,10 +1922,6 @@ msgstr "Angiv mindst én record"
 msgid "Invalid record type."
 msgstr "Ugyldig recordtype."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Der kunne ikke tilføjes en record."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2091,10 +2063,6 @@ msgstr "Udfyld venligst alle krævede felter korrekt."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Du har ikke tilladelse til at slette denne record."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Recorden kunne ikke slettes."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2527,14 +2495,6 @@ msgstr "Der blev også oprettet %d matchende record(s)."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d record (r) blev ikke tilføjet."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Nogle records kunne ikke tilføjes. De kan allerede eksistere eller indeholde "
-"ugyldige data."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3136,10 +3096,6 @@ msgstr "Din profil er blevet opdateret med succes."
 msgid "The user has been updated successfully."
 msgstr "Brugeren er blevet opdateret med succes."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Brugeren kunne ikke opdateres."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Du har ikke tilladelse til at redigere denne bruger."
@@ -3212,10 +3168,6 @@ msgstr "Du har ikke tilladelse til at slette tilladelsesskabeloner."
 msgid "The permission template has been deleted successfully."
 msgstr "Tilladelsesskabelonen er blevet slettet med succes."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Tilladelsesskabelonen kunne ikke slettes."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS-statusfunktionen er deaktiveret i systemets konfiguration."
@@ -3231,22 +3183,6 @@ msgid ""
 msgstr ""
 "PowerDNS API-funktionen er ikke konfigureret. Sæt venligst API URL og nøgle "
 "i systemkonfigurationen."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Du har ikke tilladelse til at få adgang til denne funktion."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Operationen er fuldført."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Kunne ikke behandle anmodningen. Prøv igen."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Der opstod en uventet fejl. Kontakt administratoren."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3381,14 +3317,6 @@ msgstr "Supermaster er blevet slettet med succes."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Bulkregistrering"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Ejeren skal være et numerisk brugerid."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Kunne ikke tilføje zone."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3899,17 +3827,9 @@ msgstr "Fejl ved rydning af standardzoneskabelon: "
 msgid "Error creating zone template: "
 msgstr "Fejl ved oprettelse af zoneskabelon: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Fejl ved tilføjelse af standard-SOA-record til skabelon: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Fejl ved sletning af zoneskabelon: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Fejl ved sletning af brugerens zoneskabeloner: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3953,10 +3873,6 @@ msgstr ""
 msgid "Error deleting zone template record: "
 msgstr "Fejl ved sletning af zoneskabelonrecord: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Fejl ved kontrol af skabelonejerskab: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3966,37 +3882,9 @@ msgstr ""
 "Disse recordtyper blev udeladt af skabelonen, fordi du ikke må tilføje dem: "
 "%s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Fejl ved hentning af zoner ved hjælp af skabelon: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Kunne ikke få en liste over zoner ved hjælp af skabelon: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Du har ikke tilladelse til at redigere en zoneskabelon."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Fejl ved afkobling af zone fra skabelon: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Fejl ved hentning af zoner: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Fejl ved kontrol af skabelonnavnets eksistens: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Fejl ved søgning efter skabelon ved navn: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Fejl ved kontrol af skabelonens eksistens: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7697,10 +7585,6 @@ msgstr "Værtsnavnet er for langt."
 msgid "Single-label hostnames are not allowed."
 msgstr "Single-label værtsnavne er ikke tilladt."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Du har ugyldige tegn i dit zonenavn."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Et værtsnavn kan ikke starte eller slutte med en streg."
@@ -7768,14 +7652,6 @@ msgstr "Givet værtsnavn har for mange skråstreger."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Du bruger et ugyldigt topdomæne."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"SOA-valideringsparametre er ikke angivet. Kald setSOAParams() først, eller "
-"angiv dem som argumenter."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9682,20 +9558,6 @@ msgstr "Kunne ikke oprette %s record for zone."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Ugyldige argumenter for funktion %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Kunne ikke slette zone fra DNS-motor."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Kunne ikke rydde op i zonemetadata: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Kunne ikke slette zonemetadata: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Kunne ikke opdatere zonetype i DNS-motor."
@@ -9703,10 +9565,6 @@ msgstr "Kunne ikke opdatere zonetype i DNS-motor."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Kunne ikke opdatere zone master i DNS-motor."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Den valgte bruger ejer allerede zonen."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9996,10 +9854,6 @@ msgstr ""
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Gyldighedsområde: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Kun for MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15626,5 +15480,3 @@ msgid ""
 msgstr ""
 "Kunne ikke angive sprogindstilling. Den valgte sprogindstilling understøttes "
 "muligvis ikke på dette system. Kontakt din administrator."
-
-

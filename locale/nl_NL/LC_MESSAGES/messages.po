@@ -54,14 +54,6 @@ msgstr "Validatie mislukt:"
 msgid "Failed to generate record:"
 msgstr "Kan record niet genereren:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Dit record was niet geldig en kon niet worden toegevoegd. Het bestaat "
-"mogelijk al of bevat ongeldige gegevens."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Het record is succesvol toegevoegd."
@@ -1252,10 +1244,6 @@ msgstr "Er bestaat al een zone met deze naam."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Dit is geen geldig IPv4- of IPv6-adres."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Kan de secundaire zone niet aanmaken."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Ongeldige zone."
@@ -1366,10 +1354,6 @@ msgstr "Zonenaam is verplicht."
 msgid "This is an invalid zone name."
 msgstr "Dit is een ongeldige zonenaam."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Een zone met deze naam bestaat al."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Ongeldig zonetype."
@@ -1381,14 +1365,6 @@ msgid ""
 msgstr ""
 "Kan geen nieuwe zone aanmaken via import: selecteer minstens één groep of "
 "laat \"Geen gebruikerseigenaar\" uitgevinkt."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Kan zone niet aanmaken."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Kan aangemaakte zone niet ophalen."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1957,10 +1933,6 @@ msgstr "Geef minstens één record op"
 msgid "Invalid record type."
 msgstr "Ongeldig recordtype."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Record kon niet worden toegevoegd."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2103,10 +2075,6 @@ msgstr "Vul alle verplichte velden correct in."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "U hebt geen toestemming om dit record te verwijderen."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Het record kon niet worden verwijderd."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2533,14 +2501,6 @@ msgstr "%d overeenkomend(e) record(s) zijn ook aangemaakt."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d record(s) konden niet worden toegevoegd."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Sommige records konden niet worden toegevoegd. Ze bestaan mogelijk al of "
-"bevatten ongeldige gegevens."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3150,10 +3110,6 @@ msgstr "Uw profiel is succesvol bijgewerkt."
 msgid "The user has been updated successfully."
 msgstr "De gebruiker is succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "De gebruiker kon niet worden bijgewerkt."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "U hebt geen toestemming om deze gebruiker te bewerken."
@@ -3225,10 +3181,6 @@ msgstr "U hebt geen toestemming om machtigingssjablonen te verwijderen."
 msgid "The permission template has been deleted successfully."
 msgstr "Het machtigingssjabloon is succesvol verwijderd."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Het rechtensjabloon kon niet worden verwijderd."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "De PowerDNS-statusfunctie is uitgeschakeld in de systeemconfiguratie."
@@ -3244,23 +3196,6 @@ msgid ""
 msgstr ""
 "De PowerDNS API-functie is niet geconfigureerd. Stel de API-URL en -sleutel "
 "in bij de systeemconfiguratie."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "U heeft geen toestemming om toegang te krijgen tot deze functie."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Bewerking succesvol voltooid."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Verwerking van het verzoek mislukt. Probeer het opnieuw."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr ""
-"Er is een onverwachte fout opgetreden. Neem contact op met de beheerder."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3397,14 +3332,6 @@ msgstr "De supermaster is succesvol verwijderd."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Bulk Registratie"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Eigenaar moet een numeriek gebruikers-ID zijn."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Kan zone niet toevoegen."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3924,17 +3851,9 @@ msgstr "Fout bij wissen van standaard zonesjabloon: "
 msgid "Error creating zone template: "
 msgstr "Fout bij het aanmaken van zonesjabloon: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Fout bij het toevoegen van standaard SOA-record aan sjabloon: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Fout bij het verwijderen van zonesjabloon: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Fout bij het verwijderen van gebruikerszonesjablonen: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3978,10 +3897,6 @@ msgstr ""
 msgid "Error deleting zone template record: "
 msgstr "Fout bij het verwijderen van zonesjabloonrecord: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Fout bij het controleren van sjablooneigendom: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3991,37 +3906,9 @@ msgstr ""
 "Deze recordtypen zijn niet in het sjabloon opgenomen omdat u ze niet mag "
 "toevoegen: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Fout bij het ophalen van zones die sjabloon gebruiken: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Kan lijst van zones die sjabloon gebruiken niet ophalen: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "U hebt geen toestemming om een zonesjabloon te bewerken."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Fout bij het loskoppelen van zone van sjabloon: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Fout bij het ophalen van zones: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Fout bij het controleren van sjabloonnaambestaan: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Fout bij het opzoeken van sjabloon op naam: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Fout bij het controleren van sjabloonbestaan: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7790,10 +7677,6 @@ msgstr "De hostnaam is te lang."
 msgid "Single-label hostnames are not allowed."
 msgstr "Single-label hostnamen zijn niet toegestaan."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "U hebt ongeldige karakters in uw zonenaam."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Een hostnaam kan niet beginnen of eindigen met een streepje."
@@ -7861,14 +7744,6 @@ msgstr "Gegeven hostnaam heeft te veel schuine strepen."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "U gebruikt een ongeldig topleveldomein."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"SOA validatieparameters niet ingesteld. Roep eerst setSOAParams() aan of "
-"geef ze als argumenten."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9799,20 +9674,6 @@ msgstr "Kan %s-record niet aanmaken voor zone."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Ongeldige argument(en) gegeven aan functie %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Kan zone niet verwijderen uit DNS-backend."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Kan zonemetadata niet opschonen: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Kan zonemetadata niet verwijderen: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Kan zonetype niet bijwerken in DNS-backend."
@@ -9820,10 +9681,6 @@ msgstr "Kan zonetype niet bijwerken in DNS-backend."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Kan zone-master niet bijwerken in DNS-backend."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "De geselecteerde gebruiker is al eigenaar van de zone."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -10113,10 +9970,6 @@ msgstr ""
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Geldig bereik: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Alleen voor MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15796,5 +15649,3 @@ msgid ""
 msgstr ""
 "Het instellen van de locale is mislukt. De geselecteerde locale wordt "
 "mogelijk niet ondersteund op dit systeem. Neem contact op met uw beheerder."
-
-

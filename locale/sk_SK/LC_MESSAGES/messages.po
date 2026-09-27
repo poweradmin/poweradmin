@@ -54,14 +54,6 @@ msgstr "Overenie zlyhalo:"
 msgid "Failed to generate record:"
 msgstr "Nepodarilo sa vygenerovať záznam:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Tento záznam nebol platný a nepodarilo sa ho pridať. Môže už existovať alebo "
-"obsahovať neplatné údaje."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Záznam bol úspešne pridaný."
@@ -1235,10 +1227,6 @@ msgstr "Zóna s týmto názvom už existuje."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Toto nie je platná IPv4 alebo IPv6 adresa."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Nepodarilo sa vytvoriť sekundárnu zónu."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Neplatná zóna."
@@ -1347,10 +1335,6 @@ msgstr "Názov zóny je povinný."
 msgid "This is an invalid zone name."
 msgstr "Toto je neplatný názov zóny."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Zóna s týmto názvom už existuje."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Neplatný typ zóny."
@@ -1362,14 +1346,6 @@ msgid ""
 msgstr ""
 "Nie je možné vytvoriť novú zónu importom: vyberte aspoň jednu skupinu alebo "
 "nechajte \"Bez používateľského vlastníka\" neoznačené."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Nepodarilo sa vytvoriť zónu."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Nepodarilo sa získať vytvorenú zónu."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1923,10 +1899,6 @@ msgstr "Zadajte aspoň jeden záznam"
 msgid "Invalid record type."
 msgstr "Neplatný typ záznamu."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Záznam sa nepodarilo pridať."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2067,10 +2039,6 @@ msgstr "Vyplňte správne všetky povinné polia."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Nemáte oprávnenie vymazať tento záznam."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Záznam nebolo možné odstrániť."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2496,14 +2464,6 @@ msgstr "Bolo vytvorených aj %d zhodných záznamov."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Nepodarilo sa pridať %d záznamov."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Niektoré záznamy sa nepodarilo pridať. Môžu už existovať alebo obsahovať "
-"neplatné údaje."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3111,10 +3071,6 @@ msgstr "Váš profil bol úspešne aktualizovaný."
 msgid "The user has been updated successfully."
 msgstr "Používateľ bol úspešne aktualizovaný."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Používateľ sa nedal aktualizovať."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Nemáte oprávnenie upraviť tohto používateľa."
@@ -3191,10 +3147,6 @@ msgstr "Nemáte oprávnenie mazať šablóny oprávnení."
 msgid "The permission template has been deleted successfully."
 msgstr "Šablóna oprávnení bola úspešne odstránená."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Šablónu oprávnení sa nepodarilo odstrániť."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Funkcia stavu PowerDNS je v systémovej konfigurácii zakázaná."
@@ -3210,22 +3162,6 @@ msgid ""
 msgstr ""
 "Funkcia PowerDNS API nie je nakonfigurovaná. Nastavte URL a kľúč API v "
 "systémovej konfigurácii."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Nemáte oprávnenie na prístup k tejto funkcii."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Operácia bola úspešne dokončená."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Spracovanie žiadosti zlyhalo. Skúste znova."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Vyskytla sa neočakávaná chyba. Kontaktujte administrátora."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3359,14 +3295,6 @@ msgstr "Supermaster bol úspešne odstránený."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Hromadná registrácia"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Vlastník musí byť číselné ID používateľa."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Nepodarilo sa pridať zónu."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3881,17 +3809,9 @@ msgstr "Chyba pri rušení predvolenej šablóny zóny: "
 msgid "Error creating zone template: "
 msgstr "Chyba pri vytváraní šablóny zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Chyba pri pridávaní predvoleného SOA záznamu: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Chyba pri odstraňovaní šablóny zóny: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Chyba pri odstraňovaní šablón zón používateľa: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3932,10 +3852,6 @@ msgstr "Nemáte oprávnenie odstrániť tento typ záznamu zo šablóny zóny."
 msgid "Error deleting zone template record: "
 msgstr "Chyba pri odstraňovaní záznamu šablóny zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Chyba pri kontrole vlastníctva šablóny: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3945,37 +3861,9 @@ msgstr ""
 "Tieto typy záznamov boli zo šablóny vynechané, pretože ich nemôžete "
 "pridávať: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Chyba pri získavaní zón používajúcich šablónu: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Nepodarilo sa získať zoznam zón používajúcich šablónu: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nemáte oprávnenie upraviť šablónu zóny."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Chyba pri odpájaní zóny od šablóny: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Chyba pri načítavaní zón: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Chyba pri kontrole existencie názvu šablóny: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Chyba pri hľadaní šablóny podľa názvu: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Chyba pri kontrole existencie šablóny: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7645,10 +7533,6 @@ msgstr "Názov hostiteľa je príliš dlhý."
 msgid "Single-label hostnames are not allowed."
 msgstr "Hostitelia s jednou značkou nie sú povolení."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Máte neplatné znaky v názve zóny."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Názov hostiteľa nemôže začínať alebo končiť pomlčkou."
@@ -7712,14 +7596,6 @@ msgstr "Zadaný hostiteľ má príliš veľa lomítok."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Používate neplatnú doménu najvyššej úrovne."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"Parametre na overenie SOA nie sú nastavené. Najprv zavolajte setSOAParams() "
-"alebo ich zadajte ako argumenty."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9617,20 +9493,6 @@ msgstr "Nepodarilo sa vytvoriť záznam %s pre zónu."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Neplatný argument(y) pre funkciu %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Nepodarilo sa vymazať zónu z DNS backend."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Nepodarilo sa vyčistiť metadáta zóny: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Nepodarilo sa vymazať metadáta zóny: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Nepodarilo sa aktualizovať typ zóny v DNS backend."
@@ -9638,10 +9500,6 @@ msgstr "Nepodarilo sa aktualizovať typ zóny v DNS backend."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Nepodarilo sa aktualizovať master zóny v DNS."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Vybraný používateľ už vlastní zónu."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9929,10 +9787,6 @@ msgstr "Príklad: [ZONE] pre zónu, alebo subdomain.[ZONE]"
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Platný rozsah: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Len pre MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15525,5 +15379,3 @@ msgstr ""
 "Nepodarilo sa nastaviť národné prostredie. Vybrané národné prostredie "
 "(locale) nemusí byť v tomto systéme podporované. Kontaktujte svojho "
 "administrátora."
-
-

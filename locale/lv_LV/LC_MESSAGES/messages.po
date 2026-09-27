@@ -55,13 +55,6 @@ msgstr "Validācija neizdevās:"
 msgid "Failed to generate record:"
 msgstr "Neizdevās ģenerēt ierakstu:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Šis ieraksts nebija derīgs un netika pievienots. Iespējams, tas jau pastāv."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Ieraksts veiksmīgi pievienots."
@@ -1229,10 +1222,6 @@ msgstr "Zona ar šādu nosaukumu jau eksistē."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Šī nav derīga IPv4 vai IPv6 adrese."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Neizdevās izveidot sekundāro zonu."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Nederīga zona."
@@ -1341,10 +1330,6 @@ msgstr "Zonas nosaukums ir nepieciešams."
 msgid "This is an invalid zone name."
 msgstr "Šis ir nederīgs zonas nosaukums."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Zona ar šādu nosaukumu jau eksistē."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Nederīgs zonas tips."
@@ -1356,14 +1341,6 @@ msgid ""
 msgstr ""
 "Nevar izveidot jaunu zonu ar importu: izvēlieties vismaz vienu grupu vai "
 "atstājiet \"Nav lietotāja īpašnieka\" neatzīmētu."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Neizdevās izveidot zonu."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Neizdevās iegūt izveidoto zonu."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1910,10 +1887,6 @@ msgstr "Norādiet vismaz vienu ierakstu"
 msgid "Invalid record type."
 msgstr "Nederīgs ieraksta veids."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Ierakstu nevarēja pievienot."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2053,10 +2026,6 @@ msgstr "Aizpildiet visus nepieciešamos laukus pareizi."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Jums nav atļaujas dzēst šo ierakstu."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Ierakstu nevarēja dzēst."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2483,14 +2452,6 @@ msgstr "Tika izveidoti arī %d atbilstoši ieraksti."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Neizdevās pievienot %d ierakstus."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Dažus ierakstus nevarēja pievienot. Iespējams, tie jau eksistē vai ir "
-"nederīgi."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3095,10 +3056,6 @@ msgstr "Jūsu profils veiksmīgi atjaunināts."
 msgid "The user has been updated successfully."
 msgstr "Lietotājs veiksmīgi atjaunināts."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Lietotāju nevarēja atjaunināt."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Jums nav atļaujas rediģēt šo lietotāju."
@@ -3175,10 +3132,6 @@ msgstr "Jums nav atļaujas dzēst atļauju veidnes."
 msgid "The permission template has been deleted successfully."
 msgstr "Atļauju veidne veiksmīgi dzēsta."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Atļauju veidni nevarēja dzēst."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS statusa funkcija ir atspējota konfigurācijā."
@@ -3192,22 +3145,6 @@ msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
 msgstr "PowerDNS API funkcija nav konfigurēta. Iestatiet URL un atslēgu."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Jums nav atļaujas piekļūt šai funkcijai."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Darbība veiksmīgi pabeigta."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Neizdevās apstrādāt pieprasījumu. Mēģiniet vēlreiz."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Radās negaidīta kļūda. Sazinieties ar administratoru."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3340,14 +3277,6 @@ msgstr "Supermaster veiksmīgi dzēsts."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Masveida reģistrācija"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Īpašniekam jābūt skaitliskam lietotāja ID."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Neizdevās pievienot zonu."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3859,17 +3788,9 @@ msgstr "Kļūda, notīrot noklusēto zonas veidni: "
 msgid "Error creating zone template: "
 msgstr "Kļūda, veidojot zonas veidni: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Kļūda, pievienojot noklusējuma SOA ierakstu veidnei: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Kļūda, dzēšot zonas veidni: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Kļūda, dzēšot lietotāja zonu veidnes: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3910,10 +3831,6 @@ msgstr "Jums nav atļaujas dzēst šo ieraksta veidu no zonas veidnes."
 msgid "Error deleting zone template record: "
 msgstr "Kļūda, dzēšot zonas veidnes ierakstu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Kļūda, pārbaudot veidnes īpašumtiesības: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3923,37 +3840,9 @@ msgstr ""
 "Šie ierakstu veidi netika iekļauti veidnē, jo jums nav atļaujas tos "
 "pievienot: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Kļūda, iegūstot zonas, kas izmanto veidni: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Neizdevās iegūt zonu sarakstu, kas izmanto veidni: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Jums nav atļaujas rediģēt zonas veidni."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Kļūda, atsaistot zonu no veidnes: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Kļūda zonu iegūšanā: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Kļūda, pārbaudot veidnes nosaukuma eksistenci: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Kļūda, meklējot veidni pēc nosaukuma: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Kļūda, pārbaudot veidnes eksistenci: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7523,10 +7412,6 @@ msgstr "Resursdatora nosaukums ir pārāk garš."
 msgid "Single-label hostnames are not allowed."
 msgstr "Hostnosaukumi ar vienu iezīmi nav atļauti."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Jūsu zonas nosaukumā ir nederīgas rakstzīmes."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Resursdatora vārds nedrīkst sākties vai beigties ar domuzīmi."
@@ -7591,13 +7476,6 @@ msgstr "Norādītajā resursdatorā ir pārāk daudz slīpsvītru."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Jūs izmantojat nederīgu augstākā līmeņa domēnu."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"SOA validācijas parametri nav iestatīti. Izsauciet setSOAParams() vispirms."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9464,20 +9342,6 @@ msgstr "Neizdevās izveidot %s ierakstu zonai."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Nederīgi argumenti funkcijai %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Neizdevās dzēst zonu no DNS aizmugures."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Neizdevās iztīrīt zonas metadatus: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Neizdevās dzēst zonas metadatus: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Neizdevās atjaunināt zonas veidu DNS aizmugurē."
@@ -9485,10 +9349,6 @@ msgstr "Neizdevās atjaunināt zonas veidu DNS aizmugurē."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Neizdevās atjaunināt zonas galveno DNS aizmugurē."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Atlasītais lietotājs jau ir zonas īpašnieks."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9773,10 +9633,6 @@ msgstr "Piemērs: [ZONE] zonai vai subdomain.[ZONE] apakšdomēnam"
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Derīgs diapazons: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Tikai MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15348,5 +15204,3 @@ msgid ""
 msgstr ""
 "Neizdevās iestatīt lokalizāciju. Izvēlētā lokalizācija, iespējams, nav "
 "atbalstīta šajā sistēmā. Lūdzu, sazinieties ar savu administratoru."
-
-

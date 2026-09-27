@@ -54,14 +54,6 @@ msgstr "אימות נכשל:"
 msgid "Failed to generate record:"
 msgstr "יצירת הרשומה נכשלה:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"רשומה זו לא הייתה חוקית ולא ניתן היה להוסיף אותה. ייתכן שהיא כבר קיימת או "
-"מכילה נתונים לא חוקיים."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "הרשומות נוספו בהצלחה."
@@ -1214,10 +1206,6 @@ msgstr "יש כבר אזור עם השם הזה."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "זו לא כתובת IPv4 או IPv6 בתוקף."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "יצירת האזור המשני נכשלה."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "אזור לא תקין."
@@ -1324,10 +1312,6 @@ msgstr "שם האזור נדרש."
 msgid "This is an invalid zone name."
 msgstr "זהו שם אזור לא חוקי."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "אזור עם השם הזה כבר קיים."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "סוג אזור לא חוקי."
@@ -1339,14 +1323,6 @@ msgid ""
 msgstr ""
 "לא ניתן ליצור אזור חדש באמצעות ייבוא: בחר לפחות קבוצה אחת, או השאר את \"ללא "
 "בעלים משתמש\" לא מסומן."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "נכשל ליצור אזור."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "לא הצליח להחזיר את האזור שנוצר."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1886,10 +1862,6 @@ msgstr "יש לספק לפחות רשומה אחת"
 msgid "Invalid record type."
 msgstr "סוג רשומה לא חוקי"
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "לא ניתן להוסיף רשומה."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2024,10 +1996,6 @@ msgstr "אנא מלאו את כל השדות הדרושים כראוי."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "אין לך רשות למחוק את הרשומה הזו."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "לא ניתן למחוק את הרשומה."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2444,14 +2412,6 @@ msgstr "%d רשומות תואמות נוצרו גם כן."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d רשומות לא נוספו."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"לא ניתן היה להוסיף חלק מהרשומות. ייתכן שהן כבר קיימות או מכילות נתונים לא "
-"חוקיים."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3043,10 +3003,6 @@ msgstr "הפרופיל שלך עודכן בהצלחה."
 msgid "The user has been updated successfully."
 msgstr "המשתמש עודכן בהצלחה."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "לא ניתן לעדכן את המשתמש."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "אין לך רשות לערוך את המשתמש הזה."
@@ -3115,10 +3071,6 @@ msgstr "אין לך רשות למחוק תבניות רשות."
 msgid "The permission template has been deleted successfully."
 msgstr "תבנית ההרשאה נמחקה בהצלחה."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "לא ניתן למחוק את תבנית ההרשאה."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "תכונת מצב PowerDNS מושבתת בתצורת המערכת."
@@ -3134,22 +3086,6 @@ msgid ""
 msgstr ""
 "התכונה PowerDNS API אינה מוגדרת. אנא הגדר את כתובת ה- API ואת המפתח בתצורת "
 "המערכת."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "אין לך רשות לגשת לתכונה זו."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "הפעולה הושלמה בהצלחה."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "נכשל לעבד את הבקשה. אנא נסה שוב."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "אירעה שגיאה בלתי צפויה. אנא צור קשר עם המנהל."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3280,14 +3216,6 @@ msgstr "ה-supermaster נמחק בהצלחה."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "רישום מרוכז"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "הבעלים חייב להיות מזהה משתמש מספריים."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "הוספת האזור נכשלה."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3782,17 +3710,9 @@ msgstr "שגיאה בניקוי תבנית אזור ברירת המחדל: "
 msgid "Error creating zone template: "
 msgstr "שגיאה ביצירת תבנית אזור: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "שגיאה בהוספת רשומת SOA של ברירת המחדל לתבנית: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "שגיאה במחיקת תבנית אזור: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "שגיאה במחיקת תבניות אזור המשתמש: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3833,10 +3753,6 @@ msgstr "אין לך הרשאה למחוק סוג רשומה זה מתבנית א
 msgid "Error deleting zone template record: "
 msgstr "שגיאה במחיקת רשומת תבנית האזור: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "שגיאה בבדיקת הבעלות על התבנית: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3844,37 +3760,9 @@ msgid ""
 "them: %s"
 msgstr "סוגי הרשומות הבאים הושמטו מהתבנית מכיוון שאין לך הרשאה להוסיף אותם: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "שגיאה באחזור האזורים המשתמשים בתבנית: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "נכשל לקבל רשימה של אזורים המשתמשים בתבנית: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "אין לך רשות לערוך תבנית אזור."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "שגיאה בביטול קישור האזור מהתבנית: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "שגיאה באחזור האזורים: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "שגיאה בבדיקת קיום שם התבנית: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "שגיאה בחיפוש התבנית לפי שם: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "שגיאה בבדיקת קיום התבנית: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7421,10 +7309,6 @@ msgstr "השם המארח ארוך מדי."
 msgid "Single-label hostnames are not allowed."
 msgstr "שמות מארח בעלי תווית יחידה אינם מורשים."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "יש לך תווים לא חוקיים בשם האזור שלך."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "שם מארח לא יכול להתחיל או להסתיים במקף."
@@ -7488,13 +7372,6 @@ msgstr "לשם המארח שניתן יש יותר מדי לוכסנים."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "אתה משתמש דומיין ברמה הגבוהה ביותר לא חוקי."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"פרמטרי אימות SOA לא נקבעו. קרא תחילה ל-setSOAParams() או ספק אותם כארגומנטים."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9342,20 +9219,6 @@ msgstr "יצירת רשומת %s עבור האזור נכשלה."
 msgid "Invalid argument(s) given to function %s"
 msgstr "ארגומנט(ים) לא חוקיים ניתנו לפונקציה %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "נכשל למחוק את האזור מ- DNS backend."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "ניקוי המטא-נתונים של האזור נכשל: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "מחיקת המטא-נתונים של האזור נכשלה: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "נכשל לעדכן את סוג האזור ב- DNS backend."
@@ -9363,10 +9226,6 @@ msgstr "נכשל לעדכן את סוג האזור ב- DNS backend."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "עדכון ה-master של האזור ב-DNS backend נכשל."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "המשתמש הנבחר כבר הבעלים של האזור."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9650,10 +9509,6 @@ msgstr "דוגמה: [ZONE] עבור האזור עצמו, או subdomain.[ZONE] �
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "טווח תקין: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "רק עבור MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15161,5 +15016,3 @@ msgid ""
 msgstr ""
 "הגדרת השפה נכשלה. ייתכן שהשפה שנבחרה אינה נתמכת במערכת זו. יש לפנות למנהל "
 "המערכת."
-
-

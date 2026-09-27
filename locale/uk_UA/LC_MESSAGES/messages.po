@@ -55,14 +55,6 @@ msgstr "Помилка валідації:"
 msgid "Failed to generate record:"
 msgstr "Не вдалося згенерувати запис:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Цей запис недійсний і не може бути додано. Можливо, він вже існує або "
-"містить недійсні дані."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Запис було успішно додано."
@@ -1250,10 +1242,6 @@ msgstr "Зона з такою назвою вже існує."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Це не є дійсною адресою IPv4 або IPv6."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Не вдалося створити вторинну зону."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Недійсна зона."
@@ -1362,10 +1350,6 @@ msgstr "Назва зони є обов'язковою."
 msgid "This is an invalid zone name."
 msgstr "Це недійсна назва зони."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Зона з такою назвою вже існує."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Недійсний тип зони."
@@ -1377,14 +1361,6 @@ msgid ""
 msgstr ""
 "Неможливо створити нову зону через імпорт: виберіть принаймні одну групу або "
 "зніміть позначку \"Немає власника-користувача\"."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Не вдалося створити зону."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Не вдалося отримати створену зону."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1944,10 +1920,6 @@ msgstr "Надайте принаймні один запис"
 msgid "Invalid record type."
 msgstr "Недійсний тип запису."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Не вдалося додати запис."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2087,10 +2059,6 @@ msgstr "Будь ласка, заповніть усі обов'язкові п�
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "У вас немає дозволу на видалення цього запису."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Не вдалося видалити запис."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2519,14 +2487,6 @@ msgstr "Також створено %d відповідних записів."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d запис(ів) не вдалося додати."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Деякі записи не вдалося додати. Можливо, вони вже існують або містять "
-"недійсні дані."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3130,10 +3090,6 @@ msgstr "Ваш профіль було успішно оновлено."
 msgid "The user has been updated successfully."
 msgstr "Користувача було успішно оновлено."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Не вдалося оновити користувача."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "У вас немає дозволу на редагування цього користувача."
@@ -3210,10 +3166,6 @@ msgstr "У вас немає дозволу на видалення шаблон
 msgid "The permission template has been deleted successfully."
 msgstr "Шаблон прав доступу було успішно видалено."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Не вдалося видалити шаблон дозволів."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Функцію статусу PowerDNS вимкнено в конфігурації системи."
@@ -3229,22 +3181,6 @@ msgid ""
 msgstr ""
 "Функцію API PowerDNS не налаштовано. Будь ласка, встановіть URL та ключ API "
 "у конфігурації системи."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "У вас немає дозволу на доступ до цієї функції."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Операцію виконано успішно."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Не вдалося обробити запит. Спробуйте ще раз."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Сталася непередбачена помилка. Зверніться до адміністратора."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3380,14 +3316,6 @@ msgstr "Сервер supermaster було успішно видалено."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Масова реєстрація"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Власник має бути числовим ID користувача."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Не вдалося додати зону."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3905,17 +3833,9 @@ msgstr "Помилка очищення шаблону зони за замов�
 msgid "Error creating zone template: "
 msgstr "Помилка створення шаблону зони: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Помилка додавання SOA-запису за замовчуванням до шаблону: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Помилка видалення шаблону зони: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Помилка видалення шаблонів зон користувача: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3956,10 +3876,6 @@ msgstr "У вас немає дозволу видаляти цей тип за�
 msgid "Error deleting zone template record: "
 msgstr "Помилка видалення запису шаблону зони: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Помилка перевірки власності шаблону: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3969,37 +3885,9 @@ msgstr ""
 "Ці типи записів не додано до шаблону, оскільки ви не маєте права їх "
 "додавати: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Помилка отримання зон, що використовують шаблон: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Не вдалося отримати список зон, що використовують шаблон: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "У вас немає дозволу на редагування шаблону зони."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Помилка від'єднання зони від шаблону: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Помилка отримання зон: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Помилка перевірки існування назви шаблону: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Помилка пошуку шаблону за назвою: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Помилка перевірки існування шаблону: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7756,10 +7644,6 @@ msgstr "Ім'я хоста задовге."
 msgid "Single-label hostnames are not allowed."
 msgstr "Імена хостів з однієї мітки не допускаються."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Ім'я зони містить недійсні символи."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Ім'я хоста не може починатися або закінчуватися дефісом."
@@ -7828,14 +7712,6 @@ msgstr "Вказане ім'я хоста містить надто багато
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Ви використовуєте недійсний домен верхнього рівня."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"Параметри перевірки SOA не задано. Спочатку викличте setSOAParams() або "
-"передайте їх як аргументи."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9752,20 +9628,6 @@ msgstr "Не вдалося створити %s-запис для зони."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Недійсні аргументи передано до функції %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Не вдалося видалити зону з DNS-бекенду."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Не вдалося очистити метадані зони: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Не вдалося видалити метадані зони: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Не вдалося оновити тип зони в DNS-бекенді."
@@ -9773,10 +9635,6 @@ msgstr "Не вдалося оновити тип зони в DNS-бекенді
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Не вдалося оновити головний сервер зони в DNS-бекенді."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Вибраний користувач уже є власником зони."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -10063,10 +9921,6 @@ msgstr "Приклад: [ZONE] для самої зони або subdomain.[ZONE
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Допустимий діапазон: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Лише для MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15702,5 +15556,3 @@ msgid ""
 msgstr ""
 "Не вдалося встановити локаль. Вибрана локаль може не підтримуватися в цій "
 "системі. Зверніться до свого адміністратора."
-
-

@@ -54,13 +54,6 @@ msgstr "Valideerimine ebaõnnestus:"
 msgid "Failed to generate record:"
 msgstr "Kirje loomine ebaõnnestus:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"See kirje polnud kehtiv ja seda ei saanud lisada. Võib juba eksisteerida."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Kirje edukalt lisatud."
@@ -1227,10 +1220,6 @@ msgstr "Selle nimega tsoon on juba olemas."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "See pole kehtiv IPv4 ega IPv6 aadress."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Teisese tsooni loomine ebaõnnestus."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Vigane tsoon."
@@ -1338,10 +1327,6 @@ msgstr "Tsooni nimi on kohustuslik."
 msgid "This is an invalid zone name."
 msgstr "See on vigane tsooni nimi."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Selle nimega tsoon on juba olemas."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Vigane tsooni tüüp."
@@ -1353,14 +1338,6 @@ msgid ""
 msgstr ""
 "Uut tsooni ei saa importimisega luua: valige vähemalt üks grupp või jätke "
 "\"Kasutaja-omanikku pole\" märkimata."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Tsooni loomine ebaõnnestus."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Loodud tsooni hankimine ebaõnnestus."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1906,10 +1883,6 @@ msgstr "Andke vähemalt üks kirje"
 msgid "Invalid record type."
 msgstr "Vigane kirje tüüp."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Kirjet ei saanud lisada."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2048,10 +2021,6 @@ msgstr "Palun täitke kõik kohustuslikud väljad korrektselt."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Teil pole õigust seda kirjet kustutada."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Kirjet ei saanud kustutada."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2468,14 +2437,6 @@ msgstr "Loodud on ka %d sobivat kirjet."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d kirje lisamine ebaõnnestus."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Mõnda kirjet ei saanud lisada. Nad võivad juba eksisteerida või sisaldada "
-"vigaseid andmeid."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3081,10 +3042,6 @@ msgstr "Teie profiil on edukalt uuendatud."
 msgid "The user has been updated successfully."
 msgstr "Kasutaja on edukalt uuendatud."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Kasutajat ei saanud uuendada."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Teil pole õigust seda kasutajat muuta."
@@ -3155,10 +3112,6 @@ msgstr "Teil pole õigust õiguste malle kustutada."
 msgid "The permission template has been deleted successfully."
 msgstr "Õiguste mall on edukalt kustutatud."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Õiguste malli ei saanud kustutada."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNS oleku funktsioon on süsteemi seadistustes keelatud."
@@ -3172,22 +3125,6 @@ msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
 msgstr "PowerDNS API funktsioon pole seadistatud. Seadistage URL ja võti."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Teil pole õigust sellele funktsioonile juurde pääseda."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Tegevus edukalt lõpetatud."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Päringu töötlemine ebaõnnestus. Palun proovige uuesti."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Tekkis ootamatu viga. Palun võtke ühendust administraatoriga."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3322,14 +3259,6 @@ msgstr "Supermaster on edukalt kustutatud."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Hulgiregistreerimine"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Omanik peab olema numbriline kasutaja ID."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Tsooni lisamine ebaõnnestus."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3833,17 +3762,9 @@ msgstr "Viga vaikimisi tsoonimalli eemaldamisel: "
 msgid "Error creating zone template: "
 msgstr "Viga tsooni malli loomisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Viga vaikimisi SOA-kirje lisamisel mallile: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Viga tsooni malli kustutamisel: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Viga kasutaja tsooni mallide kustutamisel: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3884,10 +3805,6 @@ msgstr "Teil pole õigust seda kirjetüüpi tsooni mallist kustutada."
 msgid "Error deleting zone template record: "
 msgstr "Viga tsooni malli kirje kustutamisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Viga malli omandi kontrollimisel: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3897,37 +3814,9 @@ msgstr ""
 "Järgmised kirjetüübid jäeti mallist välja, kuna teil pole õigust neid "
 "lisada: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Viga tsoonide hankimisel, mis kasutavad malli: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Mallit kasutavate tsoonide loendi saamine ebaõnnestus: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Teil pole õigust tsooni malli muuta."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Viga tsooni eemaldamisel mallist: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Viga tsoonide hankimisel: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Viga malli nime olemasolu kontrollimisel: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Viga malli otsimisel nime järgi: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Viga malli olemasolu kontrollimisel: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7491,10 +7380,6 @@ msgstr "Hostinimi on liiga pikk."
 msgid "Single-label hostnames are not allowed."
 msgstr "Ühe sildiga hostinimed pole lubatud."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Teie tsooni nimes on vigased märgid."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Hostinimi ei tohi alata ega lõppeda sidekriipsuga."
@@ -7559,13 +7444,6 @@ msgstr "Antud hostinimi sisaldab liiga palju kaldkriipse."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Kasutate vigast tipptaseme domeeni."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"SOA valideerimise parameetrid pole määratud. Kutsuge setSOAParams() esmalt."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9429,20 +9307,6 @@ msgstr "%s-kirje loomine tsoonile ebaõnnestus."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Vigane(d) argument(id) funktsioonile %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Tsooni kustutamine DNS-taustalt ebaõnnestus."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Tsooni metaandmete puhastamine ebaõnnestus: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Tsooni metaandmete kustutamine ebaõnnestus: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Tsooni tüübi uuendamine DNS-taustal ebaõnnestus."
@@ -9450,10 +9314,6 @@ msgstr "Tsooni tüübi uuendamine DNS-taustal ebaõnnestus."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Tsooni põhi uuendamine DNS-taustal ebaõnnestus."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Valitud kasutaja juba omab tsooni."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9739,10 +9599,6 @@ msgstr "Näide: [ZONE] tsooni enda jaoks või subdomain.[ZONE] alamdomeeni jaoks
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Kehtiv vahemik: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Ainult MX, SRV, KX, NAPTR jaoks"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15296,5 +15152,3 @@ msgid ""
 msgstr ""
 "Lokaadi määramine ebaõnnestus. Valitud lokaat ei pruugi selles süsteemis "
 "olla toetatud. Palun võtke ühendust administraatoriga."
-
-

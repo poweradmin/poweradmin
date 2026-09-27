@@ -54,14 +54,6 @@ msgstr "検証に失敗しました:"
 msgid "Failed to generate record:"
 msgstr "レコードの生成に失敗しました:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"このレコードは無効で追加できませんでした。既に存在するか、無効なデータが含ま"
-"れている可能性があります。"
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "レコードが正常に追加されました。"
@@ -1237,10 +1229,6 @@ msgstr "この名前のゾーンは既に存在します。"
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "これは有効なIPv4またはIPv6アドレスではありません。"
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "セカンダリゾーンの作成に失敗しました。"
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "無効なゾーンです。"
@@ -1353,10 +1341,6 @@ msgstr "ゾーン名は必須です。"
 msgid "This is an invalid zone name."
 msgstr "これは無効なゾーン名です。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "この名前のゾーンは既に存在します。"
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "無効なゾーンタイプです。"
@@ -1368,14 +1352,6 @@ msgid ""
 msgstr ""
 "インポートで新しいゾーンを作成できません: 少なくとも1つのグループを選択する"
 "か、\"ユーザー所有者なし\" をオフのままにしてください。"
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "ゾーンの作成に失敗しました。"
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "作成されたゾーンの取得に失敗しました。"
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1923,10 +1899,6 @@ msgstr "少なくとも1つのレコードを入力してください"
 msgid "Invalid record type."
 msgstr "無効なレコードタイプです。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "レコードを追加できませんでした。"
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2062,10 +2034,6 @@ msgstr "すべての必須フィールドを正しく入力してください。
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "このレコードを削除する権限がありません。"
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "レコードを削除できませんでした。"
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2488,14 +2456,6 @@ msgstr "%d件の一致するレコードも作成されました。"
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d件のレコードの追加に失敗しました。"
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"一部のレコードを追加できませんでした。既に存在するか、無効なデータが含まれて"
-"いる可能性があります。"
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3096,10 +3056,6 @@ msgstr "プロフィールが正常に更新されました。"
 msgid "The user has been updated successfully."
 msgstr "ユーザーが正常に更新されました。"
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "ユーザーを更新できませんでした。"
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "このユーザーを編集する権限がありません。"
@@ -3168,10 +3124,6 @@ msgstr "権限テンプレートを削除する権限がありません。"
 msgid "The permission template has been deleted successfully."
 msgstr "権限テンプレートが正常に削除されました。"
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "権限テンプレートを削除できませんでした。"
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "PowerDNSステータス機能はシステム設定で無効になっています。"
@@ -3187,22 +3139,6 @@ msgid ""
 msgstr ""
 "PowerDNS API機能が設定されていません。システム設定でAPIのURLとキーを設定して"
 "ください。"
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "この機能にアクセスする権限がありません。"
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "操作が正常に完了しました。"
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "リクエストの処理に失敗しました。再試行してください。"
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "予期しないエラーが発生しました。管理者にお問い合わせください。"
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3339,14 +3275,6 @@ msgstr "supermasterが正常に削除されました。"
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "一括登録"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "所有者は数値のユーザーIDである必要があります。"
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "ゾーンの追加に失敗しました。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3855,17 +3783,9 @@ msgstr "デフォルトのゾーンテンプレートのクリア中にエラー
 msgid "Error creating zone template: "
 msgstr "ゾーンテンプレートの作成エラー： "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "テンプレートへのデフォルトSOAレコード追加エラー： "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "ゾーンテンプレートの削除エラー： "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "ユーザーゾーンテンプレートの削除エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3906,10 +3826,6 @@ msgstr "このレコードタイプをゾーンテンプレートから削除す
 msgid "Error deleting zone template record: "
 msgstr "ゾーンテンプレートレコードの削除エラー： "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "テンプレート所有権の確認エラー： "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3919,37 +3835,9 @@ msgstr ""
 "次のレコードタイプは追加が許可されていないため、テンプレートから除外されまし"
 "た: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "テンプレートを使用するゾーンの取得エラー： "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "テンプレートを使用するゾーンのリスト取得に失敗しました： "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "ゾーンテンプレートを編集する権限がありません。"
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "テンプレートからのゾーン解除エラー： "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "ゾーンの取得エラー： "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "テンプレート名の存在確認エラー： "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "テンプレート名による検索エラー: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "テンプレートの存在確認エラー： "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7674,10 +7562,6 @@ msgstr "ホスト名が長すぎます。"
 msgid "Single-label hostnames are not allowed."
 msgstr "単一ラベルのホスト名は許可されていません。"
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "ゾーン名に無効な文字が含まれています。"
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "ホスト名はダッシュで始まったり終わったりできません。"
@@ -7746,14 +7630,6 @@ msgstr "指定されたホスト名にスラッシュが多すぎます。"
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "無効なトップレベルドメインを使用しています。"
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"SOA検証パラメータが設定されていません。最初にsetSOAParams()を呼び出すか、引数"
-"として提供してください。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9682,20 +9558,6 @@ msgstr "ゾーンの%sレコードの作成に失敗しました。"
 msgid "Invalid argument(s) given to function %s"
 msgstr "関数%sに無効な引数が渡されました"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "DNSバックエンドからのゾーンの削除に失敗しました。"
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "ゾーンメタデータのクリーンアップに失敗しました: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "ゾーンメタデータの削除に失敗しました: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "DNSバックエンドでのゾーンタイプの更新に失敗しました。"
@@ -9703,10 +9565,6 @@ msgstr "DNSバックエンドでのゾーンタイプの更新に失敗しまし
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "DNSバックエンドでのゾーンマスターの更新に失敗しました。"
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "選択されたユーザーは既にゾーンを所有しています。"
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -9993,10 +9851,6 @@ msgstr "例：ゾーン自体の場合は[ZONE]、サブドメインの場合は
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "有効範囲：0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "MX、SRV、KX、NAPTRのみ"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15600,5 +15454,3 @@ msgid ""
 msgstr ""
 "ロケールを設定できませんでした。選択したロケールはこのシステムでサポートされ"
 "ていない可能性があります。管理者にお問い合わせください。"
-
-

@@ -54,14 +54,6 @@ msgstr "Validasi gagal:"
 msgid "Failed to generate record:"
 msgstr "Gagal menghasilkan rekaman:"
 
-#: lib/Application/Controller/AddRecordController.php:197
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Rekaman ini tidak valid dan tidak dapat ditambahkan. Mungkin sudah ada atau "
-"berisi data yang tidak valid."
-
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Rekaman berhasil ditambahkan."
@@ -1254,10 +1246,6 @@ msgstr "Sudah ada zona dengan nama ini."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Ini bukan alamat IPv4 atau IPv6 yang valid."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
-msgid "Failed to create the secondary zone."
-msgstr "Gagal membuat zona sekunder."
-
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
 msgid "Invalid zone."
 msgstr "Zona tidak valid."
@@ -1367,10 +1355,6 @@ msgstr "Nama zona wajib diisi."
 msgid "This is an invalid zone name."
 msgstr "Ini bukan nama zona yang valid."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
-msgid "A zone with this name already exists."
-msgstr "Zona dengan nama ini sudah ada."
-
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Tipe zona tidak valid."
@@ -1382,14 +1366,6 @@ msgid ""
 msgstr ""
 "Tidak dapat membuat zona baru melalui impor: pilih setidaknya satu grup, "
 "atau biarkan \"Tidak ada pemilik pengguna\" tidak dicentang."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
-msgid "Failed to create zone."
-msgstr "Gagal membuat zona."
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
-msgid "Failed to retrieve created zone."
-msgstr "Gagal mengambil zona yang dibuat."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
@@ -1950,10 +1926,6 @@ msgstr "Berikan setidaknya satu rekaman"
 msgid "Invalid record type."
 msgstr "Tipe rekaman tidak valid."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
-msgid "Record could not be added."
-msgstr "Rekaman tidak dapat ditambahkan."
-
 #: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
@@ -2092,10 +2064,6 @@ msgstr "Silakan isi semua kolom yang diperlukan dengan benar."
 #: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Anda tidak memiliki izin untuk menghapus rekaman ini."
-
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
-msgid "The record could not be deleted."
-msgstr "Rekaman tidak dapat dihapus."
 
 #: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
@@ -2520,14 +2488,6 @@ msgstr "%d rekaman yang cocok juga dibuat."
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d rekaman gagal ditambahkan."
-
-#: lib/Application/Controller/AddRecordController.php:541
-msgid ""
-"Some records could not be added. They may already exist or contain invalid "
-"data."
-msgstr ""
-"Beberapa rekaman tidak dapat ditambahkan. Mungkin sudah ada atau berisi data "
-"yang tidak valid."
 
 #: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
@@ -3131,10 +3091,6 @@ msgstr "Profil Anda telah berhasil diperbarui."
 msgid "The user has been updated successfully."
 msgstr "Pengguna telah berhasil diperbarui."
 
-#: lib/Application/Controller/EditUserController.php:174
-msgid "The user could not be updated."
-msgstr "Pengguna tidak dapat diperbarui."
-
 #: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Anda tidak memiliki izin untuk mengedit pengguna ini."
@@ -3207,10 +3163,6 @@ msgstr "Anda tidak memiliki izin untuk menghapus templat izin."
 msgid "The permission template has been deleted successfully."
 msgstr "Templat izin telah berhasil dihapus."
 
-#: lib/Application/Controller/DeletePermTemplController.php:93
-msgid "The permission template could not be deleted."
-msgstr "Templat izin tidak dapat dihapus."
-
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
 msgstr "Fitur status PowerDNS dinonaktifkan dalam konfigurasi sistem."
@@ -3226,22 +3178,6 @@ msgid ""
 msgstr ""
 "Fitur API PowerDNS belum dikonfigurasi. Silakan atur URL dan kunci API dalam "
 "konfigurasi sistem."
-
-#: lib/Application/Controller/ExampleController.php:129
-msgid "You do not have the permission to access this feature."
-msgstr "Anda tidak memiliki izin untuk mengakses fitur ini."
-
-#: lib/Application/Controller/ExampleController.php:213
-msgid "Operation completed successfully."
-msgstr "Operasi berhasil diselesaikan."
-
-#: lib/Application/Controller/ExampleController.php:217
-msgid "Failed to process the request. Please try again."
-msgstr "Gagal memproses permintaan. Silakan coba lagi."
-
-#: lib/Application/Controller/ExampleController.php:224
-msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Terjadi kesalahan yang tidak terduga. Silakan hubungi administrator."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -3377,14 +3313,6 @@ msgstr "Supermaster telah berhasil dihapus."
 #: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Pendaftaran Massal"
-
-#: lib/Application/Controller/BulkRegistrationController.php:151
-msgid "Owner must be a numeric user ID."
-msgstr "Pemilik harus berupa ID pengguna numerik."
-
-#: lib/Application/Controller/BulkRegistrationController.php:231
-msgid "Failed to add zone."
-msgstr "Gagal menambahkan zona."
 
 #: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
@@ -3905,17 +3833,9 @@ msgstr "Galat menghapus templat zona default: "
 msgid "Error creating zone template: "
 msgstr "Kesalahan membuat templat zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
-msgid "Error adding default SOA record to template: "
-msgstr "Kesalahan menambahkan rekaman SOA default ke templat: "
-
 #: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Kesalahan menghapus templat zona: "
-
-#: lib/Domain/Model/ZoneTemplate.php:518
-msgid "Error deleting user zone templates: "
-msgstr "Kesalahan menghapus templat zona pengguna: "
 
 #: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
@@ -3959,10 +3879,6 @@ msgstr ""
 msgid "Error deleting zone template record: "
 msgstr "Kesalahan menghapus rekaman templat zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
-msgid "Error checking template ownership: "
-msgstr "Kesalahan memeriksa kepemilikan templat: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
@@ -3972,37 +3888,9 @@ msgstr ""
 "Jenis rekaman berikut tidak disertakan dalam templat karena Anda tidak boleh "
 "menambahkannya: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
-msgid "Error retrieving zones using template: "
-msgstr "Kesalahan mengambil zona yang menggunakan templat: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1244
-msgid "Failed to get list of zones using template: "
-msgstr "Gagal mendapatkan daftar zona yang menggunakan templat: "
-
 #: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Anda tidak memiliki izin untuk mengedit templat zona."
-
-#: lib/Domain/Model/ZoneTemplate.php:1311
-msgid "Error unlinking zone from template: "
-msgstr "Kesalahan memutuskan tautan zona dari templat: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1360
-msgid "Error retrieving zones: "
-msgstr "Kesalahan mengambil zona: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1379
-msgid "Error checking template name existence: "
-msgstr "Kesalahan memeriksa keberadaan nama templat: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1400
-msgid "Error looking up template by name: "
-msgstr "Kesalahan mencari templat berdasarkan nama: "
-
-#: lib/Domain/Model/ZoneTemplate.php:1423
-msgid "Error checking template existence: "
-msgstr "Kesalahan memeriksa keberadaan templat: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7767,10 +7655,6 @@ msgstr "Nama host terlalu panjang."
 msgid "Single-label hostnames are not allowed."
 msgstr "Nama host dengan label tunggal tidak diizinkan."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
-msgid "You have invalid characters in your zone name."
-msgstr "Ada karakter tidak valid dalam nama zona Anda."
-
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
 msgstr "Nama host tidak boleh dimulai atau diakhiri dengan tanda hubung."
@@ -7842,14 +7726,6 @@ msgstr "Nama host yang diberikan memiliki terlalu banyak garis miring."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
 msgstr "Anda menggunakan top level domain yang tidak valid."
-
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
-msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
-msgstr ""
-"Parameter validasi SOA belum disetel. Panggil setSOAParams() terlebih dahulu "
-"atau berikan sebagai argumen."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
@@ -9786,20 +9662,6 @@ msgstr "Gagal membuat rekaman %s untuk zona."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Argumen tidak valid diberikan ke fungsi %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:567
-msgid "Failed to delete zone from DNS backend."
-msgstr "Gagal menghapus zona dari backend DNS."
-
-#: lib/Domain/Service/Dns/DomainManager.php:524
-#, php-format
-msgid "Failed to clean up zone metadata: %s"
-msgstr "Gagal membersihkan metadata zona: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:615
-#, php-format
-msgid "Failed to delete zone metadata: %s"
-msgstr "Gagal menghapus metadata zona: %s"
-
 #: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Gagal memperbarui tipe zona di backend DNS."
@@ -9807,10 +9669,6 @@ msgstr "Gagal memperbarui tipe zona di backend DNS."
 #: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Gagal memperbarui master zona di backend DNS."
-
-#: lib/Domain/Service/Dns/DomainManager.php:891
-msgid "The selected user already owns the zone."
-msgstr "Pengguna yang dipilih sudah memiliki zona ini."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
@@ -10100,10 +9958,6 @@ msgstr ""
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
 msgstr "Rentang valid: 0-65535"
-
-#: templates/modern/add_zone_templ_record.html:55
-msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Hanya untuk MX, SRV, KX, NAPTR"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
@@ -15746,5 +15600,3 @@ msgid ""
 msgstr ""
 "Gagal menyetel locale. Locale yang dipilih mungkin tidak didukung pada "
 "sistem ini. Silakan hubungi administrator Anda."
-
-
