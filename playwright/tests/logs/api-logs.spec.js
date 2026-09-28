@@ -300,12 +300,10 @@ test.describe('API Logs - Log Entries', () => {
 
   test('should display total logs count', async ({ page }) => {
     await page.goto('/settings/api/logs');
-    const badge = page.locator('.badge.bg-secondary');
+    // Operation badges in the table carry the same classes, so scope to the header
+    const badge = page.locator('.card-header .badge.bg-secondary');
     await expect(badge).toBeVisible();
-
-    const badgeText = await badge.textContent();
-    const count = parseInt(badgeText.trim());
-    expect(count).toBeGreaterThanOrEqual(0);
+    await expect(badge).toHaveText(/^\d+$/);
   });
 
   test('should display operation badges with colors', async ({ page }) => {
