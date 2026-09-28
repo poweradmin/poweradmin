@@ -184,11 +184,13 @@ class AddRecordController extends BaseController
             : $this->recordTypeService()->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities(), false);
 
         // Offer only what this caller may actually submit, so a restricted type is not
-        // presented and then refused on save.
+        // presented and then refused on save. Subzone NS holders keep NS; the apex is refused on save.
         $permEdit = $this->services()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
+        $canEditSubzoneNs = $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE);
         $offeredTypes = array_values(array_filter(
             $offeredTypes,
             fn(string $type): bool => !Permission::isRecordTypeRestrictedForClient($type, $permEdit)
+                || ($canEditSubzoneNs && strtoupper($type) === 'NS')
         ));
 
         $this->render('add_record.html', [
