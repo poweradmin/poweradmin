@@ -24,7 +24,7 @@ class DnssecDataTransformerTest extends TestCase
             algorithm: 'ECDSAP256SHA256',
             isActive: true,
             dnskey: '257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==',
-            ds: ['31406 13 2 a]cdef1234567890']
+            ds: ['2371 13 2 a]cdef1234567890']
         );
 
         $result = $this->transformer->transformKey($key);
@@ -33,8 +33,8 @@ class DnssecDataTransformerTest extends TestCase
         $this->assertCount(6, $result);
         $this->assertEquals(1, $result[0]);
         $this->assertEquals('KSK', $result[1]);
-        $this->assertEquals('31406', $result[2]);
-        $this->assertEquals('13', $result[3]);
+        $this->assertSame(2371, $result[2]);
+        $this->assertSame(13, $result[3]);
         $this->assertEquals(256, $result[4]);
         $this->assertTrue($result[5]);
     }
@@ -57,6 +57,43 @@ class DnssecDataTransformerTest extends TestCase
         $this->assertCount(6, $result);
         $this->assertEquals(2, $result[0]);
         $this->assertEquals('ZSK', $result[1]);
+        $this->assertSame(34505, $result[2], 'a ZSK has no DS record, so its key tag comes from the DNSKEY');
+        $this->assertSame(13, $result[3]);
+    }
+
+    public function testTransformKeyUsesTheRfc4034KeyTag(): void
+    {
+        // The DNSKEY from RFC 4034 section 5.4, whose key tag is 60485
+        $key = new CryptoKey(
+            id: 7,
+            type: 'zsk',
+            size: 1024,
+            algorithm: 'RSASHA1',
+            isActive: true,
+            dnskey: '256 3 5 AQOeiiR0GOMYkDshWoSKz9XzfwJr1AYtsmx3TGkJaNXVbfi/2pHm822aJ5iI9BMzNXxeYCmZDRD99WYwYqUSdjMmmAphXdvxegXd/M5+X7OrzKBaMbCVdFLUUh6DhweJBjEVv5f2wwjM9XzcnOf+EPbtG9DMBmADjFDc2w/rljwvFw==',
+            ds: []
+        );
+
+        $result = $this->transformer->transformKey($key);
+
+        $this->assertSame(60485, $result[2]);
+        $this->assertSame(5, $result[3]);
+    }
+
+    public function testTransformKeyUsesTheModulusTagForRsaMd5(): void
+    {
+        // Algorithm 1 takes the tag from the third- and second-to-last key octets (0xABCD)
+        $key = new CryptoKey(
+            id: 8,
+            type: 'ksk',
+            size: 1024,
+            algorithm: 'RSAMD5',
+            isActive: true,
+            dnskey: '257 3 1 AwEAAavN7w==',
+            ds: []
+        );
+
+        $this->assertSame(0xABCD, $this->transformer->transformKey($key)[2]);
     }
 
     public function testTransformKeyWithNullDnskey(): void

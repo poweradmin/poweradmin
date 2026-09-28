@@ -579,7 +579,7 @@ class ZoneDnssecKeysController extends PublicApiController
         return [
             'id' => (int)$key->getId(),
             'type' => strtolower((string)$key->getType()),
-            'keytag' => $dnskey !== null ? self::keyTag($dnskey) : 0,
+            'keytag' => $key->getKeyTag(),
             'algorithm' => self::ALGORITHM_NAMES_BY_ID[$algorithmId] ?? null,
             'algorithm_id' => $algorithmId,
             'bits' => (int)$key->getSize(),
@@ -587,31 +587,5 @@ class ZoneDnssecKeysController extends PublicApiController
             'dnskey' => $dnskey,
             'ds' => array_values($key->getDs()),
         ];
-    }
-
-    /**
-     * The key tag of a DNSKEY record in presentation format (RFC 4034, appendix B).
-     */
-    private static function keyTag(string $dnskey): int
-    {
-        $fields = preg_split('/\s+/', trim($dnskey));
-        if (count($fields) < 4) {
-            return 0;
-        }
-
-        $publicKey = base64_decode(implode('', array_slice($fields, 3)), true);
-        if ($publicKey === false) {
-            return 0;
-        }
-
-        $rdata = pack('nCC', (int)$fields[0], (int)$fields[1], (int)$fields[2]) . $publicKey;
-        $sum = 0;
-        $length = strlen($rdata);
-        for ($i = 0; $i < $length; $i++) {
-            $sum += ($i & 1) ? ord($rdata[$i]) : ord($rdata[$i]) << 8;
-        }
-        $sum += ($sum >> 16) & 0xFFFF;
-
-        return $sum & 0xFFFF;
     }
 }
