@@ -125,6 +125,12 @@ class CryptoKey
             return 0;
         }
 
+        // RFC 4034 appendix B.1: RSA/MD5 takes the tag from the modulus, not the checksum
+        if ((int)$fields[2] === 1) {
+            $length = strlen($publicKey);
+            return $length >= 3 ? (ord($publicKey[$length - 3]) << 8) | ord($publicKey[$length - 2]) : 0;
+        }
+
         $rdata = pack('nCC', (int)$fields[0], (int)$fields[1], (int)$fields[2]) . $publicKey;
         $sum = 0;
         $length = strlen($rdata);

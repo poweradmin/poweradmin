@@ -80,6 +80,22 @@ class DnssecDataTransformerTest extends TestCase
         $this->assertSame(5, $result[3]);
     }
 
+    public function testTransformKeyUsesTheModulusTagForRsaMd5(): void
+    {
+        // Algorithm 1 takes the tag from the third- and second-to-last key octets (0xABCD)
+        $key = new CryptoKey(
+            id: 8,
+            type: 'ksk',
+            size: 1024,
+            algorithm: 'RSAMD5',
+            isActive: true,
+            dnskey: '257 3 1 AwEAAavN7w==',
+            ds: []
+        );
+
+        $this->assertSame(0xABCD, $this->transformer->transformKey($key)[2]);
+    }
+
     public function testTransformKeyWithNullDnskey(): void
     {
         $key = new CryptoKey(
