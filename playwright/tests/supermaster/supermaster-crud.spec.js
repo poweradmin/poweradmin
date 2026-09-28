@@ -144,12 +144,8 @@ test.describe('Supermaster CRUD Operations', () => {
       await page.locator('input[name*="nameserver"], input[name*="ns"]').first().fill('ns.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('invalid') ||
-                       url.includes('supermasters/add');
-      expect(hasError).toBeTruthy();
+      await expect(page).toHaveURL(/supermasters\/add/);
+      await expect(page.locator('.alert-danger')).toContainText(/not a valid IPv4 or IPv6 address/i);
     });
 
     test('should reject duplicate supermaster', async ({ page }) => {

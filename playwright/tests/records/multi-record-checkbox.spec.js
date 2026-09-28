@@ -68,38 +68,35 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
     test('new record row should have unchecked disabled checkbox', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = await getTestZoneId(page);
+      expect(zoneId, 'a test zone must exist').toBeTruthy();
 
-      if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
-        await page.waitForLoadState('networkidle');
+      await page.goto(`/zones/${zoneId}/edit`);
+      await page.waitForLoadState('networkidle');
 
-        const disabledCheckbox = page.locator('input[type="checkbox"][name*="disabled"]').first();
-
-        if (await disabledCheckbox.count() > 0) {
-          const isChecked = await disabledCheckbox.isChecked();
-          expect(isChecked).toBeFalsy();
-        }
-      }
+      const disabledCheckboxes = page.locator('input[type="checkbox"][name$="[disabled]"]');
+      await expect(disabledCheckboxes.first()).toBeVisible();
+      // The box mirrors the stored state, and no record in the test data is disabled
+      await expect(page.locator('input[type="checkbox"][name$="[disabled]"]:checked')).toHaveCount(0);
     });
 
     test('should handle checkbox toggle correctly', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = await getTestZoneId(page);
+      expect(zoneId, 'a test zone must exist').toBeTruthy();
 
-      if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
-        await page.waitForLoadState('networkidle');
+      await page.goto(`/zones/${zoneId}/edit`);
+      await page.waitForLoadState('networkidle');
 
-        const disabledCheckbox = page.locator('input[type="checkbox"][name*="disabled"]').first();
+      const disabledCheckbox = page.locator('input[type="checkbox"][name$="[disabled]"]').first();
+      const row = disabledCheckbox.locator('xpath=ancestor::tr[1]');
+      await expect(disabledCheckbox).not.toBeChecked();
 
-        if (await disabledCheckbox.count() > 0) {
-          const initialState = await disabledCheckbox.isChecked();
-          await disabledCheckbox.click();
-          const newState = await disabledCheckbox.isChecked();
+      // Ticking the box dims the row; nothing is saved until the form is submitted
+      await disabledCheckbox.check();
+      await expect(row).toHaveClass(/opacity-25/);
 
-          expect(newState).not.toBe(initialState);
-        }
-      }
+      await disabledCheckbox.uncheck();
+      await expect(row).not.toHaveClass(/opacity-25/);
     });
   });
 

@@ -16,16 +16,6 @@ playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain o
 playwright/tests/modules/zone-file-export.spec.js::should show Zone File option in Export dropdown when module is enabled
 playwright/tests/password-recovery/forgot-password.spec.js::should navigate to login page
 playwright/tests/password-recovery/forgot-username.spec.js::should navigate back to login page
-playwright/tests/records/batch-ptr-records.spec.js::should handle empty batch PTR submission
-playwright/tests/records/batch-ptr-records.spec.js::should return to zone list from batch PTR page
-playwright/tests/records/batch-ptr-records.spec.js::should submit batch PTR form without 404 error
-playwright/tests/records/bulk-records.spec.js::should reject empty record content
-playwright/tests/records/bulk-records.spec.js::should submit multiple records at once
-playwright/tests/records/bulk-records.spec.js::should validate IP address for A records
-playwright/tests/records/bulk-records.spec.js::viewer should not add records
-playwright/tests/records/multi-record-checkbox.spec.js::new record row should have unchecked disabled checkbox
-playwright/tests/records/multi-record-checkbox.spec.js::should handle checkbox toggle correctly
-playwright/tests/records/record-validation.spec.js::should reject negative priority
 playwright/tests/search/search-comments.spec.js::should find records by comment text
 playwright/tests/search/search-comments.spec.js::should persist comments checkbox state after search
 playwright/tests/search/search-comments.spec.js::should toggle comments search option

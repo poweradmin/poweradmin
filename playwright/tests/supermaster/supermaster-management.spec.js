@@ -6,8 +6,11 @@ import users from '../../fixtures/users.json' with { type: 'json' };
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Supermaster Management', () => {
-  const testIp = '192.168.100.50';
-  const testNameserver = 'ns-test.example.com';
+  // A rerun must not collide with the supermaster a previous run left behind
+  const stamp = Date.now();
+  const octet = (shift) => Math.floor(stamp / shift) % 250;
+  const testIp = `10.${octet(65536)}.${octet(256)}.${octet(1)}`;
+  const testNameserver = `ns-test-${stamp}.example.com`;
 
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -67,135 +70,59 @@ test.describe('Supermaster Management', () => {
     await page.goto('/supermasters/add');
     await page.waitForLoadState('networkidle');
 
-    // Check if the add form exists
-    const ipField = page.locator('input[name*="ip"], input[placeholder*="ip"]').first();
-    if (await ipField.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
+    await page.locator('#master_ip').fill(testIp);
+    await page.locator('#ns_name').fill(testNameserver);
 
-    // Fill in supermaster details
-    await ipField.fill(testIp);
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-    const nsField = page.locator('input[name*="nameserver"], input[name*="ns"], input[placeholder*="nameserver"]').first();
-    if (await nsField.count() > 0) {
-      await nsField.fill(testNameserver);
-    }
-
-    const accountField = page.locator('input[name*="account"], input[placeholder*="account"]').first();
-    if (await accountField.count() > 0) {
-      await accountField.fill('test-account');
-    }
-
-    // Submit form
-    const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-    await submitBtn.click();
-    await page.waitForLoadState('networkidle');
-
-    // Verify success or no fatal error
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page).toHaveURL(/\/supermasters$/);
+    await expect(page.locator('body')).toContainText('The supermaster has been added successfully.');
   });
 
   test('should list the created supermaster', async ({ page }) => {
     await page.goto('/supermasters');
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-
-    // Should show the test supermaster if it was created
-    if (bodyText.includes(testIp)) {
-      expect(bodyText).toContain(testIp);
-    } else {
-      // Supermaster may not have been created in previous test
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    }
+    const testRow = page.locator(`tr.supermaster-row:has-text("${testIp}")`);
+    await expect(testRow).toHaveCount(1);
+    await expect(testRow).toContainText(testNameserver);
   });
 
   test('should edit a supermaster', async ({ page }) => {
     await page.goto('/supermasters');
     await page.waitForLoadState('networkidle');
 
-    // Find a supermaster row in the table
-    const supermasterTable = page.locator('table');
-    if (await supermasterTable.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
+    const testRow = page.locator(`tr.supermaster-row:has-text("${testIp}")`);
+    await testRow.locator('a[href*="/supermasters/edit"]').click();
 
-    // Look for an edit link in the table
-    const editLink = supermasterTable.locator('tbody a[href*="edit"]').first();
-    if (await editLink.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await editLink.click();
-    await page.waitForLoadState('networkidle');
-
-    // Just verify the edit page loads
-    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    // The edit form opens on the supermaster that was picked
+    await expect(page.locator('#master_ip')).toHaveValue(testIp);
+    await expect(page.locator('#ns_name')).toHaveValue(testNameserver);
   });
 
   test('should delete a supermaster', async ({ page }) => {
     await page.goto('/supermasters');
     await page.waitForLoadState('networkidle');
 
-    // Find a supermaster row with our test IP
-    const testRow = page.locator(`tr:has-text("${testIp}")`).first();
-    if (await testRow.count() === 0) {
-      // No test supermaster to delete
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
+    const testRow = page.locator(`tr.supermaster-row:has-text("${testIp}")`);
+    await testRow.locator('a[href*="/supermasters/delete"]').click();
 
-    // Find and click delete link
-    const deleteLink = testRow.locator('a[href*="delete"]').first();
-    if (await deleteLink.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
+    await page.locator('form[action*="/supermasters/delete"] button[type="submit"]').click();
 
-    await deleteLink.click();
-    await page.waitForLoadState('networkidle');
-
-    // Confirm deletion if needed
-    const confirmBtn = page.locator('button[type="submit"]:has-text("Delete"), input[value*="Delete"], button:has-text("Yes"), input[value="Yes"]').first();
-    if (await confirmBtn.count() > 0) {
-      await confirmBtn.click();
-      await page.waitForLoadState('networkidle');
-    }
-
-    // Verify page loaded without errors
-    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page.locator('body')).toContainText('The supermaster has been deleted successfully.');
+    await expect(page.locator(`tr.supermaster-row:has-text("${testIp}")`)).toHaveCount(0);
   });
 
   test('should validate supermaster form', async ({ page }) => {
     await page.goto('/supermasters/add');
     await page.waitForLoadState('networkidle');
 
-    // Check if form exists
-    const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-    if (await submitBtn.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
     // Submit empty form
-    await submitBtn.click();
-    await page.waitForLoadState('networkidle');
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-    // Should show validation error or stay on form
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-
-    // Either shows error or stays on add page
-    expect(page.url().includes('supermaster') || bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('required')).toBeTruthy();
+    // Both fields are required, so the browser blocks the submit
+    await expect(page.locator('form[action*="/supermasters/add"]')).toHaveClass(/was-validated/);
+    await expect(page.locator('#master_ip')).toHaveValue('');
+    await expect(page).toHaveURL(/\/supermasters\/add/);
   });
 });

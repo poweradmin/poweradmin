@@ -57,9 +57,8 @@ test.describe('Zone Apex (@) Symbol Handling', () => {
     await page.waitForLoadState('networkidle');
 
     // Should redirect to zone edit page with success message
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    expect(bodyText).toContain('successfully');
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page.locator('body')).toContainText('have been added successfully');
 
     // Verify the record name is the zone name, not @.zone or @
     const recordNameInput = page.locator('input[name*="name"]').last();
@@ -81,17 +80,12 @@ test.describe('Zone Apex (@) Symbol Handling', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    expect(bodyText).toContain('successfully');
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page.locator('body')).toContainText('have been added successfully');
 
-    // Find the A record row and verify name
-    const aRecordRow = page.locator('tr:has-text("192.0.2.1")');
-    if (await aRecordRow.count() > 0) {
-      const nameInput = aRecordRow.locator('input[name*="name"]').first();
-      const recordName = await nameInput.inputValue();
-      expect(recordName).toContain(testDomain);
-    }
+    // Record values live in input attributes, so tr:has-text never matches them
+    const aRecordRow = page.locator('tr:has(input[name$="[content]"][value="192.0.2.1"])');
+    await expect(aRecordRow.locator('input[name$="[name]"]')).toHaveValue(testDomain);
   });
 
   test('should cleanup test zone', async ({ page }) => {

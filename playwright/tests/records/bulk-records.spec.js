@@ -146,20 +146,20 @@ test.describe('Bulk Record Operations', () => {
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
-      const typeSelector = page.locator('select[name*="type"]').first();
-      const nameInput = page.locator('input[name*="name"]').first();
-      const contentInput = page.locator('input[name*="content"]').first();
+      const stamp = Date.now();
+      await page.locator('select[name="records[0][type]"]').selectOption('A');
+      await page.locator('input[name="records[0][name]"]').fill(`bulk-a-${stamp}`);
+      await page.locator('input[name="records[0][content]"]').fill('192.0.2.60');
 
-      if (await typeSelector.count() > 0 && await nameInput.count() > 0 && await contentInput.count() > 0) {
-        await typeSelector.selectOption('A');
-        await nameInput.fill(`bulk-test-${Date.now()}`);
-        await contentInput.fill('192.168.1.100');
+      await page.locator('button', { hasText: 'Add another record' }).click();
+      await page.locator('select[name="records[1][type]"]').selectOption('A');
+      await page.locator('input[name="records[1][name]"]').fill(`bulk-b-${stamp}`);
+      await page.locator('input[name="records[1][content]"]').fill('192.0.2.61');
 
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      // Both rows must be written, not just the first
+      await expect(page.locator('body')).toContainText('2 record(s) have been added successfully.');
     });
   });
 
@@ -224,25 +224,17 @@ test.describe('Bulk Record Operations', () => {
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
-      const typeSelector = page.locator('select[name*="type"]').first();
-      const nameInput = page.locator('input[name*="name"]').first();
+      await page.locator('select[name="records[0][type]"]').selectOption('A');
+      await page.locator('input[name="records[0][name]"]').fill('empty-content-test');
+      // Leave content empty
 
-      if (await typeSelector.count() > 0 && await nameInput.count() > 0) {
-        await typeSelector.selectOption('A');
-        await nameInput.fill('empty-content-test');
-        // Leave content empty
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-        // Should show error or stay on page
-        const url = page.url();
-        const bodyText = await page.locator('body').textContent();
-
-        const hasError = bodyText.toLowerCase().includes('required') ||
-                         bodyText.toLowerCase().includes('content') ||
-                         url.includes('add');
-        expect(hasError || bodyText).toBeTruthy();
-      }
+      // Content is required, so the browser blocks the submit and nothing is written
+      const form = page.locator('form:has(input[name="records[0][content]"])');
+      await expect(form).toHaveClass(/was-validated/);
+      await expect(page.locator('input[name="records[0][content]"]')).toHaveValue('');
+      await expect(page).toHaveURL(/\/records\/add/);
     });
 
     test('should validate IP address for A records', async ({ page }) => {
@@ -255,21 +247,14 @@ test.describe('Bulk Record Operations', () => {
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
-      const typeSelector = page.locator('select[name*="type"]').first();
-      const nameInput = page.locator('input[name*="name"]').first();
-      const contentInput = page.locator('input[name*="content"]').first();
+      await page.locator('select[name="records[0][type]"]').selectOption('A');
+      await page.locator('input[name="records[0][name]"]').fill('invalid-ip-test');
+      await page.locator('input[name="records[0][content]"]').fill('not.an.ip.address');
 
-      if (await typeSelector.count() > 0 && await nameInput.count() > 0 && await contentInput.count() > 0) {
-        await typeSelector.selectOption('A');
-        await nameInput.fill('invalid-ip-test');
-        await contentInput.fill('not.an.ip.address');
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-        // Should show some feedback (error or success if validation passes server-side)
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      await expect(page).toHaveURL(/\/records\/add/);
+      await expect(page.locator('.alert-danger')).toContainText('Invalid IPv4 address format.');
     });
   });
 
@@ -291,17 +276,15 @@ test.describe('Bulk Record Operations', () => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
       await page.goto('/zones/forward?letter=all');
 
-      const editLink = page.locator('a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
+      // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first
+      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
+      await expect(editLink).toBeVisible();
+      await editLink.click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-        // The point of the test: a viewer is offered no way to add a record
-        const addRecordLink = page.locator('a[href*="/records/add"]');
-        expect(await addRecordLink.count()).toBe(0);
-      }
+      // The point of the test: a viewer is offered no way to add a record
+      await expect(page.locator('a[href*="/records/add"]')).toHaveCount(0);
     });
   });
 });

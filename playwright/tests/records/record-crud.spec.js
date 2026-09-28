@@ -50,12 +50,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('invalid') ||
-                       url.includes('/records/add');
-      expect(hasError).toBeTruthy();
+      await expect(page).toHaveURL(/\/records\/add/);
+      await expect(page.locator('.alert-danger')).toContainText('Invalid IPv4 address format.');
     });
   });
 
@@ -107,12 +103,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('invalid') ||
-                       url.includes('/records/add');
-      expect(hasError).toBeTruthy();
+      await expect(page).toHaveURL(/\/records\/add/);
+      await expect(page.locator('.alert-danger')).toContainText(/not a valid IPv6 address/i);
     });
   });
 

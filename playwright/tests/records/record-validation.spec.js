@@ -182,13 +182,14 @@ test.describe('Record Validation - All Types', () => {
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('MX');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('mail.example.com');
-      const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
-      if (await prioField.count() > 0) {
-        await prioField.fill('-1');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-        const url = page.url();
-        expect(url).toMatch(/records\/add|error/);
-      }
+      const prioField = page.locator('input[name="records[0][prio]"]');
+      await expect(prioField).toBeEnabled();
+      await prioField.fill('-1');
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      // The priority field has min="0", so the browser blocks the submit
+      await expect(page.locator('form:has(input[name="records[0][prio]"])')).toHaveClass(/was-validated/);
+      await expect(page).toHaveURL(/\/records\/add/);
     });
   });
 
@@ -264,9 +265,7 @@ test.describe('Record Validation - All Types', () => {
 
       // Should stay on add record page with visible error
       await expect(page).toHaveURL(/\/records\/add/);
-      await expect(page.locator('.alert-danger')).toBeVisible();
-      const alertText = await page.locator('.alert-danger').textContent();
-      expect(alertText).toMatch(/quotes|content/i);
+      await expect(page.locator('.alert-danger')).toContainText(/quotes|content/i);
 
       // Form data should be restored
       const contentValue = await page.locator('input[name*="content"], input[name*="value"], textarea').first().inputValue();

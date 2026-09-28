@@ -124,27 +124,18 @@ test.describe('Batch PTR Records (Issue #968)', () => {
 
       await page.goto(`/zones/batch-ptr?id=${zoneId}`);
 
-      // Check form action URL is correct (should use ? not &)
-      const form = page.locator('form').first();
-      if (await form.count() > 0) {
-        const action = await form.getAttribute('action');
-        if (action) {
-          // The bug was: action="/zones/batch-ptr&id=123" instead of "?id=123"
-          expect(action).not.toMatch(/batch-ptr&id=/);
-        }
-      }
+      // The bug was: action="/zones/batch-ptr&id=123" instead of "?id=123"
+      const form = page.locator('form[action*="batch-ptr"]');
+      await expect(form).toHaveAttribute('action', new RegExp(`/zones/batch-ptr\\?id=${zoneId}$`));
 
-      // Try to submit the form
-      const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-      if (await submitBtn.count() > 0) {
-        await submitBtn.click();
-        await page.waitForLoadState('networkidle');
+      // The required network prefix is empty on load, so fill it or the browser
+      // blocks the submit and the route is never exercised
+      await page.locator('#network_prefix').fill('192.0.2.0/30');
+      await page.locator('button[type="submit"]').first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        // Should NOT get 404 error (the bug)
-        expect(bodyText).not.toMatch(/404|not found/i);
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+      await expect(page).toHaveURL(new RegExp(`/zones/batch-ptr\\?id=${zoneId}$`));
+      await expect(page.locator('body')).not.toContainText(/404|not found/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle empty batch PTR submission', async ({ page }) => {
@@ -157,14 +148,14 @@ test.describe('Batch PTR Records (Issue #968)', () => {
 
       await page.goto(`/zones/batch-ptr?id=${zoneId}`);
 
-      const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-      if (await submitBtn.count() > 0) {
-        await submitBtn.click();
-        await page.waitForLoadState('networkidle');
+      await page.locator('button[type="submit"]').first().click();
 
-        // Should handle gracefully, not crash
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      // The network prefix is required, so the empty form never leaves the page
+      const form = page.locator('form[action*="batch-ptr"]');
+      await expect(form).toHaveClass(/was-validated/);
+      await expect(page.locator('#network_prefix')).toHaveValue('');
+      await expect(page).toHaveURL(new RegExp(`/zones/batch-ptr\\?id=${zoneId}$`));
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -198,17 +189,14 @@ test.describe('Batch PTR Records (Issue #968)', () => {
       }
 
       await page.goto(`/zones/batch-ptr?id=${zoneId}`);
-      await page.waitForLoadState('networkidle');
 
-      // Find back/cancel link - try various selectors
-      const backLink = page.locator('a:has-text("Back"), a:has-text("Cancel"), a[href*="/zones/"], a[href*="/zones/forward"]').first();
-      if (await backLink.count() > 0) {
-        await backLink.click({ timeout: 5000 }).catch(() => {
-          // If click fails, just navigate directly
-        });
-        await page.waitForLoadState('networkidle');
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      // Cancel returns to the zone the batch PTR page was opened from
+      const cancelLink = page.locator('form[action*="batch-ptr"] a:has-text("Cancel")');
+      await expect(cancelLink).toHaveAttribute('href', new RegExp(`/zones/${zoneId}/edit$`));
+      await cancelLink.click();
+
+      await expect(page).toHaveURL(new RegExp(`/zones/${zoneId}/edit$`));
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 

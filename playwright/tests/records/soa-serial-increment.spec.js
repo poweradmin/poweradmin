@@ -55,8 +55,7 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Verify the record was added successfully
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toContain('successfully added');
+    await expect(page.locator('body')).toContainText('successfully added');
 
     // Get the SOA serial after adding the record
     const serialAfter = parseInt(await page.locator('input[name="serial"]').inputValue(), 10);
