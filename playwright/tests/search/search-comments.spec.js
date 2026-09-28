@@ -10,6 +10,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { createZone, deleteZoneById, findAnyZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Search Comments Feature', () => {
@@ -145,26 +146,35 @@ test.describe('Search Comments Feature', () => {
 
     test('should find records by comment text', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/search');
 
-      const recordsCheckbox = page.locator('input[name="records"], input#records_check');
-      const commentsCheckbox = page.locator('input[name="comments"], input#comments_check');
+      const stamp = Date.now();
+      const zoneName = `comment-search-${stamp}.example.com`;
+      const marker = `commentmarker${stamp}`;
+      const zoneId = await createZone(page, zoneName);
+      expect(zoneId).not.toBeNull();
 
-      if (await recordsCheckbox.count() > 0) {
-        await recordsCheckbox.check();
-      }
+      try {
+        await page.goto(`/zones/${zoneId}/records/add`);
+        const commentInput = page.locator('input[name="records[0][comment]"]');
+        test.skip(await commentInput.count() === 0, 'Record comments are disabled on this instance');
 
-      if (await commentsCheckbox.count() > 0) {
-        await commentsCheckbox.check();
+        await page.locator('input[name="records[0][name]"]').fill('commented');
+        await page.locator('input[name="records[0][content]"]').fill('192.0.2.50');
+        await commentInput.fill(marker);
+        await page.locator('button[type="submit"]').first().click();
+        await expect(page.locator('body')).toContainText(/success/i);
 
-        const queryInput = page.locator('input[name="query"]');
-        // Search for a term that might be in comments
-        await queryInput.fill('server');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+        await page.goto('/search');
+        await page.locator('#records_check').check();
+        await page.locator('#comments_check').check();
+        await page.locator('input[name="query"]').fill(marker);
+        await page.locator('button[name="do_search"]').click();
 
-        await page.waitForLoadState('networkidle');
-
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+        await expect(page.locator('body')).toContainText('Records found');
+        await expect(page.locator(`tr:has-text("commented.${zoneName}")`)).toHaveCount(1);
+        await expect(page.locator(`tr:has-text("${marker}")`)).toHaveCount(1);
+      } finally {
+        await deleteZoneById(page, zoneId);
       }
     });
   });
@@ -172,9 +182,18 @@ test.describe('Search Comments Feature', () => {
   test.describe('Search Results Comment Display', () => {
     test('should show comment column in zone results when enabled', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/search');
 
+      // The column follows the same setting as the comment field on the zone edit
+      // page, which is the only signal a test has for whether it is switched on
+      const zoneId = await findAnyZoneId(page);
+      await page.goto(`/zones/${zoneId}/edit`);
+      const zoneCommentsEnabled = await page.locator('textarea[name="zone_comment"]').count() > 0;
+      test.skip(!zoneCommentsEnabled, 'Zone comments are disabled on this instance');
+
+      await page.goto('/search');
       await page.locator('#zones_check').check();
+      // The records table renders a Comment header of its own, so search zones only
+      await page.locator('#records_check').uncheck();
       await page.locator('input[name="query"]').fill('example.com');
       await page.locator('button[name="do_search"]').click();
 
