@@ -60,7 +60,7 @@ msgstr "Bestand:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
-msgstr "Home"
+msgstr "Start"
 
 #: lib/Module/ZoneImportExport/templates/import.html:173
 msgid "IDN domain names"
