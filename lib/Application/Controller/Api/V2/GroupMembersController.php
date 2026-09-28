@@ -41,6 +41,11 @@ use Exception;
 
 class GroupMembersController extends PublicApiController
 {
+    protected function acceptsZoneRestrictedKey(): bool
+    {
+        return false;
+    }
+
     private GroupMembershipService $membershipService;
     private ApiPermissionService $apiPermissionService;
 

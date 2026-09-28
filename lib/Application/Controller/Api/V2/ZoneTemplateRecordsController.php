@@ -43,6 +43,11 @@ use OpenApi\Attributes as OA;
 
 class ZoneTemplateRecordsController extends PublicApiController
 {
+    protected function acceptsZoneRestrictedKey(): bool
+    {
+        return false;
+    }
+
     private DbZoneTemplateRepository $repository;
     private ApiPermissionService $apiPermissionService;
     private LegacyLogger $auditLogger;

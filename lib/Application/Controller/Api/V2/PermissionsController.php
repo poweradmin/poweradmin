@@ -39,6 +39,11 @@ use OpenApi\Attributes as OA;
 
 class PermissionsController extends PublicApiController
 {
+    protected function acceptsZoneRestrictedKey(): bool
+    {
+        return false;
+    }
+
     private DbPermissionTemplateRepository $permissionTemplateRepository;
     private ApiPermissionService $apiPermissionService;
 

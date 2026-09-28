@@ -73,6 +73,11 @@ use OpenApi\Attributes as OA;
 
 class UsersController extends PublicApiController
 {
+    protected function acceptsZoneRestrictedKey(): bool
+    {
+        return false;
+    }
+
     /** Guards against a single request fanning out into thousands of membership queries. */
     private const MAX_GROUPS_PER_REQUEST = 50;
 
