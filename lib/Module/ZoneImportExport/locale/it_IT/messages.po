@@ -60,7 +60,7 @@ msgstr "File:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
-msgstr "Home"
+msgstr "Inizio"
 
 #: lib/Module/ZoneImportExport/templates/import.html:173
 msgid "IDN domain names"
@@ -95,7 +95,7 @@ msgid "Invalid zone ID."
 msgstr "ID zona non valido."
 
 msgid "Master"
-msgstr "Master"
+msgstr "Principale"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"
