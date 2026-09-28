@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-28 01:30+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -39,7 +39,7 @@ msgstr "Μη έγκυρη ταυτότητα ζώνης."
 msgid "Zone not found."
 msgstr "Η ζώνη δε βρέθηκε."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
+#: lib/Application/Controller/BatchPtrRecordController.php:115
 msgid "You do not have permission to add records to this zone."
 msgstr "Δεν έχετε άδεια να προσθέσετε εγγραφές σε αυτή τη ζώνη."
 
@@ -47,11 +47,11 @@ msgstr "Δεν έχετε άδεια να προσθέσετε εγγραφές 
 msgid "Invalid wizard type."
 msgstr "Μη έγκυρος τύπος οδηγού."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "Η επικύρωση απέτυχε:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "Αποτυχία δημιουργίας εγγραφής:"
 
@@ -1273,7 +1273,7 @@ msgstr ""
 msgid "Invalid hostname."
 msgstr "Μη έγκυρο όνομα υπολογιστή."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "Υπάρχει ήδη μια ζώνη με αυτό το όνομα."
 
@@ -1301,21 +1301,21 @@ msgstr ""
 msgid "Zone has been converted to a primary zone."
 msgstr "Η ζώνη μετατράπηκε σε πρωτεύουσα ζώνη."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "Δεν έχετε άδεια να δημιουργήσετε ζώνες για άλλους χρήστες."
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Άγνωστο(-α) αναγνωριστικό(-ά) ομάδας(-ων): %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Μπορείτε να ορίσετε μόνο ομάδες που είστε μέλος (απαγορεύεται: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr "Τουλάχιστον ένας χρήστης ή ομάδα πρέπει να επιλεγεί ως ιδιοκτήτης."
 
@@ -1464,7 +1464,7 @@ msgstr "Αποτυχία ανάκτησης πληροφοριών RDAP μέσω
 msgid "Invalid CSRF token."
 msgstr "Μη έγκυρο διακριτικό CSRF."
 
-#: lib/BaseController.php:598
+#: lib/BaseController.php:624
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -1497,7 +1497,7 @@ msgstr "Δεν έχουν επιλεγεί εγγραφές για διαγρα�
 msgid "Describe why you are making this change."
 msgstr "Περιγράψτε γιατί κάνετε αυτήν την αλλαγή."
 
-#: lib/Application/Controller/DeleteRecordsController.php:233
+#: lib/Application/Controller/DeleteRecordsController.php:229
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
@@ -1505,7 +1505,7 @@ msgstr ""
 "Η εγγραφή έχει διαγραφεί με επιτυχία. Αφαιρέθηκαν επίσης τυχόν αντίστοιχες "
 "εγγραφές PTR."
 
-#: lib/Application/Controller/DeleteRecordsController.php:235
+#: lib/Application/Controller/DeleteRecordsController.php:231
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1514,18 +1514,18 @@ msgstr ""
 "%d εγγραφές έχουν διαγραφεί με επιτυχία. Αφαιρέθηκαν επίσης τυχόν "
 "αντίστοιχες εγγραφές PTR."
 
-#: lib/Application/Controller/DeleteRecordsController.php:238
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid "No records could be deleted. Please check permissions."
 msgstr "Καμία εγγραφή δεν μπόρεσε να διαγραφεί. Παρακαλώ ελέγξτε τις άδειες."
 
-#: lib/Application/Controller/DeleteRecordsController.php:305
+#: lib/Application/Controller/DeleteRecordsController.php:301
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "Δεν έχουν επιλεγεί έγκυρες εγγραφές για διαγραφή ή σας λείπει η άδεια "
 "διαγραφής τους."
 
-#: lib/Domain/Service/Dns/DomainManager.php:182
+#: lib/Domain/Service/Dns/DomainManager.php:183
 msgid "Invalid or unexpected input given."
 msgstr "Δόθηκε μη έγκυρη ή μη αναμενόμενη εισαγωγή."
 
@@ -1537,7 +1537,7 @@ msgstr "Δεν έχετε την άδεια να διαγράψετε αυτόν
 msgid "You do not have permission to delete a superuser account."
 msgstr "Δεν έχετε άδεια να διαγράψετε έναν λογαριασμό υπερχρήστη."
 
-#: lib/Application/Controller/EditUserController.php:597
+#: lib/Application/Controller/ZoneOwnershipController.php:186
 msgid "User does not exist."
 msgstr "Ο χρήστης δεν υπάρχει."
 
@@ -1563,7 +1563,7 @@ msgstr "Η λειτουργία σχολίων ζώνης είναι απενε�
 msgid "You do not have the permission to view this comment."
 msgstr "Δεν έχετε την άδεια να δείτε αυτό το σχόλιο."
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:606
 msgid "You do not have the permission to edit this comment."
 msgstr "Δεν έχετε την άδεια να επεξεργαστείτε αυτό το σχόλιο."
 
@@ -1579,11 +1579,11 @@ msgstr "Μη έγκυρη ταυτότητα εγγραφής."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Δεν έχετε άδεια να διαγράψετε εγγραφές σε αυτή τη ζώνη."
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:509
 msgid "Record not found."
 msgstr "Η εγγραφή δε βρέθηκε."
 
-#: lib/Application/Controller/DeleteRecordController.php:216
+#: lib/Application/Controller/DeleteRecordController.php:212
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
@@ -1591,24 +1591,24 @@ msgstr ""
 "Η εγγραφή και οι αντίστοιχες εγγραφές PTR και A/AAAA έχουν διαγραφεί με "
 "επιτυχία."
 
-#: lib/Application/Controller/DeleteRecordController.php:218
+#: lib/Application/Controller/DeleteRecordController.php:214
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "Η εγγραφή και η αντίστοιχη εγγραφή PTR έχουν διαγραφεί με επιτυχία."
 
-#: lib/Application/Controller/DeleteRecordController.php:220
+#: lib/Application/Controller/DeleteRecordController.php:216
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "Η εγγραφή και η αντίστοιχη εγγραφή A/AAAA έχουν διαγραφεί με επιτυχία."
 
-#: lib/Application/Controller/DeleteRecordController.php:222
+#: lib/Application/Controller/DeleteRecordController.php:218
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr ""
 "Η εγγραφή έχει διαγραφεί με επιτυχία. Δεν βρέθηκε αντίστοιχη εγγραφή PTR."
 
-#: lib/Application/Controller/DeleteRecordController.php:224
+#: lib/Application/Controller/DeleteRecordController.php:220
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -1619,7 +1619,7 @@ msgstr ""
 msgid "The record has been deleted successfully."
 msgstr "Η εγγραφή έχει διαγραφεί με επιτυχία."
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:516
 msgid "You cannot delete records from a read-only zone."
 msgstr "Δεν μπορείτε να διαγράψετε εγγραφές από μια ζώνη μόνο για ανάγνωση."
 
@@ -1681,7 +1681,7 @@ msgstr "Δεν έχετε άδεια να διαχειριστείτε τα μέ
 msgid "Manage Group Members"
 msgstr "Διαχείριση μελών της ομάδας"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:112
+#: lib/Application/Controller/ManageGroupZonesController.php:118
 msgid "Invalid action."
 msgstr "Μη έγκυρη ενέργεια."
 
@@ -1746,7 +1746,7 @@ msgstr "Απαιτείται κωδικός επαλήθευσης."
 msgid "MFA has been enabled successfully."
 msgstr "Το MFA έχει ενεργοποιηθεί με επιτυχία."
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "Μη έγκυρος κωδικός επαλήθευσης. Παρακαλώ προσπαθήστε ξανά."
 
@@ -1827,7 +1827,7 @@ msgstr "Δεν έχετε την άδεια να δείτε supermasters."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Δεν έχετε την άδεια να δείτε μεταδεδομένα ζώνης."
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:831
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Δεν έχετε την άδεια να επεξεργαστείτε μεταδεδομένα ζώνης."
 
@@ -1993,7 +1993,7 @@ msgstr "Μη έγκυρος τύπος εγγραφής."
 msgid "Record could not be added."
 msgstr "Δεν ήταν δυνατό να προστεθεί εγγραφή."
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:529
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d εγγραφή(-ές) προστέθηκε(-αν) με επιτυχία."
@@ -2044,11 +2044,11 @@ msgstr "Το πρότυπο άδειας δεν μπόρεσε να ενημερ
 msgid "Groups"
 msgstr "Ομάδες"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "Δεν έχετε την άδεια να εκτελέσετε αναζητήσεις."
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "Αναζήτηση"
@@ -2070,7 +2070,7 @@ msgstr "Ο αριθμός της σελίδας πρέπει να είναι τ�
 msgid "Page number exceeds available pages."
 msgstr "Ο αριθμός σελίδας υπερβαίνει τις διαθέσιμες σελίδες."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:75
 msgid "Invalid request method."
 msgstr "Μη έγκυρη μέθοδος αίτησης."
 
@@ -2091,7 +2091,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "Δεν έχετε την άδεια να προσθέσετε ένα νέο χρήστη."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "Προσθήκη χρήστη"
 
@@ -2131,7 +2131,7 @@ msgstr ""
 msgid "Please fill in all required fields correctly."
 msgstr "Παρακαλώ συμπληρώστε όλα τα απαιτούμενα πεδία σωστά."
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:542
 msgid "You do not have the permission to delete this record."
 msgstr "Δεν έχετε την άδεια να διαγράψετε αυτή την εγγραφή."
 
@@ -2139,7 +2139,7 @@ msgstr "Δεν έχετε την άδεια να διαγράψετε αυτή �
 msgid "The record could not be deleted."
 msgstr "Η εγγραφή δεν μπορεί να διαγραφεί."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "Καταγραφές ζωνών"
@@ -2161,7 +2161,7 @@ msgstr "Μόνο οι ζώνες παραγωγού δημοσιεύουν κα�
 msgid "You do not have permission to access this zone."
 msgstr "Δεν έχετε άδεια πρόσβασης σε αυτή τη ζώνη."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:753
 msgid "You do not have permission to edit this zone."
 msgstr "Δεν έχετε άδεια να επεξεργαστείτε αυτή τη ζώνη."
 
@@ -2169,7 +2169,7 @@ msgstr "Δεν έχετε άδεια να επεξεργαστείτε αυτή 
 msgid "The zone has been added to the catalog."
 msgstr "Η ζώνη προστέθηκε στον κατάλογο."
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:613
 msgid "The zone has been removed from the catalog."
 msgstr "Η ζώνη αφαιρέθηκε από τον κατάλογο."
 
@@ -2206,7 +2206,7 @@ msgstr "Επεξεργασία προτύπου ζώνης"
 msgid "There is no zone template with this ID."
 msgstr "Δεν υπάρχει πρότυπο ζώνης με αυτή την ταυτότητα."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "Το πρότυπο ζώνης έχει ενημερωθεί με επιτυχία."
 
@@ -2225,7 +2225,7 @@ msgstr "Οι ζώνες έχουν ενημερωθεί με επιτυχία."
 msgid "You do not have permission to create new zone templates."
 msgstr "Δεν έχετε άδεια να δημιουργήσετε νέα πρότυπα ζώνης."
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 "Το πρότυπο ζώνης με αυτό το όνομα υπάρχει ήδη, παρακαλώ επιλέξτε ένα άλλο."
@@ -2254,7 +2254,7 @@ msgstr "Μη έγκυρο αναγνωριστικό προτύπου."
 msgid "Template does not exist."
 msgstr "Το πρότυπο δεν υπάρχει."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:522
 msgid "You do not have permission to view this zone."
 msgstr "Δεν έχετε άδεια να δείτε αυτή τη ζώνη."
 
@@ -2310,7 +2310,7 @@ msgstr "Επεξεργασία ζώνης"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Δεν έχετε άδεια να διαχειριστείτε το DNSSEC για αυτή τη ζώνη."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:337
 msgid "DNSSEC is not enabled on the server."
 msgstr "Το DNSSEC δεν είναι ενεργοποιημένο στον εξυπηρετητή."
 
@@ -2321,15 +2321,15 @@ msgstr ""
 "Αυτή η ζώνη είναι presigned· τα κλειδιά DNSSEC διαχειρίζονται στον "
 "πρωτεύοντα διακομιστή."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "Η ζώνη έχει ήδη υπογραφεί με την DNSSEC."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "Η ζώνη έχει υπογραφεί επιτυχώς."
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2337,7 +2337,7 @@ msgstr ""
 "Η υπογραφή ζώνης ζητήθηκε με επιτυχία, αλλά η επαλήθευση απέτυχε. Ελέγξτε τα "
 "κλειδιά DNSSEC."
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2365,23 +2365,23 @@ msgstr ""
 "Αποτυχία αφαίρεσης της υπογραφής της ζώνης. Ελέγξτε τα αρχεία καταγραφής "
 "PowerDNS για λεπτομέρειες."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:619
 msgid "The catalog has been changed successfully."
 msgstr "Ο κατάλογος άλλαξε με επιτυχία."
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:637
 msgid "Zone type has been changed successfully."
 msgstr "Ο τύπος ζώνης έχει αλλάξει με επιτυχία."
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:644
 msgid "Slave master has been changed successfully."
 msgstr "Ο master της ζώνης slave άλλαξε με επιτυχία."
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:658
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Δεν μπορείτε να εφαρμόσετε πρότυπο σε μια ζώνη μόνο για ανάγνωση."
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:680
 msgid "Zone template has been changed successfully."
 msgstr "Το πρότυπο ζώνης έχει αλλαχτεί με επιτυχία."
 
@@ -2389,7 +2389,7 @@ msgstr "Το πρότυπο ζώνης έχει αλλαχτεί με επιτυ
 msgid "You cannot edit records in a read-only zone."
 msgstr "Δεν μπορείτε να επεξεργαστείτε εγγραφές σε μια ζώνη μόνο για ανάγνωση."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:863
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2399,19 +2399,19 @@ msgstr ""
 "διακομιστή στον αριθμό πεδίων. Ζητήστε από τον διαχειριστή σας να αυξήσει τη "
 "ρύθμιση PHP \"max_input_vars\"."
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:971
 msgid "Zone has not been updated successfully."
 msgstr "Η ζώνη δεν έχει ενημερωθεί με επιτυχία."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:972
 msgid "Request has expired, please try again."
 msgstr "Η αίτηση έληξε, παρακαλώ προσπαθήστε ξανά."
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:981
 msgid "Zone has been updated successfully."
 msgstr "Η ζώνη έχει ενημερωθεί με επιτυχία."
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:982
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2419,7 +2419,11 @@ msgstr ""
 "Η ζώνη αποθηκεύτηκε με επιτυχία. Δεν έγιναν αλλαγές σε εγγραφές, αλλά ο "
 "σειριακός αριθμός SOA αυξήθηκε."
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Domain/Service/Dns/RecordManager.php:289
+msgid "You do not have the permission to add a record to this zone."
+msgstr "Δεν έχετε την άδεια να προσθέσετε μια εγγραφή σε αυτή τη ζώνη."
+
+#: lib/Application/Controller/EditController.php:1024
 msgid "Please provide all required fields."
 msgstr "Παρακαλώ παράσχετε όλα τα απαιτούμενα πεδία."
 
@@ -2429,7 +2433,7 @@ msgstr ""
 "Η εγγραφή προστέθηκε επιτυχώς. Δημιουργήθηκε επίσης μια αντίστοιχη εγγραφή "
 "PTR."
 
-#: lib/Application/Controller/AddRecordController.php:266
+#: lib/Application/Controller/AddRecordController.php:510
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr ""
 "Η εγγραφή προστέθηκε με επιτυχία, αλλά η δημιουργία της εγγραφής PTR "
@@ -2449,20 +2453,20 @@ msgstr ""
 msgid "Invalid security token. Please try again."
 msgstr "Μη έγκυρο διακριτικό ασφαλείας. Παρακαλώ προσπαθήστε ξανά."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr ""
 "Πάρα πολλές αποτυχημένες προσπάθειες. Παρακαλώ δοκιμάστε ξανά αργότερα."
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "Δε βρέθηκε εγγραφή MFA. Παρακαλώ επικοινωνήστε με τον διαχειριστή."
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "Συνέβη ένα σφάλμα. Παρακαλώ προσπαθήστε ξανά."
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2471,15 +2475,15 @@ msgstr ""
 "ηλεκτρονικού ταχυδρομείου είναι απενεργοποιημένη. Παρακαλώ χρησιμοποιήστε "
 "έναν κωδικό ανάκτησης."
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "Ένας νέος κωδικός επαλήθευσης έχει σταλεί στο email σας."
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "Παρακαλώ χρησιμοποιήστε έναν κωδικό ανάκτησης."
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2487,29 +2491,25 @@ msgstr ""
 "Αδυναμία αποστολής κωδικού επαλήθευσης στο email σας. Παρακαλώ "
 "χρησιμοποιήστε έναν κωδικό ανάκτησης."
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
-msgid "You do not have the permission to add a record to this zone."
-msgstr "Δεν έχετε την άδεια να προσθέσετε μια εγγραφή σε αυτή τη ζώνη."
-
 #: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "Η εγγραφή προστέθηκε επιτυχώς."
 
-#: lib/Application/Controller/AddRecordController.php:464
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "No records were provided."
 msgstr "Δεν δόθηκαν εγγραφές."
 
-#: lib/Application/Controller/AddRecordController.php:533
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Δημιουργήθηκαν επίσης %d αντίστοιχη(-ες) εγγραφή(-ές)."
 
-#: lib/Application/Controller/AddRecordController.php:536
+#: lib/Application/Controller/AddRecordController.php:534
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Απέτυχε η προσθήκη %d εγγραφής(-ών)."
 
-#: lib/Application/Controller/AddRecordController.php:541
+#: lib/Application/Controller/AddRecordController.php:539
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2517,7 +2517,7 @@ msgstr ""
 "Μερικές εγγραφές δεν ήταν δυνατόν να προστεθούν. Μπορεί να υπάρχουν ήδη ή να "
 "περιέχουν μη έγκυρα δεδομένα."
 
-#: lib/Application/Controller/AddRecordController.php:571
+#: lib/Application/Controller/AddRecordController.php:569
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Αποτυχία προσθήκης οποιασδήποτε εγγραφής. Μπορεί να περιέχουν μη έγκυρα "
@@ -2527,7 +2527,7 @@ msgstr ""
 msgid "No zone selected for deletion."
 msgstr "Δεν επιλέχθηκε ζώνη για διαγραφή."
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1013
 msgid "You do not have the permission to delete a zone."
 msgstr "Δεν έχετε την άδεια να διαγράψετε μια ζώνη."
 
@@ -2592,7 +2592,7 @@ msgstr ""
 "Αδυναμία ανάκτησης του κλειδιού PEM. Ο εξυπηρετητής μπορεί να μην εκθέσει το "
 "υλικό ιδιωτικού κλειδιού για αυτό το κλειδί."
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "Δεν έχετε την άδεια να προσθέσετε μια κύρια ζώνη."
 
@@ -2626,7 +2626,7 @@ msgstr ""
 "2001:db8::/48) ή ένα όνομα ανάστροφης ζώνης που τελειώνει σε in-addr.arpa ή "
 "ip6.arpa."
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2634,7 +2634,7 @@ msgstr ""
 "Η ζώνη δημιουργήθηκε με επιτυχία, αλλά η υπογραφή του DNSSEC παραλείφθηκε "
 "λόγω σφαλμάτων επικύρωσης:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2643,11 +2643,11 @@ msgstr ""
 "ζώνης πέρασε, αλλά το PowerDNS API επέστρεψε ένα σφάλμα. Ελέγξτε τα αρχεία "
 "καταγραφής PowerDNS για λεπτομέρειες."
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Η ζώνη έχει δημιουργηθεί και υπογραφεί με την DNSSEC με επιτυχία."
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2663,16 +2663,16 @@ msgstr "Η ζώνη προστέθηκε με επιτυχία."
 msgid "Batch PTR record creation is not enabled."
 msgstr "Η δημιουργία εγγραφών Batch PTR δεν είναι ενεργοποιημένη."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:88
+#: lib/Application/Controller/BatchPtrRecordController.php:89
 msgid "You do not have permission to edit DNS records."
 msgstr "Δεν έχετε άδεια να επεξεργαστείτε εγγραφές DNS."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:93
+#: lib/Application/Controller/BatchPtrRecordController.php:94
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
 msgstr "Εγγραφές Batch PTR"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:109
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr ""
 "Η δημιουργία εγγραφών Batch PTR δεν είναι διαθέσιμη για αντίστροφες ζώνες."
@@ -2778,19 +2778,27 @@ msgstr "Προβολές"
 msgid "Invalid key ID."
 msgstr "Μη έγκυρο αναγνωριστικό κλειδιού."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:107
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
+msgid ""
+"DNSSEC functionality is not available. Please check PowerDNS API "
+"configuration."
+msgstr ""
+"Η λειτουργία DNSSEC δεν είναι διαθέσιμη. Παρακαλώ ελέγξτε τις ρυθμίσεις "
+"PowerDNS API."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Το κλειδί DNSSEC δεν βρέθηκε ή δεν υπάρχει πλέον."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:111
+#: lib/Application/Controller/DnssecDeleteKeyController.php:113
 msgid "Zone key has been deleted successfully."
 msgstr "Το κλειδί ζώνης έχει διαγραφεί με επιτυχία."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:119
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "Failed to delete the zone key."
 msgstr "Αποτυχία διαγραφής του κλειδιού ζώνης."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:126
+#: lib/Application/Controller/DnssecDeleteKeyController.php:128
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Συνέβη ένα σφάλμα κατά τη διαγραφή του κλειδιού DNSSEC: "
 
@@ -2824,44 +2832,44 @@ msgstr "Δεν έχετε επαρκείς άδειες για να δείτε �
 msgid "Reverse Zones"
 msgstr "Αντίστροφες ζώνες"
 
-#: lib/Application/Controller/ListForwardZonesController.php:283
+#: lib/Application/Controller/ListForwardZonesController.php:296
 msgid "You do not have the permission to see any zones."
 msgstr "Δεν έχετε την άδεια να δείτε καμία ζώνη."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:79
+#: lib/Application/Controller/ManageGroupZonesController.php:85
 msgid "You do not have permission to manage zone ownership."
 msgstr "Δεν έχετε άδεια να διαχειριστείτε την ιδιοκτησία της ζώνης."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:93
+#: lib/Application/Controller/ManageGroupZonesController.php:99
 msgid "Manage Group Zones"
 msgstr "Διαχείριση ζωνών ομάδας"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:230
+#: lib/Application/Controller/ManageGroupZonesController.php:236
 msgid "Please select at least one zone."
 msgstr "Παρακαλώ επιλέξτε τουλάχιστον μία ζώνη."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:166
+#: lib/Application/Controller/ManageGroupZonesController.php:172
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "Η ζώνη %d προστέθηκε στην ομάδα."
 msgstr[1] "Ζώνες %d προστίθενται στην ομάδα."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:209
+#: lib/Application/Controller/ManageGroupZonesController.php:215
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "Δεν ήταν δυνατό να προστεθεί ζώνη %d."
 msgstr[1] "Δεν ήταν δυνατόν να προστεθούν ζώνες %d."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:251
+#: lib/Application/Controller/ManageGroupZonesController.php:257
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "Η ζώνη %d απομακρύνθηκε από την ομάδα."
 msgstr[1] "Οι ζώνες %d απομακρύνθηκαν από την ομάδα."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:294
+#: lib/Application/Controller/ManageGroupZonesController.php:300
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2928,38 +2936,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "Ανατέθηκαν %d ζώνες· %d απέτυχαν"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "Το κανονικό αναγνωριστικό της ζώνης επιδιορθώθηκε"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "Η επιδιόρθωση του κανονικού αναγνωριστικού της ζώνης απέτυχε"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "Δεν υπάρχουν ζώνες χωρίς κανονικό αναγνωριστικό προς επιδιόρθωση"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "Επιδιορθώθηκε το κανονικό αναγνωριστικό %d ζωνών"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "Επιδιορθώθηκαν %d ζώνες; %d απέτυχαν"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "Η δευτερεύουσα ζώνη διαγράφηκε επιτυχώς"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "Αποτυχία διαγραφής δευτερεύουσας ζώνης"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "Η ορφανή εγγραφή διαγράφηκε επιτυχώς"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "Αποτυχία διαγραφής ορφανής εγγραφής"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Οι διπλότυπες εγγραφές SOA διορθώθηκαν με επιτυχία"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "Αποτυχία διόρθωσης διπλότυπων εγγραφών SOA"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "Η προκαθορισμένη εγγραφή SOA δημιουργήθηκε με επιτυχία"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "Αποτυχία δημιουργίας προκαθορισμένης εγγραφής SOA"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "Μη έγκυρος τύπος ελέγχου"
 
@@ -2967,7 +2997,7 @@ msgstr "Μη έγκυρος τύπος ελέγχου"
 msgid "You have logged out."
 msgstr "Αποσυνδέθηκες."
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "Δεν έχετε την άδεια να προσθέσετε ένα πρότυπο ζώνης."
 
@@ -3000,7 +3030,7 @@ msgstr "Δεν έχετε την άδεια να προσθέσετε μια δ�
 msgid "Add Secondary Zone"
 msgstr "Προσθήκη δευτερεύουσας ζώνης"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "Δεν έχετε την άδεια να διαγράψετε τα πρότυπα ζώνης."
 
@@ -3020,21 +3050,61 @@ msgstr "Ο supermaster που προσπαθείτε να επεξεργαστε
 msgid "The supermaster has been updated successfully."
 msgstr "Ο supermaster ενημερώθηκε με επιτυχία."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
 msgid "You do not have permission to manage group zones."
 msgstr "Δεν έχετε άδεια να διαχειριστείτε ομαδικές ζώνες."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:80
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
 msgid "Invalid group or zone ID."
 msgstr "Μη έγκυρη ομάδα ή αναγνωριστικό ζώνης."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:104
 msgid "Zone removed from group successfully."
 msgstr "Η ζώνη απομακρύνθηκε από την ομάδα με επιτυχία."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:93
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:106
 msgid "Zone was not owned by this group."
 msgstr "Η ζώνη δεν ανήκε σε αυτή την ομάδα."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:309
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"Δεν είναι δυνατή η αφαίρεση της τελευταίας ομάδας: η λειτουργία ιδιοκτησίας "
+"ζώνης είναι groups_only και απαιτεί τουλάχιστον μία ομάδα. Προσθέστε πρώτα "
+"μια άλλη ομάδα."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:315
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"Δεν είναι δυνατή η αφαίρεση της ομάδας: η λειτουργία ιδιοκτησίας ζώνης είναι "
+"users_only και η ζώνη δεν έχει ιδιοκτήτες χρήστες. Προσθέστε πρώτα έναν "
+"ιδιοκτήτη χρήστη."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:343
+msgid "Add another owner or a group first."
+msgstr "Προσθέστε έναν άλλο ιδιοκτήτη ή μια ομάδα πρώτα."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr ""
+"Προσθέστε πρώτα έναν άλλο ιδιοκτήτη χρήστη (η λειτουργία ιδιοκτησίας ζώνης "
+"είναι users_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:348
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr ""
+"Προσθέστε πρώτα μια ομάδα (η λειτουργία ιδιοκτησίας ζώνης είναι groups_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr ""
+"Αδυναμία αφαίρεσης του τελευταίου ιδιοκτήτη: αυτό θα άφηνε τη ζώνη χωρίς "
+"ιδιοκτησία."
 
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
@@ -3238,7 +3308,7 @@ msgstr "Η αποσύνδεση ολοκληρώθηκε (με προειδοπ�
 msgid "You do not have permission to view this record."
 msgstr "Δεν έχετε άδεια να δείτε αυτή την εγγραφή."
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have permission to edit this record."
 msgstr "Δεν έχετε άδεια να επεξεργαστείτε αυτή την εγγραφή."
 
@@ -3282,43 +3352,19 @@ msgstr ""
 msgid "Change password"
 msgstr "Τροποποίηση κωδικού πρόσβασης"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
-msgid "ECDSA P-256 algorithm must use 256 bits"
-msgstr "Ο αλγόριθμος ECDSA P-256 πρέπει να χρησιμοποιεί 256 bits"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:136
-msgid "ECDSA P-384 algorithm must use 384 bits"
-msgstr "Ο αλγόριθμος ECDSA P-384 πρέπει να χρησιμοποιεί 384 bits"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:142
-msgid "ED25519 algorithm must use 256 bits"
-msgstr "Ο αλγόριθμος ED25519 πρέπει να χρησιμοποιεί 256 bits"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:147
-msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr ""
-"Ο αλγόριθμος ED448 πρέπει να χρησιμοποιεί 456 bits (μη υποστηριζόμενος σε "
-"αυτό το UI)"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:154
-msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr ""
-"Οι αλγόριθμοι RSA θα πρέπει να χρησιμοποιούν 1024 ή 2048 bits για επαρκή "
-"ασφάλεια"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:176
+#: lib/Application/Controller/DnssecAddKeyController.php:144
 msgid "Zone key has been added successfully."
 msgstr "Το κλειδί ζώνης προστέθηκε με επιτυχία."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:180
+#: lib/Application/Controller/DnssecAddKeyController.php:148
 msgid "Failed to add new DNSSEC key."
 msgstr "Αποτυχία προσθήκης νέου κλειδιού DNSSEC."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:184
+#: lib/Application/Controller/DnssecAddKeyController.php:152
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Συνέβη ένα σφάλμα κατά την προσθήκη του κλειδιού DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:188
+#: lib/Application/Controller/DnssecAddKeyController.php:156
 msgid "Please select both algorithm and bits"
 msgstr "Παρακαλώ επιλέξτε τόσο αλγόριθμο και bits"
 
@@ -3360,19 +3406,19 @@ msgstr "Ο supermaster έχει διαγραφεί με επιτυχία."
 msgid "Bulk Registration"
 msgstr "Μαζική καταχώριση"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "Ο ιδιοκτήτης πρέπει να είναι αριθμητική ταυτότητα χρήστη."
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "Αποτυχία προσθήκης ζώνης."
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "Οι ζώνες έχουν προστεθεί με επιτυχία."
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "Ορισμένες ζώνες δεν μπορούν να προστεθούν."
 
@@ -3402,18 +3448,15 @@ msgstr ""
 "Η ανάθεση χρήστη-ιδιοκτήτη απενεργοποιείται από την τρέχουσα κατάσταση "
 "ιδιοκτησίας ζώνης."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Domain/Service/Dns/DomainManager.php:894
+msgid "The selected user already owns the zone."
+msgstr "Ο επιλεγμένος χρήστης κατέχει ήδη τη ζώνη."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:197
 msgid "Owner has been added successfully."
 msgstr "Ο ιδιοκτήτης έχει προστεθεί με επιτυχία."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:293
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr ""
-"Αδυναμία αφαίρεσης του τελευταίου ιδιοκτήτη: αυτό θα άφηνε τη ζώνη χωρίς "
-"ιδιοκτησία."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
@@ -3422,7 +3465,7 @@ msgstr ""
 "ιδιοκτησίας ζώνης είναι users_only και απαιτεί τουλάχιστον έναν ιδιοκτήτη "
 "χρήστη. Προσθέστε πρώτα έναν άλλο ιδιοκτήτη χρήστη."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
@@ -3431,61 +3474,28 @@ msgstr ""
 "ζώνης είναι groups_only και η ζώνη δεν έχει ιδιοκτήτες ομάδας. Προσθέστε "
 "πρώτα μια ομάδα."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "Ο ιδιοκτήτης αφαιρέθηκε με επιτυχία."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:250
+#: lib/Application/Controller/ZoneOwnershipController.php:260
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr ""
 "Η ομαδική ανάθεση ιδιοκτησίας απενεργοποιείται από την τρέχουσα λειτουργία "
 "ιδιοκτησίας ζώνης."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:262
+#: lib/Application/Controller/ZoneOwnershipController.php:272
 msgid "You do not have permission to assign this group."
 msgstr "Δεν έχετε άδεια να αναθέσετε αυτή την ομάδα."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:270
+#: lib/Application/Controller/ZoneOwnershipController.php:280
 msgid "Group has been added successfully."
 msgstr "Η ομάδα προστέθηκε με επιτυχία."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:299
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr ""
-"Δεν είναι δυνατή η αφαίρεση της τελευταίας ομάδας: η λειτουργία ιδιοκτησίας "
-"ζώνης είναι groups_only και απαιτεί τουλάχιστον μία ομάδα. Προσθέστε πρώτα "
-"μια άλλη ομάδα."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:305
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr ""
-"Δεν είναι δυνατή η αφαίρεση της ομάδας: η λειτουργία ιδιοκτησίας ζώνης είναι "
-"users_only και η ζώνη δεν έχει ιδιοκτήτες χρήστες. Προσθέστε πρώτα έναν "
-"ιδιοκτήτη χρήστη."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:310
+#: lib/Application/Controller/ZoneOwnershipController.php:320
 msgid "Group has been removed successfully."
 msgstr "Η ομάδα έχει αφαιρεθεί με επιτυχία."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:333
-msgid "Add another owner or a group first."
-msgstr "Προσθέστε έναν άλλο ιδιοκτήτη ή μια ομάδα πρώτα."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Προσθέστε πρώτα έναν άλλο ιδιοκτήτη χρήστη (η λειτουργία ιδιοκτησίας ζώνης "
-"είναι users_only)."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:338
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr ""
-"Προσθέστε πρώτα μια ομάδα (η λειτουργία ιδιοκτησίας ζώνης είναι groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3496,45 +3506,52 @@ msgstr "Η σελίδα δε βρέθηκε"
 msgid "This action requires a POST request."
 msgstr "Αυτή η ενέργεια απαιτεί ένα αίτημα POST."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:92
-msgid ""
-"DNSSEC functionality is not available. Please check PowerDNS API "
-"configuration."
-msgstr ""
-"Η λειτουργία DNSSEC δεν είναι διαθέσιμη. Παρακαλώ ελέγξτε τις ρυθμίσεις "
-"PowerDNS API."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:118
+#: lib/Application/Controller/DnssecToggleKeyController.php:120
 msgid "Zone key has been successfully deactivated."
 msgstr "Το κλειδί ζώνης απενεργοποιήθηκε με επιτυχία."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:121
 msgid "Failed to deactivate zone key."
 msgstr "Αποτυχία απενεργοποίησης του κλειδιού ζώνης."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:122
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "Zone key has been successfully activated."
 msgstr "Το κλειδί ζώνης ενεργοποιήθηκε με επιτυχία."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:123
+#: lib/Application/Controller/DnssecToggleKeyController.php:125
 msgid "Failed to activate zone key."
 msgstr "Αποτυχία ενεργοποίησης κλειδιού ζώνης."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:136
+#: lib/Application/Controller/DnssecToggleKeyController.php:138
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
 "Συνέβη ένα σφάλμα κατά την εναλλαγή της κατάστασης του κλειδιού DNSSEC. "
 "Παρακαλώ προσπαθήστε ξανά."
 
-#: lib/Application/Service/RequestValidator.php:69
+#: lib/Application/Service/RequestValidator.php:87
 #, php-format
 msgid "The %s field is required."
 msgstr "Το πεδίο %s απαιτείται."
 
-#: lib/Application/Service/RequestValidator.php:77
+#: lib/Application/Service/RequestValidator.php:90
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Το πεδίο %s πρέπει να είναι ένας αριθμός."
+
+#: lib/Application/Service/RequestValidator.php:94
+#, php-format
+msgid "The %s field must be a list."
+msgstr "Το πεδίο %s πρέπει να είναι λίστα."
+
+#: lib/Application/Service/RequestValidator.php:98
+#, php-format
+msgid "The %s field must be at most %d characters."
+msgstr "Το πεδίο %s πρέπει να έχει το πολύ %d χαρακτήρες."
+
+#: lib/Application/Service/RequestValidator.php:102
+#, php-format
+msgid "The %s field has an invalid value."
+msgstr "Το πεδίο %s έχει μη έγκυρη τιμή."
 
 #: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
 #: templates/modern/users.html:222
@@ -3552,11 +3569,11 @@ msgstr ""
 "Ο λογαριασμός είναι προσωρινά κλειδωμένος. Παρακαλώ προσπαθήστε ξανά "
 "αργότερα."
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "Ο λογαριασμός χρήστη είναι απενεργοποιημένος."
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "Η ταυτοποίηση απέτυχε!"
 
@@ -3585,7 +3602,7 @@ msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Αποτυχία ταυτοποίησης: Αδυναμία δημιουργίας ή ενημέρωσης λογαριασμού χρήστη"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "Η ταυτοποίηση LDAP απέτυχε!"
 
@@ -3809,7 +3826,7 @@ msgstr ""
 "Εμφάνιση κατάστασης συνδεσιμότητας για τα supermasters ρυθμισμένα στον "
 "παρακάτω πίνακα."
 
-#: lib/Infrastructure/Web/PageRenderer.php:132
+#: lib/Infrastructure/Web/PageRenderer.php:133
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3817,8 +3834,7 @@ msgstr ""
 "Το προκαθορισμένο κλειδί κρυπτογράφησης συνεδρίας χρησιμοποιείται, παρακαλώ "
 "ρυθμίστε το στο αρχείο ρυθμίσεων σας."
 
-#: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
+#: lib/Infrastructure/Web/PageRenderer.php:137
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3826,7 +3842,7 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/Infrastructure/Web/PageRenderer.php:253
+#: lib/Infrastructure/Web/PageRenderer.php:254
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr ""
@@ -3889,44 +3905,44 @@ msgstr "Η διεύθυνση email υπάρχει ήδη, παρακαλώ επ
 msgid "Enter a valid user name."
 msgstr "Εισάγετε ένα έγκυρο όνομα χρήστη."
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "Το πρότυπο ζώνης δε βρέθηκε."
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "Μόνο τα καθολικά πρότυπα ζώνης μπορούν να οριστούν ως προεπιλεγμένα."
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "Σφάλμα ορισμού προκαθορισμένου προτύπου ζώνης: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "Σφάλμα εκκαθάρισης προεπιλεγμένου προτύπου ζώνης: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "Σφάλμα δημιουργίας προτύπου ζώνης: "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "Σφάλμα προσθήκης προκαθορισμένης εγγραφής SOA στο πρότυπο: "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Σφάλμα διαγραφής προτύπου ζώνης: "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "Σφάλμα διαγραφής προτύπων ζώνης χρήστη: "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
 "Δεν έχετε την άδεια να προσθέσετε μια εγγραφή σε αυτό το πρότυπο ζώνης."
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
@@ -3943,19 +3959,19 @@ msgstr ""
 "Η προτεραιότητα για τις εγγραφές MX/SRV πρέπει να είναι ένας αριθμός μεταξύ "
 "0 και 65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "Σφάλμα κατά την προσθήκη εγγραφής προτύπου ζώνης: "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "Η εγγραφή δεν ανήκει σε αυτό το πρότυπο ζώνης."
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "Σφάλμα ενημέρωσης εγγραφής προτύπου ζώνης: "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3963,15 +3979,15 @@ msgstr ""
 "Δεν έχετε την άδεια να διαγράψετε αυτόν τον τύπο εγγραφής από ένα πρότυπο "
 "ζώνης."
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "Σφάλμα διαγραφής εγγραφής προτύπου ζώνης: "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "Σφάλμα ελέγχου ιδιοκτησίας προτύπου: "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3980,35 +3996,35 @@ msgstr ""
 "Αυτοί οι τύποι εγγραφών παραλείφθηκαν από το πρότυπο επειδή δεν επιτρέπεται "
 "να τους προσθέσετε: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "Σφάλμα ανάκτησης ζωνών που χρησιμοποιούν το πρότυπο: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "Αποτυχία λήψης λίστας ζωνών που χρησιμοποιούν το πρότυπο: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Δεν έχετε την άδεια να επεξεργαστείτε ένα πρότυπο ζώνης."
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "Σφάλμα αποσύνδεσης ζώνης από το πρότυπο: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "Σφάλμα ανάκτησης ζωνών: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "Σφάλμα ελέγχου ύπαρξης ονόματος προτύπου: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "Σφάλμα αναζήτησης προτύπου με βάση το όνομα: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "Σφάλμα ελέγχου ύπαρξης προτύπου: "
 
@@ -4068,50 +4084,59 @@ msgstr ""
 "Οι προβολές απαιτούν \"views=yes\" στο pdns.conf. Ο συνδεδεμένος διακομιστής "
 "τις έχει απενεργοποιημένες."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "Όλες οι ζώνες έχουν ιδιοκτήτες."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "Βρέθηκαν %d ζώνες χωρίς ιδιοκτήτες"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "Όλες οι ζώνες σκλάβων έχουν κύριες διευθύνσεις IP"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d ζώνες σκλάβων που βρέθηκαν χωρίς κύρια διευθύνσεις IP"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "Όλες οι εγγραφές ανήκουν σε υφιστάμενες ζώνες"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "Βρέθηκαν %d ορφανές εγγραφές"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "Δε βρέθηκαν διπλές εγγραφές SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d ζώνες έχουν διπλές εγγραφές SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "Όλες οι ζώνες έχουν εγγραφές SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "Βρέθηκαν %d ζώνες χωρίς εγγραφές SOA"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "Όλες οι ζώνες έχουν κανονικό αναγνωριστικό"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "Βρέθηκαν %d ζώνες χωρίς κανονικό αναγνωριστικό"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -7866,7 +7891,7 @@ msgstr ""
 "Η τιμή contactphone πρέπει να περιέχει μόνο αριθμούς, κενά και συνήθη σημεία "
 "στίξης αριθμού τηλεφώνου."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:464
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:467
 msgid "Value must be enclosed in double quotes."
 msgstr "Η τιμή πρέπει να περικλείεται σε διπλά εισαγωγικά."
 
@@ -9587,15 +9612,18 @@ msgstr ""
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "Μια εγγραφή NAPTR με regexp πρέπει να έχει \".\" ως αντικατάσταση."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
-msgstr "Η υπηρεσία NAPTR πρέπει να ακολουθεί τη μορφή: [protocol][+rs][+rs]... όπου το protocol και το rs διαχωρίζονται με σύμβολα συν, ξεκινούν με γράμμα και περιέχουν μόνο γράμματα, ψηφία, παύλες ή άνω κάτω τελείες (έως 32 χαρακτήρες το καθένα)."
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
+"and rs are separated by plus signs, each start with a letter and contain "
+"only letters, digits, hyphens or colons (max 32 chars each)."
+msgstr ""
+"Η υπηρεσία NAPTR πρέπει να ακολουθεί τη μορφή: [protocol][+rs][+rs]... όπου "
+"το protocol και το rs διαχωρίζονται με σύμβολα συν, ξεκινούν με γράμμα και "
+"περιέχουν μόνο γράμματα, ψηφία, παύλες ή άνω κάτω τελείες (έως 32 χαρακτήρες "
+"το καθένα)."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:362
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
@@ -9603,11 +9631,11 @@ msgstr ""
 "Οι τερματικές σημαίες \"S\", \"A\", \"U\" και \"P\" δεν πρέπει να "
 "συνδυάζονται με άλλες σημαίες."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:381
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:384
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr "NAPTR regexp πρέπει να ξεκινήσει με έναν χαρακτήρα οριοθέτησης."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:387
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:390
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
@@ -9615,7 +9643,7 @@ msgstr ""
 "Το NAPTR regexp πρέπει να έχει το μορφότυπο "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:394
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:397
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
@@ -9623,7 +9651,7 @@ msgstr ""
 "Οι σημαίες regexp του NAPTR (μετά τον τρίτο οριοθέτη) πρέπει να περιέχουν "
 "μόνο \"i\" ή να είναι κενές."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:412
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
@@ -9631,17 +9659,17 @@ msgstr ""
 "Αυτή φαίνεται να είναι εγγραφή ENUM NAPTR (RFC 6116). Βεβαιωθείτε ότι ο "
 "τομέας βρίσκεται κάτω από το e164.arpa ή ένα ιδιωτικό δέντρο ENUM."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:413
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:416
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr ""
 "Οι εγγραφές ENUM θα πρέπει να έχουν τη σημαία \"U\" για να δηλώνουν έξοδο "
 "URI."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:440
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:443
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr "Το NAPTR regexp περιέχει δυνητικά επικίνδυνο μοτίβο: "
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:447
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:450
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr ""
 "Το NAPTR regexp είναι πολύ μεγάλο. Το μέγιστο μήκος είναι 1000 χαρακτήρες."
@@ -9817,6 +9845,30 @@ msgstr "Δεν έχετε άδεια να διαγράψετε κλειδιά AP
 msgid "You do not have permission to regenerate API keys."
 msgstr "Δεν έχετε άδεια να αναγεννήσετε κλειδιά API."
 
+#: lib/Domain/Service/DnssecKeySpecValidator.php:56
+msgid "ECDSA P-256 algorithm must use 256 bits"
+msgstr "Ο αλγόριθμος ECDSA P-256 πρέπει να χρησιμοποιεί 256 bits"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:57
+msgid "ECDSA P-384 algorithm must use 384 bits"
+msgstr "Ο αλγόριθμος ECDSA P-384 πρέπει να χρησιμοποιεί 384 bits"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:58
+msgid "ED25519 algorithm must use 256 bits"
+msgstr "Ο αλγόριθμος ED25519 πρέπει να χρησιμοποιεί 256 bits"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:59
+msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
+msgstr ""
+"Ο αλγόριθμος ED448 πρέπει να χρησιμοποιεί 456 bits (μη υποστηριζόμενος σε "
+"αυτό το UI)"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:60
+msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr ""
+"Οι αλγόριθμοι RSA θα πρέπει να χρησιμοποιούν 1024 ή 2048 bits για επαρκή "
+"ασφάλεια"
+
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr ""
@@ -9908,17 +9960,17 @@ msgstr ""
 msgid "Unknown database type."
 msgstr "Άγνωστος τύπος βάσης δεδομένων."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:102
+#: lib/Domain/Service/ReverseRecordCreator.php:103
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "Δεν υπάρχει αντίστοιχη αντίστροφη ζώνη για: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:110
+#: lib/Domain/Service/ReverseRecordCreator.php:111
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "Υπάρχει ήδη μια εγγραφή PTR για το %s που δείχνει στο %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:123
+#: lib/Domain/Service/ReverseRecordCreator.php:127
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -9928,27 +9980,27 @@ msgstr ""
 "για το %s που δείχνει στο: %s. Δεν συνιστάται η ύπαρξη πολλαπλών εγγραφών "
 "PTR για την ίδια IP."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:245
+#: lib/Domain/Service/ReverseRecordCreator.php:249
 msgid "PTR update skipped: record type is not A or AAAA."
 msgstr "Η ενημέρωση PTR παραλείφθηκε: ο τύπος εγγραφής δεν είναι A ή AAAA."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:258
+#: lib/Domain/Service/ReverseRecordCreator.php:262
 msgid "Stale PTR record removed."
 msgstr "Αφαιρέθηκε η ξεπερασμένη εγγραφή PTR."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Μια εγγραφή με αυτό το όνομα, τον τύπο και το περιεχόμενο υπάρχει ήδη."
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "Αποτυχία προσθήκης εγγραφής στο σύστημα υποστήριξης DNS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:465
 msgid "Failed to update record in DNS backend."
 msgstr "Αποτυχία ενημέρωσης εγγραφής στο σύστημα υποστήριξης DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:899
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Μη έγκυρο(-α) όρισμα(-τα) δόθηκαν στη συνάρτηση %s %s"
@@ -9958,56 +10010,52 @@ msgid "There is already a supermaster with this IP address and hostname."
 msgstr ""
 "Υπάρχει ήδη ένας supermaster με αυτή τη διεύθυνση IP και το όνομα υπολογιστή."
 
-#: lib/Domain/Service/Dns/DomainManager.php:225
+#: lib/Domain/Service/Dns/DomainManager.php:226
 msgid "Failed to create zone in DNS backend."
 msgstr "Αποτυχία δημιουργίας ζώνης στο σύστημα υποστήριξης DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:440
+#: lib/Domain/Service/Dns/DomainManager.php:443
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Αποτυχία δημιουργίας ζώνης: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:327
+#: lib/Domain/Service/Dns/DomainManager.php:328
 msgid "Failed to create SOA record for zone."
 msgstr "Αποτυχία δημιουργίας εγγραφής SOA για τη ζώνη."
 
-#: lib/Domain/Service/Dns/DomainManager.php:382
+#: lib/Domain/Service/Dns/DomainManager.php:385
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "Αποτυχία δημιουργίας εγγραφής %s για τη ζώνη."
 
-#: lib/Domain/Service/Dns/DomainManager.php:444
+#: lib/Domain/Service/Dns/DomainManager.php:447
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Μη έγκυρο(-α) όρισμα(-τα) δόθηκαν στη συνάρτηση %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:570
 msgid "Failed to delete zone from DNS backend."
 msgstr "Αποτυχία διαγραφής ζώνης από το σύστημα υποστήριξης DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:527
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Αποτυχία καθαρισμού μεταδεδομένων ζώνης: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:618
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Αποτυχία διαγραφής μεταδεδομένων ζώνης: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:792
 msgid "Failed to update zone type in DNS backend."
 msgstr "Αποτυχία ενημέρωσης του τύπου ζώνης στο σύστημα υποστήριξης DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:846
 msgid "Failed to update zone master in DNS backend."
 msgstr "Αποτυχία ενημέρωσης του master ζώνης στο σύστημα υποστήριξης DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
-msgid "The selected user already owns the zone."
-msgstr "Ο επιλεγμένος χρήστης κατέχει ήδη τη ζώνη."
-
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1199
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Η ενημέρωση των εγγραφών της ζώνης απέτυχε: %s"
@@ -10703,7 +10751,7 @@ msgstr "Αποστολή συνδέσμου επαναφοράς"
 msgid "Group Management"
 msgstr "Διαχείριση ομάδων"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "Δε βρέθηκαν ομάδες"
 
@@ -10792,7 +10840,7 @@ msgstr ""
 "Τα μέλη της ομάδας κληρονομούν αυτές τις άδειες μόνο για ζώνες που ανήκουν "
 "σε αυτή την ομάδα"
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "Επιλέξτε ένα πρότυπο αδειών"
 
@@ -10988,15 +11036,15 @@ msgstr ""
 msgid "DNS Management"
 msgstr "Διαχείριση DNS"
 
-#: templates/modern/index.html:58 templates/modern/pdns_status.html:159
+#: templates/modern/index.html:413 templates/modern/pdns_status.html:159
 msgid "Online"
 msgstr "Σε σύνδεση"
 
-#: templates/modern/index.html:60 templates/modern/pdns_status.html:161
+#: templates/modern/index.html:415 templates/modern/pdns_status.html:161
 msgid "Offline"
 msgstr "Χωρίς σύνδεση"
 
-#: templates/modern/index.html:441 templates/modern/header.html:300
+#: templates/modern/index.html:458 templates/modern/header.html:300
 msgid "Templates"
 msgstr "Πρότυπα"
 
@@ -11008,15 +11056,15 @@ msgstr "Δίκτυα"
 msgid "Zone Operations"
 msgstr "Λειτουργίες ζώνης"
 
-#: templates/modern/index.html:157 templates/modern/index.html:461
+#: templates/modern/index.html:157 templates/modern/index.html:478
 msgid "Master Zone"
 msgstr "Κύρια ζώνη"
 
-#: templates/modern/index.html:167 templates/modern/index.html:471
+#: templates/modern/index.html:167 templates/modern/index.html:488
 msgid "Slave Zone"
 msgstr "Δευτερεύουσα ζώνη"
 
-#: templates/modern/index.html:197 templates/modern/index.html:501
+#: templates/modern/index.html:197 templates/modern/index.html:518
 msgid "PTR Records"
 msgstr "Εγγραφές PTR"
 
@@ -11041,7 +11089,7 @@ msgstr "Βάση δεδομένων"
 msgid "TTL defaults"
 msgstr "Προκαθορισμένα TTL"
 
-#: templates/modern/index.html:366 templates/modern/index.html:553
+#: templates/modern/index.html:366 templates/modern/index.html:570
 msgid "My Profile"
 msgstr "Το προφίλ μου"
 
@@ -11050,7 +11098,7 @@ msgstr "Το προφίλ μου"
 msgid "Password"
 msgstr "Κωδικός πρόσβασης"
 
-#: templates/modern/index.html:572 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:389
 msgid "Preferences"
 msgstr "Προτιμήσεις"
 
@@ -11607,19 +11655,19 @@ msgstr "Ναι, αναγεννήστε αυτό το κλειδί API"
 msgid "No, keep current key"
 msgstr "Όχι, κρατήστε το τρέχον κλειδί"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "Επαναφορά κωδικού πρόσβασης"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "Αίτηση νέου συνδέσμου επαναφοράς"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "Ο κωδικός πρόσβασης δεν πληροί τις απαιτήσεις"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "Εισάγετε το νέο σας κωδικό πρόσβασης για"
 
@@ -11627,44 +11675,44 @@ msgstr "Εισάγετε το νέο σας κωδικό πρόσβασης γι
 msgid "New password"
 msgstr "Νέος κωδικός πρόσβασης"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "Παροχή κωδικού πρόσβασης"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "Επιβεβαίωση κωδικού πρόσβασης"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "Απαιτήσεις κωδικού πρόσβασης"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "Ελάχιστο μήκος"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "χαρακτήρες"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "Τουλάχιστον ένα κεφαλαίο γράμμα"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "Τουλάχιστον ένα πεζό γράμμα"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "Τουλάχιστον ένας αριθμός"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "Τουλάχιστον ένας ειδικός χαρακτήρας"
 
@@ -11757,7 +11805,6 @@ msgid "No SOA"
 msgstr "Όχι SOA"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -11787,7 +11834,7 @@ msgstr "Το NOTIFY στάλθηκε στο serial %serial%"
 msgid "Delete zone(s)"
 msgstr "Διαγραφή ζώνης(-ων)"
 
-#: templates/modern/dnssec_add_key.html:77
+#: templates/modern/dnssec_add_key.html:76
 msgid "Add key"
 msgstr "Προσθήκη κλειδιού"
 
@@ -11820,11 +11867,11 @@ msgstr "Επιλογή αλγόριθμου"
 msgid "Bits in length"
 msgstr "Μήκος σε bits"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:70
 msgid "Select bits length"
 msgstr "Επιλογή μήκους bits"
 
-#: templates/modern/dnssec_add_key.html:128
+#: templates/modern/dnssec_add_key.html:127
 msgid "Recommended bits for"
 msgstr "Συνιστάται bits για"
 
@@ -11833,19 +11880,19 @@ msgstr "Συνιστάται bits για"
 msgid "Warning:"
 msgstr "Προειδοποίηση:"
 
-#: templates/modern/dnssec_add_key.html:136
+#: templates/modern/dnssec_add_key.html:135
 msgid "bits is not recommended for"
 msgstr "bits δεν συνιστάται για"
 
-#: templates/modern/dnssec_add_key.html:172
+#: templates/modern/dnssec_add_key.html:171
 msgid "About DNSSEC Key Types"
 msgstr "Σχετικά με τους τύπους κλειδιών DNSSEC"
 
-#: templates/modern/dnssec_add_key.html:175
+#: templates/modern/dnssec_add_key.html:174
 msgid "Key Types Explained"
 msgstr "Εξηγημένοι τύποι κλειδιών"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:176
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11853,19 +11900,19 @@ msgstr ""
 "Συνδυασμένο κλειδί υπογραφής - χρησιμεύει και ως KSK και ZSK (προτείνεται "
 "για PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:177
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Κλειδί υπογραφής κλειδιών - υπογράφει τις εγγραφές DNSKEY στη ζώνη"
 
-#: templates/modern/dnssec_add_key.html:179
+#: templates/modern/dnssec_add_key.html:178
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Κλειδί υπογραφής ζώνης - υπογράφει όλες τις άλλες εγγραφές στη ζώνη"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:183
 msgid "Recommended Settings"
 msgstr "Προτεινόμενες ρυθμίσεις"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:184
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11953,16 +12000,16 @@ msgstr ""
 "Οι άδειες από αυτό το πρότυπο θα ισχύουν παγκοσμίως σε ολόκληρο το σύστημα "
 "για αυτόν το χρήστη"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "Προαιρετικές πληροφορίες για αυτόν τον χρήστη"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Ενεργοποίηση"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "Ταυτοποίηση LDAP"
 
@@ -11970,7 +12017,7 @@ msgstr "Ταυτοποίηση LDAP"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "Οι ρυθμίσεις ταυτοποίησης μπορούν να αλλαχθούν μόνο από διαχειριστή"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "Χρήση εξωτερικού καταλόγου LDAP για ταυτοποίηση"
 
@@ -11982,7 +12029,7 @@ msgstr "Επιστροφή στην αρχική σελίδα"
 msgid "Back to Users"
 msgstr "Επιστροφή στους χρήστες"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "Πληροφορίες λογαριασμού"
 
@@ -12006,7 +12053,7 @@ msgstr "Πρέπει να περιέχει ειδικούς χαρακτήρες
 msgid "No specific password requirements"
 msgstr "Καμία ειδική απαίτηση κωδικού πρόσβασης"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "Άδειες χρήστη"
 
@@ -12022,7 +12069,7 @@ msgstr "Με βάση αυτό το πρότυπο, αυτός ο χρήστης
 msgid "No permissions are assigned to this template"
 msgstr "Δεν ανατίθενται άδειες σε αυτό το πρότυπο"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "Συμμετοχές σε ομάδες"
 
@@ -12038,7 +12085,7 @@ msgstr "Προβολή λεπτομερειών ομάδας"
 msgid "This user is not a member of any groups."
 msgstr "Αυτός ο χρήστης δεν είναι μέλος οποιασδήποτε ομάδας."
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "Προσθήκη στις ομάδες"
 
@@ -12048,7 +12095,7 @@ msgstr ""
 "Επιλέξτε μία ή περισσότερες ομάδες και κάντε κλικ στο κουμπί \"Προσθέστε "
 "επιλεγμένες ομάδες\"."
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "Αναζήτηση διαθέσιμων ομάδων..."
 
@@ -13068,63 +13115,79 @@ msgstr "Ονομασία ζώνης"
 msgid "Assign owner"
 msgstr "Ορισμός ιδιοκτήτη"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "Διόρθωση"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "Ζώνες χωρίς κανονικό αναγνωριστικό"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "Να επιδιορθωθεί το κανονικό αναγνωριστικό όλων των ζωνών της λίστας;"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "Επιδιόρθωση όλων"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "Επιδιόρθωση κανονικού αναγνωριστικού"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "Ζώνες σκλάβων χωρίς Master IP διευθύνσεις"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "Κύριος IP"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "Διαγραφή ζώνης σκλάβων"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "Εγγραφές που δεν ανήκουν σε καμία ζώνη"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "ID εγγραφής"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "Διαγραφή ορφανής εγγραφής"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "Ζώνες με διπλές εγγραφές SOA"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "Αριθμός SOA"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "Διατήρηση πρώτου SOA, διαγραφή διπλών"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "Ζώνες χωρίς εγγραφές SOA"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "Δημιουργία προκαθορισμένης εγγραφής SOA"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε τη ζώνη σκλάβων"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε την ορφανή εγγραφή"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "Σίγουρα θέλετε να διαγράψετε αυτό το αντικείμενο;"
 
@@ -13167,15 +13230,15 @@ msgstr ""
 "Αποστολή διαπιστευτηρίων σύνδεσης στη διεύθυνση ηλεκτρονικού ταχυδρομείου "
 "του χρήστη"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "Επιλέξτε ένα πρότυπο..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "Επιλέξτε άδειες για αυτόν τον χρήστη"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -13185,7 +13248,7 @@ msgstr ""
 "πρότυπο. Μπορείτε να τροποποιήσετε αυτές τις άδειες αργότερα με την "
 "επεξεργασία του χρήστη."
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr ""
 "Επιλέξτε ομάδες στις οποίες θα προστεθεί ο νέος χρήστης κατά τη δημιουργία."
@@ -14932,7 +14995,7 @@ msgstr ""
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Πρόκειται να διαγράψετε ένα κλειδί DNSSEC (ID"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
@@ -14940,19 +15003,19 @@ msgstr ""
 "Όλα τα μέλη της ομάδας θα κληρονομήσουν αυτές τις άδειες για ζώνες που "
 "ανήκουν σε αυτή την ομάδα"
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "Δημιουργία ομάδας"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "Σχετικά με ομάδες"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "Τι είναι οι Ομάδες;"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -14961,11 +15024,11 @@ msgstr ""
 "την πρόσβαση ζώνης συλλογικά. Τα μέλη κληρονομούν τις άδειες της ομάδας για "
 "όλες τις ζώνες που ανήκουν στην ομάδα."
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "Πώς να χρησιμοποιήσετε τις ομάδες"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -16042,3 +16105,5 @@ msgid ""
 msgstr ""
 "Η ρύθμιση του locale απέτυχε. Το επιλεγμένο locale μπορεί να μην "
 "υποστηρίζεται σε αυτό το σύστημα. Επικοινωνήστε με τον διαχειριστή σας."
+
+

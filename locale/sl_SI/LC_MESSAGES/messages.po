@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-28 01:30+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -40,7 +40,7 @@ msgstr "Neveljavna oznaka cone."
 msgid "Zone not found."
 msgstr "Cona ni najdena."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
+#: lib/Application/Controller/BatchPtrRecordController.php:115
 msgid "You do not have permission to add records to this zone."
 msgstr "Nimate dovoljenja za dodajanje zapisov v to cono."
 
@@ -48,11 +48,11 @@ msgstr "Nimate dovoljenja za dodajanje zapisov v to cono."
 msgid "Invalid wizard type."
 msgstr "Neveljaven tip pomočnika."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "Preverjanje veljavnosti ni uspelo:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "Ni moč ustvariti zapisa:"
 
@@ -1237,7 +1237,7 @@ msgstr "Ime cone in naslov primarnega strežnika sta obvezna."
 msgid "Invalid hostname."
 msgstr "Neveljavno ime gostitelja."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "Obstaja že cona s tem imenom."
 
@@ -1265,21 +1265,21 @@ msgstr ""
 msgid "Zone has been converted to a primary zone."
 msgstr "Cona je bila pretvorjena v primarno cono."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "Nimate dovoljenja za ustvarjanje con za druge uporabnike."
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Neznani ID-ji skupin: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Dodelite lahko le skupine, katerih ste član (nedovoljeno: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr "Za lastnika mora biti izbran vsaj en uporabnik ali skupina."
 
@@ -1426,7 +1426,7 @@ msgstr "Ni moč pridobiti podatkov RDAP z uporabo strežnika %s"
 msgid "Invalid CSRF token."
 msgstr "Neveljaven žeton CSRF."
 
-#: lib/BaseController.php:598
+#: lib/BaseController.php:624
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -1459,7 +1459,7 @@ msgstr "Za izbris ni izbranih zapisov."
 msgid "Describe why you are making this change."
 msgstr "Opišite, zakaj izvajate to spremembo."
 
-#: lib/Application/Controller/DeleteRecordsController.php:233
+#: lib/Application/Controller/DeleteRecordsController.php:229
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
@@ -1467,7 +1467,7 @@ msgstr ""
 "Zapis je bil uspešno izbrisan. Odstranjeni so bili tudi vsi ustrezni zapisi "
 "PTR."
 
-#: lib/Application/Controller/DeleteRecordsController.php:235
+#: lib/Application/Controller/DeleteRecordsController.php:231
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1476,17 +1476,17 @@ msgstr ""
 "%d zapisov je bilo uspešno izbrisanih. Odstranjeni so bili tudi vsi ustrezni "
 "zapisi PTR."
 
-#: lib/Application/Controller/DeleteRecordsController.php:238
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid "No records could be deleted. Please check permissions."
 msgstr "Nobenih zapisov ni bilo mogoče izbrisati. Prosim preverite dovoljenja."
 
-#: lib/Application/Controller/DeleteRecordsController.php:305
+#: lib/Application/Controller/DeleteRecordsController.php:301
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "Za izbris ni izbranih veljavnih zapisov ali pa nimate dovoljenja za izbris."
 
-#: lib/Domain/Service/Dns/DomainManager.php:182
+#: lib/Domain/Service/Dns/DomainManager.php:183
 msgid "Invalid or unexpected input given."
 msgstr "Neveljaven ali nepričakovan vnos."
 
@@ -1498,7 +1498,7 @@ msgstr "Nimate dovoljenja za brisanje tega uporabnika."
 msgid "You do not have permission to delete a superuser account."
 msgstr "Nimate dovoljenja za brisanje superuporabniškega računa."
 
-#: lib/Application/Controller/EditUserController.php:597
+#: lib/Application/Controller/ZoneOwnershipController.php:186
 msgid "User does not exist."
 msgstr "Uporabnik ne obstaja."
 
@@ -1523,7 +1523,7 @@ msgstr "Funkcija za komentarje cone je v nastavitvah onemogočena."
 msgid "You do not have the permission to view this comment."
 msgstr "Nimate dovoljenja za ogled tega komentarja."
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:606
 msgid "You do not have the permission to edit this comment."
 msgstr "Nimate dovoljenja za urejanje tega komentarja."
 
@@ -1539,34 +1539,34 @@ msgstr "Neveljaven ID zapisa."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Nimate dovoljenja za brisanje zapisov v tej coni."
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:509
 msgid "Record not found."
 msgstr "Zapis ni najden."
 
-#: lib/Application/Controller/DeleteRecordController.php:216
+#: lib/Application/Controller/DeleteRecordController.php:212
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr ""
 "Zapis in njegovi ustrezni zapisi PTR in A/AAAA so bili uspešno izbrisani."
 
-#: lib/Application/Controller/DeleteRecordController.php:218
+#: lib/Application/Controller/DeleteRecordController.php:214
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "Zapis in njegov ustrezni zapis PTR sta bila uspešno izbrisana."
 
-#: lib/Application/Controller/DeleteRecordController.php:220
+#: lib/Application/Controller/DeleteRecordController.php:216
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "Zapis in ustrezen zapis A/AAAA sta bila uspešno izbrisana."
 
-#: lib/Application/Controller/DeleteRecordController.php:222
+#: lib/Application/Controller/DeleteRecordController.php:218
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr "Zapis je bil uspešno izbrisan. Ustrezen zapis PTR ni bil najden."
 
-#: lib/Application/Controller/DeleteRecordController.php:224
+#: lib/Application/Controller/DeleteRecordController.php:220
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -1577,7 +1577,7 @@ msgstr ""
 msgid "The record has been deleted successfully."
 msgstr "Zapis je bil uspešno izbrisan."
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:516
 msgid "You cannot delete records from a read-only zone."
 msgstr "Iz cone samo za branje ne morete brisati zapisov."
 
@@ -1639,7 +1639,7 @@ msgstr "Nimate dovoljenja za upravljanje članov skupine."
 msgid "Manage Group Members"
 msgstr "Upravljajte člane skupine"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:112
+#: lib/Application/Controller/ManageGroupZonesController.php:118
 msgid "Invalid action."
 msgstr "Neveljavno dejanje."
 
@@ -1711,7 +1711,7 @@ msgstr "Zahteva se potrditvena koda."
 msgid "MFA has been enabled successfully."
 msgstr "MFA je bil uspešno omogočen."
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "Neveljavna potrditvena koda. Prosim, poskusite znova."
 
@@ -1786,7 +1786,7 @@ msgstr "Nimate dovoljenja za ogled supermasterjev."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Nimate dovoljenja za ogled metapodatkov cone."
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:831
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Nimate dovoljenja za urejanje metapodatkov cone."
 
@@ -1950,7 +1950,7 @@ msgstr "Neveljavna vrsta zapisa."
 msgid "Record could not be added."
 msgstr "Zapisa ni bilo mogoče dodati."
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:529
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "Uspešno je bilo dodanih %d zapisov."
@@ -2001,11 +2001,11 @@ msgstr "Predloge dovoljenj ni bilo mogoče posodobiti."
 msgid "Groups"
 msgstr "Skupine"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "Nimate dovoljenja za iskanje."
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "Iskanje"
@@ -2027,7 +2027,7 @@ msgstr "Številka strani mora biti vsaj 1."
 msgid "Page number exceeds available pages."
 msgstr "Številka strani presega razpoložljive strani."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:75
 msgid "Invalid request method."
 msgstr "Neveljaven način zahteve."
 
@@ -2048,7 +2048,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "Nimate dovoljenja za dodajanje novega uporabnika."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "Dodaj uporabnika"
 
@@ -2087,7 +2087,7 @@ msgstr "Geslo je bilo ustvarjeno, vendar ni prikazano iz varnostnih razlogov."
 msgid "Please fill in all required fields correctly."
 msgstr "Prosimo, izpolnite vsa zahtevana polja pravilno."
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:542
 msgid "You do not have the permission to delete this record."
 msgstr "Nimate dovoljenja za izbris tega zapisa."
 
@@ -2095,7 +2095,7 @@ msgstr "Nimate dovoljenja za izbris tega zapisa."
 msgid "The record could not be deleted."
 msgstr "Zapisa ni bilo moč zbrisati."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "Dnevniki con"
@@ -2117,7 +2117,7 @@ msgstr "Katalog objavljajo samo proizvajalske cone."
 msgid "You do not have permission to access this zone."
 msgstr "Nimate dovoljenja za dostop do te cone."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:753
 msgid "You do not have permission to edit this zone."
 msgstr "Nimate dovoljenja za urejanje te cone."
 
@@ -2125,7 +2125,7 @@ msgstr "Nimate dovoljenja za urejanje te cone."
 msgid "The zone has been added to the catalog."
 msgstr "Cona je bila dodana v katalog."
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:613
 msgid "The zone has been removed from the catalog."
 msgstr "Cona je bila odstranjena iz kataloga."
 
@@ -2162,7 +2162,7 @@ msgstr "Uredi predlogo cone"
 msgid "There is no zone template with this ID."
 msgstr "S tem ID-jem ni predloge cone."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "Predloga cone je bila uspešno posodobljena."
 
@@ -2183,7 +2183,7 @@ msgstr "Cone so bile uspešno posodobljene."
 msgid "You do not have permission to create new zone templates."
 msgstr "Nimate dovoljenja za ustvarjanje novih predlog cone."
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Predloga cone s tem imenom že obstaja, izberite drugo."
 
@@ -2211,7 +2211,7 @@ msgstr "Neveljaven ID predloge."
 msgid "Template does not exist."
 msgstr "Predloga ne obstaja."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:522
 msgid "You do not have permission to view this zone."
 msgstr "Nimate dovoljenja za ogled te cone."
 
@@ -2271,7 +2271,7 @@ msgstr "Uredi cono"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nimate dovoljenja za upravljanje DNSSEC za to cono."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:337
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC ni omogočen na strežniku."
 
@@ -2281,15 +2281,15 @@ msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr ""
 "Ta cona je predpodpisana; ključi DNSSEC se upravljajo na primarnem strežniku."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "Cona je že podpisana z DNSSEC."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "Zona je bila uspešno podpisana."
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2297,7 +2297,7 @@ msgstr ""
 "Podpisovanje cone je bilo zahtevano uspešno, vendar preverjanje ni uspelo. "
 "Preveri DNSSEC ključe."
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2325,23 +2325,23 @@ msgstr ""
 "Odstranitev podpisa cone ni uspela. Za podrobnosti preverite dnevnike "
 "PowerDNS."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:619
 msgid "The catalog has been changed successfully."
 msgstr "Katalog je bil uspešno spremenjen."
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:637
 msgid "Zone type has been changed successfully."
 msgstr "Vrsta cone je bila uspešno spremenjena."
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:644
 msgid "Slave master has been changed successfully."
 msgstr "Nadrejeni strežnik (master) je bil uspešno spremenjen."
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:658
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Predloge ne morete uporabiti na coni samo za branje."
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:680
 msgid "Zone template has been changed successfully."
 msgstr "Predloga cone je bila uspešno spremenjena."
 
@@ -2349,7 +2349,7 @@ msgstr "Predloga cone je bila uspešno spremenjena."
 msgid "You cannot edit records in a read-only zone."
 msgstr "V coni samo za branje ne morete urejati zapisov."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:863
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2359,19 +2359,19 @@ msgstr ""
 "omejitev števila polj. Skrbnika prosite, naj poveča nastavitev PHP "
 "\"max_input_vars\"."
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:971
 msgid "Zone has not been updated successfully."
 msgstr "Cona ni bila uspešno posodobljena."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:972
 msgid "Request has expired, please try again."
 msgstr "Zahteva je potekla, prosim poskusite znova."
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:981
 msgid "Zone has been updated successfully."
 msgstr "Cona je bila uspešno posodobljena."
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:982
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2379,7 +2379,11 @@ msgstr ""
 "Cona je bila uspešno shranjena. Zapisi niso bili spremenjeni, vendar je bila "
 "serijska številka SOA povečana."
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Domain/Service/Dns/RecordManager.php:289
+msgid "You do not have the permission to add a record to this zone."
+msgstr "Nimate dovoljenja za dodajanje zapisa v to cono."
+
+#: lib/Application/Controller/EditController.php:1024
 msgid "Please provide all required fields."
 msgstr "Navedite vsa zahtevana polja."
 
@@ -2387,7 +2391,7 @@ msgstr "Navedite vsa zahtevana polja."
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Zapis uspešno dodan. Ustvarjen je bil tudi ustrezen zapis PTR."
 
-#: lib/Application/Controller/AddRecordController.php:266
+#: lib/Application/Controller/AddRecordController.php:510
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Zapis je bil uspešno dodan, vendar ustvarjanje zapisa PTR ni uspelo: "
 
@@ -2404,19 +2408,19 @@ msgstr "Zapis uspešno dodan. Ustvarjen je bil tudi ustrezen zapis A."
 msgid "Invalid security token. Please try again."
 msgstr "Neveljaven varnostni žeton. Prosim, poskusite znova."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr "Preveč neuspešnih poskusov. Poskusite znova pozneje."
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "Ni najdenega zapisa MFA. Prosim kontaktirajte administratorja."
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "Prišlo je do napake. Prosim, poskusite znova."
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2424,15 +2428,15 @@ msgstr ""
 "Preverjanje e-pošte ni na voljo, ker je poštna storitev onemogočena. "
 "Uporabite obnovitveno kodo."
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "Nova potrditvena koda je bila poslana na vašo e-pošto."
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "Namesto tega uporabite obnovitveno kodo."
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2440,29 +2444,25 @@ msgstr ""
 "Potrditvene kode ni bilo mogoče poslati na vaš e-poštni naslov. Namesto tega "
 "uporabite obnovitveno kodo."
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
-msgid "You do not have the permission to add a record to this zone."
-msgstr "Nimate dovoljenja za dodajanje zapisa v to cono."
-
 #: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "Zapis uspešno dodan."
 
-#: lib/Application/Controller/AddRecordController.php:464
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "No records were provided."
 msgstr "Zapisi niso bili predloženi."
 
-#: lib/Application/Controller/AddRecordController.php:533
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Ustvarjeni so bili tudi ustrezni zapisi %d."
 
-#: lib/Application/Controller/AddRecordController.php:536
+#: lib/Application/Controller/AddRecordController.php:534
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d zapisov ni bilo mogoče dodati."
 
-#: lib/Application/Controller/AddRecordController.php:541
+#: lib/Application/Controller/AddRecordController.php:539
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2470,7 +2470,7 @@ msgstr ""
 "Nekaterih zapisov ni bilo mogoče dodati. Lahko že obstajajo ali vsebujejo "
 "neveljavne podatke."
 
-#: lib/Application/Controller/AddRecordController.php:571
+#: lib/Application/Controller/AddRecordController.php:569
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Dodajanje zapisov ni uspelo. Lahko vsebujejo neveljavne podatke."
 
@@ -2478,7 +2478,7 @@ msgstr "Dodajanje zapisov ni uspelo. Lahko vsebujejo neveljavne podatke."
 msgid "No zone selected for deletion."
 msgstr "Za izbris ni izbrane cone."
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1013
 msgid "You do not have the permission to delete a zone."
 msgstr "Nimate dovoljenja za brisanje cone."
 
@@ -2543,7 +2543,7 @@ msgstr ""
 "Ključa PEM ni bilo mogoče pridobiti. Strežnik morda ne razkriva zasebnega "
 "ključnega gradiva za ta ključ."
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "Nimate dovoljenja za dodajanje glavne cone."
 
@@ -2575,7 +2575,7 @@ msgstr ""
 "Vnesite omrežje v zapisu CIDR (na primer 192.168.1.0/24 ali 2001:db8::/48) "
 "ali ime obratne cone, ki se konča z in-addr.arpa ali ip6.arpa."
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2583,7 +2583,7 @@ msgstr ""
 "Cona je bila uspešno ustvarjena, vendar se je podpis DNSSEC zaradi napak pri "
 "validaciji preskočil:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2592,11 +2592,11 @@ msgstr ""
 "Preverjanje cone je bilo uspešno, vendar je PowerDNS API vrnil napako. Za "
 "podrobnosti preverite dnevnike PowerDNS."
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Cona je bila vzpostavljena in podpisana z DNSSEC uspešno."
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2612,16 +2612,16 @@ msgstr "Cona je bila uspešno dodana."
 msgid "Batch PTR record creation is not enabled."
 msgstr "Ustvarjanje zapisa serije PTR ni omogočeno."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:88
+#: lib/Application/Controller/BatchPtrRecordController.php:89
 msgid "You do not have permission to edit DNS records."
 msgstr "Nimate dovoljenja za urejanje DNS zapisov."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:93
+#: lib/Application/Controller/BatchPtrRecordController.php:94
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
 msgstr "Zapisi PTR serije"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:109
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Ustvarjanje serijskih zapisov PTR ni na voljo za obratne cone."
 
@@ -2725,19 +2725,25 @@ msgstr "Pogledi"
 msgid "Invalid key ID."
 msgstr "Neveljaven ID ključa."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:107
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
+msgid ""
+"DNSSEC functionality is not available. Please check PowerDNS API "
+"configuration."
+msgstr "Funkcija DNSSEC ni na voljo. Preverite nastavitve PowerDNS API."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Ključ DNSSEC ni najden ali ne obstaja več."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:111
+#: lib/Application/Controller/DnssecDeleteKeyController.php:113
 msgid "Zone key has been deleted successfully."
 msgstr "Ključ cone je bil uspešno izbrisan."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:119
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "Failed to delete the zone key."
 msgstr "Ključa cone ni bilo mogoče izbrisati."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:126
+#: lib/Application/Controller/DnssecDeleteKeyController.php:128
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Prišlo je do napake pri brisanju ključa DNSSEC: "
 
@@ -2771,23 +2777,23 @@ msgstr "Nimate dovolj dovoljenj za ogled te strani."
 msgid "Reverse Zones"
 msgstr "Obratne cone"
 
-#: lib/Application/Controller/ListForwardZonesController.php:283
+#: lib/Application/Controller/ListForwardZonesController.php:296
 msgid "You do not have the permission to see any zones."
 msgstr "Nimate dovoljenja za ogled con."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:79
+#: lib/Application/Controller/ManageGroupZonesController.php:85
 msgid "You do not have permission to manage zone ownership."
 msgstr "Nimate dovoljenja za upravljanje lastništva con."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:93
+#: lib/Application/Controller/ManageGroupZonesController.php:99
 msgid "Manage Group Zones"
 msgstr "Upravljajte cone skupine"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:230
+#: lib/Application/Controller/ManageGroupZonesController.php:236
 msgid "Please select at least one zone."
 msgstr "Izberite vsaj eno cono."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:166
+#: lib/Application/Controller/ManageGroupZonesController.php:172
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
@@ -2796,7 +2802,7 @@ msgstr[1] "cone %d, dodane skupini."
 msgstr[2] "cone %d, dodane skupini."
 msgstr[3] "cone %d, dodane skupini."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:209
+#: lib/Application/Controller/ManageGroupZonesController.php:215
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
@@ -2805,7 +2811,7 @@ msgstr[1] "con %d ni bilo mogoče dodati."
 msgstr[2] "con %d ni bilo mogoče dodati."
 msgstr[3] "con %d ni bilo mogoče dodati."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:251
+#: lib/Application/Controller/ManageGroupZonesController.php:257
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
@@ -2814,7 +2820,7 @@ msgstr[1] "cone %d, odstranjene iz skupine."
 msgstr[2] "cone %d, odstranjene iz skupine."
 msgstr[3] "cone %d, odstranjene iz skupine."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:294
+#: lib/Application/Controller/ManageGroupZonesController.php:300
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2882,38 +2888,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "Dodeljenih %d con; %d neuspešnih"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "Kanonični ID cone je popravljen"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "Popravljanje kanoničnega ID-ja cone ni uspelo"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "Ni con brez kanoničnega ID-ja za popravilo"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "Popravljen kanonični ID %d con"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "Popravljenih %d con; %d neuspešnih"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "Podrejena cona je bila uspešno izbrisana"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "Podrejene cone ni bilo mogoče izbrisati"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "Siroten zapis je bil uspešno izbrisan"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "Ni uspelo zbrisati osirotelega zapisa"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Podvojeni zapisi SOA so bili uspešno popravljeni"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "Podvojenih zapisov SOA ni bilo mogoče popraviti"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "Privzeti zapis SOA je bil uspešno ustvarjen"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "Ni uspelo ustvariti privzetega zapisa SOA"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "Neveljavna vrsta preverjanja"
 
@@ -2921,7 +2949,7 @@ msgstr "Neveljavna vrsta preverjanja"
 msgid "You have logged out."
 msgstr "Odjavil si se."
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "Nimate dovoljenja za dodajanje predloge cone."
 
@@ -2954,7 +2982,7 @@ msgstr "Nimate dovoljenja za dodajanje podrejene cone."
 msgid "Add Secondary Zone"
 msgstr "Dodaj sekundarno cono"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "Nimate dovoljenja za brisanje predlog cone."
 
@@ -2974,21 +3002,57 @@ msgstr "Supermaster, ki ga poskušate urediti, ne obstaja."
 msgid "The supermaster has been updated successfully."
 msgstr "Supermaster je bil uspešno posodobljen."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
 msgid "You do not have permission to manage group zones."
 msgstr "Nimate dovoljenja za upravljanje skupinskih con."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:80
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
 msgid "Invalid group or zone ID."
 msgstr "Neveljavna oznaka skupine ali cone."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:104
 msgid "Zone removed from group successfully."
 msgstr "Cona uspešno odstranjena iz skupine."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:93
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:106
 msgid "Zone was not owned by this group."
 msgstr "Zona ni bila v lasti te skupine."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:309
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"Ni mogoče odstraniti zadnje skupine: način lastništva cone je groups_only in "
+"zahteva vsaj eno skupino. Najprej dodajte drugo skupino."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:315
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"Ni mogoče odstraniti skupine: način lastništva cone je users_only in cona "
+"nima lastnikov uporabnikov. Najprej dodajte lastnika uporabnika."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:343
+msgid "Add another owner or a group first."
+msgstr "Najprej dodajte drugega lastnika ali skupino."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr ""
+"Najprej dodajte drugega lastnika uporabnika (način lastništva cone je "
+"users_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:348
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "Najprej dodajte skupino (način lastništva cone je groups_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr ""
+"Ni moč odstraniti zadnjega lastnika: to bi zapustilo cono brez lastništva."
 
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
@@ -3193,7 +3257,7 @@ msgstr "Odjava zaključena (z opozorili): "
 msgid "You do not have permission to view this record."
 msgstr "Nimate dovoljenja za ogled tega zapisa."
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have permission to edit this record."
 msgstr "Nimate dovoljenja za urejanje tega zapisa."
 
@@ -3237,42 +3301,19 @@ msgstr ""
 msgid "Change password"
 msgstr "Spremeni geslo"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
-msgid "ECDSA P-256 algorithm must use 256 bits"
-msgstr "Algoritem ECDSA P-256 mora uporabljati 256 bitov."
-
-#: lib/Application/Controller/DnssecAddKeyController.php:136
-msgid "ECDSA P-384 algorithm must use 384 bits"
-msgstr "Algoritem ECDSA P-384 mora uporabljati 384 bitov"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:142
-msgid "ED25519 algorithm must use 256 bits"
-msgstr "Algoritem ED25519 mora uporabljati 256 bitov."
-
-#: lib/Application/Controller/DnssecAddKeyController.php:147
-msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr ""
-"Algoritem ED448 mora uporabljati 456 bitov (nepodprt v tem uporabniškem "
-"vmesniku)"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:154
-msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr ""
-"algoritmi RSA morajo za ustrezno varnost uporabljati 1024 ali 2048 bitov."
-
-#: lib/Application/Controller/DnssecAddKeyController.php:176
+#: lib/Application/Controller/DnssecAddKeyController.php:144
 msgid "Zone key has been added successfully."
 msgstr "Ključ cone je bil uspešno dodan."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:180
+#: lib/Application/Controller/DnssecAddKeyController.php:148
 msgid "Failed to add new DNSSEC key."
 msgstr "Dodajanje novega ključa DNSSEC ni uspelo."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:184
+#: lib/Application/Controller/DnssecAddKeyController.php:152
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Prišlo je do napake pri dodajanju ključa DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:188
+#: lib/Application/Controller/DnssecAddKeyController.php:156
 msgid "Please select both algorithm and bits"
 msgstr "Izberite algoritem in bite"
 
@@ -3314,19 +3355,19 @@ msgstr "Supermaster je bil uspešno izbrisan."
 msgid "Bulk Registration"
 msgstr "Množična registracija"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "Lastnik mora biti številčni uporabniški ID."
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "Cone ni bilo mogoče dodati."
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "Cone so bile uspešno dodane."
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "Nekaterih con ni bilo mogoče dodati."
 
@@ -3356,17 +3397,15 @@ msgstr ""
 "Dodelitev uporabnika-lastnik je onemogočena s trenutnim načinom lastništva "
 "cone."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Domain/Service/Dns/DomainManager.php:894
+msgid "The selected user already owns the zone."
+msgstr "Izbrani uporabnik je že lastnik cone."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:197
 msgid "Owner has been added successfully."
 msgstr "Lastnik je bil uspešno dodan."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:293
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr ""
-"Ni moč odstraniti zadnjega lastnika: to bi zapustilo cono brez lastništva."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
@@ -3375,7 +3414,7 @@ msgstr ""
 "users_only in zahteva vsaj enega lastnika uporabnika. Najprej dodajte "
 "drugega lastnika uporabnika."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
@@ -3383,58 +3422,28 @@ msgstr ""
 "Ni mogoče odstraniti lastnika uporabnika: način lastništva cone je "
 "groups_only in cona nima lastnikov skupin. Najprej dodajte skupino."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "Lastnik je bil uspešno odstranjen."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:250
+#: lib/Application/Controller/ZoneOwnershipController.php:260
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr ""
 "Dodelitev lastništva skupine je onemogočena zaradi trenutnega načina "
 "lastništva cone."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:262
+#: lib/Application/Controller/ZoneOwnershipController.php:272
 msgid "You do not have permission to assign this group."
 msgstr "Nimate dovoljenja za dodelitev te skupine."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:270
+#: lib/Application/Controller/ZoneOwnershipController.php:280
 msgid "Group has been added successfully."
 msgstr "Skupina je bila uspešno dodana."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:299
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr ""
-"Ni mogoče odstraniti zadnje skupine: način lastništva cone je groups_only in "
-"zahteva vsaj eno skupino. Najprej dodajte drugo skupino."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:305
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr ""
-"Ni mogoče odstraniti skupine: način lastništva cone je users_only in cona "
-"nima lastnikov uporabnikov. Najprej dodajte lastnika uporabnika."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:310
+#: lib/Application/Controller/ZoneOwnershipController.php:320
 msgid "Group has been removed successfully."
 msgstr "Skupina je bila uspešno odstranjena."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:333
-msgid "Add another owner or a group first."
-msgstr "Najprej dodajte drugega lastnika ali skupino."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Najprej dodajte drugega lastnika uporabnika (način lastništva cone je "
-"users_only)."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:338
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Najprej dodajte skupino (način lastništva cone je groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3445,42 +3454,51 @@ msgstr "Stran ni najdena"
 msgid "This action requires a POST request."
 msgstr "To dejanje zahteva zahtevo POST."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:92
-msgid ""
-"DNSSEC functionality is not available. Please check PowerDNS API "
-"configuration."
-msgstr "Funkcija DNSSEC ni na voljo. Preverite nastavitve PowerDNS API."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:118
+#: lib/Application/Controller/DnssecToggleKeyController.php:120
 msgid "Zone key has been successfully deactivated."
 msgstr "Ključ cone je bil uspešno deaktiviran."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:121
 msgid "Failed to deactivate zone key."
 msgstr "Ni uspelo deaktivirati ključa cone."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:122
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "Zone key has been successfully activated."
 msgstr "Ključ cone je bil uspešno aktiviran."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:123
+#: lib/Application/Controller/DnssecToggleKeyController.php:125
 msgid "Failed to activate zone key."
 msgstr "Ni uspelo aktivirati ključa cone."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:136
+#: lib/Application/Controller/DnssecToggleKeyController.php:138
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
 "Prišlo je do napake pri preklapljanju ključa DNSSEC. Prosim, poskusite znova."
 
-#: lib/Application/Service/RequestValidator.php:69
+#: lib/Application/Service/RequestValidator.php:87
 #, php-format
 msgid "The %s field is required."
 msgstr "Polje %s je potrebno."
 
-#: lib/Application/Service/RequestValidator.php:77
+#: lib/Application/Service/RequestValidator.php:90
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Polje %s mora biti številka."
+
+#: lib/Application/Service/RequestValidator.php:94
+#, php-format
+msgid "The %s field must be a list."
+msgstr "Polje %s mora biti seznam."
+
+#: lib/Application/Service/RequestValidator.php:98
+#, php-format
+msgid "The %s field must be at most %d characters."
+msgstr "Polje %s ima lahko največ %d znakov."
+
+#: lib/Application/Service/RequestValidator.php:102
+#, php-format
+msgid "The %s field has an invalid value."
+msgstr "Polje %s ima neveljavno vrednost."
 
 #: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
 #: templates/modern/users.html:222
@@ -3496,11 +3514,11 @@ msgstr "Ne"
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Račun je začasno zaklenjen. Prosim, poskusite kasneje."
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "Uporabniški račun je onemogočen."
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "Overovitev ni uspela!"
 
@@ -3529,7 +3547,7 @@ msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Overovitev ni uspela: Ni moč ustvariti ali posodobiti uporabniškega računa"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "Overovitev LDAP ni uspela!"
 
@@ -3750,7 +3768,7 @@ msgid ""
 msgstr ""
 "Prikaz stanja povezljivosti za supermasterje, nastavljene v spodnji tabeli."
 
-#: lib/Infrastructure/Web/PageRenderer.php:132
+#: lib/Infrastructure/Web/PageRenderer.php:133
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3758,8 +3776,7 @@ msgstr ""
 "Uporabljen je privzet sejni šifrirni ključ, prosim nastavite ga v "
 "nastavitveni datoteki."
 
-#: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
+#: lib/Infrastructure/Web/PageRenderer.php:137
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3767,7 +3784,7 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/Infrastructure/Web/PageRenderer.php:253
+#: lib/Infrastructure/Web/PageRenderer.php:254
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr ""
@@ -3830,43 +3847,43 @@ msgstr "E-poštni naslov že obstaja, izberite drugega."
 msgid "Enter a valid user name."
 msgstr "Vnesite veljavno uporabniško ime."
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "Predloga cone ni najdena."
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "Kot privzeto se lahko nastavijo samo globalne predloge cone."
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "Napaka pri nastavljanju privzete predloge cone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "Napaka pri odpravljanju privzete predloge cone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "Napaka pri ustvarjanju predloge cone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "Napaka pri dodajanju privzetega zapisa SOA v predlogo: "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Napaka pri brisanju predloge cone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "Napaka pri brisanju uporabniških predlog cone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Nimate dovoljenja za dodajanje zapisa v to predlogo cone."
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Nimate dovoljenja za dodajanje te vrste zapisa v predlogo cone."
@@ -3879,33 +3896,33 @@ msgstr "Vaše vsebinsko polje nima legitimne vrednosti."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Prednost za zapise MX/SRV mora biti številka med 0 in 65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "Napaka pri dodajanju zapisa predloge cone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "Zapis ne pripada tej predlogi cone."
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "Napaka pri posodabljanju zapisa predloge cone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Nimate dovoljenja za brisanje te vrste zapisa iz predloge cone."
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "Napaka pri brisanju zapisa predloge cone: "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "Napaka pri preverjanju lastništva predloge: "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3914,35 +3931,35 @@ msgstr ""
 "Te vrste zapisov niso bile vključene v predlogo, ker jih ne smete dodajati: "
 "%s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "Napaka pri pridobivanju con z uporabo predloge: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "Ni moč dobiti seznama območij z uporabo predloge: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nimate dovoljenja za urejanje predloge cone."
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "Napaka pri razvezovanju cone iz predloge: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "Napaka pri pridobivanju območij: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "Napaka pri preverjanju obstoja imena predloge: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "Napaka pri iskanju predloge po imenu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "Napaka pri preverjanju obstoja predloge: "
 
@@ -4002,50 +4019,59 @@ msgstr ""
 "Pogledi zahtevajo \"views=yes\" v pdns.conf. Na povezanem strežniku so "
 "onemogočeni."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "Vse cone imajo lastnike"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "Najdenih %d con brez lastnikov"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "Vse podrejene cone imajo glavne naslove IP"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "Najdenih %d podrejenih con brez glavnih naslovov IP"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "Vsi zapisi pripadajo obstoječim conam"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "Najdenih %d osirotelih zapisov"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "Ni najdenih podvojenih zapisov SOA."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d con ima podvojene zapise SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "Vse cone imajo zapise SOA."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "Najdenih %d con brez zapisov SOA"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "Vse cone imajo kanonični ID"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "Najdenih %d con brez kanoničnega ID-ja"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -7618,7 +7644,7 @@ msgstr ""
 "Vrednost contactphone mora vsebovati samo številke, presledke in običajna "
 "ločila telefonskih številk."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:464
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:467
 msgid "Value must be enclosed in double quotes."
 msgstr "Vrednost mora biti dodana v dvojnih narekovajih."
 
@@ -9257,15 +9283,17 @@ msgstr ""
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "NAPTR zapis z regexp mora imeti \".\" kot zamenjava."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
-msgstr "Storitev NAPTR mora slediti obliki: [protocol][+rs][+rs]... kjer sta protocol in rs ločena z znaki plus, vsak se začne s črko in vsebuje samo črke, števke, vezaje ali dvopičja (največ 32 znakov vsak)."
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
+"and rs are separated by plus signs, each start with a letter and contain "
+"only letters, digits, hyphens or colons (max 32 chars each)."
+msgstr ""
+"Storitev NAPTR mora slediti obliki: [protocol][+rs][+rs]... kjer sta "
+"protocol in rs ločena z znaki plus, vsak se začne s črko in vsebuje samo "
+"črke, števke, vezaje ali dvopičja (največ 32 znakov vsak)."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:362
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
@@ -9273,11 +9301,11 @@ msgstr ""
 "Terminalne zastave \"S\", \"A\", \"U\" in \"P\" se ne smejo kombinirati z "
 "drugimi zastavami."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:381
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:384
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr "NAPTR regexp se mora začeti z znakom razmejitve."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:387
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:390
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
@@ -9285,7 +9313,7 @@ msgstr ""
 "NAPTR regexp mora imeti obliko "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:394
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:397
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
@@ -9293,7 +9321,7 @@ msgstr ""
 "Zastave NAPTR regexp (po tretji razmejitvi) naj vsebujejo samo \"i\" ali pa "
 "naj bodo prazne."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:412
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
@@ -9301,15 +9329,15 @@ msgstr ""
 "Zdi se, da gre za zapis ENUM NAPTR (RFC 6116). Poskrbite, da je domena pod "
 "e164.arpa ali pod zasebnim drevesom ENUM."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:413
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:416
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr "ENUM zapisi morajo imeti oznako \"U\", ki označuje izhod URI."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:440
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:443
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr "NAPTR regexp vsebuje potencialno nevaren vzorec: "
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:447
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:450
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr "NAPTR regexp je predolgo. Največja dolžina je 1000 znakov."
 
@@ -9478,6 +9506,29 @@ msgstr "Nimate dovoljenja za brisanje ključev API."
 msgid "You do not have permission to regenerate API keys."
 msgstr "Nimate dovoljenja za regeneracijo API ključev."
 
+#: lib/Domain/Service/DnssecKeySpecValidator.php:56
+msgid "ECDSA P-256 algorithm must use 256 bits"
+msgstr "Algoritem ECDSA P-256 mora uporabljati 256 bitov."
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:57
+msgid "ECDSA P-384 algorithm must use 384 bits"
+msgstr "Algoritem ECDSA P-384 mora uporabljati 384 bitov"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:58
+msgid "ED25519 algorithm must use 256 bits"
+msgstr "Algoritem ED25519 mora uporabljati 256 bitov."
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:59
+msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
+msgstr ""
+"Algoritem ED448 mora uporabljati 456 bitov (nepodprt v tem uporabniškem "
+"vmesniku)"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:60
+msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr ""
+"algoritmi RSA morajo za ustrezno varnost uporabljati 1024 ali 2048 bitov."
+
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr "V coni ni nobenega zapisa SOA ali aktivnega. To je potrebno za DNSSEC."
@@ -9563,17 +9614,17 @@ msgstr ""
 msgid "Unknown database type."
 msgstr "Neznan tip zbirke podatkov."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:102
+#: lib/Domain/Service/ReverseRecordCreator.php:103
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "Ni ustrezne obratne cone za: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:110
+#: lib/Domain/Service/ReverseRecordCreator.php:111
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "Zapis PTR za %s, ki kaže na %s, že obstaja."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:123
+#: lib/Domain/Service/ReverseRecordCreator.php:127
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -9582,27 +9633,27 @@ msgstr ""
 "Dodan reverzni zapis. Opozorilo: PTR zapis za %s že obstaja, kar kaže na: "
 "%s. Več zapisov PTR za isti IP se ne priporoča."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:245
+#: lib/Domain/Service/ReverseRecordCreator.php:249
 msgid "PTR update skipped: record type is not A or AAAA."
 msgstr "Posodobitev PTR preskočena: vrsta zapisa ni A ali AAAA."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:258
+#: lib/Domain/Service/ReverseRecordCreator.php:262
 msgid "Stale PTR record removed."
 msgstr "Zastarel zapis PTR je bil odstranjen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Zapis s tem imenom gostitelja, vrsto in vsebino že obstaja."
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "Dodajanje zapisa v zaledje DNS ni uspelo."
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:465
 msgid "Failed to update record in DNS backend."
 msgstr "Posodobitev zapisa v zaledju DNS ni uspela."
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:899
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Neveljavni argumenti za funkcijo %s %s"
@@ -9611,56 +9662,52 @@ msgstr "Neveljavni argumenti za funkcijo %s %s"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Obstaja že supermaster s tem IP naslovom in imenom gostitelja."
 
-#: lib/Domain/Service/Dns/DomainManager.php:225
+#: lib/Domain/Service/Dns/DomainManager.php:226
 msgid "Failed to create zone in DNS backend."
 msgstr "Ustvarjanje cone v zaledju DNS ni uspelo."
 
-#: lib/Domain/Service/Dns/DomainManager.php:440
+#: lib/Domain/Service/Dns/DomainManager.php:443
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Ustvarjanje cone ni uspelo: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:327
+#: lib/Domain/Service/Dns/DomainManager.php:328
 msgid "Failed to create SOA record for zone."
 msgstr "Ni uspelo ustvariti zapisa SOA za cono."
 
-#: lib/Domain/Service/Dns/DomainManager.php:382
+#: lib/Domain/Service/Dns/DomainManager.php:385
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "Ni uspelo ustvariti zapisa %s za cono."
 
-#: lib/Domain/Service/Dns/DomainManager.php:444
+#: lib/Domain/Service/Dns/DomainManager.php:447
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Neveljavni argumenti za funkcijo %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:570
 msgid "Failed to delete zone from DNS backend."
 msgstr "Brisanje cone iz zaledja DNS ni uspelo."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:527
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Čiščenje metapodatkov cone ni uspelo: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:618
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Brisanje metapodatkov cone ni uspelo: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:792
 msgid "Failed to update zone type in DNS backend."
 msgstr "Posodobitev vrste cone v zaledju DNS ni uspela."
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:846
 msgid "Failed to update zone master in DNS backend."
 msgstr "Posodobitev glavnega strežnika cone v zaledju DNS ni uspela."
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
-msgid "The selected user already owns the zone."
-msgstr "Izbrani uporabnik je že lastnik cone."
-
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1199
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Zapisov cone ni bilo mogoče posodobiti: %s"
@@ -10342,7 +10389,7 @@ msgstr "Pošlji reset povezavo"
 msgid "Group Management"
 msgstr "Upravljanje skupin"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "Ni najdenih skupin"
 
@@ -10428,7 +10475,7 @@ msgid ""
 msgstr ""
 "Člani skupine podedujejo ta dovoljenja samo za cone, ki so v lasti te skupine"
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "Izberite predlogo dovoljenj"
 
@@ -10619,15 +10666,15 @@ msgstr ""
 msgid "DNS Management"
 msgstr "Upravljanje DNS"
 
-#: templates/modern/index.html:58 templates/modern/pdns_status.html:159
+#: templates/modern/index.html:413 templates/modern/pdns_status.html:159
 msgid "Online"
 msgstr "Na spletu"
 
-#: templates/modern/index.html:60 templates/modern/pdns_status.html:161
+#: templates/modern/index.html:415 templates/modern/pdns_status.html:161
 msgid "Offline"
 msgstr "Brez povezave"
 
-#: templates/modern/index.html:441 templates/modern/header.html:300
+#: templates/modern/index.html:458 templates/modern/header.html:300
 msgid "Templates"
 msgstr "Predloge"
 
@@ -10639,15 +10686,15 @@ msgstr "Omrežja"
 msgid "Zone Operations"
 msgstr "Operacije s conami"
 
-#: templates/modern/index.html:157 templates/modern/index.html:461
+#: templates/modern/index.html:157 templates/modern/index.html:478
 msgid "Master Zone"
 msgstr "Glavna cona"
 
-#: templates/modern/index.html:167 templates/modern/index.html:471
+#: templates/modern/index.html:167 templates/modern/index.html:488
 msgid "Slave Zone"
 msgstr "Podrejena cona"
 
-#: templates/modern/index.html:197 templates/modern/index.html:501
+#: templates/modern/index.html:197 templates/modern/index.html:518
 msgid "PTR Records"
 msgstr "Zapisi PTR"
 
@@ -10672,7 +10719,7 @@ msgstr "Zbirka podatkov"
 msgid "TTL defaults"
 msgstr "Privzete vrednosti TTL"
 
-#: templates/modern/index.html:366 templates/modern/index.html:553
+#: templates/modern/index.html:366 templates/modern/index.html:570
 msgid "My Profile"
 msgstr "Moj profil"
 
@@ -10681,7 +10728,7 @@ msgstr "Moj profil"
 msgid "Password"
 msgstr "Geslo"
 
-#: templates/modern/index.html:572 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:389
 msgid "Preferences"
 msgstr "Nastavitve"
 
@@ -11218,19 +11265,19 @@ msgstr "Da, regeneriraj ta API ključ."
 msgid "No, keep current key"
 msgstr "Ne, obdrži trenutni ključ"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "Ponastavi geslo"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "Zahtevaj novo povezavo za ponastavitev"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "Geslo ne izpolnjuje zahtev"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "Vnesite novo geslo za"
 
@@ -11238,44 +11285,44 @@ msgstr "Vnesite novo geslo za"
 msgid "New password"
 msgstr "Novo geslo"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "Navedite geslo"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "Potrdi geslo"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "Gesla se ne ujemajo"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "Zahteve glede gesla"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "Najmanjša dolžina"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "znaki"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "Vsaj ena velika črka"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "Vsaj ena mala črka"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "Najmanj ena številka"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "Vsaj en poseben znak"
 
@@ -11368,7 +11415,6 @@ msgid "No SOA"
 msgstr "Brez SOA"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -11398,7 +11444,7 @@ msgstr "NOTIFY poslan pri serijski številki %serial%"
 msgid "Delete zone(s)"
 msgstr "Izbriši cono(-e)"
 
-#: templates/modern/dnssec_add_key.html:77
+#: templates/modern/dnssec_add_key.html:76
 msgid "Add key"
 msgstr "Dodaj ključ"
 
@@ -11430,11 +11476,11 @@ msgstr "Izberite algoritem"
 msgid "Bits in length"
 msgstr "Dolžina v bitih"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:70
 msgid "Select bits length"
 msgstr "Izberite dolžino bitov"
 
-#: templates/modern/dnssec_add_key.html:128
+#: templates/modern/dnssec_add_key.html:127
 msgid "Recommended bits for"
 msgstr "Priporočeni biti za"
 
@@ -11443,19 +11489,19 @@ msgstr "Priporočeni biti za"
 msgid "Warning:"
 msgstr "Opozorilo:"
 
-#: templates/modern/dnssec_add_key.html:136
+#: templates/modern/dnssec_add_key.html:135
 msgid "bits is not recommended for"
 msgstr "bitov ni priporočljivo za"
 
-#: templates/modern/dnssec_add_key.html:172
+#: templates/modern/dnssec_add_key.html:171
 msgid "About DNSSEC Key Types"
 msgstr "O tipih ključev DNSSEC"
 
-#: templates/modern/dnssec_add_key.html:175
+#: templates/modern/dnssec_add_key.html:174
 msgid "Key Types Explained"
 msgstr "Tipi ključev so pojasnjeni"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:176
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11463,19 +11509,19 @@ msgstr ""
 "Kombinirani podpisni ključ - služi kot KSK in ZSK (priporočeno za PowerDNS "
 "4.0+)"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:177
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Ključ za podpisovanje ključev - podpiše DNSKEY zapise v coni"
 
-#: templates/modern/dnssec_add_key.html:179
+#: templates/modern/dnssec_add_key.html:178
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Ključ za podpisovanje cone - podpiše vse druge zapise v coni"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:183
 msgid "Recommended Settings"
 msgstr "Priporočene nastavitve"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:184
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11561,16 +11607,16 @@ msgstr ""
 "Dovoljenja iz te predloge se bodo uporabljala po celem sistemu za tega "
 "uporabnika"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "Neobvezne informacije o tem uporabniku"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Omogočeno"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "Overovitev LDAP"
 
@@ -11578,7 +11624,7 @@ msgstr "Overovitev LDAP"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "Nastavitve avtentikacije lahko spremeni samo skrbnik"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "Za overovitev uporabi zunanji imenik LDAP"
 
@@ -11590,7 +11636,7 @@ msgstr "Nazaj na domačo stran"
 msgid "Back to Users"
 msgstr "Nazaj k uporabnikom"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "Podatki o računu"
 
@@ -11614,7 +11660,7 @@ msgstr "Mora vsebovati posebne znake"
 msgid "No specific password requirements"
 msgstr "Ni posebnih zahtev za geslo"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "Uporabniška dovoljenja"
 
@@ -11630,7 +11676,7 @@ msgstr "Na podlagi te predloge ima ta uporabnik naslednja dovoljenja"
 msgid "No permissions are assigned to this template"
 msgstr "V to predlogo niso dodeljena dovoljenja"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "Članstva v skupini"
 
@@ -11646,7 +11692,7 @@ msgstr "Prikaži podrobnosti o skupini"
 msgid "This user is not a member of any groups."
 msgstr "Ta uporabnik ni član nobene skupine."
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "Dodaj v skupine"
 
@@ -11655,7 +11701,7 @@ msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
 "Izberite eno ali več skupin in kliknite gumb \"Dodaj izbrane skupine\"."
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "Iskanje razpoložljivih skupin..."
 
@@ -12664,63 +12710,79 @@ msgstr "Ime cone"
 msgid "Assign owner"
 msgstr "Dodeli lastnika"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "Popravi"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "Cone brez kanoničnega ID-ja"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "Ali želite popraviti kanonični ID vseh navedenih con?"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "Popravi vse"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "Popravi kanonični ID"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "Podrejene cone brez glavnih naslovov IP"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "Glavni IP"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "Izbriši podrejeno cono"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "Zapisi, ki ne pripadajo nobeni coni"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "ID zapisa"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "Izbriši osirotel zapis"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "Cone s podvojenimi zapisi SOA"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "Število SOA"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "Obdrži prvi SOA, zbriši dvojnike"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "Cone brez zapisov SOA"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "Ustvari privzeti zapis SOA"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "Ste prepričani, da želite izbrisati podrejeno cono"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "Ste prepričani, da želite izbrisati osirotel zapis"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "Ali res želite zbrisati ta element?"
 
@@ -12761,15 +12823,15 @@ msgstr "Pošlji geslo po e-pošti"
 msgid "Send login credentials to user's email address"
 msgstr "Pošlji poverilnice za prijavo na e-poštni naslov uporabnika"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "Izberite predlogo..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "Izberite dovoljenja za tega uporabnika"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -12778,7 +12840,7 @@ msgstr ""
 "Pri ustvarjanju novega uporabnika bodo prejeli dovoljenja na podlagi izbrane "
 "predloge. Ta dovoljenja lahko kasneje spremenite z urejanjem uporabnika."
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr "Izberite skupine za dodajanje novega uporabnika ob ustvarjanju."
 
@@ -14473,26 +14535,26 @@ msgstr ""
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Izbrisali boste ključ DNSSEC (ID"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr ""
 "Vsi člani skupine bodo podedovali ta dovoljenja za cone v lasti te skupine"
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "Ustvari skupino"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "O skupinah"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "Kaj so skupine?"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -14501,11 +14563,11 @@ msgstr ""
 "dostopa do con. Člani podedujejo dovoljenja skupine za vse cone, ki so v "
 "lasti skupine."
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "Kako uporabljati skupine"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -15556,3 +15618,5 @@ msgid ""
 msgstr ""
 "Nastavitev jezikovnega okolja ni uspela. Izbrano jezikovno okolje v tem "
 "sistemu morda ni podprto. Obrnite se na skrbnika."
+
+

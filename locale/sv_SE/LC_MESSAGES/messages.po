@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-28 01:30+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -38,7 +38,7 @@ msgstr "Ogiltigt zon-ID."
 msgid "Zone not found."
 msgstr "Zonen hittades inte."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
+#: lib/Application/Controller/BatchPtrRecordController.php:115
 msgid "You do not have permission to add records to this zone."
 msgstr "Du har inte behörighet att lägga till poster i denna zon."
 
@@ -46,11 +46,11 @@ msgstr "Du har inte behörighet att lägga till poster i denna zon."
 msgid "Invalid wizard type."
 msgstr "Ogiltig guidetyp."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "Validering misslyckades:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "Kunde inte generera post:"
 
@@ -1235,7 +1235,7 @@ msgstr "Zonnamn och primär serveradress krävs."
 msgid "Invalid hostname."
 msgstr "Ogiltigt värdnamn."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "Det finns redan en zon med detta namn."
 
@@ -1263,21 +1263,21 @@ msgstr ""
 msgid "Zone has been converted to a primary zone."
 msgstr "Zonen har konverterats till en primär zon."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "Du har inte behörighet att skapa zoner för andra användare."
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Okänt grupp-ID: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Du kan endast tilldela grupper du är medlem i (ej tillåten: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr "Minst en användare eller grupp måste väljas som ägare."
 
@@ -1425,7 +1425,7 @@ msgstr "Kunde inte hämta RDAP-information med server %s"
 msgid "Invalid CSRF token."
 msgstr "Ogiltig CSRF-token."
 
-#: lib/BaseController.php:598
+#: lib/BaseController.php:624
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -1458,14 +1458,14 @@ msgstr "Inga poster valda för radering."
 msgid "Describe why you are making this change."
 msgstr "Beskriv varför du gör denna ändring."
 
-#: lib/Application/Controller/DeleteRecordsController.php:233
+#: lib/Application/Controller/DeleteRecordsController.php:229
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
 "Posten har raderats. Eventuella motsvarande PTR-poster togs också bort."
 
-#: lib/Application/Controller/DeleteRecordsController.php:235
+#: lib/Application/Controller/DeleteRecordsController.php:231
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1473,18 +1473,18 @@ msgid ""
 msgstr ""
 "%d poster har raderats. Eventuella motsvarande PTR-poster togs också bort."
 
-#: lib/Application/Controller/DeleteRecordsController.php:238
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid "No records could be deleted. Please check permissions."
 msgstr "Inga poster kunde raderas. Kontrollera behörigheterna."
 
-#: lib/Application/Controller/DeleteRecordsController.php:305
+#: lib/Application/Controller/DeleteRecordsController.php:301
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "Inga giltiga poster valda för radering eller så saknar du behörighet att "
 "radera dem."
 
-#: lib/Domain/Service/Dns/DomainManager.php:182
+#: lib/Domain/Service/Dns/DomainManager.php:183
 msgid "Invalid or unexpected input given."
 msgstr "Ogiltiga eller oväntade indata angavs."
 
@@ -1496,7 +1496,7 @@ msgstr "Du har inte behörighet att radera denna användare."
 msgid "You do not have permission to delete a superuser account."
 msgstr "Du har inte behörighet att radera ett superanvändarkonto."
 
-#: lib/Application/Controller/EditUserController.php:597
+#: lib/Application/Controller/ZoneOwnershipController.php:186
 msgid "User does not exist."
 msgstr "Användaren finns inte."
 
@@ -1522,7 +1522,7 @@ msgstr "Funktionen för zonkommentarer är inaktiverad i konfigurationen."
 msgid "You do not have the permission to view this comment."
 msgstr "Du har inte behörighet att visa denna kommentar."
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:606
 msgid "You do not have the permission to edit this comment."
 msgstr "Du har inte behörighet att redigera denna kommentar."
 
@@ -1538,33 +1538,33 @@ msgstr "Ogiltigt post-ID."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Du har inte behörighet att radera poster i denna zon."
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:509
 msgid "Record not found."
 msgstr "Posten hittades inte."
 
-#: lib/Application/Controller/DeleteRecordController.php:216
+#: lib/Application/Controller/DeleteRecordController.php:212
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr "Posten och dess motsvarande PTR- och A/AAAA-poster har raderats."
 
-#: lib/Application/Controller/DeleteRecordController.php:218
+#: lib/Application/Controller/DeleteRecordController.php:214
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "Posten och dess motsvarande PTR-post har raderats."
 
-#: lib/Application/Controller/DeleteRecordController.php:220
+#: lib/Application/Controller/DeleteRecordController.php:216
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "Posten och dess motsvarande A/AAAA-post har raderats."
 
-#: lib/Application/Controller/DeleteRecordController.php:222
+#: lib/Application/Controller/DeleteRecordController.php:218
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr "Posten har raderats. Ingen matchande PTR-post hittades."
 
-#: lib/Application/Controller/DeleteRecordController.php:224
+#: lib/Application/Controller/DeleteRecordController.php:220
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -1574,7 +1574,7 @@ msgstr "Posten har raderats. Ingen matchande A/AAAA-post hittades."
 msgid "The record has been deleted successfully."
 msgstr "Posten har raderats."
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:516
 msgid "You cannot delete records from a read-only zone."
 msgstr "Du kan inte radera poster från en skrivskyddad zon."
 
@@ -1636,7 +1636,7 @@ msgstr "Du har inte behörighet att hantera gruppmedlemmar."
 msgid "Manage Group Members"
 msgstr "Hantera gruppmedlemmar"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:112
+#: lib/Application/Controller/ManageGroupZonesController.php:118
 msgid "Invalid action."
 msgstr "Ogiltig åtgärd."
 
@@ -1700,7 +1700,7 @@ msgstr "Verifieringskod krävs."
 msgid "MFA has been enabled successfully."
 msgstr "MFA har aktiverats."
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "Ogiltig verifieringskod. Försök igen."
 
@@ -1772,7 +1772,7 @@ msgstr "Du har inte behörighet att visa supermasters."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Du har inte behörighet att visa zonens metadata."
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:831
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Du har inte behörighet att redigera zonmetadata."
 
@@ -1934,7 +1934,7 @@ msgstr "Ogiltig posttyp."
 msgid "Record could not be added."
 msgstr "Posten kunde inte läggas till."
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:529
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d post(er) har lagts till."
@@ -1985,11 +1985,11 @@ msgstr "Behörighetsmallen kunde inte uppdateras."
 msgid "Groups"
 msgstr "Grupper"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "Du har inte behörighet att utföra sökningar."
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "Sök"
@@ -2011,7 +2011,7 @@ msgstr "Sidnummer måste vara minst 1."
 msgid "Page number exceeds available pages."
 msgstr "Sidnummer överskrider tillgängliga sidor."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:75
 msgid "Invalid request method."
 msgstr "Ogiltig förfrågningsmetod."
 
@@ -2032,7 +2032,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "Du har inte behörighet att lägga till en ny användare."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "Lägg till användare"
 
@@ -2070,7 +2070,7 @@ msgstr "Ett lösenord genererades men visas inte av säkerhetsskäl."
 msgid "Please fill in all required fields correctly."
 msgstr "Fyll i alla obligatoriska fält korrekt."
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:542
 msgid "You do not have the permission to delete this record."
 msgstr "Du har inte behörighet att radera denna post."
 
@@ -2078,7 +2078,7 @@ msgstr "Du har inte behörighet att radera denna post."
 msgid "The record could not be deleted."
 msgstr "Posten kunde inte raderas."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "Zonloggar"
@@ -2100,7 +2100,7 @@ msgstr "Endast Producer-zoner publicerar en katalog."
 msgid "You do not have permission to access this zone."
 msgstr "Du har inte behörighet att komma åt denna zon."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:753
 msgid "You do not have permission to edit this zone."
 msgstr "Du har inte behörighet att redigera denna zon."
 
@@ -2108,7 +2108,7 @@ msgstr "Du har inte behörighet att redigera denna zon."
 msgid "The zone has been added to the catalog."
 msgstr "Zonen har lagts till i katalogen."
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:613
 msgid "The zone has been removed from the catalog."
 msgstr "Zonen har tagits bort från katalogen."
 
@@ -2145,7 +2145,7 @@ msgstr "Redigera zonmall"
 msgid "There is no zone template with this ID."
 msgstr "Det finns ingen zonmall med detta ID."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "Zonmallen har uppdaterats."
 
@@ -2164,7 +2164,7 @@ msgstr "Zonerna har uppdaterats."
 msgid "You do not have permission to create new zone templates."
 msgstr "Du har inte behörighet att skapa nya zonmallar."
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "En zonmall med detta namn finns redan, välj ett annat."
 
@@ -2192,7 +2192,7 @@ msgstr "Ogiltigt mall-ID."
 msgid "Template does not exist."
 msgstr "Mallen finns inte."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:522
 msgid "You do not have permission to view this zone."
 msgstr "Du har inte behörighet att visa denna zon."
 
@@ -2248,7 +2248,7 @@ msgstr "Redigera zon"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Du har inte behörighet att hantera DNSSEC för denna zon."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:337
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC är inte aktiverat på servern."
 
@@ -2258,15 +2258,15 @@ msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr ""
 "Denna zon är försignerad; DNSSEC-nycklar hanteras på den primära servern."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zonen är redan signerad med DNSSEC."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "Zonen har signerats."
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2274,7 +2274,7 @@ msgstr ""
 "Zonsignering begärdes men verifieringen misslyckades. Kontrollera DNSSEC-"
 "nycklarna."
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2299,23 +2299,23 @@ msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Kunde inte avsignera zonen. Kontrollera PowerDNS-loggarna för detaljer."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:619
 msgid "The catalog has been changed successfully."
 msgstr "Katalogen har ändrats."
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:637
 msgid "Zone type has been changed successfully."
 msgstr "Zontypen har ändrats."
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:644
 msgid "Slave master has been changed successfully."
 msgstr "Slave-master har ändrats."
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:658
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Du kan inte tillämpa en mall på en skrivskyddad zon."
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:680
 msgid "Zone template has been changed successfully."
 msgstr "Zonmallen har ändrats."
 
@@ -2323,7 +2323,7 @@ msgstr "Zonmallen har ändrats."
 msgid "You cannot edit records in a read-only zone."
 msgstr "Du kan inte redigera poster i en skrivskyddad zon."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:863
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2333,25 +2333,29 @@ msgstr ""
 "antalet fält. Be din administratör att öka PHP-inställningen "
 "\"max_input_vars\"."
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:971
 msgid "Zone has not been updated successfully."
 msgstr "Zonen kunde inte uppdateras."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:972
 msgid "Request has expired, please try again."
 msgstr "Förfrågan har gått ut, försök igen."
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:981
 msgid "Zone has been updated successfully."
 msgstr "Zonen har uppdaterats."
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:982
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr "Zonen sparades. Inga poständringar gjordes men SOA-serienumret ökades."
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Domain/Service/Dns/RecordManager.php:289
+msgid "You do not have the permission to add a record to this zone."
+msgstr "Du har inte behörighet att lägga till en post i denna zon."
+
+#: lib/Application/Controller/EditController.php:1024
 msgid "Please provide all required fields."
 msgstr "Ange alla obligatoriska fält."
 
@@ -2359,7 +2363,7 @@ msgstr "Ange alla obligatoriska fält."
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Posten lades till. En matchande PTR-post skapades också."
 
-#: lib/Application/Controller/AddRecordController.php:266
+#: lib/Application/Controller/AddRecordController.php:510
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Posten lades till men skapande av PTR-post misslyckades: "
 
@@ -2375,19 +2379,19 @@ msgstr "Posten lades till. En matchande A-post skapades också."
 msgid "Invalid security token. Please try again."
 msgstr "Ogiltig säkerhetstoken. Försök igen."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr "För många misslyckade försök. Försök igen senare."
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "Ingen MFA-post hittades. Kontakta administratören."
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "Ett fel uppstod. Försök igen."
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2395,15 +2399,15 @@ msgstr ""
 "E-postverifiering är inte tillgänglig eftersom e-posttjänsten är "
 "inaktiverad. Använd en återställningskod."
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "En ny verifieringskod har skickats till din e-post."
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "Använd en återställningskod istället."
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2411,29 +2415,25 @@ msgstr ""
 "Kunde inte skicka verifieringskod till din e-post. Använd en "
 "återställningskod istället."
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
-msgid "You do not have the permission to add a record to this zone."
-msgstr "Du har inte behörighet att lägga till en post i denna zon."
-
 #: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "Posten lades till."
 
-#: lib/Application/Controller/AddRecordController.php:464
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "No records were provided."
 msgstr "Inga poster angavs."
 
-#: lib/Application/Controller/AddRecordController.php:533
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d matchande post(er) skapades också."
 
-#: lib/Application/Controller/AddRecordController.php:536
+#: lib/Application/Controller/AddRecordController.php:534
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d post(er) kunde inte läggas till."
 
-#: lib/Application/Controller/AddRecordController.php:541
+#: lib/Application/Controller/AddRecordController.php:539
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2441,7 +2441,7 @@ msgstr ""
 "Vissa poster kunde inte läggas till. De kanske redan finns eller innehåller "
 "ogiltiga data."
 
-#: lib/Application/Controller/AddRecordController.php:571
+#: lib/Application/Controller/AddRecordController.php:569
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Kunde inte lägga till några poster. De kan innehålla ogiltiga data."
 
@@ -2449,7 +2449,7 @@ msgstr "Kunde inte lägga till några poster. De kan innehålla ogiltiga data."
 msgid "No zone selected for deletion."
 msgstr "Ingen zon vald för radering."
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1013
 msgid "You do not have the permission to delete a zone."
 msgstr "Du har inte behörighet att radera en zon."
 
@@ -2514,7 +2514,7 @@ msgstr ""
 "Kunde inte hämta PEM-nyckeln. Servern exponerar kanske inte privat "
 "nyckelmaterial för den här nyckeln."
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "Du har inte behörighet att lägga till en masterzon."
 
@@ -2547,14 +2547,14 @@ msgstr ""
 "2001:db8::/48) eller ett namn på en omvänd zon som slutar på in-addr.arpa "
 "eller ip6.arpa."
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
 "Zonen skapades men DNSSEC-signering hoppades över på grund av valideringsfel:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2562,11 +2562,11 @@ msgstr ""
 "Zonen skapades men DNSSEC-säkring misslyckades. Zonvalidering godkändes men "
 "PowerDNS API returnerade ett fel. Kontrollera PowerDNS-loggarna för detaljer."
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zonen har skapats och signerats med DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2582,16 +2582,16 @@ msgstr "Zonen har lagts till."
 msgid "Batch PTR record creation is not enabled."
 msgstr "Batch-skapande av PTR-poster är inte aktiverat."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:88
+#: lib/Application/Controller/BatchPtrRecordController.php:89
 msgid "You do not have permission to edit DNS records."
 msgstr "Du har inte behörighet att redigera DNS-poster."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:93
+#: lib/Application/Controller/BatchPtrRecordController.php:94
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
 msgstr "Batch-PTR-poster"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:109
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Batch-skapande av PTR-poster är inte tillgängligt för omvända zoner."
 
@@ -2694,19 +2694,27 @@ msgstr "Vyer"
 msgid "Invalid key ID."
 msgstr "Ogiltigt nyckel-ID."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:107
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
+msgid ""
+"DNSSEC functionality is not available. Please check PowerDNS API "
+"configuration."
+msgstr ""
+"DNSSEC-funktionalitet är inte tillgänglig. Kontrollera PowerDNS API-"
+"konfigurationen."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC-nyckeln hittades inte eller finns inte längre."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:111
+#: lib/Application/Controller/DnssecDeleteKeyController.php:113
 msgid "Zone key has been deleted successfully."
 msgstr "Zonnyckeln har raderats."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:119
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "Failed to delete the zone key."
 msgstr "Kunde inte radera zonnyckeln."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:126
+#: lib/Application/Controller/DnssecDeleteKeyController.php:128
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Ett fel uppstod vid radering av DNSSEC-nyckeln: "
 
@@ -2740,44 +2748,44 @@ msgstr "Du har inte tillräcklig behörighet att visa denna sida."
 msgid "Reverse Zones"
 msgstr "Omvända zoner"
 
-#: lib/Application/Controller/ListForwardZonesController.php:283
+#: lib/Application/Controller/ListForwardZonesController.php:296
 msgid "You do not have the permission to see any zones."
 msgstr "Du har inte behörighet att se några zoner."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:79
+#: lib/Application/Controller/ManageGroupZonesController.php:85
 msgid "You do not have permission to manage zone ownership."
 msgstr "Du har inte behörighet att hantera zonägarskap."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:93
+#: lib/Application/Controller/ManageGroupZonesController.php:99
 msgid "Manage Group Zones"
 msgstr "Hantera gruppzoner"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:230
+#: lib/Application/Controller/ManageGroupZonesController.php:236
 msgid "Please select at least one zone."
 msgstr "Välj minst en zon."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:166
+#: lib/Application/Controller/ManageGroupZonesController.php:172
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d zon tillagd i gruppen."
 msgstr[1] "%d zoner tillagda i gruppen."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:209
+#: lib/Application/Controller/ManageGroupZonesController.php:215
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d zon kunde inte läggas till."
 msgstr[1] "%d zoner kunde inte läggas till."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:251
+#: lib/Application/Controller/ManageGroupZonesController.php:257
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d zon borttagen från gruppen."
 msgstr[1] "%d zoner borttagna från gruppen."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:294
+#: lib/Application/Controller/ManageGroupZonesController.php:300
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2842,38 +2850,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "Tilldelade %d zoner; %d misslyckades"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "Zonens kanoniska ID reparerat"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "Kunde inte reparera zonens kanoniska ID"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "Inga zoner utan kanoniskt ID att åtgärda"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "Reparerade det kanoniska ID:t för %d zoner"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "%d zoner reparerade; %d misslyckades"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "Slave-zon raderad"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "Kunde inte radera slave-zon"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "Föräldralös post raderad"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "Kunde inte radera föräldralös post"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Duplicerade SOA-poster åtgärdade"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "Kunde inte åtgärda duplicerade SOA-poster"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "Standard SOA-post skapad"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "Kunde inte skapa standard SOA-post"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "Ogiltig kontrolltyp"
 
@@ -2881,7 +2911,7 @@ msgstr "Ogiltig kontrolltyp"
 msgid "You have logged out."
 msgstr "Du har loggat ut."
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "Du har inte behörighet att lägga till en zonmall."
 
@@ -2914,7 +2944,7 @@ msgstr "Du har inte behörighet att lägga till en slave-zon."
 msgid "Add Secondary Zone"
 msgstr "Lägg till sekundär zon"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "Du har inte behörighet att radera zonmallar."
 
@@ -2934,21 +2964,55 @@ msgstr "Den supermaster du försöker redigera finns inte."
 msgid "The supermaster has been updated successfully."
 msgstr "Supermastern har uppdaterats."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
 msgid "You do not have permission to manage group zones."
 msgstr "Du har inte behörighet att hantera gruppzoner."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:80
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
 msgid "Invalid group or zone ID."
 msgstr "Ogiltigt grupp- eller zon-ID."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:104
 msgid "Zone removed from group successfully."
 msgstr "Zon borttagen från gruppen."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:93
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:106
 msgid "Zone was not owned by this group."
 msgstr "Zonen ägdes inte av denna grupp."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:309
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"Kan inte ta bort den sista gruppen: zon-ägarskapsläget är groups_only och "
+"kräver minst en grupp. Lägg till en annan grupp först."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:315
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"Kan inte ta bort grupp: zon-ägarskapsläget är users_only och zonen har inga "
+"användarägare. Lägg till en användarägare först."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:343
+msgid "Add another owner or a group first."
+msgstr "Lägg till en annan ägare eller grupp först."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr ""
+"Lägg till en annan användarägare först (zonägarskapsläget är users_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:348
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "Lägg till en grupp först (zonägarskapsläget är groups_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "Kan inte ta bort den sista ägaren: zonen skulle bli utan ägare."
 
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
@@ -3147,7 +3211,7 @@ msgstr "Utloggning slutförd (med varningar): "
 msgid "You do not have permission to view this record."
 msgstr "Du har inte behörighet att visa denna post."
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have permission to edit this record."
 msgstr "Du har inte behörighet att redigera denna post."
 
@@ -3189,41 +3253,19 @@ msgstr ""
 msgid "Change password"
 msgstr "Ändra lösenord"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
-msgid "ECDSA P-256 algorithm must use 256 bits"
-msgstr "ECDSA P-256-algoritmen måste använda 256 bitar"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:136
-msgid "ECDSA P-384 algorithm must use 384 bits"
-msgstr "ECDSA P-384-algoritmen måste använda 384 bitar"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:142
-msgid "ED25519 algorithm must use 256 bits"
-msgstr "ED25519-algoritmen måste använda 256 bitar"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:147
-msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr ""
-"ED448-algoritmen måste använda 456 bitar (stöds inte i detta gränssnitt)"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:154
-msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr ""
-"RSA-algoritmer bör använda 1024 eller 2048 bitar för tillräcklig säkerhet"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:176
+#: lib/Application/Controller/DnssecAddKeyController.php:144
 msgid "Zone key has been added successfully."
 msgstr "Zonnyckeln har lagts till."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:180
+#: lib/Application/Controller/DnssecAddKeyController.php:148
 msgid "Failed to add new DNSSEC key."
 msgstr "Kunde inte lägga till ny DNSSEC-nyckel."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:184
+#: lib/Application/Controller/DnssecAddKeyController.php:152
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Ett fel uppstod vid tillägg av DNSSEC-nyckeln: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:188
+#: lib/Application/Controller/DnssecAddKeyController.php:156
 msgid "Please select both algorithm and bits"
 msgstr "Välj både algoritm och bitar"
 
@@ -3265,19 +3307,19 @@ msgstr "Supermastern har raderats."
 msgid "Bulk Registration"
 msgstr "Massregistrering"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "Ägare måste vara ett numeriskt användar-ID."
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "Det gick inte att lägga till zonen."
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "Zonerna har lagts till."
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "Vissa zon(er) kunde inte läggas till."
 
@@ -3307,16 +3349,15 @@ msgstr ""
 "Tilldelning av användarägare är inaktiverad av det aktuella "
 "zonägarskapsläget."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Domain/Service/Dns/DomainManager.php:894
+msgid "The selected user already owns the zone."
+msgstr "Den valda användaren äger redan zonen."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:197
 msgid "Owner has been added successfully."
 msgstr "Ägare har lagts till."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:293
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr "Kan inte ta bort den sista ägaren: zonen skulle bli utan ägare."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
@@ -3324,7 +3365,7 @@ msgstr ""
 "Kan inte ta bort den sista användarägaren: zon-ägarskapsläget är users_only "
 "och kräver minst en användarägare. Lägg till en annan först."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
@@ -3332,57 +3373,28 @@ msgstr ""
 "Kan inte ta bort användarägare: zon-ägarskapsläget är groups_only och zonen "
 "har inga gruppägare. Lägg till en grupp först."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "Ägare har tagits bort."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:250
+#: lib/Application/Controller/ZoneOwnershipController.php:260
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr ""
 "Tilldelning av gruppägarskap är inaktiverad av det aktuella zon-"
 "ägarskapsläget."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:262
+#: lib/Application/Controller/ZoneOwnershipController.php:272
 msgid "You do not have permission to assign this group."
 msgstr "Du har inte behörighet att tilldela denna grupp."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:270
+#: lib/Application/Controller/ZoneOwnershipController.php:280
 msgid "Group has been added successfully."
 msgstr "Grupp har lagts till."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:299
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr ""
-"Kan inte ta bort den sista gruppen: zon-ägarskapsläget är groups_only och "
-"kräver minst en grupp. Lägg till en annan grupp först."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:305
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr ""
-"Kan inte ta bort grupp: zon-ägarskapsläget är users_only och zonen har inga "
-"användarägare. Lägg till en användarägare först."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:310
+#: lib/Application/Controller/ZoneOwnershipController.php:320
 msgid "Group has been removed successfully."
 msgstr "Grupp har tagits bort."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:333
-msgid "Add another owner or a group first."
-msgstr "Lägg till en annan ägare eller grupp först."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Lägg till en annan användarägare först (zonägarskapsläget är users_only)."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:338
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Lägg till en grupp först (zonägarskapsläget är groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3393,43 +3405,50 @@ msgstr "Sidan hittades inte"
 msgid "This action requires a POST request."
 msgstr "Denna åtgärd kräver en POST-förfrågan."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:92
-msgid ""
-"DNSSEC functionality is not available. Please check PowerDNS API "
-"configuration."
-msgstr ""
-"DNSSEC-funktionalitet är inte tillgänglig. Kontrollera PowerDNS API-"
-"konfigurationen."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:118
+#: lib/Application/Controller/DnssecToggleKeyController.php:120
 msgid "Zone key has been successfully deactivated."
 msgstr "Zonnyckeln har inaktiverats."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:121
 msgid "Failed to deactivate zone key."
 msgstr "Kunde inte inaktivera zonnyckeln."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:122
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "Zone key has been successfully activated."
 msgstr "Zonnyckeln har aktiverats."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:123
+#: lib/Application/Controller/DnssecToggleKeyController.php:125
 msgid "Failed to activate zone key."
 msgstr "Kunde inte aktivera zonnyckeln."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:136
+#: lib/Application/Controller/DnssecToggleKeyController.php:138
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Ett fel uppstod vid växling av DNSSEC-nyckeln. Försök igen."
 
-#: lib/Application/Service/RequestValidator.php:69
+#: lib/Application/Service/RequestValidator.php:87
 #, php-format
 msgid "The %s field is required."
 msgstr "Fältet %s är obligatoriskt."
 
-#: lib/Application/Service/RequestValidator.php:77
+#: lib/Application/Service/RequestValidator.php:90
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Fältet %s måste vara ett nummer."
+
+#: lib/Application/Service/RequestValidator.php:94
+#, php-format
+msgid "The %s field must be a list."
+msgstr "Fältet %s måste vara en lista."
+
+#: lib/Application/Service/RequestValidator.php:98
+#, php-format
+msgid "The %s field must be at most %d characters."
+msgstr "Fältet %s får vara högst %d tecken."
+
+#: lib/Application/Service/RequestValidator.php:102
+#, php-format
+msgid "The %s field has an invalid value."
+msgstr "Fältet %s har ett ogiltigt värde."
 
 #: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
 #: templates/modern/users.html:222
@@ -3445,11 +3464,11 @@ msgstr "Nej"
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Kontot är tillfälligt låst. Försök igen senare."
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "Användarkontot är inaktiverat."
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "Autentisering misslyckades!"
 
@@ -3478,7 +3497,7 @@ msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Autentisering misslyckades: Kunde inte skapa eller uppdatera användarkonto"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "LDAP-autentisering misslyckades!"
 
@@ -3698,7 +3717,7 @@ msgstr ""
 "Visar anslutningsstatus för de supermasters som är konfigurerade i tabellen "
 "nedan."
 
-#: lib/Infrastructure/Web/PageRenderer.php:132
+#: lib/Infrastructure/Web/PageRenderer.php:133
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3706,8 +3725,7 @@ msgstr ""
 "Standardkrypteringsnyckeln för sessioner används, vänligen ange en i din "
 "konfigurationsfil."
 
-#: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
+#: lib/Infrastructure/Web/PageRenderer.php:137
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3715,7 +3733,7 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/Infrastructure/Web/PageRenderer.php:253
+#: lib/Infrastructure/Web/PageRenderer.php:254
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr "Katalogen install/ finns, du måste ta bort den innan du fortsätter."
@@ -3777,43 +3795,43 @@ msgstr "E-postadressen finns redan, välj en annan."
 msgid "Enter a valid user name."
 msgstr "Ange ett giltigt användarnamn."
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "Zonmallen hittades inte."
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "Endast globala zonmallar kan ställas in som standard."
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "Fel vid inställning av standardzonmall: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "Fel vid borttagning av standardzonmall: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "Fel vid skapande av zonmall: "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "Fel vid tillägg av standard SOA-post till mall: "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Fel vid radering av zonmall: "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "Fel vid radering av användarens zonmallar: "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Du har inte behörighet att lägga till en post i denna zonmall."
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Du har inte behörighet att lägga till denna posttyp i en zonmall."
@@ -3826,33 +3844,33 @@ msgstr "Ditt innehållsfält har inte ett giltigt värde."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Prioritet för MX/SRV-poster måste vara ett nummer mellan 0 och 65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "Fel vid tillägg av post i zonmallen: "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "Posten tillhör inte denna zonmall."
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "Fel vid uppdatering av zonmallspost: "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Du har inte behörighet att ta bort denna posttyp från en zonmall."
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "Fel vid radering av zonmallspost: "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "Fel vid kontroll av mallägarskap: "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3861,35 +3879,35 @@ msgstr ""
 "Dessa posttyper utelämnades från mallen eftersom du inte får lägga till dem: "
 "%s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "Fel vid hämtning av zoner som använder mallen: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "Kunde inte hämta lista över zoner som använder mallen: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Du har inte behörighet att redigera en zonmall."
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "Fel vid bortkoppling av zon från mall: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "Fel vid hämtning av zoner: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "Fel vid kontroll av mallnamn: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "Fel vid sökning av mall efter namn: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "Fel vid kontroll av mallens existens: "
 
@@ -3949,50 +3967,59 @@ msgstr ""
 "Vyer kräver \"views=yes\" i pdns.conf. Den anslutna servern har dem "
 "inaktiverade."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "Alla zoner har ägare"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d zoner hittades utan ägare"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "Alla slave-zoner har master-IP-adresser"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d slave-zoner hittades utan master-IP-adresser"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "Alla poster tillhör befintliga zoner"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d föräldralösa poster hittades"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "Inga duplicerade SOA-poster hittades"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d zoner har duplicerade SOA-poster"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "Alla zoner har SOA-poster"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d zoner hittades utan SOA-poster"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "Alla zoner har ett kanoniskt ID"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "%d zoner hittades utan kanoniskt ID"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -7560,7 +7587,7 @@ msgstr ""
 "Värdet för contactphone får bara innehålla siffror, blanksteg och "
 "skiljetecken som är vanliga i telefonnummer."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:464
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:467
 msgid "Value must be enclosed in double quotes."
 msgstr "Värdet måste omslutas av dubbla citattecken."
 
@@ -9191,15 +9218,18 @@ msgstr ""
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "En NAPTR-post med regexp måste ha \".\" som ersättning."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
-msgstr "NAPTR-tjänsten måste följa formatet: [protocol][+rs][+rs]... där protocol och rs separeras med plustecken, var och en börjar med en bokstav och innehåller endast bokstäver, siffror, bindestreck eller kolon (max 32 tecken vardera)."
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
+"and rs are separated by plus signs, each start with a letter and contain "
+"only letters, digits, hyphens or colons (max 32 chars each)."
+msgstr ""
+"NAPTR-tjänsten måste följa formatet: [protocol][+rs][+rs]... där protocol "
+"och rs separeras med plustecken, var och en börjar med en bokstav och "
+"innehåller endast bokstäver, siffror, bindestreck eller kolon (max 32 tecken "
+"vardera)."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:362
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
@@ -9207,11 +9237,11 @@ msgstr ""
 "Terminalflaggorna \"S\", \"A\", \"U\" och \"P\" bör inte kombineras med "
 "andra flaggor."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:381
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:384
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr "NAPTR-regexp måste börja med ett avgränsningstecken."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:387
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:390
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
@@ -9219,7 +9249,7 @@ msgstr ""
 "NAPTR-regexp måste ha formatet "
 "avgränsare+mönster+avgränsare+ersättning+avgränsare+flaggor."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:394
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:397
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
@@ -9227,7 +9257,7 @@ msgstr ""
 "Flaggorna i NAPTR-regexp (efter den tredje avgränsaren) får endast innehålla "
 "\"i\" eller vara tomma."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:412
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
@@ -9235,15 +9265,15 @@ msgstr ""
 "Detta ser ut att vara en ENUM-NAPTR-post (RFC 6116). Kontrollera att domänen "
 "ligger under e164.arpa eller i ett privat ENUM-träd."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:413
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:416
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr "ENUM-poster bör ha flaggan \"U\" för att ange URI som utdata."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:440
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:443
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr "Regexp i NAPTR-posten innehåller ett potentiellt farligt mönster: "
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:447
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:450
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr "NAPTR-regexp är för lång. Maxlängden är 1000 tecken."
 
@@ -9411,6 +9441,28 @@ msgstr "Du har inte behörighet att radera API-nycklar."
 msgid "You do not have permission to regenerate API keys."
 msgstr "Du har inte behörighet att återskapa API-nycklar."
 
+#: lib/Domain/Service/DnssecKeySpecValidator.php:56
+msgid "ECDSA P-256 algorithm must use 256 bits"
+msgstr "ECDSA P-256-algoritmen måste använda 256 bitar"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:57
+msgid "ECDSA P-384 algorithm must use 384 bits"
+msgstr "ECDSA P-384-algoritmen måste använda 384 bitar"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:58
+msgid "ED25519 algorithm must use 256 bits"
+msgstr "ED25519-algoritmen måste använda 256 bitar"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:59
+msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
+msgstr ""
+"ED448-algoritmen måste använda 456 bitar (stöds inte i detta gränssnitt)"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:60
+msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr ""
+"RSA-algoritmer bör använda 1024 eller 2048 bitar för tillräcklig säkerhet"
+
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr "Ingen SOA-post finns, eller är aktiv, i zonen. Detta krävs för DNSSEC."
@@ -9494,17 +9546,17 @@ msgstr ""
 msgid "Unknown database type."
 msgstr "Okänd databastyp."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:102
+#: lib/Domain/Service/ReverseRecordCreator.php:103
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "Det finns ingen matchande omvänd zon för: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:110
+#: lib/Domain/Service/ReverseRecordCreator.php:111
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "En PTR-post för %s som pekar på %s finns redan."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:123
+#: lib/Domain/Service/ReverseRecordCreator.php:127
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -9513,27 +9565,27 @@ msgstr ""
 "Omvänd post tillagd. Varning: Det finns redan en PTR-post för %s som pekar "
 "på: %s. Flera PTR-poster för samma IP rekommenderas inte."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:245
+#: lib/Domain/Service/ReverseRecordCreator.php:249
 msgid "PTR update skipped: record type is not A or AAAA."
 msgstr "PTR-uppdateringen hoppades över: posttypen är inte A eller AAAA."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:258
+#: lib/Domain/Service/ReverseRecordCreator.php:262
 msgid "Stale PTR record removed."
 msgstr "Föråldrad PTR-post borttagen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "A record with this hostname, type, and content already exists."
 msgstr "En post med detta värdnamn, denna typ och detta innehåll finns redan."
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "Kunde inte lägga till post i DNS-backend."
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:465
 msgid "Failed to update record in DNS backend."
 msgstr "Kunde inte uppdatera post i DNS-backend."
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:899
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Ogiltiga argument angivna till funktionen %s %s"
@@ -9542,56 +9594,52 @@ msgstr "Ogiltiga argument angivna till funktionen %s %s"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Det finns redan en supermaster med denna IP-adress och detta värdnamn."
 
-#: lib/Domain/Service/Dns/DomainManager.php:225
+#: lib/Domain/Service/Dns/DomainManager.php:226
 msgid "Failed to create zone in DNS backend."
 msgstr "Kunde inte skapa zon i DNS-backend."
 
-#: lib/Domain/Service/Dns/DomainManager.php:440
+#: lib/Domain/Service/Dns/DomainManager.php:443
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Kunde inte skapa zonen: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:327
+#: lib/Domain/Service/Dns/DomainManager.php:328
 msgid "Failed to create SOA record for zone."
 msgstr "Kunde inte skapa SOA-post för zonen."
 
-#: lib/Domain/Service/Dns/DomainManager.php:382
+#: lib/Domain/Service/Dns/DomainManager.php:385
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "Kunde inte skapa %s-post för zonen."
 
-#: lib/Domain/Service/Dns/DomainManager.php:444
+#: lib/Domain/Service/Dns/DomainManager.php:447
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Ogiltiga argument angivna till funktionen %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:570
 msgid "Failed to delete zone from DNS backend."
 msgstr "Kunde inte radera zon från DNS-backend."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:527
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Kunde inte rensa zonmetadata: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:618
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Kunde inte radera zonmetadata: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:792
 msgid "Failed to update zone type in DNS backend."
 msgstr "Kunde inte uppdatera zontyp i DNS-backend."
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:846
 msgid "Failed to update zone master in DNS backend."
 msgstr "Kunde inte uppdatera zonens master i DNS-backend."
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
-msgid "The selected user already owns the zone."
-msgstr "Den valda användaren äger redan zonen."
-
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1199
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Kunde inte uppdatera zonens poster: %s"
@@ -10275,7 +10323,7 @@ msgstr "Skicka återställningslänk"
 msgid "Group Management"
 msgstr "Grupphantering"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "Inga grupper hittades"
 
@@ -10362,7 +10410,7 @@ msgstr ""
 "Gruppmedlemmar ärver dessa behörigheter endast för zoner som ägs av denna "
 "grupp"
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "Välj en behörighetsmall"
 
@@ -10552,15 +10600,15 @@ msgstr ""
 msgid "DNS Management"
 msgstr "DNS-hantering"
 
-#: templates/modern/index.html:58 templates/modern/pdns_status.html:159
+#: templates/modern/index.html:413 templates/modern/pdns_status.html:159
 msgid "Online"
 msgstr "Online"
 
-#: templates/modern/index.html:60 templates/modern/pdns_status.html:161
+#: templates/modern/index.html:415 templates/modern/pdns_status.html:161
 msgid "Offline"
 msgstr "Offline"
 
-#: templates/modern/index.html:441 templates/modern/header.html:300
+#: templates/modern/index.html:458 templates/modern/header.html:300
 msgid "Templates"
 msgstr "Mallar"
 
@@ -10572,15 +10620,15 @@ msgstr "Nätverk"
 msgid "Zone Operations"
 msgstr "Zonoperationer"
 
-#: templates/modern/index.html:157 templates/modern/index.html:461
+#: templates/modern/index.html:157 templates/modern/index.html:478
 msgid "Master Zone"
 msgstr "Masterzon"
 
-#: templates/modern/index.html:167 templates/modern/index.html:471
+#: templates/modern/index.html:167 templates/modern/index.html:488
 msgid "Slave Zone"
 msgstr "Slavzon"
 
-#: templates/modern/index.html:197 templates/modern/index.html:501
+#: templates/modern/index.html:197 templates/modern/index.html:518
 msgid "PTR Records"
 msgstr "PTR-poster"
 
@@ -10605,7 +10653,7 @@ msgstr "Databas"
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
-#: templates/modern/index.html:366 templates/modern/index.html:553
+#: templates/modern/index.html:366 templates/modern/index.html:570
 msgid "My Profile"
 msgstr "Min profil"
 
@@ -10614,7 +10662,7 @@ msgstr "Min profil"
 msgid "Password"
 msgstr "Lösenord"
 
-#: templates/modern/index.html:572 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:389
 msgid "Preferences"
 msgstr "Inställningar"
 
@@ -11160,19 +11208,19 @@ msgstr "Ja, generera om denna API-nyckel"
 msgid "No, keep current key"
 msgstr "Nej, behåll nuvarande nyckel"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "Återställ lösenord"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "Begär ny återställningslänk"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "Lösenordet uppfyller inte kraven"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "Ange ditt nya lösenord för"
 
@@ -11180,44 +11228,44 @@ msgstr "Ange ditt nya lösenord för"
 msgid "New password"
 msgstr "Nytt lösenord"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "Ange ett lösenord"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "Bekräfta lösenord"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "Lösenorden matchar inte"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "Lösenordskrav"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "Minsta längd"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "tecken"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "Minst en versal"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "Minst en gemen"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "Minst en siffra"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "Minst ett specialtecken"
 
@@ -11310,7 +11358,6 @@ msgid "No SOA"
 msgstr "Ingen SOA"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -11340,7 +11387,7 @@ msgstr "NOTIFY skickat vid serienummer %serial%"
 msgid "Delete zone(s)"
 msgstr "Ta bort zon(er)"
 
-#: templates/modern/dnssec_add_key.html:77
+#: templates/modern/dnssec_add_key.html:76
 msgid "Add key"
 msgstr "Lägg till nyckel"
 
@@ -11373,11 +11420,11 @@ msgstr "Välj algoritm"
 msgid "Bits in length"
 msgstr "Bitar i längd"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:70
 msgid "Select bits length"
 msgstr "Välj bitlängd"
 
-#: templates/modern/dnssec_add_key.html:128
+#: templates/modern/dnssec_add_key.html:127
 msgid "Recommended bits for"
 msgstr "Rekommenderade bitar för"
 
@@ -11386,19 +11433,19 @@ msgstr "Rekommenderade bitar för"
 msgid "Warning:"
 msgstr "Varning:"
 
-#: templates/modern/dnssec_add_key.html:136
+#: templates/modern/dnssec_add_key.html:135
 msgid "bits is not recommended for"
 msgstr "bitar rekommenderas inte för"
 
-#: templates/modern/dnssec_add_key.html:172
+#: templates/modern/dnssec_add_key.html:171
 msgid "About DNSSEC Key Types"
 msgstr "Om DNSSEC-nyckeltyper"
 
-#: templates/modern/dnssec_add_key.html:175
+#: templates/modern/dnssec_add_key.html:174
 msgid "Key Types Explained"
 msgstr "Nyckeltyper förklarade"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:176
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11406,19 +11453,19 @@ msgstr ""
 "Combined Signing Key - fungerar som både KSK och ZSK (rekommenderas för "
 "PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:177
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Key Signing Key - signerar DNSKEY-posterna i zonen"
 
-#: templates/modern/dnssec_add_key.html:179
+#: templates/modern/dnssec_add_key.html:178
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - signerar alla andra poster i zonen"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:183
 msgid "Recommended Settings"
 msgstr "Rekommenderade inställningar"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:184
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11505,16 +11552,16 @@ msgstr ""
 "Behörigheter från denna mall kommer att gälla globalt över hela systemet för "
 "denna användare"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "Valfri information om denna användare"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Aktiverad"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "LDAP-autentisering"
 
@@ -11522,7 +11569,7 @@ msgstr "LDAP-autentisering"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "Autentiseringsinställningar kan endast ändras av en administratör"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "Använd extern LDAP-katalog för autentisering"
 
@@ -11534,7 +11581,7 @@ msgstr "Tillbaka till startsidan"
 msgid "Back to Users"
 msgstr "Tillbaka till användare"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "Kontoinformation"
 
@@ -11558,7 +11605,7 @@ msgstr "Måste innehålla specialtecken"
 msgid "No specific password requirements"
 msgstr "Inga specifika lösenordskrav"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "Användarbehörigheter"
 
@@ -11574,7 +11621,7 @@ msgstr "Baserat på denna mall har denna användare följande behörigheter"
 msgid "No permissions are assigned to this template"
 msgstr "Inga behörigheter är tilldelade denna mall"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "Gruppmedlemskap"
 
@@ -11590,7 +11637,7 @@ msgstr "Visa gruppdetaljer"
 msgid "This user is not a member of any groups."
 msgstr "Denna användare är inte medlem i några grupper."
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "Lägg till i grupper"
 
@@ -11600,7 +11647,7 @@ msgstr ""
 "Välj en eller flera grupper och klicka på knappen \"Lägg till valda "
 "grupper\"."
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "Sök tillgängliga grupper..."
 
@@ -12609,63 +12656,79 @@ msgstr "Zonnamn"
 msgid "Assign owner"
 msgstr "Tilldela ägare"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "Åtgärda"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "Zoner utan kanoniskt ID"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "Reparera det kanoniska ID:t för alla listade zoner?"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "Reparera alla"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "Reparera kanoniskt ID"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "Slavzoner utan master IP-adresser"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "Master-IP"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "Ta bort slavzon"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "Poster som inte tillhör någon zon"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "Post-ID"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "Ta bort föräldralös post"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "Zoner med duplicerade SOA-poster"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "SOA-antal"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "Behåll första SOA, ta bort dubbletter"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "Zoner utan SOA-poster"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "Skapa standard SOA-post"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "Är du säker på att du vill ta bort slavzonen"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "Är du säker på att du vill ta bort den föräldralösa posten"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "Är du säker på att du vill ta bort detta objekt?"
 
@@ -12706,15 +12769,15 @@ msgstr "Skicka lösenord via e-post"
 msgid "Send login credentials to user's email address"
 msgstr "Skicka inloggningsuppgifter till användarens e-postadress"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "Välj en mall..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "Välj behörigheter för denna användare"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -12723,7 +12786,7 @@ msgstr ""
 "När du skapar en ny användare får de behörigheter baserat på den valda "
 "mallen. Du kan ändra dessa behörigheter senare genom att redigera användaren."
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr "Välj grupper att lägga till den nya användaren i vid skapandet."
 
@@ -14426,7 +14489,7 @@ msgstr ""
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Du är på väg att ta bort en DNSSEC-nyckel (ID"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
@@ -14434,19 +14497,19 @@ msgstr ""
 "Alla gruppmedlemmar kommer att ärva dessa behörigheter för zoner som ägs av "
 "denna grupp"
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "Skapa grupp"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "Om grupper"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "Vad är grupper?"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -14454,11 +14517,11 @@ msgstr ""
 "Grupper låter dig organisera användare och hantera zonåtkomst gemensamt. "
 "Medlemmar ärver gruppens behörigheter för alla zoner som ägs av gruppen."
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "Hur man använder grupper"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -15504,3 +15567,5 @@ msgid ""
 msgstr ""
 "Kunde inte ställa in locale. Det valda locale-värdet stöds kanske inte på "
 "detta system. Kontakta din administratör."
+
+

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-28 01:30+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -37,7 +37,7 @@ msgstr "無效的區域 ID。"
 msgid "Zone not found."
 msgstr "找不到區域。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
+#: lib/Application/Controller/BatchPtrRecordController.php:115
 msgid "You do not have permission to add records to this zone."
 msgstr "您沒有權限向此區域新增記錄。"
 
@@ -45,11 +45,11 @@ msgstr "您沒有權限向此區域新增記錄。"
 msgid "Invalid wizard type."
 msgstr "無效的精靈類型。"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "驗證失敗："
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "無法產生記錄："
 
@@ -1165,7 +1165,7 @@ msgstr "區域名稱和 Primary 伺服器位址為必填項。"
 msgid "Invalid hostname."
 msgstr "主機名稱無效。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "已存在同名區域。"
 
@@ -1191,21 +1191,21 @@ msgstr "此區域尚無已傳輸的記錄。請等待傳輸完成後再將其轉
 msgid "Zone has been converted to a primary zone."
 msgstr "區域已轉換為 Primary 區域。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "您無權為其他使用者建立區域。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "未知組 ID: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "您只能分配您所屬的組(不允許: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr "必須至少選擇一個使用者或組作為所有者。"
 
@@ -1350,7 +1350,7 @@ msgstr "使用伺服器 %s 檢索 RDAP 資訊失敗"
 msgid "Invalid CSRF token."
 msgstr "無效的 CSRF 令牌。"
 
-#: lib/BaseController.php:598
+#: lib/BaseController.php:624
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -1381,29 +1381,29 @@ msgstr "沒有選擇要刪除的記錄。"
 msgid "Describe why you are making this change."
 msgstr "請說明您進行此變更的原因。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:233
+#: lib/Application/Controller/DeleteRecordsController.php:229
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr "記錄已成功刪除。相應的 PTR 記錄也已刪除。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:235
+#: lib/Application/Controller/DeleteRecordsController.php:231
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr "已成功刪除 %d 條記錄。相應的 PTR 記錄也已刪除。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:238
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid "No records could be deleted. Please check permissions."
 msgstr "無法刪除記錄。請檢查權限。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:305
+#: lib/Application/Controller/DeleteRecordsController.php:301
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr "沒有選擇有效的刪除記錄或您沒有刪除權限。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:182
+#: lib/Domain/Service/Dns/DomainManager.php:183
 msgid "Invalid or unexpected input given."
 msgstr "給定的輸入無效或異常。"
 
@@ -1415,7 +1415,7 @@ msgstr "您沒有刪除此使用者的權限。"
 msgid "You do not have permission to delete a superuser account."
 msgstr "您沒有權限刪除超級使用者帳號。"
 
-#: lib/Application/Controller/EditUserController.php:597
+#: lib/Application/Controller/ZoneOwnershipController.php:186
 msgid "User does not exist."
 msgstr "使用者不存在。"
 
@@ -1440,7 +1440,7 @@ msgstr "區域註解功能在設定中已停用。"
 msgid "You do not have the permission to view this comment."
 msgstr "您沒有查看此註解的權限。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:606
 msgid "You do not have the permission to edit this comment."
 msgstr "您沒有編輯此註解的權限。"
 
@@ -1456,33 +1456,33 @@ msgstr "無效的記錄 ID。"
 msgid "You do not have permission to delete records in this zone."
 msgstr "您沒有權限刪除此區域中的記錄。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:509
 msgid "Record not found."
 msgstr "找不到記錄。"
 
-#: lib/Application/Controller/DeleteRecordController.php:216
+#: lib/Application/Controller/DeleteRecordController.php:212
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr "記錄及其對應的PTR和A/AAAA記錄已成功刪除。"
 
-#: lib/Application/Controller/DeleteRecordController.php:218
+#: lib/Application/Controller/DeleteRecordController.php:214
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "記錄及其對應的 PTR 記錄已成功刪除。"
 
-#: lib/Application/Controller/DeleteRecordController.php:220
+#: lib/Application/Controller/DeleteRecordController.php:216
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "記錄及其對應的A/AAAA記錄已成功刪除。"
 
-#: lib/Application/Controller/DeleteRecordController.php:222
+#: lib/Application/Controller/DeleteRecordController.php:218
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr "記錄已成功刪除。找不到相符的 PTR 記錄。"
 
-#: lib/Application/Controller/DeleteRecordController.php:224
+#: lib/Application/Controller/DeleteRecordController.php:220
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -1492,7 +1492,7 @@ msgstr "記錄已成功刪除。找不到相符的A/AAAA記錄。"
 msgid "The record has been deleted successfully."
 msgstr "記錄已成功刪除。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:516
 msgid "You cannot delete records from a read-only zone."
 msgstr "您不能從唯讀區域刪除記錄。"
 
@@ -1554,7 +1554,7 @@ msgstr "您沒有權限管理組成員。"
 msgid "Manage Group Members"
 msgstr "管理組成員"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:112
+#: lib/Application/Controller/ManageGroupZonesController.php:118
 msgid "Invalid action."
 msgstr "無效的操作。"
 
@@ -1618,7 +1618,7 @@ msgstr "驗證碼是必需的。"
 msgid "MFA has been enabled successfully."
 msgstr "MFA 已成功啟用。"
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "驗證碼無效。請重試。"
 
@@ -1684,7 +1684,7 @@ msgstr "您沒有查看 supermasters 的權限。"
 msgid "You do not have the permission to view zone metadata."
 msgstr "您沒有查看區域元資料的權限。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:831
 msgid "You do not have the permission to edit zone metadata."
 msgstr "您沒有編輯區域元資料的權限。"
 
@@ -1838,7 +1838,7 @@ msgstr "記錄類型無效。"
 msgid "Record could not be added."
 msgstr "無法新增記錄。"
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:529
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "已成功新增 %d 條記錄。"
@@ -1885,11 +1885,11 @@ msgstr "無法更新權限範本。"
 msgid "Groups"
 msgstr "組"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "您沒有執行搜尋的權限。"
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "搜尋"
@@ -1911,7 +1911,7 @@ msgstr "頁碼必須至少為1。"
 msgid "Page number exceeds available pages."
 msgstr "頁碼超出可用頁面。"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:75
 msgid "Invalid request method."
 msgstr "請求方法無效。"
 
@@ -1932,7 +1932,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "您沒有新增新使用者的權限。"
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "新增使用者"
 
@@ -1969,7 +1969,7 @@ msgstr "已產生密碼，但出於安全原因不顯示。"
 msgid "Please fill in all required fields correctly."
 msgstr "請正確填寫所有必填欄位。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:542
 msgid "You do not have the permission to delete this record."
 msgstr "您沒有刪除此記錄的權限。"
 
@@ -1977,7 +1977,7 @@ msgstr "您沒有刪除此記錄的權限。"
 msgid "The record could not be deleted."
 msgstr "無法刪除記錄。"
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "區域記錄檔"
@@ -1999,7 +1999,7 @@ msgstr "只有 Producer 區域才會發布目錄。"
 msgid "You do not have permission to access this zone."
 msgstr "您沒有權限存取此區域。"
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:753
 msgid "You do not have permission to edit this zone."
 msgstr "您沒有編輯此區域的權限。"
 
@@ -2007,7 +2007,7 @@ msgstr "您沒有編輯此區域的權限。"
 msgid "The zone has been added to the catalog."
 msgstr "該區域已新增至目錄。"
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:613
 msgid "The zone has been removed from the catalog."
 msgstr "該區域已從目錄中移除。"
 
@@ -2044,7 +2044,7 @@ msgstr "編輯區域範本"
 msgid "There is no zone template with this ID."
 msgstr "不存在此 ID 的區域範本。"
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "區域範本已成功更新。"
 
@@ -2063,7 +2063,7 @@ msgstr "區域已成功更新。"
 msgid "You do not have permission to create new zone templates."
 msgstr "您沒有建立新區域範本的權限。"
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "此名稱的區域範本已存在，請選擇另一個名稱。"
 
@@ -2091,7 +2091,7 @@ msgstr "範本 ID 無效。"
 msgid "Template does not exist."
 msgstr "範本不存在。"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:522
 msgid "You do not have permission to view this zone."
 msgstr "您沒有權限查看此區域。"
 
@@ -2147,7 +2147,7 @@ msgstr "編輯區域"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "您沒有權限管理此區域的 DNSSEC。"
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:337
 msgid "DNSSEC is not enabled on the server."
 msgstr "伺服器上未啟用 DNSSEC。"
 
@@ -2156,21 +2156,21 @@ msgstr "伺服器上未啟用 DNSSEC。"
 msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr "此區域為預簽名；DNSSEC 金鑰在 Primary 伺服器上管理。"
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "區域已使用 DNSSEC 簽名。"
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "區域已成功簽名。"
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr "區域簽名請求成功，但驗證失敗。請檢查 DNSSEC 金鑰。"
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2194,23 +2194,23 @@ msgstr "區域取消簽名請求成功，但驗證失敗。"
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "取消區域簽名失敗。請查看 PowerDNS 記錄檔了解詳情。"
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:619
 msgid "The catalog has been changed successfully."
 msgstr "目錄已成功變更。"
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:637
 msgid "Zone type has been changed successfully."
 msgstr "區域類型已成功更改。"
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:644
 msgid "Slave master has been changed successfully."
 msgstr "從伺服器主機已成功更改。"
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:658
 msgid "You cannot apply a template to a read-only zone."
 msgstr "您不能對唯讀區域套用範本。"
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:680
 msgid "Zone template has been changed successfully."
 msgstr "區域範本已成功更改。"
 
@@ -2218,7 +2218,7 @@ msgstr "區域範本已成功更改。"
 msgid "You cannot edit records in a read-only zone."
 msgstr "您不能在唯讀區域中編輯記錄。"
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:863
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2227,25 +2227,29 @@ msgstr ""
 "部分記錄未儲存，因為表單超出了伺服器對欄位數量的限制。請要求您的管理員提高 "
 "PHP \"max_input_vars\" 設定。"
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:971
 msgid "Zone has not been updated successfully."
 msgstr "區域更新失敗。"
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:972
 msgid "Request has expired, please try again."
 msgstr "請求已過期，請重試。"
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:981
 msgid "Zone has been updated successfully."
 msgstr "區域已成功更新。"
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:982
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr "區域儲存成功。沒有進行記錄更改，但 SOA 序列號已遞增。"
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Domain/Service/Dns/RecordManager.php:289
+msgid "You do not have the permission to add a record to this zone."
+msgstr "您沒有向此區域新增記錄的權限。"
+
+#: lib/Application/Controller/EditController.php:1024
 msgid "Please provide all required fields."
 msgstr "請提供所有必填欄位。"
 
@@ -2253,7 +2257,7 @@ msgstr "請提供所有必填欄位。"
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "記錄新增成功。還建立了相符的 PTR 記錄。"
 
-#: lib/Application/Controller/AddRecordController.php:266
+#: lib/Application/Controller/AddRecordController.php:510
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "記錄新增成功，但 PTR 記錄建立失敗： "
 
@@ -2269,67 +2273,63 @@ msgstr "記錄新增成功。還建立了相符的 A 記錄。"
 msgid "Invalid security token. Please try again."
 msgstr "安全令牌無效。請重試。"
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr "失敗嘗試次數過多。請稍後重試。"
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "找不到 MFA 記錄。請聯繫管理員。"
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "發生錯誤。請重試。"
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
 msgstr "電子郵件驗證不可用，因為郵件服務已停用。請使用復原代碼。"
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "新的驗證碼已傳送到您的電子郵件。"
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "請改用復原代碼。"
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
 msgstr "無法向您的電子郵件傳送驗證碼。請改用復原代碼。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
-msgid "You do not have the permission to add a record to this zone."
-msgstr "您沒有向此區域新增記錄的權限。"
-
 #: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "記錄已成功新增。"
 
-#: lib/Application/Controller/AddRecordController.php:464
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "No records were provided."
 msgstr "未提供記錄。"
 
-#: lib/Application/Controller/AddRecordController.php:533
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "同時建立了 %d 條相符的記錄。"
 
-#: lib/Application/Controller/AddRecordController.php:536
+#: lib/Application/Controller/AddRecordController.php:534
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d 條記錄新增失敗。"
 
-#: lib/Application/Controller/AddRecordController.php:541
+#: lib/Application/Controller/AddRecordController.php:539
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr "某些記錄無法新增。它們可能已存在或包含無效資料。"
 
-#: lib/Application/Controller/AddRecordController.php:571
+#: lib/Application/Controller/AddRecordController.php:569
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "新增任何記錄都失敗了。它們可能包含無效資料。"
 
@@ -2337,7 +2337,7 @@ msgstr "新增任何記錄都失敗了。它們可能包含無效資料。"
 msgid "No zone selected for deletion."
 msgstr "未選擇要刪除的區域。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1013
 msgid "You do not have the permission to delete a zone."
 msgstr "您沒有刪除區域的權限。"
 
@@ -2400,7 +2400,7 @@ msgid ""
 "material for this key."
 msgstr "無法獲取 PEM 金鑰。伺服器可能未公開此金鑰的私鑰材料。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "您沒有新增主區域的權限。"
 
@@ -2431,13 +2431,13 @@ msgstr ""
 "以 CIDR 記法輸入一個網路（例如 192.168.1.0/24 或 2001:db8::/48）或一個以 in-"
 "addr.arpa 或 ip6.arpa 結尾的反向區域名稱。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr "區域已成功建立，但由於驗證錯誤跳過了DNSSEC簽名："
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2445,11 +2445,11 @@ msgstr ""
 "區域已建立，但使用DNSSEC保護失敗。區域驗證通過，但PowerDNS API返回了錯誤。請"
 "查看PowerDNS記錄檔以了解詳情。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "區域已成功建立並使用DNSSEC簽名。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2463,16 +2463,16 @@ msgstr "區域已成功新增。"
 msgid "Batch PTR record creation is not enabled."
 msgstr "批次 PTR 記錄建立未啟用。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:88
+#: lib/Application/Controller/BatchPtrRecordController.php:89
 msgid "You do not have permission to edit DNS records."
 msgstr "您沒有編輯 DNS 記錄的權限。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:93
+#: lib/Application/Controller/BatchPtrRecordController.php:94
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
 msgstr "批次 PTR 記錄"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:109
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "反向區域不支援批次 PTR 記錄建立。"
 
@@ -2572,19 +2572,25 @@ msgstr "檢視"
 msgid "Invalid key ID."
 msgstr "無效的金鑰 ID。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:107
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
+msgid ""
+"DNSSEC functionality is not available. Please check PowerDNS API "
+"configuration."
+msgstr "DNSSEC功能不可用。請檢查PowerDNS API設定。"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC金鑰找不到或不再存在。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:111
+#: lib/Application/Controller/DnssecDeleteKeyController.php:113
 msgid "Zone key has been deleted successfully."
 msgstr "區域金鑰已成功刪除。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:119
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "Failed to delete the zone key."
 msgstr "刪除區域金鑰失敗。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:126
+#: lib/Application/Controller/DnssecDeleteKeyController.php:128
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "刪除 DNSSEC 金鑰時發生錯誤： "
 
@@ -2618,44 +2624,44 @@ msgstr "您沒有足夠的權限查看此頁面。"
 msgid "Reverse Zones"
 msgstr "反向區域"
 
-#: lib/Application/Controller/ListForwardZonesController.php:283
+#: lib/Application/Controller/ListForwardZonesController.php:296
 msgid "You do not have the permission to see any zones."
 msgstr "您沒有查看任何區域的權限。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:79
+#: lib/Application/Controller/ManageGroupZonesController.php:85
 msgid "You do not have permission to manage zone ownership."
 msgstr "您沒有權限管理區域所有權。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:93
+#: lib/Application/Controller/ManageGroupZonesController.php:99
 msgid "Manage Group Zones"
 msgstr "管理組區域"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:230
+#: lib/Application/Controller/ManageGroupZonesController.php:236
 msgid "Please select at least one zone."
 msgstr "請至少選擇一個區域。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:166
+#: lib/Application/Controller/ManageGroupZonesController.php:172
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d 個區域已新增到組。"
 msgstr[1] "%d 個區域已新增到組。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:209
+#: lib/Application/Controller/ManageGroupZonesController.php:215
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d 個區域無法新增。"
 msgstr[1] "%d 個區域無法新增。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:251
+#: lib/Application/Controller/ManageGroupZonesController.php:257
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d 個區域已從組中移除。"
 msgstr[1] "%d 個區域已從組中移除。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:294
+#: lib/Application/Controller/ManageGroupZonesController.php:300
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2720,38 +2726,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "已指派 %d 個區域；%d 個失敗"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "區域正規 ID 已修復"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "修復區域正規 ID 失敗"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "沒有缺少正規 ID 的區域需要修復"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "已修復 %d 個區域的正規 ID"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "已修復 %d 個區域；%d 個失敗"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "從區域刪除成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "刪除從區域失敗"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "孤立記錄刪除成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "刪除孤立記錄失敗"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "重複 SOA 記錄修復成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "修復重複 SOA 記錄失敗"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "預設 SOA 記錄建立成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "建立預設 SOA 記錄失敗"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "檢查類型無效"
 
@@ -2759,7 +2787,7 @@ msgstr "檢查類型無效"
 msgid "You have logged out."
 msgstr "您已登出。"
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "您沒有新增區域範本的權限。"
 
@@ -2792,7 +2820,7 @@ msgstr "您沒有新增從區域的權限。"
 msgid "Add Secondary Zone"
 msgstr "新增輔助區域"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "您沒有刪除區域範本的權限。"
 
@@ -2812,21 +2840,54 @@ msgstr "您嘗試編輯的 supermaster 不存在。"
 msgid "The supermaster has been updated successfully."
 msgstr "supermaster 已成功更新。"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
 msgid "You do not have permission to manage group zones."
 msgstr "您沒有權限管理組區域。"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:80
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
 msgid "Invalid group or zone ID."
 msgstr "無效的組或區域ID。"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:104
 msgid "Zone removed from group successfully."
 msgstr "區域已成功從組中移除。"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:93
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:106
 msgid "Zone was not owned by this group."
 msgstr "區域不屬於此組。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:309
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"無法刪除最後一個組: 區域所有權模式為 groups_only,需要至少一個組。請先新增另一"
+"個組。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:315
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"無法刪除組: 區域所有權模式為 users_only,且該區域沒有使用者所有者。請先新增一"
+"個使用者所有者。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:343
+msgid "Add another owner or a group first."
+msgstr "請先新增另一個所有者或組。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr "請先新增另一個使用者所有者(區域所有權模式為 users_only)。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:348
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "請先新增一個組(區域所有權模式為 groups_only)。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "無法刪除最後一個所有者: 區域將不再有任何所有權。"
 
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
@@ -3015,7 +3076,7 @@ msgstr "登出完成（有警告）： "
 msgid "You do not have permission to view this record."
 msgstr "您沒有權限查看此記錄。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have permission to edit this record."
 msgstr "您沒有權限編輯此記錄。"
 
@@ -3053,39 +3114,19 @@ msgstr "外部身分驗證使用者無法在此更改密碼。請聯繫管理員
 msgid "Change password"
 msgstr "更改密碼"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
-msgid "ECDSA P-256 algorithm must use 256 bits"
-msgstr "ECDSA P-256 演算法必須使用 256 位元"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:136
-msgid "ECDSA P-384 algorithm must use 384 bits"
-msgstr "ECDSA P-384 演算法必須使用 384 位元"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:142
-msgid "ED25519 algorithm must use 256 bits"
-msgstr "ED25519 演算法必須使用 256 位元"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:147
-msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr "ED448 演算法必須使用 456 位元（此 UI 不支援）"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:154
-msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr "RSA 演算法應使用 1024 或 2048 位元以確保足夠的安全性"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:176
+#: lib/Application/Controller/DnssecAddKeyController.php:144
 msgid "Zone key has been added successfully."
 msgstr "區域金鑰已成功新增。"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:180
+#: lib/Application/Controller/DnssecAddKeyController.php:148
 msgid "Failed to add new DNSSEC key."
 msgstr "新增新的 DNSSEC 金鑰失敗。"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:184
+#: lib/Application/Controller/DnssecAddKeyController.php:152
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "新增 DNSSEC 金鑰時發生錯誤： "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:188
+#: lib/Application/Controller/DnssecAddKeyController.php:156
 msgid "Please select both algorithm and bits"
 msgstr "請選擇演算法和位數"
 
@@ -3127,19 +3168,19 @@ msgstr "supermaster 已成功刪除。"
 msgid "Bulk Registration"
 msgstr "批次註冊"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "所有者必須為數字使用者 ID。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "新增區域失敗。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "區域已成功新增。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "某些區域無法新增。"
 
@@ -3165,16 +3206,15 @@ msgstr "預設區域範本已更新。"
 msgid "User-owner assignment is disabled by the current zone ownership mode."
 msgstr "目前區域所有權模式停用了使用者所有者分配。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Domain/Service/Dns/DomainManager.php:894
+msgid "The selected user already owns the zone."
+msgstr "選定的使用者已擁有該區域。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:197
 msgid "Owner has been added successfully."
 msgstr "所有者已成功新增。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:293
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr "無法刪除最後一個所有者: 區域將不再有任何所有權。"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
@@ -3182,7 +3222,7 @@ msgstr ""
 "無法刪除最後一個使用者所有者: 區域所有權模式為 users_only,需要至少一個使用者"
 "所有者。請先新增另一個。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
@@ -3190,54 +3230,26 @@ msgstr ""
 "無法刪除使用者所有者: 區域所有權模式為 groups_only,且該區域沒有組所有者。請先"
 "新增一個組。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "所有者已成功移除。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:250
+#: lib/Application/Controller/ZoneOwnershipController.php:260
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr "目前區域所有權模式停用了組所有權分配。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:262
+#: lib/Application/Controller/ZoneOwnershipController.php:272
 msgid "You do not have permission to assign this group."
 msgstr "您沒有權限分配此組。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:270
+#: lib/Application/Controller/ZoneOwnershipController.php:280
 msgid "Group has been added successfully."
 msgstr "組已成功新增。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:299
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr ""
-"無法刪除最後一個組: 區域所有權模式為 groups_only,需要至少一個組。請先新增另一"
-"個組。"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:305
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr ""
-"無法刪除組: 區域所有權模式為 users_only,且該區域沒有使用者所有者。請先新增一"
-"個使用者所有者。"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:310
+#: lib/Application/Controller/ZoneOwnershipController.php:320
 msgid "Group has been removed successfully."
 msgstr "組已成功移除。"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:333
-msgid "Add another owner or a group first."
-msgstr "請先新增另一個所有者或組。"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "請先新增另一個使用者所有者(區域所有權模式為 users_only)。"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:338
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "請先新增一個組(區域所有權模式為 groups_only)。"
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3248,41 +3260,50 @@ msgstr "頁面找不到"
 msgid "This action requires a POST request."
 msgstr "此操作需要 POST 請求。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:92
-msgid ""
-"DNSSEC functionality is not available. Please check PowerDNS API "
-"configuration."
-msgstr "DNSSEC功能不可用。請檢查PowerDNS API設定。"
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:118
+#: lib/Application/Controller/DnssecToggleKeyController.php:120
 msgid "Zone key has been successfully deactivated."
 msgstr "區域金鑰已成功停用。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:121
 msgid "Failed to deactivate zone key."
 msgstr "停用區域金鑰失敗。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:122
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "Zone key has been successfully activated."
 msgstr "區域金鑰已成功啟用。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:123
+#: lib/Application/Controller/DnssecToggleKeyController.php:125
 msgid "Failed to activate zone key."
 msgstr "啟用區域金鑰失敗。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:136
+#: lib/Application/Controller/DnssecToggleKeyController.php:138
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "切換DNSSEC金鑰時發生錯誤。請重試。"
 
-#: lib/Application/Service/RequestValidator.php:69
+#: lib/Application/Service/RequestValidator.php:87
 #, php-format
 msgid "The %s field is required."
 msgstr "%s 欄位是必需的。"
 
-#: lib/Application/Service/RequestValidator.php:77
+#: lib/Application/Service/RequestValidator.php:90
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%s 欄位必須是數字。"
+
+#: lib/Application/Service/RequestValidator.php:94
+#, php-format
+msgid "The %s field must be a list."
+msgstr "%s 欄位必須是清單。"
+
+#: lib/Application/Service/RequestValidator.php:98
+#, php-format
+msgid "The %s field must be at most %d characters."
+msgstr "%s 欄位最多 %d 個字元。"
+
+#: lib/Application/Service/RequestValidator.php:102
+#, php-format
+msgid "The %s field has an invalid value."
+msgstr "%s 欄位的值無效。"
 
 #: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
 #: templates/modern/users.html:222
@@ -3298,11 +3319,11 @@ msgstr "否"
 msgid "Account is temporarily locked. Please try again later."
 msgstr "帳號暫時鎖定。請稍後重試。"
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "使用者帳號已停用。"
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "認證失敗！"
 
@@ -3330,7 +3351,7 @@ msgstr "身分驗證失敗：無效的工作階段"
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "身分驗證失敗：無法建立或更新使用者帳號"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "LDAP 認證失敗！"
 
@@ -3546,14 +3567,13 @@ msgid ""
 "below."
 msgstr "顯示下表中設定的 supermaster 的連接狀態。"
 
-#: lib/Infrastructure/Web/PageRenderer.php:132
+#: lib/Infrastructure/Web/PageRenderer.php:133
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "正在使用預設工作階段加密金鑰，請在設定檔中設定。"
 
-#: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
+#: lib/Infrastructure/Web/PageRenderer.php:137
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3561,7 +3581,7 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/Infrastructure/Web/PageRenderer.php:253
+#: lib/Infrastructure/Web/PageRenderer.php:254
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr "install/ 目錄存在，您必須先將其移除才能繼續。"
@@ -3617,43 +3637,43 @@ msgstr "電子郵件位址已存在，請選擇另一個。"
 msgid "Enter a valid user name."
 msgstr "請輸入有效的使用者名稱。"
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "找不到區域範本。"
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "只有全域區域範本可以設定為預設。"
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "設定預設區域範本時出錯: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "清除預設區域範本時出錯: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "建立區域範本錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "向範本新增預設 SOA 記錄錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "刪除區域範本錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "刪除使用者區域範本錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "您沒有向此區域範本新增記錄的權限。"
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "您沒有將此記錄類型新增至區域範本的權限。"
@@ -3666,68 +3686,68 @@ msgstr "您的內容欄位沒有合法值。"
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV 記錄的優先級必須是 0 到 65535 之間的數字。"
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "新增區域範本記錄時發生錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "該記錄不屬於此區域範本。"
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "更新區域範本記錄錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "您沒有從區域範本刪除此記錄類型的權限。"
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "刪除區域範本記錄錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "檢查範本所有權錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 msgstr "以下記錄類型未加入範本，因為您沒有新增它們的權限：%s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "檢索使用範本的區域錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "取得使用範本的區域清單失敗： "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "您沒有編輯區域範本的權限。"
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "從範本取消連結區域錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "檢索區域錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "檢查範本名稱存在性錯誤： "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "按名稱查找範本時出錯： "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "檢查範本存在性錯誤： "
 
@@ -3783,50 +3803,59 @@ msgid ""
 "disabled."
 msgstr "檢視需要在 pdns.conf 中設定 \"views=yes\"。已連線的伺服器已將其停用。"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "所有區域都有所有者"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "發現 %d 個沒有所有者的區域"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "所有從區域都有主 IP 位址"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "發現 %d 個沒有主 IP 位址的從區域"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "所有記錄都屬於現有區域"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "發現 %d 條孤立記錄"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "未發現重複的 SOA 記錄"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d 個區域有重複的 SOA 記錄"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "所有區域都有 SOA 記錄"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "發現 %d 個沒有 SOA 記錄的區域"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "所有區域都有正規 ID"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "找到 %d 個沒有正規 ID 的區域"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -6971,7 +7000,7 @@ msgid ""
 "number punctuation."
 msgstr "contactphone 值只能包含數字、空格和常見的電話號碼標點符號。"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:464
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:467
 msgid "Value must be enclosed in double quotes."
 msgstr "值必須用雙引號括起來。"
 
@@ -8429,52 +8458,54 @@ msgstr "NAPTR 記錄替換必須是 \".\" 或有效的完全限定網域名稱�
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "帶有正則表達式的 NAPTR 記錄必須將 \".\" 作為替換。"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
-msgstr "NAPTR 服務必須遵循以下格式：[protocol][+rs][+rs]... 其中 protocol 和 rs 以加號分隔，各自以字母開頭，且只能包含字母、數字、連字號或冒號（每段最多 32 個字元）。"
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
+"and rs are separated by plus signs, each start with a letter and contain "
+"only letters, digits, hyphens or colons (max 32 chars each)."
+msgstr ""
+"NAPTR 服務必須遵循以下格式：[protocol][+rs][+rs]... 其中 protocol 和 rs 以加"
+"號分隔，各自以字母開頭，且只能包含字母、數字、連字號或冒號（每段最多 32 個字"
+"元）。"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:362
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
 msgstr "終端標誌 \"S\"、\"A\"、\"U\" 和 \"P\" 不應與其他標誌組合。"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:381
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:384
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr "NAPTR 正規表示式必須以分隔字元開頭。"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:387
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:390
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
 msgstr "NAPTR 正則表達式必須具有格式：分隔符+模式+分隔符+替換+分隔符+標誌。"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:394
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:397
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
 msgstr "NAPTR 正則表達式標誌（第三個分隔符之後）應僅包含 \"i\" 或為空。"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:412
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
 msgstr ""
 "這似乎是 ENUM NAPTR 記錄 (RFC 6116)。確保域在 e164.arpa 或私有 ENUM 樹下。"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:413
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:416
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr "ENUM 記錄應具有 \"U\" 標誌以指示 URI 輸出。"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:440
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:443
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr "NAPTR 正則表達式包含潛在危險模式： "
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:447
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:450
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr "NAPTR 正規表示式太長。最大長度為 1000 個字元。"
 
@@ -8628,6 +8659,26 @@ msgstr "您沒有刪除 API 金鑰的權限。"
 msgid "You do not have permission to regenerate API keys."
 msgstr "您沒有重新產生 API 金鑰的權限。"
 
+#: lib/Domain/Service/DnssecKeySpecValidator.php:56
+msgid "ECDSA P-256 algorithm must use 256 bits"
+msgstr "ECDSA P-256 演算法必須使用 256 位元"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:57
+msgid "ECDSA P-384 algorithm must use 384 bits"
+msgstr "ECDSA P-384 演算法必須使用 384 位元"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:58
+msgid "ED25519 algorithm must use 256 bits"
+msgstr "ED25519 演算法必須使用 256 位元"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:59
+msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
+msgstr "ED448 演算法必須使用 456 位元（此 UI 不支援）"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:60
+msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr "RSA 演算法應使用 1024 或 2048 位元以確保足夠的安全性"
+
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr "區域中沒有 SOA 記錄，或 SOA 記錄未啟用。這是 DNSSEC 所必需的。"
@@ -8706,17 +8757,17 @@ msgstr ""
 msgid "Unknown database type."
 msgstr "未知的資料庫類型。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:102
+#: lib/Domain/Service/ReverseRecordCreator.php:103
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "%s 沒有相符的反向區域。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:110
+#: lib/Domain/Service/ReverseRecordCreator.php:111
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "%s 指向 %s 的 PTR 記錄已存在。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:123
+#: lib/Domain/Service/ReverseRecordCreator.php:127
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -8725,27 +8776,27 @@ msgstr ""
 "反向記錄已新增。警告：%s的PTR記錄已存在，指向：%s。不建議為同一IP設定多個PTR"
 "記錄。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:245
+#: lib/Domain/Service/ReverseRecordCreator.php:249
 msgid "PTR update skipped: record type is not A or AAAA."
 msgstr "已略過 PTR 更新：記錄類型不是 A 或 AAAA。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:258
+#: lib/Domain/Service/ReverseRecordCreator.php:262
 msgid "Stale PTR record removed."
 msgstr "已移除過時的 PTR 記錄。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "A record with this hostname, type, and content already exists."
 msgstr "具有此主機名稱、類型和內容的記錄已存在。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "向 DNS 後端新增記錄失敗。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:465
 msgid "Failed to update record in DNS backend."
 msgstr "在 DNS 後端更新記錄失敗。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:899
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "給函數 %s %s 提供了無效參數"
@@ -8754,56 +8805,52 @@ msgstr "給函數 %s %s 提供了無效參數"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "已存在具有此 IP 位址和主機名稱的 supermaster。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:225
+#: lib/Domain/Service/Dns/DomainManager.php:226
 msgid "Failed to create zone in DNS backend."
 msgstr "在 DNS 後端建立區域失敗。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:440
+#: lib/Domain/Service/Dns/DomainManager.php:443
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "建立區域失敗：%s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:327
+#: lib/Domain/Service/Dns/DomainManager.php:328
 msgid "Failed to create SOA record for zone."
 msgstr "為區域建立 SOA 記錄失敗。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:382
+#: lib/Domain/Service/Dns/DomainManager.php:385
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "為區域建立 %s 記錄失敗。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:444
+#: lib/Domain/Service/Dns/DomainManager.php:447
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "給函數 %s 提供了無效參數"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:570
 msgid "Failed to delete zone from DNS backend."
 msgstr "從 DNS 後端刪除區域失敗。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:527
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "清理區域元資料失敗：%s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:618
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "刪除區域元資料失敗：%s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:792
 msgid "Failed to update zone type in DNS backend."
 msgstr "在 DNS 後端更新區域類型失敗。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:846
 msgid "Failed to update zone master in DNS backend."
 msgstr "在 DNS 後端更新區域主伺服器失敗。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
-msgid "The selected user already owns the zone."
-msgstr "選定的使用者已擁有該區域。"
-
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1199
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "更新區域記錄失敗：%s"
@@ -9467,7 +9514,7 @@ msgstr "傳送重設連結"
 msgid "Group Management"
 msgstr "組管理"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "找不到組"
 
@@ -9552,7 +9599,7 @@ msgid ""
 "Group members inherit these permissions only for zones owned by this group"
 msgstr "組成員僅對此組擁有的區域繼承這些權限"
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "選擇權限範本"
 
@@ -9735,15 +9782,15 @@ msgstr ""
 msgid "DNS Management"
 msgstr "DNS 管理"
 
-#: templates/modern/index.html:58 templates/modern/pdns_status.html:159
+#: templates/modern/index.html:413 templates/modern/pdns_status.html:159
 msgid "Online"
 msgstr "線上"
 
-#: templates/modern/index.html:60 templates/modern/pdns_status.html:161
+#: templates/modern/index.html:415 templates/modern/pdns_status.html:161
 msgid "Offline"
 msgstr "離線"
 
-#: templates/modern/index.html:441 templates/modern/header.html:300
+#: templates/modern/index.html:458 templates/modern/header.html:300
 msgid "Templates"
 msgstr "範本"
 
@@ -9755,15 +9802,15 @@ msgstr "網路"
 msgid "Zone Operations"
 msgstr "區域操作"
 
-#: templates/modern/index.html:157 templates/modern/index.html:461
+#: templates/modern/index.html:157 templates/modern/index.html:478
 msgid "Master Zone"
 msgstr "主區域"
 
-#: templates/modern/index.html:167 templates/modern/index.html:471
+#: templates/modern/index.html:167 templates/modern/index.html:488
 msgid "Slave Zone"
 msgstr "從區域"
 
-#: templates/modern/index.html:197 templates/modern/index.html:501
+#: templates/modern/index.html:197 templates/modern/index.html:518
 msgid "PTR Records"
 msgstr "PTR 記錄"
 
@@ -9788,7 +9835,7 @@ msgstr "資料庫"
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
-#: templates/modern/index.html:366 templates/modern/index.html:553
+#: templates/modern/index.html:366 templates/modern/index.html:570
 msgid "My Profile"
 msgstr "我的資料"
 
@@ -9797,7 +9844,7 @@ msgstr "我的資料"
 msgid "Password"
 msgstr "密碼"
 
-#: templates/modern/index.html:572 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:389
 msgid "Preferences"
 msgstr "首選項"
 
@@ -10312,19 +10359,19 @@ msgstr "是的，重新產生此 API 金鑰"
 msgid "No, keep current key"
 msgstr "不，保留目前金鑰"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "重設密碼"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "請求新的重設連結"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "密碼不符合要求"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "為以下對象輸入新密碼"
 
@@ -10332,44 +10379,44 @@ msgstr "為以下對象輸入新密碼"
 msgid "New password"
 msgstr "新密碼"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "請提供密碼"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "確認密碼"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "密碼不相符"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "密碼要求"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "最小長度"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "個字元"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "至少一個大寫字母"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "至少一個小寫字母"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "至少一個數字"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "至少一個特殊字元"
 
@@ -10462,7 +10509,6 @@ msgid "No SOA"
 msgstr "無 SOA"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -10490,7 +10536,7 @@ msgstr "已於序列號 %serial% 傳送 NOTIFY"
 msgid "Delete zone(s)"
 msgstr "刪除區域"
 
-#: templates/modern/dnssec_add_key.html:77
+#: templates/modern/dnssec_add_key.html:76
 msgid "Add key"
 msgstr "新增金鑰"
 
@@ -10522,11 +10568,11 @@ msgstr "選擇演算法"
 msgid "Bits in length"
 msgstr "長度位數"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:70
 msgid "Select bits length"
 msgstr "選擇位數長度"
 
-#: templates/modern/dnssec_add_key.html:128
+#: templates/modern/dnssec_add_key.html:127
 msgid "Recommended bits for"
 msgstr "推薦位數"
 
@@ -10535,37 +10581,37 @@ msgstr "推薦位數"
 msgid "Warning:"
 msgstr "警告："
 
-#: templates/modern/dnssec_add_key.html:136
+#: templates/modern/dnssec_add_key.html:135
 msgid "bits is not recommended for"
 msgstr "位數不推薦用於"
 
-#: templates/modern/dnssec_add_key.html:172
+#: templates/modern/dnssec_add_key.html:171
 msgid "About DNSSEC Key Types"
 msgstr "關於 DNSSEC 金鑰類型"
 
-#: templates/modern/dnssec_add_key.html:175
+#: templates/modern/dnssec_add_key.html:174
 msgid "Key Types Explained"
 msgstr "金鑰類型說明"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:176
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
 msgstr "組合簽名金鑰 - 同時用作 KSK 和 ZSK（推薦用於 PowerDNS 4.0+）"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:177
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "金鑰簽名金鑰 - 簽名區域中的 DNSKEY 記錄"
 
-#: templates/modern/dnssec_add_key.html:179
+#: templates/modern/dnssec_add_key.html:178
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "區域簽名金鑰 - 簽名區域中的所有其他記錄"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:183
 msgid "Recommended Settings"
 msgstr "推薦設定"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:184
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10648,16 +10694,16 @@ msgid ""
 "for this user"
 msgstr "此範本的權限將在整個系統中全域應用於此使用者"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "關於此使用者的可選資訊"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "已啟用"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "LDAP 身分驗證"
 
@@ -10665,7 +10711,7 @@ msgstr "LDAP 身分驗證"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "驗證設定只能由管理員變更"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "使用外部 LDAP 目錄進行身分驗證"
 
@@ -10677,7 +10723,7 @@ msgstr "返回首頁"
 msgid "Back to Users"
 msgstr "返回使用者"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "帳號資訊"
 
@@ -10701,7 +10747,7 @@ msgstr "必須包含特殊字元"
 msgid "No specific password requirements"
 msgstr "無特定密碼要求"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "使用者權限"
 
@@ -10717,7 +10763,7 @@ msgstr "基於此範本，此使用者具有以下權限"
 msgid "No permissions are assigned to this template"
 msgstr "此範本未分配任何權限"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "組成員資格"
 
@@ -10733,7 +10779,7 @@ msgstr "查看組詳細資訊"
 msgid "This user is not a member of any groups."
 msgstr "此使用者不是任何組的成員。"
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "新增到組"
 
@@ -10741,7 +10787,7 @@ msgstr "新增到組"
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr "選擇一個或多個組，然後按一下\"新增選定的組\"按鈕。"
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "搜尋可用組..."
 
@@ -11717,63 +11763,79 @@ msgstr "區域名稱"
 msgid "Assign owner"
 msgstr "分配所有者"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "修復"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "沒有正規 ID 的區域"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "要修復所有列出區域的正規 ID 嗎？"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "全部修復"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "修復正規 ID"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "沒有主 IP 位址的從區域"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "主 IP"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "刪除從區域"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "不屬於任何區域的記錄"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "記錄 ID"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "刪除孤立記錄"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "具有重複 SOA 記錄的區域"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "SOA 數量"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "保留第一個 SOA，刪除重複項"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "沒有 SOA 記錄的區域"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "建立預設 SOA 記錄"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "您確定要刪除從區域"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "您確定要刪除孤立記錄"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "您確定要刪除此項目嗎？"
 
@@ -11812,15 +11874,15 @@ msgstr "透過電子郵件傳送密碼"
 msgid "Send login credentials to user's email address"
 msgstr "將登入憑證傳送到使用者的電子郵件地址"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "選擇範本..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "為此使用者選擇權限"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -11829,7 +11891,7 @@ msgstr ""
 "建立新使用者時，他們將根據所選範本獲得權限。您可以稍後透過編輯使用者來修改這"
 "些權限。"
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr "選擇在建立時將新使用者新增到的組。"
 
@@ -13463,25 +13525,25 @@ msgstr "刪除活動金鑰將影響您區域的安全性，並可能導致驗證
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "您即將刪除 DNSSEC 金鑰（ID"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr "所有組成員將繼承此組擁有的區域的這些權限"
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "建立組"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "關於分組"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "什麼是分組？"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -13489,11 +13551,11 @@ msgstr ""
 "分組允許您組織使用者並集中管理區域存取。成員將繼承該組對所有組擁有區域的權"
 "限。"
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "如何使用分組"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -14489,3 +14551,5 @@ msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
 msgstr "設定地區設定失敗。所選的地區設定可能不受此系統支援。請聯絡您的管理員。"
+
+

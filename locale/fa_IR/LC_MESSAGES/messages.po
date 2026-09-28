@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-28 01:30+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -38,7 +38,7 @@ msgstr "شناسه منطقه نامعتبر است."
 msgid "Zone not found."
 msgstr "منطقه پیدا نشد."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
+#: lib/Application/Controller/BatchPtrRecordController.php:115
 msgid "You do not have permission to add records to this zone."
 msgstr "شما اجازه ندارید رکوردها را به این منطقه اضافه کنید."
 
@@ -46,11 +46,11 @@ msgstr "شما اجازه ندارید رکوردها را به این منطق�
 msgid "Invalid wizard type."
 msgstr "نوع دستیار نامعتبر است."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "اعتبارسنجی ناموفق بود:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "شکست در تولید رکورد:"
 
@@ -1236,7 +1236,7 @@ msgstr "نام منطقه و آدرس سرور اصلی الزامی هستند.
 msgid "Invalid hostname."
 msgstr "نام میزبان نامعتبر است."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "منطقه ای با این نام وجود دارد."
 
@@ -1264,21 +1264,21 @@ msgstr ""
 msgid "Zone has been converted to a primary zone."
 msgstr "منطقه به یک منطقه اصلی تبدیل شد."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "شما اجازه ایجاد مناطق برای کاربران دیگر را ندارید."
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "شناسه گروه ناشناخته: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "فقط می‌توانید گروه‌هایی را که عضو آن‌ها هستید اختصاص دهید (مجاز نیست: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr "حداقل یک کاربر یا گروه باید به عنوان مالک انتخاب شود."
 
@@ -1425,7 +1425,7 @@ msgstr "بازیابی اطلاعات RDAP با استفاده از سرور %s 
 msgid "Invalid CSRF token."
 msgstr "توکن CSRF نامعتبر است."
 
-#: lib/BaseController.php:598
+#: lib/BaseController.php:624
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -1458,30 +1458,30 @@ msgstr "هیچ رکوردی برای حذف انتخاب نشد."
 msgid "Describe why you are making this change."
 msgstr "توضیح دهید چرا این تغییر را انجام می‌دهید."
 
-#: lib/Application/Controller/DeleteRecordsController.php:233
+#: lib/Application/Controller/DeleteRecordsController.php:229
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr "رکورد با موفقیت حذف شده است. هر رکورد PTR مربوطه نیز حذف شد."
 
-#: lib/Application/Controller/DeleteRecordsController.php:235
+#: lib/Application/Controller/DeleteRecordsController.php:231
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr "%d رکورد با موفقیت حذف شد. هر رکورد PTR مربوطه نیز حذف شد."
 
-#: lib/Application/Controller/DeleteRecordsController.php:238
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid "No records could be deleted. Please check permissions."
 msgstr "هیچ رکوردی حذف نشد. لطفا مجوزها را بررسی کنید."
 
-#: lib/Application/Controller/DeleteRecordsController.php:305
+#: lib/Application/Controller/DeleteRecordsController.php:301
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "هیچ رکورد معتبری برای حذف انتخاب نشده است یا شما مجوز حذف آن‌ها را ندارید."
 
-#: lib/Domain/Service/Dns/DomainManager.php:182
+#: lib/Domain/Service/Dns/DomainManager.php:183
 msgid "Invalid or unexpected input given."
 msgstr "ورودی نامعتبر یا غیرمنتظره داده شده است."
 
@@ -1493,7 +1493,7 @@ msgstr "شما اجازه حذف این کاربر را ندارید."
 msgid "You do not have permission to delete a superuser account."
 msgstr "شما اجازه حذف حساب ابرکاربر را ندارید."
 
-#: lib/Application/Controller/EditUserController.php:597
+#: lib/Application/Controller/ZoneOwnershipController.php:186
 msgid "User does not exist."
 msgstr "کاربر وجود ندارد."
 
@@ -1518,7 +1518,7 @@ msgstr "ویژگی نظرات منطقه در پیکربندی غیرفعال ا
 msgid "You do not have the permission to view this comment."
 msgstr "شما اجازه ندارید که این نظر را ببینید."
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:606
 msgid "You do not have the permission to edit this comment."
 msgstr "شما اجازه ویرایش این نظر را ندارید."
 
@@ -1534,33 +1534,33 @@ msgstr "شناسه رکورد نامعتبر است."
 msgid "You do not have permission to delete records in this zone."
 msgstr "شما اجازه حذف رکوردها در این منطقه را ندارید."
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:509
 msgid "Record not found."
 msgstr "رکورد یافت نشد."
 
-#: lib/Application/Controller/DeleteRecordController.php:216
+#: lib/Application/Controller/DeleteRecordController.php:212
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr "رکورد و رکوردهای PTR و A/AAAA مربوطه با موفقیت حذف شدند."
 
-#: lib/Application/Controller/DeleteRecordController.php:218
+#: lib/Application/Controller/DeleteRecordController.php:214
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "رکورد و رکورد PTR مربوطه با موفقیت حذف شده است."
 
-#: lib/Application/Controller/DeleteRecordController.php:220
+#: lib/Application/Controller/DeleteRecordController.php:216
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "رکورد و رکورد A/AAAA مربوطه آن با موفقیت حذف شده است."
 
-#: lib/Application/Controller/DeleteRecordController.php:222
+#: lib/Application/Controller/DeleteRecordController.php:218
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr "رکورد با موفقیت حذف شده است. رکورد PTR پیدا نشد."
 
-#: lib/Application/Controller/DeleteRecordController.php:224
+#: lib/Application/Controller/DeleteRecordController.php:220
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -1570,7 +1570,7 @@ msgstr "رکورد با موفقیت حذف شده است. هیچ رکورد A/A
 msgid "The record has been deleted successfully."
 msgstr "رکورد با موفقیت حذف شده است."
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:516
 msgid "You cannot delete records from a read-only zone."
 msgstr "شما نمی‌توانید رکوردها را از یک منطقه فقط خواندنی حذف کنید."
 
@@ -1632,7 +1632,7 @@ msgstr "شما اجازه مدیریت اعضای گروه را ندارید."
 msgid "Manage Group Members"
 msgstr "مدیریت اعضای گروه"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:112
+#: lib/Application/Controller/ManageGroupZonesController.php:118
 msgid "Invalid action."
 msgstr "اقدام نامعتبر است."
 
@@ -1696,7 +1696,7 @@ msgstr "کد تأیید لازم است."
 msgid "MFA has been enabled successfully."
 msgstr "MFA با موفقیت فعال شده است."
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "کد تأیید نامعتبر است. لطفا دوباره امتحان کنید."
 
@@ -1766,7 +1766,7 @@ msgstr "شما اجازه مشاهده supermasters را ندارید."
 msgid "You do not have the permission to view zone metadata."
 msgstr "شما اجازه مشاهده متاداده منطقه را ندارید."
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:831
 msgid "You do not have the permission to edit zone metadata."
 msgstr "شما اجازه ویرایش متاداده منطقه را ندارید."
 
@@ -1925,7 +1925,7 @@ msgstr "نوع رکورد نامعتبر است."
 msgid "Record could not be added."
 msgstr "رکورد نمی تواند اضافه شود."
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:529
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d رکورد با موفقیت اضافه شد."
@@ -1972,11 +1972,11 @@ msgstr "قالب مجوز به‌روزرسانی نشد."
 msgid "Groups"
 msgstr "گروه ها"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "شما اجازه انجام جستجو را ندارید."
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "جستجو"
@@ -1998,7 +1998,7 @@ msgstr "شماره صفحه باید حداقل 1 باشد."
 msgid "Page number exceeds available pages."
 msgstr "شماره صفحه از صفحات موجود فراتر می‌رود."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:75
 msgid "Invalid request method."
 msgstr "روش درخواست نامعتبر است."
 
@@ -2019,7 +2019,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "شما اجازه اضافه کردن یک کاربر جدید را ندارید."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "افزودن کاربر"
 
@@ -2056,7 +2056,7 @@ msgstr "یک رمز عبور ایجاد شد اما به دلایل امنیتی
 msgid "Please fill in all required fields correctly."
 msgstr "لطفا تمام زمینه های مورد نیاز را به درستی پر کنید."
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:542
 msgid "You do not have the permission to delete this record."
 msgstr "شما اجازه حذف این رکورد را ندارید."
 
@@ -2064,7 +2064,7 @@ msgstr "شما اجازه حذف این رکورد را ندارید."
 msgid "The record could not be deleted."
 msgstr "رکورد را نمی توان حذف کرد."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "گزارش‌های منطقه"
@@ -2086,7 +2086,7 @@ msgstr "تنها مناطق تولید کننده کاتالوگ منتشر می
 msgid "You do not have permission to access this zone."
 msgstr "شما اجازه دسترسی به این منطقه را ندارید."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:753
 msgid "You do not have permission to edit this zone."
 msgstr "شما اجازه ویرایش این منطقه را ندارید."
 
@@ -2094,7 +2094,7 @@ msgstr "شما اجازه ویرایش این منطقه را ندارید."
 msgid "The zone has been added to the catalog."
 msgstr "منطقه به کاتالوگ اضافه شد."
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:613
 msgid "The zone has been removed from the catalog."
 msgstr "منطقه از کاتالوگ حذف شد."
 
@@ -2131,7 +2131,7 @@ msgstr "ویرایش قالب منطقه"
 msgid "There is no zone template with this ID."
 msgstr "هیچ قالب منطقه ای با این شناسه وجود ندارد."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "قالب منطقه با موفقیت به روز شده است."
 
@@ -2150,7 +2150,7 @@ msgstr "منطقه ها با موفقیت به روز شده اند."
 msgid "You do not have permission to create new zone templates."
 msgstr "شما اجازه ایجاد قالب های منطقه جدید را ندارید."
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 "قالب منطقه با این نام در حال حاضر وجود دارد، لطفا یکی دیگر را انتخاب کنید."
@@ -2179,7 +2179,7 @@ msgstr "شناسه قالب نامعتبر است."
 msgid "Template does not exist."
 msgstr "الگو وجود ندارد."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:522
 msgid "You do not have permission to view this zone."
 msgstr "شما اجازه ندارید که این منطقه را ببینید."
 
@@ -2235,7 +2235,7 @@ msgstr "ویرایش منطقه"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "شما اجازه مدیریت DNSSEC برای این منطقه را ندارید."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:337
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC در سرور فعال نیست."
 
@@ -2244,15 +2244,15 @@ msgstr "DNSSEC در سرور فعال نیست."
 msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr "این منطقه presigned است؛ کلیدهای DNSSEC در سرور اصلی مدیریت می‌شوند."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "منطقه در حال حاضر با DNSSEC امضا شده است."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "منطقه با موفقیت امضا شده است."
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2260,7 +2260,7 @@ msgstr ""
 "امضای منطقه با موفقیت درخواست شد، اما تایید شکست خورد. کلیدهای DNSSEC را "
 "بررسی کنید."
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2285,23 +2285,23 @@ msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "حذف امضای منطقه ناموفق بود. برای جزئیات، گزارش‌های PowerDNS را بررسی کنید."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:619
 msgid "The catalog has been changed successfully."
 msgstr "کاتالوگ با موفقیت تغییر کرد."
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:637
 msgid "Zone type has been changed successfully."
 msgstr "نوع منطقه با موفقیت تغییر کرده است."
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:644
 msgid "Slave master has been changed successfully."
 msgstr "سرور master برای منطقه slave با موفقیت تغییر کرد."
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:658
 msgid "You cannot apply a template to a read-only zone."
 msgstr "شما نمی‌توانید یک قالب را به یک منطقه فقط خواندنی اعمال کنید."
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:680
 msgid "Zone template has been changed successfully."
 msgstr "قالب منطقه با موفقیت تغییر کرده است."
 
@@ -2309,7 +2309,7 @@ msgstr "قالب منطقه با موفقیت تغییر کرده است."
 msgid "You cannot edit records in a read-only zone."
 msgstr "شما نمی‌توانید رکوردها را در یک منطقه فقط خواندنی ویرایش کنید."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:863
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2318,19 +2318,19 @@ msgstr ""
 "برخی رکوردها ذخیره نشدند زیرا فرم از محدودیت سرور در تعداد فیلدها فراتر رفت. "
 "از مدیر خود بخواهید تنظیم PHP \"max_input_vars\" را افزایش دهد."
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:971
 msgid "Zone has not been updated successfully."
 msgstr "منطقه با موفقیت به روز نشده است."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:972
 msgid "Request has expired, please try again."
 msgstr "درخواست منقضی شده است، لطفا دوباره امتحان کنید."
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:981
 msgid "Zone has been updated successfully."
 msgstr "منطقه با موفقیت به روز شده است."
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:982
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2338,7 +2338,11 @@ msgstr ""
 "منطقه با موفقیت ذخیره شد. هیچ تغییری در رکوردها ایجاد نشد، اما سریال SOA "
 "افزایش یافت."
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Domain/Service/Dns/RecordManager.php:289
+msgid "You do not have the permission to add a record to this zone."
+msgstr "شما اجازه ندارید که یک رکورد به این منطقه اضافه کنید."
+
+#: lib/Application/Controller/EditController.php:1024
 msgid "Please provide all required fields."
 msgstr "لطفا تمام زمینه های مورد نیاز را ارائه دهید."
 
@@ -2346,7 +2350,7 @@ msgstr "لطفا تمام زمینه های مورد نیاز را ارائه د
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "رکورد با موفقیت اضافه شده است. یک رکورد PTR نیز ایجاد شده است."
 
-#: lib/Application/Controller/AddRecordController.php:266
+#: lib/Application/Controller/AddRecordController.php:510
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "رکورد با موفقیت اضافه شد، اما ایجاد رکورد PTR شکست خورد: "
 
@@ -2362,19 +2366,19 @@ msgstr "رکورد با موفقیت اضافه شد. یک رکورد A منطب
 msgid "Invalid security token. Please try again."
 msgstr "توکن امنیتی نامعتبر است. لطفا دوباره امتحان کنید."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr "تلاش‌های ناموفق بیش از حد. لطفاً بعداً دوباره امتحان کنید."
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "هیچ رکورد MFA پیدا نشد. لطفا با مدیر تماس بگیرید."
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "یک خطا رخ داد. لطفا دوباره امتحان کنید."
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2382,15 +2386,15 @@ msgstr ""
 "تأیید ایمیل در دسترس نیست زیرا خدمات ایمیل غیرفعال است. لطفا از یک کد "
 "بازیابی استفاده کنید."
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "یک کد تایید جدید به ایمیل شما ارسال شده است."
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "به جای آن از یک کد بازیابی استفاده کنید."
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2398,29 +2402,25 @@ msgstr ""
 "ارسال کد تأیید به ایمیل شما ممکن نشد. به جای آن از یک کد بازیابی استفاده "
 "کنید."
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
-msgid "You do not have the permission to add a record to this zone."
-msgstr "شما اجازه ندارید که یک رکورد به این منطقه اضافه کنید."
-
 #: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "رکورد با موفقیت اضافه شده است."
 
-#: lib/Application/Controller/AddRecordController.php:464
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "No records were provided."
 msgstr "هیچ رکوردی ارائه نشد."
 
-#: lib/Application/Controller/AddRecordController.php:533
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d رکورد منطبق نیز ایجاد شد."
 
-#: lib/Application/Controller/AddRecordController.php:536
+#: lib/Application/Controller/AddRecordController.php:534
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "اضافه کردن %d رکورد ناموفق بود."
 
-#: lib/Application/Controller/AddRecordController.php:541
+#: lib/Application/Controller/AddRecordController.php:539
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2428,7 +2428,7 @@ msgstr ""
 "برخی از رکوردها را نمی توان اضافه کرد. آنها ممکن است در حال حاضر وجود داشته "
 "باشند یا حاوی داده های نامعتبر باشند."
 
-#: lib/Application/Controller/AddRecordController.php:571
+#: lib/Application/Controller/AddRecordController.php:569
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "افزودن هیچ رکوردی موفق نبود. آن‌ها ممکن است حاوی داده‌های نامعتبر باشند."
 
@@ -2436,7 +2436,7 @@ msgstr "افزودن هیچ رکوردی موفق نبود. آن‌ها ممکن
 msgid "No zone selected for deletion."
 msgstr "هیچ منطقه ای برای حذف انتخاب نشد."
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1013
 msgid "You do not have the permission to delete a zone."
 msgstr "شما اجازه حذف یک منطقه را ندارید."
 
@@ -2501,7 +2501,7 @@ msgstr ""
 "نمی تواند کلید PEM را بازیابی کند. سرور ممکن است مواد کلیدی خصوصی را برای "
 "این کلید افشا نکند."
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "شما اجازه اضافه کردن یک منطقه اصلی را ندارید."
 
@@ -2533,7 +2533,7 @@ msgstr ""
 "یک شبکه به نشانه‌گذاری CIDR (برای مثال 192.168.1.0/24 یا 2001:db8::/48) یا یک "
 "نام منطقه معکوس که به in-addr.arpa یا ip6.arpa ختم می‌شود وارد کنید."
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2541,7 +2541,7 @@ msgstr ""
 "منطقه با موفقیت ایجاد شد، اما امضای DNSSEC به دلیل خطاهای اعتبارسنجی نادیده "
 "گرفته شد:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2550,11 +2550,11 @@ msgstr ""
 "بود، اما PowerDNS API خطایی بازگرداند. برای جزئیات، گزارش‌های PowerDNS را "
 "بررسی کنید."
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "منطقه با موفقیت با DNSSEC ایجاد و امضا شده است."
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2570,16 +2570,16 @@ msgstr "منطقه با موفقیت اضافه شده است."
 msgid "Batch PTR record creation is not enabled."
 msgstr "ایجاد رکورد Batch PTR فعال نیست."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:88
+#: lib/Application/Controller/BatchPtrRecordController.php:89
 msgid "You do not have permission to edit DNS records."
 msgstr "شما اجازه ویرایش رکوردهای DNS را ندارید."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:93
+#: lib/Application/Controller/BatchPtrRecordController.php:94
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
 msgstr "رکوردهای PTR گروهی"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:109
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "ایجاد رکورد Batch PTR برای مناطق معکوس در دسترس نیست."
 
@@ -2681,19 +2681,25 @@ msgstr "نماها"
 msgid "Invalid key ID."
 msgstr "شناسه کلید نامعتبر است."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:107
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
+msgid ""
+"DNSSEC functionality is not available. Please check PowerDNS API "
+"configuration."
+msgstr "قابلیت DNSSEC در دسترس نیست. لطفا پیکربندی PowerDNS API را بررسی کنید."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "DNSSEC key not found or no longer exists."
 msgstr "کلید DNSSEC یافت نمی شود یا دیگر وجود ندارد."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:111
+#: lib/Application/Controller/DnssecDeleteKeyController.php:113
 msgid "Zone key has been deleted successfully."
 msgstr "کلید منطقه با موفقیت حذف شده است."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:119
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "Failed to delete the zone key."
 msgstr "شکست در حذف کلید منطقه"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:126
+#: lib/Application/Controller/DnssecDeleteKeyController.php:128
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "خطا در هنگام حذف کلید DNSSEC رخ داد: "
 
@@ -2727,44 +2733,44 @@ msgstr "شما اجازه کافی برای مشاهده این صفحه ندا�
 msgid "Reverse Zones"
 msgstr "مناطق معکوس"
 
-#: lib/Application/Controller/ListForwardZonesController.php:283
+#: lib/Application/Controller/ListForwardZonesController.php:296
 msgid "You do not have the permission to see any zones."
 msgstr "شما اجازه دیدن هیچ منطقه ای را ندارید."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:79
+#: lib/Application/Controller/ManageGroupZonesController.php:85
 msgid "You do not have permission to manage zone ownership."
 msgstr "شما اجازه مدیریت مالکیت منطقه را ندارید."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:93
+#: lib/Application/Controller/ManageGroupZonesController.php:99
 msgid "Manage Group Zones"
 msgstr "مدیریت منطقه گروه"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:230
+#: lib/Application/Controller/ManageGroupZonesController.php:236
 msgid "Please select at least one zone."
 msgstr "لطفا حداقل یک منطقه را انتخاب کنید."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:166
+#: lib/Application/Controller/ManageGroupZonesController.php:172
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d منطقه به گروه اضافه شد."
 msgstr[1] "%d منطقه به گروه اضافه شد."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:209
+#: lib/Application/Controller/ManageGroupZonesController.php:215
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d منطقه را نمی‌توان اضافه کرد."
 msgstr[1] "%d منطقه را نمی‌توان اضافه کرد."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:251
+#: lib/Application/Controller/ManageGroupZonesController.php:257
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d منطقه از گروه حذف شد."
 msgstr[1] "%d منطقه از گروه حذف شد."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:294
+#: lib/Application/Controller/ManageGroupZonesController.php:300
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2829,38 +2835,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "%d منطقه اختصاص یافت؛ %d ناموفق"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "شناسه کانونیکال منطقه تعمیر شد"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "تعمیر شناسه کانونیکال منطقه ناموفق بود"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "هیچ منطقه‌ای بدون شناسه کانونیکال برای اصلاح وجود ندارد"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "شناسه کانونیکال %d منطقه تعمیر شد"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "%d منطقه تعمیر شد؛ %d ناموفق"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "منطقه برده با موفقیت حذف شد"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "شکست در حذف منطقه برده"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "رکورد یتیم با موفقیت حذف شد"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "شکست در حذف رکورد یتیم"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "رکوردهای تکراری SOA با موفقیت اصلاح شدند"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "شکست در اصلاح رکوردهای تکراری SOA"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "رکورد پیش‌فرض SOA با موفقیت ایجاد شد"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "شکست در ایجاد رکورد پیش فرض SOA"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "نوع بررسی نامعتبر"
 
@@ -2868,7 +2896,7 @@ msgstr "نوع بررسی نامعتبر"
 msgid "You have logged out."
 msgstr "شما خارج شده اید."
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "شما اجازه اضافه کردن یک قالب منطقه را ندارید."
 
@@ -2901,7 +2929,7 @@ msgstr "شما اجازه ندارید یک منطقه برده را اضافه 
 msgid "Add Secondary Zone"
 msgstr "افزودن منطقه ثانویه"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "شما اجازه حذف قالب های منطقه را ندارید."
 
@@ -2921,21 +2949,54 @@ msgstr "supermaster مورد نظر برای ویرایش وجود ندارد."
 msgid "The supermaster has been updated successfully."
 msgstr "supermaster با موفقیت به‌روز شده است."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
 msgid "You do not have permission to manage group zones."
 msgstr "شما اجازه مدیریت مناطق گروهی را ندارید."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:80
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
 msgid "Invalid group or zone ID."
 msgstr "شناسه گروه یا منطقه نامعتبر است."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:104
 msgid "Zone removed from group successfully."
 msgstr "منطقه با موفقیت از گروه خارج شد."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:93
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:106
 msgid "Zone was not owned by this group."
 msgstr "منطقه متعلق به این گروه نبود."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:309
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"نمی‌توان آخرین گروه را حذف کرد: حالت مالکیت منطقه groups_only است و دست‌کم به "
+"یک گروه نیاز دارد. ابتدا گروه دیگری اضافه کنید."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:315
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"نمی‌توان گروه را حذف کرد: حالت مالکیت منطقه users_only است و منطقه هیچ مالک "
+"کاربری ندارد. ابتدا یک مالک کاربری اضافه کنید."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:343
+msgid "Add another owner or a group first."
+msgstr "ابتدا یک مالک یا یک گروه دیگر را اضافه کنید."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr "ابتدا مالک کاربری دیگری اضافه کنید (حالت مالکیت منطقه users_only است)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:348
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "ابتدا یک گروه اضافه کنید (حالت مالکیت منطقه groups_only است)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "نمی توان آخرین مالک را حذف کرد: این منطقه را بدون مالکیت ترک می کند."
 
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
@@ -3130,7 +3191,7 @@ msgstr "خروج انجام شد (با هشدار): "
 msgid "You do not have permission to view this record."
 msgstr "شما اجازه ندارید که این رکورد را ببینید."
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have permission to edit this record."
 msgstr "شما اجازه ویرایش این رکورد را ندارید."
 
@@ -3173,39 +3234,19 @@ msgstr ""
 msgid "Change password"
 msgstr "تغییر رمز عبور"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
-msgid "ECDSA P-256 algorithm must use 256 bits"
-msgstr "الگوریتم ECDSA P-256 باید از ۲۵۶ بیت استفاده کند"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:136
-msgid "ECDSA P-384 algorithm must use 384 bits"
-msgstr "الگوریتم ECDSA P-384 باید از 384 بیت استفاده کند"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:142
-msgid "ED25519 algorithm must use 256 bits"
-msgstr "الگوریتم ED25519 باید از 256 بیت استفاده کند"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:147
-msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr "الگوریتم ED448 باید از 456 بیت (بدون پشتیبانی در این UI) استفاده کند."
-
-#: lib/Application/Controller/DnssecAddKeyController.php:154
-msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr "الگوریتم های RSA باید از 1024 یا 2048 بیت برای امنیت کافی استفاده کنند"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:176
+#: lib/Application/Controller/DnssecAddKeyController.php:144
 msgid "Zone key has been added successfully."
 msgstr "کلید منطقه با موفقیت اضافه شده است."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:180
+#: lib/Application/Controller/DnssecAddKeyController.php:148
 msgid "Failed to add new DNSSEC key."
 msgstr "شکست برای اضافه کردن کلید DNSSEC جدید"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:184
+#: lib/Application/Controller/DnssecAddKeyController.php:152
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "یک خطا در هنگام اضافه کردن کلید DNSSEC رخ داد: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:188
+#: lib/Application/Controller/DnssecAddKeyController.php:156
 msgid "Please select both algorithm and bits"
 msgstr "لطفا هر دو الگوریتم و بیت را انتخاب کنید"
 
@@ -3247,19 +3288,19 @@ msgstr "supermaster با موفقیت حذف شده است."
 msgid "Bulk Registration"
 msgstr "ثبت انبوه"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "مالک باید یک شناسه کاربری عددی باشد."
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "افزودن منطقه ناموفق بود."
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "منطقه ها با موفقیت اضافه شده اند."
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "برخی از مناطق نتوانستند اضافه شوند."
 
@@ -3287,16 +3328,15 @@ msgstr "الگوی منطقه پیش فرض به روز شده"
 msgid "User-owner assignment is disabled by the current zone ownership mode."
 msgstr "تخصیص مالک کاربر توسط حالت مالکیت منطقه فعلی غیرفعال است."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Domain/Service/Dns/DomainManager.php:894
+msgid "The selected user already owns the zone."
+msgstr "کاربر منتخب در حال حاضر دارای منطقه است."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:197
 msgid "Owner has been added successfully."
 msgstr "مالک با موفقیت اضافه شده است."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:293
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr "نمی توان آخرین مالک را حذف کرد: این منطقه را بدون مالکیت ترک می کند."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
@@ -3304,7 +3344,7 @@ msgstr ""
 "نمی‌توان آخرین مالک کاربری را حذف کرد: حالت مالکیت منطقه users_only است و "
 "دست‌کم به یک مالک کاربری نیاز دارد. ابتدا مالک کاربری دیگری اضافه کنید."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
@@ -3312,54 +3352,26 @@ msgstr ""
 "نمی‌توان مالک کاربری را حذف کرد: حالت مالکیت منطقه groups_only است و منطقه "
 "هیچ مالک گروهی ندارد. ابتدا یک گروه اضافه کنید."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "مالک با موفقیت برداشته شده است."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:250
+#: lib/Application/Controller/ZoneOwnershipController.php:260
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr "تخصیص مالکیت گروه توسط حالت مالکیت منطقه فعلی غیرفعال است."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:262
+#: lib/Application/Controller/ZoneOwnershipController.php:272
 msgid "You do not have permission to assign this group."
 msgstr "شما اجازه ندارید که این گروه را اختصاص دهید."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:270
+#: lib/Application/Controller/ZoneOwnershipController.php:280
 msgid "Group has been added successfully."
 msgstr "گروه با موفقیت اضافه شده است."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:299
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr ""
-"نمی‌توان آخرین گروه را حذف کرد: حالت مالکیت منطقه groups_only است و دست‌کم به "
-"یک گروه نیاز دارد. ابتدا گروه دیگری اضافه کنید."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:305
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr ""
-"نمی‌توان گروه را حذف کرد: حالت مالکیت منطقه users_only است و منطقه هیچ مالک "
-"کاربری ندارد. ابتدا یک مالک کاربری اضافه کنید."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:310
+#: lib/Application/Controller/ZoneOwnershipController.php:320
 msgid "Group has been removed successfully."
 msgstr "گروه با موفقیت برداشته شده است."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:333
-msgid "Add another owner or a group first."
-msgstr "ابتدا یک مالک یا یک گروه دیگر را اضافه کنید."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "ابتدا مالک کاربری دیگری اضافه کنید (حالت مالکیت منطقه users_only است)."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:338
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "ابتدا یک گروه اضافه کنید (حالت مالکیت منطقه groups_only است)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3370,41 +3382,50 @@ msgstr "صفحه ای که پیدا نشد"
 msgid "This action requires a POST request."
 msgstr "این عملیات به یک درخواست POST نیاز دارد."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:92
-msgid ""
-"DNSSEC functionality is not available. Please check PowerDNS API "
-"configuration."
-msgstr "قابلیت DNSSEC در دسترس نیست. لطفا پیکربندی PowerDNS API را بررسی کنید."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:118
+#: lib/Application/Controller/DnssecToggleKeyController.php:120
 msgid "Zone key has been successfully deactivated."
 msgstr "کلید منطقه با موفقیت غیرفعال شده است."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:121
 msgid "Failed to deactivate zone key."
 msgstr "شکست در غیرفعال کردن کلید منطقه"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:122
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "Zone key has been successfully activated."
 msgstr "کلید منطقه با موفقیت فعال شده است."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:123
+#: lib/Application/Controller/DnssecToggleKeyController.php:125
 msgid "Failed to activate zone key."
 msgstr "شکست در فعال کردن کلید منطقه"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:136
+#: lib/Application/Controller/DnssecToggleKeyController.php:138
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "هنگام تغییر وضعیت کلید DNSSEC خطایی رخ داد. لطفا دوباره امتحان کنید."
 
-#: lib/Application/Service/RequestValidator.php:69
+#: lib/Application/Service/RequestValidator.php:87
 #, php-format
 msgid "The %s field is required."
 msgstr "فیلد %s الزامی است."
 
-#: lib/Application/Service/RequestValidator.php:77
+#: lib/Application/Service/RequestValidator.php:90
 #, php-format
 msgid "The %s field must be a number."
 msgstr "فیلد %s باید یک عدد باشد."
+
+#: lib/Application/Service/RequestValidator.php:94
+#, php-format
+msgid "The %s field must be a list."
+msgstr "فیلد %s باید یک فهرست باشد."
+
+#: lib/Application/Service/RequestValidator.php:98
+#, php-format
+msgid "The %s field must be at most %d characters."
+msgstr "فیلد %s باید حداکثر %d نویسه باشد."
+
+#: lib/Application/Service/RequestValidator.php:102
+#, php-format
+msgid "The %s field has an invalid value."
+msgstr "فیلد %s مقدار نامعتبری دارد."
 
 #: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
 #: templates/modern/users.html:222
@@ -3420,11 +3441,11 @@ msgstr "خیر"
 msgid "Account is temporarily locked. Please try again later."
 msgstr "حساب به طور موقت قفل شده است. لطفا بعدا دوباره امتحان کنید."
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "حساب کاربری غیرفعال است."
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "اعتبار شکست خورد!"
 
@@ -3452,7 +3473,7 @@ msgstr "احراز هویت ناموفق بود: جلسه نامعتبر"
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "احراز هویت ناموفق بود: ایجاد یا به‌روزرسانی حساب کاربری امکان‌پذیر نیست"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "احراز هویت LDAP ناموفق بود!"
 
@@ -3672,7 +3693,7 @@ msgid ""
 "below."
 msgstr "نشان دادن وضعیت اتصال برای supermasterهای پیکربندی شده در جدول زیر."
 
-#: lib/Infrastructure/Web/PageRenderer.php:132
+#: lib/Infrastructure/Web/PageRenderer.php:133
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3680,8 +3701,7 @@ msgstr ""
 "کلید رمزگذاری جلسه پیش فرض استفاده می شود، لطفا آن را در فایل پیکربندی خود "
 "تنظیم کنید."
 
-#: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
+#: lib/Infrastructure/Web/PageRenderer.php:137
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3689,7 +3709,7 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/Infrastructure/Web/PageRenderer.php:253
+#: lib/Infrastructure/Web/PageRenderer.php:254
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr "دایرکتوری install/ وجود دارد، باید ابتدا آن را قبل از ادامه حذف کنید."
@@ -3747,43 +3767,43 @@ msgstr "آدرس ایمیل از قبل وجود دارد، لطفاً آدرس 
 msgid "Enter a valid user name."
 msgstr "یک نام کاربری معتبر وارد کنید."
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "قالب منطقه پیدا نشد."
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "فقط قالب های منطقه جهانی را می توان به عنوان پیش فرض تنظیم کرد."
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "خطا در تنظیم قالب پیش‌فرض منطقه: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "خطا در پاک کردن قالب پیش‌فرض منطقه: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "خطای ایجاد قالب منطقه: "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "خطای اضافه کردن رکورد پیش فرض SOA به قالب: "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "خطا در حذف قالب منطقه: "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "خطای حذف قالب های منطقه کاربر: "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "شما اجازه ندارید که یک رکورد را به این قالب منطقه اضافه کنید."
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "شما اجازه افزودن این نوع رکورد به قالب منطقه را ندارید."
@@ -3796,33 +3816,33 @@ msgstr "محتوای شما ارزش قانونی ندارد."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "اولویت برای رکوردهای MX/SRV باید عددی بین 0 تا 65535 باشد."
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "خطا در افزودن رکورد قالب منطقه: "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "این رکورد به این قالب منطقه تعلق ندارد."
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "خطا در به‌روزرسانی رکورد قالب منطقه: "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "شما اجازه حذف این نوع رکورد از قالب منطقه را ندارید."
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "خطای حذف رکورد قالب منطقه: "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "خطای چک کردن مالکیت قالب: "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3831,35 +3851,35 @@ msgstr ""
 "این انواع رکورد در قالب گنجانده نشدند، زیرا شما اجازه افزودن آن‌ها را ندارید: "
 "%s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "خطا در دریافت مناطق با استفاده از قالب: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "شکست در دریافت لیست مناطق با استفاده از قالب: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "شما اجازه ویرایش یک قالب منطقه را ندارید."
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "خطا در جدا کردن منطقه از قالب: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "خطا در دریافت مناطق: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "خطا در بررسی وجود نام قالب: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "خطا در جستجوی قالب بر اساس نام: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "خطای چک کردن وجود الگو: "
 
@@ -3919,50 +3939,59 @@ msgstr ""
 "نماها به \"views=yes\" در pdns.conf نیاز دارند. سرور متصل آن‌ها را غیرفعال "
 "کرده است."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "همه مناطق مالک دارند"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d منطقه بدون مالک یافت شد"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "تمام مناطق slave دارای آدرس IP اصلی هستند"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d منطقه slave بدون آدرس IP اصلی یافت شد"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "تمام رکوردها متعلق به مناطق موجود است"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d رکورد یتیم یافت شد"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "هیچ رکورد تکراری SOA پیدا نشد"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d منطقه دارای رکوردهای SOA تکراری است"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "تمام مناطق دارای رکوردهای SOA هستند"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d منطقه بدون رکورد SOA یافت شد"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "همه مناطق شناسه کانونیکال دارند"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "%d منطقه بدون شناسه کانونیکال یافت شد"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -7492,7 +7521,7 @@ msgstr ""
 "مقدار contactphone باید فقط شامل اعداد، فاصله و علائم نگارشی رایج شماره تلفن "
 "باشد."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:464
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:467
 msgid "Value must be enclosed in double quotes."
 msgstr "مقدار باید در گیومه‌های دوتایی محصور شود."
 
@@ -9112,26 +9141,29 @@ msgstr ""
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "رکورد NAPTR دارای regexp باید \".\" را به عنوان جایگزین داشته باشد."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
-msgstr "سرویس NAPTR باید از این قالب پیروی کند: [protocol][+rs][+rs]... که در آن protocol و rs با علامت به‌علاوه از هم جدا می‌شوند، هر کدام با یک حرف شروع می‌شوند و فقط شامل حروف، ارقام، خط تیره یا دو نقطه هستند (حداکثر ۳۲ کاراکتر برای هر کدام)."
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
+"and rs are separated by plus signs, each start with a letter and contain "
+"only letters, digits, hyphens or colons (max 32 chars each)."
+msgstr ""
+"سرویس NAPTR باید از این قالب پیروی کند: [protocol][+rs][+rs]... که در آن "
+"protocol و rs با علامت به‌علاوه از هم جدا می‌شوند، هر کدام با یک حرف شروع "
+"می‌شوند و فقط شامل حروف، ارقام، خط تیره یا دو نقطه هستند (حداکثر ۳۲ کاراکتر "
+"برای هر کدام)."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:362
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
 msgstr ""
 "پرچم‌های پایانی \"S\"، \"A\"، \"U\" و \"P\" نباید با پرچم‌های دیگر ترکیب شوند."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:381
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:384
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr "regexp در NAPTR باید با یک کاراکتر جداکننده شروع شود."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:387
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:390
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
@@ -9139,7 +9171,7 @@ msgstr ""
 "regexp در NAPTR باید قالب "
 "delimiter+pattern+delimiter+replacement+delimiter+flags را داشته باشد."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:394
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:397
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
@@ -9147,7 +9179,7 @@ msgstr ""
 "پرچم‌های regexp در NAPTR (بعد از سومین جداکننده) فقط باید حاوی \"i\" باشند یا "
 "خالی باشند."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:412
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
@@ -9155,15 +9187,15 @@ msgstr ""
 "این به نظر می رسد یک رکورد ENUM NAPTR (RFC 6116) است. اطمینان حاصل کنید که "
 "این دامنه تحت e164.arpa یا یک درخت ENUM خصوصی است."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:413
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:416
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr "رکورد ENUM باید پرچم \"U\" را برای نشان دادن خروجی URI داشته باشد."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:440
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:443
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr "regexp در NAPTR شامل الگوی بالقوه خطرناک است: "
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:447
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:450
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr "NAPTR regexp خیلی طولانی است. حداکثر طول 1000 کاراکتر است."
 
@@ -9330,6 +9362,26 @@ msgstr "شما اجازه حذف کلیدهای API را ندارید."
 msgid "You do not have permission to regenerate API keys."
 msgstr "شما اجازه بازسازی کلیدهای API را ندارید."
 
+#: lib/Domain/Service/DnssecKeySpecValidator.php:56
+msgid "ECDSA P-256 algorithm must use 256 bits"
+msgstr "الگوریتم ECDSA P-256 باید از ۲۵۶ بیت استفاده کند"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:57
+msgid "ECDSA P-384 algorithm must use 384 bits"
+msgstr "الگوریتم ECDSA P-384 باید از 384 بیت استفاده کند"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:58
+msgid "ED25519 algorithm must use 256 bits"
+msgstr "الگوریتم ED25519 باید از 256 بیت استفاده کند"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:59
+msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
+msgstr "الگوریتم ED448 باید از 456 بیت (بدون پشتیبانی در این UI) استفاده کند."
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:60
+msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr "الگوریتم های RSA باید از 1024 یا 2048 بیت برای امنیت کافی استفاده کنند"
+
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr ""
@@ -9413,17 +9465,17 @@ msgstr ""
 msgid "Unknown database type."
 msgstr "نوع پایگاه داده ناشناخته"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:102
+#: lib/Domain/Service/ReverseRecordCreator.php:103
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "هیچ منطقه معکوس منطبقی برای: %s وجود ندارد."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:110
+#: lib/Domain/Service/ReverseRecordCreator.php:111
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "یک رکورد PTR برای %s که به %s اشاره دارد، قبلاً وجود دارد."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:123
+#: lib/Domain/Service/ReverseRecordCreator.php:127
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -9432,27 +9484,27 @@ msgstr ""
 "رکورد معکوس اضافه شد. هشدار: یک رکورد PTR برای %s قبلاً وجود دارد که به: %s "
 "اشاره دارد. داشتن چندین رکورد PTR برای یک IP توصیه نمی‌شود."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:245
+#: lib/Domain/Service/ReverseRecordCreator.php:249
 msgid "PTR update skipped: record type is not A or AAAA."
 msgstr "به‌روزرسانی PTR رد شد: نوع رکورد A یا AAAA نیست."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:258
+#: lib/Domain/Service/ReverseRecordCreator.php:262
 msgid "Stale PTR record removed."
 msgstr "رکورد PTR قدیمی حذف شد."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "A record with this hostname, type, and content already exists."
 msgstr "یک رکورد با این نام میزبان، نوع و محتوا در حال حاضر وجود دارد."
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "شکست در اضافه کردن رکورد به DNS backend"
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:465
 msgid "Failed to update record in DNS backend."
 msgstr "شکست در به روز رسانی رکورد در DNS backend"
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:899
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "آرگومان(های) نامعتبر به تابع %s %s داده شده است"
@@ -9461,56 +9513,52 @@ msgstr "آرگومان(های) نامعتبر به تابع %s %s داده شد�
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "در حال حاضر یک supermaster با این آدرس IP و نام میزبان وجود دارد."
 
-#: lib/Domain/Service/Dns/DomainManager.php:225
+#: lib/Domain/Service/Dns/DomainManager.php:226
 msgid "Failed to create zone in DNS backend."
 msgstr "شکست در ایجاد منطقه در DNS backend"
 
-#: lib/Domain/Service/Dns/DomainManager.php:440
+#: lib/Domain/Service/Dns/DomainManager.php:443
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "ایجاد منطقه ناموفق بود: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:327
+#: lib/Domain/Service/Dns/DomainManager.php:328
 msgid "Failed to create SOA record for zone."
 msgstr "شکست در ایجاد رکورد SOA برای منطقه"
 
-#: lib/Domain/Service/Dns/DomainManager.php:382
+#: lib/Domain/Service/Dns/DomainManager.php:385
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "ایجاد رکورد %s برای منطقه ناموفق بود."
 
-#: lib/Domain/Service/Dns/DomainManager.php:444
+#: lib/Domain/Service/Dns/DomainManager.php:447
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "آرگومان(های) نامعتبر به تابع %s داده شده است"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:570
 msgid "Failed to delete zone from DNS backend."
 msgstr "شکست در حذف منطقه از DNS backend"
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:527
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "پاکسازی متادیتای منطقه ناموفق بود: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:618
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "حذف متادیتای منطقه ناموفق بود: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:792
 msgid "Failed to update zone type in DNS backend."
 msgstr "شکست در به‌روزرسانی نوع منطقه در DNS backend"
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:846
 msgid "Failed to update zone master in DNS backend."
 msgstr "شکست در به‌روزرسانی master منطقه در DNS backend"
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
-msgid "The selected user already owns the zone."
-msgstr "کاربر منتخب در حال حاضر دارای منطقه است."
-
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1199
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "به‌روزرسانی رکوردهای منطقه انجام نشد: %s"
@@ -10194,7 +10242,7 @@ msgstr "ارسال پیوند بازنشانی"
 msgid "Group Management"
 msgstr "مدیریت گروه"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "هیچ گروهی پیدا نشد"
 
@@ -10280,7 +10328,7 @@ msgid ""
 msgstr ""
 "اعضای گروه این مجوزها را فقط برای مناطق متعلق به این گروه به ارث می برند."
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "انتخاب قالب مجوز"
 
@@ -10469,15 +10517,15 @@ msgstr ""
 msgid "DNS Management"
 msgstr "مدیریت DNS"
 
-#: templates/modern/index.html:58 templates/modern/pdns_status.html:159
+#: templates/modern/index.html:413 templates/modern/pdns_status.html:159
 msgid "Online"
 msgstr "آنلاین"
 
-#: templates/modern/index.html:60 templates/modern/pdns_status.html:161
+#: templates/modern/index.html:415 templates/modern/pdns_status.html:161
 msgid "Offline"
 msgstr "آفلاین"
 
-#: templates/modern/index.html:441 templates/modern/header.html:300
+#: templates/modern/index.html:458 templates/modern/header.html:300
 msgid "Templates"
 msgstr "قالب ها"
 
@@ -10489,15 +10537,15 @@ msgstr "شبکه‌ها"
 msgid "Zone Operations"
 msgstr "عملیات منطقه"
 
-#: templates/modern/index.html:157 templates/modern/index.html:461
+#: templates/modern/index.html:157 templates/modern/index.html:478
 msgid "Master Zone"
 msgstr "منطقه Master"
 
-#: templates/modern/index.html:167 templates/modern/index.html:471
+#: templates/modern/index.html:167 templates/modern/index.html:488
 msgid "Slave Zone"
 msgstr "منطقه برده"
 
-#: templates/modern/index.html:197 templates/modern/index.html:501
+#: templates/modern/index.html:197 templates/modern/index.html:518
 msgid "PTR Records"
 msgstr "رکوردهای PTR"
 
@@ -10522,7 +10570,7 @@ msgstr "پایگاه داده"
 msgid "TTL defaults"
 msgstr "پیش فرض TTL"
 
-#: templates/modern/index.html:366 templates/modern/index.html:553
+#: templates/modern/index.html:366 templates/modern/index.html:570
 msgid "My Profile"
 msgstr "پروفایل من"
 
@@ -10531,7 +10579,7 @@ msgstr "پروفایل من"
 msgid "Password"
 msgstr "رمز عبور"
 
-#: templates/modern/index.html:572 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:389
 msgid "Preferences"
 msgstr "ترجیحات"
 
@@ -11064,19 +11112,19 @@ msgstr "بله، بازسازی این کلید API"
 msgid "No, keep current key"
 msgstr "نه، کلید فعلی را نگه دارید"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "بازنشانی رمز عبور"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "درخواست New Reset Link"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "رمز عبور الزامات را برآورده نمی کند"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "رمز عبور جدید خود را وارد کنید"
 
@@ -11084,44 +11132,44 @@ msgstr "رمز عبور جدید خود را وارد کنید"
 msgid "New password"
 msgstr "رمز عبور جدید"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "ارائه یک رمز عبور"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "تایید رمز عبور"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "پسوردها مطابقت ندارند"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "الزامات رمز عبور"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "حداقل طول"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "کاراکتر"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "حداقل یک حرف بزرگ"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "حداقل یک حرف کوچک"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "حداقل یک عدد"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "حداقل یک کاراکتر خاص"
 
@@ -11214,7 +11262,6 @@ msgid "No SOA"
 msgstr "بدون SOA"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -11244,7 +11291,7 @@ msgstr "NOTIFY در سریال %serial% ارسال شد"
 msgid "Delete zone(s)"
 msgstr "حذف منطقه(ها)"
 
-#: templates/modern/dnssec_add_key.html:77
+#: templates/modern/dnssec_add_key.html:76
 msgid "Add key"
 msgstr "اضافه کردن کلید"
 
@@ -11276,11 +11323,11 @@ msgstr "انتخاب الگوریتم"
 msgid "Bits in length"
 msgstr "Bits در طول"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:70
 msgid "Select bits length"
 msgstr "انتخاب بیت طول"
 
-#: templates/modern/dnssec_add_key.html:128
+#: templates/modern/dnssec_add_key.html:127
 msgid "Recommended bits for"
 msgstr "بیت‌های توصیه‌شده برای"
 
@@ -11289,19 +11336,19 @@ msgstr "بیت‌های توصیه‌شده برای"
 msgid "Warning:"
 msgstr "هشدار:"
 
-#: templates/modern/dnssec_add_key.html:136
+#: templates/modern/dnssec_add_key.html:135
 msgid "bits is not recommended for"
 msgstr "بیت توصیه نمی‌شود برای"
 
-#: templates/modern/dnssec_add_key.html:172
+#: templates/modern/dnssec_add_key.html:171
 msgid "About DNSSEC Key Types"
 msgstr "درباره انواع کلید DNSSEC"
 
-#: templates/modern/dnssec_add_key.html:175
+#: templates/modern/dnssec_add_key.html:174
 msgid "Key Types Explained"
 msgstr "توضیح انواع کلید"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:176
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11309,19 +11356,19 @@ msgstr ""
 "کلید امضای ترکیبی - هم به عنوان KSK و هم به عنوان ZSK عمل می‌کند (توصیه‌شده "
 "برای PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:177
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "کلید امضای کلید - رکوردهای DNSKEY را در منطقه امضا می‌کند"
 
-#: templates/modern/dnssec_add_key.html:179
+#: templates/modern/dnssec_add_key.html:178
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "کلید امضای منطقه - تمام رکوردهای دیگر را در منطقه امضا می‌کند"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:183
 msgid "Recommended Settings"
 msgstr "تنظیمات توصیه شده"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:184
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11406,16 +11453,16 @@ msgid ""
 msgstr ""
 "مجوزهای این قالب به صورت سراسری در کل سیستم برای این کاربر اعمال خواهند شد"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "اطلاعات اختیاری در مورد این کاربر"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "فعال"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "احراز هویت LDAP"
 
@@ -11423,7 +11470,7 @@ msgstr "احراز هویت LDAP"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "تنظیمات احراز هویت فقط توسط مدیر قابل تغییر است"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "استفاده از دایرکتوری خارجی LDAP برای احراز هویت"
 
@@ -11435,7 +11482,7 @@ msgstr "بازگشت به خانه"
 msgid "Back to Users"
 msgstr "بازگشت به کاربران"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "اطلاعات حساب"
 
@@ -11459,7 +11506,7 @@ msgstr "باید شامل کاراکترهای خاص باشد"
 msgid "No specific password requirements"
 msgstr "بدون الزامات خاص برای رمز عبور"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "مجوز کاربر"
 
@@ -11475,7 +11522,7 @@ msgstr "بر اساس این قالب، این کاربر دارای مجوزه�
 msgid "No permissions are assigned to this template"
 msgstr "هیچ مجوزی به این الگو داده نمی شود"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "عضویت گروه"
 
@@ -11491,7 +11538,7 @@ msgstr "مشاهده جزئیات گروه"
 msgid "This user is not a member of any groups."
 msgstr "این کاربر عضو هیچ گروه نیست."
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "اضافه کردن به گروه ها"
 
@@ -11500,7 +11547,7 @@ msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
 "یک یا چند گروه را انتخاب کنید و روی دکمه Add Selected Groups کلیک کنید."
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "جستجوی گروه های موجود ..."
 
@@ -12510,63 +12557,79 @@ msgstr "نام منطقه"
 msgid "Assign owner"
 msgstr "تعیین مالک"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "اصلاح"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "مناطق بدون شناسه کانونیکال"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "شناسه کانونیکال همه مناطق فهرست‌شده تعمیر شود؟"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "تعمیر همه"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "تعمیر شناسه کانونیکال"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "مناطق برده بدون آدرس IP Master"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "IP مستر"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "حذف منطقه برده"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "رکوردهایی که به هیچ منطقه ای تعلق ندارد"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "شناسه رکورد"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "حذف رکورد یتیم"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "مناطق با رکوردهای SOA تکراری"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "تعداد SOA"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "اولین SOA را نگه دارید، موارد تکراری را حذف کنید"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "مناطق بدون رکوردهای SOA"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "ایجاد رکورد SOA پیش‌فرض"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "مطمئن هستید که می خواهید منطقه برده را حذف کنید"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "شما مطمئن هستید که می خواهید رکورد یتیم را حذف کنید"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "آیا مطمئن هستید که می خواهید این آیتم را حذف کنید؟"
 
@@ -12607,15 +12670,15 @@ msgstr "ارسال رمز عبور توسط ایمیل"
 msgid "Send login credentials to user's email address"
 msgstr "ارسال اعتبار ورود به آدرس ایمیل کاربر"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "یک الگو را انتخاب کنید ..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "انتخاب مجوز برای این کاربر"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -12624,7 +12687,7 @@ msgstr ""
 "هنگام ایجاد یک کاربر جدید، آنها مجوز را بر اساس قالب انتخاب شده دریافت می "
 "کنند. شما می توانید این مجوزها را بعدا با ویرایش کاربر تغییر دهید."
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr "گروه‌هایی را انتخاب کنید که کاربر جدید هنگام ایجاد به آن‌ها افزوده شود."
 
@@ -14315,7 +14378,7 @@ msgstr ""
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "شما در آستانه حذف یک کلید DNSSEC هستید (ID"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
@@ -14323,19 +14386,19 @@ msgstr ""
 "همه اعضای گروه این اجازه ها را برای مناطق متعلق به این گروه به ارث خواهند "
 "برد."
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "ایجاد گروه"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "درباره گروه ها"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "گروه ها چه هستند؟"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -14344,11 +14407,11 @@ msgstr ""
 "به صورت جمعی مدیریت کنید. اعضا مجوز گروه را برای تمام مناطق متعلق به گروه به "
 "ارث می برند."
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "چگونه از گروه ها استفاده کنیم"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -15387,3 +15450,5 @@ msgid ""
 msgstr ""
 "تنظیم زبان و منطقه انجام نشد. ممکن است زبان و منطقه انتخاب‌شده در این سیستم "
 "پشتیبانی نشود. لطفاً با مدیر سیستم خود تماس بگیرید."
+
+

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-28 01:30+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr "Neteisingas zonos ID."
 msgid "Zone not found."
 msgstr "Zona nerasta."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
+#: lib/Application/Controller/BatchPtrRecordController.php:115
 msgid "You do not have permission to add records to this zone."
 msgstr "Neturite leidimo pridėti įrašų į šią zoną."
 
@@ -48,11 +48,11 @@ msgstr "Neturite leidimo pridėti įrašų į šią zoną."
 msgid "Invalid wizard type."
 msgstr "Netinkamas vedlio tipas."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "Patikrinimas nepavyko:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "Nepavyko sugeneruoti įrašo:"
 
@@ -1246,7 +1246,7 @@ msgstr "Būtina nurodyti zonos pavadinimą ir pirminio serverio adresą."
 msgid "Invalid hostname."
 msgstr "Neteisingas serverio vardas."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "Jau egzistuoja zona su šiuo pavadinimu."
 
@@ -1274,21 +1274,21 @@ msgstr ""
 msgid "Zone has been converted to a primary zone."
 msgstr "Zona konvertuota į pirminę zoną."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "Neturite teisių kurti zonas kitiems naudotojams."
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Nežinomas grupės ID: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Galite priskirti tik tas grupes, kurioms priklausote (neleidžiama: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr ""
 "Kaip savininkas turi būti pasirinktas bent vienas vartotojas arba grupė."
@@ -1437,7 +1437,7 @@ msgstr "Nepavyko gauti RDAP informacijos naudojant serverį %s"
 msgid "Invalid CSRF token."
 msgstr "Netinkamas CSRF žetonas."
 
-#: lib/BaseController.php:598
+#: lib/BaseController.php:624
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -1470,14 +1470,14 @@ msgstr "Nėra pasirinktų įrašų ištrinimui."
 msgid "Describe why you are making this change."
 msgstr "Aprašykite, kodėl atliekate šį pakeitimą."
 
-#: lib/Application/Controller/DeleteRecordsController.php:233
+#: lib/Application/Controller/DeleteRecordsController.php:229
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
 "Įrašas sėkmingai ištrintas. Visi atitinkami PTR įrašai taip pat pašalinti."
 
-#: lib/Application/Controller/DeleteRecordsController.php:235
+#: lib/Application/Controller/DeleteRecordsController.php:231
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1485,18 +1485,18 @@ msgid ""
 msgstr ""
 "%d įrašai sėkmingai ištrinti. Visi atitinkami PTR įrašai taip pat pašalinti."
 
-#: lib/Application/Controller/DeleteRecordsController.php:238
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid "No records could be deleted. Please check permissions."
 msgstr "Nepavyko ištrinti jokių įrašų. Patikrinkite leidimus."
 
-#: lib/Application/Controller/DeleteRecordsController.php:305
+#: lib/Application/Controller/DeleteRecordsController.php:301
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "Nėra pasirinktų tinkamių įrašų ištrinimui arba neturite leidimo juos "
 "ištrinti."
 
-#: lib/Domain/Service/Dns/DomainManager.php:182
+#: lib/Domain/Service/Dns/DomainManager.php:183
 msgid "Invalid or unexpected input given."
 msgstr "Netinkamas arba nenumatytas įvestis."
 
@@ -1508,7 +1508,7 @@ msgstr "Neturite leidimo ištrinti šį vartotoją."
 msgid "You do not have permission to delete a superuser account."
 msgstr "Neturite leidimo ištrinti supervartotojo paskyros."
 
-#: lib/Application/Controller/EditUserController.php:597
+#: lib/Application/Controller/ZoneOwnershipController.php:186
 msgid "User does not exist."
 msgstr "Vartotojas neegzistuoja."
 
@@ -1534,7 +1534,7 @@ msgstr "Zonų komentaru funkcija išjungta konfiguracijoje."
 msgid "You do not have the permission to view this comment."
 msgstr "Neturite leidimo peržiūrėti šį komentaarą."
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:606
 msgid "You do not have the permission to edit this comment."
 msgstr "Neturite leidimo redaguoti šį komentaarą."
 
@@ -1550,33 +1550,33 @@ msgstr "Neteisingas įrašo ID."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Jūs neturite leidimo trinti įrašų šioje zonoje."
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:509
 msgid "Record not found."
 msgstr "Įrašas nerastas."
 
-#: lib/Application/Controller/DeleteRecordController.php:216
+#: lib/Application/Controller/DeleteRecordController.php:212
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr "Įrašas ir atitinkami PTR bei A/AAAA įrašai sėkmingai ištrinti."
 
-#: lib/Application/Controller/DeleteRecordController.php:218
+#: lib/Application/Controller/DeleteRecordController.php:214
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "Įrašas ir atitinkamas PTR įrašas sėkmingai ištrinti."
 
-#: lib/Application/Controller/DeleteRecordController.php:220
+#: lib/Application/Controller/DeleteRecordController.php:216
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "Įrašas ir atitinkamas A/AAAA įrašas sėkmingai ištrinti."
 
-#: lib/Application/Controller/DeleteRecordController.php:222
+#: lib/Application/Controller/DeleteRecordController.php:218
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr "Įrašas sėkmingai ištrintas. Atitinkamas PTR įrašas nerastas."
 
-#: lib/Application/Controller/DeleteRecordController.php:224
+#: lib/Application/Controller/DeleteRecordController.php:220
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -1586,7 +1586,7 @@ msgstr "Įrašas sėkmingai ištrintas. Atitinkamo A/AAAA įrašo nerasta."
 msgid "The record has been deleted successfully."
 msgstr "Įrašas sėkmingai ištrintas."
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:516
 msgid "You cannot delete records from a read-only zone."
 msgstr "Negalite ištrinti įrašų iš tik skaitymui skirtos zonos."
 
@@ -1648,7 +1648,7 @@ msgstr "Neturite leidimo valdyti grupės narių."
 msgid "Manage Group Members"
 msgstr "Valdyti grupės narius"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:112
+#: lib/Application/Controller/ManageGroupZonesController.php:118
 msgid "Invalid action."
 msgstr "Netinkamas veiksmas."
 
@@ -1716,7 +1716,7 @@ msgstr "Patvirtinimo kodas privalomas."
 msgid "MFA has been enabled successfully."
 msgstr "MFA sėkmingai įjungta."
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "Netinkamas patvirtinimo kodas. Bandykite dar kartą."
 
@@ -1789,7 +1789,7 @@ msgstr "Neturite leidimo peržiūrėti supermasters."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Neturite teisės peržiūrėti zonos metaduomenų."
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:831
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Neturite teisės redaguoti zonos metaduomenų."
 
@@ -1951,7 +1951,7 @@ msgstr "Neteisingas įrašo tipas."
 msgid "Record could not be added."
 msgstr "Įrašo pridėti nepavyko."
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:529
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d įrašas(-ai) sėkmingai pridėti."
@@ -2002,11 +2002,11 @@ msgstr "Nepavyko atnaujinti teisių šablono."
 msgid "Groups"
 msgstr "Grupės"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "Neturite leidimo atlikti paieškas."
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "Paieška"
@@ -2028,7 +2028,7 @@ msgstr "Puslapio numeris turi būti bent 1."
 msgid "Page number exceeds available pages."
 msgstr "Puslapio numeris viršija turimus puslapius."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:75
 msgid "Invalid request method."
 msgstr "Neteisingas užklausos metodas."
 
@@ -2049,7 +2049,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "Neturite leidimo pridėti naują vartotoją."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "Pridėti naudotoją"
 
@@ -2087,7 +2087,7 @@ msgstr "Slaptažodis buvo sugeneruotas, bet saugumo sumetimais nerodomas."
 msgid "Please fill in all required fields correctly."
 msgstr "Prašome teisingai užpildyti visus privalomus laukus."
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:542
 msgid "You do not have the permission to delete this record."
 msgstr "Neturite leidimo ištrinti šio įrašo."
 
@@ -2095,7 +2095,7 @@ msgstr "Neturite leidimo ištrinti šio įrašo."
 msgid "The record could not be deleted."
 msgstr "Įrašo ištrinti nepavyko."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "Zonų žurnalai"
@@ -2117,7 +2117,7 @@ msgstr "Katalogą skelbia tik producer zonos."
 msgid "You do not have permission to access this zone."
 msgstr "Jūs neturite leidimo prisijungti prie šios zonos."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:753
 msgid "You do not have permission to edit this zone."
 msgstr "Neturite leidimo redaguoti šios zonos."
 
@@ -2125,7 +2125,7 @@ msgstr "Neturite leidimo redaguoti šios zonos."
 msgid "The zone has been added to the catalog."
 msgstr "Zona pridėta į katalogą."
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:613
 msgid "The zone has been removed from the catalog."
 msgstr "Zona pašalinta iš katalogo."
 
@@ -2162,7 +2162,7 @@ msgstr "Redaguoti zonos šabloną"
 msgid "There is no zone template with this ID."
 msgstr "Nėra zonos šablono su šiuo ID."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "Zonos šablonas sėkmingai atnaujintas."
 
@@ -2182,7 +2182,7 @@ msgstr "Zonos sėkmingai atnaujintos."
 msgid "You do not have permission to create new zone templates."
 msgstr "Neturite leidimo kurti naujų zonų šablonų."
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Zonos šablonas su šiuo pavadinimu jau egzistuoja, pasirinkite kitą."
 
@@ -2210,7 +2210,7 @@ msgstr "Neteisingas šablono ID."
 msgid "Template does not exist."
 msgstr "Šablonas neegzistuoja."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:522
 msgid "You do not have permission to view this zone."
 msgstr "Jūs neturite leidimo peržiūrėti šios zonos."
 
@@ -2268,7 +2268,7 @@ msgstr "Redaguoti zoną"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Jūs neturite leidimo valdyti DNSSEC šiai zonai."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:337
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC neįjungtas serveryje."
 
@@ -2278,15 +2278,15 @@ msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr ""
 "Ši zona yra iš anksto pasirašyta; DNSSEC raktai valdomi pirminiame serveryje."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zona jau pasirašyta su DNSSEC."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "Zona sėkmingai pasirašyta."
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2294,7 +2294,7 @@ msgstr ""
 "Zonos pasirašymo užklausa sėkminga, bet patikrinimas nepavyko. Patikrinkite "
 "DNSSEC raktus."
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2320,23 +2320,23 @@ msgstr ""
 "Nepavyko atšaukti zonos. Patikrinkite PowerDNS žurnalus dėl išsamesnės "
 "informacijos."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:619
 msgid "The catalog has been changed successfully."
 msgstr "Katalogas sėkmingai pakeistas."
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:637
 msgid "Zone type has been changed successfully."
 msgstr "Zonos tipas sėkmingai pakeistas."
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:644
 msgid "Slave master has been changed successfully."
 msgstr "Slave master sėkmingai pakeistas."
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:658
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Negalite pritaikyti šablono tik skaitymui skirtai zonai."
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:680
 msgid "Zone template has been changed successfully."
 msgstr "Zonos šablonas sėkmingai pakeistas."
 
@@ -2344,7 +2344,7 @@ msgstr "Zonos šablonas sėkmingai pakeistas."
 msgid "You cannot edit records in a read-only zone."
 msgstr "Negalite redaguoti įrašų tik skaitymui skirtoje zonoje."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:863
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2354,19 +2354,19 @@ msgstr ""
 "skaičiaus limitą. Paprašykite administratoriaus padidinti PHP "
 "\"max_input_vars\" nustatymą."
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:971
 msgid "Zone has not been updated successfully."
 msgstr "Zona nesėkmingai atnaujinta."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:972
 msgid "Request has expired, please try again."
 msgstr "Užklausa pasibaigė, bandykite dar kartą."
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:981
 msgid "Zone has been updated successfully."
 msgstr "Zona sėkmingai atnaujinta."
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:982
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2374,7 +2374,11 @@ msgstr ""
 "Zona sėkmingai išsaugota. Įrašų keitimai nebuvo atlikti, tačiau SOA "
 "serijinis numeris buvo padidintas."
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Domain/Service/Dns/RecordManager.php:289
+msgid "You do not have the permission to add a record to this zone."
+msgstr "Neturite leidimo pridėti įrašą į šią zoną."
+
+#: lib/Application/Controller/EditController.php:1024
 msgid "Please provide all required fields."
 msgstr "Prašome pateikti visus privalomus laukus."
 
@@ -2382,7 +2386,7 @@ msgstr "Prašome pateikti visus privalomus laukus."
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Įrašas sėkmingai pridėtas. Taip pat sukurtas atitinkamas PTR įrašas."
 
-#: lib/Application/Controller/AddRecordController.php:266
+#: lib/Application/Controller/AddRecordController.php:510
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Įrašas sėkmingai pridėtas, bet PTR įrašo sukurti nepavyko: "
 
@@ -2398,19 +2402,19 @@ msgstr "Įrašas sėkmingai pridėtas. Taip pat sukurtas atitinkamas A įrašas.
 msgid "Invalid security token. Please try again."
 msgstr "Neteisingas saugumo žetonas. Bandykite dar kartą."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr "Per daug nepavykusių bandymų. Bandykite dar kartą vėliau."
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "MFA įrašas nerastas. Susisiekite su administratoriumi."
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "Įvyko klaida. Bandykite dar kartą."
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2418,15 +2422,15 @@ msgstr ""
 "El. pašto patikrinimas neprieinamas, nes pašto tarnyba išjungta. Naudokite "
 "atkūrimo kodą."
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "Naujas patvirtinimo kodas išsiųstas į jūsų el. paštą."
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "Vietoj to naudokite atkūrimo kodą."
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2434,29 +2438,25 @@ msgstr ""
 "Nepavyko išsiųsti patvirtinimo kodo į jūsų el. paštą. Vietoj to naudokite "
 "atkūrimo kodą."
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
-msgid "You do not have the permission to add a record to this zone."
-msgstr "Neturite leidimo pridėti įrašą į šią zoną."
-
 #: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "Įrašas sėkmingai pridėtas."
 
-#: lib/Application/Controller/AddRecordController.php:464
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "No records were provided."
 msgstr "Nebuvo pateikta įrašų."
 
-#: lib/Application/Controller/AddRecordController.php:533
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Taip pat sukurta %d atitinkančių įrašų."
 
-#: lib/Application/Controller/AddRecordController.php:536
+#: lib/Application/Controller/AddRecordController.php:534
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d įrašo(-ų) pridėti nepavyko."
 
-#: lib/Application/Controller/AddRecordController.php:541
+#: lib/Application/Controller/AddRecordController.php:539
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2464,7 +2464,7 @@ msgstr ""
 "Kai kurių įrašų pridėti nepavyko. Jie gali jau egzistuoti arba turėti "
 "neteisingų duomenų."
 
-#: lib/Application/Controller/AddRecordController.php:571
+#: lib/Application/Controller/AddRecordController.php:569
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nepavyko pridėti jokių įrašų. Jie gali turėti neteisingų duomenų."
 
@@ -2472,7 +2472,7 @@ msgstr "Nepavyko pridėti jokių įrašų. Jie gali turėti neteisingų duomenų
 msgid "No zone selected for deletion."
 msgstr "Nepasirinkta zona trynimui."
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1013
 msgid "You do not have the permission to delete a zone."
 msgstr "Neturite leidimo ištrinti zoną."
 
@@ -2537,7 +2537,7 @@ msgstr ""
 "Nepavyko gauti PEM rakto. Galbūt serveris šio rakto privačios medžiagos "
 "neatskleidžia."
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "Neturite leidimo pridėti pagrindinę zoną."
 
@@ -2570,7 +2570,7 @@ msgstr ""
 "arba atvirkštinės zonos pavadinimą, kuris baigiasi in-addr.arpa arba "
 "ip6.arpa."
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2578,7 +2578,7 @@ msgstr ""
 "Zona sėkmingai sukurta, bet DNSSEC pasirašymas praleistas dėl tikrinimo "
 "klaidų:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2586,11 +2586,11 @@ msgstr ""
 "Zona sukurta, bet apsaugoti ją su DNSSEC nepavyko. Zonos tikrinimas pavyko, "
 "bet PowerDNS API grąžino klaidą. Patikrinkite PowerDNS žurnalus dėl detalių."
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zona sėkmingai sukurta ir pasirašyta su DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2606,16 +2606,16 @@ msgstr "Zona sėkmingai pridėta."
 msgid "Batch PTR record creation is not enabled."
 msgstr "Masinis PTR įrašų kūrimas neįjungtas."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:88
+#: lib/Application/Controller/BatchPtrRecordController.php:89
 msgid "You do not have permission to edit DNS records."
 msgstr "Neturite leidimo redaguoti DNS įrašų."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:93
+#: lib/Application/Controller/BatchPtrRecordController.php:94
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
 msgstr "Masiniai PTR įrašai"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:109
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Masinis PTR įrašų kūrimas neprieinamas reverse zonoms."
 
@@ -2719,19 +2719,26 @@ msgstr "Rodiniai"
 msgid "Invalid key ID."
 msgstr "Neteisingas rakto ID."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:107
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
+msgid ""
+"DNSSEC functionality is not available. Please check PowerDNS API "
+"configuration."
+msgstr ""
+"DNSSEC funkcionalumas neprieinamas. Patikrinkite PowerDNS API konfigūraciją."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC raktas nerastas arba nebeegzistuoja."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:111
+#: lib/Application/Controller/DnssecDeleteKeyController.php:113
 msgid "Zone key has been deleted successfully."
 msgstr "Zonos raktas sėkmingai ištrintas."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:119
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "Failed to delete the zone key."
 msgstr "Nepavyko ištrinti zonos rakto."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:126
+#: lib/Application/Controller/DnssecDeleteKeyController.php:128
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Įvyko klaida trinant DNSSEC raktą: "
 
@@ -2765,23 +2772,23 @@ msgstr "Neturite pakankamų leidimų peržiūrėti šį puslapį."
 msgid "Reverse Zones"
 msgstr "Atvirkštinės zonos"
 
-#: lib/Application/Controller/ListForwardZonesController.php:283
+#: lib/Application/Controller/ListForwardZonesController.php:296
 msgid "You do not have the permission to see any zones."
 msgstr "Neturite leidimo matyti jokių zonų."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:79
+#: lib/Application/Controller/ManageGroupZonesController.php:85
 msgid "You do not have permission to manage zone ownership."
 msgstr "Neturite leidimo valdyti zonos nuosavybę."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:93
+#: lib/Application/Controller/ManageGroupZonesController.php:99
 msgid "Manage Group Zones"
 msgstr "Valdyti grupės zonas"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:230
+#: lib/Application/Controller/ManageGroupZonesController.php:236
 msgid "Please select at least one zone."
 msgstr "Pasirinkite bent vieną zoną."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:166
+#: lib/Application/Controller/ManageGroupZonesController.php:172
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
@@ -2789,7 +2796,7 @@ msgstr[0] "%d zona pridėta į grupę."
 msgstr[1] "%d zonos pridėtos į grupę."
 msgstr[2] "%d zonų pridėta į grupę."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:209
+#: lib/Application/Controller/ManageGroupZonesController.php:215
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
@@ -2797,7 +2804,7 @@ msgstr[0] "%d zona nepridėta."
 msgstr[1] "%d zonos nepridėtos."
 msgstr[2] "%d zonų nepridėta."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:251
+#: lib/Application/Controller/ManageGroupZonesController.php:257
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
@@ -2805,7 +2812,7 @@ msgstr[0] "%d zona pašalinta iš grupės."
 msgstr[1] "%d zonos pašalintos iš grupės."
 msgstr[2] "%d zonų pašalinta iš grupės."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:294
+#: lib/Application/Controller/ManageGroupZonesController.php:300
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2871,38 +2878,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "Priskirta %d zonų; %d nepavyko"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "Zonos kanoninis ID pataisytas"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "Nepavyko pataisyti zonos kanoninio ID"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "Nėra zonų be kanoninio ID, kurias reikėtų pataisyti"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "Pataisytas %d zonų kanoninis ID"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "Pataisyta %d zonų; %d nepavyko"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "Slave zona sėkmingai ištrinta"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "Nepavyko ištrinti slave zonos"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "Našlaitis įrašas sėkmingai ištrintas"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "Nepavyko ištrinti našlaičio įrašo"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Dubliuoti SOA įrašai sėkmingai sutvarkyti"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "Nepavyko sutvarkyti dubliuotų SOA įrašų"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "Numatytasis SOA įrašas sėkmingai sukurtas"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "Nepavyko sukurti numatytojo SOA įrašo"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "Neteisingas patikrinimo tipas"
 
@@ -2910,7 +2939,7 @@ msgstr "Neteisingas patikrinimo tipas"
 msgid "You have logged out."
 msgstr "Jūs atsijungėte."
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "Neturite leidimo pridėti zonos šablono."
 
@@ -2943,7 +2972,7 @@ msgstr "Neturite leidimo pridėti slave zonos."
 msgid "Add Secondary Zone"
 msgstr "Pridėti antrinę zoną"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "Neturite leidimo ištrinti zonų šablonų."
 
@@ -2963,21 +2992,57 @@ msgstr "Supermaster, kurį bandote redaguoti, neegzistuoja."
 msgid "The supermaster has been updated successfully."
 msgstr "Supermaster sėkmingai atnaujintas."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
 msgid "You do not have permission to manage group zones."
 msgstr "Neturite leidimo valdyti grupės zonas."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:80
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
 msgid "Invalid group or zone ID."
 msgstr "Netinkamas grupės arba zonos ID."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:104
 msgid "Zone removed from group successfully."
 msgstr "Zona sėkmingai pašalinta iš grupės."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:93
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:106
 msgid "Zone was not owned by this group."
 msgstr "Zona nepriklausė šiai grupei."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:309
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"Nepavyksta pašalinti paskutinės grupės: zonos nuosavybės režimas yra "
+"groups_only ir reikalauja bent vienos grupės. Pirmiausia pridėkite kitą "
+"grupę."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:315
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"Nepavyksta pašalinti grupės: zonos nuosavybės režimas yra users_only, o zona "
+"neturi naudotojų savininkų. Pirmiausia pridėkite naudotoją kaip savininką."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:343
+msgid "Add another owner or a group first."
+msgstr "Pirmiausia pridėkite kitą savininką arba grupę."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr ""
+"Pirmiausia pridėkite kitą naudotoją kaip savininką (zonos nuosavybės režimas "
+"yra users_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:348
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "Pirmiausia pridėkite grupę (zonos nuosavybės režimas yra groups_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "Nepavyksta pašalinti paskutinio savininko: zona liktų be savininko."
 
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
@@ -3176,7 +3241,7 @@ msgstr "Atsijungimas užbaigtas (su įspėjimais): "
 msgid "You do not have permission to view this record."
 msgstr "Jūs neturite leidimo peržiūrėti šio įrašo."
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have permission to edit this record."
 msgstr "Jūs neturite leidimo redaguoti šio įrašo."
 
@@ -3219,39 +3284,19 @@ msgstr ""
 msgid "Change password"
 msgstr "Keisti slaptažodį"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
-msgid "ECDSA P-256 algorithm must use 256 bits"
-msgstr "ECDSA P-256 algoritmas turi naudoti 256 bitus"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:136
-msgid "ECDSA P-384 algorithm must use 384 bits"
-msgstr "ECDSA P-384 algoritmas turi naudoti 384 bitus"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:142
-msgid "ED25519 algorithm must use 256 bits"
-msgstr "ED25519 algoritmas turi naudoti 256 bitus"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:147
-msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr "ED448 algoritmas turi naudoti 456 bitus (nepalaikomas šioje sąsajoje)"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:154
-msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr "RSA algoritmai turėtų naudoti 1024 arba 2048 bitus pakankamam saugumui"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:176
+#: lib/Application/Controller/DnssecAddKeyController.php:144
 msgid "Zone key has been added successfully."
 msgstr "Zonos raktas sėkmingai pridėtas."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:180
+#: lib/Application/Controller/DnssecAddKeyController.php:148
 msgid "Failed to add new DNSSEC key."
 msgstr "Nepavyko pridėti naujo DNSSEC rakto."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:184
+#: lib/Application/Controller/DnssecAddKeyController.php:152
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Įvyko klaida pridedant DNSSEC raktą: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:188
+#: lib/Application/Controller/DnssecAddKeyController.php:156
 msgid "Please select both algorithm and bits"
 msgstr "Pasirinkite ir algoritmą, ir bitus"
 
@@ -3293,19 +3338,19 @@ msgstr "Supermaster sėkmingai ištrintas."
 msgid "Bulk Registration"
 msgstr "Masinis registravimas"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "Savininkas turi būti skaitinis naudotojo ID."
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "Nepavyko pridėti zonos."
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "Zonos sėkmingai pridėtos."
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "Kai kurių zonų pridėti nepavyko."
 
@@ -3335,16 +3380,15 @@ msgstr ""
 "Naudotojo savininko priskyrimas išjungtas dabartiniame zonos nuosavybės "
 "režime."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Domain/Service/Dns/DomainManager.php:894
+msgid "The selected user already owns the zone."
+msgstr "Pasirinktas naudotojas jau valdo zoną."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:197
 msgid "Owner has been added successfully."
 msgstr "Savininkas sėkmingai pridėtas."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:293
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr "Nepavyksta pašalinti paskutinio savininko: zona liktų be savininko."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
@@ -3353,7 +3397,7 @@ msgstr ""
 "režimas yra users_only ir reikalauja bent vieno naudotojo savininko. "
 "Pirmiausia pridėkite kitą."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
@@ -3361,58 +3405,27 @@ msgstr ""
 "Nepavyksta pašalinti naudotojo savininko: zonos nuosavybės režimas yra "
 "groups_only, o zona neturi grupės savininkų. Pirmiausia pridėkite grupę."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "Savininkas sėkmingai pašalintas."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:250
+#: lib/Application/Controller/ZoneOwnershipController.php:260
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr ""
 "Grupės nuosavybės priskyrimas išjungtas dabartiniame zonos nuosavybės režime."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:262
+#: lib/Application/Controller/ZoneOwnershipController.php:272
 msgid "You do not have permission to assign this group."
 msgstr "Neturite leidimo priskirti šios grupės."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:270
+#: lib/Application/Controller/ZoneOwnershipController.php:280
 msgid "Group has been added successfully."
 msgstr "Grupė sėkmingai pridėta."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:299
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr ""
-"Nepavyksta pašalinti paskutinės grupės: zonos nuosavybės režimas yra "
-"groups_only ir reikalauja bent vienos grupės. Pirmiausia pridėkite kitą "
-"grupę."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:305
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr ""
-"Nepavyksta pašalinti grupės: zonos nuosavybės režimas yra users_only, o zona "
-"neturi naudotojų savininkų. Pirmiausia pridėkite naudotoją kaip savininką."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:310
+#: lib/Application/Controller/ZoneOwnershipController.php:320
 msgid "Group has been removed successfully."
 msgstr "Grupė sėkmingai pašalinta."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:333
-msgid "Add another owner or a group first."
-msgstr "Pirmiausia pridėkite kitą savininką arba grupę."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Pirmiausia pridėkite kitą naudotoją kaip savininką (zonos nuosavybės režimas "
-"yra users_only)."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:338
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Pirmiausia pridėkite grupę (zonos nuosavybės režimas yra groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3423,42 +3436,50 @@ msgstr "Puslapis nerastas"
 msgid "This action requires a POST request."
 msgstr "Šiam veiksmui reikalinga POST užklausa."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:92
-msgid ""
-"DNSSEC functionality is not available. Please check PowerDNS API "
-"configuration."
-msgstr ""
-"DNSSEC funkcionalumas neprieinamas. Patikrinkite PowerDNS API konfigūraciją."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:118
+#: lib/Application/Controller/DnssecToggleKeyController.php:120
 msgid "Zone key has been successfully deactivated."
 msgstr "Zonos raktas sėkmingai išjungtas."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:121
 msgid "Failed to deactivate zone key."
 msgstr "Nepavyko išjungti zonos rakto."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:122
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "Zone key has been successfully activated."
 msgstr "Zonos raktas sėkmingai įjungtas."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:123
+#: lib/Application/Controller/DnssecToggleKeyController.php:125
 msgid "Failed to activate zone key."
 msgstr "Nepavyko įjungti zonos rakto."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:136
+#: lib/Application/Controller/DnssecToggleKeyController.php:138
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Įvyko klaida perjungiant DNSSEC raktą. Bandykite dar kartą."
 
-#: lib/Application/Service/RequestValidator.php:69
+#: lib/Application/Service/RequestValidator.php:87
 #, php-format
 msgid "The %s field is required."
 msgstr "Laukas %s yra privalomas."
 
-#: lib/Application/Service/RequestValidator.php:77
+#: lib/Application/Service/RequestValidator.php:90
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Laukas %s turi būti skaičius."
+
+#: lib/Application/Service/RequestValidator.php:94
+#, php-format
+msgid "The %s field must be a list."
+msgstr "Laukas %s turi būti sąrašas."
+
+#: lib/Application/Service/RequestValidator.php:98
+#, php-format
+msgid "The %s field must be at most %d characters."
+msgstr "Laukas %s gali būti ne ilgesnis kaip %d simbolių."
+
+#: lib/Application/Service/RequestValidator.php:102
+#, php-format
+msgid "The %s field has an invalid value."
+msgstr "Lauko %s vertė neteisinga."
 
 #: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
 #: templates/modern/users.html:222
@@ -3474,11 +3495,11 @@ msgstr "Ne"
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Paskyra laikinai užblokuota. Bandykite vėliau."
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "Vartotojo paskyra išjungta."
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "Autentifikacija nepavyko!"
 
@@ -3507,7 +3528,7 @@ msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Autentifikacija nepavyko: Nepavyko sukurti arba atnaujinti vartotojo paskyros"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "LDAP autentifikacija nepavyko!"
 
@@ -3729,7 +3750,7 @@ msgstr ""
 "Rodoma toliau esančioje lentelėje sukonfigūruotų supermaster serverių ryšio "
 "būsena."
 
-#: lib/Infrastructure/Web/PageRenderer.php:132
+#: lib/Infrastructure/Web/PageRenderer.php:133
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3737,8 +3758,7 @@ msgstr ""
 "Naudojamas numatytasis sesijos šifravimo raktas, nustatykite jį savo "
 "konfigūracijos faile."
 
-#: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
+#: lib/Infrastructure/Web/PageRenderer.php:137
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3746,7 +3766,7 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/Infrastructure/Web/PageRenderer.php:253
+#: lib/Infrastructure/Web/PageRenderer.php:254
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr ""
@@ -3809,43 +3829,43 @@ msgstr "El. pašto adresas jau egzistuoja, pasirinkite kitą."
 msgid "Enter a valid user name."
 msgstr "Įveskite teisingą vartotojo vardą."
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "Zonos šablonas nerastas."
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "Numatytuoju gali būti nustatyti tik visuotiniai zonos šablonai."
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "Klaida nustatant numatytąjį zonos šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "Klaida šalinant numatytąjį zonos šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "Klaida kuriant zonos šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "Klaida pridedant numatytąjį SOA įrašą į šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Klaida trinant zonos šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "Klaida trinant vartotojo zonų šablonus: "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Neturite leidimo pridėti įrašo į šį zonos šabloną."
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Neturite teisės pridėti šio tipo įrašo į zonos šabloną."
@@ -3858,68 +3878,68 @@ msgstr "Jūsų turinio laukas neturi teisingo reikšmės."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV įrašų prioritetas turi būti skaičius tarp 0 ir 65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "Klaida pridedant zonos šablono įrašą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "Įrašas nepriklauso šiam zonos šablonui."
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "Klaida atnaujinant zonos šablono įrašą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Neturite teisės ištrinti šio tipo įrašo iš zonos šablono."
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "Klaida trinant zonos šablono įrašą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "Klaida tikrinant šablono priklausomybę: "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 msgstr "Šie įrašų tipai neįtraukti į šabloną, nes jų pridėti negalite: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "Klaida gaunant zonas, naudojančias šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "Nepavyko gauti zonų, naudojančių šabloną, sąrašo: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Neturite leidimo redaguoti zonos šablono."
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "Klaida atskiriant zoną nuo šablono: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "Klaida gaunant zonas: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "Klaida tikrinant šablono pavadinimo egzistavimą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "Klaida ieškant šablono pagal pavadinimą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "Klaida tikrinant šablono egzistavimą: "
 
@@ -3979,50 +3999,59 @@ msgstr ""
 "Rodiniams reikia \"views=yes\" pdns.conf faile. Prijungtame serveryje jie "
 "išjungti."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "Visos zonos turi savininkus"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d zonų rasta be savininkų"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "Visos slave zonos turi master IP adresus"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d slave zonų rasta be master IP adresų"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "Visi įrašai priklauso egzistuojančioms zonoms"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d našlaičių įrašų rasta"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "Dubliuotų SOA įrašų nerasta"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d zonos turi dubliuotų SOA įrašų"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "Visos zonos turi SOA įrašus"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d zonų rasta be SOA įrašų"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "Visos zonos turi kanoninį ID"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "Rasta %d zonų be kanoninio ID"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -7618,7 +7647,7 @@ msgstr ""
 "Contactphone reikšmė turi turėti tik skaičius, tarpus ir įprastų telefono "
 "numerių skyrybos ženklus."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:464
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:467
 msgid "Value must be enclosed in double quotes."
 msgstr "Reikšmė turi būti įdėta į dvigubas kabutes."
 
@@ -9263,15 +9292,18 @@ msgstr ""
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "NAPTR įrašas su regexp turi turėti \".\" kaip pakeitimą."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
-msgstr "NAPTR paslauga turi atitikti formatą: [protokolas][+rs][+rs]... kur protokolas ir rs skiriami pliuso ženklais, kiekvienas prasideda raide ir gali turėti tik raides, skaitmenis, brūkšnelius arba dvitaškius (ne daugiau kaip 32 simboliai kiekvienam)."
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
+"and rs are separated by plus signs, each start with a letter and contain "
+"only letters, digits, hyphens or colons (max 32 chars each)."
+msgstr ""
+"NAPTR paslauga turi atitikti formatą: [protokolas][+rs][+rs]... kur "
+"protokolas ir rs skiriami pliuso ženklais, kiekvienas prasideda raide ir "
+"gali turėti tik raides, skaitmenis, brūkšnelius arba dvitaškius (ne daugiau "
+"kaip 32 simboliai kiekvienam)."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:362
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
@@ -9279,11 +9311,11 @@ msgstr ""
 "Terminalinės vėliavos \"S\", \"A\", \"U\" ir \"P\" neturėtų būti derinamos "
 "su kitomis vėliavomis."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:381
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:384
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr "NAPTR regexp turi prasidėti skirtuko simboliu."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:387
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:390
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
@@ -9291,7 +9323,7 @@ msgstr ""
 "NAPTR regexp turi turėti formatą "
 "skirtukas+šablonas+skirtukas+pakeitimas+skirtukas+vėliavos."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:394
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:397
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
@@ -9299,7 +9331,7 @@ msgstr ""
 "NAPTR regexp vėliavos (po trečio skirtuko) turėtų turėti tik \"i\" arba būti "
 "tuščios."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:412
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
@@ -9307,15 +9339,15 @@ msgstr ""
 "Tai atrodo kaip ENUM NAPTR įrašas (RFC 6116). Užtikrinkite, kad domenas yra "
 "po e164.arpa arba privačiame ENUM medyje."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:413
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:416
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr "ENUM įrašai turėtų turėti \"U\" vėliavą, kad parodytų URI išvestį."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:440
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:443
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr "NAPTR regexp turi potencialiai pavojingą šabloną: "
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:447
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:450
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr "NAPTR regexp per ilgas. Maksimalus ilgis yra 1000 simbolių."
 
@@ -9484,6 +9516,26 @@ msgstr "Neturite leidimo šalinti API raktų."
 msgid "You do not have permission to regenerate API keys."
 msgstr "Neturite leidimo perdaryti API raktų."
 
+#: lib/Domain/Service/DnssecKeySpecValidator.php:56
+msgid "ECDSA P-256 algorithm must use 256 bits"
+msgstr "ECDSA P-256 algoritmas turi naudoti 256 bitus"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:57
+msgid "ECDSA P-384 algorithm must use 384 bits"
+msgstr "ECDSA P-384 algoritmas turi naudoti 384 bitus"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:58
+msgid "ED25519 algorithm must use 256 bits"
+msgstr "ED25519 algoritmas turi naudoti 256 bitus"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:59
+msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
+msgstr "ED448 algoritmas turi naudoti 456 bitus (nepalaikomas šioje sąsajoje)"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:60
+msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr "RSA algoritmai turėtų naudoti 1024 arba 2048 bitus pakankamam saugumui"
+
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr "Zonoje nėra SOA įrašo arba jis nėra aktyvus. Tai yra būtina DNSSEC."
@@ -9567,17 +9619,17 @@ msgstr ""
 msgid "Unknown database type."
 msgstr "Nežinomas duomenų bazės tipas."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:102
+#: lib/Domain/Service/ReverseRecordCreator.php:103
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "Nėra atitinkamos atvirkštinės zonos: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:110
+#: lib/Domain/Service/ReverseRecordCreator.php:111
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "PTR įrašas %s nukreipiantis į %s jau egzistuoja."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:123
+#: lib/Domain/Service/ReverseRecordCreator.php:127
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -9587,27 +9639,27 @@ msgstr ""
 "nurodantis į: %s. Kelių PTR įrašų turėjimas tam pačiam IP nėra "
 "rekomenduojamas."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:245
+#: lib/Domain/Service/ReverseRecordCreator.php:249
 msgid "PTR update skipped: record type is not A or AAAA."
 msgstr "PTR atnaujinimas praleistas: įrašo tipas nėra A arba AAAA."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:258
+#: lib/Domain/Service/ReverseRecordCreator.php:262
 msgid "Stale PTR record removed."
 msgstr "Pasenęs PTR įrašas pašalintas."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Įrašas su šiuo hostname, tipu ir turiniu jau egzistuoja."
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "Nepavyko pridėti įrašo į DNS posistemę."
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:465
 msgid "Failed to update record in DNS backend."
 msgstr "Nepavyko atnaujinti įrašo DNS posistemėje."
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:899
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Neteisingi argumentai pateikti funkcijai %s %s"
@@ -9616,56 +9668,52 @@ msgstr "Neteisingi argumentai pateikti funkcijai %s %s"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Jau yra supermaster su šiuo IP adresu ir hostname."
 
-#: lib/Domain/Service/Dns/DomainManager.php:225
+#: lib/Domain/Service/Dns/DomainManager.php:226
 msgid "Failed to create zone in DNS backend."
 msgstr "Nepavyko sukurti zonos DNS posistemėje."
 
-#: lib/Domain/Service/Dns/DomainManager.php:440
+#: lib/Domain/Service/Dns/DomainManager.php:443
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Nepavyko sukurti zonos: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:327
+#: lib/Domain/Service/Dns/DomainManager.php:328
 msgid "Failed to create SOA record for zone."
 msgstr "Nepavyko sukurti SOA įrašo zonai."
 
-#: lib/Domain/Service/Dns/DomainManager.php:382
+#: lib/Domain/Service/Dns/DomainManager.php:385
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "Nepavyko sukurti %s įrašo zonai."
 
-#: lib/Domain/Service/Dns/DomainManager.php:444
+#: lib/Domain/Service/Dns/DomainManager.php:447
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Neteisingi argumentai pateikti funkcijai %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:570
 msgid "Failed to delete zone from DNS backend."
 msgstr "Nepavyko ištrinti zonos iš DNS posistemės."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:527
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Nepavyko išvalyti zonos metaduomenų: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:618
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Nepavyko ištrinti zonos metaduomenų: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:792
 msgid "Failed to update zone type in DNS backend."
 msgstr "Nepavyko atnaujinti zonos tipo DNS posistemėje."
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:846
 msgid "Failed to update zone master in DNS backend."
 msgstr "Nepavyko atnaujinti zonos pagrindinio serverio DNS posistemėje."
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
-msgid "The selected user already owns the zone."
-msgstr "Pasirinktas naudotojas jau valdo zoną."
-
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1199
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Nepavyko atnaujinti zonos įrašų: %s"
@@ -10348,7 +10396,7 @@ msgstr "Siųsti atkūrimo nuorodą"
 msgid "Group Management"
 msgstr "Grupių valdymas"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "Grupių nerasta"
 
@@ -10435,7 +10483,7 @@ msgid ""
 msgstr ""
 "Grupės nariai paveldi šias teises tik zonoms, priklausančioms šiai grupei"
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "Pasirinkite leidimų šabloną"
 
@@ -10624,15 +10672,15 @@ msgstr ""
 msgid "DNS Management"
 msgstr "DNS valdymas"
 
-#: templates/modern/index.html:58 templates/modern/pdns_status.html:159
+#: templates/modern/index.html:413 templates/modern/pdns_status.html:159
 msgid "Online"
 msgstr "Prisijungęs"
 
-#: templates/modern/index.html:60 templates/modern/pdns_status.html:161
+#: templates/modern/index.html:415 templates/modern/pdns_status.html:161
 msgid "Offline"
 msgstr "Atsijungęs"
 
-#: templates/modern/index.html:441 templates/modern/header.html:300
+#: templates/modern/index.html:458 templates/modern/header.html:300
 msgid "Templates"
 msgstr "Šablonai"
 
@@ -10644,15 +10692,15 @@ msgstr "Tinklai"
 msgid "Zone Operations"
 msgstr "Zonų operacijos"
 
-#: templates/modern/index.html:157 templates/modern/index.html:461
+#: templates/modern/index.html:157 templates/modern/index.html:478
 msgid "Master Zone"
 msgstr "Master zona"
 
-#: templates/modern/index.html:167 templates/modern/index.html:471
+#: templates/modern/index.html:167 templates/modern/index.html:488
 msgid "Slave Zone"
 msgstr "Slave zona"
 
-#: templates/modern/index.html:197 templates/modern/index.html:501
+#: templates/modern/index.html:197 templates/modern/index.html:518
 msgid "PTR Records"
 msgstr "PTR įrašai"
 
@@ -10677,7 +10725,7 @@ msgstr "Duomenų bazė"
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
-#: templates/modern/index.html:366 templates/modern/index.html:553
+#: templates/modern/index.html:366 templates/modern/index.html:570
 msgid "My Profile"
 msgstr "Mano profilis"
 
@@ -10686,7 +10734,7 @@ msgstr "Mano profilis"
 msgid "Password"
 msgstr "Slaptažodis"
 
-#: templates/modern/index.html:572 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:389
 msgid "Preferences"
 msgstr "Nuostatos"
 
@@ -11222,19 +11270,19 @@ msgstr "Taip, iš naujo generuoti šį API raktą"
 msgid "No, keep current key"
 msgstr "Ne, palikti dabartinį raktą"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "Atkurti slaptažodį"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "Prašyti naujos atkūrimo nuorodos"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "Slaptažodis neatitinka reikalavimų"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "Įveskite naują slaptažodį"
 
@@ -11242,44 +11290,44 @@ msgstr "Įveskite naują slaptažodį"
 msgid "New password"
 msgstr "Naujas slaptažodis"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "Nurodykite slaptažodį"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "Patvirtinti slaptažodį"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "Slaptažodžiai nesutampa"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "Slaptažodžio reikalavimai"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "Minimalus ilgis"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "simboliai"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "Bent viena didžioji raidė"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "Bent viena mažoji raidė"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "Bent vienas skaičius"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "Bent vienas specialus simbolis"
 
@@ -11372,7 +11420,6 @@ msgid "No SOA"
 msgstr "Nėra SOA"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -11402,7 +11449,7 @@ msgstr "NOTIFY išsiųstas su serijos numeriu %serial%"
 msgid "Delete zone(s)"
 msgstr "Pašalinti zoną(as)"
 
-#: templates/modern/dnssec_add_key.html:77
+#: templates/modern/dnssec_add_key.html:76
 msgid "Add key"
 msgstr "Pridėti raktą"
 
@@ -11435,11 +11482,11 @@ msgstr "Pasirinkite algoritmą"
 msgid "Bits in length"
 msgstr "Bitų ilgis"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:70
 msgid "Select bits length"
 msgstr "Pasirinkite bitų ilgį"
 
-#: templates/modern/dnssec_add_key.html:128
+#: templates/modern/dnssec_add_key.html:127
 msgid "Recommended bits for"
 msgstr "Rekomenduojami bitai"
 
@@ -11448,19 +11495,19 @@ msgstr "Rekomenduojami bitai"
 msgid "Warning:"
 msgstr "Įspėjimas:"
 
-#: templates/modern/dnssec_add_key.html:136
+#: templates/modern/dnssec_add_key.html:135
 msgid "bits is not recommended for"
 msgstr "bitai nerekomenduojami"
 
-#: templates/modern/dnssec_add_key.html:172
+#: templates/modern/dnssec_add_key.html:171
 msgid "About DNSSEC Key Types"
 msgstr "Apie DNSSEC raktų tipus"
 
-#: templates/modern/dnssec_add_key.html:175
+#: templates/modern/dnssec_add_key.html:174
 msgid "Key Types Explained"
 msgstr "Raktų tipų paaiškinimas"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:176
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11468,19 +11515,19 @@ msgstr ""
 "Kombinuotas pasirašymo raktas - veikia ir kaip KSK, ir kaip ZSK "
 "(rekomenduojamas PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:177
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Rakto pasirašymo raktas - pasirašo DNSKEY įrašus zonoje"
 
-#: templates/modern/dnssec_add_key.html:179
+#: templates/modern/dnssec_add_key.html:178
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zonos pasirašymo raktas - pasirašo visus kitus įrašus zonoje"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:183
 msgid "Recommended Settings"
 msgstr "Rekomenduojami nustatymai"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:184
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11565,16 +11612,16 @@ msgid ""
 msgstr ""
 "Šio šablono leidimai bus taikomi visuotinai visoje sistemoje šiam vartotojui"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "Neprivaloma informacija apie šį naudotoją"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Įjungta"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "LDAP autentifikacija"
 
@@ -11582,7 +11629,7 @@ msgstr "LDAP autentifikacija"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "Autentifikavimo nustatymus gali keisti tik administratorius"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "Naudoti išorinį LDAP katalogą autentifikacijai"
 
@@ -11594,7 +11641,7 @@ msgstr "Grįžti į pradžią"
 msgid "Back to Users"
 msgstr "Grįžti į naudotojus"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "Paskyros informacija"
 
@@ -11618,7 +11665,7 @@ msgstr "Turi turėti specialius simbolius"
 msgid "No specific password requirements"
 msgstr "Nėra specifinių slaptažodžio reikalavimų"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "Naudotojo leidimai"
 
@@ -11634,7 +11681,7 @@ msgstr "Remiantis šiuo šablonu, šis naudotojas turi šiuos leidimus"
 msgid "No permissions are assigned to this template"
 msgstr "Šiam šablonui nepriskirti jokie leidimai"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "Grupių narystės"
 
@@ -11650,7 +11697,7 @@ msgstr "Peržiūrėti grupės informaciją"
 msgid "This user is not a member of any groups."
 msgstr "Šis vartotojas nėra jokių grupių narys."
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "Pridėti į grupes"
 
@@ -11660,7 +11707,7 @@ msgstr ""
 "Pasirinkite vieną ar kelias grupes ir spustelėkite mygtuką \"Pridėti "
 "pasirinktas grupes\"."
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "Ieškoti prieinamų grupių..."
 
@@ -12668,63 +12715,79 @@ msgstr "Zonos pavadinimas"
 msgid "Assign owner"
 msgstr "Priskirti savininką"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "Taisyti"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "Zonos Be Kanoninio ID"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "Pataisyti visų išvardytų zonų kanoninį ID?"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "Pataisyti visus"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "Pataisyti kanoninį ID"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "Slave zonos be master IP adresų"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "Pagrindinio serverio IP"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "Pašalinti slave zoną"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "Įrašai, nepriklausantys jokiai zonai"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "Įrašo ID"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "Pašalinti našlaitį įrašą"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "Zonos su dubliuotais SOA įrašais"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "SOA kiekis"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "Palikti pirmą SOA, pašalinti dubliatus"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "Zonos be SOA įrašų"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "Sukurti numatytąjį SOA įrašą"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "Ar esate tikri, kad norite pašalinti slave zoną"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "Ar esate tikri, kad norite pašalinti našlaitį įrašą"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "Ar esate tikri, kad norite pašalinti šį elementą?"
 
@@ -12765,15 +12828,15 @@ msgstr "Siųsti slaptažodį el. paštu"
 msgid "Send login credentials to user's email address"
 msgstr "Siųsti prisijungimo duomenis į naudotojo el. pašto adresą"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "Pasirinkite šabloną..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "Pasirinkite šio naudotojo leidimus"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -12782,7 +12845,7 @@ msgstr ""
 "Kuriant naują naudotoją, jis gaus leidimus pagal pasirinktą šabloną. Šiuos "
 "leidimus galite keisti vėliau redaguodami naudotoją."
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr ""
 "Pasirinkite grupes, į kurias bus pridėtas naujas vartotojas sukūrimo metu."
@@ -14483,7 +14546,7 @@ msgstr ""
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Ruošiatės ištrinti DNSSEC raktą (ID"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
@@ -14491,19 +14554,19 @@ msgstr ""
 "Visi grupės nariai paveldės šiuos leidimus zonoms, priklausančioms šiai "
 "grupei"
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "Sukurti grupę"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "Apie grupes"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "Kas yra grupės?"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -14512,11 +14575,11 @@ msgstr ""
 "kolektyviai. Nariai paveldi grupės teises visoms grupei priklausančioms "
 "zonoms."
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "Kaip naudoti grupes"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -15565,3 +15628,5 @@ msgid ""
 msgstr ""
 "Nepavyko nustatyti lokalės. Pasirinkta lokalė šioje sistemoje gali būti "
 "nepalaikoma. Kreipkitės į savo administratorių."
+
+

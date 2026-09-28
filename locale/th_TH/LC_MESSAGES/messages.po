@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-28 01:30+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -38,7 +38,7 @@ msgstr "รหัสโซนไม่ถูกต้อง"
 msgid "Zone not found."
 msgstr "ไม่พบโซน"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
+#: lib/Application/Controller/BatchPtrRecordController.php:115
 msgid "You do not have permission to add records to this zone."
 msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดในโซนนี้"
 
@@ -46,11 +46,11 @@ msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอ
 msgid "Invalid wizard type."
 msgstr "ชนิดของตัวช่วยนี้ไม่ถูกต้อง"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "การตรวจสอบความถูกต้องล้มเหลว:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "สร้างเรกคอร์ดไม่สำเร็จ:"
 
@@ -1191,7 +1191,7 @@ msgstr "จำเป็นต้องระบุชื่อโซนและ
 msgid "Invalid hostname."
 msgstr "ชื่อโฮสต์ไม่ถูกต้อง"
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "มีโซนที่ชื่อนี้อยู่แล้ว"
 
@@ -1217,21 +1217,21 @@ msgstr "โซนนี้ยังไม่มีเรกคอร์ดที
 msgid "Zone has been converted to a primary zone."
 msgstr "โซนถูกแปลงเป็นโซนหลักแล้ว"
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "คุณไม่มีสิทธิ์ในการสร้างโซนสำหรับผู้ใช้อื่น ๆ"
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "ID กลุ่มที่ไม่รู้จัก: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "คุณสามารถมอบหมายเฉพาะกลุ่มที่คุณเป็นสมาชิกเท่านั้น (ไม่อนุญาต: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr "ต้องเลือกผู้ใช้หรือกลุ่มอย่างน้อยหนึ่งรายการเป็นเจ้าของ"
 
@@ -1378,7 +1378,7 @@ msgstr "ไม่สามารถดึงข้อมูล RDAP จากเ
 msgid "Invalid CSRF token."
 msgstr "โทเค็น CSRF ไม่ถูกต้อง"
 
-#: lib/BaseController.php:598
+#: lib/BaseController.php:624
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -1409,29 +1409,29 @@ msgstr "ยังไม่มีการเลือกบันทึกสำ
 msgid "Describe why you are making this change."
 msgstr "อธิบายว่าเหตุใดคุณจึงทำการเปลี่ยนแปลงนี้"
 
-#: lib/Application/Controller/DeleteRecordsController.php:233
+#: lib/Application/Controller/DeleteRecordsController.php:229
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr "ลบเรกคอร์ดเรียบร้อยแล้ว เรกคอร์ด PTR ที่เกี่ยวข้องก็ถูกลบไปด้วย"
 
-#: lib/Application/Controller/DeleteRecordsController.php:235
+#: lib/Application/Controller/DeleteRecordsController.php:231
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr "ลบเรกคอร์ด %d รายการสำเร็จ เรกคอร์ด PTR ที่เกี่ยวข้องก็ถูกลบไปด้วย"
 
-#: lib/Application/Controller/DeleteRecordsController.php:238
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid "No records could be deleted. Please check permissions."
 msgstr "ไม่มีบันทึกใดถูกลบได้ กรุณาตรวจสอบสิทธิ์ที่อนุญาต"
 
-#: lib/Application/Controller/DeleteRecordsController.php:305
+#: lib/Application/Controller/DeleteRecordsController.php:301
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr "ยังไม่มีการเลือกบันทึกที่ถูกต้องสำหรับการลบทิ้ง หรือคุณไม่มีสิทธิ์ลบมัน"
 
-#: lib/Domain/Service/Dns/DomainManager.php:182
+#: lib/Domain/Service/Dns/DomainManager.php:183
 msgid "Invalid or unexpected input given."
 msgstr "ค่าที่ป้อนมาไม่ถูกต้องหรือไม่คาดคิด"
 
@@ -1443,7 +1443,7 @@ msgstr "คุณไม่มีสิทธิ์ในการลบผู้
 msgid "You do not have permission to delete a superuser account."
 msgstr "คุณไม่มีสิทธิ์ลบบัญชีผู้ใช้ระดับสูงสุด (superuser)"
 
-#: lib/Application/Controller/EditUserController.php:597
+#: lib/Application/Controller/ZoneOwnershipController.php:186
 msgid "User does not exist."
 msgstr "ไม่มีผู้ใช้อยู่"
 
@@ -1468,7 +1468,7 @@ msgstr "คุณสมบัติส่วนหมายเหตุของ
 msgid "You do not have the permission to view this comment."
 msgstr "คุณไม่ได้รับอนุญาตให้ดูหมายเหตุนี้"
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:606
 msgid "You do not have the permission to edit this comment."
 msgstr "คุณไม่มีสิทธิ์แก้ไขหมายเหตุนี้"
 
@@ -1484,33 +1484,33 @@ msgstr "หมายเลขบันทึกใช้ไม่ได้"
 msgid "You do not have permission to delete records in this zone."
 msgstr "คุณไม่ได้รับอนุญาตให้ลบเรกคอร์ดในโซนนี้"
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:509
 msgid "Record not found."
 msgstr "ไม่พบบันทึก"
 
-#: lib/Application/Controller/DeleteRecordController.php:216
+#: lib/Application/Controller/DeleteRecordController.php:212
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr "บันทึกนี้ พร้อมกับบันทึก PTR และ A/AAAA ที่เกี่ยวข้อง ถูกลบเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DeleteRecordController.php:218
+#: lib/Application/Controller/DeleteRecordController.php:214
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "เรกคอร์ดและเรกคอร์ด PTR ที่เกี่ยวข้องถูกลบเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DeleteRecordController.php:220
+#: lib/Application/Controller/DeleteRecordController.php:216
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "เรกคอร์ดและเรกคอร์ด A/AAAA ที่เกี่ยวข้องถูกลบเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DeleteRecordController.php:222
+#: lib/Application/Controller/DeleteRecordController.php:218
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr "ลบเรกคอร์ดเรียบร้อยแล้ว ไม่พบเรกคอร์ด PTR ที่ตรงกัน"
 
-#: lib/Application/Controller/DeleteRecordController.php:224
+#: lib/Application/Controller/DeleteRecordController.php:220
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -1520,7 +1520,7 @@ msgstr "ลบเรกคอร์ดเรียบร้อยแล้ว �
 msgid "The record has been deleted successfully."
 msgstr "ลบเรกคอร์ดเรียบร้อยแล้ว"
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:516
 msgid "You cannot delete records from a read-only zone."
 msgstr "คุณไม่สามารถลบเรกคอร์ดจากโซนแบบอ่านอย่างเดียวได้"
 
@@ -1582,7 +1582,7 @@ msgstr "คุณไม่ได้รับอนุญาตให้จัด
 msgid "Manage Group Members"
 msgstr "จัดการสมาชิกกลุ่ม"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:112
+#: lib/Application/Controller/ManageGroupZonesController.php:118
 msgid "Invalid action."
 msgstr "การกระทำไม่ถูกต้อง"
 
@@ -1642,7 +1642,7 @@ msgstr "ต้องระบุรหัสยืนยัน"
 msgid "MFA has been enabled successfully."
 msgstr "เปิดใช้งาน MFA เรียบร้อยแล้ว"
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "รหัสตรวจสอบไม่ถูกต้อง กรุณาลองอีกครั้ง"
 
@@ -1708,7 +1708,7 @@ msgstr "คุณไม่ได้รับอนุญาตให้ดู su
 msgid "You do not have the permission to view zone metadata."
 msgstr "คุณไม่ได้รับอนุญาตให้ดูเมตาดาต้าของโซน"
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:831
 msgid "You do not have the permission to edit zone metadata."
 msgstr "คุณไม่มีสิทธิ์แก้ไขเมตาดาต้าของโซน"
 
@@ -1862,7 +1862,7 @@ msgstr "ชนิดของเรกคอร์ดไม่ถูกต้อ
 msgid "Record could not be added."
 msgstr "ไม่สามารถเพิ่มเรกคอร์ดได้"
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:529
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "เพิ่มเรกคอร์ด %d รายการสำเร็จ"
@@ -1909,11 +1909,11 @@ msgstr "ไม่สามารถอัปเดตเทมเพลตสิ
 msgid "Groups"
 msgstr "กลุ่ม"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "คุณไม่ได้รับอนุญาตให้ทำการค้นหา"
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "ค้นหา"
@@ -1935,7 +1935,7 @@ msgstr "หมายเลขหน้าต้องมีค่าอย่า
 msgid "Page number exceeds available pages."
 msgstr "หมายเลขหน้าเกินจำนวนหน้าที่มีอยู่"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:75
 msgid "Invalid request method."
 msgstr "วิธีการร้องขอไม่ถูกต้อง"
 
@@ -1956,7 +1956,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "คุณไม่มีสิทธิ์ในการเพิ่มผู้ใช้ใหม่"
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "เพิ่มผู้ใช้"
 
@@ -1993,7 +1993,7 @@ msgstr "มีการสร้างรหัสผ่านขึ้นแต
 msgid "Please fill in all required fields correctly."
 msgstr "โปรดกรอกข้อมูลในช่องที่จำเป็นทั้งหมดให้ถูกต้อง"
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:542
 msgid "You do not have the permission to delete this record."
 msgstr "คุณไม่มีสิทธิ์ลบเรกคอร์ดนี้"
 
@@ -2001,7 +2001,7 @@ msgstr "คุณไม่มีสิทธิ์ลบเรกคอร์ด
 msgid "The record could not be deleted."
 msgstr "ไม่สามารถลบเรกคอร์ดได้"
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "ปูมบันทึกของโซน"
@@ -2023,7 +2023,7 @@ msgstr "เฉพาะโซนประเภท Producer เท่านั�
 msgid "You do not have permission to access this zone."
 msgstr "คุณไม่ได้รับอนุญาตให้เข้าถึงโซนนี้"
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:753
 msgid "You do not have permission to edit this zone."
 msgstr "คุณไม่มีสิทธิ์แก้ไขโซนนี้"
 
@@ -2031,7 +2031,7 @@ msgstr "คุณไม่มีสิทธิ์แก้ไขโซนนี
 msgid "The zone has been added to the catalog."
 msgstr "เพิ่มโซนลงในแคตตาล็อกเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:613
 msgid "The zone has been removed from the catalog."
 msgstr "ลบโซนออกจากแคตตาล็อกเรียบร้อยแล้ว"
 
@@ -2068,7 +2068,7 @@ msgstr "แก้ไขเทมเพลตโซน"
 msgid "There is no zone template with this ID."
 msgstr "ไม่มีเทมเพลตโซนที่มีหมายเลขนี้"
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "ปรับปรุงเทมเพลตโซนเรียบร้อยแล้ว"
 
@@ -2086,7 +2086,7 @@ msgstr "ปรับปรุงโซนต่าง ๆ เรียบร้�
 msgid "You do not have permission to create new zone templates."
 msgstr "คุณไม่ได้รับอนุญาตให้สร้างเทมเพลตโซนใหม่"
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "มีเทมเพลตโซนชื่อนี้อยู่แล้ว โปรดเลือกชื่ออื่น"
 
@@ -2114,7 +2114,7 @@ msgstr "หมายเลขแม่แบบไม่ถูกต้อง"
 msgid "Template does not exist."
 msgstr "ไม่มีแม่แบบอยู่"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:522
 msgid "You do not have permission to view this zone."
 msgstr "คุณไม่ได้รับอนุญาตให้ดูโซนนี้"
 
@@ -2168,7 +2168,7 @@ msgstr "แก้ไขโซน"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "คุณไม่ได้รับอนุญาตให้จัดการ DNSSEC สำหรับโซนนี้"
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:337
 msgid "DNSSEC is not enabled on the server."
 msgstr "ไม่เปิดใช้งาน DNSSEC บนเซิร์ฟเวอร์"
 
@@ -2177,21 +2177,21 @@ msgstr "ไม่เปิดใช้งาน DNSSEC บนเซิร์ฟ�
 msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr "โซนนี้ลงนามล่วงหน้าแล้ว คีย์ DNSSEC ถูกจัดการที่เซิร์ฟเวอร์หลัก"
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "โซนนี้ได้ลงนามด้วย DNSSEC แล้ว"
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "โซนได้รับการลงนามเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr "ร้องขอการลงนามโซนสำเร็จแล้ว แต่การตรวจสอบล้มเหลว กรุณาตรวจสอบคีย์ DNSSEC"
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2215,23 +2215,23 @@ msgstr "ร้องขอการยกเลิกการลงนามโ
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "ล้มเหลวในการยกเลิกการลงนามโซน ตรวจสอบบันทึกของ PowerDNS เพื่อดูรายละเอียด"
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:619
 msgid "The catalog has been changed successfully."
 msgstr "เปลี่ยนแคตตาล็อกเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:637
 msgid "Zone type has been changed successfully."
 msgstr "เปลี่ยนชนิดของโซนเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:644
 msgid "Slave master has been changed successfully."
 msgstr "เปลี่ยน master ของโซน slave เรียบร้อยแล้ว"
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:658
 msgid "You cannot apply a template to a read-only zone."
 msgstr "คุณไม่สามารถใช้เทมเพลตกับโซนแบบอ่านอย่างเดียวได้"
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:680
 msgid "Zone template has been changed successfully."
 msgstr "เปลี่ยนเทมเพลตของโซนเรียบร้อยแล้ว"
 
@@ -2239,7 +2239,7 @@ msgstr "เปลี่ยนเทมเพลตของโซนเรีย
 msgid "You cannot edit records in a read-only zone."
 msgstr "คุณไม่สามารถแก้ไขเรกคอร์ดในโซนแบบอ่านอย่างเดียวได้"
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:863
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2248,25 +2248,29 @@ msgstr ""
 "เรกคอร์ดบางรายการไม่ถูกบันทึกเนื่องจากฟอร์มเกินขีดจำกัดของเซิร์ฟเวอร์เกี่ยวกับจำนวนฟิลด์ "
 "ขอให้ผู้ดูแลระบบเพิ่มค่าการตั้งค่า PHP \"max_input_vars\""
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:971
 msgid "Zone has not been updated successfully."
 msgstr "การปรับปรุงโซนยังไม่สำเร็จ"
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:972
 msgid "Request has expired, please try again."
 msgstr "การร้องขอหมดอายุแล้ว โปรดลองใหม่อีกครั้ง"
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:981
 msgid "Zone has been updated successfully."
 msgstr "ปรับปรุงโซนเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:982
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr "บันทึกโซนเรียบร้อยแล้ว ไม่มีการเปลี่ยนแปลงเรกคอร์ด แต่หมายเลขซีเรียลของ SOA ถูกเพิ่มขึ้น"
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Domain/Service/Dns/RecordManager.php:289
+msgid "You do not have the permission to add a record to this zone."
+msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดลงในโซนนี้"
+
+#: lib/Application/Controller/EditController.php:1024
 msgid "Please provide all required fields."
 msgstr "โปรดกรอกข้อมูลในช่องที่จำเป็นทั้งหมด"
 
@@ -2274,7 +2278,7 @@ msgstr "โปรดกรอกข้อมูลในช่องที่จ
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "เพิ่มเรกคอร์ดเรียบร้อยแล้ว มีการสร้างเรกคอร์ด PTR ที่ตรงกันด้วย"
 
-#: lib/Application/Controller/AddRecordController.php:266
+#: lib/Application/Controller/AddRecordController.php:510
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "เพิ่มเรกคอร์ดเรียบร้อยแล้ว แต่การสร้างเรกคอร์ด PTR ล้มเหลว: "
 
@@ -2290,67 +2294,63 @@ msgstr "เพิ่มเรกคอร์ดเรียบร้อยแล
 msgid "Invalid security token. Please try again."
 msgstr "โทเค็นความปลอดภัยไม่ถูกต้อง กรุณาลองอีกครั้ง"
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr "พยายามล้มเหลวมากเกินไป โปรดลองอีกครั้งในภายหลัง"
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "ไม่พบบันทึกของ MFA โปรดติดต่อผู้ดูแลระบบ"
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "เกิดข้อผิดพลาดขึ้น กรุณาลองอีกครั้ง"
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
 msgstr "ไม่สามารถใช้การตรวจสอบอีเมลได้ เนื่องจากบริการอีเมลถูกปิดการใช้งาน โปรดใช้รหัสกู้คืน"
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "รหัสยืนยันใหม่ถูกส่งไปยังอีเมลของคุณแล้ว"
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "กรุณาใช้รหัสกู้คืนแทน"
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
 msgstr "ไม่สามารถส่งรหัสยืนยันไปยังอีเมลของคุณได้ กรุณาใช้รหัสกู้คืนแทน"
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
-msgid "You do not have the permission to add a record to this zone."
-msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดลงในโซนนี้"
-
 #: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "เพิ่มเรกคอร์ดเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/AddRecordController.php:464
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "No records were provided."
 msgstr "ไม่มีการระบุเรกคอร์ด"
 
-#: lib/Application/Controller/AddRecordController.php:533
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "สร้างเรกคอร์ดที่ตรงกัน %d รายการด้วย"
 
-#: lib/Application/Controller/AddRecordController.php:536
+#: lib/Application/Controller/AddRecordController.php:534
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "เพิ่มเรกคอร์ด %d รายการล้มเหลว"
 
-#: lib/Application/Controller/AddRecordController.php:541
+#: lib/Application/Controller/AddRecordController.php:539
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr "ไม่สามารถเพิ่มเรกคอร์ดบางรายการได้ อาจมีอยู่แล้วหรือมีข้อมูลที่ไม่ถูกต้อง"
 
-#: lib/Application/Controller/AddRecordController.php:571
+#: lib/Application/Controller/AddRecordController.php:569
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "ไม่สามารถเพิ่มเรกคอร์ดใด ๆ ได้ อาจมีข้อมูลที่ไม่ถูกต้อง"
 
@@ -2358,7 +2358,7 @@ msgstr "ไม่สามารถเพิ่มเรกคอร์ดใด
 msgid "No zone selected for deletion."
 msgstr "ยังไม่มีการเลือกโซนสำหรับการลบ"
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1013
 msgid "You do not have the permission to delete a zone."
 msgstr "คุณไม่มีสิทธิ์ลบโซน"
 
@@ -2421,7 +2421,7 @@ msgid ""
 "material for this key."
 msgstr "ไม่สามารถรับกุญแจ PEM ได้ เครื่องแม่ข่ายอาจจะไม่ได้เปิดเผยกุญแจส่วนตัวสำหรับกุญแจนี้"
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "คุณไม่ได้รับอนุญาตให้เพิ่มโซนหลัก"
 
@@ -2451,13 +2451,13 @@ msgstr ""
 "ป้อนเครือข่ายในรูปแบบ CIDR (เช่น 192.168.1.0/24 หรือ 2001:db8::/48) "
 "หรือชื่อโซนย้อนกลับที่ลงท้ายด้วย in-addr.arpa หรือ ip6.arpa"
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr "สร้างโซนสำเร็จแล้ว แต่ข้ามการลงนาม DNSSEC เนื่องจากมีข้อผิดพลาดในการตรวจสอบ:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2465,11 +2465,11 @@ msgstr ""
 "สร้างโซนแล้ว แต่การรักษาความปลอดภัยด้วย DNSSEC ล้มเหลว การตรวจสอบโซนผ่าน แต่ PowerDNS "
 "API ส่งข้อผิดพลาดกลับมา ตรวจสอบบันทึกของ PowerDNS เพื่อดูรายละเอียด"
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "สร้างโซนและลงนามด้วย DNSSEC เรียบร้อยแล้ว"
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2483,16 +2483,16 @@ msgstr "เพิ่มโซนเรียบร้อยแล้ว"
 msgid "Batch PTR record creation is not enabled."
 msgstr "ยังไม่ได้เปิดใช้งานการสร้างบันทึก PTR แบบชุด"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:88
+#: lib/Application/Controller/BatchPtrRecordController.php:89
 msgid "You do not have permission to edit DNS records."
 msgstr "คุณไม่มีสิทธิ์แก้ไขบันทึก DNS"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:93
+#: lib/Application/Controller/BatchPtrRecordController.php:94
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
 msgstr "บันทึกแบบชุด PTR"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:109
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "การสร้างบันทึก PTR แบบชุดไม่สามารถใช้กับโซนย้อนกลับได้"
 
@@ -2593,19 +2593,25 @@ msgstr "มุมมอง"
 msgid "Invalid key ID."
 msgstr "หมายเลขกุญแจไม่ถูกต้อง"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:107
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
+msgid ""
+"DNSSEC functionality is not available. Please check PowerDNS API "
+"configuration."
+msgstr "ไม่พบคุณสมบัติของ DNSSEC กรุณาตรวจสอบการตั้งค่า PowerDNS API"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "DNSSEC key not found or no longer exists."
 msgstr "ไม่พบกุญแจ DNSSEC หรือไม่มีอีกแล้ว"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:111
+#: lib/Application/Controller/DnssecDeleteKeyController.php:113
 msgid "Zone key has been deleted successfully."
 msgstr "ลบกุญแจของโซนเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:119
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "Failed to delete the zone key."
 msgstr "ล้มเหลวในการลบกุญแจของโซน"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:126
+#: lib/Application/Controller/DnssecDeleteKeyController.php:128
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "เกิดข้อผิดพลาดขึ้นระหว่างทำการลบกุญแจ DNSSEC: "
 
@@ -2639,41 +2645,41 @@ msgstr "คุณมีสิทธิ์ไม่เพียงพอสำห
 msgid "Reverse Zones"
 msgstr "โซนย้อนกลับ"
 
-#: lib/Application/Controller/ListForwardZonesController.php:283
+#: lib/Application/Controller/ListForwardZonesController.php:296
 msgid "You do not have the permission to see any zones."
 msgstr "คุณไม่ได้รับอนุญาตให้เห็นโซนใด ๆ"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:79
+#: lib/Application/Controller/ManageGroupZonesController.php:85
 msgid "You do not have permission to manage zone ownership."
 msgstr "คุณไม่ได้รับอนุญาตให้จัดการการเป็นเจ้าของโซน"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:93
+#: lib/Application/Controller/ManageGroupZonesController.php:99
 msgid "Manage Group Zones"
 msgstr "จัดการโซนของกลุ่ม"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:230
+#: lib/Application/Controller/ManageGroupZonesController.php:236
 msgid "Please select at least one zone."
 msgstr "โปรดเลือกอย่างน้อยหนึ่งโซน"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:166
+#: lib/Application/Controller/ManageGroupZonesController.php:172
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "เพิ่ม %d โซนไปยังกลุ่ม"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:209
+#: lib/Application/Controller/ManageGroupZonesController.php:215
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "ไม่สามารถเพิ่ม %d โซน"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:251
+#: lib/Application/Controller/ManageGroupZonesController.php:257
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "ลบ %d โซนออกจากกลุ่ม"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:294
+#: lib/Application/Controller/ManageGroupZonesController.php:300
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2737,38 +2743,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "กำหนด %d โซนแล้ว; %d ล้มเหลว"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "ซ่อมแซม ID มาตรฐานของโซนแล้ว"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "ซ่อมแซม ID มาตรฐานของโซนไม่สำเร็จ"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "ไม่มีโซนที่ไม่มี ID มาตรฐานให้ซ่อมแซม"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "ซ่อมแซม ID มาตรฐานของ %d โซนแล้ว"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "ซ่อมแซมแล้ว %d โซน; ล้มเหลว %d"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "ลบโซนทาสเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "ล้มเหลวในการลบโซนทาส"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "ลบบันทึกกำพร้าเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "ล้มเหลวในการลบบันทึกกำพร้า"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "แก้ไขบันทึก SOA ที่ซ้ำกันเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "ล้มเหลวในการแก้ไขบันทึก SOA ที่ซ้ำกัน"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "สร้างบันทึก SOA เริ่มต้นสำเร็จแล้ว"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "ล้มเหลวในการสร้างบันทึกปริยายของ SOA"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "ชนิดของการตรวจสอบไม่ถูกต้อง"
 
@@ -2776,7 +2804,7 @@ msgstr "ชนิดของการตรวจสอบไม่ถูกต
 msgid "You have logged out."
 msgstr "คุณออกจากระบบแล้ว"
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "คุณไม่มีสิทธิ์ในการเพิ่มแม่แบบโซน"
 
@@ -2809,7 +2837,7 @@ msgstr "คุณไม่มีสิทธิ์ในการเพิ่ม
 msgid "Add Secondary Zone"
 msgstr "เพิ่มโซนรอง"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "คุณไม่มีสิทธิ์ในการลบแม่แบบโซน"
 
@@ -2829,21 +2857,54 @@ msgstr "Supermaster ที่ท่านพยายามจะแก้ไข
 msgid "The supermaster has been updated successfully."
 msgstr "Supermaster ได้ปรับปรุงแล้ว"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
 msgid "You do not have permission to manage group zones."
 msgstr "คุณไม่ได้รับอนุญาตให้จัดการโซนของกลุ่ม"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:80
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
 msgid "Invalid group or zone ID."
 msgstr "หมายเลขกลุ่มหรือโซนไม่ถูกต้อง"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:104
 msgid "Zone removed from group successfully."
 msgstr "ลบโซนออกจากกลุ่มเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:93
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:106
 msgid "Zone was not owned by this group."
 msgstr "โซนนี้ไม่ได้เป็นของกลุ่มนี้"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:309
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"ไม่สามารถลบกลุ่มสุดท้ายได้: โหมดการเป็นเจ้าของโซนคือ groups_only และต้องมีอย่างน้อยหนึ่งกลุ่ม "
+"กรุณาเพิ่มกลุ่มอื่นก่อน"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:315
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"ไม่สามารถลบกลุ่มได้: โหมดการเป็นเจ้าของโซนคือ users_only และโซนนี้ไม่มีเจ้าของที่เป็นผู้ใช้ "
+"กรุณาเพิ่มเจ้าของที่เป็นผู้ใช้ก่อน"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:343
+msgid "Add another owner or a group first."
+msgstr "เพิ่มเจ้าของหรือกลุ่มอื่นก่อน"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr "เพิ่มเจ้าของที่เป็นผู้ใช้อีกคนก่อน (โหมดการเป็นเจ้าของโซนคือ users_only)"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:348
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "เพิ่มกลุ่มก่อน (โหมดการเป็นเจ้าของโซนคือ groups_only)"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "ไม่สามารถลบเจ้าของคนสุดท้ายได้: จะทำให้โซนนี้ไม่มีเจ้าของ"
 
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
@@ -3032,7 +3093,7 @@ msgstr "การออกจากระบบเสร็จสมบูรณ
 msgid "You do not have permission to view this record."
 msgstr "คุณไม่ได้รับอนุญาตให้ดูบันทึกนี้"
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have permission to edit this record."
 msgstr "คุณไม่ได้รับอนุญาตให้แก้ไขบันทึกนี้"
 
@@ -3071,39 +3132,19 @@ msgstr ""
 msgid "Change password"
 msgstr "เปลี่ยนรหัสผ่าน"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
-msgid "ECDSA P-256 algorithm must use 256 bits"
-msgstr "ECDSA อัลกอริทึม P-256 ต้องใช้ 256 บิต"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:136
-msgid "ECDSA P-384 algorithm must use 384 bits"
-msgstr "ECDSA อัลกอริทึม P-384 ต้องใช้ 384 บิต"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:142
-msgid "ED25519 algorithm must use 256 bits"
-msgstr "ED25519 อัลกอริทึมจะต้องใช้ 256 บิต"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:147
-msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr "อัลกอริทึม ED448 ต้องใช้ 456 บิต (ไม่รองรับใน UI นี้)"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:154
-msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr "อัลกอริทึม RSA ควรใช้ 1024 หรือ 2048 บิตเพื่อรักษาความปลอดภัยที่เพียงพอ"
-
-#: lib/Application/Controller/DnssecAddKeyController.php:176
+#: lib/Application/Controller/DnssecAddKeyController.php:144
 msgid "Zone key has been added successfully."
 msgstr "การเพิ่มกุญแจโซนสำเร็จแล้ว"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:180
+#: lib/Application/Controller/DnssecAddKeyController.php:148
 msgid "Failed to add new DNSSEC key."
 msgstr "ล้มเหลวในการเพิ่มคีย์ DNSSEC ใหม่"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:184
+#: lib/Application/Controller/DnssecAddKeyController.php:152
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "เกิดข้อผิดพลาดขึ้นขณะเพิ่มกุญแจ DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:188
+#: lib/Application/Controller/DnssecAddKeyController.php:156
 msgid "Please select both algorithm and bits"
 msgstr "โปรดเลือกทั้งอัลกอริทึมและบิต"
 
@@ -3145,19 +3186,19 @@ msgstr "Supermaster ถูกลบเรียบร้อยแล้ว"
 msgid "Bulk Registration"
 msgstr "การลงทะเบียนแบบกลุ่ม"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "เจ้าของต้องเป็นหมายเลขผู้ใช้"
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "ไม่สามารถเพิ่มโซนได้"
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "เพิ่มโซนเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "ไม่สามารถเพิ่มบางโซนได้"
 
@@ -3183,16 +3224,15 @@ msgstr "ปรับปรุงแม่แบบโซนปริยายแ
 msgid "User-owner assignment is disabled by the current zone ownership mode."
 msgstr "การมอบหมายเจ้าของที่เป็นผู้ใช้ถูกปิดการใช้งานโดยโหมดการเป็นเจ้าของโซนในปัจจุบัน"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Domain/Service/Dns/DomainManager.php:894
+msgid "The selected user already owns the zone."
+msgstr "ผู้ใช้ที่เลือกเป็นเจ้าของโซนนี้อยู่แล้ว"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:197
 msgid "Owner has been added successfully."
 msgstr "เพิ่มเจ้าของเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:293
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr "ไม่สามารถลบเจ้าของคนสุดท้ายได้: จะทำให้โซนนี้ไม่มีเจ้าของ"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
@@ -3200,7 +3240,7 @@ msgstr ""
 "ไม่สามารถลบเจ้าของที่เป็นผู้ใช้คนสุดท้ายได้: โหมดการเป็นเจ้าของโซนคือ users_only "
 "และต้องมีเจ้าของที่เป็นผู้ใช้อย่างน้อยหนึ่งคน กรุณาเพิ่มเจ้าของที่เป็นผู้ใช้อีกคนก่อน"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
@@ -3208,54 +3248,26 @@ msgstr ""
 "ไม่สามารถลบเจ้าของที่เป็นผู้ใช้ได้: โหมดการเป็นเจ้าของโซนคือ groups_only "
 "และโซนนี้ไม่มีเจ้าของที่เป็นกลุ่ม กรุณาเพิ่มกลุ่มก่อน"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "เจ้าของถูกถอดถอนเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:250
+#: lib/Application/Controller/ZoneOwnershipController.php:260
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr "การมอบหมายให้เป็นเจ้าของกลุ่มถูกปิดการใช้งานโดยโหมดการเป็นเจ้าของโซนในปัจจุบัน"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:262
+#: lib/Application/Controller/ZoneOwnershipController.php:272
 msgid "You do not have permission to assign this group."
 msgstr "คุณไม่มีสิทธิ์ในการกำหนดกลุ่มผู้ใช้นี้"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:270
+#: lib/Application/Controller/ZoneOwnershipController.php:280
 msgid "Group has been added successfully."
 msgstr "เพิ่มกลุ่มเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:299
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr ""
-"ไม่สามารถลบกลุ่มสุดท้ายได้: โหมดการเป็นเจ้าของโซนคือ groups_only และต้องมีอย่างน้อยหนึ่งกลุ่ม "
-"กรุณาเพิ่มกลุ่มอื่นก่อน"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:305
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr ""
-"ไม่สามารถลบกลุ่มได้: โหมดการเป็นเจ้าของโซนคือ users_only และโซนนี้ไม่มีเจ้าของที่เป็นผู้ใช้ "
-"กรุณาเพิ่มเจ้าของที่เป็นผู้ใช้ก่อน"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:310
+#: lib/Application/Controller/ZoneOwnershipController.php:320
 msgid "Group has been removed successfully."
 msgstr "การลบกลุ่มเสร็จสมบูรณ์แล้ว"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:333
-msgid "Add another owner or a group first."
-msgstr "เพิ่มเจ้าของหรือกลุ่มอื่นก่อน"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "เพิ่มเจ้าของที่เป็นผู้ใช้อีกคนก่อน (โหมดการเป็นเจ้าของโซนคือ users_only)"
-
-#: lib/Application/Controller/ZoneOwnershipController.php:338
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "เพิ่มกลุ่มก่อน (โหมดการเป็นเจ้าของโซนคือ groups_only)"
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3266,41 +3278,50 @@ msgstr "ไม่พบหน้า"
 msgid "This action requires a POST request."
 msgstr "การดำเนินการนี้ต้องใช้คำขอ POST"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:92
-msgid ""
-"DNSSEC functionality is not available. Please check PowerDNS API "
-"configuration."
-msgstr "ไม่พบคุณสมบัติของ DNSSEC กรุณาตรวจสอบการตั้งค่า PowerDNS API"
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:118
+#: lib/Application/Controller/DnssecToggleKeyController.php:120
 msgid "Zone key has been successfully deactivated."
 msgstr "ปิดการใช้งานกุญแจโซนเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:121
 msgid "Failed to deactivate zone key."
 msgstr "ล้มเหลวในการปิดการใช้งานกุญแจโซน"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:122
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "Zone key has been successfully activated."
 msgstr "เปิดใช้งานกุญแจโซนเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:123
+#: lib/Application/Controller/DnssecToggleKeyController.php:125
 msgid "Failed to activate zone key."
 msgstr "ล้มเหลวในการเปิดใช้งานกุญแจโซน"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:136
+#: lib/Application/Controller/DnssecToggleKeyController.php:138
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "เกิดข้อผิดพลาดขึ้นระหว่างสลับสถานะกุญแจ DNSSEC กรุณาลองอีกครั้ง"
 
-#: lib/Application/Service/RequestValidator.php:69
+#: lib/Application/Service/RequestValidator.php:87
 #, php-format
 msgid "The %s field is required."
 msgstr "ต้องระบุฟิลด์ %s"
 
-#: lib/Application/Service/RequestValidator.php:77
+#: lib/Application/Service/RequestValidator.php:90
 #, php-format
 msgid "The %s field must be a number."
 msgstr "ฟิลด์ %s ต้องเป็นตัวเลข"
+
+#: lib/Application/Service/RequestValidator.php:94
+#, php-format
+msgid "The %s field must be a list."
+msgstr "ฟิลด์ %s ต้องเป็นรายการ"
+
+#: lib/Application/Service/RequestValidator.php:98
+#, php-format
+msgid "The %s field must be at most %d characters."
+msgstr "ฟิลด์ %s ต้องมีความยาวไม่เกิน %d ตัวอักษร"
+
+#: lib/Application/Service/RequestValidator.php:102
+#, php-format
+msgid "The %s field has an invalid value."
+msgstr "ฟิลด์ %s มีค่าไม่ถูกต้อง"
 
 #: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
 #: templates/modern/users.html:222
@@ -3316,11 +3337,11 @@ msgstr "ไม่"
 msgid "Account is temporarily locked. Please try again later."
 msgstr "บัญชีถูกปิดชั่วคราว กรุณาลองอีกครั้งในภายหลัง"
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "บัญชีผู้ใช้ถูกปิดการใช้งาน"
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "การตรวจสอบสิทธิ์ล้มเหลว!"
 
@@ -3348,7 +3369,7 @@ msgstr "การตรวจสอบสิทธิ์ล้มเหลว: �
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "การตรวจสอบสิทธิ์ล้มเหลว: ไม่สามารถสร้างหรืออัปเดตบัญชีผู้ใช้ได้"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "การตรวจสอบสิทธิ์ของ LDAP ล้มเหลว!"
 
@@ -3564,14 +3585,13 @@ msgid ""
 "below."
 msgstr "แสดงสถานะการเชื่อมต่อสำหรับ Supermasters ที่ถูกปรับแต่งไว้ในตารางด้านล่างนี้"
 
-#: lib/Infrastructure/Web/PageRenderer.php:132
+#: lib/Infrastructure/Web/PageRenderer.php:133
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "ใช้คีย์เข้ารหัสวาระงานปริยาย โปรดตั้งค่ามันในแฟ้มปรับแต่งของคุณ"
 
-#: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
+#: lib/Infrastructure/Web/PageRenderer.php:137
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3579,7 +3599,7 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/Infrastructure/Web/PageRenderer.php:253
+#: lib/Infrastructure/Web/PageRenderer.php:254
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr "ไดเรกทอรี install/ มีอยู่ คุณต้องลบออกก่อนจึงจะดำเนินการต่อได้"
@@ -3637,43 +3657,43 @@ msgstr "มีที่อยู่อีเมลนี้อยู่แล้
 msgid "Enter a valid user name."
 msgstr "ป้อนชื่อผู้ใช้ที่ถูกต้อง"
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "ไม่พบแม่แบบโซน"
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "เฉพาะแม่แบบโซนแบบส่วนกลางเท่านั้นที่สามารถกำหนดให้เป็นค่าปริยายได้"
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "เกิดข้อผิดพลาดในการตั้งค่าแม่แบบโซนปริยาย: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "เกิดข้อผิดพลาดในการล้างแม่แบบโซนปริยาย: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "เกิดข้อผิดพลาดในการสร้างแม่แบบโซน: "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "เกิดข้อผิดพลาดในการเพิ่มบันทึก SOA ปริยายไปยังแม่แบบ: "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "เกิดข้อผิดพลาดในการลบแม่แบบโซน: "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "เกิดข้อผิดพลาดในการลบแม่แบบโซนของผู้ใช้: "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดลงในแม่แบบโซนนี้"
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดชนิดนี้ลงในเทมเพลตโซน."
@@ -3686,68 +3706,68 @@ msgstr "ช่องเนื้อหาของคุณมีค่าที
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "ความสำคัญสำหรับบันทึก MX/SRV ต้องเป็นเลขระหว่าง 0 กับ 65535"
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "เกิดข้อผิดพลาดในการเพิ่มเรกคอร์ดของแม่แบบโซน: "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "เรกคอร์ดนี้ไม่ได้อยู่ในแม่แบบโซนนี้"
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "เกิดข้อผิดพลาดในการปรับปรุงเรกคอร์ดของแม่แบบโซน: "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "คุณไม่มีสิทธิ์ลบเรกคอร์ดชนิดนี้ออกจากเทมเพลตโซน."
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "เกิดข้อผิดพลาดในการลบเรกคอร์ดของแม่แบบโซน: "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "เกิดข้อผิดพลาดในการตรวจสอบเจ้าของแม่แบบ: "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 msgstr "เรกคอร์ดชนิดต่อไปนี้ไม่ได้ถูกใส่ไว้ในเทมเพลต เนื่องจากคุณไม่มีสิทธิ์เพิ่ม: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "เกิดข้อผิดพลาดในการรับค่าโซนที่ใช้แม่แบบ: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "ล้มเหลวในการรับรายการโซนที่ใช้แม่แบบ: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "คุณไม่มีสิทธิ์แก้ไขแม่แบบโซน"
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "เกิดข้อผิดพลาดในการยกเลิกการเชื่อมโยงโซนออกจากแม่แบบ: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "เกิดข้อผิดพลาดในการรับค่าโซน: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "การตรวจสอบชื่อแม่แบบผิดพลาด: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "เกิดข้อผิดพลาดในการค้นชื่อต้นแบบ: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "เกิดข้อผิดพลาดในการตรวจสอบการมีอยู่ของต้นแบบ: "
 
@@ -3803,50 +3823,59 @@ msgid ""
 "disabled."
 msgstr "มุมมองต้องการ \"views=yes\" ใน pdns.conf เซิร์ฟเวอร์ที่เชื่อมต่ออยู่ปิดใช้งานไว้"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "ทุกโซนมีเจ้าของ"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "พบ %d โซนที่ไม่มีเจ้าของ"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "โซน slave ทั้งหมดมีที่อยู่ IP ของ master"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "พบ %d slave zone ที่ไม่มีที่อยู่ IP master"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "เรกคอร์ดทั้งหมดเป็นของโซนที่มีอยู่"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "พบเรกคอร์ดกำพร้า %d รายการ"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "ไม่พบบันทึก SOA ที่ซ้ำกัน"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d โซนมีเรกคอร์ด SOA ซ้ำซ้อน"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "ทุกโซนมีบันทึก SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "พบ %d โซนที่ไม่มีเรกคอร์ด SOA"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "ทุกโซนมี ID มาตรฐาน"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "พบ %d โซนที่ไม่มี ID มาตรฐาน"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -7161,7 +7190,7 @@ msgstr ""
 "ค่า contactphone ต้องมีเฉพาะตัวเลข ช่องว่าง "
 "และเครื่องหมายวรรคตอนที่ใช้กับหมายเลขโทรศัพท์ทั่วไป"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:464
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:467
 msgid "Value must be enclosed in double quotes."
 msgstr "ค่าต้องอยู่ในเครื่องหมายคำพูดคู่"
 
@@ -8685,25 +8714,27 @@ msgstr ""
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "บันทึก NAPTR ที่มี regexp ต้องใช้ \".\" เป็นค่า replacement"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-"protocol and rs are separated by plus signs, each start with a letter "
-"and contain only letters, digits, hyphens or colons (max 32 chars "
-"each)."
-msgstr "service ของ NAPTR ต้องเป็นไปตามรูปแบบ: [protocol][+rs][+rs]... โดยที่ protocol และ rs คั่นด้วยเครื่องหมายบวก แต่ละส่วนขึ้นต้นด้วยตัวอักษร และมีได้เฉพาะตัวอักษร ตัวเลข ยัติภังค์ หรือทวิภาค (ไม่เกิน 32 อักขระต่อส่วน)"
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
+"and rs are separated by plus signs, each start with a letter and contain "
+"only letters, digits, hyphens or colons (max 32 chars each)."
+msgstr ""
+"service ของ NAPTR ต้องเป็นไปตามรูปแบบ: [protocol][+rs][+rs]... โดยที่ protocol "
+"และ rs คั่นด้วยเครื่องหมายบวก แต่ละส่วนขึ้นต้นด้วยตัวอักษร และมีได้เฉพาะตัวอักษร ตัวเลข ยัติภังค์ "
+"หรือทวิภาค (ไม่เกิน 32 อักขระต่อส่วน)"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:359
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:362
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
 msgstr "แฟล็กแบบ terminal \"S\", \"A\", \"U\" และ \"P\" ไม่ควรใช้ร่วมกับแฟล็กอื่น"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:381
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:384
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr "regexp ของ NAPTR ต้องขึ้นต้นด้วยอักขระตัวคั่น"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:387
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:390
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
@@ -8711,14 +8742,14 @@ msgstr ""
 "regexp ของ NAPTR ต้องมีรูปแบบ "
 "delimiter+pattern+delimiter+replacement+delimiter+flags"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:394
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:397
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
 msgstr ""
 "flags ของ regexp ใน NAPTR (หลังตัวคั่นตัวที่สาม) ควรมีเฉพาะ \"i\" หรือปล่อยว่างเท่านั้น"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:412
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
@@ -8726,15 +8757,15 @@ msgstr ""
 "นี่ดูเหมือนจะเป็นบันทึก NAPTR แบบ ENUM (RFC 6116) โปรดตรวจสอบให้แน่ใจว่าโดเมนอยู่ภายใต้ "
 "e164.arpa หรือทรี ENUM แบบส่วนตัว"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:413
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:416
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr "บันทึก ENUM ควรมีแฟล็ก \"U\" เพื่อระบุผลลัพธ์แบบ URI"
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:440
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:443
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr "regexp ของ NAPTR มีรูปแบบที่อาจเป็นอันตราย: "
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:447
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:450
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr "regexp ของ NAPTR ยาวเกินไป ความยาวสูงสุดคือ 1000 ตัวอักษร"
 
@@ -8891,6 +8922,26 @@ msgstr "คุณไม่ได้รับอนุญาตให้ลบก
 msgid "You do not have permission to regenerate API keys."
 msgstr "คุณไม่ได้รับอนุญาตให้ทำกุญแจ API ใหม่"
 
+#: lib/Domain/Service/DnssecKeySpecValidator.php:56
+msgid "ECDSA P-256 algorithm must use 256 bits"
+msgstr "ECDSA อัลกอริทึม P-256 ต้องใช้ 256 บิต"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:57
+msgid "ECDSA P-384 algorithm must use 384 bits"
+msgstr "ECDSA อัลกอริทึม P-384 ต้องใช้ 384 บิต"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:58
+msgid "ED25519 algorithm must use 256 bits"
+msgstr "ED25519 อัลกอริทึมจะต้องใช้ 256 บิต"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:59
+msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
+msgstr "อัลกอริทึม ED448 ต้องใช้ 456 บิต (ไม่รองรับใน UI นี้)"
+
+#: lib/Domain/Service/DnssecKeySpecValidator.php:60
+msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr "อัลกอริทึม RSA ควรใช้ 1024 หรือ 2048 บิตเพื่อรักษาความปลอดภัยที่เพียงพอ"
+
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr "ไม่มีบันทึก SOA อยู่ในโซน หรือไม่ได้เปิดใช้งาน ซึ่งจำเป็นสำหรับ DNSSEC"
@@ -8973,17 +9024,17 @@ msgstr ""
 msgid "Unknown database type."
 msgstr "ไม่รู้จักชนิดของฐานข้อมูล"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:102
+#: lib/Domain/Service/ReverseRecordCreator.php:103
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "ไม่มีโซนย้อนกลับที่ตรงกันสำหรับ: %s"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:110
+#: lib/Domain/Service/ReverseRecordCreator.php:111
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "เรกคอร์ด PTR สำหรับ %s ที่ชี้ไปยัง %s มีอยู่แล้ว"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:123
+#: lib/Domain/Service/ReverseRecordCreator.php:127
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -8992,27 +9043,27 @@ msgstr ""
 "เพิ่มเรกคอร์ดย้อนกลับแล้ว คำเตือน: เรกคอร์ด PTR สำหรับ %s มีอยู่แล้วโดยชี้ไปยัง: %s "
 "ไม่แนะนำให้มีเรกคอร์ด PTR หลายรายการสำหรับ IP เดียวกัน"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:245
+#: lib/Domain/Service/ReverseRecordCreator.php:249
 msgid "PTR update skipped: record type is not A or AAAA."
 msgstr "การปรับปรุง PTR ข้าม: ประเภทบันทึกไม่ใช่ A หรือ AAAA"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:258
+#: lib/Domain/Service/ReverseRecordCreator.php:262
 msgid "Stale PTR record removed."
 msgstr "ลบบันทึก PTR ที่ล้าสมัยออกแล้ว"
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "A record with this hostname, type, and content already exists."
 msgstr "มีบันทึกที่มีชื่อโฮสต์ ประเภท และเนื้อหานี้อยู่แล้ว"
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "ล้มเหลวในการเพิ่มบันทึกลงแบ็คเอนต์ DNS"
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:465
 msgid "Failed to update record in DNS backend."
 msgstr "ล้มเหลวในการปรับบันทึกในโปรแกรมเบื้องหลัง DNS"
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:899
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "อาร์กิวเมนต์ที่ไม่ถูกต้องสำหรับฟังก์ชัน %s %s"
@@ -9021,56 +9072,52 @@ msgstr "อาร์กิวเมนต์ที่ไม่ถูกต้อ
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "มี supermaster ที่ใช้ IP address และชื่อโฮสต์นี้อยู่แล้ว"
 
-#: lib/Domain/Service/Dns/DomainManager.php:225
+#: lib/Domain/Service/Dns/DomainManager.php:226
 msgid "Failed to create zone in DNS backend."
 msgstr "ล้มเหลวในการสร้างโซนในแบ็คเอนด์ DNS"
 
-#: lib/Domain/Service/Dns/DomainManager.php:440
+#: lib/Domain/Service/Dns/DomainManager.php:443
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "ไม่สามารถสร้างโซน: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:327
+#: lib/Domain/Service/Dns/DomainManager.php:328
 msgid "Failed to create SOA record for zone."
 msgstr "ล้มเหลวในการสร้างบันทึก SOA สำหรับโซน"
 
-#: lib/Domain/Service/Dns/DomainManager.php:382
+#: lib/Domain/Service/Dns/DomainManager.php:385
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "ไม่สามารถสร้างเรกคอร์ด %s สำหรับโซน"
 
-#: lib/Domain/Service/Dns/DomainManager.php:444
+#: lib/Domain/Service/Dns/DomainManager.php:447
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "อาร์กิวเมนต์ที่ไม่ถูกต้องสำหรับฟังก์ชัน %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:570
 msgid "Failed to delete zone from DNS backend."
 msgstr "ล้มเหลวในการลบโซนออกจากแบ็คเอนด์ DNS"
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:527
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "ไม่สามารถล้างเมตาดาต้าของโซน: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:618
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "ไม่สามารถลบเมตาดาต้าของโซน: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:792
 msgid "Failed to update zone type in DNS backend."
 msgstr "ล้มเหลวในการอัปเดตชนิดของโซนในแบ็คเอนด์ DNS"
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:846
 msgid "Failed to update zone master in DNS backend."
 msgstr "ล้มเหลวในการอัปเดตตัวหลักของโซนในโปรแกรมเบื้องหลัง DNS"
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
-msgid "The selected user already owns the zone."
-msgstr "ผู้ใช้ที่เลือกเป็นเจ้าของโซนนี้อยู่แล้ว"
-
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1199
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "ไม่สามารถอัปเดตเรกคอร์ดของโซนได้: %s"
@@ -9740,7 +9787,7 @@ msgstr "ส่งลิงก์รีเซ็ต"
 msgid "Group Management"
 msgstr "การจัดการกลุ่ม"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "ไม่พบกลุ่ม"
 
@@ -9825,7 +9872,7 @@ msgid ""
 "Group members inherit these permissions only for zones owned by this group"
 msgstr "สมาชิกกลุ่มจะได้รับสิทธิ์เหล่านี้เฉพาะกับโซนที่กลุ่มนี้เป็นเจ้าของเท่านั้น"
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "เลือกต้นแบบสิทธิ์"
 
@@ -10009,15 +10056,15 @@ msgstr ""
 msgid "DNS Management"
 msgstr "การจัดการ DNS"
 
-#: templates/modern/index.html:58 templates/modern/pdns_status.html:159
+#: templates/modern/index.html:413 templates/modern/pdns_status.html:159
 msgid "Online"
 msgstr "ออนไลน์"
 
-#: templates/modern/index.html:60 templates/modern/pdns_status.html:161
+#: templates/modern/index.html:415 templates/modern/pdns_status.html:161
 msgid "Offline"
 msgstr "ออฟไลน์"
 
-#: templates/modern/index.html:441 templates/modern/header.html:300
+#: templates/modern/index.html:458 templates/modern/header.html:300
 msgid "Templates"
 msgstr "แม่แบบ"
 
@@ -10029,15 +10076,15 @@ msgstr "เครือข่าย"
 msgid "Zone Operations"
 msgstr "ปฏิบัติการของโซน"
 
-#: templates/modern/index.html:157 templates/modern/index.html:461
+#: templates/modern/index.html:157 templates/modern/index.html:478
 msgid "Master Zone"
 msgstr "โซนหลัก"
 
-#: templates/modern/index.html:167 templates/modern/index.html:471
+#: templates/modern/index.html:167 templates/modern/index.html:488
 msgid "Slave Zone"
 msgstr "โซนรอง"
 
-#: templates/modern/index.html:197 templates/modern/index.html:501
+#: templates/modern/index.html:197 templates/modern/index.html:518
 msgid "PTR Records"
 msgstr "บันทึกแบบ PTR"
 
@@ -10062,7 +10109,7 @@ msgstr "ฐานข้อมูล"
 msgid "TTL defaults"
 msgstr "ค่าปริยายของ TTL"
 
-#: templates/modern/index.html:366 templates/modern/index.html:553
+#: templates/modern/index.html:366 templates/modern/index.html:570
 msgid "My Profile"
 msgstr "โพรไฟล์ของฉัน"
 
@@ -10071,7 +10118,7 @@ msgstr "โพรไฟล์ของฉัน"
 msgid "Password"
 msgstr "รหัสผ่าน"
 
-#: templates/modern/index.html:572 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:389
 msgid "Preferences"
 msgstr "ปรับแต่ง"
 
@@ -10595,19 +10642,19 @@ msgstr "ใช่, สร้างกุญแจ API นี้ใหม่"
 msgid "No, keep current key"
 msgstr "ไม่, เก็บกุญแจปัจจุบันไว้"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "ตั้งค่ารหัสผ่านใหม่"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "ขอลิงก์รีเซ็ตใหม่"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "รหัสผ่านไม่ตรงกับความต้องการ"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "ใส่รหัสผ่านใหม่ของคุณสำหรับ"
 
@@ -10615,44 +10662,44 @@ msgstr "ใส่รหัสผ่านใหม่ของคุณสำห
 msgid "New password"
 msgstr "รหัสผ่านใหม่"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "การตั้งค่ารหัสผ่าน"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "ยืนยันรหัสผ่าน"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "รหัสผ่านไม่ตรงกัน"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "ข้อกำหนดรหัสผ่าน"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "ความยาวน้อยที่สุด"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "ตัวอักษร"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "อักษรตัวพิมพ์ใหญ่อย่างน้อยหนึ่งตัว"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "อักษรตัวเล็กอย่างน้อยหนึ่งตัว"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "ตัวเลขอย่างน้อยหนึ่งตัว"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "อย่างน้อยหนึ่งตัวอักษรพิเศษ"
 
@@ -10745,7 +10792,6 @@ msgid "No SOA"
 msgstr "ไม่มี SOA"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -10773,7 +10819,7 @@ msgstr "ส่ง NOTIFY แล้วที่หมายเลขซีเร�
 msgid "Delete zone(s)"
 msgstr "ลบโซน"
 
-#: templates/modern/dnssec_add_key.html:77
+#: templates/modern/dnssec_add_key.html:76
 msgid "Add key"
 msgstr "เพิ่มคีย์"
 
@@ -10805,11 +10851,11 @@ msgstr "เลือกอัลกอริทึม"
 msgid "Bits in length"
 msgstr "บิตในความยาว"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:70
 msgid "Select bits length"
 msgstr "เลือกความยาวบิต"
 
-#: templates/modern/dnssec_add_key.html:128
+#: templates/modern/dnssec_add_key.html:127
 msgid "Recommended bits for"
 msgstr "บิตแนะนำสำหรับ"
 
@@ -10818,38 +10864,38 @@ msgstr "บิตแนะนำสำหรับ"
 msgid "Warning:"
 msgstr "คำเตือน:"
 
-#: templates/modern/dnssec_add_key.html:136
+#: templates/modern/dnssec_add_key.html:135
 msgid "bits is not recommended for"
 msgstr "ไม่ขอแนะนำให้ใช้บิต"
 
-#: templates/modern/dnssec_add_key.html:172
+#: templates/modern/dnssec_add_key.html:171
 msgid "About DNSSEC Key Types"
 msgstr "เกี่ยวกับชนิดกุญแจ DNSSEC"
 
-#: templates/modern/dnssec_add_key.html:175
+#: templates/modern/dnssec_add_key.html:174
 msgid "Key Types Explained"
 msgstr "ชนิดของกุญแจอธิบาย"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:176
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
 msgstr ""
 "กุญแจสำหรับเซ็นรวม - ทำหน้าที่ทั้งแบบ KSK และ ZSK (แนะนำให้ใช้สำหรับ PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:177
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "กุญแจสำหรับเซ็นกุญแจ - ลงนามเรกคอร์ด DNSKEY ในโซน"
 
-#: templates/modern/dnssec_add_key.html:179
+#: templates/modern/dnssec_add_key.html:178
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "กุญแจสำหรับเซ็นโซน - ลงนามเรกคอร์ดอื่น ๆ ทั้งหมดในโซน"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:183
 msgid "Recommended Settings"
 msgstr "ตั้งค่าแนะนำ"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:184
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10933,16 +10979,16 @@ msgid ""
 "for this user"
 msgstr "สิทธิ์ที่อนุญาตจากต้นแบบนี้ จะมีผลกับทั้งระบบสำหรับผู้ใช้นี้"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับผู้ใช้นี้"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "เปิดใช้งาน"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "การตรวจสอบสิทธิ์ของ LDAP"
 
@@ -10950,7 +10996,7 @@ msgstr "การตรวจสอบสิทธิ์ของ LDAP"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "การตั้งค่าการยืนยันตัวตนสามารถเปลี่ยนแปลงได้โดยผู้ดูแลระบบเท่านั้น"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "ใช้ไดเรกทอรีภายนอกของ LDAP เพื่อการตรวจสอบสิทธิ์"
 
@@ -10962,7 +11008,7 @@ msgstr "กลับสู่หน้าแรก"
 msgid "Back to Users"
 msgstr "กลับไปยังผู้ใช้"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "ข้อมูลบัญชีผู้ใช้"
 
@@ -10986,7 +11032,7 @@ msgstr "ต้องมีอักขระพิเศษ"
 msgid "No specific password requirements"
 msgstr "ไม่มีข้อกำหนดเฉพาะสำหรับรหัสผ่าน"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "สิทธิ์ของผู้ใช้"
 
@@ -11002,7 +11048,7 @@ msgstr "จากต้นแบบนี้ ผู้ใช้นี้จะ�
 msgid "No permissions are assigned to this template"
 msgstr "ยังไม่มีการกำหนดสิทธิ์กับต้นแบบนี้"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "สมาชิกกลุ่ม"
 
@@ -11018,7 +11064,7 @@ msgstr "ดูรายละเอียดกลุ่ม"
 msgid "This user is not a member of any groups."
 msgstr "ผู้ใช้นี้ไม่ใช่สมาชิกของกลุ่มใด ๆ"
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "เพิ่มไปยังกลุ่ม"
 
@@ -11026,7 +11072,7 @@ msgstr "เพิ่มไปยังกลุ่ม"
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr "เลือกหนึ่งกลุ่มหรือมากกว่า แล้วคลิกที่ปุ่ม \"เพิ่มกลุ่มที่เลือก\""
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "ค้นหากลุ่มผู้ใช้..."
 
@@ -12011,63 +12057,79 @@ msgstr "ชื่อโซน"
 msgid "Assign owner"
 msgstr "กำหนดเจ้าของ"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "แก้ไข"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "โซนที่ไม่มี ID มาตรฐาน"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "ซ่อมแซม ID มาตรฐานของโซนทั้งหมดในรายการหรือไม่?"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "ซ่อมแซมทั้งหมด"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "ซ่อมแซม ID มาตรฐาน"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "โซนทาสที่ไม่มีที่อยู่ IP ของมาสเตอร์"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "IP ของมาสเตอร์"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "ลบโซนทาส"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "บันทึกที่ไม่อยู่ในโซนใด ๆ"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "หมายเลขบันทึก"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "ลบบันทึกที่กำพร้า"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "โซนที่มีบันทึก SOA ซ้ำกัน"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "จำนวน SOA"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "เก็บ SOA ตัวแรกไว้ ลบตัวซ้ำ"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "โซนที่ไม่มีบันทึก SOA"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "สร้างบันทึกปริยายของ SOA"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "คุณแน่ใจหรือว่าต้องการจะลบโซนทาส"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "คุณแน่ใจหรือว่าต้องการจะลบบันทึกที่กำพร้า"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "คุณแน่ใจหรือว่าต้องการจะลบรายการนี้?"
 
@@ -12106,15 +12168,15 @@ msgstr "ส่งรหัสผ่านผ่านทางอีเมล"
 msgid "Send login credentials to user's email address"
 msgstr "ส่งข้อมูลการเข้าสู่ระบบไปยังที่อยู่อีเมลของผู้ใช้"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "เลือกแม่แบบ..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "เลือกสิทธิ์ที่อนุญาตของผู้ใช้นี้"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -12123,7 +12185,7 @@ msgstr ""
 "เมื่อมีการสร้างผู้ใช้ใหม่ พวกเขาจะได้รับสิทธิ์ที่อนุญาตจากแม่แบบที่เลือกไว้ "
 "คุณสามารถแก้ไขสิทธิ์เหล่านี้ภายหลังได้โดยการแก้ไขผู้ใช้"
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr "เลือกกลุ่มที่จะเพิ่มผู้ใช้ใหม่เข้าไปเมื่อสร้างผู้ใช้"
 
@@ -13776,25 +13838,25 @@ msgstr ""
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "คุณกำลังจะลบคีย์ DNSSEC (ID"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr "สมาชิกทุกคนในกลุ่มจะสืบทอดสิทธิ์เหล่านี้สำหรับโซนที่กลุ่มนี้เป็นเจ้าของ"
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "สร้างกลุ่ม"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "เกี่ยวกับกลุ่ม"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "กลุ่มคืออะไร?"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -13802,11 +13864,11 @@ msgstr ""
 "กลุ่มช่วยให้คุณจัดระเบียบผู้ใช้และจัดการการเข้าถึงโซนร่วมกันได้ "
 "สมาชิกจะสืบทอดสิทธิ์ของกลุ่มสำหรับโซนทั้งหมดที่กลุ่มเป็นเจ้าของ"
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "วิธีใช้กลุ่ม"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -14810,3 +14872,5 @@ msgid ""
 "Please contact your administrator."
 msgstr ""
 "ไม่สามารถตั้งค่า locale ได้. locale ที่เลือกอาจไม่รองรับบนระบบนี้. กรุณาติดต่อผู้ดูแลระบบของคุณ."
+
+
