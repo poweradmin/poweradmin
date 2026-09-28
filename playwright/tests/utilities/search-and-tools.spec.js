@@ -46,14 +46,11 @@ test.describe('Search and Utility Tools', () => {
 
     // Enter search query
     const searchInput = page.locator('input[type="search"], input[name*="search"], input[name*="query"], input[placeholder*="search"], input[placeholder*="domain"]').first();
-    await searchInput.fill('example.com');
+    await searchInput.fill('admin-zone.example.com');
 
     await page.locator('button[type="submit"], input[type="submit"], button:has-text("Search")').first().click();
-    await page.waitForLoadState('networkidle');
 
-    // Should show search results or "no results" message
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('table tr:has-text("admin-zone.example.com")').first()).toBeVisible();
   });
 
   test('should access WHOIS tool', async ({ page }) => {
@@ -76,21 +73,9 @@ test.describe('Search and Utility Tools', () => {
 
   test('should show WHOIS form fields', async ({ page }) => {
     await page.goto('/whois');
-    await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-
-    // Check if WHOIS is available
-    if (bodyText.toLowerCase().includes('disabled') || bodyText.toLowerCase().includes('not available')) {
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // Should have domain input field
-    const domainInput = page.locator('input[name*="domain"], input[name*="host"], input[placeholder*="domain"]').first();
-    if (await domainInput.count() > 0) {
-      await expect(domainInput).toBeVisible();
-    }
+    await expect(page.locator('input[name="domain"]')).toBeVisible();
+    await expect(page.locator('form button[type="submit"]').first()).toBeVisible();
   });
 
   test('should validate WHOIS domain input', async ({ page }) => {

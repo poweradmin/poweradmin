@@ -1,14 +1,4 @@
-playwright/tests/corner-cases/error-handling.spec.js::should properly escape HTML in user input display
-playwright/tests/dnssec/dnssec-key-lifecycle.spec.js::manager should access DNSSEC for own zones
 playwright/tests/errors/error-pages.spec.js::decline should link to logout
 playwright/tests/errors/error-pages.spec.js::should require checkbox to be checked
 playwright/tests/errors/error-pages.spec.js::should show validation error when checkbox not checked
-playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on RDAP page from zone ID
-playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on WHOIS page from zone ID
-playwright/tests/modules/zone-file-export.spec.js::should show Zone File option in Export dropdown when module is enabled
 playwright/tests/search/search-comments.spec.js::should find records by comment text
-playwright/tests/utilities/search-and-tools.spec.js::should show WHOIS form fields
-playwright/tests/zones/dns-wizard.spec.js::should access SPF wizard form
-playwright/tests/zones/zone-metadata-readonly.spec.js::should have disabled kind dropdowns
-playwright/tests/zones/zone-metadata-readonly.spec.js::should have readonly value inputs
-playwright/tests/zones/zone-operations.spec.js::should display slave zone master IP

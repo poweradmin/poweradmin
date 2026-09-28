@@ -79,14 +79,10 @@ test.describe('DNS Wizard', () => {
     test('should access SPF wizard form', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        const spfLink = page.locator('a[href*="/wizard/SPF"], a[href*="/wizard/spf"]').first();
-        if (await spfLink.count() > 0) {
-          await spfLink.click();
-          await expect(page).toHaveURL(/.*wizard\/(SPF|spf)/i);
-        }
-      }
+      await navigateToWizard(page, 'admin-zone');
+
+      await page.locator('a[href*="/wizard/SPF"], a[href*="/wizard/spf"]').first().click();
+      await expect(page).toHaveURL(/.*wizard\/(SPF|spf)/i);
     });
 
     test('should display wizard form fields', async ({ page }) => {

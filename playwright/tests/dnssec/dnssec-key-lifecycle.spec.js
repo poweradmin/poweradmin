@@ -362,23 +362,20 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('manager should access DNSSEC for own zones', async ({ page }) => {
+      const managerZone = 'manager-zone.example.com';
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
       await page.goto('/zones/forward?letter=all');
-      await page.waitForLoadState('networkidle');
 
-      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-      if (await editLink.count() === 0) {
-        test.skip('No zones available for manager user');
-        return;
-      }
+      const editLink = page.locator(`tr:has-text("${managerZone}") a[href*="/edit"]`).first();
+      await expect(editLink).toBeVisible();
 
-      const href = await editLink.getAttribute('href');
-      const match = href?.match(/\/zones\/(\d+)\/edit/);
-      if (match) {
-        await page.goto(`/zones/${match[1]}/dnssec`);
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+      const match = (await editLink.getAttribute('href')).match(/\/zones\/(\d+)\/edit/);
+      expect(match, 'the edit link must carry a numeric zone id').not.toBeNull();
+
+      await page.goto(`/zones/${match[1]}/dnssec`);
+
+      await expect(page.locator('.card-header').first()).toContainText(managerZone);
+      await expect(page.locator('[data-testid="system-message"].alert-danger')).toHaveCount(0);
     });
 
     test('viewer should have appropriate DNSSEC access', async ({ page }) => {

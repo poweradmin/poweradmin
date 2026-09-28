@@ -8,9 +8,33 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
+import { findZoneIdByName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
+
+// The read-only controls only render for metadata the zone already carries, and
+// the fixture data ships none, so admin seeds one row before the viewer looks.
+const SEEDED_METADATA_VALUE = '192.0.2.77';
+
+test.beforeAll(async ({ browser }) => {
+  const page = await browser.newPage();
+  await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+  const zoneId = await findZoneIdByName(page, 'viewer-zone.example.com');
+  expect(zoneId, 'viewer-zone.example.com must exist').not.toBeNull();
+
+  await page.goto(`/zones/${zoneId}/metadata`);
+  if (await page.locator(`.metadata-content[value="${SEEDED_METADATA_VALUE}"]`).count() === 0) {
+    await page.locator('#add-metadata-row').click();
+    await page.locator('.metadata-kind-select').last().selectOption('ALLOW-AXFR-FROM');
+    await page.locator('.metadata-content').last().fill(SEEDED_METADATA_VALUE);
+    await page.locator('[data-testid="save-zone-metadata"]').click();
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
+  }
+
+  await page.close();
+});
 
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
@@ -75,10 +99,7 @@ test.describe('Zone Metadata Read-Only View', () => {
       if (!zoneId) return;
 
       await page.goto(`/zones/${zoneId}/metadata`);
-      const kindSelect = page.locator('.metadata-kind-select').first();
-      if (await kindSelect.count() > 0) {
-        await expect(kindSelect).toBeDisabled();
-      }
+      await expect(page.locator('.metadata-kind-select').first()).toBeDisabled();
     });
 
     test('should have readonly value inputs', async ({ page }) => {
@@ -87,10 +108,9 @@ test.describe('Zone Metadata Read-Only View', () => {
       if (!zoneId) return;
 
       await page.goto(`/zones/${zoneId}/metadata`);
-      const contentInput = page.locator('.metadata-content').first();
-      if (await contentInput.count() > 0) {
-        await expect(contentInput).toHaveAttribute('readonly', '');
-      }
+      const contentInput = page.locator(`.metadata-content[value="${SEEDED_METADATA_VALUE}"]`);
+      await expect(contentInput).toHaveAttribute('readonly', '');
+      await expect(contentInput).toHaveValue(SEEDED_METADATA_VALUE);
     });
 
     test('should not show save button', async ({ page }) => {

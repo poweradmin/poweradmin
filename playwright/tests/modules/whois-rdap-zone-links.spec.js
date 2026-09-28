@@ -9,24 +9,21 @@ import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
-// Helper to get a zone ID from the zone list
+const TEST_ZONE = 'admin-zone.example.com';
+
+// admin-zone.example.com is fixture data on every instance, so a missing row is a
+// real failure rather than a reason to skip the test.
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
-  const row = page.locator('tr:has-text("admin-zone.example.com")').first();
-  if (await row.count() > 0) {
-    const checkbox = row.locator('input[name="zone_id[]"]');
-    if (await checkbox.count() > 0) {
-      return await checkbox.getAttribute('value');
-    }
-  }
-  return null;
+  const checkbox = page.locator(`tr:has-text("${TEST_ZONE}") input[name="zone_id[]"]`).first();
+  await expect(checkbox).toBeVisible();
+  return await checkbox.getAttribute('value');
 }
 
 test.describe('WHOIS/RDAP Zone Links', () => {
   test('should navigate to WHOIS page from zone list link', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
 
     // Navigate directly to the zone-specific WHOIS URL
     await page.goto(`/zones/${zoneId}/whois`);
@@ -48,32 +45,15 @@ test.describe('WHOIS/RDAP Zone Links', () => {
   test('should pre-fill domain on WHOIS page from zone ID', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
 
     await page.goto(`/zones/${zoneId}/whois`);
-    await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-
-    // If WHOIS is disabled, skip the rest
-    if (bodyText.toLowerCase().includes('disabled') || bodyText.toLowerCase().includes('not available')) {
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // The domain input should be pre-filled with the zone name
-    const domainInput = page.locator('input[name="domain"]');
-    if (await domainInput.count() > 0) {
-      const value = await domainInput.inputValue();
-      // Should have some value (the zone name)
-      expect(value.length).toBeGreaterThan(0);
-    }
+    await expect(page.locator('input[name="domain"]')).toHaveValue(TEST_ZONE);
   });
 
   test('should navigate to RDAP page from zone list link', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
 
     // Navigate directly to the zone-specific RDAP URL
     await page.goto(`/zones/${zoneId}/rdap`);
@@ -95,31 +75,15 @@ test.describe('WHOIS/RDAP Zone Links', () => {
   test('should pre-fill domain on RDAP page from zone ID', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
 
     await page.goto(`/zones/${zoneId}/rdap`);
-    await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-
-    // If RDAP is disabled, skip the rest
-    if (bodyText.toLowerCase().includes('disabled') || bodyText.toLowerCase().includes('not available')) {
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // The domain input should be pre-filled with the zone name
-    const domainInput = page.locator('input[name="domain"]');
-    if (await domainInput.count() > 0) {
-      const value = await domainInput.inputValue();
-      expect(value.length).toBeGreaterThan(0);
-    }
+    await expect(page.locator('input[name="domain"]')).toHaveValue(TEST_ZONE);
   });
 
   test('should show WHOIS button on zone edit page for admin', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
 
     await page.goto(`/zones/${zoneId}/edit`);
 
@@ -140,7 +104,6 @@ test.describe('WHOIS/RDAP Zone Links', () => {
   test('should show RDAP button on zone edit page for admin', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
 
     await page.goto(`/zones/${zoneId}/edit`);
 

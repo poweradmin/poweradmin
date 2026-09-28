@@ -155,20 +155,11 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await deleteBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-      if (await yesBtn.count() > 0) {
-        await yesBtn.click();
-        await page.waitForLoadState('networkidle');
+      await page.locator('button[name="confirm"]').click();
 
-        // Should be on zones list or show success, not error page
-        const url = page.url();
-        const bodyText = await page.locator('body').textContent();
-
-        const isOnZonesList = url.includes('/zones');
-        const hasError = bodyText.toLowerCase().includes('error occurred');
-
-        expect(isOnZonesList || !hasError, 'Should be on zones list or show success').toBeTruthy();
-      }
+      await expect(page).toHaveURL(/\/zones\/forward/);
+      await expect(page.locator('[data-testid="system-message"]')).toContainText(/success/i);
+      expect(await zoneExists(page, redirectZone)).toBe(false);
     });
   });
 

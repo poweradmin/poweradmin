@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneById, findZoneIdByName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Error Handling and Edge Cases', () => {
@@ -196,75 +197,36 @@ test.describe('Error Handling and Edge Cases', () => {
   test.describe('Special Characters Handling', () => {
     test('should properly escape HTML in user input display', async ({ page }) => {
       const testZone = `special-char-${Date.now()}.com`;
+      const payload = '"<script>alert(1)</script>"';
 
-      // Create a zone
       await page.goto('/zones/add/master');
-      await page.waitForLoadState('networkidle');
+      await page.locator('[data-testid="zone-name-input"]').fill(testZone);
+      await page.locator('[data-testid="add-zone-button"]').click();
 
-      const zoneInput = page.locator('[data-testid="zone-name-input"], input[name*="zone_name"], input[name*="zonename"]').first();
-      if (await zoneInput.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
+      const zoneId = await findZoneIdByName(page, testZone);
+      expect(zoneId, `zone ${testZone} should exist after creation`).not.toBeNull();
 
-      await zoneInput.fill(testZone);
+      try {
+        await page.goto(`/zones/${zoneId}/records/add`);
+        await page.locator('select[name="records[0][type]"]').selectOption('TXT');
+        await page.locator('input[name="records[0][name]"]').fill('html-test');
+        await page.locator('input[name="records[0][content]"]').fill(payload);
+        await page.locator('button[type="submit"][name="commit"]').click();
 
-      const submitBtn = page.locator('[data-testid="add-zone-button"], button[type="submit"], input[type="submit"]').first();
-      await submitBtn.click();
-      await page.waitForLoadState('networkidle');
+        await page.goto(`/zones/${zoneId}/edit`);
 
-      // Navigate to zone edit
-      await page.goto('/zones/forward?letter=all');
-      await page.waitForLoadState('networkidle');
+        const contents = await page.locator('input[name$="[content]"]').evaluateAll(
+          (inputs) => inputs.map((input) => input.value)
+        );
+        expect(contents).toContain(payload);
 
-      const zoneRow = page.locator(`tr:has-text("${testZone}")`).first();
-      if (await zoneRow.count() > 0) {
-        const editLink = zoneRow.locator('a[href*="edit"]').first();
-        if (await editLink.count() > 0) {
-          await editLink.click();
-          await page.waitForLoadState('networkidle');
-
-          // Try to add a TXT record with HTML
-          const typeSelect = page.locator('select[name*="type"]').first();
-          if (await typeSelect.count() > 0) {
-            await typeSelect.selectOption('TXT');
-
-            const nameInput = page.locator('input[name*="[name]"], input.name-field').first();
-            if (await nameInput.count() > 0) {
-              await nameInput.fill('html-test');
-            }
-
-            const contentInput = page.locator('input[name*="[content]"], input.record-content').first();
-            if (await contentInput.count() > 0) {
-              await contentInput.fill('<script>alert("XSS")</script>');
-            }
-
-            const addBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-            await addBtn.click();
-            await page.waitForLoadState('networkidle');
-
-            // HTML should be escaped in the display (not executed)
-            await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-          }
-        }
-      }
-
-      // Clean up
-      await page.goto('/zones/forward?letter=all');
-      await page.waitForLoadState('networkidle');
-
-      const cleanupRow = page.locator(`tr:has-text("${testZone}")`).first();
-      if (await cleanupRow.count() > 0) {
-        const deleteLink = cleanupRow.locator('a[href*="delete"]').first();
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-          await page.waitForLoadState('networkidle');
-          const confirmBtn = page.locator('button[type="submit"]:has-text("Delete"), input[value*="Delete"]').first();
-          if (await confirmBtn.count() > 0) {
-            await confirmBtn.click();
-          }
-        }
+        // The payload must come back as inert text, never as a live script node
+        const executed = await page.locator('script').evaluateAll(
+          (nodes) => nodes.some((node) => node.textContent.includes('alert(1)'))
+        );
+        expect(executed, 'the TXT payload must not be injected as a script').toBe(false);
+      } finally {
+        await deleteZoneById(page, zoneId);
       }
     });
   });

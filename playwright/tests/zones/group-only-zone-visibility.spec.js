@@ -51,8 +51,8 @@ test.describe('Group-Only Zone Visibility (Issue #1042)', () => {
     await editLink.click();
 
     await expect(page).toHaveURL(/.*zones\/\d+\/edit/);
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/denied|permission/i);
+    await expect(page.locator('[data-testid="system-message"].alert-danger')).toHaveCount(0);
+    await expect(page.locator('body')).toContainText(groupOnlyZone);
   });
 
   test('non-member should not see group-only zone', async ({ page }) => {
@@ -84,15 +84,7 @@ test.describe('Group-Only Zone Visibility (Issue #1042)', () => {
     await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
-    // Verify zone was created (redirects to zone list or shows success)
-    const bodyText = await page.locator('body').textContent();
-    const url = page.url();
-    const created = bodyText.toLowerCase().includes('success') ||
-                    bodyText.toLowerCase().includes('added') ||
-                    bodyText.includes(uniqueZone) ||
-                    url.includes('/edit') ||
-                    url.includes('/zones/forward');
-    expect(created).toBeTruthy();
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/success/i);
 
     // Now logout and login as manager to verify visibility
     await logout(page);

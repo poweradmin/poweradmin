@@ -144,15 +144,8 @@ test.describe('Complete Domain Management Workflow', () => {
     await submitBtn.click();
     await page.waitForLoadState('networkidle');
 
-    // Should find our domain or show no results (if domain wasn't created)
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-
-    // Domain should be found if it was created, otherwise page should just not error
-    const domainFound = bodyText.includes(testDomain);
-    const noResults = bodyText.toLowerCase().includes('no results');
-
-    expect(domainFound || noResults || bodyText.toLowerCase().includes('search')).toBeTruthy();
+    // The first test in this serial file creates testDomain, so search must find it
+    await expect(page.locator(`table tr:has-text("${testDomain}")`).first()).toBeVisible();
   });
 
   // Cleanup: Delete the test domain

@@ -130,11 +130,13 @@ test.describe('Zone Operations', () => {
     test('should display slave zone master IP', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
-      const slaveRow = page.locator('tr:has-text("SLAVE")').first();
-      if (await slaveRow.count() > 0) {
-        const bodyText = await slaveRow.textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+
+      // The master IP lives on the zone edit page, not in the list row
+      const editLink = page.locator('tr:has-text("slave-zone.example.com") a[href*="/edit"]').first();
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+
+      await expect(page.locator('input[name="new_master"]')).toHaveValue('10.0.0.1');
     });
   });
 

@@ -15,45 +15,30 @@ async function getTestZoneId(page) {
   // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
   // which carries no zone id, so this helper used to return null for every test.
   const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-  if (await editLink.count() > 0) {
-    const href = await editLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
-  }
-  return null;
+  await expect(editLink).toBeVisible();
+  const href = await editLink.getAttribute('href');
+  const match = href.match(/\/zones\/([^/]+)\/edit/);
+  expect(match, `no zone id in ${href}`).not.toBeNull();
+  return match[1];
 }
 
 test.describe('Zone File Export Module', () => {
   test('should show Zone File option in Export dropdown when module is enabled', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
 
     await page.goto(`/zones/${zoneId}/edit`);
-    await page.waitForLoadState('networkidle');
 
-    const exportBtn = page.locator('button.dropdown-toggle:has-text("Export")');
-    if (await exportBtn.count() === 0) {
-      // Export button not present - module might be disabled
-      return;
-    }
+    await page.locator('button.dropdown-toggle:has-text("Export")').click();
 
-    await exportBtn.click();
-
-    // Check for Zone File option
     const zoneFileLink = page.locator('.dropdown-menu a:has-text("Zone File")');
-    if (await zoneFileLink.count() > 0) {
-      await expect(zoneFileLink).toBeVisible();
-      const href = await zoneFileLink.getAttribute('href');
-      expect(href).toContain(`/zones/${zoneId}/export/zonefile`);
-    }
-    // If not present, module is disabled - that's OK
+    await expect(zoneFileLink).toBeVisible();
+    await expect(zoneFileLink).toHaveAttribute('href', new RegExp(`/zones/${zoneId}/export/zonefile$`));
   });
 
   test('should download zone file', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
 
     // Try to download - module might not be enabled
     const downloadPromise = page.waitForEvent('download', { timeout: 5000 }).catch(() => null);
@@ -77,7 +62,6 @@ test.describe('Zone File Export Module', () => {
   test('should contain valid BIND zone file content', async ({ page, request }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
 
     // Get cookies from authenticated session
     const cookies = await page.context().cookies();
