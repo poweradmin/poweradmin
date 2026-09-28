@@ -33,7 +33,7 @@ class DnssecKeySpecValidator
     /**
      * Key sizes (in bits) offered for new keys.
      */
-    public const VALID_BITS = ['2048', '1024', '384', '256'];
+    public const VALID_BITS = ['2048', '1024', '456', '384', '256'];
 
     private const RSA_ALGORITHMS = ['rsasha1', 'rsasha1-nsec3-sha1', 'rsasha256', 'rsasha512'];
 
