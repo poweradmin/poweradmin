@@ -26,6 +26,15 @@ async function createLinkedZone(page, label) {
   return { templateId, zoneId, zoneName };
 }
 
+// The confirmation only renders for a POST that selects zones without confirming,
+// so it has to be reached through the form rather than by a URL.
+async function openUnlinkConfirmation(page, templateId, zoneId) {
+  await page.goto(`/zones/templates/${templateId}/zones`);
+  await page.locator(`#unlink-zones-form input[name="zone_ids[]"][value="${zoneId}"]`).check();
+  await page.locator('#bulk-unlink-btn').click();
+  await expect(page.locator('.alert-danger')).toContainText(/unlink/i);
+}
+
 test.describe('Zone Template Unlink Confirmation Page', () => {
   test.describe('Page Access', () => {
     test('should display unlink confirmation when accessed with valid data', async ({ page }) => {
@@ -99,24 +108,32 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
   });
 
   test.describe('Confirmation Form Elements', () => {
-    test('confirmation page should have CSRF token when present', async ({ page }) => {
+    test('confirmation page should carry a CSRF token', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-
-      const csrfTokens = page.locator('input[name="_token"]');
-      const hasTokens = await csrfTokens.count() >= 0;
-
-      expect(hasTokens).toBeTruthy();
+      const { templateId, zoneId } = await createLinkedZone(page, 'csrf');
+      try {
+        await openUnlinkConfirmation(page, templateId, zoneId);
+        await expect(page.locator('form[action$="/zones/templates/unlink"] input[name="_token"]')).toHaveCount(1);
+      } finally {
+        await deleteZoneById(page, zoneId);
+        await deleteTemplate(page, templateId);
+      }
     });
 
-    test('should have cancel button structure', async ({ page }) => {
+    test('cancel should link back to the template zones page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
+      const { templateId, zoneId } = await createLinkedZone(page, 'cancel');
+      try {
+        await openUnlinkConfirmation(page, templateId, zoneId);
 
-      const buttons = page.locator('a.btn, button.btn');
-      const hasButtons = await buttons.count() > 0;
-
-      expect(hasButtons || page.url().includes('templates')).toBeTruthy();
+        const cancel = page.locator(`a.btn[href$="/zones/templates/${templateId}/zones"]`);
+        await expect(cancel).toBeVisible();
+        await cancel.click();
+        await expect(page).toHaveURL(new RegExp(`/zones/templates/${templateId}/zones$`));
+      } finally {
+        await deleteZoneById(page, zoneId);
+        await deleteTemplate(page, templateId);
+      }
     });
   });
 
