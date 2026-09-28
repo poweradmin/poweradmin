@@ -35,6 +35,11 @@ use OpenApi\Attributes as OA;
  */
 class ZoneTemplateRecordsController extends PublicApiController
 {
+    protected function acceptsZoneRestrictedKey(): bool
+    {
+        return false;
+    }
+
     private ZoneTemplateRepositoryInterface $repository;
     private ApiPermissionService $apiPermissionService;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;

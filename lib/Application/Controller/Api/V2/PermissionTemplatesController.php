@@ -36,6 +36,11 @@ use Poweradmin\Domain\Enum\PermissionTemplateType;
  */
 class PermissionTemplatesController extends PublicApiController
 {
+    protected function acceptsZoneRestrictedKey(): bool
+    {
+        return false;
+    }
+
     private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
     private PermissionTemplateWriteService $permissionTemplateWriteService;
     private ApiPermissionService $apiPermissionService;

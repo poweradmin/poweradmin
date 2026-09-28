@@ -268,6 +268,10 @@ abstract class PublicApiController extends AbstractApiController
         $scope = $this->getApiKeyScope();
         $method = strtoupper($this->request->getMethod());
 
+        if ($scope->hasZoneRestriction() && !$this->acceptsZoneRestrictedKey()) {
+            $this->sendAndHalt($this->returnApiError('Forbidden: this API key is restricted to specific zones', 403));
+        }
+
         // Read-only is always method-based and always correct: only GET/HEAD pass.
         if ($scope->isReadonly() && !in_array($method, ['GET', 'HEAD'], true)) {
             $this->sendApiKeyOperationForbidden();
@@ -281,6 +285,15 @@ abstract class PublicApiController extends AbstractApiController
                 $this->sendApiKeyOperationForbidden();
             }
         }
+    }
+
+    /**
+     * Whether an API key restricted to specific zones may call this endpoint.
+     * Endpoints not tied to any zone override this to refuse such keys.
+     */
+    protected function acceptsZoneRestrictedKey(): bool
+    {
+        return true;
     }
 
     /**
