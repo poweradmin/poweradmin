@@ -89,14 +89,11 @@ test.describe('Forgot Password Page', () => {
     });
 
     test('should navigate to login page', async ({ page }) => {
-      await page.goto('/password/forgot');
+      const isEnabled = await isPasswordRecoveryEnabled(page);
+      test.skip(!isEnabled, 'Password recovery is disabled (SMTP not configured)');
 
-      const backLink = page.locator('a[href*="login"]:has-text("Back"), a[href*="login"]:has-text("Login"), a[href*="login"]');
-
-      if (await backLink.count() > 0) {
-        await backLink.first().click();
-        await expect(page).toHaveURL(/.*\/login/);
-      }
+      await page.locator('a[href*="login"]').first().click();
+      await expect(page).toHaveURL(/.*\/login/);
     });
   });
 });
@@ -137,14 +134,11 @@ test.describe('Forgot Password Form Validation', () => {
       const submitBtn = page.locator('button[type="submit"]');
       await submitBtn.click();
 
-      // Browser validation should prevent submission or show error
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-
-      const hasValidationIssue = url.includes('forgot') ||
-                                  bodyText.toLowerCase().includes('valid') ||
-                                  bodyText.toLowerCase().includes('email');
-      expect(hasValidationIssue).toBeTruthy();
+      // The form is novalidate with a Bootstrap submit handler, so the post is
+      // blocked client-side and the field's own feedback is what shows
+      await expect(page.locator('form.needs-validation')).toHaveClass(/was-validated/);
+      await expect(page.locator('.invalid-feedback')).toBeVisible();
+      await expect(page).toHaveURL(/password\/forgot/);
     });
 
     test('should have email input type when enabled', async ({ page }) => {
@@ -169,9 +163,9 @@ test.describe('Forgot Password Form Validation', () => {
       const submitBtn = page.locator('button[type="submit"]');
       await submitBtn.click();
 
-      // Should process and show result (success or error)
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.length).toBeGreaterThan(0);
+      // The reply is deliberately the same whether or not the account exists
+      await expect(page.locator('.alert-success'))
+        .toContainText(/you will receive a password reset link/i);
     });
 
     test('should handle non-existent email gracefully when enabled', async ({ page }) => {

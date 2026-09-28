@@ -66,20 +66,12 @@ test.describe('MFA Management', () => {
     }
   });
 
-  test('should handle MFA verification form', async ({ page }) => {
+  test('should redirect away from MFA verification when no challenge is pending', async ({ page }) => {
     await page.goto('/mfa/verify');
-    await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-
-    // Check if MFA verification page exists
-    const codeInput = page.locator('input[name*="code"], input[placeholder*="code"]');
-    if (await codeInput.count() > 0) {
-      await expect(codeInput.first()).toBeVisible();
-    } else {
-      // MFA verify page might redirect or not exist
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    }
+    // The admin fixture has no MFA, so the controller has nothing to verify
+    await expect(page).not.toHaveURL(/mfa\/verify/);
+    await expect(page.locator('input[name="mfa_code"]')).toHaveCount(0);
   });
 
   test('should validate MFA code format', async ({ page }) => {

@@ -268,23 +268,24 @@ test.describe('Email Template Previews Page', () => {
     test('should load light mode preview', async ({ adminPage: page }) => {
       await page.goto('/tools/email-previews');
 
-      const lightModeLink = page.locator('a[href*="mode=light"]').first();
+      // The link opens a new tab, so the preview is fetched by following its href
+      const href = await page.locator('a[href*="mode=light"]').first().getAttribute('href');
+      await page.goto(href);
 
-      if (await lightModeLink.count() > 0) {
-        const href = await lightModeLink.getAttribute('href');
-        expect(href).toContain('mode=light');
-      }
+      await expect(page.locator('body.email-container')).toContainText(/automated message/i);
+      const background = await page.locator('body').evaluate(el => getComputedStyle(el).backgroundColor);
+      expect(background).toBe('rgb(255, 255, 255)');
     });
 
     test('should load dark mode preview', async ({ adminPage: page }) => {
       await page.goto('/tools/email-previews');
 
-      const darkModeLink = page.locator('a[href*="mode=dark"]').first();
+      const href = await page.locator('a[href*="mode=dark"]').first().getAttribute('href');
+      await page.goto(href);
 
-      if (await darkModeLink.count() > 0) {
-        const href = await darkModeLink.getAttribute('href');
-        expect(href).toContain('mode=dark');
-      }
+      await expect(page.locator('body.email-container')).toContainText(/automated message/i);
+      const background = await page.locator('body').evaluate(el => getComputedStyle(el).backgroundColor);
+      expect(background).toBe('rgb(26, 26, 26)');
     });
   });
 

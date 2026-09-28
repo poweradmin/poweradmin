@@ -104,58 +104,29 @@ test.describe('Password Management', () => {
 
   test('should validate password requirements', async ({ page }) => {
     await page.goto('/password/change');
-    await page.waitForLoadState('networkidle');
 
-    const passwordFields = page.locator('input[type="password"]');
-    if (await passwordFields.count() < 3) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // Fill in current password
-    await passwordFields.nth(0).fill(users.admin.password);
-
-    // Try weak password
-    await passwordFields.nth(1).fill('weak');
-    await passwordFields.nth(2).fill('weak');
-
-    // Submit form
+    // The policy refuses the new password, so admin's own password stays as it was
+    await page.locator('input[name="old_password"]').fill(users.admin.password);
+    await page.locator('input[name="new_password"]').fill('weak');
+    await page.locator('input[name="new_password2"]').fill('weak');
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
 
-    // Should show validation error or stay on form
-    const bodyText = await page.locator('body').textContent();
-    // Either shows error or stays on password change page
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    expect(page.url().includes('password') || bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('weak')).toBeTruthy();
+    await expect(page.locator('[data-testid="system-message"]'))
+      .toContainText(/password must be at least 6 characters/i);
+    await expect(page).toHaveURL(/\/password\/change/);
   });
 
   test('should handle password mismatch', async ({ page }) => {
     await page.goto('/password/change');
-    await page.waitForLoadState('networkidle');
 
-    const passwordFields = page.locator('input[type="password"]');
-    if (await passwordFields.count() < 3) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // Fill in current password
-    await passwordFields.nth(0).fill(users.admin.password);
-
-    // Enter mismatched passwords
-    await passwordFields.nth(1).fill('ValidPass123!@#');
-    await passwordFields.nth(2).fill('DifferentPass456!@#');
-
-    // Submit form
+    // The repeat field does not match, so the change is refused before it is applied
+    await page.locator('input[name="old_password"]').fill(users.admin.password);
+    await page.locator('input[name="new_password"]').fill('ValidPass123!@#');
+    await page.locator('input[name="new_password2"]').fill('DifferentPass456!@#');
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
 
-    // Should show mismatch error or stay on form
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    expect(page.url().includes('password') || bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('match')).toBeTruthy();
+    await expect(page.locator('[data-testid="system-message"]'))
+      .toContainText(/fill in all required fields correctly/i);
+    await expect(page).toHaveURL(/\/password\/change/);
   });
 });

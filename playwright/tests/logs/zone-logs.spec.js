@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { createZone, deleteZoneById } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Zone Logs', () => {
@@ -69,22 +70,6 @@ test.describe('Zone Logs', () => {
       await expect(page.locator('a[title="Clear"]')).toBeVisible();
     });
 
-    test('should display log entries when available', async ({ page }) => {
-      await page.goto('/zones/logs');
-      const rows = page.locator('table tbody tr');
-      if (await rows.count() > 0) {
-        await expect(rows.first()).toBeVisible();
-      }
-    });
-
-    test('should display details button when logs exist', async ({ page }) => {
-      await page.goto('/zones/logs');
-      const detailsBtn = page.locator('button[data-bs-toggle="modal"]');
-      if (await detailsBtn.count() > 0) {
-        await expect(detailsBtn.first()).toBeVisible();
-      }
-    });
-
     test('should display total logs count in header', async ({ page }) => {
       await page.goto('/zones/logs');
       const header = page.locator('.card-header');
@@ -119,13 +104,48 @@ test.describe('Zone Logs', () => {
       await page.locator('button[type="submit"]').first().click();
       await expect(page).toHaveURL(/operation=add_zone/);
     });
+  });
+
+  // The zone log is empty until a zone actually changes, so this block makes one
+  // change of its own and asserts against that zone's entry.
+  test.describe('Logged Zone Change', () => {
+    const loggedZone = `zone-log-${Date.now()}.example.com`;
+    let loggedZoneId = null;
+
+    test.beforeAll(async ({ browser }) => {
+      const page = await browser.newPage();
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      loggedZoneId = await createZone(page, loggedZone);
+      await page.close();
+    });
+
+    test.afterAll(async ({ browser }) => {
+      const page = await browser.newPage();
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      if (loggedZoneId) {
+        await deleteZoneById(page, loggedZoneId);
+      }
+      await page.close();
+    });
+
+    test.beforeEach(async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto(`/zones/logs?name=${loggedZone}`);
+    });
+
+    test('should display log entries for a changed zone', async ({ page }) => {
+      await expect(page.locator('table tbody tr').first()).toBeVisible();
+      await expect(page.locator('table')).toContainText(`zone:${loggedZone}`);
+    });
+
+    test('should display details button for a log entry', async ({ page }) => {
+      await expect(page.locator('table tbody button[data-bs-toggle="modal"]').first()).toBeVisible();
+    });
 
     test('should display color-coded operation badges', async ({ page }) => {
-      await page.goto('/zones/logs');
-      const badges = page.locator('.log-event-cell .badge');
-      if (await badges.count() > 0) {
-        await expect(badges.first()).toBeVisible();
-      }
+      const badge = page.locator('.log-event-cell .badge').filter({ hasText: 'add_zone' }).first();
+      await expect(badge).toBeVisible();
+      await expect(badge).toHaveClass(/bg-success/);
     });
   });
 

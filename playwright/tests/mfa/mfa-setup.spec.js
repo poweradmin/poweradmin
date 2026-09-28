@@ -221,17 +221,12 @@ test.describe('MFA App Setup Flow', () => {
 
       await setupAppBtn.click();
 
-      // The setup page is reached by a form post; wait for it before reading the body.
+      // The setup page is reached by a form post; wait for it before asserting.
       await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
-      const qrCode = page.locator('img[alt*="QR"], .qr-code, canvas');
-      const bodyText = await page.locator('body').textContent();
-
-      const hasQR = await qrCode.count() > 0;
-      const hasSecret = bodyText.toLowerCase().includes('secret') ||
-                        bodyText.toLowerCase().includes('code');
-
-      expect(hasQR || hasSecret).toBeTruthy();
+      // The QR code is rendered as an inline SVG, not an image
+      await expect(page.locator('svg').first()).toBeVisible();
+      await expect(page.locator('input#secret-key')).not.toHaveValue('');
     });
 
     test('should display manual entry key', async ({ page }) => {
@@ -244,15 +239,12 @@ test.describe('MFA App Setup Flow', () => {
 
       await setupAppBtn.click();
 
-      // The setup page is reached by a form post; wait for it before reading the body.
+      // The setup page is reached by a form post; wait for it before asserting.
       await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
-      const bodyText = await page.locator('body').textContent();
-      const hasManualKey = bodyText.toLowerCase().includes('manual') ||
-                           bodyText.toLowerCase().includes('secret') ||
-                           bodyText.toLowerCase().includes('key');
-
-      expect(hasManualKey).toBeTruthy();
+      await expect(page.locator('body')).toContainText(/manually enter this key/i);
+      await expect(page.locator('input#secret-key')).toBeVisible();
+      await expect(page.locator('input#secret-key')).not.toHaveValue('');
     });
 
     test('should have verification code input', async ({ page }) => {
@@ -327,15 +319,12 @@ test.describe('MFA App Setup Flow', () => {
 
       await setupAppBtn.click();
 
-      // The setup page is reached by a form post; wait for it before reading the body.
+      // The setup page is reached by a form post; wait for it before asserting.
       await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
-      const bodyText = await page.locator('body').textContent();
-      const hasAppRecommendations = bodyText.toLowerCase().includes('google authenticator') ||
-                                     bodyText.toLowerCase().includes('microsoft authenticator') ||
-                                     bodyText.toLowerCase().includes('authy') ||
-                                     bodyText.toLowerCase().includes('recommended');
-      expect(hasAppRecommendations).toBeTruthy();
+      await expect(page.locator('body')).toContainText(/recommended authenticator apps/i);
+      await expect(page.locator('body')).toContainText('Google Authenticator');
+      await expect(page.locator('body')).toContainText('Microsoft Authenticator');
     });
   });
 
@@ -353,12 +342,10 @@ test.describe('MFA App Setup Flow', () => {
       const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
       await verifyBtn.click();
 
-      const bodyText = await page.locator('body').textContent();
-      const isOnSetupPage = bodyText.toLowerCase().includes('qr') ||
-                             bodyText.toLowerCase().includes('scan') ||
-                             bodyText.toLowerCase().includes('verification code') ||
-                             bodyText.toLowerCase().includes('invalid');
-      expect(isOnSetupPage).toBeTruthy();
+      // The field is required, so the browser blocks the post and the page stays put
+      const codeInput = page.locator('input[name="verification_code"]');
+      await expect(codeInput).toHaveJSProperty('validity.valueMissing', true);
+      await expect(page.locator('body')).toContainText(/step 1: scan qr code/i);
     });
 
     test('should reject invalid verification code', async ({ page }) => {
@@ -378,14 +365,8 @@ test.describe('MFA App Setup Flow', () => {
       await verifyBtn.click();
 
       // Auto-retrying assertion: the verify navigation may still be in flight
-      await expect(page.locator('body')).toContainText(/invalid|error|incorrect|verification code/i);
-
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('invalid') ||
-                       bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('incorrect') ||
-                       bodyText.toLowerCase().includes('verification code');
-      expect(hasError).toBeTruthy();
+      await expect(page.locator('[data-testid="system-message"]'))
+        .toContainText(/invalid verification code/i);
     });
 
     test('should enforce numeric input for verification code', async ({ page }) => {
@@ -452,16 +433,11 @@ test.describe('Email MFA Setup Flow', () => {
 
       await setupEmailBtn.click();
 
-      // The setup page is reached by a form post; wait for it before reading the body.
+      // The setup page is reached by a form post; wait for it before asserting.
       await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
-      const bodyText = await page.locator('body').textContent();
-      const hasEmailInfo = bodyText.includes('@') ||
-                            bodyText.toLowerCase().includes('email') ||
-                            bodyText.toLowerCase().includes('sent') ||
-                            bodyText.toLowerCase().includes('verification') ||
-                            bodyText.toLowerCase().includes('code');
-      expect(hasEmailInfo).toBeTruthy();
+      await expect(page.locator('body')).toContainText(/a verification code has been sent/i);
+      await expect(page.locator('body')).toContainText('admin@example.com');
     });
   });
 });
@@ -512,9 +488,9 @@ test.describe('MFA Security', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     await page.goto('/mfa/setup');
 
-    const forms = page.locator('form[method="post"], form[method="POST"]');
-    if (await forms.count() > 0) {
-      await expect(forms.first()).toBeVisible();
-    }
+    // Every action on this page is a state change, so none of them may be a GET link
+    await expect(page.locator('form[method="post"] button[name="setup_app"]')).toBeVisible();
+    await expect(page.locator('form[method="post"] button[name="setup_email"]')).toBeVisible();
+    await expect(page.locator('a[href*="setup_app"], a[href*="disable_mfa"]')).toHaveCount(0);
   });
 });

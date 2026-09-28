@@ -5,6 +5,14 @@ import users from '../../fixtures/users.json' with { type: 'json' };
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
+/** Fills every required field on /users/add so the post reaches the server. */
+async function fillAddUserForm(page, { username, email, password }) {
+  await page.locator('input[name="username"]').fill(username);
+  await page.locator('input[name="fullname"]').fill(username);
+  await page.locator('input[name="email"]').fill(email);
+  await page.locator('input[name="password"]').fill(password);
+}
+
 test.describe('User CRUD Operations', () => {
   const testPassword = 'TestP@ssw0rd123';
 
@@ -107,101 +115,77 @@ test.describe('User CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      const hasSuccess = bodyText.toLowerCase().includes('success') ||
-                         bodyText.toLowerCase().includes('created') ||
-                         bodyText.toLowerCase().includes('added') ||
-                         page.url().includes('/users');
-      expect(hasSuccess).toBeTruthy();
+      await expect(page).toHaveURL(/\/users$/);
+      await expect(page.locator('[data-testid="system-message"]'))
+        .toContainText(/user has been created successfully/i);
+      await page.goto(`/users?search=${uniqueUsername}`);
+      await expect(page.locator(`tr:has(input[value="${uniqueUsername}"])`)).toHaveCount(1);
     });
 
     test('should reject empty username', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/users/add');
 
-      const passwordFields = page.locator('input[type="password"]');
-      const count = await passwordFields.count();
-      for (let i = 0; i < count; i++) {
-        await passwordFields.nth(i).fill(testPassword);
-      }
-
+      await page.locator('input[type="password"]').first().fill(testPassword);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('required') ||
-                       url.includes('/users/add');
-      expect(hasError).toBeTruthy();
+      // The field is required, so the browser refuses to post the form at all
+      await expect(page.locator('input[name="username"]'))
+        .toHaveJSProperty('validity.valueMissing', true);
+      await expect(page).toHaveURL(/\/users\/add/);
     });
 
     test('should reject duplicate username', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const stamp = Date.now();
       await page.goto('/users/add');
 
-      await page.locator('input[name*="username"], input[name*="user"]').first().fill('admin');
-
-      const passwordFields = page.locator('input[type="password"]');
-      const count = await passwordFields.count();
-      for (let i = 0; i < count; i++) {
-        await passwordFields.nth(i).fill(testPassword);
-      }
-
+      // Every other field must be valid, or the browser blocks the post and the
+      // duplicate is never put to the server
+      await fillAddUserForm(page, {
+        username: users.admin.username,
+        email: `dup-username-${stamp}@example.com`,
+        password: testPassword,
+      });
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('exist') ||
-                       bodyText.toLowerCase().includes('duplicate') ||
-                       url.includes('/users/add');
-      expect(hasError).toBeTruthy();
+      await expect(page.locator('[data-testid="system-message"]'))
+        .toContainText(/username exist already/i);
+      await expect(page).toHaveURL(/\/users\/add/);
     });
 
-    test('should reject password mismatch', async ({ page }) => {
+    test('should reject duplicate email address', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const stamp = Date.now();
       await page.goto('/users/add');
 
-      await page.locator('input[name*="username"], input[name*="user"]').first().fill(`mismatch-${Date.now()}`);
+      await fillAddUserForm(page, {
+        username: `dup-email-${stamp}`,
+        email: 'admin@example.com',
+        password: testPassword,
+      });
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const passwordFields = page.locator('input[type="password"]');
-      const count = await passwordFields.count();
-
-      if (count >= 2) {
-        await passwordFields.nth(0).fill('Password123!');
-        await passwordFields.nth(1).fill('DifferentPassword!');
-
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-        const url = page.url();
-        const bodyText = await page.locator('body').textContent();
-        const hasError = bodyText.toLowerCase().includes('error') ||
-                         bodyText.toLowerCase().includes('match') ||
-                         url.includes('/users/add');
-        expect(hasError).toBeTruthy();
-      }
+      await expect(page.locator('[data-testid="system-message"]'))
+        .toContainText(/email address already exists/i);
+      await expect(page).toHaveURL(/\/users\/add/);
     });
 
     test('should reject weak password', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const stamp = Date.now();
       await page.goto('/users/add');
 
-      await page.locator('input[name*="username"], input[name*="user"]').first().fill(`weakpwd-${Date.now()}`);
-
-      const passwordFields = page.locator('input[type="password"]');
-      const count = await passwordFields.count();
-      for (let i = 0; i < count; i++) {
-        await passwordFields.nth(i).fill('123');
-      }
-
+      await fillAddUserForm(page, {
+        username: `weakpwd-${stamp}`,
+        email: `weakpwd-${stamp}@example.com`,
+        password: '123',
+      });
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('password') ||
-                       url.includes('/users/add');
-      expect(hasError).toBeTruthy();
+      await expect(page.locator('[data-testid="system-message"]'))
+        .toContainText(/password must be at least 6 characters/i);
+      await expect(page).toHaveURL(/\/users\/add/);
     });
   });
 
@@ -312,46 +296,30 @@ test.describe('User CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/password/change');
 
-      const passwordFields = page.locator('input[type="password"]');
-      const count = await passwordFields.count();
+      // A wrong current password is refused, so admin's own password is never changed
+      await page.locator('input[name="old_password"]').fill('WrongCurrentPassword');
+      await page.locator('input[name="new_password"]').fill('NewPassword123!');
+      await page.locator('input[name="new_password2"]').fill('NewPassword123!');
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      if (count >= 3) {
-        await passwordFields.nth(0).fill('WrongCurrentPassword');
-        await passwordFields.nth(1).fill('NewPassword123!');
-        await passwordFields.nth(2).fill('NewPassword123!');
-
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-        const bodyText = await page.locator('body').textContent();
-        const url = page.url();
-        const hasError = bodyText.toLowerCase().includes('error') ||
-                         bodyText.toLowerCase().includes('incorrect') ||
-                         url.includes('/password/change');
-        expect(hasError).toBeTruthy();
-      }
+      await expect(page.locator('[data-testid="system-message"]'))
+        .toContainText(/did not enter the correct current password/i);
+      await expect(page).toHaveURL(/\/password\/change/);
     });
 
     test('should reject mismatched new passwords', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/password/change');
 
-      const passwordFields = page.locator('input[type="password"]');
-      const count = await passwordFields.count();
+      // The repeat field must not match, so the change is refused before it is applied
+      await page.locator('input[name="old_password"]').fill(users.admin.password);
+      await page.locator('input[name="new_password"]').fill('NewPassword123!');
+      await page.locator('input[name="new_password2"]').fill('DifferentPassword123!');
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      if (count >= 3) {
-        await passwordFields.nth(0).fill(users.admin.password);
-        await passwordFields.nth(1).fill('NewPassword123!');
-        await passwordFields.nth(2).fill('DifferentPassword123!');
-
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-        const bodyText = await page.locator('body').textContent();
-        const url = page.url();
-        const hasError = bodyText.toLowerCase().includes('error') ||
-                         bodyText.toLowerCase().includes('match') ||
-                         url.includes('/password/change');
-        expect(hasError).toBeTruthy();
-      }
+      await expect(page.locator('[data-testid="system-message"]'))
+        .toContainText(/fill in all required fields correctly/i);
+      await expect(page).toHaveURL(/\/password\/change/);
     });
   });
 });

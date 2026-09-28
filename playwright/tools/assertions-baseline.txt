@@ -1,21 +1,11 @@
-playwright/tests/admin/email-previews.spec.js::should load dark mode preview
-playwright/tests/admin/email-previews.spec.js::should load light mode preview
 playwright/tests/corner-cases/error-handling.spec.js::should properly escape HTML in user input display
 playwright/tests/dnssec/dnssec-key-lifecycle.spec.js::manager should access DNSSEC for own zones
 playwright/tests/errors/error-pages.spec.js::decline should link to logout
 playwright/tests/errors/error-pages.spec.js::should require checkbox to be checked
 playwright/tests/errors/error-pages.spec.js::should show validation error when checkbox not checked
-playwright/tests/logs/user-logs.spec.js::should display log entries when available
-playwright/tests/logs/zone-logs.spec.js::should display color-coded operation badges
-playwright/tests/logs/zone-logs.spec.js::should display details button when logs exist
-playwright/tests/logs/zone-logs.spec.js::should display log entries when available
-playwright/tests/mfa/mfa-management.spec.js::should handle MFA verification form
-playwright/tests/mfa/mfa-setup.spec.js::should use POST for MFA actions
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on RDAP page from zone ID
 playwright/tests/modules/whois-rdap-zone-links.spec.js::should pre-fill domain on WHOIS page from zone ID
 playwright/tests/modules/zone-file-export.spec.js::should show Zone File option in Export dropdown when module is enabled
-playwright/tests/password-recovery/forgot-password.spec.js::should navigate to login page
-playwright/tests/password-recovery/forgot-username.spec.js::should navigate back to login page
 playwright/tests/search/search-comments.spec.js::should find records by comment text
 playwright/tests/search/search-comments.spec.js::should persist comments checkbox state after search
 playwright/tests/search/search-comments.spec.js::should toggle comments search option

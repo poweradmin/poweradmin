@@ -95,58 +95,41 @@ test.describe('MFA Recovery Codes Page', () => {
     });
   });
 
+  // Recovery codes only exist once MFA is on, and turning it on needs a real TOTP
+  // code the suite cannot produce, so these skip rather than pass silently.
+  async function openRegeneratedCodes(page) {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/mfa/setup');
+
+    const regenerateBtn = page.locator('button[name="regenerate_codes"]');
+    if (await regenerateBtn.count() === 0) {
+      return false;
+    }
+
+    await regenerateBtn.click();
+    return true;
+  }
+
   test.describe('Recovery Codes Actions', () => {
     test('should have print button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
+      const opened = await openRegeneratedCodes(page);
+      test.skip(!opened, 'MFA is not enabled for the admin account');
 
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await expect(regenerateBtn).toBeVisible();
-
-        await regenerateBtn.click();
-
-        const newBodyText = await page.locator('body').textContent();
-        const hasPrintOption = newBodyText.toLowerCase().includes('print') ||
-                                newBodyText.toLowerCase().includes('recovery');
-        expect(hasPrintOption).toBeTruthy();
-      }
+      await expect(page.locator('button:has-text("Print")')).toBeVisible();
     });
 
     test('should have copy all button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
+      const opened = await openRegeneratedCodes(page);
+      test.skip(!opened, 'MFA is not enabled for the admin account');
 
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await regenerateBtn.click();
-
-        const newBodyText = await page.locator('body').textContent();
-        const hasCopyOption = newBodyText.toLowerCase().includes('copy') ||
-                               newBodyText.toLowerCase().includes('recovery');
-        expect(hasCopyOption).toBeTruthy();
-      }
+      await expect(page.locator('button:has-text("Copy all")')).toBeVisible();
     });
 
     test('should have download button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
+      const opened = await openRegeneratedCodes(page);
+      test.skip(!opened, 'MFA is not enabled for the admin account');
 
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await regenerateBtn.click();
-
-        const newBodyText = await page.locator('body').textContent();
-        const hasDownloadOption = newBodyText.toLowerCase().includes('download') ||
-                                   newBodyText.toLowerCase().includes('recovery');
-        expect(hasDownloadOption).toBeTruthy();
-      }
+      await expect(page.locator('button#download-btn')).toBeVisible();
     });
   });
 

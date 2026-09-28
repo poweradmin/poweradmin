@@ -9,52 +9,17 @@ test.describe('User Management Error Validation', () => {
 
   test('should show error when changing password with incorrect current password', async ({ page }) => {
     await page.goto('/password/change');
-    await page.waitForLoadState('networkidle');
 
-    // Check if password change form exists
-    const currentPasswordField = page.locator('input[name*="current"], input[name*="old"], input[type="password"]').first();
-    if (await currentPasswordField.count() === 0) {
-      // Password change page may not exist or may require different setup
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/password|change|not found/i);
-      return;
-    }
+    // A wrong current password is refused, so admin's own password is never changed
+    await page.locator('input[name="old_password"]').fill('wrongpassword');
+    await page.locator('input[name="new_password"]').fill('NewPassword123!');
+    await page.locator('input[name="new_password2"]').fill('NewPassword123!');
 
-    // Fill in incorrect current password
-    await currentPasswordField.fill('wrongpassword');
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-    // Fill in new password
-    const newPasswordField = page.locator('input[type="password"]').nth(1);
-    if (await newPasswordField.count() > 0) {
-      await newPasswordField.fill('newpassword123');
-    }
-
-    // Confirm new password (find third password field if exists)
-    const passwordFields = await page.locator('input[type="password"]').count();
-    if (passwordFields > 2) {
-      await page.locator('input[type="password"]').nth(2).fill('newpassword123');
-    }
-
-    // Submit form
-    const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-    if (await submitBtn.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await submitBtn.click();
-    await page.waitForLoadState('networkidle');
-
-    // Should show error message or page should handle the error gracefully
-    const bodyText = await page.locator('body').textContent();
-    // If incorrect password was rejected, body should contain error-related text OR stay on the same page
-    const hasError = bodyText.toLowerCase().includes('incorrect') ||
-                     bodyText.toLowerCase().includes('wrong') ||
-                     bodyText.toLowerCase().includes('invalid') ||
-                     bodyText.toLowerCase().includes('error') ||
-                     bodyText.toLowerCase().includes('password');
-    expect(hasError || page.url().includes('password')).toBeTruthy();
+    await expect(page.locator('[data-testid="system-message"]'))
+      .toContainText(/did not enter the correct current password/i);
+    await expect(page).toHaveURL(/\/password\/change/);
   });
 
   test('should show error when new passwords do not match', async ({ page }) => {

@@ -67,12 +67,12 @@ test.describe('User Logs', () => {
       await expect(page.locator('a[title="Clear"]')).toBeVisible();
     });
 
-    test('should display log entries when available', async ({ page }) => {
-      await page.goto('/users/logs');
-      const rows = page.locator('table tbody tr');
-      if (await rows.count() > 0) {
-        await expect(rows.first()).toBeVisible();
-      }
+    test('should display log entries for the login this test just made', async ({ page }) => {
+      // beforeEach logged in as admin, so a login_success row is guaranteed
+      await page.goto('/users/logs?event_type=login_success');
+      await expect(page.locator('table tbody tr').first()).toBeVisible();
+      await expect(page.locator('table')).toContainText('login_success');
+      await expect(page.locator('table')).toContainText(`user:${users.admin.username}`);
     });
 
     test('should have user filter dropdown', async ({ page }) => {

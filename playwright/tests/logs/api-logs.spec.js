@@ -352,10 +352,9 @@ test.describe('API Logs - Export', () => {
     const modal = page.locator('#exportModal');
     await expect(modal).toBeVisible();
 
-    const modalText = await modal.textContent();
-    expect(modalText).toMatch(/Export Logs/);
-    expect(modalText).toMatch(/CSV/);
-    expect(modalText).toMatch(/JSON/);
+    await expect(modal).toContainText(/Export Logs/);
+    await expect(modal).toContainText(/CSV/);
+    await expect(modal).toContainText(/JSON/);
   });
 });
 

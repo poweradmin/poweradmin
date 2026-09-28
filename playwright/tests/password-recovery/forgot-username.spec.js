@@ -108,14 +108,9 @@ test.describe('Forgot Username', () => {
     test('should navigate back to login page', async ({ page }) => {
       await page.goto('/username/forgot');
 
-      const loginLink = page.locator('a[href*="/login"], a:has-text("Login"), a:has-text("Back")').first();
-      if (await loginLink.count() > 0) {
-        await loginLink.click();
-        await page.waitForLoadState('domcontentloaded');
+      await page.locator('a[href*="/login"], a:has-text("Login"), a:has-text("Back")').first().click();
 
-        const url = page.url();
-        expect(url).toMatch(/login/);
-      }
+      await expect(page).toHaveURL(/login/);
     });
   });
 });
