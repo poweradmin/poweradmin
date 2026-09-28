@@ -36,6 +36,22 @@ test.beforeAll(async ({ browser }) => {
   await page.close();
 });
 
+test.afterAll(async ({ browser }) => {
+  const page = await browser.newPage();
+  await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+  const zoneId = await findZoneIdByName(page, 'viewer-zone.example.com');
+  await page.goto(`/zones/${zoneId}/metadata`);
+  const seeded = page.locator(`tr:has(.metadata-content[value="${SEEDED_METADATA_VALUE}"])`);
+  if (await seeded.count() > 0) {
+    await seeded.locator('.metadata-remove-row').click();
+    await page.locator('[data-testid="save-zone-metadata"]').click();
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
+  }
+
+  await page.close();
+});
+
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
 
