@@ -95,7 +95,7 @@ msgid "Invalid zone ID."
 msgstr "Ugyldig sone-ID."
 
 msgid "Master"
-msgstr "Master"
+msgstr "Hovedserver"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"

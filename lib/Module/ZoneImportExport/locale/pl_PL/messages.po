@@ -95,7 +95,7 @@ msgid "Invalid zone ID."
 msgstr "Nieprawidłowy ID strefy."
 
 msgid "Master"
-msgstr "Master"
+msgstr "Nadrzędny"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"

@@ -56,7 +56,7 @@ msgstr "Ukuran file melebihi ukuran maksimal yang diizinkan sebesar %s."
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"
-msgstr "File:"
+msgstr "Berkas:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
