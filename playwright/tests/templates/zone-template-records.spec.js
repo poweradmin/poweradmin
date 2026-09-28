@@ -6,6 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { addTemplateRecord, createTemplate, deleteTemplate } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -314,23 +315,17 @@ test.describe('Zone Template Records', () => {
 
     test('manager should access template records for own templates', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/zones/templates');
-      await page.waitForLoadState('networkidle');
 
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        // No templates, just verify page loaded
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-        return;
-      }
+      const ownName = `manager-templ-${Date.now()}`;
+      const ownId = await createTemplate(page, ownName);
+      expect(ownId).toBeTruthy();
 
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      await addTemplateRecord(page, ownId, { type: 'A', name: 'www', content: '192.0.2.30' });
+
+      await page.goto(`/zones/templates/${ownId}/edit`);
+      await expect(page.locator('table tbody tr').filter({ hasText: 'www' }).first()).toContainText('192.0.2.30');
+
+      await deleteTemplate(page, ownId);
     });
   });
 

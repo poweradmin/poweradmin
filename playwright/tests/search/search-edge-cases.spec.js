@@ -11,6 +11,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
+import zones from '../../fixtures/zones.json' with { type: 'json' };
 
 test.describe('Search Edge Cases', () => {
   test.describe('Clear Search Field (Regression #815)', () => {
@@ -198,10 +199,9 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      // Should not execute script
-      expect(bodyText).not.toContain('<script>');
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      // A reflected payload would land as a real script element, not as escaped text
+      await expect(page.locator('script').filter({ hasText: 'alert("xss")' })).toHaveCount(0);
     });
 
     test('should handle unicode characters', async ({ page }) => {
@@ -282,21 +282,17 @@ test.describe('Search Edge Cases', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/search');
 
-      const queryInput = page.locator('input[name="query"]');
-      await queryInput.fill('*');
+      await page.locator('input[name="query"]').fill(zones.admin.name);
+      await page.locator('button[name="do_search"]').click();
 
-      const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-      await submitBtn.click();
-      await page.waitForLoadState('networkidle');
+      await expect(page.locator('body')).toContainText('Zones found');
 
-      // Click on first result link if available
-      const resultLink = page.locator('table a, .search-results a').first();
-      if (await resultLink.count() > 0) {
-        await resultLink.click();
-        await page.waitForLoadState('networkidle');
+      // Result rows carry the zone name as plain text; the only link out is the edit action
+      const resultLink = page.locator(`tr:has-text("${zones.admin.name}") a[href*="/zones/"][href*="/edit"]`).first();
+      await resultLink.click();
 
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      await expect(page).toHaveURL(/\/zones\/[^/]+\/edit/);
+      await expect(page.locator('body')).toContainText(zones.admin.name);
     });
 
     test('should handle browser back after search', async ({ page }) => {

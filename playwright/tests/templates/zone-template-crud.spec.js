@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { createTemplate, deleteTemplate } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -191,50 +192,22 @@ test.describe('Zone Template CRUD Operations', () => {
 
     test('should update template name', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+      const ownName = `${templateName}-rename`;
+      const templateId = await createTemplate(page, ownName);
+      expect(templateId).toBeTruthy();
+
+      const renamed = `${ownName}-updated`;
+      await page.goto(`/zones/templates/${templateId}/edit`);
+      await page.locator('#templ_name').fill(renamed);
+      // Save the template details, not the first submit on the page: that is
+      // "Update zones", which renders disabled when no zones use the template.
+      await page.locator('button[type="submit"][name="edit"]').click();
+
       await page.goto('/zones/templates');
-      await page.waitForLoadState('networkidle');
+      await expect(page.locator(`tr:has-text("${renamed}")`)).toHaveCount(1);
 
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        // No templates table, just verify page loaded
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-        return;
-      }
-
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      if (await editLink.count() === 0) {
-        // No edit links, just verify page loaded
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-        return;
-      }
-
-      await editLink.click();
-      await page.waitForLoadState('networkidle');
-
-      const nameField = page.locator('input[name*="name"], input[name*="templ"]').first();
-      if (await nameField.count() === 0) {
-        // No name field found, just verify page loaded
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
-
-      await nameField.fill(`updated-template-${Date.now()}`);
-
-      const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-      if (await submitBtn.count() === 0 || !(await submitBtn.isEnabled())) {
-        // No submit button found or not enabled
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
-
-      await submitBtn.click();
-      await page.waitForLoadState('networkidle');
-
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await deleteTemplate(page, templateId);
     });
 
     test('should update template description', async ({ page }) => {

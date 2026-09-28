@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { addTemplateRecord, createTemplate, deleteTemplate } from '../../helpers/templates.js';
+import { deleteZoneById, findZoneIdByName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Zone Templates Management', () => {
@@ -58,47 +60,19 @@ test.describe('Zone Templates Management', () => {
   });
 
   test('should add records to zone template', async ({ page }) => {
-    // Navigate to templates and find our test template
-    await page.goto('/zones/templates');
-    await page.waitForLoadState('networkidle');
+    // Own template so the test does not depend on another test having run first
+    const ownName = `${templateName}-records`;
+    const templateId = await createTemplate(page, ownName);
+    expect(templateId).toBeTruthy();
 
-    const bodyText = await page.locator('body').textContent();
-    if (!bodyText.includes(templateName)) {
-      // Template not found, skip this test
-      test.skip('Test template not found - may not have been created');
-      return;
-    }
+    await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.0.2.21' });
 
-    // Find the template row and click an enabled link (edit records, not view zones which may be disabled)
-    const templateRow = page.locator(`tr:has-text("${templateName}")`);
-    const enabledLink = templateRow.locator('a:not([aria-disabled="true"]):not(.disabled)').first();
+    await page.goto(`/zones/templates/${templateId}/edit`);
+    const recordRow = page.locator('table tbody tr').filter({ hasText: 'www' }).first();
+    await expect(recordRow).toContainText('192.0.2.21');
+    await expect(recordRow).toContainText('A');
 
-    if (await enabledLink.count() === 0) {
-      test.skip('No enabled links found for template');
-      return;
-    }
-
-    await enabledLink.click();
-    await page.waitForLoadState('networkidle');
-
-    // Add A record to template
-    const hasTypeSelect = await page.locator('select[name*="type"]').count() > 0;
-    if (hasTypeSelect) {
-      await page.locator('select[name*="type"]').selectOption('A');
-      await page.locator('input[name*="name"]').fill('www');
-      await page.locator('input[name*="content"], input[name*="value"]').fill('[ZONE]');
-
-      const hasTtl = await page.locator('input[name*="ttl"]').count() > 0;
-      if (hasTtl) {
-        await page.locator('input[name*="ttl"]').clear();
-        await page.locator('input[name*="ttl"]').fill('3600');
-      }
-
-      await page.locator('button[type="submit"]').click();
-      await page.waitForLoadState('networkidle');
-
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-    }
+    await deleteTemplate(page, templateId);
   });
 
   test('should use template when creating new zone', async ({ page }) => {
@@ -138,28 +112,28 @@ test.describe('Zone Templates Management', () => {
   });
 
   test('should verify template records applied to new zone', async ({ page }) => {
-    // Navigate to zones and find the domain created with template
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
+    const ownName = `${templateName}-applied`;
+    const ownDomain = `applied-${Date.now()}.example.com`;
+    const templateId = await createTemplate(page, ownName);
+    expect(templateId).toBeTruthy();
 
-    const bodyText = await page.locator('body').textContent();
-    if (!bodyText.includes(testDomain)) {
-      // Zone not created, skip this test
-      test.skip('Test zone not found');
-      return;
-    }
+    await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.0.2.22' });
 
-    // Click on an enabled link for the zone
-    const zoneRow = page.locator(`tr:has-text("${testDomain}")`);
-    const enabledLink = zoneRow.locator('a:not([aria-disabled="true"]):not(.disabled)').first();
+    await page.goto('/zones/add/master');
+    await page.locator('#domain').fill(ownDomain);
+    await page.locator('#zone_template').selectOption(templateId);
+    await page.locator('button[type="submit"]').first().click();
+    await expect(page.locator('body')).toContainText(/success|added|created/i);
 
-    if (await enabledLink.count() > 0) {
-      await enabledLink.click();
-      await page.waitForLoadState('networkidle');
+    const zoneId = await findZoneIdByName(page, ownDomain);
+    expect(zoneId).toBeTruthy();
 
-      // Verify page loaded without errors
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-    }
+    await page.goto(`/zones/${zoneId}/edit`);
+    // Record values live in input attributes, so textContent never sees them
+    await expect(page.locator('input[value="192.0.2.22"]')).toHaveCount(1);
+
+    await deleteZoneById(page, zoneId);
+    await deleteTemplate(page, templateId);
   });
 
   test('should edit existing zone template', async ({ page }) => {
@@ -253,16 +227,19 @@ test.describe('Zone Templates Management', () => {
   });
 
   test('should show action buttons on single line', async ({ page }) => {
-    await page.goto('/zones/templates');
-    await page.waitForLoadState('networkidle');
+    const ownName = `${templateName}-buttons`;
+    const templateId = await createTemplate(page, ownName);
+    expect(templateId).toBeTruthy();
 
-    const actionCells = page.locator('.d-flex.flex-nowrap');
-    if (await actionCells.count() > 0) {
-      const firstCell = actionCells.first();
-      const cellBox = await firstCell.boundingBox();
-      // All buttons should fit within a reasonable height (single line)
-      expect(cellBox.height).toBeLessThan(50);
-    }
+    await page.goto('/zones/templates');
+    const actionCell = page.locator(`tr:has-text("${ownName}") .d-flex.flex-nowrap`);
+    await expect(actionCell).toBeVisible();
+
+    const cellBox = await actionCell.boundingBox();
+    // All buttons should fit within a reasonable height (single line)
+    expect(cellBox.height).toBeLessThan(50);
+
+    await deleteTemplate(page, templateId);
   });
 
   // Cleanup

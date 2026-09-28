@@ -6,7 +6,25 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { createTemplate, deleteTemplate } from '../../helpers/templates.js';
+import { deleteZoneById, findZoneIdByName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
+
+// Each test builds its own template and linked zone so the zones page under test
+// has something to show whatever else the suite has created or removed.
+async function createLinkedZone(page, label) {
+  const stamp = Date.now();
+  const templateId = await createTemplate(page, `unlink-${label}-${stamp}`);
+  const zoneName = `unlink-${label}-${stamp}.example.com`;
+
+  await page.goto('/zones/add/master');
+  await page.locator('#domain').fill(zoneName);
+  await page.locator('#zone_template').selectOption(templateId);
+  await page.locator('button[type="submit"]').first().click();
+
+  const zoneId = await findZoneIdByName(page, zoneName);
+  return { templateId, zoneId, zoneName };
+}
 
 test.describe('Zone Template Unlink Confirmation Page', () => {
   test.describe('Page Access', () => {
@@ -105,23 +123,15 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
   test.describe('Zones Table Display', () => {
     test('template zones page should show zones in table', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
+      const { templateId, zoneId, zoneName } = await createLinkedZone(page, 'table');
+      expect(zoneId).toBeTruthy();
 
-      // Look for template links in table, not dropdowns
-      const templateLinks = page.locator('table a[href*="/zones/templates"]').first();
+      await page.goto(`/zones/templates/${templateId}/zones`);
 
-      expect(await templateLinks.count()).toBeGreaterThan(0);
+      await expect(page.locator(`#unlink-zones-form tr:has-text("${zoneName}")`)).toHaveCount(1);
 
-      await templateLinks.click();
-      await page.waitForLoadState('networkidle');
-
-      const bodyText = await page.locator('body').textContent();
-      const table = page.locator('table');
-
-      const hasTable = await table.count() > 0;
-      const hasZoneInfo = bodyText.toLowerCase().includes('zone');
-
-      expect(hasTable || hasZoneInfo).toBeTruthy();
+      await deleteZoneById(page, zoneId);
+      await deleteTemplate(page, templateId);
     });
 
     test('zones table should have zone name column', async ({ page }) => {
@@ -150,31 +160,17 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
 
     test('zones table should have type column', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
+      const { templateId, zoneId, zoneName } = await createLinkedZone(page, 'type');
+      expect(zoneId).toBeTruthy();
 
-      // Look for edit links specifically in the templates table
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone|no.*template/i);
-        return;
-      }
+      await page.goto(`/zones/templates/${templateId}/zones`);
 
-      // Find a template edit link in the table body
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
+      await expect(page.locator('#unlink-zones-form th').filter({ hasText: 'Type' })).toHaveCount(1);
+      // MASTER zones are labelled "Primary" in the interface
+      await expect(page.locator(`#unlink-zones-form tr:has-text("${zoneName}")`)).toContainText(/primary/i);
 
-      expect(await editLink.count()).toBeGreaterThan(0);
-
-      await editLink.click();
-      await page.waitForLoadState('networkidle');
-
-      const bodyText = await page.locator('body').textContent();
-      const hasTypeInfo = bodyText.toLowerCase().includes('type') ||
-                          bodyText.toLowerCase().includes('master') ||
-                          bodyText.toLowerCase().includes('slave') ||
-                          bodyText.toLowerCase().includes('native');
-
-      expect(hasTypeInfo || page.url().includes('template')).toBeTruthy();
+      await deleteZoneById(page, zoneId);
+      await deleteTemplate(page, templateId);
     });
   });
 

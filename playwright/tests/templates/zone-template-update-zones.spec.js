@@ -172,15 +172,8 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       // never reach it
       await page.waitForLoadState('domcontentloaded');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
-
-      const hasSuccess = bodyText.toLowerCase().includes('success') ||
-                        bodyText.toLowerCase().includes('updated') ||
-                        bodyText.toLowerCase().includes('zone');
-      const stayedOnPage = page.url().includes('templates');
-
-      expect(hasSuccess || stayedOnPage).toBeTruthy();
+      await expect(page.locator('body')).not.toContainText(FATAL_ERROR_PATTERN);
+      await expect(page.locator('.alert-success')).toContainText(/Zones have been updated successfully/i);
     });
 
     test('should verify zone records after template update', async ({ page }) => {

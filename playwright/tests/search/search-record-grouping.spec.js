@@ -8,6 +8,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
+import zones from '../../fixtures/zones.json' with { type: 'json' };
 
 test.describe('Search Record Grouping', () => {
   /**
@@ -59,20 +60,12 @@ test.describe('Search Record Grouping', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     await page.goto('/search');
 
-    const searchInput = page.locator('input[name="query"], input[name*="search"], input[type="text"]').first();
-    await searchInput.fill('duplicate-test');
+    await page.locator('input[name="query"]').fill(zones.admin.name);
+    await page.locator('#records_check').check();
+    await page.locator('button[name="do_search"]').click();
 
-    const recordsCheckbox = page.locator('input[name="records"]');
-    if (await recordsCheckbox.isVisible()) {
-      await recordsCheckbox.check();
-    }
-
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
-
-    const resultsTable = page.locator('table');
-    const bodyText = await page.locator('body').textContent();
-    expect(await resultsTable.count() > 0 || bodyText.toLowerCase().includes('no')).toBeTruthy();
+    await expect(page.locator('body')).toContainText('Records found');
+    await expect(page.locator(`table tbody tr:has-text("${zones.admin.name}")`).first()).toBeVisible();
   });
 
   /**
@@ -155,9 +148,8 @@ test.describe('Search Record Grouping', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception|error occurred|SQLSTATE/i);
-    expect(bodyText).toContain('Records found');
+    await expect(page.locator('body')).not.toContainText(/fatal|exception|error occurred|SQLSTATE/i);
+    await expect(page.locator('body')).toContainText('Records found');
 
     const recordsTable = page.locator('table').nth(1);
     await expect(recordsTable).toBeVisible();

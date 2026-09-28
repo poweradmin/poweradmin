@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { addTemplateRecord, createTemplate, deleteTemplate } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Zone Template Management', () => {
@@ -43,52 +44,18 @@ test.describe('Zone Template Management', () => {
   });
 
   test('should add records to a zone template', async ({ page }) => {
-    await page.goto('/zones/templates');
-    await page.waitForLoadState('networkidle');
+    // Own template so the test does not depend on another test having run first
+    const ownName = `${templateName}-records`;
+    const templateId = await createTemplate(page, ownName);
+    expect(templateId).toBeTruthy();
 
-    // Find a template in the table
-    const templateTable = page.locator('table');
-    if (await templateTable.count() === 0) {
-      // No templates table, skip
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/template|zone|no.*template/i);
-      return;
-    }
+    await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.168.1.10' });
 
-    // Find an edit link in the table - specifically for templates (not users)
-    const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-    if (await editLink.count() === 0) {
-      // No templates to edit, just verify page loaded
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-      return;
-    }
+    await page.goto(`/zones/templates/${templateId}/edit`);
+    const recordRow = page.locator('table tbody tr').filter({ hasText: 'www' }).first();
+    await expect(recordRow).toContainText('192.168.1.10');
 
-    await editLink.click();
-    await page.waitForLoadState('networkidle');
-
-    // Check for record type select (indicating we're on a records page)
-    const typeSelect = page.locator('select[name*="type"]').first();
-    if (await typeSelect.count() > 0) {
-      await typeSelect.selectOption('A');
-
-      const nameInput = page.locator('input[name*="name"]').first();
-      await nameInput.fill('www');
-
-      const contentInput = page.locator('input[name*="content"]').first();
-      await contentInput.fill('192.168.1.10');
-
-      const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-      await submitBtn.click();
-      await page.waitForLoadState('networkidle');
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    } else {
-      // Just verify the page loaded without errors
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    }
+    await deleteTemplate(page, templateId);
   });
 
   test('should apply a zone template when creating a zone', async ({ page }) => {

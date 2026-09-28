@@ -8,6 +8,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
+import zones from '../../fixtures/zones.json' with { type: 'json' };
 
 // Helper to get any zone name for testing
 async function findAnyZoneName(page) {
@@ -210,23 +211,20 @@ test.describe('Search Functionality', () => {
   test.describe('Search Result Navigation', () => {
     test('should navigate to zone from search results', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      testDomain = await findAnyZoneName(page);
-
-      if (!testDomain) {
-        test.info().annotations.push({ type: 'skip', description: 'No zones available for search test' });
-        return;
-      }
 
       await page.goto('/search');
-      await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill(testDomain);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.locator('input[name="query"]').fill(zones.admin.name);
+      await page.locator('button[name="do_search"]').click();
 
-      const zoneLink = page.locator(`a:has-text("${testDomain}")`).first();
-      if (await zoneLink.count() > 0) {
-        await zoneLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      await expect(page.locator('body')).toContainText('Zones found');
+
+      // The zone name is plain text in the results row, so the zone is reached
+      // through its edit action rather than a link on the name
+      const zoneRow = page.locator(`tr:has-text("${zones.admin.name}")`).first();
+      await zoneRow.locator('a[href*="/zones/"][href*="/edit"]').first().click();
+
+      await expect(page).toHaveURL(/\/zones\/[^/]+\/edit/);
+      await expect(page.locator('body')).toContainText(zones.admin.name);
     });
   });
 

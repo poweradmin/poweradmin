@@ -32,43 +32,26 @@ test.describe('Search Comments Feature', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/search');
 
-      const commentsCheckbox = page.locator('input[name="comments"], input#comments_check');
+      const commentsCheckbox = page.locator('#comments_check');
+      await expect(commentsCheckbox).not.toBeChecked();
 
-      if (await commentsCheckbox.count() > 0) {
-        // Check the comments checkbox
-        await commentsCheckbox.check();
-        expect(await commentsCheckbox.isChecked()).toBeTruthy();
+      await commentsCheckbox.check();
+      await expect(commentsCheckbox).toBeChecked();
 
-        // Uncheck it
-        await commentsCheckbox.uncheck();
-        expect(await commentsCheckbox.isChecked()).toBeFalsy();
-      }
+      await commentsCheckbox.uncheck();
+      await expect(commentsCheckbox).not.toBeChecked();
     });
 
     test('should persist comments checkbox state after search', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/search');
 
-      const commentsCheckbox = page.locator('input[name="comments"], input#comments_check');
+      await page.locator('#comments_check').check();
+      await page.locator('input[name="query"]').fill('example');
+      await page.locator('button[name="do_search"]').click();
 
-      if (await commentsCheckbox.count() > 0) {
-        await commentsCheckbox.check();
-
-        // Perform a search
-        const queryInput = page.locator('input[name="query"]');
-        await queryInput.fill('test');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-        await page.waitForLoadState('networkidle');
-
-        // Checkbox state should be preserved
-        const newCommentsCheckbox = page.locator('input[name="comments"], input#comments_check');
-        if (await newCommentsCheckbox.count() > 0) {
-          const isChecked = await newCommentsCheckbox.isChecked();
-          // State should be preserved or reset
-          expect(typeof isChecked).toBe('boolean');
-        }
-      }
+      // The form is re-rendered from search_by_comments, so the option has to survive the POST
+      await expect(page.locator('#comments_check')).toBeChecked();
     });
   });
 
@@ -191,23 +174,12 @@ test.describe('Search Comments Feature', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/search');
 
-      const zonesCheckbox = page.locator('input[name="zones"], input#zones_check');
-      if (await zonesCheckbox.count() > 0) {
-        await zonesCheckbox.check();
-      }
+      await page.locator('#zones_check').check();
+      await page.locator('input[name="query"]').fill('example.com');
+      await page.locator('button[name="do_search"]').click();
 
-      const queryInput = page.locator('input[name="query"]');
-      await queryInput.fill('*');
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      await page.waitForLoadState('networkidle');
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-
-      const hasCommentDisplay = bodyText.toLowerCase().includes('comment') ||
-                                 await page.locator('th:has-text("Comment")').count() > 0;
-      expect(hasCommentDisplay).toBe(true);
+      await expect(page.locator('body')).toContainText('Zones found');
+      await expect(page.locator('th').filter({ hasText: 'Comment' })).toHaveCount(1);
     });
 
     test('should show comment column in record results when enabled', async ({ page }) => {

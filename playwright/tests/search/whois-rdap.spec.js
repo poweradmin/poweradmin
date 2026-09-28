@@ -179,11 +179,9 @@ test.describe('WHOIS Lookup Page', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const resultText = await page.locator('body').textContent();
-      const hasResultsOrError = resultText.toLowerCase().includes('result') ||
-                                 resultText.toLowerCase().includes('error') ||
-                                 resultText.toLowerCase().includes('google');
-      expect(hasResultsOrError).toBeTruthy();
+      await expect(page.getByRole('heading', { name: /WHOIS results for google\.com/i })).toBeVisible();
+      // The lookup renders the server response or an explicit error, never a blank section
+      await expect(page.locator('.whois-results pre, .alert-danger').first()).toBeVisible();
     });
 
     test('should handle invalid domain when enabled', async ({ page }) => {
@@ -200,8 +198,8 @@ test.describe('WHOIS Lookup Page', () => {
 
       await page.waitForLoadState('networkidle');
 
-      const resultText = await page.locator('body').textContent();
-      expect(resultText.length).toBeGreaterThan(100);
+      // No WHOIS server is registered for a made-up TLD, so the lookup has to say so
+      await expect(page.locator('.alert-danger')).toContainText(/No WHOIS server found/i);
     });
 
     test('should show results or alert when enabled', async ({ page }) => {
