@@ -36,7 +36,7 @@
     "description": "Native zone type for replication testing"
   },
   "slave": {
-    "name": "slave-zone.example.net",
+    "name": "slave-zone.example.com",
     "type": "SLAVE",
     "owner": "admin",
     "description": "Slave zone requiring master server"
