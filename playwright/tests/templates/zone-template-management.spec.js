@@ -47,15 +47,17 @@ test.describe('Zone Template Management', () => {
     // Own template so the test does not depend on another test having run first
     const ownName = `${templateName}-records`;
     const templateId = await createTemplate(page, ownName);
-    expect(templateId).toBeTruthy();
+    try {
+      expect(templateId).toBeTruthy();
 
-    await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.168.1.10' });
+      await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.168.1.10' });
 
-    await page.goto(`/zones/templates/${templateId}/edit`);
-    const recordRow = page.locator('table tbody tr').filter({ hasText: 'www' }).first();
-    await expect(recordRow).toContainText('192.168.1.10');
-
-    await deleteTemplate(page, templateId);
+      await page.goto(`/zones/templates/${templateId}/edit`);
+      const recordRow = page.locator('table tbody tr').filter({ hasText: 'www' }).first();
+      await expect(recordRow).toContainText('192.168.1.10');
+    } finally {
+      await deleteTemplate(page, templateId);
+    }
   });
 
   test('should apply a zone template when creating a zone', async ({ page }) => {

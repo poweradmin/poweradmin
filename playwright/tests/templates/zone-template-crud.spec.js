@@ -195,19 +195,21 @@ test.describe('Zone Template CRUD Operations', () => {
 
       const ownName = `${templateName}-rename`;
       const templateId = await createTemplate(page, ownName);
-      expect(templateId).toBeTruthy();
+      try {
+        expect(templateId).toBeTruthy();
 
-      const renamed = `${ownName}-updated`;
-      await page.goto(`/zones/templates/${templateId}/edit`);
-      await page.locator('#templ_name').fill(renamed);
-      // Save the template details, not the first submit on the page: that is
-      // "Update zones", which renders disabled when no zones use the template.
-      await page.locator('button[type="submit"][name="edit"]').click();
+        const renamed = `${ownName}-updated`;
+        await page.goto(`/zones/templates/${templateId}/edit`);
+        await page.locator('#templ_name').fill(renamed);
+        // Save the template details, not the first submit on the page: that is
+        // "Update zones", which renders disabled when no zones use the template.
+        await page.locator('button[type="submit"][name="edit"]').click();
 
-      await page.goto('/zones/templates');
-      await expect(page.locator(`tr:has-text("${renamed}")`)).toHaveCount(1);
-
-      await deleteTemplate(page, templateId);
+        await page.goto('/zones/templates');
+        await expect(page.locator(`tr:has-text("${renamed}")`)).toHaveCount(1);
+      } finally {
+        await deleteTemplate(page, templateId);
+      }
     });
 
     test('should update template description', async ({ page }) => {

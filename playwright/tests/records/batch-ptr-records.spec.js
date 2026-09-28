@@ -129,8 +129,9 @@ test.describe('Batch PTR Records (Issue #968)', () => {
       await expect(form).toHaveAttribute('action', new RegExp(`/zones/batch-ptr\\?id=${zoneId}$`));
 
       // The required network prefix is empty on load, so fill it or the browser
-      // blocks the submit and the route is never exercised
-      await page.locator('#network_prefix').fill('192.0.2.0/30');
+      // blocks the submit and the route is never exercised. The range has no
+      // seeded reverse zone, so the post exercises the route without writing PTRs.
+      await page.locator('#network_prefix').fill('198.51.100.0/30');
       await page.locator('button[type="submit"]').first().click();
 
       await expect(page).toHaveURL(new RegExp(`/zones/batch-ptr\\?id=${zoneId}$`));

@@ -63,16 +63,18 @@ test.describe('Zone Templates Management', () => {
     // Own template so the test does not depend on another test having run first
     const ownName = `${templateName}-records`;
     const templateId = await createTemplate(page, ownName);
-    expect(templateId).toBeTruthy();
+    try {
+      expect(templateId).toBeTruthy();
 
-    await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.0.2.21' });
+      await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.0.2.21' });
 
-    await page.goto(`/zones/templates/${templateId}/edit`);
-    const recordRow = page.locator('table tbody tr').filter({ hasText: 'www' }).first();
-    await expect(recordRow).toContainText('192.0.2.21');
-    await expect(recordRow).toContainText('A');
-
-    await deleteTemplate(page, templateId);
+      await page.goto(`/zones/templates/${templateId}/edit`);
+      const recordRow = page.locator('table tbody tr').filter({ hasText: 'www' }).first();
+      await expect(recordRow).toContainText('192.0.2.21');
+      await expect(recordRow).toContainText('A');
+    } finally {
+      await deleteTemplate(page, templateId);
+    }
   });
 
   test('should use template when creating new zone', async ({ page }) => {
@@ -115,25 +117,30 @@ test.describe('Zone Templates Management', () => {
     const ownName = `${templateName}-applied`;
     const ownDomain = `applied-${Date.now()}.example.com`;
     const templateId = await createTemplate(page, ownName);
-    expect(templateId).toBeTruthy();
+    let zoneId = null;
+    try {
+      expect(templateId).toBeTruthy();
 
-    await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.0.2.22' });
+      await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.0.2.22' });
 
-    await page.goto('/zones/add/master');
-    await page.locator('#domain').fill(ownDomain);
-    await page.locator('#zone_template').selectOption(templateId);
-    await page.locator('button[type="submit"]').first().click();
-    await expect(page.locator('body')).toContainText(/success|added|created/i);
+      await page.goto('/zones/add/master');
+      await page.locator('#domain').fill(ownDomain);
+      await page.locator('#zone_template').selectOption(templateId);
+      await page.locator('button[type="submit"]').first().click();
+      await expect(page.locator('body')).toContainText(/success|added|created/i);
 
-    const zoneId = await findZoneIdByName(page, ownDomain);
-    expect(zoneId).toBeTruthy();
+      zoneId = await findZoneIdByName(page, ownDomain);
+      expect(zoneId).toBeTruthy();
 
-    await page.goto(`/zones/${zoneId}/edit`);
-    // Record values live in input attributes, so textContent never sees them
-    await expect(page.locator('input[value="192.0.2.22"]')).toHaveCount(1);
-
-    await deleteZoneById(page, zoneId);
-    await deleteTemplate(page, templateId);
+      await page.goto(`/zones/${zoneId}/edit`);
+      // Record values live in input attributes, so textContent never sees them
+      await expect(page.locator('input[value="192.0.2.22"]')).toHaveCount(1);
+    } finally {
+      if (zoneId) {
+        await deleteZoneById(page, zoneId);
+      }
+      await deleteTemplate(page, templateId);
+    }
   });
 
   test('should edit existing zone template', async ({ page }) => {
@@ -229,17 +236,19 @@ test.describe('Zone Templates Management', () => {
   test('should show action buttons on single line', async ({ page }) => {
     const ownName = `${templateName}-buttons`;
     const templateId = await createTemplate(page, ownName);
-    expect(templateId).toBeTruthy();
+    try {
+      expect(templateId).toBeTruthy();
 
-    await page.goto('/zones/templates');
-    const actionCell = page.locator(`tr:has-text("${ownName}") .d-flex.flex-nowrap`);
-    await expect(actionCell).toBeVisible();
+      await page.goto('/zones/templates');
+      const actionCell = page.locator(`tr:has-text("${ownName}") .d-flex.flex-nowrap`);
+      await expect(actionCell).toBeVisible();
 
-    const cellBox = await actionCell.boundingBox();
-    // All buttons should fit within a reasonable height (single line)
-    expect(cellBox.height).toBeLessThan(50);
-
-    await deleteTemplate(page, templateId);
+      const cellBox = await actionCell.boundingBox();
+      // All buttons should fit within a reasonable height (single line)
+      expect(cellBox.height).toBeLessThan(50);
+    } finally {
+      await deleteTemplate(page, templateId);
+    }
   });
 
   // Cleanup

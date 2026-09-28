@@ -318,14 +318,16 @@ test.describe('Zone Template Records', () => {
 
       const ownName = `manager-templ-${Date.now()}`;
       const ownId = await createTemplate(page, ownName);
-      expect(ownId).toBeTruthy();
+      try {
+        expect(ownId).toBeTruthy();
 
-      await addTemplateRecord(page, ownId, { type: 'A', name: 'www', content: '192.0.2.30' });
+        await addTemplateRecord(page, ownId, { type: 'A', name: 'www', content: '192.0.2.30' });
 
-      await page.goto(`/zones/templates/${ownId}/edit`);
-      await expect(page.locator('table tbody tr').filter({ hasText: 'www' }).first()).toContainText('192.0.2.30');
-
-      await deleteTemplate(page, ownId);
+        await page.goto(`/zones/templates/${ownId}/edit`);
+        await expect(page.locator('table tbody tr').filter({ hasText: 'www' }).first()).toContainText('192.0.2.30');
+      } finally {
+        await deleteTemplate(page, ownId);
+      }
     });
   });
 

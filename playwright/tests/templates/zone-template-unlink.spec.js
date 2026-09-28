@@ -124,14 +124,16 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
     test('template zones page should show zones in table', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const { templateId, zoneId, zoneName } = await createLinkedZone(page, 'table');
-      expect(zoneId).toBeTruthy();
+      try {
+        expect(zoneId).toBeTruthy();
 
-      await page.goto(`/zones/templates/${templateId}/zones`);
+        await page.goto(`/zones/templates/${templateId}/zones`);
 
-      await expect(page.locator(`#unlink-zones-form tr:has-text("${zoneName}")`)).toHaveCount(1);
-
-      await deleteZoneById(page, zoneId);
-      await deleteTemplate(page, templateId);
+        await expect(page.locator(`#unlink-zones-form tr:has-text("${zoneName}")`)).toHaveCount(1);
+      } finally {
+        await deleteZoneById(page, zoneId);
+        await deleteTemplate(page, templateId);
+      }
     });
 
     test('zones table should have zone name column', async ({ page }) => {
@@ -161,16 +163,18 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
     test('zones table should have type column', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const { templateId, zoneId, zoneName } = await createLinkedZone(page, 'type');
-      expect(zoneId).toBeTruthy();
+      try {
+        expect(zoneId).toBeTruthy();
 
-      await page.goto(`/zones/templates/${templateId}/zones`);
+        await page.goto(`/zones/templates/${templateId}/zones`);
 
-      await expect(page.locator('#unlink-zones-form th').filter({ hasText: 'Type' })).toHaveCount(1);
-      // MASTER zones are labelled "Primary" in the interface
-      await expect(page.locator(`#unlink-zones-form tr:has-text("${zoneName}")`)).toContainText(/primary/i);
-
-      await deleteZoneById(page, zoneId);
-      await deleteTemplate(page, templateId);
+        await expect(page.locator('#unlink-zones-form th').filter({ hasText: 'Type' })).toHaveCount(1);
+        // MASTER zones are labelled "Primary" in the interface
+        await expect(page.locator(`#unlink-zones-form tr:has-text("${zoneName}")`)).toContainText(/primary/i);
+      } finally {
+        await deleteZoneById(page, zoneId);
+        await deleteTemplate(page, templateId);
+      }
     });
   });
 
