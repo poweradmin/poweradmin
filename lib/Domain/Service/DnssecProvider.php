@@ -61,7 +61,7 @@ interface DnssecProvider
      * 4.7+; older servers should return false. Implementations that do not
      * back onto the PowerDNS API may also return false.
      */
-    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, string $privateKeyPem): bool;
+    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool;
 
     /**
      * Export the PEM-encoded private key for an existing cryptokey, or null

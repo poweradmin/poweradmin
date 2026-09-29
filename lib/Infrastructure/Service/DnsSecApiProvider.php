@@ -232,7 +232,7 @@ class DnsSecApiProvider implements DnssecProvider
         return (int)$zoneData['edited_serial'];
     }
 
-    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, string $privateKeyPem): bool
+    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool
     {
         $zone = new Zone($zoneName);
         $result = $this->client->importZoneKey($zone, $keyType, $algorithm, $privateKeyPem);
