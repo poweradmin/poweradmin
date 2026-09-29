@@ -182,4 +182,35 @@ class MailServiceTest extends TestCase
         // Since mail is disabled, it should return false
         $this->assertFalse($result);
     }
+
+    public function testConnectionCheckReachesTheConnectStageForABareIpv6Literal(): void
+    {
+        $logged = '';
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->method('error')->willReturnCallback(function (string $message) use (&$logged): void {
+            $logged = $message;
+        });
+
+        (new MailService($this->config, $logger))->canConnectToMailServer('::1', 1);
+
+        // Unbracketed, "::1" parses to an empty host and fails name resolution.
+        $this->assertStringNotContainsString('getaddrinfo', $logged);
+    }
+
+    public function testSmtpDsnBracketsAnIpv6Host(): void
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnMap([
+            ['mail', 'host', 'localhost', '2001:db8::25'],
+            ['mail', 'port', 25, 25],
+            ['mail', 'encryption', '', ''],
+            ['mail', 'username', '', ''],
+            ['mail', 'password', '', ''],
+            ['mail', 'auth', false, false],
+        ]);
+        $service = new MailService($config, $this->logger);
+        $method = new \ReflectionMethod($service, 'buildSmtpDsn');
+
+        $this->assertSame('smtp://[2001:db8::25]:25', $method->invoke($service));
+    }
 }
