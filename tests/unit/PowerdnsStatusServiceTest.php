@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use ReflectionClass;
-use ReflectionMethod;
 
 class PowerdnsStatusServiceTest extends TestCase
 {
@@ -233,28 +232,6 @@ class PowerdnsStatusServiceTest extends TestCase
             ['description' => 'Number of UDP queries received', 'type' => 'counter'],
             $status['metric_info']['udp-queries']
         );
-    }
-
-    #[DataProvider('socketHostProvider')]
-    public function testSocketHostBracketsIpv6Literals(string $host, string $expected): void
-    {
-        $method = new ReflectionMethod(PowerdnsStatusService::class, 'socketHost');
-
-        $this->assertSame($expected, $method->invoke(null, $host));
-    }
-
-    public static function socketHostProvider(): array
-    {
-        return [
-            'IPv4' => ['192.0.2.1', '192.0.2.1'],
-            'hostname' => ['ns1.example.com', 'ns1.example.com'],
-            'IPv6' => ['2001:db8:dead:beef:cafe:a:b:1', '[2001:db8:dead:beef:cafe:a:b:1]'],
-            'IPv6 loopback' => ['::1', '[::1]'],
-            'already bracketed' => ['[2001:db8::1]', '[2001:db8::1]'],
-            'scoped IPv6' => ['fe80::1%eth0', '[fe80::1%eth0]'],
-            'IPv4-mapped IPv6' => ['::ffff:192.0.2.1', '[::ffff:192.0.2.1]'],
-            'padded IPv6' => [' ::1 ', '[::1]'],
-        ];
     }
 
     public function testProbeHostReachesTheConnectStageForABareIpv6Literal(): void

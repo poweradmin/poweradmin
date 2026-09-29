@@ -446,4 +446,26 @@ class IpHelper
 
         return $shortened;
     }
+
+    /**
+     * Brackets a bare IPv6 literal for fsockopen(), which otherwise reads everything
+     * after its first colon as the port. A scheme prefix and a %zone suffix are kept.
+     */
+    public static function socketHost(string $host): string
+    {
+        $host = trim($host);
+        $scheme = '';
+        $schemeEnd = strpos($host, '://');
+        if ($schemeEnd !== false) {
+            $scheme = substr($host, 0, $schemeEnd + 3);
+            $host = substr($host, $schemeEnd + 3);
+        }
+
+        $address = explode('%', $host, 2)[0];
+        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+            return $scheme . '[' . $host . ']';
+        }
+
+        return $scheme . $host;
+    }
 }
