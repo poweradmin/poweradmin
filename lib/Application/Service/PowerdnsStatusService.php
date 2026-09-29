@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
+use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Error\ApiErrorException;
@@ -205,7 +206,7 @@ class PowerdnsStatusService
                 $errno = 0;
                 $errstr = '';
                 $timeout = 2; // 2 second timeout
-                $connection = @fsockopen(self::socketHost($server), 53, $errno, $errstr, $timeout);
+                $connection = @fsockopen(IpHelper::socketHost($server), 53, $errno, $errstr, $timeout);
 
                 if (!$connection) {
                     $results[$server]['status'] = 'unreachable';
@@ -228,20 +229,6 @@ class PowerdnsStatusService
         }
     }
 
-    /**
-     * fsockopen() reads everything after the first colon of a bare IPv6 literal
-     * as the port, so the address needs brackets. A %zone suffix stays inside them.
-     */
-    private static function socketHost(string $host): string
-    {
-        $host = trim($host);
-        $address = explode('%', $host, 2)[0];
-        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
-            return '[' . $host . ']';
-        }
-
-        return $host;
-    }
 
     private function formatUptime(int $uptimeSeconds): string
     {

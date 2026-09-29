@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -479,5 +479,27 @@ class IpHelper
         }
 
         return $validIps;
+    }
+
+    /**
+     * Brackets a bare IPv6 literal for fsockopen(), which otherwise reads everything
+     * after its first colon as the port. A scheme prefix and a %zone suffix are kept.
+     */
+    public static function socketHost(string $host): string
+    {
+        $host = trim($host);
+        $scheme = '';
+        $schemeEnd = strpos($host, '://');
+        if ($schemeEnd !== false) {
+            $scheme = substr($host, 0, $schemeEnd + 3);
+            $host = substr($host, $schemeEnd + 3);
+        }
+
+        $address = explode('%', $host, 2)[0];
+        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+            return $scheme . '[' . $host . ']';
+        }
+
+        return $scheme . $host;
     }
 }

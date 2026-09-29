@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Module\Whois\Service;
 
+use Poweradmin\Domain\Utility\IpHelper;
 use Exception;
 use Poweradmin\Domain\Service\DnsIdnService;
 
@@ -177,7 +178,7 @@ class WhoisService
 
         $port = 43;
 
-        $socket = @fsockopen($server, $port, $errno, $errstr, $this->socketTimeout);
+        $socket = @fsockopen(IpHelper::socketHost($server), $port, $errno, $errstr, $this->socketTimeout);
         if (!$socket) {
             return null;
         }

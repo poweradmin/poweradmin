@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Tests\Unit\Domain\Utility;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -552,5 +553,28 @@ class IpHelperTest extends TestCase
         $this->assertNull(IpHelper::networkToReverseZone('192.168.0.0/20'));
         // IPv6 reverse zones must align to a nibble boundary
         $this->assertNull(IpHelper::networkToReverseZone('2001:db8::/33'));
+    }
+
+    #[DataProvider('socketHostProvider')]
+    public function testSocketHostBracketsIpv6Literals(string $host, string $expected): void
+    {
+        $this->assertSame($expected, IpHelper::socketHost($host));
+    }
+
+    public static function socketHostProvider(): array
+    {
+        return [
+            'IPv4' => ['192.0.2.1', '192.0.2.1'],
+            'hostname' => ['ns1.example.com', 'ns1.example.com'],
+            'IPv6' => ['2001:db8:dead:beef:cafe:a:b:1', '[2001:db8:dead:beef:cafe:a:b:1]'],
+            'IPv6 loopback' => ['::1', '[::1]'],
+            'already bracketed' => ['[2001:db8::1]', '[2001:db8::1]'],
+            'scoped IPv6' => ['fe80::1%eth0', '[fe80::1%eth0]'],
+            'IPv4-mapped IPv6' => ['::ffff:192.0.2.1', '[::ffff:192.0.2.1]'],
+            'padded IPv6' => [' ::1 ', '[::1]'],
+            'scheme and IPv6' => ['ssl://2001:db8::25', 'ssl://[2001:db8::25]'],
+            'scheme and hostname' => ['tls://mail.example.com', 'tls://mail.example.com'],
+            'scheme and bracketed IPv6' => ['ssl://[2001:db8::25]', 'ssl://[2001:db8::25]'],
+        ];
     }
 }

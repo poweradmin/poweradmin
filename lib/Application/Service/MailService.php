@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Utility\IpHelper;
 use Exception;
 use Poweradmin\Domain\Service\MailService as MailServiceInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -351,7 +352,7 @@ class MailService implements MailServiceInterface
         $oldErrorReporting = error_reporting(0);
 
         // Try to establish a connection
-        $socket = @fsockopen($host, $port, $errno, $errstr, 5); // 5 second timeout is enough for testing
+        $socket = @fsockopen(IpHelper::socketHost($host), $port, $errno, $errstr, 5); // 5 second timeout is enough for testing
 
         // Restore error reporting
         error_reporting($oldErrorReporting);
@@ -448,7 +449,7 @@ class MailService implements MailServiceInterface
             $dsn .= '@';
         }
 
-        $dsn .= $host . ':' . $port;
+        $dsn .= IpHelper::socketHost($host) . ':' . $port;
 
         // Add encryption parameters
         $options = [];
