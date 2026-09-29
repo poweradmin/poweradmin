@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Mail;
 
+use Poweradmin\Domain\Utility\IpHelper;
 use Exception;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
@@ -345,7 +346,7 @@ class MailService
         $oldErrorReporting = error_reporting(0);
 
         // Try to establish a connection
-        $socket = @fsockopen($host, $port, $errno, $errstr, 5); // 5 second timeout is enough for testing
+        $socket = @fsockopen(IpHelper::socketHost($host), $port, $errno, $errstr, 5); // 5 second timeout is enough for testing
 
         // Restore error reporting
         error_reporting($oldErrorReporting);
@@ -462,7 +463,7 @@ class MailService
             $dsn .= '@';
         }
 
-        $dsn .= $host . ':' . $port;
+        $dsn .= IpHelper::socketHost($host) . ':' . $port;
 
         // Enforce STARTTLS when tls is configured. Symfony ignores a bare
         // ?encryption param, so use require_tls: the connection then fails instead

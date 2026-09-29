@@ -221,4 +221,33 @@ class MailServiceTest extends TestCase
         // Since mail is disabled, it should return false
         $this->assertFalse($result);
     }
+
+    public function testConnectionCheckReachesTheConnectStageForABareIpv6Literal(): void
+    {
+        $logged = '';
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->method('error')->willReturnCallback(function (string $message) use (&$logged): void {
+            $logged = $message;
+        });
+
+        (new MailService(new FakeConfiguration(), $logger))->canConnectToMailServer('::1', 1);
+
+        // Unbracketed, "::1" parses to an empty host and fails name resolution.
+        $this->assertStringNotContainsString('getaddrinfo', $logged);
+    }
+
+    public function testSmtpDsnBracketsAnIpv6Host(): void
+    {
+        $service = $this->service([
+            'host' => '2001:db8::25',
+            'port' => 25,
+            'encryption' => '',
+            'username' => '',
+            'password' => '',
+            'auth' => false,
+        ]);
+        $method = new \ReflectionMethod($service, 'buildSmtpDsn');
+
+        $this->assertSame('smtp://[2001:db8::25]:25', $method->invoke($service));
+    }
 }
