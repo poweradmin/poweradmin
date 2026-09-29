@@ -233,7 +233,7 @@ class PowerdnsStatusService
     {
         $errno = 0;
         $errstr = '';
-        $connection = @fsockopen($host, self::PROBE_PORT, $errno, $errstr, self::PROBE_TIMEOUT_SECONDS);
+        $connection = @fsockopen(self::socketHost($host), self::PROBE_PORT, $errno, $errstr, self::PROBE_TIMEOUT_SECONDS);
 
         if ($connection === false) {
             return $errstr;
@@ -241,6 +241,21 @@ class PowerdnsStatusService
 
         fclose($connection);
         return null;
+    }
+
+    /**
+     * fsockopen() reads everything after the first colon of a bare IPv6 literal
+     * as the port, so the address needs brackets. A %zone suffix stays inside them.
+     */
+    private static function socketHost(string $host): string
+    {
+        $host = trim($host);
+        $address = explode('%', $host, 2)[0];
+        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+            return '[' . $host . ']';
+        }
+
+        return $host;
     }
 
     private function formatUptime(int $uptimeSeconds): string
