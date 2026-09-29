@@ -106,7 +106,7 @@ class NullDnssecProvider implements DnssecProviderInterface
         return null;
     }
 
-    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, string $privateKeyPem): bool
+    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool
     {
         return false;
     }

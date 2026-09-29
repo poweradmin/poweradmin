@@ -461,7 +461,7 @@ class PowerdnsApiClient
      * (per docs/changelog/4.7.rst PR #11590). The server derives bits and
      * picks the right algorithm slot from the PEM contents.
      */
-    public function importZoneKey(Zone $zone, string $keyType, string $algorithm, string $privateKeyPem): bool
+    public function importZoneKey(Zone $zone, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
