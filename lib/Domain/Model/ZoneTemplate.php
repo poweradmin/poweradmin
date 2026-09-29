@@ -368,7 +368,9 @@ class ZoneTemplate
 
             try {
                 // Insert the zone template
-                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) VALUES (:name, :descr, :owner, :created_by)");
+                // Written explicitly: web-installer databases from 4.4 have is_default NOT NULL
+                // without a default, so omitting it fails the insert.
+                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by, is_default) VALUES (:name, :descr, :owner, :created_by, " . DbCompat::boolFalse((string) $this->config->get('database', 'type')) . ")");
                 $stmt->execute([
                     ':name' => $details['templ_name'],
                     ':descr' => $details['templ_descr'],
@@ -946,8 +948,10 @@ class ZoneTemplate
                 $isGlobal = isset($options['global']) && $options['global'] === true;
                 $owner = $this->resolveTemplateOwner($isGlobal, $userid);
 
-                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) 
-                    VALUES (:name, :descr, :owner, :created_by)");
+                // Written explicitly: web-installer databases from 4.4 have is_default NOT NULL
+                // without a default, so omitting it fails the insert.
+                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by, is_default) 
+                    VALUES (:name, :descr, :owner, :created_by, " . DbCompat::boolFalse((string) $this->config->get('database', 'type')) . ")");
 
                 $stmt->execute([
                     ':name' => $template_name,
