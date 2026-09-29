@@ -43,6 +43,7 @@ abstract class InternalApiController extends AbstractApiController
         // Additional validation for internal API
         $this->validateAuthentication();
         $this->validateCsrfHeader();
+        $this->refuseArrayQueryParameters();
     }
 
     /**
@@ -64,6 +65,17 @@ abstract class InternalApiController extends AbstractApiController
         if (!(new CsrfTokenService($this->session()))->validateToken($token)) {
             $response = $this->returnApiError('Invalid CSRF token', 403);
             $this->sendAndHalt($response);
+        }
+    }
+
+    /**
+     * Answer 400 when a query parameter arrives as an array; see arrayQueryParameter().
+     */
+    protected function refuseArrayQueryParameters(): void
+    {
+        $key = $this->arrayQueryParameter();
+        if ($key !== null) {
+            $this->sendAndHalt($this->returnErrorResponse(sprintf("Query parameter '%s' must be a single value", $key), 400));
         }
     }
 

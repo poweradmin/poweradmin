@@ -70,6 +70,23 @@ abstract class AbstractApiController extends BaseController
     }
 
     /**
+     * The first query parameter sent as an array (`?type[]=A`), or null when every
+     * value is a scalar. InputBag::get() throws on such a value, so subclasses refuse
+     * the request before any handler reads the query. The key is scrubbed to valid
+     * UTF-8 because it is echoed in a JSON error.
+     */
+    protected function arrayQueryParameter(): ?string
+    {
+        foreach ($this->request->query->all() as $key => $value) {
+            if (is_array($value)) {
+                return mb_scrub((string)$key, 'UTF-8');
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Checks if the current request is a JSON request
      *
      * @return bool True if the request is JSON, false otherwise

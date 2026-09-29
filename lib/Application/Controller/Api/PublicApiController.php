@@ -90,6 +90,8 @@ abstract class PublicApiController extends AbstractApiController
         // Enforce the API key's read-only / operation scope before any handler runs
         $this->enforceApiKeyMethodScope();
 
+        $this->refuseArrayQueryParameters();
+
         // HEAD passes the read-only scope check above; route it to the GET handler so
         // each controller answers it instead of falling through to a 405. The
         // bootstrap buffers away the GET body so the client still gets headers only.
@@ -156,6 +158,17 @@ abstract class PublicApiController extends AbstractApiController
         // log and audit lines name the API principal instead of "system".
         if ($this->authenticatedUserId > 0) {
             $this->services()->bindActor(new ApiKeyActor($this->authenticatedUserId, $this->getAuthenticatedUsername()));
+        }
+    }
+
+    /**
+     * Answer 400 when a query parameter arrives as an array; see arrayQueryParameter().
+     */
+    protected function refuseArrayQueryParameters(): void
+    {
+        $key = $this->arrayQueryParameter();
+        if ($key !== null) {
+            $this->sendAndHalt($this->returnApiError(sprintf("Query parameter '%s' must be a single value", $key), 400));
         }
     }
 

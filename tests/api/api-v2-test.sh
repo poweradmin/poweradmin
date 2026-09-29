@@ -363,6 +363,9 @@ test_record_listing() {
     assert_json "Sorted by ttl, then content descending" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "198.51.100.7,192.0.2.2,192.0.2.1"
     api_request_v2 "GET" "${base}/records?sort=owner" "" 400 "Reject unknown record sort field"
     api_request_v2 "GET" "${base}/records?sort=name:up" "" 400 "Reject unknown sort direction"
+    api_request_v2 "GET" "${base}/records?type%5B%5D=A" "" 400 "Reject a filter sent as an array"
+    assert_json "Array parameter is named" "$LAST_RESPONSE_BODY" '.message' "Query parameter 'type' must be a single value"
+    api_request_v2 "GET" "${base}/records?page%5B%5D=x" "" 400 "Reject page sent as an array"
 
     # Paging after filter and sort
     api_request_v2 "GET" "${base}/records?type=A&sort=content&per_page=2&page=2" "" 200 "Second page of A records"
