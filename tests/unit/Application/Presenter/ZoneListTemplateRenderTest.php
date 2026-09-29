@@ -120,10 +120,11 @@ class ZoneListTemplateRenderTest extends TestCase
 
     /**
      * @param list<array<string, mixed>>|null $rows
+     * @param array<string, mixed> $overrides
      */
-    private function renderForwardList(?array $rows = null, bool $batchPtr = true): string
+    private function renderForwardList(?array $rows = null, bool $batchPtr = true, array $overrides = []): string
     {
-        return $this->twig->render('list_forward_zones.html', [
+        return $this->twig->render('list_forward_zones.html', array_merge([
             'zones' => $rows ?? $this->decoratedRows(),
             'pending_change_requests_by_zone' => [7 => 1],
             'count_zones_all_letterstart' => 2,
@@ -160,7 +161,7 @@ class ZoneListTemplateRenderTest extends TestCase
             'perm_is_godlike' => true,
             'is_api_backend' => true,
             'nav' => ['batch_ptr' => $batchPtr],
-        ]);
+        ], $overrides));
     }
 
     public function testForwardListRendersEveryOptionalColumnFromTheReadModel(): void
@@ -185,6 +186,22 @@ class ZoneListTemplateRenderTest extends TestCase
         $this->assertStringNotContainsString('/zones/batch-ptr?id=', $this->renderForwardList($rows));
 
         $this->assertStringNotContainsString('/zones/batch-ptr?id=', $this->renderForwardList(null, false));
+    }
+
+    public function testShowAllKeepsThePageLinksWhenThePageHoldsFewerZonesThanMatched(): void
+    {
+        $pages = [
+            'pagination_items' => [
+                ['ellipsis' => false, 'active' => true, 'page' => 1, 'label' => '1', 'url' => '/zones/forward?start=1'],
+                ['ellipsis' => false, 'active' => false, 'page' => 2, 'label' => '2', 'url' => '/zones/forward?start=2'],
+            ],
+        ];
+
+        $partialPage = $this->renderForwardList(null, true, $pages + ['count_zones_all_letterstart' => 5]);
+        $this->assertStringContainsString('/zones/forward?start=2', $partialPage);
+
+        $wholeList = $this->renderForwardList(null, true, $pages + ['count_zones_all_letterstart' => 2]);
+        $this->assertStringNotContainsString('/zones/forward?start=2', $wholeList);
     }
 
     public function testDeleteUserPageReadsTheModelsThroughArrayAccess(): void
