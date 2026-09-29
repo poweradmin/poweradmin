@@ -446,7 +446,9 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
     ): int {
         $this->transaction()->begin();
         try {
-            $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) VALUES (:name, :descr, :owner, :created_by)");
+            // Written explicitly: web-installer databases from 4.4 have is_default NOT NULL
+            // without a default, so omitting it fails the insert.
+            $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by, is_default) VALUES (:name, :descr, :owner, :created_by, " . DbCompat::boolFalse($this->dbType()) . ")");
             $stmt->execute([
                 ':name' => $name,
                 ':descr' => $description,
