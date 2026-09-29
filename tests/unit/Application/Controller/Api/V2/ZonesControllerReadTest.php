@@ -188,6 +188,31 @@ class ZonesControllerReadTest extends V2ControllerTestCase
         $this->assertSame(['current_page' => PHP_INT_MAX, 'per_page' => 4, 'total' => 10, 'last_page' => 3], $body['pagination']);
     }
 
+    public function testAnEmptyListReportsTheCappedPerPage(): void
+    {
+        $this->permissions->method('getUserVisibleZoneIds')->willReturn(null);
+        $this->zones->method('getZoneCountFiltered')->willReturn(0);
+
+        $body = $this->decode($this->listZones(['per_page' => 999999]));
+
+        $this->assertSame(['current_page' => 1, 'per_page' => 10000, 'total' => 0, 'last_page' => 1], $body['pagination']);
+    }
+
+    public function testANegativePerPageReturnsEveryZoneLikeTheOtherLists(): void
+    {
+        $this->permissions->method('getUserVisibleZoneIds')->willReturn(null);
+        $this->zones->method('getZoneCountFiltered')->willReturn(2);
+        $this->zones->expects($this->once())
+            ->method('getAllZonesFiltered')
+            ->with(null, null, null)
+            ->willReturn([['id' => 1, 'name' => 'a.example.com'], ['id' => 2, 'name' => 'b.example.com']]);
+
+        $body = $this->decode($this->listZones(['per_page' => -5, 'page' => 2]));
+
+        $this->assertCount(2, $body['data']['zones']);
+        $this->assertArrayNotHasKey('pagination', $body);
+    }
+
     public function testPerPageIsCappedAtTheMaximumPageSize(): void
     {
         $this->permissions->method('getUserVisibleZoneIds')->willReturn(null);

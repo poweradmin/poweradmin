@@ -158,8 +158,8 @@ class ZonesController extends PublicApiController
             // Get filter parameters
             $nameFilter = $this->request->query->get('name');
 
-            // Get pagination parameters (defaults to returning all zones like PowerDNS and PowerDNS-Admin)
-            $perPage = (int)$this->request->query->get('per_page', 0);
+            // Without per_page every zone is returned, like PowerDNS
+            [$page, $perPage] = $this->pagingParameters();
 
             // Get zone IDs that the user can view (null = all zones, [] = no zones, array = specific zones)
             $visibleZoneIds = $this->apiPermissionService->getUserVisibleZoneIds($userId);
@@ -186,47 +186,24 @@ class ZonesController extends PublicApiController
                     'meta' => ['timestamp' => date('Y-m-d H:i:s')],
                     'pagination' => [
                         'current_page' => 1,
-                        'per_page' => $perPage > 0 ? $perPage : $totalCount,
+                        'per_page' => $perPage,
                         'total' => 0,
                         'last_page' => 1
                     ]
                 ]);
             }
 
-            // If per_page is 0 or not specified, return all zones (compatible with PowerDNS/PowerDNS-Admin)
             if ($perPage === 0) {
                 $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter);
-                $page = 1;
-                $lastPage = 1;
             } else {
-                // Use pagination with permission and name filtering at database level
-                $page = max(1, (int)$this->request->query->get('page', 1));
-                $perPage = min(self::MAX_PAGE_SIZE, max(1, $perPage));
                 // Checked before the offset, which overflows to a float for a huge page
                 $zones = ListPaging::isPastEnd($page, $perPage, $totalCount)
                     ? []
                     : $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, ($page - 1) * $perPage, $perPage);
-                $lastPage = (int)ceil($totalCount / $perPage);
             }
 
-            // Format zone data
             $formattedZones = array_map(ZoneResource::summary(...), $zones);
-
-            $responseData = [
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ];
-
-            // Only include pagination metadata if pagination was requested
-            if ($perPage > 0) {
-                $responseData['pagination'] = [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total' => $totalCount,
-                    'last_page' => $lastPage
-                ];
-            }
+            $responseData = ['meta' => ['timestamp' => date('Y-m-d H:i:s')]] + ListPaging::extra($page, $perPage, $totalCount);
 
             return $this->returnApiResponse(['zones' => $formattedZones], true, 'Zones retrieved successfully', 200, $responseData);
         } catch (\Throwable $e) {
