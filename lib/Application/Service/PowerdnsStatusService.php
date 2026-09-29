@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -205,7 +205,7 @@ class PowerdnsStatusService
                 $errno = 0;
                 $errstr = '';
                 $timeout = 2; // 2 second timeout
-                $connection = @fsockopen($server, 53, $errno, $errstr, $timeout);
+                $connection = @fsockopen(self::socketHost($server), 53, $errno, $errstr, $timeout);
 
                 if (!$connection) {
                     $results[$server]['status'] = 'unreachable';
@@ -226,6 +226,21 @@ class PowerdnsStatusService
                 'error' => 'An unexpected error occurred: ' . $e->getMessage()
             ];
         }
+    }
+
+    /**
+     * fsockopen() reads everything after the first colon of a bare IPv6 literal
+     * as the port, so the address needs brackets. A %zone suffix stays inside them.
+     */
+    private static function socketHost(string $host): string
+    {
+        $host = trim($host);
+        $address = explode('%', $host, 2)[0];
+        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+            return '[' . $host . ']';
+        }
+
+        return $host;
     }
 
     private function formatUptime(int $uptimeSeconds): string
