@@ -6,6 +6,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
@@ -82,5 +83,98 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertTrue($result['signed.example.com']['secured']);
+    }
+
+    #[Test]
+    public function getZonesCountsRecordsOnlyForTheVisiblePage(): void
+    {
+        $this->addZones([102 => 'c.example.com', 103 => 'd.example.com', 104 => 'e.example.com'], 1);
+        $counted = [];
+        $backend = $this->backendCountingInto($counted, [
+            100 => 'signed.example.com', 101 => 'unsigned.example.com',
+            102 => 'c.example.com', 103 => 'd.example.com', 104 => 'e.example.com',
+        ]);
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 2, 'name', 'ASC');
+
+        $this->assertSame(['c.example.com', 'd.example.com'], array_keys($result));
+        $this->assertSame([102, 103], $counted);
+        $this->assertSame(1020, $result['c.example.com']['count_records']);
+    }
+
+    #[Test]
+    public function getZonesSortedByRecordCountCountsOnlyTheUsersZones(): void
+    {
+        $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
+        $this->db->exec("INSERT INTO users (id, username, fullname) VALUES (2, 'owner', 'Owner')");
+        $this->addZones([102 => 'c.example.com', 103 => 'd.example.com'], 2);
+        $counted = [];
+        $backend = $this->backendCountingInto($counted, [
+            100 => 'signed.example.com', 101 => 'unsigned.example.com',
+            102 => 'c.example.com', 103 => 'd.example.com',
+        ]);
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('own', 2, 'all', 0, 1, 'count_records', 'DESC');
+
+        $this->assertSame(['d.example.com'], array_keys($result));
+        $this->assertSame([102, 103], $counted);
+    }
+
+    #[Test]
+    public function getZonesWithoutPaginationCountsOnlyTheFilteredZones(): void
+    {
+        $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
+        $this->db->exec("INSERT INTO users (id, username, fullname) VALUES (2, 'owner', 'Owner')");
+        $this->addZones([102 => 'c.example.com', 103 => 'd.example.com', 104 => 'cx.example.com'], 2);
+        $counted = [];
+        $backend = $this->backendCountingInto($counted, [
+            100 => 'signed.example.com', 101 => 'unsigned.example.com',
+            102 => 'c.example.com', 103 => 'd.example.com', 104 => 'cx.example.com',
+        ]);
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('own', 2, 'c', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC');
+
+        $this->assertSame(['c.example.com', 'cx.example.com'], array_keys($result));
+        $this->assertSame([102, 104], $counted);
+        $this->assertSame(1040, $result['cx.example.com']['count_records']);
+    }
+
+    /**
+     * @param array<int, string> $zones domain id => zone name
+     */
+    private function addZones(array $zones, int $owner): void
+    {
+        $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, comment, zone_templ_id, zone_name, zone_type)
+            VALUES (?, ?, '', 0, ?, 'NATIVE')");
+        foreach ($zones as $id => $name) {
+            $stmt->execute([$id, $owner, $name]);
+        }
+    }
+
+    /**
+     * @param int[] $counted receives the domain ids passed to countZoneRecords
+     * @param array<int, string> $zones domain id => zone name
+     */
+    private function backendCountingInto(array &$counted, array $zones): DnsBackendProvider
+    {
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn(array_map(
+            fn(int $id, string $name) => ['id' => $id, 'name' => $name, 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
+            array_keys($zones),
+            $zones
+        ));
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getZoneStats')->willReturn([]);
+        $backend->method('countZoneRecords')->willReturnCallback(function (int $id) use (&$counted) {
+            $counted[] = $id;
+            return $id * 10;
+        });
+
+        return $backend;
     }
 }

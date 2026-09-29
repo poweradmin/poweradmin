@@ -144,9 +144,6 @@ class ApiDomainRepository implements DomainRepositoryInterface
         // Enrich with ownership from local tables
         $allZones = $this->enrichZonesWithOwnership($allZones);
 
-        // Enrich with record counts from API
-        $this->enrichWithRecordCounts($allZones);
-
         // Filter by ownership
         if ($perm === 'own') {
             $ownedDomainIds = $this->getOwnedDomainIds($userid);
@@ -166,12 +163,23 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $apiSortBy = 'owner_username';
         }
 
+        // Each count fetches a whole zone from the API, so count only the visible
+        // page unless the list is sorted by the count itself.
+        $sortByRecordCount = $sortby === 'count_records';
+        if ($sortByRecordCount) {
+            $this->enrichWithRecordCounts($allZones);
+        }
+
         // Sort
         $allZones = ResultPaginator::sort($allZones, $apiSortBy, $sortDirection);
 
         // Paginate
         if ($rowamount < Constants::DEFAULT_MAX_ROWS) {
             $allZones = ResultPaginator::paginate($allZones, $rowstart, $rowamount);
+        }
+
+        if (!$sortByRecordCount) {
+            $this->enrichWithRecordCounts($allZones);
         }
 
         $zoneStats = $iface_zonelist_serial ? $this->backendProvider->getZoneStats() : [];
