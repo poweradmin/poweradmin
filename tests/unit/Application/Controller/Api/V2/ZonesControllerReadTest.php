@@ -174,6 +174,20 @@ class ZonesControllerReadTest extends V2ControllerTestCase
         $this->assertSame(['current_page' => 1, 'per_page' => 4, 'total' => 10, 'last_page' => 3], $body['pagination']);
     }
 
+    public function testAPagePastTheEndIsAnEmptyPageEvenWhenItWouldOverflowTheOffset(): void
+    {
+        $this->permissions->method('getUserVisibleZoneIds')->willReturn(null);
+        $this->zones->method('getZoneCountFiltered')->willReturn(10);
+        $this->zones->expects($this->never())->method('getAllZonesFiltered');
+
+        $response = $this->listZones(['per_page' => 4, 'page' => '99999999999999999999']);
+        $body = $this->decode($response);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame([], $body['data']['zones']);
+        $this->assertSame(['current_page' => PHP_INT_MAX, 'per_page' => 4, 'total' => 10, 'last_page' => 3], $body['pagination']);
+    }
+
     public function testPerPageIsCappedAtTheMaximumPageSize(): void
     {
         $this->permissions->method('getUserVisibleZoneIds')->willReturn(null);

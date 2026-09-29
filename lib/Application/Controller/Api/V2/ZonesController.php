@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\ZoneResource;
+use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Service\Zone\ZoneOwnershipInputFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipInput;
@@ -201,9 +202,10 @@ class ZonesController extends PublicApiController
                 // Use pagination with permission and name filtering at database level
                 $page = max(1, (int)$this->request->query->get('page', 1));
                 $perPage = min(self::MAX_PAGE_SIZE, max(1, $perPage));
-                $offset = ($page - 1) * $perPage;
-
-                $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, $offset, $perPage);
+                // Checked before the offset, which overflows to a float for a huge page
+                $zones = ListPaging::isPastEnd($page, $perPage, $totalCount)
+                    ? []
+                    : $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, ($page - 1) * $perPage, $perPage);
                 $lastPage = (int)ceil($totalCount / $perPage);
             }
 
