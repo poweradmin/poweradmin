@@ -97,6 +97,8 @@ readonly class DynamicDnsUpdateService
      * @param int[]|null $allowedZoneIds When provided, the resolved zone must be in this
      *                                   list (used to honor an API key's zone scope); null
      *                                   means no additional restriction.
+     * @param bool $mayRemoveRecords False refuses (status 'nodelete') a sync that would leave
+     *                               a record type with fewer records than it has now.
      * @return array{status: string, zone_id: ?int, applied_ipv4: list<string>, applied_ipv6: list<string>, changed: bool}
      */
     public function applyForUser(
@@ -105,7 +107,8 @@ readonly class DynamicDnsUpdateService
         HostnameValue $hostname,
         IpAddressList $ipList,
         bool $dualstackUpdate,
-        ?array $allowedZoneIds = null
+        ?array $allowedZoneIds = null,
+        bool $mayRemoveRecords = true
     ): array {
         $zoneId = $this->findOwningZoneId($user, $hostname);
         if ($zoneId === null) {
@@ -127,9 +130,13 @@ readonly class DynamicDnsUpdateService
         }
 
         try {
-            $updateResult = $this->updateZone($zoneId, $hostname, $ipList, $dualstackUpdate);
+            $updateResult = $this->updateZone($zoneId, $hostname, $ipList, $dualstackUpdate, $mayRemoveRecords);
         } catch (\Exception $e) {
             return $this->emptyResult('dnserr', $zoneId);
+        }
+
+        if ($updateResult['removalRefused']) {
+            return $this->emptyResult('nodelete', $zoneId);
         }
 
         if (!$updateResult['wasUpdated'] && !$updateResult['hasValidRecords']) {
@@ -191,21 +198,37 @@ readonly class DynamicDnsUpdateService
         return $bestZoneId;
     }
 
-    private function updateZone(int $zoneId, HostnameValue $hostname, IpAddressList $ipList, bool $dualstackUpdate): array
-    {
-        $wasUpdated = false;
-        $hasValidRecords = false;
-
+    private function updateZone(
+        int $zoneId,
+        HostnameValue $hostname,
+        IpAddressList $ipList,
+        bool $dualstackUpdate,
+        bool $mayRemoveRecords
+    ): array {
         // Dualstack updates always process both record types so the opposite family is
         // cleared when switching from dual-stack to single-stack.
+        $wanted = [];
         if ($dualstackUpdate || $ipList->hasIpv4Addresses()) {
-            $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::A, $ipList->getSortedIpv4Addresses());
-            $wasUpdated = $wasUpdated || $syncResult['wasUpdated'];
-            $hasValidRecords = $hasValidRecords || $syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0;
+            $wanted[RecordType::A] = $ipList->getSortedIpv4Addresses();
+        }
+        if ($dualstackUpdate || $ipList->hasIpv6Addresses()) {
+            $wanted[RecordType::AAAA] = $ipList->getSortedIpv6Addresses();
         }
 
-        if ($dualstackUpdate || $ipList->hasIpv6Addresses()) {
-            $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::AAAA, $ipList->getSortedIpv6Addresses());
+        // Every family is read and checked before any write, so a refused removal
+        // leaves the name untouched rather than half-synced.
+        $existing = [];
+        foreach ($wanted as $recordType => $ips) {
+            $existing[$recordType] = $this->repository->getDnsRecords($zoneId, $hostname, $recordType);
+            if (!$mayRemoveRecords && count(array_unique($ips)) < count($existing[$recordType])) {
+                return ['wasUpdated' => false, 'hasValidRecords' => true, 'removalRefused' => true];
+            }
+        }
+
+        $wasUpdated = false;
+        $hasValidRecords = false;
+        foreach ($wanted as $recordType => $ips) {
+            $syncResult = $this->syncDnsRecords($zoneId, $hostname, $recordType, $ips, $existing[$recordType]);
             $wasUpdated = $wasUpdated || $syncResult['wasUpdated'];
             $hasValidRecords = $hasValidRecords || $syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0;
         }
@@ -217,12 +240,15 @@ readonly class DynamicDnsUpdateService
         return [
             'wasUpdated' => $wasUpdated,
             'hasValidRecords' => $hasValidRecords,
+            'removalRefused' => false,
         ];
     }
 
-    private function syncDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType, array $newIps): array
+    /**
+     * @param array<string, int|string> $existing current record ids of this type, keyed by content
+     */
+    private function syncDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType, array $newIps, array $existing): array
     {
-        $existing = $this->repository->getDnsRecords($zoneId, $hostname, $recordType);
         $hasExistingRecords = !empty($existing);
         $wasUpdated = false;
 

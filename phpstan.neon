@@ -51,11 +51,6 @@ parameters:
     -
       identifier: instanceof.alwaysTrue
       path: lib/Application/Module/ModuleRegistry.php
-    #   DynamicDnsUpdateService - `$flag = $flag || ...` accumulators, whose left
-    #   side is literally false on first use. Rewriting would only obscure it.
-    -
-      identifier: booleanOr.leftAlwaysFalse
-      path: lib/Domain/Service/Dns/DynamicDnsUpdateService.php
     #   RRSIGRecordValidator - DateTime::modify() is typed DateTime by PHPStan but
     #   returns DateTime|false before PHP 8.3, which phan does flag. Dropping the
     #   truthiness check produces a TypeError on the ordering comparison.

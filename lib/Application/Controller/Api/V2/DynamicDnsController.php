@@ -113,7 +113,7 @@ class DynamicDnsController extends PublicApiController
         )
     )]
     #[OA\Response(response: 400, description: 'Invalid hostname or IP payload')]
-    #[OA\Response(response: 403, description: 'User lacks DDNS permission, the API key cannot access the zone, or the zone is read-only')]
+    #[OA\Response(response: 403, description: 'User lacks DDNS permission, the API key cannot access the zone or lacks the delete operation for a sync that removes records, or the zone is read-only')]
     #[OA\Response(response: 404, description: 'No owned zone contains this hostname')]
     #[OA\Response(response: 409, description: 'No matching records exist to update')]
     private function updateRecord(): JsonResponse
@@ -123,7 +123,7 @@ class DynamicDnsController extends PublicApiController
         }
 
         // The operation scope (create+update) is enforced centrally via
-        // requiredApiKeyOperations(); the zone scope is applied below.
+        // requiredApiKeyOperations(); the zone scope and delete for removals are applied below.
         $scope = $this->getApiKeyScope();
 
         $payload = $this->getJsonInput();
@@ -159,7 +159,8 @@ class DynamicDnsController extends PublicApiController
             $hostname,
             $ipList,
             $dualstack,
-            $scope->getZoneIds()
+            $scope->getZoneIds(),
+            $scope->isOperationTypeAllowed(ApiKeyScope::OP_DELETE)
         );
 
         return match ($result['status']) {
@@ -174,6 +175,7 @@ class DynamicDnsController extends PublicApiController
             'nohost' => $this->returnApiError('Hostname is not contained in any zone the user owns', 404),
             'readonly' => $this->returnApiError('Records in Secondary and Consumer zones are read-only; they replicate from a primary', 403),
             'approval' => $this->returnApiError(self::CHANGE_REQUEST_REQUIRED, 403),
+            'nodelete' => $this->returnApiError('Forbidden: this API key is not permitted to perform the delete operation', 403),
             '!yours' => $this->returnApiError('Update did not produce any change and no matching records exist', 409),
             default => $this->returnApiError('Failed to apply dynamic DNS update', 500),
         };

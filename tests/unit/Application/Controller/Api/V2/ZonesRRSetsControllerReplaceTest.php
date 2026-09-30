@@ -506,6 +506,63 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
         ]], $this->decode($response)['data']);
     }
 
+    /**
+     * @return array<string, array{list<string>, list<string>, bool}>
+     */
+    public static function createUpdateKeyReplaceProvider(): array
+    {
+        return [
+            'fewer records' => [['192.0.2.1', '192.0.2.2', '192.0.2.3'], ['192.0.2.1', '192.0.2.2'], false],
+            'one different record' => [['192.0.2.1', '192.0.2.2'], ['192.0.2.9'], false],
+            'duplicates count once' => [['192.0.2.1', '192.0.2.2'], ['192.0.2.1', '192.0.2.1'], false],
+            'same size, new contents' => [['192.0.2.1', '192.0.2.2'], ['192.0.2.8', '192.0.2.9'], true],
+            'single record swap' => [['192.0.2.1'], ['192.0.2.9'], true],
+            'more records' => [['192.0.2.1'], ['192.0.2.1', '192.0.2.2'], true],
+            'new rrset' => [[], ['192.0.2.1'], true],
+        ];
+    }
+
+    /**
+     * @param list<string> $existing
+     * @param list<string> $submitted
+     */
+    #[DataProvider('createUpdateKeyReplaceProvider')]
+    public function testAKeyWithoutDeleteMayOnlyReplaceWithoutShrinkingTheSet(array $existing, array $submitted, bool $allowed): void
+    {
+        $this->scope = new ApiKeyScope(null, [ApiKeyScope::OP_VIEW, ApiKeyScope::OP_CREATE, ApiKeyScope::OP_UPDATE], false);
+        $this->records->method('getRRSetRecords')->willReturn(array_map(
+            fn(string $ip) => ['name' => 'www.example.com', 'type' => 'A', 'ttl' => 60, 'content' => $ip, 'prio' => 0, 'disabled' => 0],
+            $existing
+        ));
+        $this->replacer->expects($allowed ? $this->once() : $this->never())
+            ->method('replace')
+            ->willReturn(['success' => true, 'message' => 'RRSet replaced successfully', 'name' => 'www.example.com', 'records' => []]);
+
+        $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 60, 'records' => array_map(
+            fn(string $ip) => ['content' => $ip],
+            $submitted
+        )]);
+
+        if ($allowed) {
+            $this->assertSame(200, $response->getStatusCode());
+        } else {
+            $this->assertSame(403, $response->getStatusCode());
+            $this->assertSame('Forbidden: this API key is not permitted to perform the delete operation', $this->messageOf($response));
+        }
+    }
+
+    public function testAKeyWithDeleteMayShrinkTheSetWithoutReadingItFirst(): void
+    {
+        $this->scope = new ApiKeyScope(null, [ApiKeyScope::OP_CREATE, ApiKeyScope::OP_UPDATE, ApiKeyScope::OP_DELETE], false);
+        $this->records->expects($this->once())->method('getRRSetRecords')->willReturn([]);
+        $this->replacer->expects($this->once())->method('replace')
+            ->willReturn(['success' => true, 'message' => 'RRSet replaced successfully', 'name' => 'www.example.com', 'records' => []]);
+
+        $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 60, 'records' => [['content' => '192.0.2.1']]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
     public function testAnExceptionFromTheServiceIs500WithItsMessage(): void
     {
         $this->replacer->method('replace')->willThrowException(new \RuntimeException('connection lost'));
