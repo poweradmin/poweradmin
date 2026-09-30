@@ -1426,6 +1426,23 @@ FrankenPHP provides significant performance improvements over traditional PHP de
 - **Built-in Compression**: Automatic gzip compression for better bandwidth usage
 - **Static Asset Optimization**: Efficient serving with proper caching headers
 
+## Customizing the Interface
+
+Mount only the files you customize, never the whole `/app/templates` directory or `/app`. Templates change together with the code that renders them, so a templates directory from another Poweradmin version keeps serving outdated pages after an upgrade. That breaks forms in ways that are hard to trace, for example saving records failing with a PHP `max_input_vars` warning.
+
+Custom styles are files the image does not ship, so mount them one by one:
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -v ./custom_light.css:/app/templates/default/style/custom_light.css:ro \
+  -v ./custom_dark.css:/app/templates/default/style/custom_dark.css:ro \
+  poweradmin/poweradmin
+```
+
+Use `modern` instead of `default` in the path when `PA_THEME` is `modern`. Do not mount the whole `style/` directory: it hides the theme's own `light.css` and `dark.css`.
+
+A custom header or footer (`/app/templates/<theme>/custom/header.html` and `footer.html`) starts as a copy of the theme's own file, so compare it with the new version after each upgrade.
+
 ## Troubleshooting
 
 ### Common Issues
