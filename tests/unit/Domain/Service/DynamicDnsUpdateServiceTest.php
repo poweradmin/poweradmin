@@ -147,6 +147,64 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertFalse($result['changed']);
     }
 
+    public function testApplyForUserWithoutRemovalLeavesTheNameUntouchedWhenDualstackWouldClearAaaa(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturnCallback(
+            fn(int $zoneId, HostnameValue $name, string $type): array => $type === 'AAAA' ? ['2001:db8::1' => 456] : []
+        );
+        // The A insert would come first, so refusing only at the AAAA step would half-sync the name
+        $this->repository->expects($this->never())->method('insertDnsRecord');
+        $this->repository->expects($this->never())->method('deleteDnsRecord');
+        $this->repository->expects($this->never())->method('updateSOASerial');
+
+        $result = $this->service->applyForUser($user, 'user', $hostname, $ipList, true, null, false);
+
+        $this->assertSame('nodelete', $result['status']);
+        $this->assertSame(1, $result['zone_id']);
+        $this->assertFalse($result['changed']);
+    }
+
+    public function testApplyForUserWithoutRemovalRefusesFewerAddressesThanTheNameHas(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn(['192.168.1.1' => 10, '192.168.1.2' => 11]);
+        $this->repository->expects($this->never())->method('deleteDnsRecord');
+
+        $result = $this->service->applyForUser($user, 'user', $hostname, $ipList, false, null, false);
+
+        $this->assertSame('nodelete', $result['status']);
+    }
+
+    public function testApplyForUserWithoutRemovalStillSwapsASingleAddress(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+        $ipList = new IpAddressList(['192.168.1.9'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn(['192.168.1.1' => 10]);
+        $this->repository->expects($this->once())->method('insertDnsRecord')->with(1, $hostname, 'A', '192.168.1.9');
+        $this->repository->expects($this->once())->method('deleteDnsRecord')->with(10);
+        $this->repository->expects($this->once())->method('updateSOASerial')->with(1);
+
+        $result = $this->service->applyForUser($user, 'user', $hostname, $ipList, false, null, false);
+
+        $this->assertSame('good', $result['status']);
+        $this->assertTrue($result['changed']);
+    }
+
     public function testProcessUpdateReturnsNochgWhenNoUpdateNeeded(): void
     {
         $request = new DynamicDnsRequest(

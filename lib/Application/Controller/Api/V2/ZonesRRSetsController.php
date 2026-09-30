@@ -105,8 +105,8 @@ class ZonesRRSetsController extends PublicApiController
         exit;
     }
 
-    // POST/PUT/PATCH all replace an RRSet (an upsert that may create or update),
-    // so writes require both operations rather than the method's default mapping.
+    // POST/PUT/PATCH all replace an RRSet (an upsert that may create or update), so
+    // writes require both; a replace that shrinks the set also needs delete (see replaceRRSet).
     protected function requiredApiKeyOperations(): array
     {
         return match (strtoupper($this->request->getMethod())) {
@@ -114,6 +114,20 @@ class ZonesRRSetsController extends PublicApiController
             'DELETE' => [ApiKeyScope::OP_DELETE],
             default => [ApiKeyScope::OP_CREATE, ApiKeyScope::OP_UPDATE],
         };
+    }
+
+    /**
+     * Whether the API key may replace the existing RRSet with the given contents. A
+     * replace that leaves fewer records than the set has now removes records, so it
+     * also needs the delete operation; same-size or larger replaces only add or change.
+     *
+     * @param array<int, array<string, mixed>> $existingRecords
+     * @param string[] $contents
+     */
+    private function mayReplaceRRSet(array $existingRecords, array $contents): bool
+    {
+        return count($existingRecords) <= count(array_unique($contents))
+            || $this->getApiKeyScope()->isOperationTypeAllowed(ApiKeyScope::OP_DELETE);
     }
 
     /**
@@ -351,7 +365,7 @@ class ZonesRRSetsController extends PublicApiController
         path: '/v2/zones/{id}/rrsets',
         operationId: 'v2ReplaceZoneRRSet',
         summary: 'Replace or create an RRSet',
-        description: 'Replaces all records with the specified name and type. If the RRSet doesn\'t exist, it will be created.',
+        description: 'Replaces all records with the specified name and type. If the RRSet doesn\'t exist, it will be created. An API key needs create and update, plus delete when the new set has fewer records than the current one.',
         tags: ['rrsets'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -439,6 +453,7 @@ class ZonesRRSetsController extends PublicApiController
             ]
         )
     )]
+    #[OA\Response(response: 403, description: 'Not permitted to edit this RRSet, or the API key lacks the delete operation for a replace that removes records')]
     private function replaceRRSet(): JsonResponse
     {
         try {
@@ -599,8 +614,15 @@ class ZonesRRSetsController extends PublicApiController
                     return $this->returnApiError('No valid records to create', 400);
                 }
 
-                // All validation passed - now safe to delete existing records
                 $existingRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
+                if (!$this->mayReplaceRRSet($existingRecords, array_column($validatedRecords, 'content'))) {
+                    if ($useTransaction) {
+                        $this->db->rollBack();
+                    }
+                    return $this->returnApiError('Forbidden: this API key is not permitted to perform the delete operation', 403);
+                }
+
+                // All validation passed - now safe to delete existing records
                 foreach ($existingRecords as $record) {
                     $deleteResult = $this->recordManager->deleteRecord($record['id']);
                     if (!$deleteResult) {

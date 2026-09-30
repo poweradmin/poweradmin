@@ -2810,13 +2810,15 @@ test_api_key_scopes() {
     local ro_secret="scopetest-readonly-key-aaaaaaaaaaaa"
     local ops_secret="scopetest-ops-key-bbbbbbbbbbbb"
     local zone_secret="scopetest-zone-key-cccccccccccc"
+    local cu_secret="scopetest-cu-key-dddddddddddd"
 
     # Clean any leftovers from a previous run, then seed fresh keys.
-    db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone');" >/dev/null 2>&1 || true
+    db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone','scopetest-cu');" >/dev/null 2>&1 || true
 
     db_exec "INSERT INTO api_keys (name, secret_key, created_by, is_readonly) VALUES ('scopetest-ro', '$(hash_api_key "$ro_secret")', ${owner_id}, 1);" >/dev/null 2>&1
     db_exec "INSERT INTO api_keys (name, secret_key, created_by, allowed_operations) VALUES ('scopetest-ops', '$(hash_api_key "$ops_secret")', ${owner_id}, 'view,create');" >/dev/null 2>&1
     db_exec "INSERT INTO api_keys (name, secret_key, created_by) VALUES ('scopetest-zone', '$(hash_api_key "$zone_secret")', ${owner_id});" >/dev/null 2>&1
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by, allowed_operations) VALUES ('scopetest-cu', '$(hash_api_key "$cu_secret")', ${owner_id}, 'view,create,update');" >/dev/null 2>&1
 
     # Two zones: one in the zone-scoped key's allowlist, one outside it.
     local zone_a zone_b
@@ -2853,6 +2855,23 @@ test_api_key_scopes() {
     api_request_v2_with_key "$ops_secret" "POST" "/zones/${zone_a}/records/bulk" \
         '{"operations":[{"action":"update","id":1,"name":"x.scope-allowed.example.com","type":"A","content":"192.0.2.9","ttl":3600}]}' \
         403 "Ops key (view+create) may not bulk-update"
+
+    # An RRSet replace that leaves fewer records removes some, so it also needs delete (gh #1606).
+    local rrset_two='{"name":"cu","type":"A","ttl":3600,"records":[{"content":"192.0.2.1"},{"content":"192.0.2.2"}]}'
+    api_request_v2_with_key "$cu_secret" "PUT" "/zones/${zone_a}/rrsets" "$rrset_two" 200 "Create+update key may create an RRSet"
+    api_request_v2_with_key "$cu_secret" "PUT" "/zones/${zone_a}/rrsets" \
+        '{"name":"cu","type":"A","ttl":3600,"records":[{"content":"192.0.2.1"}]}' 403 "Create+update key may not shrink an RRSet"
+    if api_request_v2 "GET" "/zones/${zone_a}/rrsets/cu/A" "" 200 "RRSet still readable after the refused shrink"; then
+        if [[ "$(echo "$LAST_RESPONSE_BODY" | jq '.data.rrset.records | length' 2>/dev/null)" == "2" ]]; then
+            increment_test; print_pass "Refused shrink left both records in place"
+        else
+            increment_test; print_fail "Refused shrink must leave both records in place"
+        fi
+    fi
+    api_request_v2_with_key "$cu_secret" "PUT" "/zones/${zone_a}/rrsets" \
+        '{"name":"cu","type":"A","ttl":3600,"records":[{"content":"192.0.2.8"},{"content":"192.0.2.9"}]}' 200 "Create+update key may change every record in an RRSet"
+    api_request_v2 "PUT" "/zones/${zone_a}/rrsets" \
+        '{"name":"cu","type":"A","ttl":3600,"records":[{"content":"192.0.2.8"}]}' 200 "Unrestricted key may shrink an RRSet"
 
     # A zone-scoped key is confined to its allowlist, so it cannot create new zones.
     api_request_v2_with_key "$zone_secret" "POST" "/zones" '{"name":"zonescope-create.example.com","type":"MASTER"}' 403 "Zone-scoped key may not create new zones"
@@ -2894,8 +2913,8 @@ test_api_key_scopes() {
 
     # Cleanup seeded keys (api_key_zones rows cascade / are removed with the key)
     # and the two test zones.
-    db_exec "DELETE FROM api_key_zones WHERE api_key_id IN (SELECT id FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone'));" >/dev/null 2>&1 || true
-    db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone');" >/dev/null 2>&1 || true
+    db_exec "DELETE FROM api_key_zones WHERE api_key_id IN (SELECT id FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone','scopetest-cu'));" >/dev/null 2>&1 || true
+    db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone','scopetest-cu');" >/dev/null 2>&1 || true
     [[ -n "$zone_a" ]] && api_request_v2 "DELETE" "/zones/${zone_a}" "" 204 "Cleanup in-scope zone" || true
     [[ -n "$zone_b" ]] && api_request_v2 "DELETE" "/zones/${zone_b}" "" 204 "Cleanup out-of-scope zone" || true
 }
