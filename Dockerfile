@@ -80,9 +80,10 @@ RUN apk upgrade --no-cache \
     && apk del .build-deps \
     && rm -rf /var/cache/apk/*
 
-# Run on the production ini; mount another file into conf.d/ to change the overrides
+# Run on the production ini; the overrides load first in conf.d, so any ini file
+# mounted there changes them
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
-    && cat > "$PHP_INI_DIR/conf.d/zz-poweradmin.ini" <<'INIEOF'
+    && cat > "$PHP_INI_DIR/conf.d/00-poweradmin.ini" <<'INIEOF'
 expose_php = Off
 memory_limit = 256M
 upload_max_filesize = 16M
