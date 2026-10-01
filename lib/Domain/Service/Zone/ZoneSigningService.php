@@ -26,7 +26,6 @@ use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Port\ZoneSigningInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -41,20 +40,24 @@ class ZoneSigningService
         private readonly ZoneValidationService $validator,
         private readonly SOARecordManagerInterface $soaRecordManager,
         private readonly AuditLoggerInterface $audit,
-        private readonly ConfigurationInterface $config,
         private readonly LoggerInterface $logger
     ) {
     }
 
     public function sign(int $zoneId, string $zoneName): ZoneSigningResult
     {
+        // Ask first: the server-settings and presigned lookups below read a failed request as "off"
+        $secured = $this->dnssec->fetchZoneSecured($zoneName);
+        if ($secured === null) {
+            return new ZoneSigningResult(ZoneSigningOutcome::UNREACHABLE);
+        }
         if (!$this->dnssec->isDnssecEnabled()) {
             return new ZoneSigningResult(ZoneSigningOutcome::SERVER_DISABLED);
         }
         if ($this->dnssec->isZonePresigned($zoneName)) {
             return new ZoneSigningResult(ZoneSigningOutcome::PRESIGNED);
         }
-        if ($this->zoneIsSecured($zoneName)) {
+        if ($secured) {
             return new ZoneSigningResult(ZoneSigningOutcome::ALREADY_SIGNED);
         }
 
@@ -71,8 +74,11 @@ class ZoneSigningService
             $this->logger->error('DNSSEC signing failed for zone: {zone}', ['zone' => $zoneName]);
             return new ZoneSigningResult(ZoneSigningOutcome::SECURE_FAILED);
         }
-        // isZoneSecured() reports false on API errors too, so the provider's own result is checked first.
-        if (!$this->zoneIsSecured($zoneName)) {
+        $secured = $this->dnssec->fetchZoneSecured($zoneName);
+        if ($secured === null) {
+            return new ZoneSigningResult(ZoneSigningOutcome::UNREACHABLE);
+        }
+        if (!$secured) {
             $this->logger->warning('DNSSEC signing verification failed for zone: {zone} - API returned success but zone not secured', ['zone' => $zoneName]);
             return new ZoneSigningResult(ZoneSigningOutcome::VERIFY_FAILED);
         }
@@ -83,22 +89,17 @@ class ZoneSigningService
         return new ZoneSigningResult(ZoneSigningOutcome::SIGNED);
     }
 
-    /**
-     * Asked again after each write, since the answer is PowerDNS state.
-     *
-     * @phpstan-impure
-     */
-    private function zoneIsSecured(string $zoneName): bool
-    {
-        return $this->dnssec->isZoneSecured($zoneName, $this->config);
-    }
-
     public function unsign(int $zoneId, string $zoneName): ZoneSigningResult
     {
+        // A failed lookup must not read as "not signed", which callers take for "nothing to do"
+        $secured = $this->dnssec->fetchZoneSecured($zoneName);
+        if ($secured === null) {
+            return new ZoneSigningResult(ZoneSigningOutcome::UNREACHABLE);
+        }
         if ($this->dnssec->isZonePresigned($zoneName)) {
             return new ZoneSigningResult(ZoneSigningOutcome::PRESIGNED);
         }
-        if (!$this->zoneIsSecured($zoneName)) {
+        if (!$secured) {
             return new ZoneSigningResult(ZoneSigningOutcome::NOT_SIGNED);
         }
 
@@ -106,7 +107,11 @@ class ZoneSigningService
             $this->logger->error('DNSSEC unsigning failed for zone: {zone}', ['zone' => $zoneName]);
             return new ZoneSigningResult(ZoneSigningOutcome::UNSECURE_FAILED);
         }
-        if ($this->zoneIsSecured($zoneName)) {
+        $secured = $this->dnssec->fetchZoneSecured($zoneName);
+        if ($secured === null) {
+            return new ZoneSigningResult(ZoneSigningOutcome::UNREACHABLE);
+        }
+        if ($secured) {
             $this->logger->warning('DNSSEC unsigning verification failed for zone: {zone} - API returned success but zone still secured', ['zone' => $zoneName]);
             return new ZoneSigningResult(ZoneSigningOutcome::VERIFY_FAILED);
         }

@@ -139,7 +139,6 @@ final class ZoneServices
             new ZoneValidationService($this->services->recordRepository()),
             $this->services->soaRecordManager(),
             $this->services->auditService(),
-            $this->config,
             $this->logger
         );
     }

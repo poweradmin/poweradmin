@@ -588,20 +588,29 @@ class PowerdnsApiClient
      */
     public function isZoneSecured(Zone $zone): bool
     {
+        // The web UI treats "could not ask" as unsigned so a page still renders
+        return $this->fetchZoneSecured($zone) ?? false;
+    }
+
+    /**
+     * Check if a zone is secured with DNSSEC, telling a failed request apart from an unsigned zone
+     *
+     * @return bool|null Whether the zone is signed, or null when PowerDNS could not be asked
+     */
+    public function fetchZoneSecured(Zone $zone): ?bool
+    {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName());
             $response = $this->request('GET', $endpoint);
 
-            return $response &&
-                   $response['responseCode'] === 200 &&
-                   isset($response['data']['dnssec']) &&
-                   $response['data']['dnssec'];
-        } catch (ApiErrorException $e) {
-            // Log the error but don't break the UI flow
-            $this->logger->error('DNSSEC check failed for zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
+            if ($response && $response['responseCode'] === 200 && is_array($response['data']) && array_key_exists('dnssec', $response['data'])) {
+                return (bool)$response['data']['dnssec'];
+            }
 
-            // Return false as a fallback - this assumes zone is not secured when we can't tell
-            return false;
+            return null;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('DNSSEC check failed for zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
+            return null;
         }
     }
 

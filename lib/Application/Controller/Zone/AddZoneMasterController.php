@@ -155,7 +155,7 @@ class AddZoneMasterController extends BaseController
         $dnssecMessage = $signed === null ? null : match ($signed->outcome) {
             ZoneSigningOutcome::SIGNED => ['success', _('Zone has been created and signed with DNSSEC successfully.')],
             ZoneSigningOutcome::INVALID_ZONE => ['warning', _('Zone was created successfully, but DNSSEC signing was skipped due to validation errors:') . "\n\n" . $signed->detail],
-            ZoneSigningOutcome::SECURE_FAILED => ['warning', _('Zone was created, but securing it with DNSSEC failed. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.')],
+            ZoneSigningOutcome::SECURE_FAILED, ZoneSigningOutcome::UNREACHABLE => ['warning', _('Zone was created, but securing it with DNSSEC failed. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.')],
             ZoneSigningOutcome::VERIFY_FAILED => ['warning', _('Zone was created and signing was requested, but verification failed. Check DNSSEC keys.')],
             default => null,
         };

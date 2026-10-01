@@ -38,4 +38,5 @@ enum ZoneSigningOutcome: string
     case SECURE_FAILED = 'secure_failed';
     case UNSECURE_FAILED = 'unsecure_failed';
     case VERIFY_FAILED = 'verify_failed';
+    case UNREACHABLE = 'unreachable';
 }

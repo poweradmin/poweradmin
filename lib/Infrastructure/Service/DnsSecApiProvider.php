@@ -93,6 +93,11 @@ final class DnsSecApiProvider implements DnssecProviderInterface
         }
     }
 
+    public function fetchZoneSecured(string $zoneName): ?bool
+    {
+        return $this->client->fetchZoneSecured(new Zone($zoneName));
+    }
+
     public function isZonePresigned(string $zoneName): bool
     {
         if (!array_key_exists($zoneName, $this->presignedByZone)) {

@@ -32,6 +32,11 @@ interface ZoneSigningInterface
     public function isZoneSecured(string $zoneName, $config): bool;
 
     /**
+     * Whether the zone is signed, or null when PowerDNS could not be asked.
+     */
+    public function fetchZoneSecured(string $zoneName): ?bool;
+
+    /**
      * Whether the zone carries the PRESIGNED metadata, meaning it was signed
      * at the primary server and DNSSEC cannot be managed locally.
      */

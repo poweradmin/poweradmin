@@ -31,7 +31,6 @@ use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\ZoneValidationService;
-use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
 
 /**
@@ -62,7 +61,7 @@ class ZoneSigningServiceTest extends TestCase
 
     public function testSigningBumpsTheSerialSecuresRectifiesAndAudits(): void
     {
-        $this->dnssec->method('isZoneSecured')->willReturnOnConsecutiveCalls(false, true);
+        $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(false, true);
         $this->dnssec->expects($this->once())->method('secureZone')->with(self::ZONE)->willReturn(true);
         $this->dnssec->expects($this->once())->method('rectifyZone')->with(self::ZONE)->willReturn(true);
         $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID)->willReturn(true);
@@ -76,7 +75,7 @@ class ZoneSigningServiceTest extends TestCase
         $this->validator = $this->createMock(ZoneValidationService::class);
         $this->validator->method('validateZoneForDnssec')->willReturn(['valid' => false, 'issues' => []]);
         $this->validator->method('getFormattedErrorMessage')->willReturn('No NS records');
-        $this->dnssec->method('isZoneSecured')->willReturn(false);
+        $this->dnssec->method('fetchZoneSecured')->willReturn(false);
         $this->dnssec->expects($this->never())->method('secureZone');
         $this->soa->expects($this->never())->method('updateSOASerial');
 
@@ -89,7 +88,7 @@ class ZoneSigningServiceTest extends TestCase
     public function testPresignedAndAlreadySignedZonesAreLeftAlone(): void
     {
         $this->dnssec->method('isZonePresigned')->willReturnOnConsecutiveCalls(true, false);
-        $this->dnssec->method('isZoneSecured')->willReturn(true);
+        $this->dnssec->method('fetchZoneSecured')->willReturn(true);
         $this->dnssec->expects($this->never())->method('secureZone');
 
         $this->assertSame(ZoneSigningOutcome::PRESIGNED, $this->service()->sign(self::ZONE_ID, self::ZONE)->outcome);
@@ -98,7 +97,7 @@ class ZoneSigningServiceTest extends TestCase
 
     public function testAProviderSuccessThatDoesNotShowUpIsReportedAsUnverified(): void
     {
-        $this->dnssec->method('isZoneSecured')->willReturn(false);
+        $this->dnssec->method('fetchZoneSecured')->willReturn(false);
         $this->dnssec->method('secureZone')->willReturn(true);
         $this->dnssec->expects($this->never())->method('rectifyZone');
         $this->audit->expects($this->never())->method('logDnssecSignZone');
@@ -108,7 +107,7 @@ class ZoneSigningServiceTest extends TestCase
 
     public function testUnsigningBumpsTheSerialOnlyAfterItTook(): void
     {
-        $this->dnssec->method('isZoneSecured')->willReturnOnConsecutiveCalls(true, false);
+        $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(true, false);
         $this->dnssec->expects($this->once())->method('unsecureZone')->with(self::ZONE)->willReturn(true);
         $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID)->willReturn(true);
         $this->audit->expects($this->once())->method('logDnssecUnsignZone')->with(self::ZONE_ID, self::ZONE);
@@ -118,11 +117,33 @@ class ZoneSigningServiceTest extends TestCase
 
     public function testAFailedUnsignLeavesTheSerialAlone(): void
     {
-        $this->dnssec->method('isZoneSecured')->willReturn(true);
+        $this->dnssec->method('fetchZoneSecured')->willReturn(true);
         $this->dnssec->method('unsecureZone')->willReturn(false);
         $this->soa->expects($this->never())->method('updateSOASerial');
 
         $this->assertSame(ZoneSigningOutcome::UNSECURE_FAILED, $this->service()->unsign(self::ZONE_ID, self::ZONE)->outcome);
+    }
+
+    public function testAZoneStateNobodyCouldReadIsReportedAsUnreachableBeforeAnythingMoves(): void
+    {
+        $this->dnssec->method('fetchZoneSecured')->willReturn(null);
+        $this->dnssec->expects($this->never())->method('isDnssecEnabled');
+        $this->dnssec->expects($this->never())->method('secureZone');
+        $this->dnssec->expects($this->never())->method('unsecureZone');
+        $this->soa->expects($this->never())->method('updateSOASerial');
+
+        $this->assertSame(ZoneSigningOutcome::UNREACHABLE, $this->service()->sign(self::ZONE_ID, self::ZONE)->outcome);
+        $this->assertSame(ZoneSigningOutcome::UNREACHABLE, $this->service()->unsign(self::ZONE_ID, self::ZONE)->outcome);
+    }
+
+    public function testAStateThatCannotBeReadBackAfterSigningIsNotAuditedAsSigned(): void
+    {
+        $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(false, null);
+        $this->dnssec->method('secureZone')->willReturn(true);
+        $this->dnssec->expects($this->never())->method('rectifyZone');
+        $this->audit->expects($this->never())->method('logDnssecSignZone');
+
+        $this->assertSame(ZoneSigningOutcome::UNREACHABLE, $this->service()->sign(self::ZONE_ID, self::ZONE)->outcome);
     }
 
     private function service(): ZoneSigningService
@@ -132,7 +153,6 @@ class ZoneSigningServiceTest extends TestCase
             $this->validator,
             $this->soa,
             $this->audit,
-            $this->createMock(ConfigurationInterface::class),
             new NullLogger()
         );
     }

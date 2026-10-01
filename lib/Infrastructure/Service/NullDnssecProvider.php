@@ -52,6 +52,11 @@ class NullDnssecProvider implements DnssecProviderInterface
         return false;
     }
 
+    public function fetchZoneSecured(string $zoneName): ?bool
+    {
+        return false;
+    }
+
     public function isZonePresigned(string $zoneName): bool
     {
         return false;

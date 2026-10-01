@@ -23,11 +23,13 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Port\ZoneSigningInterface;
 use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
@@ -135,6 +137,7 @@ class ZoneDnssecController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
     #[OA\Response(response: 501, description: 'DNSSEC management requires the PowerDNS API')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function getStatus(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -157,11 +160,11 @@ class ZoneDnssecController extends PublicApiController
         }
 
         try {
-            return $this->returnApiResponse(
-                $this->buildStatus($zoneName),
-                true,
-                'DNSSEC status retrieved successfully'
-            );
+            $status = $this->buildStatus($zoneName);
+            if ($status instanceof JsonResponse) {
+                return $status;
+            }
+            return $this->returnApiResponse($status, true, 'DNSSEC status retrieved successfully');
         } catch (Exception $e) {
             return $this->handleException($e, 'ZoneDnssecController::getStatus', 'Failed to retrieve DNSSEC status');
         }
@@ -201,6 +204,7 @@ class ZoneDnssecController extends PublicApiController
     #[OA\Response(response: 409, description: 'Zone is presigned; DNSSEC is managed at the primary server')]
     #[OA\Response(response: 500, description: 'Failed to update DNSSEC status')]
     #[OA\Response(response: 501, description: 'DNSSEC management requires the PowerDNS API')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function setStatus(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -232,11 +236,20 @@ class ZoneDnssecController extends PublicApiController
             $signing = $this->zoneSigningService();
             $result = $enabled ? $signing->sign($zoneId, $zoneName) : $signing->unsign($zoneId, $zoneName);
 
+            $message = match ($result->outcome) {
+                ZoneSigningOutcome::SIGNED => 'DNSSEC enabled successfully',
+                ZoneSigningOutcome::UNSIGNED => 'DNSSEC disabled successfully',
+                ZoneSigningOutcome::ALREADY_SIGNED => 'DNSSEC already enabled',
+                ZoneSigningOutcome::NOT_SIGNED => 'DNSSEC already disabled',
+                default => null,
+            };
+            if ($message !== null) {
+                $status = $this->buildStatus($zoneName);
+                return $status instanceof JsonResponse ? $status : $this->returnApiResponse($status, true, $message);
+            }
+
             return match ($result->outcome) {
-                ZoneSigningOutcome::SIGNED => $this->returnApiResponse($this->buildStatus($zoneName), true, 'DNSSEC enabled successfully'),
-                ZoneSigningOutcome::UNSIGNED => $this->returnApiResponse($this->buildStatus($zoneName), true, 'DNSSEC disabled successfully'),
-                ZoneSigningOutcome::ALREADY_SIGNED => $this->returnApiResponse($this->buildStatus($zoneName), true, 'DNSSEC already enabled'),
-                ZoneSigningOutcome::NOT_SIGNED => $this->returnApiResponse($this->buildStatus($zoneName), true, 'DNSSEC already disabled'),
+                ZoneSigningOutcome::UNREACHABLE => $this->unreachable(),
                 ZoneSigningOutcome::SERVER_DISABLED => $this->returnApiError('DNSSEC is not enabled on the server', 400),
                 ZoneSigningOutcome::PRESIGNED => $this->returnApiError('DNSSEC for this zone is presigned and managed at the primary server', 409),
                 ZoneSigningOutcome::INVALID_ZONE => $this->returnApiError($result->detail, 400),
@@ -258,17 +271,24 @@ class ZoneDnssecController extends PublicApiController
     /**
      * Build the DNSSEC status payload (enabled flag, presigned flag, DS records, DNSKEY) for a zone.
      *
-     * @return array{enabled: bool, presigned: bool, ds_records: array<int, array{key_tag: int, algorithm: int, digest_type: int, digest: string}>, dnskey: ?string}
+     * @return array{enabled: bool, presigned: bool, ds_records: array<int, array{key_tag: int, algorithm: int, digest_type: int, digest: string}>, dnskey: ?string}|JsonResponse
+     *         The status, or the error to send when PowerDNS could not be asked
      */
-    private function buildStatus(string $zoneName): array
+    private function buildStatus(string $zoneName): array|JsonResponse
     {
-        $enabled = $this->dnssecProvider->isZoneSecured($zoneName, $this->config);
+        $enabled = $this->dnssecProvider->fetchZoneSecured($zoneName);
+        if ($enabled === null) {
+            return $this->unreachable();
+        }
 
         $dsRecords = [];
         $dnskey = null;
 
         if ($enabled) {
-            $keys = $this->apiClient->getZoneKeys(new Zone($zoneName));
+            $keys = $this->apiClient?->fetchZoneKeys(new Zone($zoneName));
+            if ($keys === null) {
+                return $this->unreachable();
+            }
             foreach ($keys as $key) {
                 $keyDs = $key->getDs();
                 foreach ($keyDs as $ds) {
@@ -289,6 +309,14 @@ class ZoneDnssecController extends PublicApiController
             'ds_records' => $dsRecords,
             'dnskey' => $dnskey,
         ];
+    }
+
+    /**
+     * The error for a status PowerDNS did not report, which must not read as "unsigned".
+     */
+    private function unreachable(): JsonResponse
+    {
+        return $this->returnApiError('Failed to retrieve DNSSEC status from PowerDNS', RefusalStatus::of(Refusal::BACKEND_UNREACHABLE));
     }
 
     /**
