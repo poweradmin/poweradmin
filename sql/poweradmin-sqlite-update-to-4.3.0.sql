@@ -1,7 +1,7 @@
 -- Poweradmin schema update to 4.3.0
 -- Add zone_name, zone_type, zone_master columns to zones table for API-mode support
 -- Make domain_id nullable (API-mode zones don't have a PowerDNS domain ID)
--- Backfill zone metadata from PowerDNS domains table for existing zones
+-- The zone backfill from the PowerDNS domains table is in poweradmin-sqlite-update-to-4.3.0-backfill.sql
 --
 -- Note: SQLite doesn't support ALTER COLUMN, so we recreate the table to make
 -- domain_id nullable.
@@ -23,18 +23,6 @@ CREATE TABLE zones_new (
 -- Copy data from old table
 INSERT INTO zones_new (id, domain_id, owner, comment, zone_templ_id)
 SELECT id, domain_id, owner, comment, zone_templ_id FROM zones;
-
--- Backfill zone_name, zone_type, zone_master from PowerDNS domains table.
--- Only updates the lowest-id row per domain_id to respect the UNIQUE index on zone_name.
-UPDATE zones_new
-SET zone_name = (SELECT d.name FROM domains d WHERE d.id = zones_new.domain_id),
-    zone_type = (SELECT d.type FROM domains d WHERE d.id = zones_new.domain_id),
-    zone_master = (SELECT d.master FROM domains d WHERE d.id = zones_new.domain_id)
-WHERE zones_new.zone_name IS NULL
-  AND zones_new.domain_id IS NOT NULL
-  AND zones_new.id = (
-    SELECT MIN(z2.id) FROM zones_new z2 WHERE z2.domain_id = zones_new.domain_id
-  );
 
 -- Drop old table
 DROP TABLE zones;
@@ -85,3 +73,8 @@ WHERE event LIKE '%operation:api_key_%';
 DELETE FROM log_users WHERE event LIKE '%operation:api_key_%';
 
 COMMIT;
+
+-- Existing zones get zone_name, zone_type and zone_master from the PowerDNS domains
+-- table in poweradmin-sqlite-update-to-4.3.0-backfill.sql. Run it after this script
+-- when the database holds the PowerDNS tables (SQL backend); SQLite cannot skip a
+-- statement on a missing table, so it is kept out of this script.
