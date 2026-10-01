@@ -31,6 +31,7 @@ use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
@@ -179,7 +180,7 @@ class ZoneManagementService
      * @param array<int> $groupIds Optional list of group IDs to assign as owners
      * @param int|null $actingUserId User performing the creation, used for the overlap check
      * @param string|null $soaEditApi Per-zone SOA-EDIT-API choice; null applies the dns.soa_edit_api default
-     * @return array{success: true, zone_id: int, domain: string, type: string, dnssec: ?ZoneSigningResult}|array{success: false, message: string, refusal: Refusal, code: string}
+     * @return array{success: true, zone_id: int, domain: string, type: string, dnssec: ?ZoneSigningResult, shadowed: ?ShadowedRecords}|array{success: false, message: string, refusal: Refusal, code: string}
      */
     public function createZone(
         string $domain,
@@ -227,7 +228,8 @@ class ZoneManagementService
 
         // Check if non-delegation records exist (prevents zone hijacking)
         // Only delegation records (NS, DS) are allowed
-        if ($this->repositoryFactory->createRecordRepository()->hasNonDelegationRecords($domain)) {
+        $recordRepository = $this->repositoryFactory->createRecordRepository();
+        if ($recordRepository->hasNonDelegationRecords($domain)) {
             return ['success' => false, 'message' => 'Domain already exists', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_EXISTS];
         }
 
@@ -286,6 +288,8 @@ class ZoneManagementService
         // @phan-suppress-next-line PhanTypeInvalidDimOffset - Phan narrows the union shape to the failure arm here
         $zoneTemplate = $resolvedTemplate['id'];
 
+        $shadowed = $this->findShadowedRecords($domain, $actingUserId, $recordRepository);
+
         $this->logger->info(
             '[ZoneManagementService] Creating zone: {domain}, Type: {type}, Owner: {owner}, Groups: {groups}',
             ['domain' => $domain, 'type' => $type, 'owner' => $owner ?? 'none', 'groups' => implode(',', $groupIds) ?: 'none']
@@ -322,7 +326,23 @@ class ZoneManagementService
             'domain' => $domain,
             'type' => $type,
             'dnssec' => $signed,
+            'shadowed' => $shadowed,
         ];
+    }
+
+    /**
+     * Parent-zone records the new zone will hide. Only reported to someone who
+     * may view the parent zone, so its record names are not disclosed to others.
+     */
+    private function findShadowedRecords(string $zoneName, ?int $actingUserId, RecordRepositoryInterface $records): ?ShadowedRecords
+    {
+        $finder = new ShadowedRecordFinder($this->domainRepository(), $records);
+        $parent = $finder->closestParent($zoneName);
+        if ($parent === null || ($actingUserId !== null && !$this->permissions->canViewZone($actingUserId, $parent['id']))) {
+            return null;
+        }
+
+        return $finder->hiddenRecords($parent, $zoneName);
     }
 
     /**

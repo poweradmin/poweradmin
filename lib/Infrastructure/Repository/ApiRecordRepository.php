@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Record reads for the API backend mode, served from PowerDNS RRsets.
@@ -181,6 +182,19 @@ final class ApiRecordRepository implements RecordRepositoryInterface
     public function getRecordsByName(int $domainId, string $name, ?string $type = null): array
     {
         return $this->backendProvider->getRecordsByName($domainId, $name, $type);
+    }
+
+    public function getRecordsAtOrUnder(int $domainId, string $name): array
+    {
+        $name = rtrim($name, '.');
+        // The API has no subtree filter, so the whole zone is fetched and narrowed here
+        $records = array_filter(
+            $this->backendProvider->getRecordsByZoneId($domainId),
+            fn(array $r): bool => empty($r['disabled']) && DnsHelper::isWithinZone(rtrim((string)$r['name'], '.'), $name)
+        );
+        usort($records, fn(array $a, array $b): int => [strtolower($a['name']), $a['type']] <=> [strtolower($b['name']), $b['type']]);
+
+        return array_map(fn(array $r): array => ['name' => $r['name'], 'type' => $r['type'], 'content' => $r['content']], $records);
     }
 
     public function getFilteredRecords(

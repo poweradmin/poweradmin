@@ -2006,6 +2006,8 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\Zone\\DnssecKeyService' => __DIR__ . '/../..' . '/lib/Domain/Service/Zone/DnssecKeyService.php',
         'Poweradmin\\Domain\\Service\\Zone\\DnssecPrivateKeyConverter' => __DIR__ . '/../..' . '/lib/Domain/Service/Zone/DnssecPrivateKeyConverter.php',
         'Poweradmin\\Domain\\Service\\Zone\\ForwardZoneAssociationService' => __DIR__ . '/../..' . '/lib/Domain/Service/Zone/ForwardZoneAssociationService.php',
+        'Poweradmin\\Domain\\Service\\Zone\\ShadowedRecordFinder' => __DIR__ . '/../..' . '/lib/Domain/Service/Zone/ShadowedRecordFinder.php',
+        'Poweradmin\\Domain\\Service\\Zone\\ShadowedRecords' => __DIR__ . '/../..' . '/lib/Domain/Service/Zone/ShadowedRecords.php',
         'Poweradmin\\Domain\\Service\\Zone\\ZoneAccountSyncService' => __DIR__ . '/../..' . '/lib/Domain/Service/Zone/ZoneAccountSyncService.php',
         'Poweradmin\\Domain\\Service\\Zone\\ZoneChangeRequestResult' => __DIR__ . '/../..' . '/lib/Domain/Service/Zone/ZoneChangeRequestResult.php',
         'Poweradmin\\Domain\\Service\\Zone\\ZoneChangeRequestService' => __DIR__ . '/../..' . '/lib/Domain/Service/Zone/ZoneChangeRequestService.php',

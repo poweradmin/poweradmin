@@ -334,7 +334,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $zones = $this->createMock(ZoneManagementService::class);
         $zones->method('createZone')->willReturnCallback(function (...$args) use (&$creates): array {
             $creates[] = $args;
-            return ['success' => true, 'zone_id' => 31];
+            return ['success' => true, 'zone_id' => 31, 'domain' => $args[0], 'type' => $args[1], 'dnssec' => null, 'shadowed' => null];
         });
         $this->factory->method('zoneManagementService')->willReturn($zones);
 

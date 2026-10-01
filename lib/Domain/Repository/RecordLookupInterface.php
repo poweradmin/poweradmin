@@ -99,6 +99,16 @@ interface RecordLookupInterface
     public function getRecordsByName(int $domainId, string $name, ?string $type = null): array;
 
     /**
+     * Get the enabled records in a zone at a name or anywhere below it, matched
+     * case-insensitively. Empty non-terminals are excluded.
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Name without a trailing dot
+     * @return array<int, array{name: string, type: string, content: string}> Records ordered by name and type
+     */
+    public function getRecordsAtOrUnder(int $domainId, string $name): array;
+
+    /**
      * Check if any PTR record exists for a given reverse domain name
      *
      * @param int $domain_id Domain ID

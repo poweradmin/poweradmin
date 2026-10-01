@@ -364,6 +364,31 @@ final class SqlRecordRepository implements RecordRepositoryInterface
         return array_map(self::decodeFlags(...), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
+    public function getRecordsAtOrUnder(int $domainId, string $name): array
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $name = strtolower(rtrim($name, '.'));
+
+        // Escape LIKE wildcards with '=' (not backslash, which MySQL mangles in
+        // string literals) so an underscore label such as _dmarc matches literally.
+        $pattern = '%.' . str_replace(['=', '%', '_'], ['==', '=%', '=_'], $name);
+
+        $stmt = $this->db->prepare(
+            "SELECT name, type, content FROM $records_table
+             WHERE domain_id = :domain_id
+             AND (LOWER(name) = :name OR LOWER(name) LIKE :pattern ESCAPE '=')
+             AND type IS NOT NULL AND type != ''
+             AND disabled = " . DbCompat::boolFalse($this->dbType) . "
+             ORDER BY LOWER(name), type"
+        );
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name);
+        $stmt->bindValue(':pattern', $pattern);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getFilteredRecords(
         int $zone_id,
         int $row_start,

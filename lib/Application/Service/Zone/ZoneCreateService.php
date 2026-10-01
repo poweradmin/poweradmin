@@ -142,6 +142,6 @@ class ZoneCreateService
             );
         }
 
-        return ZoneCreateOutcome::created($zoneId, $zoneName, $created['dnssec'] ?? null);
+        return ZoneCreateOutcome::created($zoneId, $zoneName, $created['dnssec'] ?? null, $created['shadowed'] ?? null);
     }
 }

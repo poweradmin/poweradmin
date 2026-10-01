@@ -107,6 +107,24 @@ class DnsHelper
     }
 
     /**
+     * Lowercased ancestor names of a zone, closest parent first, up to the
+     * top-level label: sub.example.com gives example.com, then com.
+     *
+     * @return list<string>
+     */
+    public static function ancestorNames(string $zoneName): array
+    {
+        $labels = explode('.', strtolower(rtrim($zoneName, '.')));
+        $ancestors = [];
+
+        for ($i = 1, $count = count($labels); $i < $count; $i++) {
+            $ancestors[] = implode('.', array_slice($labels, $i));
+        }
+
+        return $ancestors;
+    }
+
+    /**
      * The form PowerDNS stores in domains.catalog and matches members against:
      * lowercase, no trailing dot. Its lookup is an exact string match, so any
      * other spelling names a producer that is accepted and never published.

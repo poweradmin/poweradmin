@@ -26,6 +26,7 @@ namespace Poweradmin\Domain\Service\Zone;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Blocks creating a zone that overlaps an existing zone owned by another user.
@@ -74,7 +75,7 @@ class ZoneOverlapService
      */
     private function findConflictingAncestor(string $zoneName, int $userId): ?string
     {
-        $ancestors = $this->ancestorNames($zoneName);
+        $ancestors = DnsHelper::ancestorNames($zoneName);
         if ($ancestors === []) {
             return null;
         }
@@ -109,23 +110,6 @@ class ZoneOverlapService
         }
 
         return null;
-    }
-
-    /**
-     * Ancestor names from the closest parent up to the top-level label.
-     *
-     * @return list<string>
-     */
-    private function ancestorNames(string $zoneName): array
-    {
-        $labels = explode('.', $this->normalizeName($zoneName));
-        $ancestors = [];
-
-        for ($i = 1, $count = count($labels); $i < $count; $i++) {
-            $ancestors[] = implode('.', array_slice($labels, $i));
-        }
-
-        return $ancestors;
     }
 
     private function normalizeName(string $name): string

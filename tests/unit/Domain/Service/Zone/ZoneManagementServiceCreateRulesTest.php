@@ -57,6 +57,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
     private const GLOBAL_TEMPLATE = 11;
 
     private bool $thirdLevelCheck = false;
+    private bool $parentZoneOwnershipCheck = true;
 
     protected function setUp(): void
     {
@@ -79,7 +80,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
     private function service(?PdnsCapabilities $capabilities = null, ?DomainRepositoryInterface $domains = null): ZoneManagementService
     {
         $config = new FakeConfiguration([
-            'dns' => ['third_level_check' => $this->thirdLevelCheck],
+            'dns' => ['third_level_check' => $this->thirdLevelCheck, 'parent_zone_ownership_check' => $this->parentZoneOwnershipCheck],
             'database' => ['type' => 'sqlite'],
         ]);
 
@@ -272,5 +273,53 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
     public function testWithoutActingUserOnlyExistenceIsChecked(): void
     {
         $this->assertSame(['id' => '10'], $this->service()->resolveZoneTemplate((string)self::PRIVATE_TEMPLATE, null));
+    }
+
+    public function testCreatedZoneReportsTheParentRecordsItHides(): void
+    {
+        $parentId = (int)$this->db->query("SELECT id FROM domains WHERE name = 'parent.example'")->fetchColumn();
+        $this->db->exec("INSERT INTO records (domain_id, name, type, content) VALUES
+            ($parentId, 'sub.parent.example', 'NS', 'ns1.sub.parent.example'),
+            ($parentId, 'sub.parent.example', 'DS', '1 13 2 abcd'),
+            ($parentId, 'ns1.sub.parent.example', 'A', '192.0.2.1'),
+            ($parentId, 'WWW.sub.parent.example', 'A', '192.0.2.2'),
+            ($parentId, '_dmarc.sub.parent.example', 'TXT', 'v=DMARC1'),
+            ($parentId, 'xsub.parent.example', 'A', '192.0.2.3'),
+            ($parentId, 'www.axb.parent.example', 'A', '192.0.2.4')");
+        $this->db->exec("INSERT INTO records (domain_id, name, type, content, disabled) VALUES ($parentId, 'off.sub.parent.example', 'A', '192.0.2.6', 1)");
+
+        $result = $this->service()->createZone('sub.parent.example', 'MASTER', self::ADMIN_USER_ID, '', 'none', false, [], self::ADMIN_USER_ID);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('parent.example', $result['shadowed']->parentZoneName);
+        // Delegation data (NS and DS at the cut, glue for its name server) and disabled records are not hidden records
+        $this->assertSame([
+            ['name' => '_dmarc.sub.parent.example', 'type' => 'TXT'],
+            ['name' => 'www.sub.parent.example', 'type' => 'A'],
+        ], $result['shadowed']->records);
+
+        // An underscore in the new name must not act as a LIKE wildcard
+        $this->assertNull($this->service()->createZone('a_b.parent.example', 'MASTER', self::ADMIN_USER_ID, '', 'none', false, [], self::ADMIN_USER_ID)['shadowed']);
+    }
+
+    public function testHiddenRecordsAreOnlyReportedToWhoeverMaySeeTheParentZone(): void
+    {
+        $parentId = (int)$this->db->query("SELECT id FROM domains WHERE name = 'parent.example'")->fetchColumn();
+        $this->db->exec("INSERT INTO records (domain_id, name, type, content) VALUES ($parentId, 'www.sub.parent.example', 'A', '192.0.2.2')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (50, 'zone_master_add')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (2, 50)");
+
+        $this->parentZoneOwnershipCheck = false;
+        $result = $this->service()->createZone('sub.parent.example', 'MASTER', self::OTHER_USER, '', 'none', false, [], self::OTHER_USER);
+
+        $this->assertTrue($result['success']);
+        $this->assertNull($result['shadowed']);
+
+        // Viewing other users' zones is enough; ownership is not required
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (51, 'zone_content_view_others')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (2, 51)");
+        $this->db->exec("INSERT INTO records (domain_id, name, type, content) VALUES ($parentId, 'www.sub2.parent.example', 'A', '192.0.2.5')");
+        $visible = $this->service()->createZone('sub2.parent.example', 'MASTER', self::OTHER_USER, '', 'none', false, [], self::OTHER_USER);
+        $this->assertSame('parent.example', $visible['shadowed']?->parentZoneName);
     }
 }

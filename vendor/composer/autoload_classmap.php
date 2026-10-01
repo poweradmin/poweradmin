@@ -1596,6 +1596,8 @@ return array(
     'Poweradmin\\Domain\\Service\\Zone\\DnssecKeyService' => $baseDir . '/lib/Domain/Service/Zone/DnssecKeyService.php',
     'Poweradmin\\Domain\\Service\\Zone\\DnssecPrivateKeyConverter' => $baseDir . '/lib/Domain/Service/Zone/DnssecPrivateKeyConverter.php',
     'Poweradmin\\Domain\\Service\\Zone\\ForwardZoneAssociationService' => $baseDir . '/lib/Domain/Service/Zone/ForwardZoneAssociationService.php',
+    'Poweradmin\\Domain\\Service\\Zone\\ShadowedRecordFinder' => $baseDir . '/lib/Domain/Service/Zone/ShadowedRecordFinder.php',
+    'Poweradmin\\Domain\\Service\\Zone\\ShadowedRecords' => $baseDir . '/lib/Domain/Service/Zone/ShadowedRecords.php',
     'Poweradmin\\Domain\\Service\\Zone\\ZoneAccountSyncService' => $baseDir . '/lib/Domain/Service/Zone/ZoneAccountSyncService.php',
     'Poweradmin\\Domain\\Service\\Zone\\ZoneChangeRequestResult' => $baseDir . '/lib/Domain/Service/Zone/ZoneChangeRequestResult.php',
     'Poweradmin\\Domain\\Service\\Zone\\ZoneChangeRequestService' => $baseDir . '/lib/Domain/Service/Zone/ZoneChangeRequestService.php',

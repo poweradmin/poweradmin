@@ -116,11 +116,19 @@ class BulkRegistrationController extends BaseController
         }
 
         $failed_domains = $batch->failed();
+        $messageKey = $failed_domains ? 'bulk_registration' : 'list_forward_zones';
         if (!$failed_domains) {
-            $this->setMessage('list_forward_zones', 'success', _('Zones have been added successfully.'));
+            $this->setMessage($messageKey, 'success', _('Zones have been added successfully.'));
+        } else {
+            $this->setMessage($messageKey, 'warning', _('Some zone(s) could not be added.'));
+        }
+        foreach ($batch->shadowedWarnings() as $warning) {
+            $this->setMessage($messageKey, 'warning', $warning);
+        }
+
+        if (!$failed_domains) {
             $this->redirect('/zones/forward');
         } else {
-            $this->setMessage('bulk_registration', 'warning', _('Some zone(s) could not be added.'));
             $this->showBulkRegistrationForm($failed_domains, $batch->added());
         }
     }

@@ -22,22 +22,54 @@
 
 namespace Poweradmin\Application\Service\Zone;
 
+use Poweradmin\Domain\Service\Zone\ShadowedRecords;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 
 /**
- * Words a refused ZoneManagementService::createZone() for the add-zone forms.
+ * Words a refused ZoneManagementService::createZone() for the add-zone forms,
+ * and the warning about parent-zone records a created zone hides.
  * The service's own message is the API wording; a zone write refusal already
  * carries the translated reason from DomainManager.
  */
 final class ZoneCreateFormMessages
 {
+    private const SHADOWED_LISTED = 5;
+
     /**
      * The reverse-zone form got neither a network nor a reverse zone name.
      */
     public static function invalidReverseNetwork(): string
     {
         return _('Enter a network in CIDR notation (for example 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa.');
+    }
+
+    /**
+     * Names the first few hidden records and says how many more there are.
+     */
+    public static function shadowedRecords(ShadowedRecords $shadowed, string $zoneName): string
+    {
+        $listed = array_map(
+            fn(array $r): string => sprintf('%s (%s)', DnsIdnService::toUtf8($r['name']), $r['type']),
+            array_slice($shadowed->records, 0, self::SHADOWED_LISTED)
+        );
+        $more = count($shadowed->records) - count($listed);
+        if ($more > 0) {
+            $listed[] = sprintf(ngettext('%d more', '%d more', $more), $more);
+        }
+
+        return sprintf(
+            ngettext(
+                '%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s.',
+                '%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s.',
+                count($shadowed->records)
+            ),
+            count($shadowed->records),
+            DnsIdnService::toUtf8($shadowed->parentZoneName),
+            DnsIdnService::toUtf8($zoneName),
+            implode(', ', $listed)
+        );
     }
 
     public static function dnssecForbidden(): string

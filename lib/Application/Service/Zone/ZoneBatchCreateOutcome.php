@@ -60,6 +60,20 @@ final readonly class ZoneBatchCreateOutcome
         return $added;
     }
 
+    /** @return list<string> The hidden-record warnings of the created zones */
+    public function shadowedWarnings(): array
+    {
+        $warnings = [];
+        foreach ($this->outcomes as $outcome) {
+            $warning = $outcome->shadowedWarning();
+            if ($warning !== null) {
+                $warnings[] = $warning;
+            }
+        }
+
+        return $warnings;
+    }
+
     /** @return list<array{name: string, reason: string}> The names that were refused, with the reason */
     public function failed(): array
     {

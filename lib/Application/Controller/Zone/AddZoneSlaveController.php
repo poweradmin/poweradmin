@@ -90,6 +90,10 @@ class AddZoneSlaveController extends BaseController
 
         $messageKey = $created->isReverseZone() ? 'list_reverse_zones' : 'list_forward_zones';
         $this->setMessage($messageKey, 'success', _('Zone has been added successfully.'));
+        $shadowedWarning = $created->shadowedWarning();
+        if ($shadowedWarning !== null) {
+            $this->setMessage($messageKey, 'warning', $shadowedWarning);
+        }
         $this->redirect($messageKey === 'list_reverse_zones' ? '/zones/reverse' : '/zones/forward');
     }
 

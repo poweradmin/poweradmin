@@ -32,6 +32,7 @@ use Poweradmin\Application\Service\Zone\ZoneCreateRequest;
 use Poweradmin\Application\Service\Zone\ZoneCreateService;
 use Poweradmin\Application\Service\Zone\ZoneOwnershipFormResolver;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\ShadowedRecords;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
@@ -223,5 +224,20 @@ class ZoneCreateServiceTest extends TestCase
         $this->assertSame('At least one user or group must be selected as owner.', $batch->message);
         $this->assertSame([], $batch->outcomes);
         $this->assertCount(0, $this->createCalls);
+    }
+
+    public function testHiddenParentRecordsReachTheOutcomeAndTheBatchWarnings(): void
+    {
+        $shadowed = new ShadowedRecords(1, 'example.com', [['name' => 'www.sub.example.com', 'type' => 'A']]);
+        $this->createResults = [
+            ['success' => true, 'zone_id' => 5, 'domain' => 'sub.example.com', 'type' => 'MASTER', 'dnssec' => null, 'shadowed' => $shadowed],
+        ];
+
+        $batch = $this->service()->createMany(self::request(['name' => '']), ['sub.example.com', 'other.example']);
+
+        $this->assertSame($shadowed, $batch->outcomes[0]->shadowed);
+        $this->assertNull($batch->outcomes[1]->shadowedWarning());
+        $this->assertCount(1, $batch->shadowedWarnings());
+        $this->assertStringContainsString('www.sub.example.com (A)', $batch->shadowedWarnings()[0]);
     }
 }

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Zone;
 
+use Poweradmin\Domain\Service\Zone\ShadowedRecords;
 use Poweradmin\Domain\Service\Zone\ZoneSigningResult;
 use Poweradmin\Domain\Utility\DnsHelper;
 
@@ -35,24 +36,34 @@ final readonly class ZoneCreateOutcome
      * @param string $zoneName The stored (punycode) name, '' when refused before it was settled
      * @param ZoneSigningResult|null $dnssec The signing result when signing was requested
      * @param string|null $message The refusal in the user's language, null on success
+     * @param ShadowedRecords|null $shadowed Parent-zone records the created zone hides
      */
     private function __construct(
         public bool $success,
         public ?int $zoneId,
         public string $zoneName,
         public ?ZoneSigningResult $dnssec,
-        public ?string $message
+        public ?string $message,
+        public ?ShadowedRecords $shadowed = null
     ) {
     }
 
-    public static function created(int $zoneId, string $zoneName, ?ZoneSigningResult $dnssec = null): self
+    public static function created(int $zoneId, string $zoneName, ?ZoneSigningResult $dnssec = null, ?ShadowedRecords $shadowed = null): self
     {
-        return new self(true, $zoneId, $zoneName, $dnssec, null);
+        return new self(true, $zoneId, $zoneName, $dnssec, null, $shadowed);
     }
 
     public static function refused(string $message, string $zoneName = ''): self
     {
         return new self(false, null, $zoneName, null, $message);
+    }
+
+    /**
+     * The warning about hidden parent-zone records, null when there are none.
+     */
+    public function shadowedWarning(): ?string
+    {
+        return $this->shadowed === null ? null : ZoneCreateFormMessages::shadowedRecords($this->shadowed, $this->zoneName);
     }
 
     public function isReverseZone(): bool

@@ -141,6 +141,11 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
+        $shadowedWarning = $created->shadowedWarning();
+        if ($shadowedWarning !== null) {
+            $this->setMessage('import', 'warning', $shadowedWarning);
+        }
+
         // Ask PowerDNS to pull the zone now instead of waiting for the refresh.
         $retrieved = $this->moduleServices()->domainManager()->retrieveZone((int)$created->zoneId);
 

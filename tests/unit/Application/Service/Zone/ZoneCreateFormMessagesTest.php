@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\Zone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Zone\ZoneCreateFormMessages;
+use Poweradmin\Domain\Service\Zone\ShadowedRecords;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 
 #[CoversClass(ZoneCreateFormMessages::class)]
@@ -43,5 +44,29 @@ class ZoneCreateFormMessagesTest extends TestCase
         $result = ['message' => 'You do not have the permission to add a master zone.', 'code' => ZoneManagementService::ERR_ZONE_WRITE];
 
         $this->assertSame('You do not have the permission to add a master zone.', ZoneCreateFormMessages::errorMessage($result));
+    }
+
+    public function testTheShadowWarningListsTheFirstRecordsAndCountsTheRest(): void
+    {
+        $one = new ShadowedRecords(1, 'example.com', [['name' => 'www.sub.example.com', 'type' => 'A']]);
+        $this->assertSame(
+            '1 record in zone example.com is now hidden by zone sub.example.com: www.sub.example.com (A). Make sure sub.example.com serves it, then delete it from example.com.',
+            ZoneCreateFormMessages::shadowedRecords($one, 'sub.example.com')
+        );
+
+        $records = [];
+        for ($i = 1; $i <= 7; $i++) {
+            $records[] = ['name' => "h$i.sub.example.com", 'type' => 'A'];
+        }
+        $message = ZoneCreateFormMessages::shadowedRecords(new ShadowedRecords(1, 'example.com', $records), 'sub.example.com');
+        $this->assertStringStartsWith('7 records in zone example.com are now hidden', $message);
+        $this->assertStringContainsString('h5.sub.example.com (A), 2 more.', $message);
+        $this->assertStringNotContainsString('h6.sub', $message);
+
+        $idn = new ShadowedRecords(1, 'xn--bcher-kva.example', [['name' => 'www.sub.xn--bcher-kva.example', 'type' => 'A']]);
+        $this->assertStringStartsWith(
+            '1 record in zone bücher.example is now hidden by zone sub.bücher.example: www.sub.bücher.example (A).',
+            ZoneCreateFormMessages::shadowedRecords($idn, 'sub.xn--bcher-kva.example')
+        );
     }
 }

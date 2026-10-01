@@ -358,6 +358,9 @@ class ZoneFileImportController extends BaseController
                 return;
             }
             $zone_id = $created['zone_id'];
+            if ($created['shadowed'] !== null) {
+                $this->addSystemMessage('warning', ZoneCreateFormMessages::shadowedRecords($created['shadowed'], $created['domain']));
+            }
 
             $audit->logZoneImport($zone_id, (string)$zoneName, false);
 
