@@ -292,6 +292,36 @@ class ZoneEditServiceTest extends TestCase
         $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
     }
 
+    public function testACommentOnlyRecordEditKeepsTheSerialWhenUnchangedSavesKeepIt(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn($this->stored('5', 'www', '192.0.2.1'));
+        $this->comments->method('findCommentByRecordId')->willReturn(null);
+        $this->comments->method('findComment')->willReturn(null);
+        $this->comments->expects($this->once())->method('updateCommentForRecord');
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::unchanged());
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+
+        $result = $this->makeService(['interface' => ['show_record_comments' => true], 'dns' => ['bump_serial_on_unchanged_save' => false]])
+            ->save($this->submission([$this->row('5', 'www', '192.0.2.1', comment: 'hello')]));
+
+        $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
+        $this->assertFalse($result->serialBumped);
+    }
+
+    public function testACommentOnlyRecordEditBumpsTheSerialByDefault(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn($this->stored('5', 'www', '192.0.2.1'));
+        $this->comments->method('findCommentByRecordId')->willReturn(null);
+        $this->comments->method('findComment')->willReturn(null);
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID);
+
+        $result = $this->makeService(['interface' => ['show_record_comments' => true]])
+            ->save($this->submission([$this->row('5', 'www', '192.0.2.1', comment: 'hello')]));
+
+        $this->assertTrue($result->serialBumped);
+    }
+
     /** @param array<string, array<string, mixed>> $overrides */
     private function makeService(array $overrides = []): ZoneEditService
     {

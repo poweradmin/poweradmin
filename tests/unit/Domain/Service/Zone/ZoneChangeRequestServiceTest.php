@@ -731,6 +731,39 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertTrue($service->approve($id, self::REVIEWER, 'bob')->success);
     }
 
+    public function testAnApprovedEditThatWritesNoRecordKeepsTheSerialWhenUnchangedSavesKeepIt(): void
+    {
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::unchanged());
+        $this->soa->expects($this->never())->method('updateSOASerial');
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+        $id = $this->fileOneEdit();
+
+        $result = $this->makeService(bumpOnUnchangedSave: false)->approve($id, self::REVIEWER, 'bob');
+
+        $this->assertTrue($result->success, $result->message);
+    }
+
+    public function testAnApprovedEditThatWritesARecordStillBumpsWhenUnchangedSavesKeepTheSerial(): void
+    {
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->expects($this->once())->method('finalizeZone');
+        $id = $this->fileOneEdit();
+
+        $result = $this->makeService(bumpOnUnchangedSave: false)->approve($id, self::REVIEWER, 'bob');
+
+        $this->assertTrue($result->success, $result->message);
+    }
+
+    private function fileOneEdit(): int
+    {
+        return $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', 'reason given', '2024010101', [[
+            'op' => 'edit',
+            'record_id' => '5',
+            'before' => ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1'],
+            'after' => ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.9', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0, 'comment' => ''],
+        ]], null);
+    }
+
     private function fileThreeActions(?string $zoneComment = null): int
     {
         return $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', 'reason given', '2024010101', [
@@ -752,13 +785,14 @@ class ZoneChangeRequestServiceTest extends TestCase
         bool $requireComment = false,
         ?\Closure $zoneSnapshot = null,
         ?RecordCommentRepositoryInterface $recordComments = null,
-        bool $showComments = false
+        bool $showComments = false,
+        bool $bumpOnUnchangedSave = true
     ): ZoneChangeRequestService {
         $config = new FakeConfiguration([
             'interface' => ['show_record_comments' => $showComments, 'show_zone_comments' => true],
             'logging' => ['require_change_comment' => $requireComment],
             'misc' => ['edit_conflict_resolution' => 'last_writer_wins', 'record_comments_sync' => false],
-            'dns' => ['bump_serial_on_unchanged_save' => true, 'hostmaster' => 'hostmaster.example.com', 'ttl' => 86400, 'txt_auto_quote' => false],
+            'dns' => ['bump_serial_on_unchanged_save' => $bumpOnUnchangedSave, 'hostmaster' => 'hostmaster.example.com', 'ttl' => 86400, 'txt_auto_quote' => false],
         ]);
         $permissions = $this->createMock(PermissionService::class);
         $zoneEdit = new ZoneEditService(

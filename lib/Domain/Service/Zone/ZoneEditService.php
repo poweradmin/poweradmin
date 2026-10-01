@@ -90,6 +90,7 @@ class ZoneEditService
         $rejectedZoneComment = null;
         $errors = [];
         $changed = false;
+        $recordsWritten = false;
 
         $staleFormRejected = $this->isStale($submission);
         if ($staleFormRejected) {
@@ -101,13 +102,14 @@ class ZoneEditService
                 $rejectedZoneComment = $submission->zoneComment;
             }
         } else {
-            [$changed, $errors] = $this->saveRows($submission);
+            [$changed, $errors, $recordsWritten] = $this->saveRows($submission);
         }
 
         // A rejected form is rejected whole: writing the comment would persist half of a
         // submission the operator is being told to send again
-        if (!$truncated && !$staleFormRejected && $this->zoneCommentsEnabled) {
-            $changed = $this->saveZoneComment($submission) || $changed;
+        if (!$truncated && !$staleFormRejected && $this->zoneCommentsEnabled && $this->saveZoneComment($submission)) {
+            $changed = true;
+            $recordsWritten = true;
         }
 
         // A truncated save that changed nothing keeps the serial untouched
@@ -124,7 +126,7 @@ class ZoneEditService
 
         return new ZoneSaveResult(
             $outcome,
-            serialBumped: $this->finalize($outcome, $submission->zoneId),
+            serialBumped: $this->finalize($outcome, $submission->zoneId, $recordsWritten),
             truncated: $truncated,
             errors: $errors,
             rejectedRecords: $rejectedRecords,
@@ -135,12 +137,14 @@ class ZoneEditService
     /**
      * Writes the rows that differ from the zone.
      *
-     * @return array{0: bool, 1: list<string>} Whether any row differed, and the refusals
+     * @return array{0: bool, 1: list<string>, 2: bool} Whether any row differed, the refusals,
+     *   and whether any record was written (a record comment-only change writes none)
      */
     private function saveRows(ZoneEditSubmission $submission): array
     {
         $changed = false;
         $errors = [];
+        $recordsWritten = false;
 
         foreach ($submission->rows as $row) {
             $written = $this->saveRow($submission, $row);
@@ -150,10 +154,12 @@ class ZoneEditService
             $changed = true;
             if (!$written->success) {
                 $errors[] = (string)$written->message;
+            } elseif ($written->changed) {
+                $recordsWritten = true;
             }
         }
 
-        return [$changed, $errors];
+        return [$changed, $errors, $recordsWritten];
     }
 
     /**
@@ -278,15 +284,18 @@ class ZoneEditService
     }
 
     /**
-     * Bumps the serial (and rectifies) for an accepted save. A no-change save
-     * bumps by default so operators can force a NOTIFY (#762).
+     * Bumps the serial (and rectifies) for an accepted save. A save that wrote no
+     * record (nothing changed, or only record comments) bumps by default so operators
+     * can force a NOTIFY (#762), unless dns.bump_serial_on_unchanged_save is off.
+     *
+     * @param bool $recordsWritten Whether a record or the zone comment was written
      */
-    private function finalize(ZoneSaveOutcome $outcome, int $zoneId): bool
+    private function finalize(ZoneSaveOutcome $outcome, int $zoneId, bool $recordsWritten): bool
     {
         if (!$outcome->wasWritten()) {
             return false;
         }
-        if ($outcome === ZoneSaveOutcome::NO_CHANGES && !$this->config->get('dns', 'bump_serial_on_unchanged_save', true)) {
+        if (!$recordsWritten && !$this->config->get('dns', 'bump_serial_on_unchanged_save', true)) {
             return false;
         }
 

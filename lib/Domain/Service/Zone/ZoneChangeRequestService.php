@@ -396,7 +396,8 @@ class ZoneChangeRequestService
     }
 
     /**
-     * Replays the actions in order and bumps the serial once. On a backend with
+     * Replays the actions in order and bumps the serial once, unless no record was
+     * written and dns.bump_serial_on_unchanged_save is off. On a backend with
      * local transactions a failure leaves the zone untouched; otherwise the
      * error names the actions that had already landed.
      *
@@ -411,7 +412,8 @@ class ZoneChangeRequestService
         }
 
         try {
-            $failure = $this->replayActions($request, $reviewerId, $reviewerName, $transactional);
+            $recordsWritten = false;
+            $failure = $this->replayActions($request, $reviewerId, $reviewerName, $transactional, $recordsWritten);
             if ($failure !== null) {
                 if ($transactional) {
                     $this->transaction->rollBack();
@@ -420,12 +422,18 @@ class ZoneChangeRequestService
                 return $failure;
             }
 
+            // Comment-only edits write no record and keep the serial when the install opted out
+            $bump = $recordsWritten || $this->config->get('dns', 'bump_serial_on_unchanged_save', true);
             if ($transactional) {
                 // The serial moves with the rows; rectify reads committed rows, so it follows the commit
-                $this->soaRecords->updateSOASerial($zoneId);
+                if ($bump) {
+                    $this->soaRecords->updateSOASerial($zoneId);
+                }
                 $this->transaction->commit();
-                $this->recordManager->finalizeZone($zoneId, false);
-            } else {
+                if ($bump) {
+                    $this->recordManager->finalizeZone($zoneId, false);
+                }
+            } elseif ($bump) {
                 $this->recordManager->finalizeZone($zoneId);
             }
         } catch (Throwable $e) {
@@ -441,9 +449,10 @@ class ZoneChangeRequestService
     /**
      * Runs every action and the zone comment write, stopping at the first refusal.
      *
+     * @param bool $recordsWritten Set when an action wrote a record or the zone comment was written; a record comment-only edit writes none
      * @return array{0: string, 1: Refusal}|null The failure text and refusal, or null when all landed
      */
-    private function replayActions(ZoneChangeRequest $request, int $reviewerId, string $reviewerName, bool $rolledBackOnFailure): ?array
+    private function replayActions(ZoneChangeRequest $request, int $reviewerId, string $reviewerName, bool $rolledBackOnFailure, bool &$recordsWritten): ?array
     {
         $applied = [];
         foreach ($request->actions as $index => $action) {
@@ -451,6 +460,8 @@ class ZoneChangeRequestService
             if (!$result->success) {
                 return [$this->describeFailure($index, $action, (string)$result->message, $applied, $rolledBackOnFailure), $result->refusal ?? Refusal::BACKEND_FAILURE];
             }
+            // An action that found its target state already in place reports ok(), which counts as written
+            $recordsWritten = $recordsWritten || $result->changed;
             $applied[] = $index;
         }
 
@@ -459,6 +470,7 @@ class ZoneChangeRequestService
             if (!$written->success) {
                 return [$this->describeFailure(count($request->actions), ['op' => 'zone_comment'], (string)$written->message, $applied, $rolledBackOnFailure), $written->refusal ?? Refusal::BACKEND_FAILURE];
             }
+            $recordsWritten = true;
         }
 
         return null;
