@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\DefaultRecordValidator;
 
@@ -146,5 +147,48 @@ class DefaultRecordValidatorTest extends TestCase
         $this->assertEquals('valid.content.example.com', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(0, $data['prio']);
+    }
+
+    /**
+     * PowerDNS answers SERVFAIL for these and aborts AXFR of the whole zone.
+     */
+    #[DataProvider('malformedGenericContentProvider')]
+    public function testValidateRejectsMalformedGenericContent(string $content): void
+    {
+        $result = $this->validator->validate($content, 'record.example.com', '', 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public static function malformedGenericContentProvider(): array
+    {
+        return [
+            'not hex' => ['\# 2 zz'],
+            'length larger than data' => ['\# 5 00'],
+            'length smaller than data' => ['\# 1 abcd'],
+            'odd hex digits' => ['\# 1 abc'],
+            'missing length' => ['\# abcd'],
+            'data with length 0' => ['\# 0 ab'],
+            'leading whitespace' => [' \# 2 zz'],
+            'length above 16 bits' => ['\# 65536 ' . str_repeat('00', 65536)],
+        ];
+    }
+
+    #[DataProvider('validGenericContentProvider')]
+    public function testValidateAcceptsWellFormedGenericContent(string $content): void
+    {
+        $result = $this->validator->validate($content, 'record.example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+    }
+
+    public static function validGenericContentProvider(): array
+    {
+        return [
+            'single chunk' => ['\# 2 abcd'],
+            'split by spaces' => ['\# 4 c0 00 02 01'],
+            'upper case hex' => ['\# 2 ABCD'],
+            'empty data' => ['\# 0'],
+        ];
     }
 }

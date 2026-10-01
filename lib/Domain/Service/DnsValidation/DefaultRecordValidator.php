@@ -61,6 +61,11 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
             return $printableResult;
         }
 
+        $trimmed = trim($content);
+        if (str_starts_with($trimmed, '\\#') && !self::isValidGenericContent($trimmed)) {
+            return ValidationResult::failure(_('Generic record data must be "\# <length> <hex>" with the length matching the hex data.'));
+        }
+
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
@@ -78,5 +83,22 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
             'ttl' => $validatedTtl,
             'prio' => $priority
         ]);
+    }
+
+    /**
+     * RFC 3597 generic rdata: "\# <length> <hex>", where the hex may be split by
+     * whitespace and must decode to exactly <length> octets ("\# 0" has no data).
+     * RDLENGTH is 16 bits, so the length cannot exceed 65535.
+     */
+    private static function isValidGenericContent(string $content): bool
+    {
+        if (!preg_match('/^\\\\#\s+(\d{1,5})(?:\s+([0-9A-Fa-f\s]*))?$/', $content, $matches)) {
+            return false;
+        }
+
+        $length = (int)$matches[1];
+        $hex = preg_replace('/\s+/', '', $matches[2] ?? '');
+
+        return $length <= 65535 && strlen($hex) % 2 === 0 && strlen($hex) / 2 === $length;
     }
 }

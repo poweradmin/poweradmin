@@ -96,6 +96,11 @@ final class ZoneTemplateRecordValidationService
         mixed $prio,
         int $defaultTtl
     ): ValidationResult {
+        // Applying a template writes its records without validating them again
+        if (!$this->validatorRegistry->isKnownType($type)) {
+            return ValidationResult::failure(_('Invalid record type.'));
+        }
+
         $resolvedName = $this->resolvePlaceholders($name);
         $resolvedContent = $this->resolvePlaceholders($content);
 

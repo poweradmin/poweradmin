@@ -127,6 +127,28 @@ class DnsValidatorRegistry
     }
 
     /**
+     * Whether a record of this type may be stored: a type with a dedicated validator,
+     * or one the admin listed in dns.domain_record_types / dns.reverse_record_types.
+     *
+     * PowerDNS answers SERVFAIL for a type it cannot parse and aborts AXFR of the zone.
+     */
+    public function isKnownType(string $recordType): bool
+    {
+        if (isset($this->validators[$recordType])) {
+            return true;
+        }
+
+        foreach (['domain_record_types', 'reverse_record_types'] as $key) {
+            $configured = $this->config->get('dns', $key);
+            if (is_array($configured) && in_array($recordType, $configured, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check if a validator exists for a record type
      *
      * @param string $recordType The record type

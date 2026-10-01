@@ -163,4 +163,11 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
     {
         $this->assertFalse($this->validate('www.[ZONE]', 'A', '192.0.2.1', -5));
     }
+
+    public function testRejectsUnknownTypeEvenWithPlaceholderContent(): void
+    {
+        // Applying the template writes the record without validating it again
+        $this->assertFalse($this->validate('www.[ZONE]', 'TYPE65280', '\# 2 zz'));
+        $this->assertFalse($this->validate('www.[ZONE]', 'FOO', '[CUSTOM_IP]'));
+    }
 }

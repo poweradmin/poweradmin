@@ -92,6 +92,32 @@ class DnsValidatorRegistryTest extends TestCase
         $this->assertInstanceOf(DnsRecordValidatorInterface::class, $validatorCustom);
     }
 
+    public function testIsKnownTypeAcceptsEveryTypeWithAValidatorAndRefusesTheRest(): void
+    {
+        $this->assertTrue($this->registry->isKnownType(RecordType::A));
+        $this->assertTrue($this->registry->isKnownType(RecordType::DS));
+        $this->assertTrue($this->registry->isKnownType(RecordType::PTR));
+
+        $this->assertFalse($this->registry->isKnownType('FOO'));
+        $this->assertFalse($this->registry->isKnownType('TYPE65280'));
+        $this->assertFalse($this->registry->isKnownType('a'));
+        $this->assertFalse($this->registry->isKnownType(''));
+    }
+
+    public function testIsKnownTypeAcceptsTypesTheAdminConfigured(): void
+    {
+        $registry = new DnsValidatorRegistry(
+            new FakeConfiguration(['dns' => ['domain_record_types' => ['A', 'TYPE65280'], 'reverse_record_types' => ['PTR', 'TYPE65281']]]),
+            $this->createMock(DnsBackendProviderInterface::class)
+        );
+
+        $this->assertTrue($registry->isKnownType('TYPE65280'));
+        $this->assertTrue($registry->isKnownType('TYPE65281'));
+        // A narrowed list does not refuse types that have a validator
+        $this->assertTrue($registry->isKnownType(RecordType::MX));
+        $this->assertFalse($registry->isKnownType('TYPE65282'));
+    }
+
     /**
      * Test getting KX record validator
      */
