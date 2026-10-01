@@ -15084,4 +15084,50 @@ msgid ""
 msgstr ""
 "ไม่สามารถตั้งค่า locale ได้. locale ที่เลือกอาจไม่รองรับบนระบบนี้. กรุณาติดต่อผู้ดูแลระบบของคุณ."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "นำเข้ากุญแจสำเร็จแล้ว"
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "กุญแจส่วนตัวไม่ตรงกับอัลกอริทึมที่เลือก"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "ไม่สามารถอ่านกุญแจส่วนตัวได้ กรุณาวางกุญแจส่วนตัวในรูปแบบ BIND หรือกุญแจ PEM ที่ไม่ได้เข้ารหัส"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "ล้มเหลวในการนำเข้ากุญแจ PowerDNS ปฏิเสธกุญแจนี้"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "ล้มเหลวในการนำเข้ากุญแจ"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "เกิดข้อผิดพลาดระหว่างทำการนำเข้ากุญแจ: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "เกิดข้อผิดพลาดระหว่างทำการส่งออกกุญแจ: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "ไม่สามารถรับกุญแจส่วนตัวจาก PowerDNS ได้"
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "ดาวน์โหลดกุญแจส่วนตัวในรูปแบบ BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "กุญแจส่วนตัว"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "วางกุญแจส่วนตัวในรูปแบบ BIND (ตามที่ส่งออกจากที่นี่หรือจาก dnssec-keygen) หรือกุญแจ PEM ที่ไม่ได้เข้ารหัส (RSA, ECDSA, Ed25519 หรือ Ed448) เลือกอัลกอริทึมที่ใช้สร้างกุญแจนี้"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "การนำเข้ากุญแจต้องการ PowerDNS 4.1 หรือใหม่กว่า"

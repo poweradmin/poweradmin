@@ -15340,4 +15340,50 @@ msgstr ""
 "הגדרת השפה נכשלה. ייתכן שהשפה שנבחרה אינה נתמכת במערכת זו. יש לפנות למנהל "
 "המערכת."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "המפתח יובא בהצלחה."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "המפתח הפרטי אינו תואם לאלגוריתם שנבחר."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "לא ניתן לקרוא את המפתח הפרטי. הדבק מפתח פרטי בפורמט BIND או מפתח PEM לא מוצפן."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "ייבוא המפתח נכשל. PowerDNS דחה אותו."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "ייבוא המפתח נכשל."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "אירעה שגיאה בעת ייבוא המפתח: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "אירעה שגיאה בעת ייצוא המפתח: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "לא ניתן לאחזר את המפתח הפרטי מ-PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "הורד את המפתח הפרטי בפורמט BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "מפתח פרטי"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "הדבק מפתח פרטי בפורמט BIND (כפי שמיוצא כאן או על ידי dnssec-keygen) או מפתח PEM לא מוצפן (RSA, ECDSA, Ed25519 או Ed448). בחר את האלגוריתם שעבורו נוצר המפתח."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "ייבוא מפתחות דורש PowerDNS 4.1 או חדש יותר."

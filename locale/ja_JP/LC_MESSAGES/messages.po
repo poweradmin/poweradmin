@@ -15784,4 +15784,50 @@ msgstr ""
 "ロケールを設定できませんでした。選択したロケールはこのシステムでサポートされ"
 "ていない可能性があります。管理者にお問い合わせください。"
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "鍵を正常にインポートしました。"
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "秘密鍵が選択したアルゴリズムと一致しません。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "秘密鍵を読み取れませんでした。BIND 形式の秘密鍵または暗号化されていない PEM 鍵を貼り付けてください。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "鍵のインポートに失敗しました。PowerDNS が拒否しました。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "鍵のインポートに失敗しました。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "鍵のインポート中にエラーが発生しました: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "鍵のエクスポート中にエラーが発生しました: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "PowerDNS から秘密鍵を取得できませんでした。"
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "秘密鍵を BIND 形式でダウンロード"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "秘密鍵"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "BIND 形式の秘密鍵 (ここで、または dnssec-keygen でエクスポートしたもの) か、暗号化されていない PEM 鍵 (RSA、ECDSA、Ed25519 または Ed448) を貼り付けてください。鍵の作成に使用したアルゴリズムを選択してください。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "鍵のインポートには PowerDNS 4.1 以降が必要です。"

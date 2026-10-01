@@ -15727,4 +15727,50 @@ msgstr ""
 "Klarte ikke å angi språkinnstilling. Den valgte språkinnstillingen støttes "
 "kanskje ikke på dette systemet. Kontakt administratoren din."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Nøkkelen ble importert."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Den private nøkkelen stemmer ikke overens med den valgte algoritmen."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Den private nøkkelen kunne ikke leses. Lim inn en privat nøkkel i BIND-format eller en ukryptert PEM-nøkkel."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Import av nøkkelen mislyktes. PowerDNS avviste den."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "Import av nøkkelen mislyktes."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Det oppstod en feil under import av nøkkelen: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Det oppstod en feil under eksport av nøkkelen: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Kunne ikke hente den private nøkkelen fra PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Last ned den private nøkkelen i BIND-format"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Privat nøkkel"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Lim inn en privat nøkkel i BIND-format (slik den eksporteres her eller av dnssec-keygen) eller en ukryptert PEM-nøkkel (RSA, ECDSA, Ed25519 eller Ed448). Velg algoritmen nøkkelen ble laget for."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Import av nøkler krever PowerDNS 4.1 eller nyere."

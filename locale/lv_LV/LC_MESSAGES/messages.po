@@ -15534,4 +15534,50 @@ msgstr ""
 "Neizdevās iestatīt lokalizāciju. Izvēlētā lokalizācija, iespējams, nav "
 "atbalstīta šajā sistēmā. Lūdzu, sazinieties ar savu administratoru."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Atslēga veiksmīgi importēta."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Privātā atslēga neatbilst izvēlētajam algoritmam."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Privāto atslēgu nevarēja nolasīt. Ielīmējiet privāto atslēgu BIND formātā vai nešifrētu PEM atslēgu."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Neizdevās importēt atslēgu. PowerDNS to noraidīja."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "Neizdevās importēt atslēgu."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Importējot atslēgu, radās kļūda: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Eksportējot atslēgu, radās kļūda: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nevarēja izgūt privāto atslēgu no PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Lejupielādēt privāto atslēgu BIND formātā"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Privātā atslēga"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Ielīmējiet privāto atslēgu BIND formātā (kā tā eksportēta šeit vai ar dnssec-keygen) vai nešifrētu PEM atslēgu (RSA, ECDSA, Ed25519 vai Ed448). Izvēlieties algoritmu, kuram atslēga tika izveidota."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Atslēgu importam nepieciešams PowerDNS 4.1 vai jaunāks."

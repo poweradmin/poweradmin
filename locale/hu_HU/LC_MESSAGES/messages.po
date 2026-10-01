@@ -15967,4 +15967,50 @@ msgstr ""
 "beállítást ez a rendszer valószínűleg nem támogatja. Kérjük, vegye fel a "
 "kapcsolatot a rendszergazdával."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Kulcs sikeresen importálva."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "A privát kulcs nem egyezik a kiválasztott algoritmussal."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "A privát kulcs nem olvasható. Illesszen be egy BIND formátumú privát kulcsot vagy egy titkosítatlan PEM kulcsot."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "A kulcs importálása nem sikerült. A PowerDNS elutasította."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "A kulcs importálása nem sikerült."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Hiba történt a kulcs importálásakor: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Hiba történt a kulcs exportálásakor: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "A privát kulcs nem volt lekérhető a PowerDNS-től."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "A privát kulcs letöltése BIND formátumban"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Privát kulcs"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Illesszen be egy BIND formátumú privát kulcsot (ahogy itt vagy a dnssec-keygen exportálja) vagy egy titkosítatlan PEM kulcsot (RSA, ECDSA, Ed25519 vagy Ed448). Válassza ki azt az algoritmust, amelyhez a kulcs készült."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "A kulcsok importálásához PowerDNS 4.1 vagy újabb szükséges."

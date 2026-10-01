@@ -15666,4 +15666,50 @@ msgstr ""
 "تنظیم زبان و منطقه انجام نشد. ممکن است زبان و منطقه انتخاب‌شده در این سیستم "
 "پشتیبانی نشود. لطفاً با مدیر سیستم خود تماس بگیرید."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "کلید با موفقیت وارد شد."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "کلید خصوصی با الگوریتم انتخاب‌شده مطابقت ندارد."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "کلید خصوصی قابل خواندن نیست. یک کلید خصوصی با قالب BIND یا یک کلید PEM رمزگذاری‌نشده را جای‌گذاری کنید."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "واردات کلید ناموفق بود. PowerDNS آن را رد کرد."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "واردات کلید ناموفق بود."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "خطایی در هنگام واردات کلید رخ داد: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "خطایی در هنگام صادرات کلید رخ داد: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "بازیابی کلید خصوصی از PowerDNS ممکن نبود."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "دانلود کلید خصوصی با قالب BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "کلید خصوصی"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "یک کلید خصوصی با قالب BIND (همان‌طور که اینجا یا توسط dnssec-keygen صادر می‌شود) یا یک کلید PEM رمزگذاری‌نشده (RSA، ECDSA، Ed25519 یا Ed448) را جای‌گذاری کنید. الگوریتمی را که کلید برای آن ساخته شده است انتخاب کنید."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "واردات کلیدها نیاز به PowerDNS 4.1 یا جدیدتر دارد."

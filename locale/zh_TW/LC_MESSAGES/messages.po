@@ -14765,4 +14765,50 @@ msgid ""
 "Please contact your administrator."
 msgstr "設定地區設定失敗。所選的地區設定可能不受此系統支援。請聯絡您的管理員。"
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "金鑰匯入成功。"
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "私鑰與所選演算法不相符。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "無法讀取私鑰。請貼上 BIND 格式的私鑰或未加密的 PEM 金鑰。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "匯入金鑰失敗。PowerDNS 拒絕了該金鑰。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "匯入金鑰失敗。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "匯入金鑰時發生錯誤: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "匯出金鑰時發生錯誤: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "無法從 PowerDNS 取得私鑰。"
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "以 BIND 格式下載私鑰"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "私鑰"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "貼上 BIND 格式的私鑰 (如此處或 dnssec-keygen 匯出的格式) 或未加密的 PEM 金鑰 (RSA、ECDSA、Ed25519 或 Ed448)。選擇產生該金鑰時使用的演算法。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "匯入金鑰需要 PowerDNS 4.1 或更新版本。"

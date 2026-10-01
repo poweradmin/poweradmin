@@ -15575,4 +15575,50 @@ msgstr ""
 "로케일을 설정하지 못했습니다. 선택한 로케일이 이 시스템에서 지원되지 않을 수 "
 "있습니다. 관리자에게 문의하십시오."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "키를 성공적으로 가져왔습니다."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "개인 키가 선택한 알고리즘과 일치하지 않습니다."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "개인 키를 읽을 수 없습니다. BIND 형식의 개인 키 또는 암호화되지 않은 PEM 키를 붙여 넣으세요."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "키 가져오기에 실패했습니다. PowerDNS가 키를 거부했습니다."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "키 가져오기에 실패했습니다."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "키 가져오기 중 오류가 발생했습니다: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "키 내보내기 중 오류가 발생했습니다: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "PowerDNS에서 개인 키를 가져올 수 없습니다."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "개인 키를 BIND 형식으로 다운로드"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "개인 키"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "BIND 형식의 개인 키 (여기서 또는 dnssec-keygen으로 내보낸 것) 또는 암호화되지 않은 PEM 키 (RSA, ECDSA, Ed25519 또는 Ed448)를 붙여 넣으세요. 키를 만들 때 사용한 알고리즘을 선택하세요."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "키 가져오기에는 PowerDNS 4.1 이상이 필요합니다."

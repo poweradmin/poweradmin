@@ -15483,4 +15483,50 @@ msgstr ""
 "Lokaadi määramine ebaõnnestus. Valitud lokaat ei pruugi selles süsteemis "
 "olla toetatud. Palun võtke ühendust administraatoriga."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Võti edukalt imporditud."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Privaatvõti ei vasta valitud algoritmile."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Privaatvõtit ei õnnestunud lugeda. Kleebi BIND-vormingus privaatvõti või krüptimata PEM-võti."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Võtme importimine ebaõnnestus. PowerDNS lükkas selle tagasi."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "Võtme importimine ebaõnnestus."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Võtme importimisel ilmnes viga: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Võtme eksportimisel ilmnes viga: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Privaatvõtit ei õnnestunud PowerDNS-ist hankida."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Laadi privaatvõti alla BIND-vormingus"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Privaatvõti"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Kleebi BIND-vormingus privaatvõti (nagu siit või dnssec-keygen abil eksporditud) või krüptimata PEM-võti (RSA, ECDSA, Ed25519 või Ed448). Vali algoritm, mille jaoks võti loodi."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Võtmete import nõuab PowerDNS 4.1 või uuemat."

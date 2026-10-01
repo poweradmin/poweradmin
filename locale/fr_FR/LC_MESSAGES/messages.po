@@ -16354,4 +16354,50 @@ msgstr ""
 "Échec de la définition de la locale. La locale sélectionnée n'est peut-être "
 "pas prise en charge sur ce système. Veuillez contacter votre administrateur."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Clé importée avec succès."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "La clé privée ne correspond pas à l'algorithme sélectionné."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "La clé privée n'a pas pu être lue. Collez une clé privée au format BIND ou une clé PEM non chiffrée."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Échec de l'importation de la clé. PowerDNS l'a rejetée."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "Échec de l'importation de la clé."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Une erreur est survenue lors de l'importation de la clé : "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Une erreur est survenue lors de l'exportation de la clé : "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Impossible de récupérer la clé privée depuis PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Télécharger la clé privée au format BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Clé privée"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Collez une clé privée au format BIND (telle qu'exportée ici ou par dnssec-keygen) ou une clé PEM non chiffrée (RSA, ECDSA, Ed25519 ou Ed448). Sélectionnez l'algorithme pour lequel la clé a été créée."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "L'importation de clés nécessite PowerDNS 4.1 ou supérieur."

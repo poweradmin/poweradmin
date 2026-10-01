@@ -15710,4 +15710,50 @@ msgstr ""
 "(locale) nemusí byť v tomto systéme podporované. Kontaktujte svojho "
 "administrátora."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Kľúč úspešne importovaný."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Súkromný kľúč nezodpovedá vybranému algoritmu."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Súkromný kľúč sa nedá prečítať. Vložte súkromný kľúč vo formáte BIND alebo nešifrovaný PEM kľúč."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Import kľúča zlyhal. PowerDNS ho odmietol."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "Import kľúča zlyhal."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Pri importe kľúča došlo k chybe: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Pri exporte kľúča došlo k chybe: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nepodarilo sa získať súkromný kľúč z PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Stiahnuť súkromný kľúč vo formáte BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Súkromný kľúč"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Vložte súkromný kľúč vo formáte BIND (tak, ako je exportovaný tu alebo nástrojom dnssec-keygen) alebo nešifrovaný PEM kľúč (RSA, ECDSA, Ed25519 alebo Ed448). Vyberte algoritmus, pre ktorý bol kľúč vytvorený."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Import kľúčov vyžaduje PowerDNS 4.1 alebo novší."

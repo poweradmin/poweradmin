@@ -15715,4 +15715,50 @@ msgstr ""
 "Không thể thiết lập locale. Locale đã chọn có thể không được hỗ trợ trên hệ "
 "thống này. Vui lòng liên hệ quản trị viên của bạn."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Đã nhập khóa thành công."
 
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Khóa riêng không khớp với thuật toán đã chọn."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Không thể đọc khóa riêng. Dán khóa riêng ở định dạng BIND hoặc khóa PEM chưa mã hóa."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Không thể nhập khóa. PowerDNS đã từ chối khóa này."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Failed to import the key."
+msgstr "Không thể nhập khóa."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Đã xảy ra lỗi khi nhập khóa: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Đã xảy ra lỗi khi xuất khóa: "
+
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Không thể lấy khóa riêng từ PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Tải khóa riêng ở định dạng BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Khóa riêng"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Dán khóa riêng ở định dạng BIND (như được xuất tại đây hoặc bằng dnssec-keygen) hoặc khóa PEM chưa mã hóa (RSA, ECDSA, Ed25519 hoặc Ed448). Chọn thuật toán đã dùng để tạo khóa này."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Nhập khóa yêu cầu PowerDNS 4.1 trở lên."
