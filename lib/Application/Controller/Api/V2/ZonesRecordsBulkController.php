@@ -250,7 +250,7 @@ class ZonesRecordsBulkController extends PublicApiController
                                 break;
 
                             case 'update':
-                                $recordType = $this->performUpdateOperation($zoneId, $operation, $zoneType);
+                                $recordType = $this->performUpdateOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
                                 $results['updated']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -258,7 +258,7 @@ class ZonesRecordsBulkController extends PublicApiController
                                 break;
 
                             case 'delete':
-                                $recordType = $this->performDeleteOperation($zoneId, $operation, $zoneType);
+                                $recordType = $this->performDeleteOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
                                 $results['deleted']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -433,7 +433,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was updated
      * @throws Exception If operation fails
      */
-    private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null): string
+    private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
     {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for update operation", 400);
@@ -443,7 +443,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Get existing record
         $existingRecord = $this->recordRepository->getRecordById($recordId);
-        if (!$existingRecord || $existingRecord['domain_id'] != $zoneId) {
+        if (!$existingRecord || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
             throw new ApiErrorException("Record not found in this zone", 404);
         }
 
@@ -497,7 +497,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was deleted
      * @throws Exception If operation fails
      */
-    private function performDeleteOperation(int $zoneId, array $operation, ?string $zoneType = null): string
+    private function performDeleteOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
     {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for delete operation", 400);
@@ -507,7 +507,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Verify record exists in this zone
         $existingRecord = $this->recordRepository->getRecordById($recordId);
-        if (!$existingRecord || $existingRecord['domain_id'] != $zoneId) {
+        if (!$existingRecord || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
             throw new ApiErrorException("Record not found in this zone", 404);
         }
 
@@ -556,5 +556,27 @@ class ZonesRecordsBulkController extends PublicApiController
             $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
             return null;
         }
+    }
+
+    /**
+     * Whether a record fetched by id belongs to the zone addressed in the path. A zone
+     * moved from SQL to API backend mode can be addressed by its zones row id while its
+     * records carry the canonical id, so the zone's own canonical id (resolved by name,
+     * the way the record lookup resolves it) also matches.
+     *
+     * @param array<string, mixed> $record
+     */
+    private function recordBelongsToZone(array $record, int $zoneId, ?string $zoneName): bool
+    {
+        $recordZoneId = (int)($record['domain_id'] ?? 0);
+        if ($recordZoneId === $zoneId) {
+            return true;
+        }
+        $zoneName ??= $this->zoneRepository->getZoneById($zoneId)['name'] ?? null;
+        if ($recordZoneId <= 0 || $zoneName === null || $zoneName === '') {
+            return false;
+        }
+
+        return $recordZoneId === $this->backendProvider->getZoneIdByName($zoneName);
     }
 }
