@@ -40,6 +40,7 @@ enum DnssecKeyOutcome: string
     case INVALID_ALGORITHM = 'invalid_algorithm';
     case INVALID_BITS = 'invalid_bits';
     case INVALID_PRIVATE_KEY = 'invalid_private_key';
+    case KEY_ALGORITHM_MISMATCH = 'key_algorithm_mismatch';
     case KEY_REJECTED = 'key_rejected';
     case UNREACHABLE = 'unreachable';
     case SERVER_DISABLED = 'server_disabled';
@@ -55,7 +56,7 @@ enum DnssecKeyOutcome: string
         return match ($this) {
             self::LISTED, self::FOUND, self::ADDED, self::UPDATED, self::UNCHANGED, self::REMOVED => null,
             self::INVALID_TYPE, self::INVALID_ALGORITHM, self::INVALID_BITS, self::SERVER_DISABLED,
-            self::INVALID_PRIVATE_KEY, self::KEY_REJECTED => Refusal::INVALID_INPUT,
+            self::INVALID_PRIVATE_KEY, self::KEY_ALGORITHM_MISMATCH, self::KEY_REJECTED => Refusal::INVALID_INPUT,
             self::PRESIGNED => Refusal::CONFLICT,
             self::NOT_FOUND => Refusal::NOT_FOUND,
             self::FAILED => Refusal::BACKEND_FAILURE,

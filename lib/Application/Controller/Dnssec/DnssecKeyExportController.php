@@ -25,8 +25,8 @@ namespace Poweradmin\Application\Controller\Dnssec;
 use Exception;
 
 /**
- * Streams a DNSSEC private key as a PEM file download. Requires PowerDNS
- * 4.7+ which exposes the `privatekey` field on per-key GETs of /cryptokeys.
+ * Streams a DNSSEC private key as an ISC (BIND "Private-key-format") file,
+ * the format PowerDNS returns on per-key GETs of /cryptokeys.
  *
  * Note: this controller returns the file directly and does NOT call render(),
  * so the HTML header/footer aren't emitted - on errors it redirects back to
@@ -41,35 +41,29 @@ class DnssecKeyExportController extends DnssecKeyController
         $zoneId = (string)$zoneIdInt;
         [$domainName, $dnssecProvider] = $this->requireManagedDnssecZone($zoneIdInt);
 
-        if (!$this->getPdnsCapabilities()->supportsPemKeyImportExport()) {
-            $this->setMessage('dnssec', 'error', _('PEM key export requires PowerDNS 4.7 or newer.'));
-            $this->redirect('/zones/' . $zoneId . '/dnssec');
-            return;
-        }
-
         try {
-            $pem = $dnssecProvider->exportZoneKeyPem($domainName, (int) $keyId);
+            $privateKey = $dnssecProvider->exportZonePrivateKey($domainName, (int) $keyId);
         } catch (Exception $e) {
-            $this->logger->error('Exception exporting DNSSEC PEM key: {error}', ['error' => $e->getMessage()]);
-            $this->setMessage('dnssec', 'error', _('An error occurred while exporting the PEM key: ') . $e->getMessage());
+            $this->logger->error('Exception exporting DNSSEC key: {error}', ['error' => $e->getMessage()]);
+            $this->setMessage('dnssec', 'error', _('An error occurred while exporting the key: ') . $e->getMessage());
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
         }
 
-        if ($pem === null) {
-            $this->setMessage('dnssec', 'error', _('Could not retrieve the PEM key. The server may not expose private key material for this key.'));
+        if ($privateKey === null) {
+            $this->setMessage('dnssec', 'error', _('Could not retrieve the private key from PowerDNS.'));
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
         }
 
-        $filename = sprintf('%s-key-%s.pem', $domainName, $keyId);
+        $filename = sprintf('%s-key-%s.private', $domainName, $keyId);
         if (!headers_sent()) {
-            header('Content-Type: application/x-pem-file');
+            header('Content-Type: text/plain; charset=utf-8');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('X-Content-Type-Options: nosniff');
         }
-        echo $pem;
-        if (!str_ends_with($pem, "\n")) {
+        echo $privateKey;
+        if (!str_ends_with($privateKey, "\n")) {
             echo "\n";
         }
     }

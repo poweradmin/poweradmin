@@ -29,6 +29,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\Dnssec\DnssecAddKeyController;
 use Poweradmin\Application\Controller\Dnssec\DnssecDeleteKeyController;
 use Poweradmin\Application\Controller\Dnssec\DnssecEditKeyController;
+use Poweradmin\Application\Controller\Dnssec\DnssecKeyImportController;
 use Poweradmin\Application\Controller\Dnssec\DnssecToggleKeyController;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Service\Web\AuditService;
@@ -36,6 +37,7 @@ use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 use Poweradmin\Domain\Service\Zone\DnssecKeyService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -94,7 +96,7 @@ class DnssecKeyPagesTest extends SeamControllerTestCase
      */
     private function page(string $class): BaseController
     {
-        $params = $class === DnssecAddKeyController::class
+        $params = in_array($class, [DnssecAddKeyController::class, DnssecKeyImportController::class], true)
             ? ['id' => (string)self::ZONE_ID]
             : ['zone_id' => (string)self::ZONE_ID, 'key_id' => (string)self::KEY_ID];
 
@@ -215,6 +217,94 @@ class DnssecKeyPagesTest extends SeamControllerTestCase
         $this->post([]);
 
         $this->assertSame('Invalid or unexpected input given.', $this->haltOf($this->page(DnssecDeleteKeyController::class))->target);
+    }
+
+    // ---------------------------------------------------------------- import
+
+    private function serverVersion(string $version): void
+    {
+        $this->session->set('pdns_server_info', ['info' => ['version' => $version], 'fetched_at' => time()]);
+    }
+
+    private function importP256(string $algorithm): void
+    {
+        if (!$this->session->has('pdns_server_info')) {
+            $this->serverVersion('5.1.4');
+        }
+        $key = openssl_pkey_new(['private_key_type' => OPENSSL_KEYTYPE_EC, 'curve_name' => 'prime256v1']);
+        $this->assertNotFalse($key);
+        openssl_pkey_export($key, $pem);
+        $this->post(['key_type' => 'csk', 'algorithm' => $algorithm, 'private_key' => $pem]);
+    }
+
+    public function testAnImportedPemKeyReachesPowerDnsAsBindTextAndAuditsTheCreatedKey(): void
+    {
+        $this->dnssec->expects($this->once())->method('importZoneKeyFromPrivateKey')
+            ->with('example.com', 'csk', $this->stringStartsWith("Private-key-format: v1.2\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: "), false)
+            ->willReturn(new CryptoKey(9, 'csk', 256, 'ECDSAP256SHA256', false, '257 3 13 AAAA'));
+        $this->audit->expects($this->once())->method('logDnssecAddKey')->with(self::ZONE_ID, 'example.com', 'csk', '256', 'ecdsa256');
+        $this->importP256('ecdsa256');
+
+        $halt = $this->haltOf($this->page(DnssecKeyImportController::class));
+
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
+        $this->assertSame([['success', 'Key imported successfully.']], $this->messagesFor('dnssec'));
+    }
+
+    public function testAServerThatCannotImportKeysRefusesBeforeReadingTheKey(): void
+    {
+        $this->serverVersion('4.0.9');
+        $this->dnssec->expects($this->never())->method('importZoneKeyFromPrivateKey');
+        $this->importP256('ecdsa256');
+
+        $this->haltOf($this->page(DnssecKeyImportController::class));
+
+        $this->assertSame([['error', 'Importing keys requires PowerDNS 4.1 or newer.']], $this->messagesFor('dnssec'));
+    }
+
+    public function testAKeyForAnotherAlgorithmNeverReachesPowerDns(): void
+    {
+        $this->dnssec->expects($this->never())->method('importZoneKeyFromPrivateKey');
+        $this->audit->expects($this->never())->method('logDnssecAddKey');
+        $this->importP256('ecdsa384');
+
+        $this->haltOf($this->page(DnssecKeyImportController::class));
+
+        $this->assertSame([['error', 'The private key does not match the selected algorithm.']], $this->messagesFor('dnssec'));
+    }
+
+    public function testTextThatIsNoKeyIsRefusedBeforePowerDns(): void
+    {
+        $this->dnssec->expects($this->never())->method('importZoneKeyFromPrivateKey');
+        $this->serverVersion('5.1.4');
+        $this->post(['key_type' => 'csk', 'algorithm' => 'ecdsa256', 'private_key' => 'not a key']);
+
+        $this->haltOf($this->page(DnssecKeyImportController::class));
+
+        $this->assertSame([['error', 'The private key could not be read. Paste a BIND private key or an unencrypted PEM key.']], $this->messagesFor('dnssec'));
+    }
+
+    public function testAKeyPowerDnsRejectsIsReportedAndNotAudited(): void
+    {
+        $this->dnssec->method('importZoneKeyFromPrivateKey')->willReturn(DnssecKeyOutcome::KEY_REJECTED);
+        $this->audit->expects($this->never())->method('logDnssecAddKey');
+        $this->importP256('ecdsa256');
+
+        $this->haltOf($this->page(DnssecKeyImportController::class));
+
+        $this->assertSame([['error', 'Failed to import the key. PowerDNS rejected it.']], $this->messagesFor('dnssec'));
+    }
+
+    public function testAnImportWhilePowerDnsIsUnreachableReportsTheOutage(): void
+    {
+        $this->keys = null;
+        $this->dnssec->expects($this->never())->method('importZoneKeyFromPrivateKey');
+        $this->importP256('ecdsa256');
+
+        $halt = $this->haltOf($this->page(DnssecKeyImportController::class));
+
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
+        $this->assertSame(self::OUTAGE, $halt->target);
     }
 
     // ---------------------------------------------------------------- add

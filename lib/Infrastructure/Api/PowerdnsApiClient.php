@@ -457,30 +457,6 @@ class PowerdnsApiClient
     }
 
     /**
-     * Import a DNSSEC key from a PEM-encoded private key. Requires PowerDNS
-     * 4.7+ which accepts the `privatekey` field on POST /cryptokeys
-     * (per docs/changelog/4.7.rst PR #11590). The server derives bits and
-     * picks the right algorithm slot from the PEM contents.
-     */
-    public function importZoneKey(Zone $zone, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool
-    {
-        try {
-            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
-            $data = [
-                'keytype' => $keyType,
-                'algorithm' => $algorithm,
-                'privatekey' => $privateKeyPem,
-            ];
-            $response = $this->request('POST', $endpoint, $data);
-
-            return $response && $response['responseCode'] === 201;
-        } catch (ApiErrorException $e) {
-            $this->logger->error('Failed to import DNSSEC key into zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
-            return false;
-        }
-    }
-
-    /**
      * Create a DNSSEC key from an existing private key and return the key
      * PowerDNS created.
      *

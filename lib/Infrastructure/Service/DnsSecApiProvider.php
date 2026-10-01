@@ -218,27 +218,19 @@ final class DnsSecApiProvider implements DnssecProviderInterface
         return $created;
     }
 
-    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool
-    {
-        $zone = new Zone($zoneName);
-        $result = $this->client->importZoneKey($zone, $keyType, $algorithm, $privateKeyPem);
-        $this->logAction('dnssec_import_zone_key', $zoneName, ['type' => $keyType, 'algorithm' => $algorithm, 'result' => $result]);
-        return $result;
-    }
-
-    public function exportZoneKeyPem(string $zoneName, int $keyId): ?string
+    public function exportZonePrivateKey(string $zoneName, int $keyId): ?string
     {
         $zone = new Zone($zoneName);
         $payload = $this->client->getZoneKeyWithPrivate($zone, $keyId);
         if ($payload === null) {
             return null;
         }
-        $pem = $payload['privatekey'] ?? null;
-        if (!is_string($pem) || $pem === '') {
+        $privateKey = $payload['privatekey'] ?? null;
+        if (!is_string($privateKey) || $privateKey === '') {
             return null;
         }
         $this->logAction('dnssec_export_zone_key', $zoneName, ['keyId' => $keyId]);
-        return $pem;
+        return $privateKey;
     }
 
     private function logAction(string $action, string $zoneName, array $context = []): void

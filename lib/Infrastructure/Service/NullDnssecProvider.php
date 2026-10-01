@@ -116,12 +116,7 @@ class NullDnssecProvider implements DnssecProviderInterface
         return DnssecKeyOutcome::FAILED;
     }
 
-    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool
-    {
-        return false;
-    }
-
-    public function exportZoneKeyPem(string $zoneName, int $keyId): ?string
+    public function exportZonePrivateKey(string $zoneName, int $keyId): ?string
     {
         return null;
     }

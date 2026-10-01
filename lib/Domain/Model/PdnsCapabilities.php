@@ -246,10 +246,10 @@ final readonly class PdnsCapabilities
         return $this->isAtLeast('4.0.0');
     }
 
-    /** PEM import/export of DNSSEC keys added in 4.7. */
-    public function supportsPemKeyImportExport(): bool
+    /** Creating a DNSSEC key from a private key (POST /cryptokeys with privatekey) added in 4.1. */
+    public function supportsPrivateKeyImport(): bool
     {
-        return $this->isAtLeast('4.7.0');
+        return $this->isAtLeast('4.1.0');
     }
 
     /** RFC 9615 authenticated DNSSEC bootstrapping added in 5.0. */
