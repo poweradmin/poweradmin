@@ -11,16 +11,27 @@ ALTER TABLE zones ADD COLUMN zone_master character varying(255) DEFAULT NULL;
 
 -- Backfill zone_name, zone_type, zone_master from PowerDNS domains table.
 -- Only updates the lowest-id row per domain_id to respect the UNIQUE index on zone_name.
-UPDATE zones
-SET zone_name = d.name,
-    zone_type = d.type,
-    zone_master = d.master
-FROM domains d
-WHERE zones.domain_id = d.id
-  AND zones.zone_name IS NULL
-  AND zones.id = (
-    SELECT MIN(z2.id) FROM zones z2 WHERE z2.domain_id = zones.domain_id
-  );
+-- Skipped when no domains table is on the search_path (API backend, or PowerDNS
+-- tables in another database); SQL mode reads zone names from domains and does not
+-- need it, it matters only before switching a database to API mode.
+DO $$
+BEGIN
+    IF to_regclass('domains') IS NULL THEN
+        RAISE NOTICE 'PowerDNS domains table not found, zone backfill skipped';
+        RETURN;
+    END IF;
+
+    UPDATE zones
+    SET zone_name = d.name,
+        zone_type = d.type,
+        zone_master = d.master
+    FROM domains d
+    WHERE zones.domain_id = d.id
+      AND zones.zone_name IS NULL
+      AND zones.id = (
+        SELECT MIN(z2.id) FROM zones z2 WHERE z2.domain_id = zones.domain_id
+      );
+END $$;
 
 CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name);
 
