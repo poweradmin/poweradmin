@@ -15608,4 +15608,46 @@ msgstr ""
 "Yerel ayar uygulanamadı. Seçilen yerel ayar bu sistemde desteklenmiyor "
 "olabilir. Lütfen yöneticinizle iletişime geçin."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Anahtar başarıyla içe aktarıldı."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Özel anahtar seçilen algoritmayla eşleşmiyor."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Özel anahtar okunamadı. BIND biçiminde bir özel anahtar veya şifrelenmemiş bir PEM anahtarı yapıştırın."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Anahtar içe aktarılamadı. PowerDNS anahtarı reddetti."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Anahtar içe aktarılırken bir hata oluştu: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Anahtar dışa aktarılırken bir hata oluştu: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Özel anahtar PowerDNS'ten alınamadı."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Özel anahtarı BIND biçiminde indir"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Özel anahtar"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "BIND biçiminde bir özel anahtar (burada veya dnssec-keygen ile dışa aktarıldığı gibi) ya da şifrelenmemiş bir PEM anahtarı (RSA, ECDSA, Ed25519 veya Ed448) yapıştırın. Anahtarın oluşturulduğu algoritmayı seçin."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Anahtar içe aktarımı PowerDNS 4.1 veya daha yenisini gerektirir."

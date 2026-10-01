@@ -15766,4 +15766,46 @@ msgstr ""
 "Het instellen van de locale is mislukt. De geselecteerde locale wordt "
 "mogelijk niet ondersteund op dit systeem. Neem contact op met uw beheerder."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Sleutel met succes geïmporteerd."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "De privésleutel komt niet overeen met het geselecteerde algoritme."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "De privésleutel kon niet worden gelezen. Plak een privésleutel in BIND-formaat of een niet-versleutelde PEM-sleutel."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Sleutel kon niet worden geïmporteerd. PowerDNS heeft deze geweigerd."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Er is een fout opgetreden bij het importeren van de sleutel: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Er is een fout opgetreden bij het exporteren van de sleutel: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Kan de privésleutel niet ophalen van PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "De privésleutel in BIND-formaat downloaden"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Privésleutel"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Plak een privésleutel in BIND-formaat (zoals hier of door dnssec-keygen geëxporteerd) of een niet-versleutelde PEM-sleutel (RSA, ECDSA, Ed25519 of Ed448). Kies het algoritme waarvoor de sleutel is gemaakt."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Het importeren van sleutels vereist PowerDNS 4.1 of nieuwer."

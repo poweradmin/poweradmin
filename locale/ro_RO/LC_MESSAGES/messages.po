@@ -16058,4 +16058,46 @@ msgstr ""
 "Setarea localizării a eșuat. Localizarea selectată poate să nu fie acceptată "
 "pe acest sistem. Contactați administratorul."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Cheia a fost importată cu succes."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Cheia privată nu se potrivește cu algoritmul selectat."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Cheia privată nu a putut fi citită. Lipiți o cheie privată în format BIND sau o cheie PEM necriptată."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Importul cheii a eșuat. PowerDNS a respins-o."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "A apărut o eroare la importul cheii: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "A apărut o eroare la exportul cheii: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nu s-a putut obține cheia privată de la PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Descarcă cheia privată în format BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Cheie privată"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Lipiți o cheie privată în format BIND (așa cum este exportată aici sau de dnssec-keygen) sau o cheie PEM necriptată (RSA, ECDSA, Ed25519 sau Ed448). Selectați algoritmul pentru care a fost creată cheia."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Importul cheilor necesită PowerDNS 4.1 sau mai nou."

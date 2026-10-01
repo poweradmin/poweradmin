@@ -15285,4 +15285,46 @@ msgstr ""
 "تعذر تعيين الإعدادات المحلية. قد تكون الإعدادات المحلية المحددة غير مدعومة "
 "على هذا النظام. يُرجى الاتصال بالمسؤول."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "تم استيراد المفتاح بنجاح."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "المفتاح الخاص لا يتطابق مع الخوارزمية المحددة."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "تعذّر قراءة المفتاح الخاص. ألصق مفتاحاً خاصاً بصيغة BIND أو مفتاح PEM غير مشفّر."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "فشل استيراد المفتاح. رفضه PowerDNS."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "حدث خطأ أثناء استيراد المفتاح: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "حدث خطأ أثناء تصدير المفتاح: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "تعذّر استرجاع المفتاح الخاص من PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "تنزيل المفتاح الخاص بصيغة BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "المفتاح الخاص"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "ألصق مفتاحاً خاصاً بصيغة BIND (كما يُصدَّر هنا أو بواسطة dnssec-keygen) أو مفتاح PEM غير مشفّر (RSA أو ECDSA أو Ed25519 أو Ed448). اختر الخوارزمية التي أُنشئ المفتاح من أجلها."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "يتطلب استيراد المفاتيح إصدار PowerDNS 4.1 أو أحدث."

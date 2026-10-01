@@ -15991,4 +15991,46 @@ msgstr ""
 "Theip ar shocrú an locale. Seans nach bhfuil tacaíocht ar an gcóras seo don "
 "locale roghnaithe. Déan teagmháil le do riarthóir."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Iompórtáladh an eochair go rathúil."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Níl an eochair phríobháideach ag teacht leis an algartam roghnaithe."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Níorbh fhéidir an eochair phríobháideach a léamh. Greamaigh eochair phríobháideach i bhformáid BIND nó eochair PEM neamhchriptithe."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Theip ar an eochair a iompórtáil. Dhiúltaigh PowerDNS di."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Tharla earráid agus an eochair á hiompórtáil: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Tharla earráid agus an eochair á heaspórtáil: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Níorbh fhéidir an eochair phríobháideach a fháil ó PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Íoslódáil an eochair phríobháideach i bhformáid BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Eochair phríobháideach"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Greamaigh eochair phríobháideach i bhformáid BIND (mar a easpórtáiltear anseo í nó le dnssec-keygen) nó eochair PEM neamhchriptithe (RSA, ECDSA, Ed25519 nó Ed448). Roghnaigh an t-algartam ar cruthaíodh an eochair dó."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Éilíonn iompórtáil eochracha PowerDNS 4.1 nó níos nuaí."

@@ -15728,4 +15728,46 @@ msgstr ""
 "Nie udało się ustawić ustawień regionalnych. Wybrane ustawienia regionalne "
 "mogą nie być obsługiwane w tym systemie. Skontaktuj się z administratorem."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Klucz zaimportowany pomyślnie."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Klucz prywatny nie pasuje do wybranego algorytmu."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Nie można odczytać klucza prywatnego. Wklej klucz prywatny w formacie BIND lub niezaszyfrowany klucz PEM."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Nie udało się zaimportować klucza. PowerDNS go odrzucił."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Wystąpił błąd podczas importu klucza: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Wystąpił błąd podczas eksportu klucza: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nie udało się pobrać klucza prywatnego z PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Pobierz klucz prywatny w formacie BIND"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Klucz prywatny"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Wklej klucz prywatny w formacie BIND (tak jak wyeksportowany tutaj lub przez dnssec-keygen) albo niezaszyfrowany klucz PEM (RSA, ECDSA, Ed25519 lub Ed448). Wybierz algorytm, dla którego klucz został utworzony."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Import kluczy wymaga PowerDNS 4.1 lub nowszego."

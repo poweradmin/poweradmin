@@ -15366,4 +15366,46 @@ msgstr ""
 "Постављање локализације није успело. Изабрана локализација можда није "
 "подржана на овом систему. Обратите се администратору."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Кључ успешно увезен."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Приватни кључ не одговара изабраном алгоритму."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Приватни кључ није било могуће прочитати. Налепите приватни кључ у BIND формату или нешифровани PEM кључ."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Увоз кључа није успео. PowerDNS га је одбио."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Дошло је до грешке приликом увоза кључа: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Дошло је до грешке приликом извоза кључа: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Није било могуће преузети приватни кључ са PowerDNS-а."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Преузми приватни кључ у BIND формату"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Приватни кључ"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Налепите приватни кључ у BIND формату (онако како је извезен овде или помоћу dnssec-keygen) или нешифровани PEM кључ (RSA, ECDSA, Ed25519 или Ed448). Изаберите алгоритам за који је кључ направљен."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Увоз кључева захтева PowerDNS 4.1 или новији."

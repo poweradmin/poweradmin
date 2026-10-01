@@ -15595,4 +15595,46 @@ msgstr ""
 "Kunne ikke angive sprogindstilling. Den valgte sprogindstilling understøttes "
 "muligvis ikke på dette system. Kontakt din administrator."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Nøgle importeret med succes."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Den private nøgle matcher ikke den valgte algoritme."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Den private nøgle kunne ikke læses. Indsæt en privat nøgle i BIND-format eller en ukrypteret PEM-nøgle."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Kunne ikke importere nøglen. PowerDNS afviste den."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Der opstod en fejl under import af nøglen: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Der opstod en fejl under eksport af nøglen: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Kunne ikke hente den private nøgle fra PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Download den private nøgle i BIND-format"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Privat nøgle"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Indsæt en privat nøgle i BIND-format (som eksporteret her eller af dnssec-keygen) eller en ukrypteret PEM-nøgle (RSA, ECDSA, Ed25519 eller Ed448). Vælg den algoritme, nøglen er lavet til."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Import af nøgler kræver PowerDNS 4.1 eller nyere."

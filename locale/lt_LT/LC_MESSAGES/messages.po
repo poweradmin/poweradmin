@@ -15629,4 +15629,46 @@ msgstr ""
 "Nepavyko nustatyti lokalės. Pasirinkta lokalė šioje sistemoje gali būti "
 "nepalaikoma. Kreipkitės į savo administratorių."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Key imported successfully."
+msgstr "Raktas sėkmingai importuotas."
 
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key does not match the selected algorithm."
+msgstr "Privatusis raktas neatitinka pasirinkto algoritmo."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
+msgstr "Nepavyko perskaityti privačiojo rakto. Įklijuokite BIND formato privatųjį raktą arba nešifruotą PEM raktą."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Nepavyko importuoti rakto. PowerDNS jį atmetė."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "An error occurred while importing the key: "
+msgstr "Importuojant raktą įvyko klaida: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "An error occurred while exporting the key: "
+msgstr "Eksportuojant raktą įvyko klaida: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nepavyko gauti privačiojo rakto iš PowerDNS."
+
+#: templates/default/dnssec.html
+msgid "Download the private key in BIND format"
+msgstr "Atsisiųsti privatųjį raktą BIND formatu"
+
+#: templates/default/dnssec.html
+msgid "Private key"
+msgstr "Privatusis raktas"
+
+#: templates/default/dnssec.html
+msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
+msgstr "Įklijuokite BIND formato privatųjį raktą (tokį, koks eksportuojamas čia arba su dnssec-keygen) arba nešifruotą PEM raktą (RSA, ECDSA, Ed25519 arba Ed448). Pasirinkite algoritmą, kuriam raktas buvo sukurtas."
+
+#: lib/Application/Controller/DnssecKeyImportController.php
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Raktų importui reikia PowerDNS 4.1 arba naujesnio."
