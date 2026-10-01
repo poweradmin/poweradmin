@@ -61,7 +61,8 @@ interface RecordManagerInterface
 
     /**
      * Edit a record. An unchanged save is skipped entirely when
-     * dns.bump_serial_on_unchanged_save is off, so nothing bumps the serial then.
+     * dns.bump_serial_on_unchanged_save is off, so nothing bumps the serial then;
+     * the result then reports changed = false.
      *
      * @param array $record Record structure to update
      * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself

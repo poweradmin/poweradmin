@@ -87,7 +87,20 @@ class RRSetReplaceService
                 return $this->rollBack($useTransaction, self::failure('A record with this hostname, type, and content already exists', Refusal::CONFLICT));
             }
 
-            foreach ($this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type) as $record) {
+            $existing = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
+
+            // A replace with the stored set would still make PowerDNS bump the serial on
+            // the API backend, so an install that opted out of bumping skips the writes
+            if (!$this->config->get('dns', 'bump_serial_on_unchanged_save', true) && self::sameRecordSet($existing, $validated)) {
+                if ($useTransaction) {
+                    $this->transaction->commit();
+                }
+                $this->audit->logApiRrsetReplace($zoneId, $normalizedName, $type, count($validated));
+
+                return ['success' => true, 'message' => 'RRSet replaced successfully', 'name' => $normalizedName, 'records' => $validated];
+            }
+
+            foreach ($existing as $record) {
                 if (!$this->recordManager->deleteRecord($record['id'], false)->success) {
                     return $this->rollBack($useTransaction, self::failure('Failed to delete existing record with ID ' . $record['id'], Refusal::BACKEND_FAILURE));
                 }
@@ -161,6 +174,25 @@ class RRSetReplaceService
         }
 
         return $failure;
+    }
+
+    /**
+     * Whether the validated set equals the stored one in every field PowerDNS serves.
+     *
+     * @param array<int, array<string, mixed>> $existing Stored rows of the RRSet
+     * @param list<array{content: string, ttl: int, priority: int, disabled: int}> $validated
+     */
+    private static function sameRecordSet(array $existing, array $validated): bool
+    {
+        $key = static fn(mixed $content, mixed $ttl, mixed $prio, mixed $disabled): string
+            => implode("\0", [(string)$content, (int)$ttl, (int)$prio, (int)$disabled]);
+
+        $stored = array_map(fn(array $r): string => $key($r['content'] ?? '', $r['ttl'] ?? 0, $r['prio'] ?? 0, $r['disabled'] ?? 0), $existing);
+        $wanted = array_map(fn(array $r): string => $key($r['content'], $r['ttl'], $r['priority'], $r['disabled']), $validated);
+        sort($stored);
+        sort($wanted);
+
+        return $stored === $wanted;
     }
 
     /**

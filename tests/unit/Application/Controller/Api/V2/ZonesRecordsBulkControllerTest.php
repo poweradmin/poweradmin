@@ -364,6 +364,56 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    public function testAnUnchangedUpdateNeitherBumpsTheSerialNorRectifies(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::unchanged());
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+
+        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $soa->expects($this->never())->method('updateSOASerial');
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'content' => '192.0.2.5']]], $soa);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(1, $this->decode($response)['data']['updated']);
+    }
+
+    public function testABatchWithOneRealWriteBumpsAndRectifiesOnce(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::unchanged());
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, false);
+
+        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID);
+
+        $response = $this->bulk(['operations' => [
+            ['action' => 'update', 'id' => 3, 'content' => '192.0.2.5'],
+            $this->createOperation(),
+        ]], $soa);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function storedARecord(): array
+    {
+        return [
+            'id' => 3,
+            'domain_id' => self::ZONE_ID,
+            'name' => 'www.example.com',
+            'type' => 'A',
+            'content' => '192.0.2.5',
+            'ttl' => 3600,
+            'prio' => 0,
+            'disabled' => 0,
+        ];
+    }
+
     public function testANonSoaBatchBumpsTheSerialOnce(): void
     {
         $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));

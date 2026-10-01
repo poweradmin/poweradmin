@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -53,6 +54,9 @@ class RRSetReplaceServiceTest extends TestCase
 
     /** @var list<string> */
     private array $calls = [];
+    private bool $bumpOnUnchangedSave = true;
+    /** @var list<array<string, mixed>> Stored rows of the RRSet */
+    private array $existing = [['id' => 5], ['id' => 6]];
 
     protected function setUp(): void
     {
@@ -77,7 +81,7 @@ class RRSetReplaceServiceTest extends TestCase
         );
 
         $this->records = $this->createMock(RecordRepositoryInterface::class);
-        $this->records->method('getRRSetRecords')->willReturn([['id' => 5], ['id' => 6]]);
+        $this->records->method('getRRSetRecords')->willReturnCallback(fn() => $this->existing);
 
         $this->manager = $this->createMock(RecordManagerInterface::class);
         $this->manager->method('deleteRecord')->willReturnCallback(function ($id) {
@@ -104,7 +108,11 @@ class RRSetReplaceServiceTest extends TestCase
     private function service(): RRSetReplaceService
     {
         $config = $this->createMock(ConfigurationInterface::class);
-        $config->method('get')->willReturnCallback(fn($group, $key) => $key === 'hostmaster' ? 'hostmaster@example.com' : 86400);
+        $config->method('get')->willReturnCallback(fn($group, $key) => match ($key) {
+            'hostmaster' => 'hostmaster@example.com',
+            'bump_serial_on_unchanged_save' => $this->bumpOnUnchangedSave,
+            default => 86400,
+        });
 
         return new RRSetReplaceService($this->transaction, $config, $this->backend, $this->validator, $this->records, $this->manager, $this->soa, $this->audit);
     }
@@ -145,6 +153,64 @@ class RRSetReplaceServiceTest extends TestCase
                 ['content' => '192.0.2.2', 'ttl' => 300, 'priority' => 0, 'disabled' => 0],
             ],
         ], $result);
+    }
+
+    public function testAnUnchangedReplaceWritesNothingWhenUnchangedSavesKeepTheSerial(): void
+    {
+        $this->bumpOnUnchangedSave = false;
+        $this->existing = [
+            ['id' => 6, 'content' => '192.0.2.2', 'ttl' => 300, 'prio' => 0, 'disabled' => 0],
+            ['id' => 5, 'content' => '192.0.2.1', 'ttl' => 300, 'prio' => 0, 'disabled' => 0],
+        ];
+        $this->audit->expects($this->once())->method('logApiRrsetReplace')->with(self::ZONE_ID, 'www.example.com', 'A', 2);
+
+        $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1', '192.0.2.2']));
+
+        $this->assertSame(['begin', 'validate:192.0.2.1', 'validate:192.0.2.2', 'commit'], $this->calls);
+        $this->assertTrue($result['success']);
+        $this->assertSame('www.example.com', $result['name']);
+        $this->assertCount(2, $result['records']);
+    }
+
+    /**
+     * @return array<string, array{list<array<string, mixed>>}>
+     */
+    public static function changedSetProvider(): array
+    {
+        $row = ['content' => '192.0.2.1', 'ttl' => 300, 'prio' => 0, 'disabled' => 0];
+
+        return [
+            'ttl' => [[['id' => 5, 'ttl' => 60] + $row]],
+            'disabled' => [[['id' => 5, 'disabled' => 1] + $row]],
+            'content' => [[['id' => 5, 'content' => '192.0.2.9'] + $row]],
+            'priority' => [[['id' => 5, 'prio' => 10] + $row]],
+            'extra stored record' => [[['id' => 5] + $row, ['id' => 6, 'content' => '192.0.2.2'] + $row]],
+            'new rrset' => [[]],
+        ];
+    }
+
+    /**
+     * @param list<array<string, mixed>> $existing
+     */
+    #[DataProvider('changedSetProvider')]
+    public function testAChangedSetIsStillWrittenWhenUnchangedSavesKeepTheSerial(array $existing): void
+    {
+        $this->bumpOnUnchangedSave = false;
+        $this->existing = $existing;
+
+        $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1']));
+
+        $this->assertContains('add:192.0.2.1', $this->calls);
+        $this->assertContains('updateSOASerial', $this->calls);
+    }
+
+    public function testAnUnchangedReplaceIsStillWrittenByDefault(): void
+    {
+        $this->existing = [['id' => 5, 'content' => '192.0.2.1', 'ttl' => 300, 'prio' => 0, 'disabled' => 0]];
+
+        $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1']));
+
+        $this->assertSame(['begin', 'validate:192.0.2.1', 'delete:5', 'add:192.0.2.1', 'updateSOASerial', 'commit', 'finalizeZone'], $this->calls);
     }
 
     public function testASoaReplacementDoesNotBumpTheSerialSeparately(): void

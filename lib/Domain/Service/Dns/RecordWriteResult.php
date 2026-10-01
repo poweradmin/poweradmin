@@ -37,7 +37,8 @@ final readonly class RecordWriteResult
         public ?string $message,
         public ?Refusal $refusal,
         public ?RecordField $field,
-        public int|string|null $recordId
+        public int|string|null $recordId,
+        public bool $changed = true
     ) {
     }
 
@@ -45,6 +46,14 @@ final readonly class RecordWriteResult
     public static function ok(int|string|null $recordId = null): self
     {
         return new self(true, null, null, null, $recordId);
+    }
+
+    /**
+     * A save that matched the stored record and was skipped, so nothing was written.
+     */
+    public static function unchanged(): self
+    {
+        return new self(true, null, null, null, null, false);
     }
 
     /**

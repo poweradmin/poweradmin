@@ -285,6 +285,8 @@ class ZonesRecordsBulkController extends PublicApiController
     {
         // Only non-SOA changes bump the serial, so a user-supplied SOA serial stays.
         $nonSOARecordModified = false;
+        // An update matching the stored record writes nothing (bump_serial_on_unchanged_save off)
+        $anyRecordWritten = false;
         try {
             foreach ($operations as $index => $operation) {
                 $action = strtolower($operation['action'] ?? '');
@@ -297,8 +299,9 @@ class ZonesRecordsBulkController extends PublicApiController
                         default => throw new ApiErrorException("Invalid action: $action. Must be 'create', 'update', or 'delete'", 400),
                     };
                     $results[$action . 'd']++;
-                    if ($recordType !== 'SOA') {
-                        $nonSOARecordModified = true;
+                    if ($recordType !== null) {
+                        $anyRecordWritten = true;
+                        $nonSOARecordModified = $nonSOARecordModified || $recordType !== 'SOA';
                     }
                 } catch (\Throwable $e) {
                     $results['failed']++;
@@ -317,7 +320,9 @@ class ZonesRecordsBulkController extends PublicApiController
             if ($useTransaction) {
                 $this->services()->transaction()->commit();
             }
-            $this->recordManager->finalizeZone($zoneId, false);
+            if ($anyRecordWritten) {
+                $this->recordManager->finalizeZone($zoneId, false);
+            }
 
             $this->services()->auditService()->logApiBulkRecords($zoneId, $results['total_operations']);
 
@@ -409,10 +414,10 @@ class ZonesRecordsBulkController extends PublicApiController
      *
      * @param int $zoneId Zone ID
      * @param array $operation Operation data
-     * @return string The record type that was updated
+     * @return string|null The record type that was updated, or null when the record already matched and nothing was written
      * @throws Exception If operation fails
      */
-    private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
+    private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): ?string
     {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for update operation", 400);
@@ -483,7 +488,7 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException((string)$result->message, RefusalStatus::of($result->refusal));
         }
 
-        return $recordData['type'];
+        return $result->changed ? $recordData['type'] : null;
     }
 
     /**

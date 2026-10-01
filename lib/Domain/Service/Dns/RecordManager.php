@@ -430,7 +430,7 @@ class RecordManager implements RecordManagerInterface
             !$this->config->get('dns', 'bump_serial_on_unchanged_save', true)
             && !self::recordFieldsDiffer($recordDetails, $submitted)
         ) {
-            return RecordWriteResult::ok();
+            return RecordWriteResult::unchanged();
         }
 
         if (
