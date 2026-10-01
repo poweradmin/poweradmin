@@ -484,6 +484,27 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
+     * Whether a record fetched by id belongs to the zone addressed in the path.
+     * A zone moved from SQL to API backend mode can be addressed by its zones row
+     * id while its records carry the canonical id, so the zone's own canonical id
+     * (resolved by name, the way the record lookup resolves it) also matches.
+     *
+     * @param array<string, mixed> $record
+     */
+    protected function recordBelongsToZone(array $record, int $zoneId, ?string $zoneName): bool
+    {
+        $recordZoneId = (int)($record['domain_id'] ?? 0);
+        if ($recordZoneId === $zoneId) {
+            return true;
+        }
+        if ($recordZoneId <= 0 || $zoneName === null || $zoneName === '') {
+            return false;
+        }
+
+        return $recordZoneId === $this->services()->dnsBackendProvider()->getZoneIdByName($zoneName);
+    }
+
+    /**
      * Record names are stored as punycode and always carry the zone suffix.
      */
     protected function normalizeV2RecordName(string $name, string $zoneName): string

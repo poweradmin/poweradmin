@@ -34,6 +34,7 @@ use Poweradmin\Application\Service\Record\RecordEditService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\RecordComment;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
@@ -75,6 +76,8 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
     private array $zoneRow = ['id' => self::ZONE_ID, 'name' => self::ZONE_NAME, 'type' => 'MASTER'];
     private ApiKeyScope $scope;
     private int|string $recordIdParameter = self::RECORD_ID;
+    /** Canonical id the backend reports for the zone, as for a zone moved from SQL to API mode */
+    private ?int $canonicalZoneId = null;
 
     protected function setUp(): void
     {
@@ -146,6 +149,36 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->records->method('getRecordById')->willReturn($this->existingRecord(['domain_id' => 999]));
 
         $response = $this->update(['content' => '192.0.2.9']);
+
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame('Record not found in this zone', $this->messageOf($response));
+    }
+
+    public function testAZoneAddressedByItsRowIdFindsRecordsCarryingItsCanonicalId(): void
+    {
+        $this->canonicalZoneId = 14;
+        $this->records->method('getRecordById')->willReturn($this->existingRecord(['domain_id' => 14]));
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+
+        $this->assertSame(204, $this->delete()->getStatusCode());
+    }
+
+    public function testAnUpdateThroughTheRowIdReachesARecordCarryingTheCanonicalId(): void
+    {
+        $this->canonicalZoneId = 14;
+        $this->records->method('getRecordById')->willReturn($this->existingRecord(['domain_id' => 14]));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+
+        $this->assertSame(200, $this->update(['content' => '192.0.2.9'])->getStatusCode());
+    }
+
+    public function testARecordOfAnotherZoneStays404WhenTheZoneHasACanonicalId(): void
+    {
+        $this->canonicalZoneId = 14;
+        $this->records->method('getRecordById')->willReturn($this->existingRecord(['domain_id' => 999]));
+        $this->recordManager->expects($this->never())->method('deleteRecord');
+
+        $response = $this->delete();
 
         $this->assertSame(404, $response->getStatusCode());
         $this->assertSame('Record not found in this zone', $this->messageOf($response));
@@ -738,8 +771,14 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->method('getDomainNameById')->willReturn(self::ZONE_NAME);
 
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->method('getZoneIdByName')->willReturnCallback(
+            fn(string $name): ?int => $name === self::ZONE_NAME ? $this->canonicalZoneId : null
+        );
+
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('domainRepository')->willReturn($domains);
+        $factory->method('dnsBackendProvider')->willReturn($backend);
         $factory->method('auditService')->willReturn($this->audit);
         $factory->method('reverseRecordCreator')->willReturn($this->reverseCreator);
         $factory->method('userRepository')->willReturn($this->stubUsers());

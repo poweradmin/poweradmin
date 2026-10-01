@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -68,6 +69,8 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
     private ApiKeyScope $scope;
     private int $zoneIdParameter = self::ZONE_ID;
     private bool $localTransactions = true;
+    /** Canonical id the backend reports for the zone, as for a zone moved from SQL to API mode */
+    private ?int $canonicalZoneId = null;
 
     protected function setUp(): void
     {
@@ -237,6 +240,18 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
 
         $this->assertSame(404, $response->getStatusCode());
         $this->assertSame(['Operation 0 (delete): Record not found in this zone'], $this->decode($response)['data']['errors']);
+    }
+
+    public function testABatchThroughTheZoneRowIdDeletesARecordCarryingTheCanonicalId(): void
+    {
+        $this->canonicalZoneId = 4;
+        $this->records->method('getRecordById')->willReturn(['id' => 3, 'domain_id' => 4, 'type' => 'A', 'name' => 'www.example.com']);
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+
+        $response = $this->bulk(['operations' => [['action' => 'delete', 'id' => 3]]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(1, $this->decode($response)['data']['deleted']);
     }
 
     public function testASuccessfulMixedBatchReportsOneCounterPerAction(): void
@@ -419,6 +434,11 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $factory->method('recordChangeLog')->willReturn(new RecordChangeLogger($this->createMock(PDO::class), new FakeConfiguration(), StubActor::nobody()));
 
         $factory->method('transaction')->willReturn(new PdoTransaction($this->stubDb()));
+        $canonical = $this->createMock(DnsBackendProviderInterface::class);
+        $canonical->method('getZoneIdByName')->willReturnCallback(
+            fn(string $name): ?int => $name === self::ZONE_NAME ? $this->canonicalZoneId : null
+        );
+        $factory->method('dnsBackendProvider')->willReturn($canonical);
 
         $backend = $this->createMock(BackendCapabilitiesInterface::class);
         $backend->method('supportsLocalWriteTransaction')->willReturn($this->localTransactions);

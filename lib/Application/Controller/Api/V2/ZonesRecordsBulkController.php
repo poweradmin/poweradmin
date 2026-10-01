@@ -422,7 +422,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Get existing record
         $existingRecord = $this->recordRepository->getRecordById($recordId);
-        if (!$existingRecord || $existingRecord['domain_id'] != $zoneId) {
+        if (!$existingRecord || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
             throw new ApiErrorException("Record not found in this zone", 404);
         }
 
@@ -504,7 +504,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Verify record exists in this zone
         $existingRecord = $this->recordRepository->getRecordById($recordId);
-        if (!$existingRecord || $existingRecord['domain_id'] != $zoneId) {
+        if (!$existingRecord || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
             throw new ApiErrorException("Record not found in this zone", 404);
         }
 
