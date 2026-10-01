@@ -57,16 +57,14 @@ interface DnssecProvider
     public function getEditedSerial(string $zoneName): ?int;
 
     /**
-     * Import a DNSSEC key from a PEM-encoded private key. Requires PowerDNS
-     * 4.7+; older servers should return false. Implementations that do not
-     * back onto the PowerDNS API may also return false.
+     * Import a DNSSEC key from its private key in the ISC/BIND format.
+     * Implementations that do not back onto the PowerDNS API return false.
      */
     public function importZoneKey(string $zoneName, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool;
 
     /**
-     * Export the PEM-encoded private key for an existing cryptokey, or null
-     * when the server does not support PEM export (pre-4.7) or the key
-     * cannot be read.
+     * Export the private key of an existing cryptokey in the ISC/BIND format
+     * PowerDNS stores it in, or null when the key cannot be read.
      */
     public function exportZoneKeyPem(string $zoneName, int $keyId): ?string;
 }

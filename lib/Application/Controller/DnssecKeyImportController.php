@@ -29,13 +29,15 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\DnssecPrivateKeyConverter;
+use Poweradmin\Domain\Service\DnssecPrivateKeyRefusal;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Enum\DnssecKeyType;
 
 /**
- * Imports a PEM-encoded DNSSEC private key into a zone via the PowerDNS API.
- * Requires PowerDNS 4.7+ which accepts the `privatekey` field on
- * POST /cryptokeys; older servers reject the call and the UI hides the form.
+ * Imports a DNSSEC private key into a zone via the PowerDNS API. Takes ISC
+ * (BIND) text or an RSA, ECDSA or EdDSA PEM key, which is converted to ISC;
+ * PowerDNS accepts private keys on POST /cryptokeys since 4.1.
  */
 class DnssecKeyImportController extends BaseController
 {
@@ -76,8 +78,8 @@ class DnssecKeyImportController extends BaseController
         }
 
         $caps = $this->getPdnsCapabilities();
-        if (!$caps->supportsPemKeyImportExport()) {
-            $this->setMessage('dnssec', 'error', _('PEM key import requires PowerDNS 4.7 or newer.'));
+        if (!$caps->supportsPrivateKeyImport()) {
+            $this->setMessage('dnssec', 'error', _('Importing keys requires PowerDNS 4.1 or newer.'));
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
         }
@@ -110,23 +112,27 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
-        if (!str_contains($privateKeyPem, '-----BEGIN') || !str_contains($privateKeyPem, '-----END')) {
-            $this->setMessage('dnssec', 'error', _('Provide a PEM-encoded private key (must contain BEGIN/END markers).'));
+        // PowerDNS takes only ISC (BIND) keys over its API; a PEM key is converted first
+        $iscKey = DnssecPrivateKeyConverter::toIsc($privateKeyPem, $algorithm);
+        if ($iscKey instanceof DnssecPrivateKeyRefusal) {
+            $this->setMessage('dnssec', 'error', $iscKey === DnssecPrivateKeyRefusal::ALGORITHM_MISMATCH
+                ? _('The private key does not match the selected algorithm.')
+                : _('The private key could not be read. Paste a BIND private key or an unencrypted PEM key.'));
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
         }
 
         try {
-            if ($dnssecProvider->importZoneKey($domainName, $keyType, $algorithm, $privateKeyPem)) {
+            if ($dnssecProvider->importZoneKey($domainName, $keyType, $algorithm, $iscKey)) {
                 (new AuditService($this->db))->logDnssecAddKey($zoneIdInt, $domainName, $keyType, '0', $algorithm);
-                $this->setMessage('dnssec', 'success', _('PEM key imported successfully.'));
+                $this->setMessage('dnssec', 'success', _('Key imported successfully.'));
             } else {
-                $this->logger->error('Failed to import DNSSEC PEM key: domain={domain}, key_type={key_type}, algorithm={algorithm}', ['domain' => $domainName, 'key_type' => $keyType, 'algorithm' => $algorithm]);
-                $this->setMessage('dnssec', 'error', _('Failed to import PEM key. The PowerDNS server may have rejected the format.'));
+                $this->logger->error('Failed to import DNSSEC key: domain={domain}, key_type={key_type}, algorithm={algorithm}', ['domain' => $domainName, 'key_type' => $keyType, 'algorithm' => $algorithm]);
+                $this->setMessage('dnssec', 'error', _('Failed to import the key. PowerDNS rejected it.'));
             }
         } catch (Exception $e) {
-            $this->logger->error('Exception importing DNSSEC PEM key: {error}', ['error' => $e->getMessage()]);
-            $this->setMessage('dnssec', 'error', _('An error occurred while importing the PEM key: ') . $e->getMessage());
+            $this->logger->error('Exception importing DNSSEC key: {error}', ['error' => $e->getMessage()]);
+            $this->setMessage('dnssec', 'error', _('An error occurred while importing the key: ') . $e->getMessage());
         }
 
         $this->redirect('/zones/' . $zoneId . '/dnssec');

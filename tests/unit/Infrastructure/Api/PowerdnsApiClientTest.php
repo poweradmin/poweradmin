@@ -122,6 +122,17 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertSame('257 3 13 BBBB', $created->getDnskey());
     }
 
+    public function testImportingAKeySendsOnlyTheKeyTypeAndThePrivateKey(): void
+    {
+        $isc = "Private-key-format: v1.2\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: AAAA\n";
+        // PowerDNS derives algorithm and size from the key and answers 422 when they are sent too
+        $this->mockHttpClient->expects($this->once())->method('makeRequest')
+            ->with('POST', '/api/v1/servers/localhost/zones/example.com./cryptokeys', ['keytype' => 'csk', 'privatekey' => $isc])
+            ->willReturn(['responseCode' => 201, 'data' => ['id' => 4]]);
+
+        $this->assertTrue($this->apiClient->importZoneKey(new Zone('example.com.'), 'csk', 'ecdsa256', $isc));
+    }
+
     /** @return array<string, array{0: array<string, mixed>|null}> */
     public static function failedCreateProvider(): array
     {

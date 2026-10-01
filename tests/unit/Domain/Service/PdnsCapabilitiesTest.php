@@ -230,8 +230,8 @@ class PdnsCapabilitiesTest extends TestCase
         // Unknown version is conservative for default-behaviour questions.
         $this->assertFalse(PdnsCapabilities::fromVersion(null)->supportsDefaultCsk());
 
-        $this->assertFalse(PdnsCapabilities::fromVersion('4.6.0')->supportsPemKeyImportExport());
-        $this->assertTrue(PdnsCapabilities::fromVersion('4.7.0')->supportsPemKeyImportExport());
+        $this->assertFalse(PdnsCapabilities::fromVersion('4.0.9')->supportsPrivateKeyImport());
+        $this->assertTrue(PdnsCapabilities::fromVersion('4.1.0')->supportsPrivateKeyImport());
 
         $this->assertFalse(PdnsCapabilities::fromVersion('4.9.0')->supportsRfc9615Bootstrap());
         $this->assertTrue(PdnsCapabilities::fromVersion('5.0.0')->supportsRfc9615Bootstrap());
@@ -276,7 +276,6 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertFalse($caps->supportsAutoprimariesApi());
         $this->assertFalse($caps->supportsRecordTimestamps());
         $this->assertFalse($caps->supportsDefaultCsk());
-        $this->assertFalse($caps->supportsPemKeyImportExport());
         $this->assertFalse($caps->supportsRfc9615Bootstrap());
 
         // Always-supported record types are still allowed even on unknown.

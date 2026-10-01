@@ -1813,6 +1813,8 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\Dns\\SupermasterManager' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/SupermasterManager.php',
         'Poweradmin\\Domain\\Service\\Dns\\SupermasterManagerInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/SupermasterManagerInterface.php',
         'Poweradmin\\Domain\\Service\\DnssecKeySpecValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnssecKeySpecValidator.php',
+        'Poweradmin\\Domain\\Service\\DnssecPrivateKeyConverter' => __DIR__ . '/../..' . '/lib/Domain/Service/DnssecPrivateKeyConverter.php',
+        'Poweradmin\\Domain\\Service\\DnssecPrivateKeyRefusal' => __DIR__ . '/../..' . '/lib/Domain/Service/DnssecPrivateKeyRefusal.php',
         'Poweradmin\\Domain\\Service\\DnssecProvider' => __DIR__ . '/../..' . '/lib/Domain/Service/DnssecProvider.php',
         'Poweradmin\\Domain\\Service\\DomainParsingService' => __DIR__ . '/../..' . '/lib/Domain/Service/DomainParsingService.php',
         'Poweradmin\\Domain\\Service\\DomainRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/DomainRecordCreator.php',
