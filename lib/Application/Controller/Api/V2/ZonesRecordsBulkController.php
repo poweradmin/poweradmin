@@ -500,7 +500,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Get existing record
         $existingRecord = $this->recordRepository->getRecordById($recordId);
-        if (!$existingRecord || $existingRecord['domain_id'] != $zoneId) {
+        if (!$existingRecord || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
             throw new ApiErrorException("Record not found in this zone", 404);
         }
 
@@ -587,7 +587,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Verify record exists in this zone
         $existingRecord = $this->recordRepository->getRecordById($recordId);
-        if (!$existingRecord || $existingRecord['domain_id'] != $zoneId) {
+        if (!$existingRecord || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
             throw new ApiErrorException("Record not found in this zone", 404);
         }
 
@@ -636,5 +636,27 @@ class ZonesRecordsBulkController extends PublicApiController
             $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
             return null;
         }
+    }
+
+    /**
+     * Whether a record fetched by id belongs to the zone addressed in the path. A zone
+     * moved from SQL to API backend mode can be addressed by its zones row id while its
+     * records carry the canonical id, so the zone's own canonical id (resolved by name,
+     * the way the record lookup resolves it) also matches.
+     *
+     * @param array<string, mixed> $record
+     */
+    private function recordBelongsToZone(array $record, int $zoneId, ?string $zoneName): bool
+    {
+        $recordZoneId = (int)($record['domain_id'] ?? 0);
+        if ($recordZoneId === $zoneId) {
+            return true;
+        }
+        $zoneName ??= $this->zoneRepository->getZoneById($zoneId)['name'] ?? null;
+        if ($recordZoneId <= 0 || $zoneName === null || $zoneName === '') {
+            return false;
+        }
+
+        return $recordZoneId === $this->backendProvider->getZoneIdByName($zoneName);
     }
 }
