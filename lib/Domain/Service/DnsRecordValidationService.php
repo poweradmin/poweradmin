@@ -99,6 +99,10 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
             return ValidationResult::failure(_('Unable to find domain with the given ID.'));
         }
 
+        if (!$this->validatorRegistry->isKnownType($type)) {
+            return ValidationResult::failure(_('Invalid record type.'));
+        }
+
         // Get the appropriate validator for this record type
         $validator = $this->validatorRegistry->getValidator($type);
         if ($validator === null) {
