@@ -230,13 +230,14 @@ RUN chown -R www-data:www-data /app /db \
     && mkdir -p /data/caddy/locks /config/caddy \
     && chown -R www-data:www-data /data/caddy /config/caddy
 
-USER www-data
+# www-data in the alpine base image
+USER 82:82
 
 EXPOSE 80
 
 # Override base image healthcheck to use port 80 instead of Caddy admin port 2019
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -sf http://localhost:80/ -o /dev/null || exit 1
+    CMD ["/bin/sh", "-c", "curl -sf http://localhost:80/ -o /dev/null || exit 1"]
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
