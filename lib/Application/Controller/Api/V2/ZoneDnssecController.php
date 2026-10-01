@@ -144,6 +144,7 @@ class ZoneDnssecController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
     #[OA\Response(response: 501, description: 'DNSSEC management requires the PowerDNS API')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function getStatus(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -170,11 +171,11 @@ class ZoneDnssecController extends PublicApiController
         }
 
         try {
-            return $this->returnApiResponse(
-                $this->buildStatus($zoneName),
-                true,
-                'DNSSEC status retrieved successfully'
-            );
+            $status = $this->buildStatus($zoneName);
+            if ($status instanceof JsonResponse) {
+                return $status;
+            }
+            return $this->returnApiResponse($status, true, 'DNSSEC status retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -214,6 +215,7 @@ class ZoneDnssecController extends PublicApiController
     #[OA\Response(response: 409, description: 'Zone is presigned; DNSSEC is managed at the primary server')]
     #[OA\Response(response: 500, description: 'Failed to update DNSSEC status')]
     #[OA\Response(response: 501, description: 'DNSSEC management requires the PowerDNS API')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
     protected function setStatus(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -246,6 +248,12 @@ class ZoneDnssecController extends PublicApiController
         }
 
         try {
+            // Ask first: the server-settings and presigned lookups below read a failed request as "off"
+            $secured = $this->apiClient->fetchZoneSecured(new Zone($zoneName));
+            if ($secured === null) {
+                return $this->unreachable();
+            }
+
             if ($enabled && !$this->dnssecProvider->isDnssecEnabled()) {
                 return $this->returnApiError('DNSSEC is not enabled on the server', 400);
             }
@@ -256,9 +264,13 @@ class ZoneDnssecController extends PublicApiController
 
             // No-op when the zone is already in the requested state: return the current
             // status without re-signing or bumping the SOA serial (matches the web UI).
-            if ($this->dnssecProvider->isZoneSecured($zoneName, $this->config) === $enabled) {
+            if ($secured === $enabled) {
+                $status = $this->buildStatus($zoneName);
+                if ($status instanceof JsonResponse) {
+                    return $status;
+                }
                 $message = $enabled ? 'DNSSEC already enabled' : 'DNSSEC already disabled';
-                return $this->returnApiResponse($this->buildStatus($zoneName), true, $message);
+                return $this->returnApiResponse($status, true, $message);
             }
 
             // Mirror the web UI: validate the zone before signing so an invalid zone
@@ -275,8 +287,6 @@ class ZoneDnssecController extends PublicApiController
                 $result = $this->dnssecProvider->unsecureZone($zoneName);
             }
 
-            // Trust the provider's own result first: isZoneSecured() reports false on
-            // API errors, so verifying state alone could mask a failed call.
             if (!$result) {
                 return $this->returnApiError('Failed to update DNSSEC status', 500);
             }
@@ -284,6 +294,9 @@ class ZoneDnssecController extends PublicApiController
             // buildStatus() re-reads the signed state, so use it to both confirm the
             // change took effect and return the resulting DS records in one pass.
             $status = $this->buildStatus($zoneName);
+            if ($status instanceof JsonResponse) {
+                return $status;
+            }
             if ($status['enabled'] !== $enabled) {
                 return $this->returnApiError('Failed to update DNSSEC status', 500);
             }
@@ -339,17 +352,25 @@ class ZoneDnssecController extends PublicApiController
     /**
      * Build the DNSSEC status payload (enabled flag, presigned flag, DS records, DNSKEY) for a zone.
      *
-     * @return array{enabled: bool, presigned: bool, ds_records: array<int, array{key_tag: int, algorithm: int, digest_type: int, digest: string}>, dnskey: ?string}
+     * @return array{enabled: bool, presigned: bool, ds_records: array<int, array{key_tag: int, algorithm: int, digest_type: int, digest: string}>, dnskey: ?string}|JsonResponse
+     *         The status, or the error to send when PowerDNS could not be asked
      */
-    private function buildStatus(string $zoneName): array
+    private function buildStatus(string $zoneName): array|JsonResponse
     {
-        $enabled = $this->dnssecProvider->isZoneSecured($zoneName, $this->config);
+        $zone = new Zone($zoneName);
+        $enabled = $this->apiClient->fetchZoneSecured($zone);
+        if ($enabled === null) {
+            return $this->unreachable();
+        }
 
         $dsRecords = [];
         $dnskey = null;
 
         if ($enabled) {
-            $keys = $this->apiClient->getZoneKeys(new Zone($zoneName));
+            $keys = $this->apiClient->fetchZoneKeys($zone);
+            if ($keys === null) {
+                return $this->unreachable();
+            }
             foreach ($keys as $key) {
                 $keyDs = $key->getDs();
                 foreach ($keyDs as $ds) {
@@ -370,6 +391,14 @@ class ZoneDnssecController extends PublicApiController
             'ds_records' => $dsRecords,
             'dnskey' => $dnskey,
         ];
+    }
+
+    /**
+     * The error for a status PowerDNS did not report, which must not read as "unsigned".
+     */
+    private function unreachable(): JsonResponse
+    {
+        return $this->returnApiError('Failed to retrieve DNSSEC status from PowerDNS', 502);
     }
 
     /**

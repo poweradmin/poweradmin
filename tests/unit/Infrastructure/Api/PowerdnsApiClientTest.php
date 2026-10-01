@@ -103,6 +103,33 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertSame([], $this->apiClient->getZoneKeys(new Zone('example.com')), 'the web UI keeps its empty list');
     }
 
+    /** @return array<string, array{0: bool}> */
+    public static function signedStateProvider(): array
+    {
+        return ['signed' => [true], 'unsigned' => [false]];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('signedStateProvider')]
+    public function testFetchZoneSecuredReturnsTheSignedState(bool $signed): void
+    {
+        $this->mockHttpClient->expects($this->once())->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com')
+            ->willReturn(['responseCode' => 200, 'data' => ['dnssec' => $signed]]);
+
+        $this->assertSame($signed, $this->apiClient->fetchZoneSecured(new Zone('example.com')));
+    }
+
+    /** @param array<string, mixed>|null $response */
+    #[\PHPUnit\Framework\Attributes\DataProvider('failedKeyListProvider')]
+    public function testFetchZoneSecuredTellsAFailureApartFromAnUnsignedZone(?array $response): void
+    {
+        $call = $this->mockHttpClient->method('makeRequest');
+        $response === null ? $call->willThrowException(new ApiErrorException('down')) : $call->willReturn($response);
+
+        $this->assertNull($this->apiClient->fetchZoneSecured(new Zone('example.com')));
+        $this->assertFalse($this->apiClient->isZoneSecured(new Zone('example.com')), 'the web UI keeps reading a failure as unsigned');
+    }
+
     public function testCreateZoneKeyPostsTheKeyAndReturnsWhatPowerDnsCreated(): void
     {
         $this->mockHttpClient->expects($this->once())->method('makeRequest')

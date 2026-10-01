@@ -60,12 +60,12 @@ class ZoneDnssecControllerTest extends TestCase
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canViewZone')->willReturn(true);
         $this->zoneRepository->method('getDomainNameById')->with(1)->willReturn('example.com');
-        $this->dnssecProvider->method('isZoneSecured')->willReturn(true);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(true);
 
         // ZSK first (no DS), then KSK with DS - dnskey must come from the KSK.
         $zsk = new CryptoKey(2, 'zsk', 256, '13', true, '256 3 13 ZSKKEY', []);
         $ksk = new CryptoKey(1, 'ksk', 256, '13', true, '257 3 13 KSKKEY', ['12345 13 2 ABC123DEF456']);
-        $this->apiClient->method('getZoneKeys')->willReturn([$zsk, $ksk]);
+        $this->apiClient->method('fetchZoneKeys')->willReturn([$zsk, $ksk]);
 
         $response = $this->createController()->callGetStatus();
         $content = json_decode($response->getContent(), true);
@@ -88,8 +88,8 @@ class ZoneDnssecControllerTest extends TestCase
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canViewZone')->willReturn(true);
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
-        $this->dnssecProvider->method('isZoneSecured')->willReturn(false);
-        $this->apiClient->expects($this->never())->method('getZoneKeys');
+        $this->apiClient->method('fetchZoneSecured')->willReturn(false);
+        $this->apiClient->expects($this->never())->method('fetchZoneKeys');
 
         $response = $this->createController()->callGetStatus();
         $content = json_decode($response->getContent(), true);
@@ -140,9 +140,9 @@ class ZoneDnssecControllerTest extends TestCase
         $this->dnssecProvider->expects($this->once())->method('secureZone')->with('example.com')->willReturn(true);
         $this->dnssecProvider->expects($this->once())->method('rectifyZone')->with('example.com')->willReturn(true);
         // First call (no-op guard) reports unsigned, post-sign call reports signed.
-        $this->dnssecProvider->method('isZoneSecured')->willReturnOnConsecutiveCalls(false, true);
+        $this->apiClient->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(false, true);
         $ksk = new CryptoKey(1, 'ksk', 256, '13', true, '257 3 13 KSKKEY', ['12345 13 2 ABC123DEF456']);
-        $this->apiClient->method('getZoneKeys')->willReturn([$ksk]);
+        $this->apiClient->method('fetchZoneKeys')->willReturn([$ksk]);
 
         $controller = $this->createController();
         $controller->setRequestBody(json_encode(['enabled' => true]));
@@ -165,7 +165,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->dnssecProvider->expects($this->once())->method('unsecureZone')->with('example.com')->willReturn(true);
         $this->dnssecProvider->expects($this->never())->method('rectifyZone');
         // First call (no-op guard) reports signed, post-unsign call reports unsigned.
-        $this->dnssecProvider->method('isZoneSecured')->willReturnOnConsecutiveCalls(true, false);
+        $this->apiClient->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(true, false);
 
         $controller = $this->createController();
         $controller->setRequestBody(json_encode(['enabled' => false]));
@@ -185,9 +185,9 @@ class ZoneDnssecControllerTest extends TestCase
         $this->permissionService->method('canViewZone')->willReturn(true);
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
         // Presigned zones report secured without any local cryptokeys.
-        $this->dnssecProvider->method('isZoneSecured')->willReturn(true);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(true);
         $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
-        $this->apiClient->method('getZoneKeys')->willReturn([]);
+        $this->apiClient->method('fetchZoneKeys')->willReturn([]);
 
         $response = $this->createController()->callGetStatus();
         $content = json_decode($response->getContent(), true);
@@ -204,6 +204,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(true);
         $this->dnssecProvider->expects($this->never())->method('secureZone');
 
         $controller = $this->createController();
@@ -220,6 +221,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->permissionService->method('canManageDnssec')->willReturn(true);
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(true);
         $this->dnssecProvider->expects($this->never())->method('unsecureZone');
 
         $controller = $this->createController();
@@ -274,7 +276,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         $this->dnssecProvider->method('secureZone')->willReturn(true);
         // No-op guard sees unsigned (proceed); post-sign verification still unsigned.
-        $this->dnssecProvider->method('isZoneSecured')->willReturn(false);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(false);
 
         $controller = $this->createController();
         $controller->setRequestBody(json_encode(['enabled' => true]));
@@ -289,11 +291,11 @@ class ZoneDnssecControllerTest extends TestCase
         $this->permissionService->method('canManageDnssec')->willReturn(true);
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
-        $this->dnssecProvider->method('isZoneSecured')->willReturn(true);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(true);
         // Already signed: must not re-sign, bump the serial, or log a change.
         $this->dnssecProvider->expects($this->never())->method('secureZone');
         $ksk = new CryptoKey(1, 'ksk', 256, '13', true, '257 3 13 KSKKEY', ['12345 13 2 ABC123DEF456']);
-        $this->apiClient->method('getZoneKeys')->willReturn([$ksk]);
+        $this->apiClient->method('fetchZoneKeys')->willReturn([$ksk]);
 
         $controller = $this->createController();
         $controller->setRequestBody(json_encode(['enabled' => true]));
@@ -311,7 +313,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
-        $this->dnssecProvider->method('isZoneSecured')->willReturn(false);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(false);
         // Already unsigned: must not unsign, bump the serial, or log a change.
         $this->dnssecProvider->expects($this->never())->method('unsecureZone');
 
@@ -332,7 +334,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->permissionService->method('canManageDnssec')->willReturn(true);
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
-        $this->dnssecProvider->method('isZoneSecured')->willReturn(false);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(false);
         // Invalid zone must be rejected before signing or bumping the serial.
         $this->dnssecProvider->expects($this->never())->method('secureZone');
 
@@ -352,6 +354,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->permissionService->method('canManageDnssec')->willReturn(true);
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(false);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(false);
         // Must not mutate the zone when the server cannot sign.
         $this->dnssecProvider->expects($this->never())->method('secureZone');
 
@@ -371,7 +374,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         // No-op guard sees unsigned (proceed); the sign call then fails.
-        $this->dnssecProvider->method('isZoneSecured')->willReturn(false);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(false);
         $this->dnssecProvider->method('secureZone')->willReturn(false);
 
         $controller = $this->createController();
@@ -389,7 +392,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
         // No-op guard sees signed (proceed); the unsign call then fails. A false
         // result must surface as 500 rather than being masked as a successful disable.
-        $this->dnssecProvider->method('isZoneSecured')->willReturn(true);
+        $this->apiClient->method('fetchZoneSecured')->willReturn(true);
         $this->dnssecProvider->method('unsecureZone')->willReturn(false);
 
         $controller = $this->createController();
@@ -399,5 +402,81 @@ class ZoneDnssecControllerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
         $this->assertNull($controller->loggedChange);
         $this->assertSame([], $controller->soaBumps);
+    }
+
+    public function testGetStatusReturns502WhenPowerDnsCannotTellTheSignedState(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canViewZone')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->apiClient->method('fetchZoneSecured')->willReturn(null);
+
+        $response = $this->createController()->callGetStatus();
+
+        $this->assertEquals(502, $response->getStatusCode());
+        $this->assertFalse(json_decode($response->getContent(), true)['success']);
+    }
+
+    public function testGetStatusReturns502WhenPowerDnsCannotListTheKeys(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canViewZone')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->apiClient->method('fetchZoneSecured')->willReturn(true);
+        $this->apiClient->method('fetchZoneKeys')->willReturn(null);
+
+        $response = $this->createController()->callGetStatus();
+
+        $this->assertEquals(502, $response->getStatusCode());
+    }
+
+    public function testDisableReturns502InsteadOfAlreadyDisabledWhenPowerDnsCannotBeAsked(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->apiClient->method('fetchZoneSecured')->willReturn(null);
+        $this->dnssecProvider->expects($this->never())->method('unsecureZone');
+
+        $controller = $this->createController();
+        $controller->setRequestBody(json_encode(['enabled' => false]));
+        $response = $controller->callSetStatus();
+
+        $this->assertEquals(502, $response->getStatusCode());
+        $this->assertNull($controller->loggedChange);
+        $this->assertSame([], $controller->soaBumps);
+    }
+
+    public function testEnableReturns502BeforeReadingServerSettingsWhenPowerDnsCannotBeAsked(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->apiClient->method('fetchZoneSecured')->willReturn(null);
+        $this->dnssecProvider->expects($this->never())->method('isDnssecEnabled');
+        $this->dnssecProvider->expects($this->never())->method('secureZone');
+
+        $controller = $this->createController();
+        $controller->setRequestBody(json_encode(['enabled' => true]));
+        $response = $controller->callSetStatus();
+
+        $this->assertEquals(502, $response->getStatusCode());
+        $this->assertSame([], $controller->soaBumps);
+    }
+
+    public function testDisableReturns502WhenTheStateCannotBeReadBackAfterUnsigning(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->apiClient->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(true, null);
+        $this->dnssecProvider->expects($this->once())->method('unsecureZone')->willReturn(true);
+
+        $controller = $this->createController();
+        $controller->setRequestBody(json_encode(['enabled' => false]));
+        $response = $controller->callSetStatus();
+
+        $this->assertEquals(502, $response->getStatusCode());
+        $this->assertNull($controller->loggedChange);
     }
 }
