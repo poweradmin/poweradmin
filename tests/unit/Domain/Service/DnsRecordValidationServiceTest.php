@@ -51,6 +51,7 @@ class DnsRecordValidationServiceTest extends TestCase
         parent::setUp();
 
         $this->validatorRegistry = $this->createMock(DnsValidatorRegistry::class);
+        $this->validatorRegistry->method('isKnownType')->willReturn(true);
         $this->dnsCommonValidator = $this->createMock(DnsCommonValidator::class);
         $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
         $this->dnsViolationValidator = $this->createMock(DNSViolationValidator::class);
@@ -593,5 +594,20 @@ class DnsRecordValidationServiceTest extends TestCase
         $this->assertEquals('web.example.com', $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(7200, $data['ttl']);
+    }
+
+    #[Test]
+    public function testValidateRecordRefusesUnknownTypeBeforeAnyValidatorRuns(): void
+    {
+        $registry = $this->createMock(DnsValidatorRegistry::class);
+        $registry->method('isKnownType')->with('TYPE65280')->willReturn(false);
+        $registry->expects($this->never())->method('getValidator');
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+
+        $service = new DnsRecordValidationService($registry, $this->dnsCommonValidator, $this->zoneRepository, $this->dnsViolationValidator);
+        $result = $service->validateRecord(-1, 1, 'TYPE65280', '\# 2 zz', 'bad.example.com', null, 3600, 'hostmaster@example.com', 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertSame('Invalid record type.', $result->getFirstError());
     }
 }
