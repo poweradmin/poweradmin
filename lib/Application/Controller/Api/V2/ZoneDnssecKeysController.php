@@ -522,7 +522,7 @@ class ZoneDnssecKeysController extends PublicApiController
      * the error response to send.
      *
      * Reading keys needs view access to the zone (the keys are public DNSKEY
-     * data); changing them needs the DNSSEC management permission.
+     * data); changing them needs the DNSSEC management permission as well.
      */
     private function resolveZone(bool $modify): string|JsonResponse
     {
@@ -537,9 +537,9 @@ class ZoneDnssecKeysController extends PublicApiController
             return $this->returnApiError('Zone not found', 404);
         }
 
-        $allowed = $modify
-            ? $this->apiPermissionService->canManageDnssec($this->authenticatedUserId, $zoneId)
-            : $this->apiPermissionService->canViewZone($this->authenticatedUserId, $zoneId);
+        // Changing keys also needs view access, as on the web DNSSEC pages
+        $allowed = $this->apiPermissionService->canViewZone($this->authenticatedUserId, $zoneId)
+            && (!$modify || $this->apiPermissionService->canManageDnssec($this->authenticatedUserId, $zoneId));
         if (!$allowed) {
             return $this->returnApiError(
                 $modify ? 'You do not have permission to manage DNSSEC for this zone' : 'You do not have permission to view this zone',

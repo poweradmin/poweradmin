@@ -338,7 +338,7 @@ class ZoneDnssecKeysControllerTest extends TestCase
 
     public function testAServerWithoutDnssecRefusesKeyChanges(): void
     {
-        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->allowManage();
         $provider = $this->createMock(DnssecProviderInterface::class);
         $provider->method('isDnssecEnabled')->willReturn(false);
         $provider->method('fetchZoneKeys')->willReturn([]);
@@ -408,6 +408,18 @@ class ZoneDnssecKeysControllerTest extends TestCase
 
         $this->assertSame(403, $response->getStatusCode());
         $this->assertStringNotContainsString('PrivateKey:', (string)$response->getContent());
+    }
+
+    public function testChangingKeysAlsoNeedsViewAccessToTheZone(): void
+    {
+        $this->permissionService->method('canViewZone')->willReturn(false);
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->dnssecProvider->expects($this->never())->method('importZoneKeyFromPrivateKey');
+        $this->dnssecProvider->expects($this->never())->method('createZoneKey');
+
+        $this->assertSame(403, $this->controller(['id' => 1, 'action' => 'import'], self::importBody())->callImportKey()->getStatusCode());
+        $addBody = (string)json_encode(['type' => 'zsk', 'algorithm' => 'ecdsa256', 'bits' => 256]);
+        $this->assertSame(403, $this->controller(['id' => 1], $addBody)->callAddKey()->getStatusCode());
     }
 
     public function testARejectedKeyIsA400WithoutTheKeyText(): void
