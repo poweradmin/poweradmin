@@ -37,6 +37,8 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
  */
 class ZoneGroupService
 {
+    private const SHARED_ZONE_ID = 'Groups cannot be assigned to this zone: its ID is shared with another zone';
+
     private ZoneGroupRepositoryInterface $zoneGroupRepository;
     private UserGroupLookupInterface $groupRepository;
     private ZoneOwnershipGuard $ownershipGuard;
@@ -70,6 +72,9 @@ class ZoneGroupService
         // Check if ownership already exists
         if ($this->zoneGroupRepository->exists($domainId, $groupId)) {
             throw new InvalidArgumentException('Group already owns this zone');
+        }
+        if ($this->ownershipGuard->refusesNewGrants($domainId)) {
+            throw new InvalidArgumentException(self::SHARED_ZONE_ID);
         }
 
         return $this->zoneGroupRepository->add($domainId, $groupId);
@@ -152,7 +157,9 @@ class ZoneGroupService
 
         foreach ($domainIds as $domainId) {
             try {
-                if (!$this->zoneGroupRepository->exists($domainId, $groupId)) {
+                if ($this->ownershipGuard->refusesNewGrants($domainId)) {
+                    $results['failed'][$domainId] = self::SHARED_ZONE_ID;
+                } elseif (!$this->zoneGroupRepository->exists($domainId, $groupId)) {
                     $this->zoneGroupRepository->add($domainId, $groupId);
                     $results['success'][] = $domainId;
                 } else {

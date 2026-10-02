@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use PDO;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\ZoneDetail;
@@ -64,16 +65,31 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return CanonicalZoneSql::canonicalIdColumn($alias, $this->backendProvider->allocatesZoneIdsLocally());
     }
 
+    /**
+     * SQL keeping zones row $alias to the zones the user owns: their owned ids, and for
+     * an id two zones share only the row they own directly (see SharedZoneIds).
+     */
+    private function ownedZonesCondition(string $alias, int $userId): string
+    {
+        $owned = $this->getOwnedZoneIds($userId);
+        if ($owned === []) {
+            return '1 = 0';
+        }
+
+        $canonicalId = $this->canonicalId($alias);
+        $condition = "$canonicalId IN (" . implode(',', $owned) . ")";
+        $shared = SharedZoneIds::sharedAmong($this->db, $owned);
+        if ($shared !== []) {
+            $condition .= " AND ($canonicalId NOT IN (" . implode(',', $shared) . ") OR $alias.owner = $userId)";
+        }
+
+        return "($condition)";
+    }
+
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
         if (!$viewOthers) {
-            $where = " WHERE (z.owner = :userId
-                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
-                OR EXISTS (
-                    SELECT 1 FROM zones_groups zg
-                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :userId_group
-                ))
+            $where = " WHERE " . $this->ownedZonesCondition('z', $userId) . "
             AND z.zone_name NOT LIKE '%.in-addr.arpa'
             AND z.zone_name NOT LIKE '%.ip6.arpa'
             AND z.zone_name IS NOT NULL";
@@ -83,20 +99,12 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                          AND z.zone_name IS NOT NULL";
         }
 
-        $bind = function ($stmt) use ($viewOthers, $userId): void {
-            if (!$viewOthers) {
-                $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-                $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
-                $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
-            }
-        };
 
         // IDN zones are excluded here so they do not all register as "x"; they are
         // resolved to their decoded initial below.
         $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->dbType) . "(z.zone_name, 1, 1)) AS letter
                   FROM zones z" . $where . " AND z.zone_name NOT LIKE 'xn--%' ORDER BY letter";
         $stmt = $this->db->prepare($query);
-        $bind($stmt);
         $stmt->execute();
 
         $letters = array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
@@ -104,7 +112,6 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         });
 
         $idnStmt = $this->db->prepare("SELECT DISTINCT z.zone_name FROM zones z" . $where . " AND z.zone_name LIKE 'xn--%'");
-        $bind($idnStmt);
         $idnStmt->execute();
 
         foreach ($idnStmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
@@ -149,27 +156,14 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 SELECT DISTINCT z.id FROM zones z
                 WHERE z.zone_name IS NOT NULL";
 
-            $params = [];
             if ($permType == 'own') {
-                $query .= " AND (z.owner = :userId
-                    OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
-                    OR EXISTS (
-                        SELECT 1 FROM zones_groups zg
-                        INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                        WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :userId_group
-                    ))";
-                $params[':userId'] = $userId;
-                $params[':userId_own'] = $userId;
-                $params[':userId_group'] = $userId;
+                $query .= " AND " . $this->ownedZonesCondition('z', $userId);
             }
 
             // Built from the enum so an unknown filter cannot emit an empty AND ()
             $query .= " AND (" . $this->reverseZoneClause($reverseType) . ")) AS distinct_zones";
 
             $stmt = $this->db->prepare($query);
-            foreach ($params as $param => $value) {
-                $stmt->bindValue($param, $value, PDO::PARAM_INT);
-            }
             $stmt->execute();
             return (int)$stmt->fetchColumn();
         }
@@ -184,18 +178,8 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                   LEFT JOIN users u ON z.owner = u.id
                   WHERE z.zone_name IS NOT NULL";
 
-        $params = [];
         if ($permType == 'own') {
-            $query .= " AND (z.owner = :userId
-                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
-                OR EXISTS (
-                    SELECT 1 FROM zones_groups zg
-                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :userId_group
-                ))";
-            $params[':userId'] = $userId;
-            $params[':userId_own'] = $userId;
-            $params[':userId_group'] = $userId;
+            $query .= " AND " . $this->ownedZonesCondition('z', $userId);
         }
 
         // Built from the enum so an unknown filter cannot emit an empty AND ()
@@ -213,9 +197,6 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $query .= " LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($query);
-        foreach ($params as $param => $value) {
-            $stmt->bindValue($param, $value, PDO::PARAM_INT);
-        }
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -363,11 +344,22 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             $stmt->bindValue($i + 1, $value, PDO::PARAM_INT);
         }
         $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $shared = SharedZoneIds::sharedAmong($this->db, array_map(self::canonicalIdOf(...), $rows));
+        $resolvedRows = [];
+        foreach ($shared as $sharedId) {
+            $resolvedRows[$sharedId] = (int)($this->resolveCanonicalRow($sharedId)['id'] ?? 0);
+        }
 
         $ownership = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        foreach ($rows as $row) {
+            $canonicalId = self::canonicalIdOf($row);
+            // For a shared id only the resolved zone's own row names an owner (see SharedZoneIds)
+            if (isset($resolvedRows[$canonicalId]) && ($row['zone_name'] === null || ($canonicalIds && (int)$row['id'] !== $resolvedRows[$canonicalId]))) {
+                continue;
+            }
             // Extra ownership rows (no zone_name) always point at the canonical id
-            $key = $row['zone_name'] !== null && !$canonicalIds ? (int)$row['id'] : self::canonicalIdOf($row);
+            $key = $row['zone_name'] !== null && !$canonicalIds ? (int)$row['id'] : $canonicalId;
             if (!isset($ownership[$key])) {
                 $ownership[$key] = ['owners' => [], 'full_names' => []];
             }
@@ -403,8 +395,20 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             if (!$userId) {
                 return 0;
             }
-            $ownedIds = $this->ownedCanonicalIds($userId);
+            $ownedIds = $this->getOwnedZoneIds($userId);
             $zones = array_filter($zones, fn($z) => in_array((int)($z['id'] ?? 0), $ownedIds, true));
+            // As in ownedZonesCondition(): for a shared id only the rows the user owns directly
+            $sharedIds = SharedZoneIds::sharedAmong($this->db, $ownedIds);
+            if ($sharedIds !== []) {
+                $stmt = $this->db->prepare(
+                    "SELECT zone_name FROM zones WHERE zone_name IS NOT NULL AND owner = :uid AND " . $this->canonicalId() . " IN (" . implode(',', $sharedIds) . ")"
+                );
+                $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+                $stmt->execute();
+                $ownedNames = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                $zones = array_filter($zones, fn($z) => !in_array((int)($z['id'] ?? 0), $sharedIds, true)
+                    || in_array(rtrim((string)($z['name'] ?? ''), '.'), $ownedNames, true));
+            }
         }
 
         if ($letterStart !== 'all') {
@@ -426,27 +430,6 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return count($zones);
     }
 
-    /**
-     * Canonical ids of the zones a user owns directly or through a group.
-     *
-     * @return int[]
-     */
-    private function ownedCanonicalIds(int $userId): array
-    {
-        $stmt = $this->db->prepare(
-            "SELECT DISTINCT " . $this->canonicalId() . " FROM zones WHERE owner = :uid
-             UNION
-             SELECT DISTINCT zg.domain_id FROM zones_groups zg
-             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-             WHERE ugm.user_id = :uid2"
-        );
-        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
-    }
-
     public function getReverseZoneCounts(string $permType, int $userId): array
     {
         $query = "SELECT
@@ -454,25 +437,11 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                     COUNT(DISTINCT CASE WHEN z.zone_name LIKE '%.in-addr.arpa' THEN z.id END) AS count_ipv4,
                     COUNT(DISTINCT CASE WHEN z.zone_name LIKE '%.ip6.arpa' THEN z.id END) AS count_ipv6
                   FROM zones z";
-        if ($permType === 'own') {
-            $query .= " LEFT JOIN zones_groups zg ON zg.domain_id = " . $this->canonicalId('z') . "";
-        }
         $query .= " WHERE z.zone_name IS NOT NULL AND (z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.ip6.arpa')";
         if ($permType === 'own') {
-            $query .= " AND (z.owner = :user_id
-                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :user_id_own AND z_own.zone_name IS NULL)
-                OR EXISTS (
-                    SELECT 1 FROM zones_groups zg2
-                    INNER JOIN user_group_members ugm ON zg2.group_id = ugm.group_id
-                    WHERE zg2.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :user_id_group
-                ))";
+            $query .= " AND " . $this->ownedZonesCondition('z', $userId);
         }
         $stmt = $this->db->prepare($query);
-        if ($permType === 'own') {
-            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':user_id_own', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':user_id_group', $userId, PDO::PARAM_INT);
-        }
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return [
@@ -493,16 +462,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                   WHERE z.zone_name IS NOT NULL";
         $params = [];
         if ($userId !== null && !$viewOthers) {
-            $query .= " AND (z.owner = :userId
-                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
-                OR EXISTS (
-                    SELECT 1 FROM zones_groups zg
-                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :userId_group
-                ))";
-            $params[':userId'] = $userId;
-            $params[':userId_own'] = $userId;
-            $params[':userId_group'] = $userId;
+            $query .= " AND " . $this->ownedZonesCondition('z', $userId);
         }
         if (isset($filters['type']) && in_array($filters['type'], ZoneKind::basicValues(), true)) {
             $query .= " AND z.zone_type = :type";
@@ -515,7 +475,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $query .= " ORDER BY z.zone_name ASC LIMIT :limit OFFSET :offset";
         $stmt = $this->db->prepare($query);
         foreach ($params as $param => $value) {
-            $stmt->bindValue($param, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            $stmt->bindValue($param, $value, PDO::PARAM_STR);
         }
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -563,7 +523,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 'comment' => $canonical['comment'] ?? '',
                 'secured' => $zoneInfo['dnssec'] ?? false,
             ],
-            $this->ownersOfCanonical((int)$canonical['id'], self::canonicalIdOf($canonical))
+            $this->getZoneOwners($zoneId)
         );
     }
 
@@ -723,6 +683,11 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $owners[(int)$row['domain_id']][] = (int)$row['owner'];
         }
+        // For a shared id only the resolved zone's direct owner counts (see SharedZoneIds)
+        foreach (SharedZoneIds::sharedAmong($this->db, array_map('intval', $zoneIds)) as $sharedId) {
+            $owner = SharedZoneIds::resolvedOwner($this->db, $sharedId);
+            $owners[$sharedId] = $owner === null ? [] : [$owner];
+        }
 
         return $owners;
     }
@@ -743,7 +708,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        return SharedZoneIds::filterOwned($this->db, $userId, array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
     }
 
     public function getZoneOwners(int $zoneId): array
@@ -752,7 +717,23 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         if ($canonical === null) {
             return [];
         }
+        if ($this->isSharedZoneId($zoneId)) {
+            // Only the resolved zone's own row names an owner (see SharedZoneIds)
+            $stmt = $this->db->prepare("SELECT u.id, u.username, u.fullname FROM users u WHERE u.id = :owner");
+            $stmt->bindValue(':owner', (int)$canonical['owner'], PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
         return $this->ownersOfCanonical((int)$canonical['id'], self::canonicalIdOf($canonical));
+    }
+
+    public function isSharedZoneId(int $zoneId): bool
+    {
+        // A zone may also be addressed by its row id, so test the id it resolves to
+        $canonical = $this->resolveCanonicalRow($zoneId);
+
+        return $canonical !== null && SharedZoneIds::isShared($this->db, self::canonicalIdOf($canonical));
     }
 
     /**
@@ -796,7 +777,8 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
-        if ($canonical === null) {
+        // An owner row keyed by a shared id would grant nothing (see SharedZoneIds)
+        if ($canonical === null || $this->isSharedZoneId($zoneId)) {
             return false;
         }
         $cid = (int)$canonical['id'];
@@ -892,6 +874,17 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             if (!$result) {
                 return false;
             }
+        }
+        if ($this->isSharedZoneId($zoneId)) {
+            // Grants keyed by a shared id cannot be attributed, so they go too rather than
+            // falling to the surviving zone; its template links stay, being data, not access
+            $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
+            $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
+            $stmt->execute();
+            $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :cid OR (zone_name IS NULL AND domain_id = :cid_e)");
+            $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+            $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
+            return $stmt->execute();
         }
         // Group ownership is keyed by the canonical zone id, like the extra ownership
         // rows below - matching on the row's own id leaves the rows behind.

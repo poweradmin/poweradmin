@@ -85,4 +85,10 @@ interface ZoneOwnershipRepositoryInterface
      * @return bool True if user is already an owner
      */
     public function isUserZoneOwner(int $zoneId, int $userId): bool;
+
+    /**
+     * Whether two zones share this zone id in API backend mode, so owner rows and group
+     * grants keyed by it cannot tell the zones apart and are not honoured.
+     */
+    public function isSharedZoneId(int $zoneId): bool;
 }

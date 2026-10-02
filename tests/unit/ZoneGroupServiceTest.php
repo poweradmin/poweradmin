@@ -49,6 +49,34 @@ class ZoneGroupServiceTest extends TestCase
     }
 
     #[Test]
+    public function addGroupToZoneRefusesAZoneIdTwoZonesShare(): void
+    {
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->zoneGroupRepo->method('exists')->willReturn(false);
+        $this->ownershipGuard->method('refusesNewGrants')->with(100)->willReturn(true);
+        $this->zoneGroupRepo->expects($this->never())->method('add');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('its ID is shared with another zone');
+
+        $this->service->addGroupToZone(100, 1);
+    }
+
+    #[Test]
+    public function bulkAddZonesSkipsZoneIdsTwoZonesShare(): void
+    {
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->zoneGroupRepo->method('exists')->willReturn(false);
+        $this->ownershipGuard->method('refusesNewGrants')->willReturnCallback(fn(int $zoneId): bool => $zoneId === 100);
+        $this->zoneGroupRepo->expects($this->once())->method('add')->with(200, 1)->willReturn(ZoneGroup::create(200, 1));
+
+        $result = $this->service->bulkAddZones(1, [100, 200]);
+
+        $this->assertSame([200], $result['success']);
+        $this->assertArrayHasKey(100, $result['failed']);
+    }
+
+    #[Test]
     public function addGroupToZoneGroupNotFoundThrows(): void
     {
         $this->groupRepo->method('findById')->with(999)->willReturn(null);

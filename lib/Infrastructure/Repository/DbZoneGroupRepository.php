@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use PDO;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
@@ -85,6 +86,12 @@ final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         $groups = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $groups[(int)$row['domain_id']][] = (int)$row['group_id'];
+        }
+        // Group grants on a shared zone id are not honoured (see SharedZoneIds)
+        if ($this->isApiBackend) {
+            foreach (SharedZoneIds::sharedAmong($this->db, array_keys($groups)) as $sharedId) {
+                unset($groups[$sharedId]);
+            }
         }
 
         return $groups;

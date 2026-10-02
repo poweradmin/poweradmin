@@ -109,6 +109,15 @@ class ZoneOwnershipGuard
     }
 
     /**
+     * Whether new owners or groups would be granted nothing on this zone id, because
+     * two zones share it (see ZoneOwnershipRepositoryInterface::isSharedZoneId()).
+     */
+    public function refusesNewGrants(int $zoneId): bool
+    {
+        return $this->zoneRepository->isSharedZoneId($zoneId);
+    }
+
+    /**
      * Null when the user may be removed; a refusal otherwise. A user who is not
      * an owner is never refused, so the caller's own not-found path still runs.
      */
@@ -120,7 +129,8 @@ class ZoneOwnershipGuard
             return null;
         }
 
-        $groupCount = count($this->zoneGroupRepository->findByDomainId($zoneId));
+        // Group grants on a shared zone id are not honoured, so they keep no one in charge
+        $groupCount = $this->zoneRepository->isSharedZoneId($zoneId) ? 0 : count($this->zoneGroupRepository->findByDomainId($zoneId));
         $wouldRemoveLastUserOwner = count($owners) <= 1;
 
         if ($wouldRemoveLastUserOwner && $groupCount === 0) {
@@ -150,7 +160,7 @@ class ZoneOwnershipGuard
                 break;
             }
         }
-        if (!$isCurrentGroup) {
+        if (!$isCurrentGroup || $this->zoneRepository->isSharedZoneId($zoneId)) {
             return null;
         }
 

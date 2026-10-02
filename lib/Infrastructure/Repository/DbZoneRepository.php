@@ -914,6 +914,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $removed;
     }
 
+    public function isSharedZoneId(int $zoneId): bool
+    {
+        // SQL mode keys every zone by its unique domains.id
+        return false;
+    }
+
     /**
      * Check if user is already an owner of the zone
      *

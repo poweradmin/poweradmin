@@ -35,7 +35,8 @@ use PDOStatement;
  * agree on the same preference, which is why this lives in one place.
  *
  * Known limit: an extra-ownership row (NULL zone_name) is keyed only by canonical id, so
- * under that collision no query can tell which of the two zones it belongs to.
+ * under that collision no query can tell which of the two zones it belongs to. The
+ * ownership checks therefore ignore such rows for a shared id (SharedZoneIds).
  */
 final class CanonicalZoneSql
 {

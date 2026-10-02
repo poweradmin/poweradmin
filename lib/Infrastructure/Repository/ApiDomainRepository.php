@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use PDO;
 use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
@@ -369,15 +370,28 @@ final class ApiDomainRepository implements DomainRepositoryInterface
         // The map is keyed by canonical id because that is how the zone list is keyed;
         // reading the raw column collapsed every unresolved row onto key 0.
         $canonicalId = CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally());
-        $stmt = $this->db->query(
-            "SELECT $canonicalId AS canonical_id, z.owner, z.comment, u.username, u.fullname
+        $stmt = $this->db->prepare(
+            "SELECT z.id, $canonicalId AS canonical_id, z.owner, z.comment, u.username, u.fullname
              FROM zones z
              LEFT JOIN users u ON z.owner = u.id"
         );
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $resolvedRows = [];
+        foreach (SharedZoneIds::all($this->db) as $sharedId) {
+            $resolved = $this->db->prepare(CanonicalZoneSql::selectByZoneId('id'));
+            CanonicalZoneSql::bindZoneId($resolved, $sharedId);
+            $resolved->execute();
+            $resolvedRows[$sharedId] = (int)$resolved->fetchColumn();
+        }
 
         $ownershipMap = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        foreach ($rows as $row) {
             $domainId = (int)$row['canonical_id'];
+            // For a shared id only the resolved zone's own row names an owner (see SharedZoneIds)
+            if (isset($resolvedRows[$domainId]) && (int)$row['id'] !== $resolvedRows[$domainId]) {
+                continue;
+            }
             if (!isset($ownershipMap[$domainId])) {
                 $ownershipMap[$domainId] = [
                     'owners' => [],
@@ -426,7 +440,7 @@ final class ApiDomainRepository implements DomainRepositoryInterface
         $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        return SharedZoneIds::filterOwned($this->db, $userId, array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
     }
 
     /**

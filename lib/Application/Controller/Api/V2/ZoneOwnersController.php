@@ -272,6 +272,10 @@ class ZoneOwnersController extends PublicApiController
         }
 
         try {
+            if ($this->zoneRepository->isSharedZoneId($zoneId)) {
+                return $this->returnApiError('Owners cannot be added to this zone: its ID is shared with another zone', 409);
+            }
+
             $data = $this->getValidatedJsonBody() ?? [];
 
             // Batch mode: user_ids array

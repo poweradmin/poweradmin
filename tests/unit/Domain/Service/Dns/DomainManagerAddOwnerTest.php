@@ -25,6 +25,8 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
@@ -42,7 +44,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
 
     private const CALLER_ID = 7;
 
-    private function manager(array $callerPermissions, array $existingUsers): DomainManager
+    private function manager(array $callerPermissions, array $existingUsers, bool $sharedZoneId = false): DomainManager
     {
         $reflection = new ReflectionClass(DomainManager::class);
         $manager = $reflection->newInstanceWithoutConstructor();
@@ -56,6 +58,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
             'actor' => new StubActor(self::CALLER_ID),
             'userRepository' => $users,
             'permissionService' => $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => $callerPermissions]),
+            'repositoryFactory' => $this->repositoryFactory($sharedZoneId),
             ] as $name => $value
         ) {
             $reflection->getProperty($name)->setValue($manager, $value);
@@ -79,5 +82,25 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $this->assertFalse($result->success);
         $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
         $this->assertSame('Unknown user ID: 42', $result->message);
+    }
+
+    public function testRefusesAZoneIdTwoZonesShareBecauseTheGrantWouldNotCount(): void
+    {
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], sharedZoneId: true)->addOwnerToZone(5, 42);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::CONFLICT, $result->refusal);
+    }
+
+    private function repositoryFactory(bool $sharedZoneId): RepositoryFactoryInterface
+    {
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('isSharedZoneId')->willReturn($sharedZoneId);
+        $zones->expects($sharedZoneId ? $this->never() : $this->any())->method('addOwnerToZone')->willReturn(true);
+
+        $factory = $this->createStub(RepositoryFactoryInterface::class);
+        $factory->method('createZoneRepository')->willReturn($zones);
+
+        return $factory;
     }
 }

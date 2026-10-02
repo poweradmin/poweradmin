@@ -60,7 +60,7 @@ class ZoneTemplateServiceLinkedZonesTest extends SqliteIntegrationTestCase
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT)");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, owner INTEGER)");
-        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
+        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT, zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
 
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES (46, '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN . "')");
@@ -346,6 +346,20 @@ class ZoneTemplateServiceLinkedZonesTest extends SqliteIntegrationTestCase
         $rows = $this->model($this->apiBackend())->getZonesUsingTemplate(self::TEMPLATE, self::OWN_EDITOR);
 
         $this->assertSame([self::ORPHAN_DOMAIN, self::DIRECT_DOMAIN, self::GROUP_DOMAIN], array_column($rows, 'id'));
+    }
+
+    public function testAZoneIdTwoZonesShareStaysOffTheOwnerFilteredList(): void
+    {
+        // Zone row 1 and a zone created here with row id 101 both have canonical id 101
+        $this->db->exec("UPDATE zones SET zone_name = 'direct.example' WHERE id = 1");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_templ_id, zone_name) VALUES
+            (" . self::DIRECT_DOMAIN . ", NULL, " . self::OWN_EDITOR . ", '', " . self::TEMPLATE . ", 'created.example')");
+        $this->actingAs(self::OWN_EDITOR);
+
+        $rows = $this->model($this->apiBackend())->getZonesUsingTemplate(self::TEMPLATE, self::OWN_EDITOR);
+
+        $this->assertNotContains(self::DIRECT_DOMAIN, array_column($rows, 'id'));
+        $this->assertContains(self::GROUP_DOMAIN, array_column($rows, 'id'));
     }
 
     public function testZonesByIdsWithNoIdsAsksNobody(): void

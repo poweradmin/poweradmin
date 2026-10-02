@@ -51,13 +51,13 @@ class DnsDataServiceSearchShapeTest extends TestCase
             [
                 "CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT)",
                 "CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER)",
-                "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT)",
+                "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT, zone_name TEXT)",
                 "CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)",
                 "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)",
                 "CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)",
                 "INSERT INTO users (id, username, fullname) VALUES (7, 'alice', 'Alice'), (8, 'bob', '')",
                 "INSERT INTO domains (id, name, type) VALUES (1, 'example.com', 'MASTER'), (2, 'example.net', 'NATIVE')",
-                "INSERT INTO zones (id, domain_id, owner, comment) VALUES (11, 1, 7, 'first'), (12, 2, 8, 'second')",
+                "INSERT INTO zones (id, domain_id, owner, comment, zone_name) VALUES (11, 1, 7, 'first', 'example.com'), (12, 2, 8, 'second', 'example.net')",
                 "INSERT INTO records (id, domain_id, name, type, content, ttl, prio, disabled) VALUES (100, 1, 'www.example.com', 'A', '192.0.2.1', 3600, 0, 0), (101, 2, 'www.example.net', 'A', '192.0.2.2', 300, 0, 1)",
             ] as $sql
         ) {

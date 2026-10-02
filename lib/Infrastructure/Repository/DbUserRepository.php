@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
@@ -217,6 +218,18 @@ class DbUserRepository implements UserRepositoryInterface
 
     public function getZoneOwnerFullNames(int $domainId): string
     {
+        if ($this->isApiBackend && SharedZoneIds::isShared($this->db, $domainId)) {
+            $owner = SharedZoneIds::resolvedOwner($this->db, $domainId);
+            if ($owner === null) {
+                return '';
+            }
+            $stmt = $this->db->prepare("SELECT fullname FROM users WHERE id = :id");
+            $stmt->bindValue(':id', $owner, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return (string)($stmt->fetchColumn() ?: '');
+        }
+
         // PARAM_INT: the canonical expression has no column affinity, so SQLite would compare as text
         $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones', $this->isApiBackend);
         $stmt = $this->db->prepare("SELECT users.fullname FROM users, zones WHERE $canonicalId = :id AND zones.owner = users.id ORDER BY fullname");
@@ -239,6 +252,10 @@ class DbUserRepository implements UserRepositoryInterface
      */
     public function userOwnsZone(int $userId, int $domainId): bool
     {
+        if ($this->isApiBackend && SharedZoneIds::isShared($this->db, $domainId)) {
+            return SharedZoneIds::ownsResolvedZone($this->db, $userId, $domainId);
+        }
+
         $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones', $this->isApiBackend);
         $stmt = $this->db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND $canonicalId = :zoneid");
         $stmt->bindValue(':userid', $userId, PDO::PARAM_INT);
@@ -289,8 +306,9 @@ class DbUserRepository implements UserRepositoryInterface
             WHERE ugm.user_id = :user_id2
         ");
         $stmt->execute([':user_id' => $userId, ':user_id2' => $userId]);
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
 
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        return $this->isApiBackend ? SharedZoneIds::filterOwned($this->db, $userId, $zoneIds) : $zoneIds;
     }
 
     /**

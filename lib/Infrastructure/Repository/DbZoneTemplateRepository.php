@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use Exception;
@@ -161,10 +162,14 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
     private function ownedZoneFilter(): string
     {
         // zones_groups is keyed by the canonical id, which API mode may take from zones.id
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones', $this->zonesTableIsCanonical());
+        // A shared id stays off the list: its rows cannot be told apart (see SharedZoneIds)
+        $unshared = $this->zonesTableIsCanonical() ? " AND $canonicalId NOT IN (" . SharedZoneIds::sharedIdsSql() . ")" : '';
+
         return " AND (zones.owner = :userid OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('zones', $this->zonesTableIsCanonical()) . " AND ugm.user_id = :userid_group))";
+                WHERE zg.domain_id = $canonicalId AND ugm.user_id = :userid_group))$unshared";
     }
 
     /**

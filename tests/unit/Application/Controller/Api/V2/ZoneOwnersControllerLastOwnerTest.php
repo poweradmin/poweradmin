@@ -130,10 +130,31 @@ class ZoneOwnersControllerLastOwnerTest extends V2ControllerTestCase
         );
     }
 
+    public function testAddingAnOwnerToASharedZoneIdIsAConflict(): void
+    {
+        $this->zoneRepository->method('isSharedZoneId')->with(self::ZONE_ID)->willReturn(true);
+        $this->zoneRepository->expects($this->never())->method('addOwnerToZone');
+
+        foreach ([['user_id' => 5], ['user_ids' => [5, 6]]] as $body) {
+            $response = $this->call('addOwner', 'POST', $body, 'both', null);
+
+            $this->assertSame(409, $response->getStatusCode());
+            $this->assertSame('Owners cannot be added to this zone: its ID is shared with another zone', $this->messageOf($response));
+        }
+    }
+
     private function remove(string $mode, int $userId): JsonResponse
     {
+        return $this->call('removeOwner', 'DELETE', null, $mode, $userId);
+    }
+
+    /**
+     * @param array<string, mixed>|null $body
+     */
+    private function call(string $handler, string $method, ?array $body, string $mode, ?int $userId): JsonResponse
+    {
         $controller = $this->bareController(ZoneOwnersController::class);
-        $this->injectBaseCollaborators($controller, 'DELETE');
+        $this->injectBaseCollaborators($controller, $method, $body);
 
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
@@ -151,11 +172,11 @@ class ZoneOwnersControllerLastOwnerTest extends V2ControllerTestCase
         $this->inject($controller, 'domainRepository', $domainRepository);
         $this->inject($controller, 'zoneRepository', $this->zoneRepository);
         $this->inject($controller, 'auditService', $this->createMock(AuditService::class));
-        $this->inject($controller, 'pathParameters', ['id' => self::ZONE_ID, 'user_id' => $userId]);
+        $this->inject($controller, 'pathParameters', $userId === null ? ['id' => self::ZONE_ID] : ['id' => self::ZONE_ID, 'user_id' => $userId]);
         $this->inject($controller, 'authenticatedUserId', 1);
         $this->inject($controller, 'serviceFactory', $this->factory($config));
 
-        return $this->callHandler($controller, 'removeOwner');
+        return $this->callHandler($controller, $handler);
     }
 
     private function factory(ConfigurationInterface $config): ControllerServiceFactory
@@ -167,6 +188,7 @@ class ZoneOwnersControllerLastOwnerTest extends V2ControllerTestCase
             new ZoneOwnershipGuard($this->zoneRepository, $this->zoneGroupRepository, new ZoneOwnershipModeService($config), $this->createMock(TransactionInterface::class))
         );
         $factory->method('permissionService')->willReturn($this->createMock(PermissionService::class));
+        $factory->method('zoneOwnershipModeService')->willReturn(new ZoneOwnershipModeService($config));
 
         return $factory;
     }

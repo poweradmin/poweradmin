@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
@@ -126,8 +127,8 @@ final readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInte
         ]);
 
         $zones = [];
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $zoneId = (int)$row['domain_id'];
+        $zoneIds = SharedZoneIds::filterOwned($this->db, $user->getId(), array_map('intval', $query->fetchAll(PDO::FETCH_COLUMN)));
+        foreach ($zoneIds as $zoneId) {
             $name = $this->backendProvider->getZoneNameById($zoneId);
             if ($name !== null) {
                 $zones[$zoneId] = $name;
