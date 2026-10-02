@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -943,7 +943,7 @@ msgstr ""
 "linjeskift fjernes automatisk."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "Nøkkeltype"
 
@@ -1218,11 +1218,11 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "Sonenavn og primærserveradresse er påkrevd."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "Ugyldig sone."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1230,7 +1230,7 @@ msgstr ""
 "Denne sonen har ingen overførte poster ennå. Vent til overføringen er "
 "fullført før du konverterer den til en primærsone."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "Sonen er konvertert til en primærsone."
 
@@ -1473,21 +1473,13 @@ msgstr "%d t siden"
 msgid "%d d ago"
 msgstr "%d d siden"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Eksport av PEM-nøkler krever PowerDNS 4.7 eller nyere."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "Det oppstod en feil under eksport av nøkkelen: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Det oppstod en feil under eksport av PEM-nøkkelen: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Kunne ikke hente PEM-nøkkelen. Serveren eksponerer kanskje ikke privat "
-"nøkkelmateriale for denne nøkkelen."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Kunne ikke hente den private nøkkelen fra PowerDNS."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1509,29 +1501,39 @@ msgstr "Sonenøkkel har blitt slettet."
 msgid "Failed to delete the zone key."
 msgstr "Kunne ikke slette sonenøkkelen."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Import av PEM-nøkler krever PowerDNS 4.7 eller nyere."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Import av nøkler krever PowerDNS 4.1 eller nyere."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "Oppgi en PEM-kodet privat nøkkel (må inneholde BEGIN/END-markører)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "Den private nøkkelen stemmer ikke overens med den valgte algoritmen."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "PEM-nøkkelen ble importert."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"Import av PEM-nøkkel mislyktes. PowerDNS-serveren kan ha avvist formatet."
+"Den private nøkkelen kunne ikke leses. Lim inn en privat nøkkel i BIND-"
+"format eller en ukryptert PEM-nøkkel."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "Det oppstod en feil under import av PEM-nøkkelen: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "Det oppstod en feil under import av nøkkelen: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "Nøkkelen ble importert."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Import av nøkkelen mislyktes. PowerDNS avviste den."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "Import av nøkkelen mislyktes."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Du har ikke tillatelse til å administrere DNSSEC for denne sonen."
 
@@ -1720,11 +1722,11 @@ msgstr "Posten har blitt slettet."
 msgid "Provide at least one record"
 msgstr "Oppgi minst én post"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "Ugyldig posttype."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d post(er) har blitt lagt til."
@@ -1763,7 +1765,7 @@ msgstr "Du har ikke tillatelse til å legge til en post i denne sonen."
 msgid "The %s field is required."
 msgstr "Feltet %s er påkrevd."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "Ingen poster ble oppgitt."
 
@@ -1771,17 +1773,17 @@ msgstr "Ingen poster ble oppgitt."
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Post lagt til, men PTR-post opprettelse mislyktes: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d matchende post(er) ble også opprettet."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d post(er) kunne ikke legges til."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Kunne ikke legge til noen poster. De inneholder kanskje ugyldige data."
 
@@ -2071,7 +2073,7 @@ msgstr ""
 "kontakt administrator."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "Endre passord"
 
@@ -2441,7 +2443,7 @@ msgstr "Du har ikke tillatelse til å se endringsforespørsler."
 msgid "Bulk Registration"
 msgstr "Masseregistrering"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "Soner har blitt lagt til."
 
@@ -3364,7 +3366,9 @@ msgstr "Endringene dine ble sendt inn til godkjenning."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "Denne sonen krever godkjenning av endringer; bruk soneredigeringen for å sende inn en endringsforespørsel."
+msgstr ""
+"Denne sonen krever godkjenning av endringer; bruk soneredigeringen for å "
+"sende inn en endringsforespørsel."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3377,7 +3381,9 @@ msgstr "Ingenting skiller seg fra sonen, så ingen forespørsel ble sendt inn."
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "Endringsforespørselen er for stor til å lagres; del den opp i mindre innsendinger."
+msgstr ""
+"Endringsforespørselen er for stor til å lagres; del den opp i mindre "
+"innsendinger."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3428,7 +3434,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "Kan ikke slette denne gruppen: den er siste eier av %s. Legg til en annen eier for disse sonene først."
+msgstr ""
+"Kan ikke slette denne gruppen: den er siste eier av %s. Legg til en annen "
+"eier for disse sonene først."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3448,7 +3456,7 @@ msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
 msgstr "Kan ikke fjerne den siste eieren: sonen ville bli stående uten eier."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3457,11 +3465,33 @@ msgstr ""
 "2001:db8::/48) eller et navn på en revers sone som slutter på in-addr.arpa "
 "eller ip6.arpa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d til"
+msgstr[1] "%d til"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"%1$d post i sonen %2$s er nå skjult av sonen %3$s: %4$s. Sørg for at %3$s "
+"inneholder den, og slett den deretter fra %2$s."
+msgstr[1] ""
+"%1$d poster i sonen %2$s er nå skjult av sonen %3$s: %4$s. Sørg for at %3$s "
+"inneholder dem, og slett dem deretter fra %2$s."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "Minst én bruker eller gruppe må velges som eier."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "Du har ikke tillatelse til å opprette soner for andre brukere."
 
@@ -3470,12 +3500,12 @@ msgstr "Du har ikke tillatelse til å opprette soner for andre brukere."
 msgid "Unknown user ID: %s"
 msgstr "Ukjent bruker-ID: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Ukjent gruppe-ID: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Du kan bare tildele grupper du er medlem av (ikke tillatt: %s)"
@@ -3484,11 +3514,11 @@ msgstr "Du kan bare tildele grupper du er medlem av (ikke tillatt: %s)"
 msgid "Invalid hostname."
 msgstr "Ugyldig vertsnavn."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "Det finnes allerede en sone med dette navnet."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4178,7 +4208,7 @@ msgstr "Innholdet i HHIT-posten må være en ikke-tom base64-kodet blob."
 msgid "Priority must be 0 for HHIT records."
 msgstr "Prioritet må være 0 for HHIT-poster."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Prioritet for MX/SRV poster må være et tall mellom 0 og 65535."
 
@@ -4733,7 +4763,7 @@ msgstr ""
 "Ugyldig LOC-postformat. Format bør være: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 "
 "[s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "Ugyldige tegn i navnfeltet."
 
@@ -5078,6 +5108,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "Innholdsfeltet kan ikke være tomt."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5861,7 +5897,7 @@ msgstr "Prioritetsverdier over 100 er uvanlige og kan være unødvendige."
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "Ugyldig verdi for MX-prioritetsfelt. Må være mellom 0 og 65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
@@ -5869,15 +5905,15 @@ msgstr ""
 "Prioritetsfelt bør ikke brukes for HTTPS-poster da prioritet er del av "
 "innholdet."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "HTTPS-post må inneholde minst prioritets- og målverdier."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "HTTPS-post prioritet må være et tall mellom 0 og 65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
@@ -5885,58 +5921,79 @@ msgstr ""
 "HTTPS-post mål må være enten \".\" eller et gyldig fullstendig kvalifisert "
 "domenenavn."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"HTTPS-post i AliasMode (prioritet=0) med mål \".\" kan ikke ha parametere i "
-"henhold til RFC 9460."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "I aliasmodus (prioritet = 0) er ingen SvcParams tillatt."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr "HTTPS-postparametere må være i key=value-format adskilt med mellomrom."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr "Ukjent HTTPS-parameternøkkel: \"%s\". Se RFC 9460 for gyldige nøkler."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "Den tilkoblede PowerDNS-versjonen kan ikke laste inn parameteren %s."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr ""
 "Duplikat HTTPS-parameternøkkel: \"%s\". Hver nøkkel kan bare vises én gang."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr ""
 "ALPN-verdi må være en kommaseparert liste med protokollidentifikatorer."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "Parameteren no-default-alpn må ha en tom verdi."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "Portverdi må være et tall mellom 1 og 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "Ugyldig IPv4-adresse i ipv4hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "Ugyldig IPv6-adresse i ipv6hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "DoH-sti må starte med skråstrek (/)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "Verdien for ech må være base64-kodet."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Verdien for tls-supported-groups må være en kommaseparert liste med tall mellom 0 og 65535."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parameteren mandatory kan ikke liste seg selv."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr ""
@@ -7713,7 +7770,7 @@ msgstr ""
 "SOA-postnavnet må samsvare med sonens apex \"%s\". La navnefeltet stå tomt "
 "eller skriv inn \"@\"."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "Innholdsfeltet ditt har ikke en gyldig verdi."
 
@@ -7817,46 +7874,42 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "Prioritet må være 0 for RESINFO-poster."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
 msgstr ""
 "SVCB-post må starte med prioritet og mål: <prioritet> <mål> [<parametere>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "SVCB-prioritet må være mellom 0 og 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "SVCB-mål må være enten \".\" eller et gyldig vertsnavn."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "I aliasmodus (prioritet = 0) kan ikke målet være \".\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "I aliasmodus (prioritet = 0) er ingen SvcParams tillatt."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr ""
 "I tjenestemodus (prioritet > 0) med \".\" som mål, kreves minst en SvcParam."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr "SVCB-parametere må være i key=value-format separert med mellomrom."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Ukjent SVCB-parameternøkkel: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -9482,36 +9535,41 @@ msgstr "I tillegg ble følgende advarsler funnet:"
 msgid "The following warnings were found:"
 msgstr "Følgende advarsler ble funnet:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Du har ikke tillatelse til å legge til en post i denne sonemalen."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Du har ikke tilgang til å legge denne oppføringstypen til en sonemal."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "Feil ved tillegging av post i sonemal: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "Posten tilhører ikke denne sonemalen."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "Feil ved oppdatering av sonemalpost: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Du har ikke tilgang til å slette denne oppføringstypen fra en sonemal."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "Feil ved sletting av sonemalpost: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "Den tilkoblede PowerDNS-versjonen kan ikke laste inn %s-poster."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -10124,7 +10182,7 @@ msgstr "Angi vertsnavnet slik det fremgår i NS-posten"
 msgid "Provide host name"
 msgstr "Oppgi vertsnavn"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "Konto"
 
@@ -10228,37 +10286,35 @@ msgstr "Deaktiver"
 msgid "Activate"
 msgstr "Aktiver"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Last ned nøkkelen som PEM"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Last ned den private nøkkelen i BIND-format"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "Eksporter PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "Eksporter"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Slett"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Importer nøkkel fra PEM"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Lim inn en PEM-kodet privat nøkkel (RSA eller ECDSA). PowerDNS 4.7+ utleder "
-"nøkkelstørrelsen fra PEM-innholdet - velg passende algoritme og nøkkelrolle."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "Privat PEM-nøkkel"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "Importer nøkkel"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Lim inn en privat nøkkel i BIND-format (slik den eksporteres her eller av "
+"dnssec-keygen) eller en ukryptert PEM-nøkkel (RSA, ECDSA, Ed25519 eller "
+"Ed448). Velg algoritmen nøkkelen ble laget for."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "Privat nøkkel"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10386,7 +10442,7 @@ msgstr "Oppgi innhold"
 msgid "This record type is deprecated and should not be used for new records."
 msgstr "Denne posttypen er utgått og bør ikke brukes for nye poster."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "Årsak til denne endringen"
 
@@ -10594,7 +10650,7 @@ msgstr "viser de første 20"
 msgid "more zones..."
 msgstr "flere soner..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "Viktig merknad"
 
@@ -10724,7 +10780,7 @@ msgstr "Verktøy"
 msgid "Database"
 msgstr "Database"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10736,11 +10792,11 @@ msgstr "Min profil"
 msgid "Password"
 msgstr "Passord"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "Innstillinger"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "Logg ut"
 
@@ -11519,11 +11575,18 @@ msgstr "Nøkkelsigneringsnøkkel - signerer DNSKEY-postene i sonen"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Sonesigneringsnøkkel - signerer alle andre poster i sonen"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS viser en nøkkel som KSK eller ZSK bare så lenge sonen har en aktiv KSK og en aktiv ZSK med samme algoritme. Ellers vises nøkkelen som CSK, selv om du valgte KSK eller ZSK her."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "Anbefalte innstillinger"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11563,7 +11626,7 @@ msgstr ""
 msgid "Add"
 msgstr "Legg til"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "Rediger profil"
 
@@ -12210,10 +12273,6 @@ msgstr "Hendelse"
 msgid "Details"
 msgstr "Detaljer"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "Eksporter"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "Eksporter logger"
@@ -12615,7 +12674,9 @@ msgstr "Du er i ferd med å slette en post i sonen"
 msgid ""
 "The deletion is filed as a change request and happens once a reviewer "
 "approves it."
-msgstr "Slettingen sendes inn som en endringsforespørsel og skjer når en vurderer godkjenner den."
+msgstr ""
+"Slettingen sendes inn som en endringsforespørsel og skjer når en vurderer "
+"godkjenner den."
 
 #: templates/default/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -12638,7 +12699,7 @@ msgstr "Slett også tilsvarende PTR-post (hvis den eksisterer)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Slett også tilhørende A/AAAA-post (hvis den eksisterer)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "Be om sletting"
 
@@ -13092,7 +13153,7 @@ msgstr "Inkluder en blanding av bokstaver, tall og symboler"
 msgid "Consider using a password manager"
 msgstr "Vurder å bruke en passordbehandler"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "Flerfaktorautentisering"
 
@@ -13678,7 +13739,7 @@ msgstr "Du er i ferd med å slette sonen"
 msgid "Zone Details"
 msgstr "Sonedetaljer"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13689,11 +13750,11 @@ msgstr ""
 "supermaster. Å slette sonen nå vil bare resultere i midlertidig fjerning. "
 "Når supermasteren sender et varsel for denne sonen, vil den legges til igjen!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "Ja, slett denne sonen"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "Nei, behold denne sonen"
 
@@ -13902,15 +13963,15 @@ msgstr ""
 msgid "Zones to Delete"
 msgstr "Soner som skal slettes"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "Merknad"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Ja, slett disse sonene"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Nei, behold disse sonene"
 
@@ -13991,11 +14052,15 @@ msgstr "Feil"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "Sonen har endret seg siden denne forespørselen ble sendt inn; de merkede endringene samsvarer ikke lenger med innholdet i sonen. Godkjenning utfører dem likevel."
+msgstr ""
+"Sonen har endret seg siden denne forespørselen ble sendt inn; de merkede "
+"endringene samsvarer ikke lenger med innholdet i sonen. Godkjenning utfører "
+"dem likevel."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
-msgstr "Sonens serienummer har endret seg siden denne forespørselen ble sendt inn."
+msgstr ""
+"Sonens serienummer har endret seg siden denne forespørselen ble sendt inn."
 
 #: templates/default/change_request.html:61
 msgid "Filed at serial"
@@ -14037,7 +14102,9 @@ msgstr "Prøv igjen"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "Kjører forespørselen på nytt etter at årsaken til feilen er rettet. Handlinger som allerede er utført, hoppes over."
+msgstr ""
+"Kjører forespørselen på nytt etter at årsaken til feilen er rettet. "
+"Handlinger som allerede er utført, hoppes over."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14354,11 +14421,11 @@ msgstr "List sonemaler"
 msgid "API Documentation"
 msgstr "API-dokumentasjon"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14366,7 +14433,7 @@ msgstr ""
 "Kontroller at pdns_api.key i config/settings.php stemmer med API-nøkkelen "
 "som er satt opp i PowerDNS."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14374,7 +14441,7 @@ msgstr ""
 "Kontroller at pdns_api.server_name stemmer med det PowerDNS rapporterer "
 "(standard 'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14384,7 +14451,7 @@ msgstr ""
 "vanlig utløser etter at soner er importert direkte i PowerDNS-databasen, er "
 "én ugyldig oppføring som gjør at soneserialiseringen mislykkes."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15727,64 +15794,67 @@ msgstr ""
 "Klarte ikke å angi språkinnstilling. Den valgte språkinnstillingen støttes "
 "kanskje ikke på dette systemet. Kontakt administratoren din."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Nøkkelen ble importert."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Eksport av PEM-nøkler krever PowerDNS 4.7 eller nyere."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Den private nøkkelen stemmer ikke overens med den valgte algoritmen."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Det oppstod en feil under eksport av PEM-nøkkelen: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Den private nøkkelen kunne ikke leses. Lim inn en privat nøkkel i BIND-format eller en ukryptert PEM-nøkkel."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Kunne ikke hente PEM-nøkkelen. Serveren eksponerer kanskje ikke privat "
+# OBSOLETE: "nøkkelmateriale for denne nøkkelen."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Import av nøkkelen mislyktes. PowerDNS avviste den."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Import av PEM-nøkler krever PowerDNS 4.7 eller nyere."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "Import av nøkkelen mislyktes."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr "Oppgi en PEM-kodet privat nøkkel (må inneholde BEGIN/END-markører)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Det oppstod en feil under import av nøkkelen: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM-nøkkelen ble importert."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Det oppstod en feil under eksport av nøkkelen: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Import av PEM-nøkkel mislyktes. PowerDNS-serveren kan ha avvist formatet."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Kunne ikke hente den private nøkkelen fra PowerDNS."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Det oppstod en feil under import av PEM-nøkkelen: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Last ned den private nøkkelen i BIND-format"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "HTTPS-post i AliasMode (prioritet=0) med mål \".\" kan ikke ha parametere "
+# OBSOLETE: "i henhold til RFC 9460."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Privat nøkkel"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "Parameteren no-default-alpn må ha en tom verdi."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Lim inn en privat nøkkel i BIND-format (slik den eksporteres her eller av dnssec-keygen) eller en ukryptert PEM-nøkkel (RSA, ECDSA, Ed25519 eller Ed448). Velg algoritmen nøkkelen ble laget for."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Last ned nøkkelen som PEM"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Import av nøkler krever PowerDNS 4.1 eller nyere."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Eksporter PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "%d til"
-msgstr[1] "%d til"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Importer nøkkel fra PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "%1$d post i sonen %2$s er nå skjult av sonen %3$s: %4$s. Sørg for at %3$s inneholder den, og slett den deretter fra %2$s."
-msgstr[1] "%1$d poster i sonen %2$s er nå skjult av sonen %3$s: %4$s. Sørg for at %3$s inneholder dem, og slett dem deretter fra %2$s."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Lim inn en PEM-kodet privat nøkkel (RSA eller ECDSA). PowerDNS 4.7+ "
+# OBSOLETE: "utleder nøkkelstørrelsen fra PEM-innholdet - velg passende algoritme og "
+# OBSOLETE: "nøkkelrolle."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Privat PEM-nøkkel"
+
+
+

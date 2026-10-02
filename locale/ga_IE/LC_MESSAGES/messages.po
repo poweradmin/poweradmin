@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -966,7 +966,7 @@ msgstr ""
 "ríomhphoist. Bainfear Spásanna agus línte nua go huathoibríoch."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "Cineál eochrach"
 
@@ -1247,11 +1247,11 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "Tá ainm an chreasa agus seoladh an phríomhfhreastalaí ag teastáil."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "Crios neamhbhailí."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1259,7 +1259,7 @@ msgstr ""
 "Níl aon taifid aistrithe ag an gcrios seo go fóill. Fan go gcríochnóidh an t-"
 "aistriú sula dtiontóidh tú ina phríomhchrios é."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "Tiontaíodh an crios ina phríomhchrios."
 
@@ -1503,21 +1503,13 @@ msgstr "%d u ó shin"
 msgid "%d d ago"
 msgstr "%d lá ó shin"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Éilíonn onnmhairithe eochair PEM PowerDNS 4.7 nó níos nuaí."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "Tharla earráid agus an eochair á heaspórtáil: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Tharla earráid agus an eochair PEM á honnmhairiú: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Níorbh fhéidir an eochair PEM a fháil. Seans nach nochtann an freastalaí "
-"ábhar na heochrach príobháidí don eochair seo."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Níorbh fhéidir an eochair phríobháideach a fháil ó PowerDNS."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1539,32 +1531,39 @@ msgstr "Tá eochair Crios scriosta go rathúil."
 msgid "Failed to delete the zone key."
 msgstr "Theip ar eochair an chrios a scriosadh."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Éilíonn allmhairiú eochair PEM PowerDNS 4.7 nó níos nuaí."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Éilíonn iompórtáil eochracha PowerDNS 4.1 nó níos nuaí."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Cuir eochair phríobháideach ionchódaithe le PEM ar fáil (ní mór marcóirí "
-"BEGIN/END a bheith inti)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "Níl an eochair phríobháideach ag teacht leis an algartam roghnaithe."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "Iompórtáladh an eochair PEM go rathúil."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"Theip ar an eochair PEM a iompórtáil. Seans gur dhiúltaigh an freastalaí "
-"PowerDNS don fhormáid."
+"Níorbh fhéidir an eochair phríobháideach a léamh. Greamaigh eochair "
+"phríobháideach i bhformáid BIND nó eochair PEM neamhchriptithe."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "Tharla earráid agus an eochair PEM á hiompórtáil: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "Tharla earráid agus an eochair á hiompórtáil: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "Iompórtáladh an eochair go rathúil."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Theip ar an eochair a iompórtáil. Dhiúltaigh PowerDNS di."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "Theip ar an eochair a iompórtáil."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Níl cead agat DNSSEC a bhainistiú don chrios seo."
 
@@ -1758,11 +1757,11 @@ msgstr "Scriosadh an taifead go rathúil."
 msgid "Provide at least one record"
 msgstr "Tabhair taifead amháin ar a laghad"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "Cineál taifead neamhbhailí."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "Cuireadh %d taifead leis go rathúil."
@@ -1801,7 +1800,7 @@ msgstr "Níl cead agat taifead a chur leis an gcrios seo."
 msgid "The %s field is required."
 msgstr "Tá an réimse %s ag teastáil."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "Níor soláthraíodh aon taifid."
 
@@ -1810,17 +1809,17 @@ msgid "Record successfully added, but PTR record creation failed: "
 msgstr ""
 "Cuireadh an taifead leis go rathúil, ach theip ar chruthú an taifid PTR: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Cruthaíodh %d taifead comhoiriúnach freisin."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Theip ar %d taifead a chur leis."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Theip ar aon taifead a chur leis. Seans go bhfuil sonraí neamhbhailí iontu."
@@ -2112,7 +2111,7 @@ msgstr ""
 "athrú anseo. Téigh i dteagmháil le do riarthóir."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "Athraigh pasfhocal"
 
@@ -2484,7 +2483,7 @@ msgstr "Níl cead agat iarratais athraithe a fheiceáil."
 msgid "Bulk Registration"
 msgstr "Clárúchán Bulc"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "Tá Criosanna curtha leis go rathúil."
 
@@ -3339,7 +3338,8 @@ msgstr ""
 
 #: lib/Application/Service/Record/RecordAddMessages.php:53
 msgid "Record successfully added, but A record creation failed: "
-msgstr "Cuireadh an taifead leis go rathúil, ach theip ar chruthú an taifid A: "
+msgstr ""
+"Cuireadh an taifead leis go rathúil, ach theip ar chruthú an taifid A: "
 
 #: lib/Application/Service/Auth/SessionAuthenticator.php:179
 #: templates/default/login.html:139
@@ -3462,7 +3462,9 @@ msgstr "Cuireadh do chuid athruithe isteach le ceadú."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "Teastaíonn ceadú le hathruithe ar an gcrios seo; úsáid eagarthóir an chreasa chun iarratas athraithe a chur isteach."
+msgstr ""
+"Teastaíonn ceadú le hathruithe ar an gcrios seo; úsáid eagarthóir an chreasa "
+"chun iarratas athraithe a chur isteach."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3475,7 +3477,8 @@ msgstr "Níl aon difríocht ón gcrios, mar sin níor comhdaíodh aon iarratas."
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "Tá an iarratas athraithe ró-mhór le stóráil; roinn é ina iarratais níos lú."
+msgstr ""
+"Tá an iarratas athraithe ró-mhór le stóráil; roinn é ina iarratais níos lú."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3528,7 +3531,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "Ní féidir an grúpa seo a scriosadh: is é úinéir deireanach %s. Cuir úinéir eile leis na criosanna sin ar dtús."
+msgstr ""
+"Ní féidir an grúpa seo a scriosadh: is é úinéir deireanach %s. Cuir úinéir "
+"eile leis na criosanna sin ar dtús."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3551,7 +3556,7 @@ msgstr ""
 "Ní féidir an t-úinéir deireanach a bhaint: d'fhágfadh sé sin an crios gan "
 "úinéireacht ar bith."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3560,12 +3565,46 @@ msgstr ""
 "2001:db8::/48) nó ainm crios aisiompaithe a chríochnaíonn le in-addr.arpa nó "
 "ip6.arpa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d eile"
+msgstr[1] "%d eile"
+msgstr[2] "%d eile"
+msgstr[3] "%d eile"
+msgstr[4] "%d eile"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. "
+"Cinntigh go bhfuil sé ag %3$s, agus ansin scrios é ó %2$s."
+msgstr[1] ""
+"Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. "
+"Cinntigh go bhfuil siad ag %3$s, agus ansin scrios iad ó %2$s."
+msgstr[2] ""
+"Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. "
+"Cinntigh go bhfuil siad ag %3$s, agus ansin scrios iad ó %2$s."
+msgstr[3] ""
+"Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. "
+"Cinntigh go bhfuil siad ag %3$s, agus ansin scrios iad ó %2$s."
+msgstr[4] ""
+"Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. "
+"Cinntigh go bhfuil siad ag %3$s, agus ansin scrios iad ó %2$s."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr ""
 "Ní mór úsáideoir amháin nó grúpa amháin ar a laghad a roghnú mar úinéir."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "Níl cead agat criosanna a chruthú d'úsáideoirí eile."
 
@@ -3574,12 +3613,12 @@ msgstr "Níl cead agat criosanna a chruthú d'úsáideoirí eile."
 msgid "Unknown user ID: %s"
 msgstr "Aitheantas úsáideora anaithnid: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "ID(anna) grúpa anaithnid: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr ""
@@ -3590,11 +3629,11 @@ msgstr ""
 msgid "Invalid hostname."
 msgstr "Óstainm neamhbhailí."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "Tá crios ann cheana féin leis an ainm seo."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4306,7 +4345,7 @@ msgstr ""
 msgid "Priority must be 0 for HHIT records."
 msgstr "Caithfidh an tosaíocht a bheith 0 do thaifid HHIT."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr ""
 "Ní mór don tosaíocht do thaifid MX/SRV a bheith ina huimhir idir 0 agus "
@@ -4881,7 +4920,7 @@ msgstr ""
 "[s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] "
 "[hp[\"m\"] [vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "Carachtair neamhbhailí i réimse an ainm."
 
@@ -5243,6 +5282,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "Ní féidir réimse ábhar a bheith folamh."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -6082,7 +6127,7 @@ msgstr ""
 "Luach neamhbhailí do réimse tosaíochta MX. Ní mór dó a bheith idir 0 agus "
 "65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
@@ -6090,17 +6135,17 @@ msgstr ""
 "Níor cheart réimse tosaíochta a úsáid le haghaidh taifid HTTPS mar go bhfuil "
 "tosaíocht mar chuid den ábhar."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr ""
 "Ní mór luachanna tosaíochta agus spriocluachanna ar a laghad a bheith i "
 "dtaifead HTTPS."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "Ní mór tosaíocht taifead HTTPS a bheith ina uimhir idir 0 agus 65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
@@ -6108,63 +6153,84 @@ msgstr ""
 "Ní mór sprioc taifead HTTPS a bheith \".\" nó ainm fearainn bailí atá "
 "cáilithe go hiomlán."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"Ní féidir paraiméadair a bheith ag taifead HTTPS in AliasMode (priority=0) a "
-"bhfuil \".\" mar sprioc aige, de réir RFC 9460."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "I Mód Alias (priority = 0), níl aon SvcParams ceadaithe."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr ""
 "Ní mór do pharaiméadair taifead HTTPS a bheith i bhformáid key=value scartha "
 "ag spásanna."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr ""
 "Eochair paraiméadair HTTPS anaithnid: \"%s\". Féach RFC 9460 le haghaidh "
 "eochracha bailí."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "Ní féidir leis an leagan de PowerDNS atá ceangailte an paraiméadar %s a lódáil."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr ""
 "Eochair paraiméadair HTTPS dhúblach: \"%s\". Ní féidir le gach eochair a "
 "bheith le feiceáil ach uair amháin."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr ""
 "Ní mór gur liosta d'aitheantóirí prótacail scartha ag camóga é luach ALPN."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "Ní mór go mbeadh luach folamh ag an bparaiméadar no-default-alpn."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "Ní mór luach an chalafoirt a bheith ina uimhir idir 1 agus 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "Seoladh IPv4 neamhbhailí in ipv4hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "Seoladh IPv6 neamhbhailí in ipv6hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "Ní mór do chosán DoH tosú le slais ar aghaidh (/)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "Caithfidh an luach ech a bheith ionchódaithe i base64."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Caithfidh an luach tls-supported-groups a bheith ina liosta uimhreacha idir 0 agus 65535, scartha le camóga."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "Ní féidir leis an bparaiméadar mandatory é féin a liostú."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr ""
@@ -8007,7 +8073,7 @@ msgstr ""
 "Caithfidh ainm an taifid SOA a bheith ag teacht le buaic an chreasa \"%s\". "
 "Fág réimse an ainm folamh nó cuir isteach \"@\"."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "Níl luach bailí sa réimse ábhair agat."
 
@@ -8114,7 +8180,7 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "Caithfidh an tosaíocht a bheith 0 do thaifid RESINFO."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
@@ -8122,23 +8188,19 @@ msgstr ""
 "Ní mór do thaifead SVCB tosú le tosaíocht agus sprioc: <priority> <target> "
 "[<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "Ní mór tosaíocht SVCB a bheith idir 0 agus 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "Ní mór sprioc SVCB a bheith \".\" nó óstach bailí."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "I Mód Alias (priority = 0), ní féidir leis an sprioc a bheith \".\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "I Mód Alias (priority = 0), níl aon SvcParams ceadaithe."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
@@ -8146,17 +8208,17 @@ msgstr ""
 "I Mód Seirbhíse (priority > 0) le sprioc \".\", teastaíonn SvcParam amháin "
 "ar a laghad."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr ""
 "Ní mór paraiméadair SVCB a bheith i bhformáid key=value scartha ag spásanna."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Eochair paraiméadair SVCB anaithnid: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -9854,36 +9916,41 @@ msgstr "Ina theannta sin, fuarthas amach na rabhaidh seo a leanas:"
 msgid "The following warnings were found:"
 msgstr "Fuarthas na rabhaidh seo a leanas:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Níl cead agat taifead a chur leis an teimpléad crios seo."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Níl cead agat an cineál taifid seo a chur le teimpléad creasa."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "Earráid agus taifead an teimpléid crios á chur leis: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "Ní bhaineann an taifead leis an teimpléad crios seo."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "Earráid agus taifead an teimpléid crios á nuashonrú: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Níl cead agat an cineál taifid seo a scriosadh ó theimpléad creasa."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "Earráid agus taifead an teimpléid crios á scriosadh: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "Ní féidir leis an leagan de PowerDNS atá ceangailte taifid %s a lódáil."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -10498,7 +10565,7 @@ msgstr "Cuir isteach an t-ainm óstach mar atá sé sa taifead NS"
 msgid "Provide host name"
 msgstr "Tabhair ainm óstach"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "Cuntas"
 
@@ -10604,38 +10671,35 @@ msgstr "Díghníomhachtaigh"
 msgid "Activate"
 msgstr "Gníomhachtaigh"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Íoslódáil an eochair seo mar PEM"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Íoslódáil an eochair phríobháideach i bhformáid BIND"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "Easpórtáil PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "Easpórtáil"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Scrios"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Iompórtáil eochair ó PEM"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Greamaigh eochair phríobháideach PEM-ionchódaithe (RSA nó ECDSA). Faigheann "
-"PowerDNS 4.7+ méid na heochrach ó ábhar an PEM - roghnaigh an t-algartam "
-"agus ról na heochrach a fhreagraíonn dó."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "Eochair phríobháideach PEM"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "Iompórtáil eochair"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Greamaigh eochair phríobháideach i bhformáid BIND (mar a easpórtáiltear "
+"anseo í nó le dnssec-keygen) nó eochair PEM neamhchriptithe (RSA, ECDSA, "
+"Ed25519 nó Ed448). Roghnaigh an t-algartam ar cruthaíodh an eochair dó."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "Eochair phríobháideach"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10765,7 +10829,7 @@ msgstr ""
 "Déantar an cineál taifid seo a dhíluacháil agus níor cheart é a úsáid le "
 "haghaidh taifead nua."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "Cúis leis an athrú seo"
 
@@ -10977,7 +11041,7 @@ msgstr "a léiríonn an chéad 20"
 msgid "more zones..."
 msgstr "tuilleadh criosanna..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "Nóta Tábhachtach"
 
@@ -11107,7 +11171,7 @@ msgstr "Uirlisí"
 msgid "Database"
 msgstr "Bunachar Sonraí"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "Réamhshocruithe TTL"
 
@@ -11119,11 +11183,11 @@ msgstr "Mo Phróifíl"
 msgid "Password"
 msgstr "Pasfhocal"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "Sainroghanna"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "Logáil amach"
 
@@ -11924,11 +11988,18 @@ msgstr "Eochair Shínithe Eochrach - síníonn sí na taifid DNSKEY sa chrios"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Eochair Shínithe Crios - síníonn sí gach taifead eile sa chrios"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "Ní thaispeánann PowerDNS eochair mar KSK nó ZSK ach fad atá KSK gníomhach agus ZSK gníomhach leis an algartam céanna sa chrios. Seachas sin taispeánann sé an eochair mar CSK, fiú má roghnaigh tú KSK nó ZSK anseo."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "Socruithe Molta"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11970,7 +12041,7 @@ msgstr ""
 msgid "Add"
 msgstr "Cuir leis"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "Cuir próifíl in eagar"
 
@@ -12627,10 +12698,6 @@ msgstr "Imeacht"
 msgid "Details"
 msgstr "Sonraí"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "Easpórtáil"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "Easpórtáil Logaí"
@@ -13034,7 +13101,9 @@ msgstr "Tá tú ar tí taifead a scriosadh i gcrios"
 msgid ""
 "The deletion is filed as a change request and happens once a reviewer "
 "approves it."
-msgstr "Comhdaítear an scriosadh mar iarratas athraithe agus tarlaíonn sé nuair a cheadaíonn athbhreithnitheoir é."
+msgstr ""
+"Comhdaítear an scriosadh mar iarratas athraithe agus tarlaíonn sé nuair a "
+"cheadaíonn athbhreithnitheoir é."
 
 #: templates/default/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -13058,7 +13127,7 @@ msgstr "Chomh maith leis sin scriosadh taifead PTR comhfhreagrach (más ann)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Chomh maith leis sin scrios an taifead A/AAAA comhfhreagrach (más ann)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "Iarr scriosadh"
 
@@ -13521,7 +13590,7 @@ msgstr "Cuir meascán de litreacha, d'uimhreacha agus de shiombailí san áiream
 msgid "Consider using a password manager"
 msgstr "Smaoinigh ar bhainisteoir focal faire a úsáid"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "Fíordheimhniú Ilfhachtóir"
 
@@ -14113,7 +14182,7 @@ msgstr "Tá tú ar tí an crios a scriosadh"
 msgid "Zone Details"
 msgstr "Sonraí an Chrios"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -14125,11 +14194,11 @@ msgstr ""
 "sealadach. Aon uair a sheolann an supermaster fógra don chrios seo, cuirfear "
 "leis arís é!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "Sea, scrios an crios seo"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "Níl, coinnigh an crios seo"
 
@@ -14344,15 +14413,15 @@ msgstr ""
 msgid "Zones to Delete"
 msgstr "Criosanna le Scriosadh"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "Tabhair faoi deara"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Sea, scrios na criosanna seo"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Níl, coinnigh na criosanna seo"
 
@@ -14433,7 +14502,10 @@ msgstr "Earráid"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "Tá an crios athraithe ó comhdaíodh an iarratas seo; ní thagann na hathruithe marcáilte le hábhar an chreasa a thuilleadh. Cuireann an ceadú i bhfeidhm iad mar sin féin."
+msgstr ""
+"Tá an crios athraithe ó comhdaíodh an iarratas seo; ní thagann na hathruithe "
+"marcáilte le hábhar an chreasa a thuilleadh. Cuireann an ceadú i bhfeidhm "
+"iad mar sin féin."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -14479,7 +14551,9 @@ msgstr "Bain triail eile as"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "Cuireann an t-iarratas i bhfeidhm arís tar éis cúis na teipe a cheartú. Déantar neamhaird ar ghníomhartha ar éirigh leo cheana."
+msgstr ""
+"Cuireann an t-iarratas i bhfeidhm arís tar éis cúis na teipe a cheartú. "
+"Déantar neamhaird ar ghníomhartha ar éirigh leo cheana."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14799,11 +14873,11 @@ msgstr "Liosta teimpléid crios"
 msgid "API Documentation"
 msgstr "Doiciméadú API"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "Earráid PowerDNS API"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14811,7 +14885,7 @@ msgstr ""
 "Seiceáil go bhfuil pdns_api.key i config/settings.php ag teacht leis an "
 "eochair API atá cumraithe i PowerDNS."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14819,7 +14893,7 @@ msgstr ""
 "Seiceáil go bhfuil pdns_api.server_name ag teacht leis an méid a "
 "thuairiscíonn PowerDNS (réamhshocrú 'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14830,7 +14904,7 @@ msgstr ""
 "criosanna a allmhairiú go díreach isteach i mbunachar sonraí PowerDNS ná "
 "taifead aonair míchumtha a chuireann sraithiú an chrios ó rath."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -16210,70 +16284,70 @@ msgstr ""
 "Theip ar shocrú an locale. Seans nach bhfuil tacaíocht ar an gcóras seo don "
 "locale roghnaithe. Déan teagmháil le do riarthóir."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Iompórtáladh an eochair go rathúil."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Éilíonn onnmhairithe eochair PEM PowerDNS 4.7 nó níos nuaí."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Níl an eochair phríobháideach ag teacht leis an algartam roghnaithe."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Tharla earráid agus an eochair PEM á honnmhairiú: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Níorbh fhéidir an eochair phríobháideach a léamh. Greamaigh eochair phríobháideach i bhformáid BIND nó eochair PEM neamhchriptithe."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Níorbh fhéidir an eochair PEM a fháil. Seans nach nochtann an freastalaí "
+# OBSOLETE: "ábhar na heochrach príobháidí don eochair seo."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Theip ar an eochair a iompórtáil. Dhiúltaigh PowerDNS di."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Éilíonn allmhairiú eochair PEM PowerDNS 4.7 nó níos nuaí."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "Theip ar an eochair a iompórtáil."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Cuir eochair phríobháideach ionchódaithe le PEM ar fáil (ní mór marcóirí "
+# OBSOLETE: "BEGIN/END a bheith inti)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Tharla earráid agus an eochair á hiompórtáil: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "Iompórtáladh an eochair PEM go rathúil."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Tharla earráid agus an eochair á heaspórtáil: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Theip ar an eochair PEM a iompórtáil. Seans gur dhiúltaigh an freastalaí "
+# OBSOLETE: "PowerDNS don fhormáid."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Níorbh fhéidir an eochair phríobháideach a fháil ó PowerDNS."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Tharla earráid agus an eochair PEM á hiompórtáil: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Íoslódáil an eochair phríobháideach i bhformáid BIND"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Ní féidir paraiméadair a bheith ag taifead HTTPS in AliasMode "
+# OBSOLETE: "(priority=0) a bhfuil \".\" mar sprioc aige, de réir RFC 9460."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Eochair phríobháideach"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "Ní mór go mbeadh luach folamh ag an bparaiméadar no-default-alpn."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Greamaigh eochair phríobháideach i bhformáid BIND (mar a easpórtáiltear anseo í nó le dnssec-keygen) nó eochair PEM neamhchriptithe (RSA, ECDSA, Ed25519 nó Ed448). Roghnaigh an t-algartam ar cruthaíodh an eochair dó."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Íoslódáil an eochair seo mar PEM"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Éilíonn iompórtáil eochracha PowerDNS 4.1 nó níos nuaí."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Easpórtáil PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "%d eile"
-msgstr[1] "%d eile"
-msgstr[2] "%d eile"
-msgstr[3] "%d eile"
-msgstr[4] "%d eile"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Iompórtáil eochair ó PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. Cinntigh go bhfuil sé ag %3$s, agus ansin scrios é ó %2$s."
-msgstr[1] "Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. Cinntigh go bhfuil siad ag %3$s, agus ansin scrios iad ó %2$s."
-msgstr[2] "Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. Cinntigh go bhfuil siad ag %3$s, agus ansin scrios iad ó %2$s."
-msgstr[3] "Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. Cinntigh go bhfuil siad ag %3$s, agus ansin scrios iad ó %2$s."
-msgstr[4] "Tá %1$d taifead sa chrios %2$s i bhfolach anois ag an gcrios %3$s: %4$s. Cinntigh go bhfuil siad ag %3$s, agus ansin scrios iad ó %2$s."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Greamaigh eochair phríobháideach PEM-ionchódaithe (RSA nó ECDSA). "
+# OBSOLETE: "Faigheann PowerDNS 4.7+ méid na heochrach ó ábhar an PEM - roghnaigh an t-"
+# OBSOLETE: "algartam agus ról na heochrach a fhreagraíonn dó."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Eochair phríobháideach PEM"
+
+
+

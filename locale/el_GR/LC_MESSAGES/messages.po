@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -969,7 +969,7 @@ msgstr ""
 "αλληλογραφίας σας. Τα κενά και οι αλλαγές γραμμής θα αφαιρεθούν αυτόματα."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "Τύπος κλειδιού"
 
@@ -1252,11 +1252,11 @@ msgid "Zone name and primary server address are required."
 msgstr ""
 "Το όνομα ζώνης και η διεύθυνση του πρωτεύοντος διακομιστή είναι απαραίτητα."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "Μη έγκυρη ζώνη."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1264,7 +1264,7 @@ msgstr ""
 "Αυτή η ζώνη δεν έχει ακόμη μεταφερθείσες εγγραφές. Περιμένετε να ολοκληρωθεί "
 "η μεταφορά πριν τη μετατρέψετε σε πρωτεύουσα ζώνη."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "Η ζώνη μετατράπηκε σε πρωτεύουσα ζώνη."
 
@@ -1510,21 +1510,13 @@ msgstr "%d ώ. πριν"
 msgid "%d d ago"
 msgstr "%d ημ. πριν"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Η εξαγωγή κλειδιού PEM απαιτεί PowerDNS 4.7 ή νεότερη."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "Συνέβη ένα σφάλμα κατά την εξαγωγή του κλειδιού: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Συνέβη ένα σφάλμα κατά την εξαγωγή του κλειδιού PEM: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Αδυναμία ανάκτησης του κλειδιού PEM. Ο εξυπηρετητής μπορεί να μην εκθέσει το "
-"υλικό ιδιωτικού κλειδιού για αυτό το κλειδί."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Αδυναμία ανάκτησης του ιδιωτικού κλειδιού από το PowerDNS."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1546,32 +1538,39 @@ msgstr "Το κλειδί ζώνης έχει διαγραφεί με επιτυ
 msgid "Failed to delete the zone key."
 msgstr "Αποτυχία διαγραφής του κλειδιού ζώνης."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Η εισαγωγή κλειδιού PEM απαιτεί PowerDNS 4.7 ή νεότερη."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Η εισαγωγή κλειδιών απαιτεί PowerDNS 4.1 ή νεότερη."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Δώστε ένα PEM-κωδικοποιημένο ιδιωτικό κλειδί (πρέπει να περιέχει δείκτες "
-"BEGIN/END)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "Το ιδιωτικό κλειδί δεν ταιριάζει με τον επιλεγμένο αλγόριθμο."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "Το κλειδί PEM εισήχθη επιτυχώς."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"Αποτυχία εισαγωγής κλειδιού PEM. Ο εξυπηρετητής PowerDNS μπορεί να απέρριψε "
-"τη μορφή."
+"Δεν ήταν δυνατή η ανάγνωση του ιδιωτικού κλειδιού. Επικολλήστε ένα ιδιωτικό "
+"κλειδί σε μορφή BIND ή ένα μη κρυπτογραφημένο κλειδί PEM."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "Συνέβη ένα σφάλμα κατά την εισαγωγή του κλειδιού PEM: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "Συνέβη ένα σφάλμα κατά την εισαγωγή του κλειδιού: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "Το κλειδί εισήχθη επιτυχώς."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Αποτυχία εισαγωγής του κλειδιού. Το PowerDNS το απέρριψε."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "Αποτυχία εισαγωγής του κλειδιού."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Δεν έχετε άδεια να διαχειριστείτε το DNSSEC για αυτή τη ζώνη."
 
@@ -1770,11 +1769,11 @@ msgstr "Η εγγραφή έχει διαγραφεί με επιτυχία."
 msgid "Provide at least one record"
 msgstr "Δώστε τουλάχιστον μία εγγραφή"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "Μη έγκυρος τύπος εγγραφής."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d εγγραφή(-ές) προστέθηκε(-αν) με επιτυχία."
@@ -1813,7 +1812,7 @@ msgstr "Δεν έχετε την άδεια να προσθέσετε μια ε�
 msgid "The %s field is required."
 msgstr "Το πεδίο %s απαιτείται."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "Δεν δόθηκαν εγγραφές."
 
@@ -1823,17 +1822,17 @@ msgstr ""
 "Η εγγραφή προστέθηκε με επιτυχία, αλλά η δημιουργία της εγγραφής PTR "
 "απέτυχε: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Δημιουργήθηκαν επίσης %d αντίστοιχη(-ες) εγγραφή(-ές)."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Απέτυχε η προσθήκη %d εγγραφής(-ών)."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Αποτυχία προσθήκης οποιασδήποτε εγγραφής. Μπορεί να περιέχουν μη έγκυρα "
@@ -2137,7 +2136,7 @@ msgstr ""
 "εδώ. Παρακαλώ επικοινωνήστε με τον διαχειριστή σας."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "Τροποποίηση κωδικού πρόσβασης"
 
@@ -2512,7 +2511,7 @@ msgstr "Δεν έχετε άδεια να δείτε αιτήματα αλλαγ
 msgid "Bulk Registration"
 msgstr "Μαζική καταχώριση"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "Οι ζώνες έχουν προστεθεί με επιτυχία."
 
@@ -3325,7 +3324,8 @@ msgstr ""
 
 #: lib/Application/Service/Record/RecordAddMessages.php:53
 msgid "Record successfully added, but A record creation failed: "
-msgstr "Η εγγραφή προστέθηκε με επιτυχία, αλλά η δημιουργία της εγγραφής A απέτυχε: "
+msgstr ""
+"Η εγγραφή προστέθηκε με επιτυχία, αλλά η δημιουργία της εγγραφής A απέτυχε: "
 
 #: lib/Application/Service/Auth/SessionAuthenticator.php:179
 #: templates/default/login.html:139
@@ -3449,7 +3449,9 @@ msgstr "Οι αλλαγές σας υποβλήθηκαν για έγκριση.
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "Αυτή η ζώνη απαιτεί έγκριση για αλλαγές· χρησιμοποιήστε τον επεξεργαστή ζώνης για να υποβάλετε αίτημα αλλαγής."
+msgstr ""
+"Αυτή η ζώνη απαιτεί έγκριση για αλλαγές· χρησιμοποιήστε τον επεξεργαστή "
+"ζώνης για να υποβάλετε αίτημα αλλαγής."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3462,7 +3464,9 @@ msgstr "Τίποτα δεν διαφέρει από τη ζώνη, οπότε δ
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "Το αίτημα αλλαγής είναι πολύ μεγάλο για να αποθηκευτεί· χωρίστε το σε μικρότερες υποβολές."
+msgstr ""
+"Το αίτημα αλλαγής είναι πολύ μεγάλο για να αποθηκευτεί· χωρίστε το σε "
+"μικρότερες υποβολές."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3517,7 +3521,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "Δεν είναι δυνατή η διαγραφή αυτής της ομάδας: είναι ο τελευταίος ιδιοκτήτης του %s. Προσθέστε πρώτα άλλον ιδιοκτήτη σε αυτές τις ζώνες."
+msgstr ""
+"Δεν είναι δυνατή η διαγραφή αυτής της ομάδας: είναι ο τελευταίος ιδιοκτήτης "
+"του %s. Προσθέστε πρώτα άλλον ιδιοκτήτη σε αυτές τις ζώνες."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3541,7 +3547,7 @@ msgstr ""
 "Αδυναμία αφαίρεσης του τελευταίου ιδιοκτήτη: αυτό θα άφηνε τη ζώνη χωρίς "
 "ιδιοκτησία."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3550,11 +3556,35 @@ msgstr ""
 "2001:db8::/48) ή ένα όνομα ανάστροφης ζώνης που τελειώνει σε in-addr.arpa ή "
 "ip6.arpa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d ακόμη"
+msgstr[1] "%d ακόμη"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"%1$d εγγραφή στη ζώνη %2$s αποκρύπτεται πλέον από τη ζώνη %3$s: %4$s. "
+"Βεβαιωθείτε ότι η %3$s την περιέχει και, στη συνέχεια, διαγράψτε την από τη "
+"%2$s."
+msgstr[1] ""
+"%1$d εγγραφές στη ζώνη %2$s αποκρύπτονται πλέον από τη ζώνη %3$s: %4$s. "
+"Βεβαιωθείτε ότι η %3$s τις περιέχει και, στη συνέχεια, διαγράψτε τις από τη "
+"%2$s."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "Τουλάχιστον ένας χρήστης ή ομάδα πρέπει να επιλεγεί ως ιδιοκτήτης."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "Δεν έχετε άδεια να δημιουργήσετε ζώνες για άλλους χρήστες."
 
@@ -3563,12 +3593,12 @@ msgstr "Δεν έχετε άδεια να δημιουργήσετε ζώνες 
 msgid "Unknown user ID: %s"
 msgstr "Άγνωστο αναγνωριστικό χρήστη: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Άγνωστο(-α) αναγνωριστικό(-ά) ομάδας(-ων): %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Μπορείτε να ορίσετε μόνο ομάδες που είστε μέλος (απαγορεύεται: %s)"
@@ -3577,11 +3607,11 @@ msgstr "Μπορείτε να ορίσετε μόνο ομάδες που είσ
 msgid "Invalid hostname."
 msgstr "Μη έγκυρο όνομα υπολογιστή."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "Υπάρχει ήδη μια ζώνη με αυτό το όνομα."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -3745,7 +3775,9 @@ msgstr "Μη έγκυρο πρότυπο άδειας: πρέπει να είν�
 
 #: lib/Application/Service/User/UserFormMessages.php:50
 msgid "Cannot disable the last remaining super admin user."
-msgstr "Δεν είναι δυνατή η απενεργοποίηση του τελευταίου υπερδιαχειριστή που απομένει."
+msgstr ""
+"Δεν είναι δυνατή η απενεργοποίηση του τελευταίου υπερδιαχειριστή που "
+"απομένει."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
@@ -3753,7 +3785,8 @@ msgstr "Ο χρήστης δεν μπόρεσε να αποθηκευτεί."
 
 #: lib/Application/Service/User/UserFormMessages.php:65
 msgid "Cannot delete the last remaining super admin user."
-msgstr "Δεν είναι δυνατή η διαγραφή του τελευταίου υπερδιαχειριστή που απομένει."
+msgstr ""
+"Δεν είναι δυνατή η διαγραφή του τελευταίου υπερδιαχειριστή που απομένει."
 
 #: lib/Application/Service/User/UserFormMessages.php:68
 msgid "The user could not be deleted."
@@ -4292,7 +4325,7 @@ msgstr ""
 msgid "Priority must be 0 for HHIT records."
 msgstr "Η προτεραιότητα πρέπει να είναι 0 για εγγραφές HHIT."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr ""
 "Η προτεραιότητα για τις εγγραφές MX/SRV πρέπει να είναι ένας αριθμός μεταξύ "
@@ -4875,7 +4908,7 @@ msgstr ""
 "\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
 "[vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "Μη έγκυροι χαρακτήρες στο πεδίο ονομάτων."
 
@@ -5239,6 +5272,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "Το πεδίο περιεχομένου δεν μπορεί να είναι κενό."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -6087,7 +6126,7 @@ msgstr ""
 "Μη έγκυρη τιμή για το πεδίο προτεραιότητας MX. Πρέπει να είναι μεταξύ 0 και "
 "65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
@@ -6095,19 +6134,19 @@ msgstr ""
 "Το πεδίο προτεραιότητας δεν πρέπει να χρησιμοποιείται για τις εγγραφές "
 "HTTPS, καθώς η προτεραιότητα αποτελεί μέρος του περιεχομένου."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr ""
 "Η εγγραφή HTTPS πρέπει να περιέχει τουλάχιστον τιμές προτεραιότητας και "
 "στόχου."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr ""
 "Η προτεραιότητα της εγγραφής HTTPS πρέπει να είναι αριθμός μεταξύ 0 και "
 "65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
@@ -6115,63 +6154,84 @@ msgstr ""
 "Ο στόχος εγγραφής HTTPS πρέπει να είναι είτε \".\" είτε ένα έγκυρο πλήρες "
 "όνομα τομέα."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"HTTPS εγγραφή στο AliasMode (priority=0) με στόχο \".\" δεν μπορεί να έχει "
-"παραμέτρους σύμφωνα με RFC 9460."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "Στην Alias Mode (priority = 0), δεν επιτρέπονται SvcParams."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr ""
 "Οι παράμετροι εγγραφής HTTPS πρέπει να είναι σε μορφή key=value χωρισμένες "
 "με κενά."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr ""
 "Άγνωστο κλειδί παραμέτρου HTTPS: \"%s\". Βλ. RFC 9460 για έγκυρα κλειδιά."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "Η συνδεδεμένη έκδοση του PowerDNS δεν μπορεί να φορτώσει την παράμετρο %s."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr ""
 "Διπλό κλειδί παραμέτρου HTTPS: \"%s\". Κάθε κλειδί μπορεί να εμφανιστεί μόνο "
 "μία φορά."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr ""
 "Η τιμή ALPN πρέπει να είναι μια λίστα διαχωρισμένων με κόμματα "
 "αναγνωριστικών πρωτοκόλλων."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "Η παράμετρος no-default-alpn πρέπει να έχει κενή τιμή."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "Η τιμή της θύρας πρέπει να είναι αριθμός μεταξύ 1 και 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "Μη έγκυρη διεύθυνση IPv4 στο ipv4hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "Μη έγκυρη διεύθυνση IPv6 στο ipv6hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "Η διαδρομή DoH πρέπει να ξεκινά με κάθετο (/)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "Η τιμή ech πρέπει να είναι κωδικοποιημένη σε base64."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Η τιμή tls-supported-groups πρέπει να είναι λίστα αριθμών μεταξύ 0 και 65535, χωρισμένων με κόμμα."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "Η παράμετρος mandatory δεν μπορεί να περιλαμβάνει τον εαυτό της."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr ""
@@ -8047,7 +8107,7 @@ msgstr ""
 "Το όνομα της εγγραφής SOA πρέπει να ταιριάζει με το apex της ζώνης \"%s\". "
 "Αφήστε το πεδίο ονόματος κενό ή εισαγάγετε \"@\"."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "Το πεδίο περιεχομένου σας δεν έχει έγκυρη τιμή."
 
@@ -8155,7 +8215,7 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "Η προτεραιότητα πρέπει να είναι 0 για εγγραφές RESINFO."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
@@ -8163,23 +8223,19 @@ msgstr ""
 "Η εγγραφή SVCB πρέπει να ξεκινά με προτεραιότητα και στόχο: <priority> "
 "<target> [<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "Η προτεραιότητα της SVCB πρέπει να είναι μεταξύ 0 και 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "Ο στόχος SVCB πρέπει να είναι είτε \".\" είτε έγκυρο όνομα υπολογιστή."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "Στην Alias Mode (priority = 0), ο στόχος δεν μπορεί να είναι \".\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "Στην Alias Mode (priority = 0), δεν επιτρέπονται SvcParams."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
@@ -8187,17 +8243,17 @@ msgstr ""
 "Σε κατάσταση λειτουργίας υπηρεσίας (προτεραιότητα > 0) με στόχο \".\", "
 "απαιτείται τουλάχιστον ένα SvcParam."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr ""
 "Οι παράμετροι SVCB πρέπει να είναι σε μορφή key=value χωρισμένες με κενά."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Άγνωστο κλειδί παραμέτρου SVCB: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -9931,31 +9987,31 @@ msgstr "Επιπλέον, βρέθηκαν οι ακόλουθες προειδ�
 msgid "The following warnings were found:"
 msgstr "Βρέθηκαν οι ακόλουθες προειδοποιήσεις:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
 "Δεν έχετε την άδεια να προσθέσετε μια εγγραφή σε αυτό το πρότυπο ζώνης."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
 "Δεν έχετε την άδεια να προσθέσετε αυτόν τον τύπο εγγραφής σε ένα πρότυπο "
 "ζώνης."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "Σφάλμα κατά την προσθήκη εγγραφής προτύπου ζώνης: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "Η εγγραφή δεν ανήκει σε αυτό το πρότυπο ζώνης."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "Σφάλμα ενημέρωσης εγγραφής προτύπου ζώνης: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -9963,9 +10019,14 @@ msgstr ""
 "Δεν έχετε την άδεια να διαγράψετε αυτόν τον τύπο εγγραφής από ένα πρότυπο "
 "ζώνης."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "Σφάλμα διαγραφής εγγραφής προτύπου ζώνης: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "Η συνδεδεμένη έκδοση του PowerDNS δεν μπορεί να φορτώσει εγγραφές %s."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -10583,7 +10644,7 @@ msgstr "Εισάγετε το όνομα υπολογιστή όπως εμφα�
 msgid "Provide host name"
 msgstr "Παροχή ονόματος υπολογιστή"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "Λογαριασμός"
 
@@ -10690,38 +10751,35 @@ msgstr "Απενεργοποιήστε"
 msgid "Activate"
 msgstr "Ενεργοποίηση"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Λήψη αυτού του κλειδιού ως PEM"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Λήψη του ιδιωτικού κλειδιού σε μορφή BIND"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "Εξαγωγή PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "Εξαγωγή"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Εισαγωγή κλειδιού από PEM"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Επικολλήστε ένα ιδιωτικό κλειδί κωδικοποιημένο σε μορφή PEM (RSA ή ECDSA). "
-"Το PowerDNS 4.7+ αντλεί το μέγεθος του κλειδιού από τα περιεχόμενα PEM - "
-"επιλέξτε τον αντίστοιχο αλγόριθμο και τον ρόλο του κλειδιού."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "Ιδιωτικό κλειδί PEM"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "Εισαγωγή κλειδιού"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Επικολλήστε ένα ιδιωτικό κλειδί σε μορφή BIND (όπως εξάγεται εδώ ή από το "
+"dnssec-keygen) ή ένα μη κρυπτογραφημένο κλειδί PEM (RSA, ECDSA, Ed25519 ή "
+"Ed448). Επιλέξτε τον αλγόριθμο για τον οποίο δημιουργήθηκε το κλειδί."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "Ιδιωτικό κλειδί"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10853,7 +10911,7 @@ msgstr ""
 "Αυτός ο τύπος εγγραφής είναι παρωχημένος και δεν πρέπει να χρησιμοποιείται "
 "για νέες εγγραφές."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "Αιτία αυτής της αλλαγής"
 
@@ -11065,7 +11123,7 @@ msgstr "εμφανίζονται οι πρώτες 20"
 msgid "more zones..."
 msgstr "Κι άλλες ζώνες..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "Σημαντική σημείωση"
 
@@ -11196,7 +11254,7 @@ msgstr "Εργαλεία"
 msgid "Database"
 msgstr "Βάση δεδομένων"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "Προκαθορισμένα TTL"
 
@@ -11208,11 +11266,11 @@ msgstr "Το προφίλ μου"
 msgid "Password"
 msgstr "Κωδικός πρόσβασης"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "Προτιμήσεις"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "Αποσύνδεση"
 
@@ -12011,11 +12069,18 @@ msgstr "Κλειδί υπογραφής κλειδιών - υπογράφει τ
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Κλειδί υπογραφής ζώνης - υπογράφει όλες τις άλλες εγγραφές στη ζώνη"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "Το PowerDNS εμφανίζει ένα κλειδί ως KSK ή ZSK μόνο όσο η ζώνη έχει ενεργό KSK και ενεργό ZSK με τον ίδιο αλγόριθμο. Διαφορετικά εμφανίζει το κλειδί ως CSK, ακόμη κι αν επιλέξατε εδώ KSK ή ZSK."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "Προτεινόμενες ρυθμίσεις"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -12057,7 +12122,7 @@ msgstr ""
 msgid "Add"
 msgstr "Προσθήκη"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "Επεξεργασία προφίλ"
 
@@ -12712,10 +12777,6 @@ msgstr "Γεγονός"
 msgid "Details"
 msgstr "Λεπτομέρειες"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "Εξαγωγή"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "Εξαγωγή αρχείων καταγραφής"
@@ -13121,7 +13182,9 @@ msgstr "Πρόκειται να διαγράψετε μια εγγραφή στ�
 msgid ""
 "The deletion is filed as a change request and happens once a reviewer "
 "approves it."
-msgstr "Η διαγραφή υποβάλλεται ως αίτημα αλλαγής και εκτελείται μόλις την εγκρίνει ένας εξεταστής."
+msgstr ""
+"Η διαγραφή υποβάλλεται ως αίτημα αλλαγής και εκτελείται μόλις την εγκρίνει "
+"ένας εξεταστής."
 
 #: templates/default/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -13145,7 +13208,7 @@ msgstr "Επίσης διαγραφή αντίστοιχης εγγραφής PT
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Διαγράψτε επίσης την αντίστοιχη εγγραφή A/AAAA (αν υπάρχει)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "Αίτημα διαγραφής"
 
@@ -13607,7 +13670,7 @@ msgstr "Συμπεριλάβετε ένα μείγμα από γράμματα, 
 msgid "Consider using a password manager"
 msgstr "Σκεφτείτε τη χρήση ενός διαχειριστή κωδικού πρόσβασης"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "Ταυτοποίηση πολλαπλών παραγόντων"
 
@@ -14208,7 +14271,7 @@ msgstr "Πρόκειται να διαγράψετε τη ζώνη"
 msgid "Zone Details"
 msgstr "Λεπτομέρειες ζώνης"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -14220,11 +14283,11 @@ msgstr ""
 "αφαίρεση. Κάθε φορά που ο supermaster στέλνει μια ειδοποίηση για αυτή τη "
 "ζώνη, θα προστεθεί ξανά!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "Ναι, διαγραφή αυτής της ζώνης"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "Όχι, διατήρηση αυτής της ζώνης"
 
@@ -14438,15 +14501,15 @@ msgstr ""
 msgid "Zones to Delete"
 msgstr "Ζώνες για διαγραφή"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "Σημείωση"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Ναι, σβήστε αυτές τις ζώνες."
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Όχι, κράτα αυτές τις ζώνες."
 
@@ -14527,11 +14590,15 @@ msgstr "Σφάλμα"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "Η ζώνη έχει αλλάξει από τότε που υποβλήθηκε αυτό το αίτημα· οι σημειωμένες αλλαγές δεν αντιστοιχούν πλέον στο περιεχόμενο της ζώνης. Η έγκριση τις εφαρμόζει παρ' όλα αυτά."
+msgstr ""
+"Η ζώνη έχει αλλάξει από τότε που υποβλήθηκε αυτό το αίτημα· οι σημειωμένες "
+"αλλαγές δεν αντιστοιχούν πλέον στο περιεχόμενο της ζώνης. Η έγκριση τις "
+"εφαρμόζει παρ' όλα αυτά."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
-msgstr "Το serial της ζώνης έχει αλλάξει από τότε που υποβλήθηκε αυτό το αίτημα."
+msgstr ""
+"Το serial της ζώνης έχει αλλάξει από τότε που υποβλήθηκε αυτό το αίτημα."
 
 #: templates/default/change_request.html:61
 msgid "Filed at serial"
@@ -14573,7 +14640,9 @@ msgstr "Δοκιμάστε ξανά"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "Εφαρμόζει ξανά το αίτημα αφού διορθωθεί η αιτία της αποτυχίας. Οι ενέργειες που ολοκληρώθηκαν ήδη παραλείπονται."
+msgstr ""
+"Εφαρμόζει ξανά το αίτημα αφού διορθωθεί η αιτία της αποτυχίας. Οι ενέργειες "
+"που ολοκληρώθηκαν ήδη παραλείπονται."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14900,11 +14969,11 @@ msgstr "Κατάλογος προτύπων ζώνης"
 msgid "API Documentation"
 msgstr "Τεκμηρίωση API"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "Σφάλμα API PowerDNS"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14912,7 +14981,7 @@ msgstr ""
 "Ελέγξτε ότι το pdns_api.key στο config/settings.php ταιριάζει με το κλειδί "
 "API που έχει ρυθμιστεί στο PowerDNS."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14920,7 +14989,7 @@ msgstr ""
 "Ελέγξτε ότι το pdns_api.server_name ταιριάζει με αυτό που αναφέρει το "
 "PowerDNS (προκαθορισμένο 'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14931,7 +15000,7 @@ msgstr ""
 "στη βάση δεδομένων του PowerDNS είναι μια μεμονωμένη λανθασμένα διαμορφωμένη "
 "εγγραφή που προκαλεί αποτυχία της σειριοποίησης της ζώνης."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -16323,64 +16392,71 @@ msgstr ""
 "Η ρύθμιση του locale απέτυχε. Το επιλεγμένο locale μπορεί να μην "
 "υποστηρίζεται σε αυτό το σύστημα. Επικοινωνήστε με τον διαχειριστή σας."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Το κλειδί εισήχθη επιτυχώς."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Η εξαγωγή κλειδιού PEM απαιτεί PowerDNS 4.7 ή νεότερη."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Το ιδιωτικό κλειδί δεν ταιριάζει με τον επιλεγμένο αλγόριθμο."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Συνέβη ένα σφάλμα κατά την εξαγωγή του κλειδιού PEM: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Δεν ήταν δυνατή η ανάγνωση του ιδιωτικού κλειδιού. Επικολλήστε ένα ιδιωτικό κλειδί σε μορφή BIND ή ένα μη κρυπτογραφημένο κλειδί PEM."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Αδυναμία ανάκτησης του κλειδιού PEM. Ο εξυπηρετητής μπορεί να μην εκθέσει "
+# OBSOLETE: "το υλικό ιδιωτικού κλειδιού για αυτό το κλειδί."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Αποτυχία εισαγωγής του κλειδιού. Το PowerDNS το απέρριψε."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Η εισαγωγή κλειδιού PEM απαιτεί PowerDNS 4.7 ή νεότερη."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "Αποτυχία εισαγωγής του κλειδιού."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Δώστε ένα PEM-κωδικοποιημένο ιδιωτικό κλειδί (πρέπει να περιέχει δείκτες "
+# OBSOLETE: "BEGIN/END)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Συνέβη ένα σφάλμα κατά την εισαγωγή του κλειδιού: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "Το κλειδί PEM εισήχθη επιτυχώς."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Συνέβη ένα σφάλμα κατά την εξαγωγή του κλειδιού: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Αποτυχία εισαγωγής κλειδιού PEM. Ο εξυπηρετητής PowerDNS μπορεί να "
+# OBSOLETE: "απέρριψε τη μορφή."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Αδυναμία ανάκτησης του ιδιωτικού κλειδιού από το PowerDNS."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Συνέβη ένα σφάλμα κατά την εισαγωγή του κλειδιού PEM: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Λήψη του ιδιωτικού κλειδιού σε μορφή BIND"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "HTTPS εγγραφή στο AliasMode (priority=0) με στόχο \".\" δεν μπορεί να "
+# OBSOLETE: "έχει παραμέτρους σύμφωνα με RFC 9460."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Ιδιωτικό κλειδί"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "Η παράμετρος no-default-alpn πρέπει να έχει κενή τιμή."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Επικολλήστε ένα ιδιωτικό κλειδί σε μορφή BIND (όπως εξάγεται εδώ ή από το dnssec-keygen) ή ένα μη κρυπτογραφημένο κλειδί PEM (RSA, ECDSA, Ed25519 ή Ed448). Επιλέξτε τον αλγόριθμο για τον οποίο δημιουργήθηκε το κλειδί."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Λήψη αυτού του κλειδιού ως PEM"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Η εισαγωγή κλειδιών απαιτεί PowerDNS 4.1 ή νεότερη."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Εξαγωγή PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "%d ακόμη"
-msgstr[1] "%d ακόμη"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Εισαγωγή κλειδιού από PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "%1$d εγγραφή στη ζώνη %2$s αποκρύπτεται πλέον από τη ζώνη %3$s: %4$s. Βεβαιωθείτε ότι η %3$s την περιέχει και, στη συνέχεια, διαγράψτε την από τη %2$s."
-msgstr[1] "%1$d εγγραφές στη ζώνη %2$s αποκρύπτονται πλέον από τη ζώνη %3$s: %4$s. Βεβαιωθείτε ότι η %3$s τις περιέχει και, στη συνέχεια, διαγράψτε τις από τη %2$s."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Επικολλήστε ένα ιδιωτικό κλειδί κωδικοποιημένο σε μορφή PEM (RSA ή "
+# OBSOLETE: "ECDSA). Το PowerDNS 4.7+ αντλεί το μέγεθος του κλειδιού από τα "
+# OBSOLETE: "περιεχόμενα PEM - επιλέξτε τον αντίστοιχο αλγόριθμο και τον ρόλο του "
+# OBSOLETE: "κλειδιού."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Ιδιωτικό κλειδί PEM"
+
+
+

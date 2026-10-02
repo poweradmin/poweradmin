@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -896,7 +896,7 @@ msgid ""
 msgstr "粘貼來自郵件伺服器的base64編碼公鑰。空格和換行符將自動刪除。"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "金鑰類型"
 
@@ -1148,17 +1148,17 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "區域名稱和 Primary 伺服器位址為必填項。"
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "無效的區域。"
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
 msgstr "此區域尚無已傳輸的記錄。請等待傳輸完成後再將其轉換為 Primary 區域。"
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "區域已轉換為 Primary 區域。"
 
@@ -1393,19 +1393,13 @@ msgstr "%d 小時前"
 msgid "%d d ago"
 msgstr "%d 天前"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "PEM 金鑰匯出需要 PowerDNS 4.7 或更新版本。"
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "匯出金鑰時發生錯誤: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "匯出 PEM 金鑰時發生錯誤: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr "無法獲取 PEM 金鑰。伺服器可能未公開此金鑰的私鑰材料。"
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "無法從 PowerDNS 取得私鑰。"
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1427,28 +1421,37 @@ msgstr "區域金鑰已成功刪除。"
 msgid "Failed to delete the zone key."
 msgstr "刪除區域金鑰失敗。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "PEM 金鑰匯入需要 PowerDNS 4.7 或更新版本。"
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "匯入金鑰需要 PowerDNS 4.1 或更新版本。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "提供 PEM 編碼的私鑰 (必須包含 BEGIN/END 標記)。"
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "私鑰與所選演算法不相符。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "PEM 金鑰匯入成功。"
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
-msgstr "匯入 PEM 金鑰失敗。PowerDNS 伺服器可能拒絕了該格式。"
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
+msgstr "無法讀取私鑰。請貼上 BIND 格式的私鑰或未加密的 PEM 金鑰。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "匯入 PEM 金鑰時發生錯誤: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "匯入金鑰時發生錯誤: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "金鑰匯入成功。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "匯入金鑰失敗。PowerDNS 拒絕了該金鑰。"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "匯入金鑰失敗。"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "您沒有權限管理此區域的 DNSSEC。"
 
@@ -1627,11 +1630,11 @@ msgstr "記錄已成功刪除。"
 msgid "Provide at least one record"
 msgstr "至少提供一個記錄"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "記錄類型無效。"
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "已成功新增 %d 條記錄。"
@@ -1670,7 +1673,7 @@ msgstr "您沒有向此區域新增記錄的權限。"
 msgid "The %s field is required."
 msgstr "%s 欄位是必需的。"
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "未提供記錄。"
 
@@ -1678,17 +1681,17 @@ msgstr "未提供記錄。"
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "記錄新增成功，但 PTR 記錄建立失敗： "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "同時建立了 %d 條相符的記錄。"
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d 條記錄新增失敗。"
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "新增任何記錄都失敗了。它們可能包含無效資料。"
 
@@ -1957,7 +1960,7 @@ msgid ""
 msgstr "外部身分驗證使用者無法在此更改密碼。請聯繫管理員。"
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "更改密碼"
 
@@ -2316,7 +2319,7 @@ msgstr "您沒有權限檢視變更請求。"
 msgid "Bulk Registration"
 msgstr "批次註冊"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "區域已成功新增。"
 
@@ -3283,7 +3286,8 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "無法刪除此群組：它是 %s 的最後一個所有者。請先為這些區域新增其他所有者。"
+msgstr ""
+"無法刪除此群組：它是 %s 的最後一個所有者。請先為這些區域新增其他所有者。"
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3302,7 +3306,7 @@ msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
 msgstr "無法刪除最後一個所有者: 區域將不再有任何所有權。"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3310,11 +3314,33 @@ msgstr ""
 "以 CIDR 記法輸入一個網路（例如 192.168.1.0/24 或 2001:db8::/48）或一個以 in-"
 "addr.arpa 或 ip6.arpa 結尾的反向區域名稱。"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "另外 %d 筆"
+msgstr[1] "另外 %d 筆"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"區域 %2$s 中的 %1$d 筆記錄現在被區域 %3$s 隱藏：%4$s。請確認 %3$s 包含這些記"
+"錄，然後從 %2$s 中刪除它們。"
+msgstr[1] ""
+"區域 %2$s 中的 %1$d 筆記錄現在被區域 %3$s 隱藏：%4$s。請確認 %3$s 包含這些記"
+"錄，然後從 %2$s 中刪除它們。"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "必須至少選擇一個使用者或組作為所有者。"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "您無權為其他使用者建立區域。"
 
@@ -3323,12 +3349,12 @@ msgstr "您無權為其他使用者建立區域。"
 msgid "Unknown user ID: %s"
 msgstr "未知的使用者 ID：%s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "未知組 ID: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "您只能分配您所屬的組(不允許: %s)"
@@ -3337,11 +3363,11 @@ msgstr "您只能分配您所屬的組(不允許: %s)"
 msgid "Invalid hostname."
 msgstr "主機名稱無效。"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "已存在同名區域。"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4000,7 +4026,7 @@ msgstr "HHIT 記錄內容必須是非空的 base64 編碼 blob。"
 msgid "Priority must be 0 for HHIT records."
 msgstr "HHIT 記錄的優先級必須為 0。"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV 記錄的優先級必須是 0 到 65535 之間的數字。"
 
@@ -4492,7 +4518,7 @@ msgstr ""
 "無效的 LOC 記錄格式。格式應為：d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] "
 "{\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "名稱欄位中包含無效字元。"
 
@@ -4793,6 +4819,12 @@ msgstr "優先級欄位值無效。ALIAS 記錄的優先級值必須為 0。"
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "內容欄位不能為空。"
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5507,75 +5539,97 @@ msgstr "優先級值超過 100 是異常的，可能是不必要的。"
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "MX 優先級欄位值無效。必須在 0 到 65535 之間。"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
 msgstr "HTTPS 記錄不應使用優先級欄位，因為優先級是內容的一部分。"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "HTTPS 記錄必須至少包含優先級和目標值。"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "HTTPS 記錄優先級必須是 0 到 65535 之間的數字。"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
 msgstr "HTTPS 記錄目標必須是 \".\" 或有效的完全限定網域名稱。"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"根據 RFC 9460，別名模式（優先級=0）且目標為 \".\" 的 HTTPS 記錄不能有參數。"
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "在別名模式（優先級 = 0）中，不允許 SvcParams。"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr "HTTPS 記錄參數必須是以空格分隔的 key=value 格式。"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr "未知的 HTTPS 參數鍵：\"%s\"。請參閱 RFC 9460 了解有效的鍵。"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "所連線的 PowerDNS 版本無法載入 %s 參數。"
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr "重複的 HTTPS 參數鍵：\"%s\"。每個鍵只能出現一次。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr "ALPN 值必須是通訊協定識別碼的逗號分隔清單。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "no-default-alpn 參數必須為空值。"
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "埠值必須是 1 到 65535 之間的數字。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "ipv4hint 中的 IPv4 位址無效：\"%s\"。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "ipv6hint 中的 IPv6 位址無效：\"%s\"。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "DoH 路徑必須以正斜槓（/）開頭。"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "ech 值必須以 base64 編碼。"
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups 值必須是以逗號分隔的 0 到 65535 之間的數字清單。"
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "mandatory 參數不能列出其本身。"
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr "參數 \"%s\" 被標記為必需但未包含在記錄中。"
@@ -7138,7 +7192,7 @@ msgid ""
 "or enter \"@\"."
 msgstr "SOA 記錄名稱必須與區域頂點 \"%s\" 相符。請將名稱欄位留空或輸入 \"@\"。"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "您的內容欄位沒有合法值。"
 
@@ -7231,44 +7285,40 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "RESINFO 記錄的優先級必須為 0。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
 msgstr "SVCB 記錄必須以優先級和目標開始：<priority> <target> [<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "SVCB 優先級必須在 0 到 65535 之間。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "SVCB 目標必須是 \".\" 或有效的主機名稱。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "在別名模式（優先級 = 0）中，目標不能是 \".\"。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "在別名模式（優先級 = 0）中，不允許 SvcParams。"
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr "在使用 \".\" 目標的服務模式（優先級 > 0）中，至少需要一個 SvcParam。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr "SVCB 參數必須採用用空格分隔的 key=value 格式。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "未知的 SVCB 參數鍵：\"%s\"。"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr "重複的 SVCB 參數鍵：\"%s\"。每個鍵只能出現一次。"
@@ -8737,36 +8787,41 @@ msgstr "此外，發現以下警告："
 msgid "The following warnings were found:"
 msgstr "發現以下警告："
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "您沒有向此區域範本新增記錄的權限。"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "您沒有將此記錄類型新增至區域範本的權限。"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "新增區域範本記錄時發生錯誤： "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "該記錄不屬於此區域範本。"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "更新區域範本記錄錯誤： "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "您沒有從區域範本刪除此記錄類型的權限。"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "刪除區域範本記錄錯誤： "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "所連線的 PowerDNS 版本無法載入 %s 記錄。"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -9363,7 +9418,7 @@ msgstr "輸入在 NS 記錄中顯示的主機名稱"
 msgid "Provide host name"
 msgstr "提供主機名稱"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "帳號"
 
@@ -9462,37 +9517,34 @@ msgstr "停用"
 msgid "Activate"
 msgstr "啟用"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "以 PEM 格式下載此金鑰"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "以 BIND 格式下載私鑰"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "匯出 PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "匯出"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "刪除"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "從 PEM 匯入金鑰"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"貼上 PEM 編碼的私鑰 (RSA 或 ECDSA)。PowerDNS 4.7+ 從 PEM 內容推導金鑰大小 - "
-"選擇相符的演算法和金鑰角色。"
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "PEM 私鑰"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "匯入金鑰"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"貼上 BIND 格式的私鑰 (如此處或 dnssec-keygen 匯出的格式) 或未加密的 PEM 金鑰 "
+"(RSA、ECDSA、Ed25519 或 Ed448)。選擇產生該金鑰時使用的演算法。"
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "私鑰"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -9615,7 +9667,7 @@ msgstr "提供內容"
 msgid "This record type is deprecated and should not be used for new records."
 msgstr "此記錄類型已棄用，不應用於新記錄。"
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "本次變更的原因"
 
@@ -9819,7 +9871,7 @@ msgstr "顯示前20個"
 msgid "more zones..."
 msgstr "更多區域..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "重要提示"
 
@@ -9943,7 +9995,7 @@ msgstr "工具"
 msgid "Database"
 msgstr "資料庫"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -9955,11 +10007,11 @@ msgstr "我的資料"
 msgid "Password"
 msgstr "密碼"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "首選項"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "登出"
 
@@ -10709,11 +10761,18 @@ msgstr "金鑰簽名金鑰 - 簽名區域中的 DNSKEY 記錄"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "區域簽名金鑰 - 簽名區域中的所有其他記錄"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "只有當區域中有相同演算法的已啟用 KSK 與已啟用 ZSK 時，PowerDNS 才會將金鑰顯示為 KSK 或 ZSK。否則，即使您在此選擇了 KSK 或 ZSK，金鑰也會顯示為 CSK。"
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "推薦設定"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10752,7 +10811,7 @@ msgstr ""
 msgid "Add"
 msgstr "新增"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "編輯資料"
 
@@ -11370,10 +11429,6 @@ msgstr "事件"
 msgid "Details"
 msgstr "詳細資訊"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "匯出"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "匯出記錄檔"
@@ -11791,7 +11846,7 @@ msgstr "同時刪除相應的 PTR 記錄（如果存在）"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "同時刪除對應的A/AAAA記錄（如果存在）"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "請求刪除"
 
@@ -12236,7 +12291,7 @@ msgstr "包含字母、數字和符號的混合"
 msgid "Consider using a password manager"
 msgstr "考慮使用密碼管理器"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "多因素身分驗證"
 
@@ -12801,7 +12856,7 @@ msgstr "您即將刪除區域"
 msgid "Zone Details"
 msgstr "區域詳情"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -12811,11 +12866,11 @@ msgstr ""
 "您即將刪除主名稱伺服器為 supermaster 的從區域。現在刪除此區域只會導致臨時刪"
 "除。每當 supermaster 傳送此區域的通知時，它將再次被新增！"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "是的，刪除此區域"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "不，保留此區域"
 
@@ -13020,15 +13075,15 @@ msgstr "您即將刪除多個區域。此操作無法撤銷。"
 msgid "Zones to Delete"
 msgstr "要刪除的區域"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "注意"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "是的，刪除這些區域"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "不，保留這些區域"
 
@@ -13107,7 +13162,9 @@ msgstr "錯誤"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "自此請求提交後區域已變更，標記的變更不再符合區域目前的內容。核准仍會套用這些變更。"
+msgstr ""
+"自此請求提交後區域已變更，標記的變更不再符合區域目前的內容。核准仍會套用這些"
+"變更。"
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -13454,11 +13511,11 @@ msgstr "列出區域範本"
 msgid "API Documentation"
 msgstr "API 文檔"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -13466,7 +13523,7 @@ msgstr ""
 "請確認 config/settings.php 中的 pdns_api.key 與 PowerDNS 設定的 API 金鑰相"
 "符。"
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -13474,7 +13531,7 @@ msgstr ""
 "請確認 pdns_api.server_name 與 PowerDNS 回報的名稱相符（預設為 "
 "'localhost'）。"
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -13483,7 +13540,7 @@ msgstr ""
 "PowerDNS 拒絕了此要求。請查看 PowerDNS 伺服器記錄檔以找出原因 - 若曾直接將區"
 "域匯入 PowerDNS 資料庫，常見原因是有單一格式錯誤的記錄導致區域序列化失敗。"
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -14765,64 +14822,63 @@ msgid ""
 "Please contact your administrator."
 msgstr "設定地區設定失敗。所選的地區設定可能不受此系統支援。請聯絡您的管理員。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "金鑰匯入成功。"
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM 金鑰匯出需要 PowerDNS 4.7 或更新版本。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "私鑰與所選演算法不相符。"
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "匯出 PEM 金鑰時發生錯誤: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "無法讀取私鑰。請貼上 BIND 格式的私鑰或未加密的 PEM 金鑰。"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr "無法獲取 PEM 金鑰。伺服器可能未公開此金鑰的私鑰材料。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "匯入金鑰失敗。PowerDNS 拒絕了該金鑰。"
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM 金鑰匯入需要 PowerDNS 4.7 或更新版本。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "匯入金鑰失敗。"
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr "提供 PEM 編碼的私鑰 (必須包含 BEGIN/END 標記)。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "匯入金鑰時發生錯誤: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM 金鑰匯入成功。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "匯出金鑰時發生錯誤: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr "匯入 PEM 金鑰失敗。PowerDNS 伺服器可能拒絕了該格式。"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "無法從 PowerDNS 取得私鑰。"
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "匯入 PEM 金鑰時發生錯誤: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "以 BIND 格式下載私鑰"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "根據 RFC 9460，別名模式（優先級=0）且目標為 \".\" 的 HTTPS 記錄不能有參"
+# OBSOLETE: "數。"
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "私鑰"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "no-default-alpn 參數必須為空值。"
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "貼上 BIND 格式的私鑰 (如此處或 dnssec-keygen 匯出的格式) 或未加密的 PEM 金鑰 (RSA、ECDSA、Ed25519 或 Ed448)。選擇產生該金鑰時使用的演算法。"
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "以 PEM 格式下載此金鑰"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "匯入金鑰需要 PowerDNS 4.1 或更新版本。"
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "匯出 PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "另外 %d 筆"
-msgstr[1] "另外 %d 筆"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "從 PEM 匯入金鑰"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "區域 %2$s 中的 %1$d 筆記錄現在被區域 %3$s 隱藏：%4$s。請確認 %3$s 包含這些記錄，然後從 %2$s 中刪除它們。"
-msgstr[1] "區域 %2$s 中的 %1$d 筆記錄現在被區域 %3$s 隱藏：%4$s。請確認 %3$s 包含這些記錄，然後從 %2$s 中刪除它們。"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "貼上 PEM 編碼的私鑰 (RSA 或 ECDSA)。PowerDNS 4.7+ 從 PEM 內容推導金鑰大小 "
+# OBSOLETE: "- 選擇相符的演算法和金鑰角色。"
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "PEM 私鑰"
+
+
+

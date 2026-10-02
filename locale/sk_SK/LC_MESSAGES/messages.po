@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Slovak\n"
@@ -938,7 +938,7 @@ msgstr ""
 "znaky nového riadka sa automaticky odstránia."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "typ kľúča"
 
@@ -1207,11 +1207,11 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "Názov zóny a adresa primárneho servera sú povinné."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "Neplatná zóna."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1219,7 +1219,7 @@ msgstr ""
 "Táto zóna zatiaľ nemá žiadne prenesené záznamy. Pred prevodom na primárnu "
 "zónu počkajte na dokončenie prenosu."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "Zóna bola prevedená na primárnu zónu."
 
@@ -1463,21 +1463,13 @@ msgstr "pred %d h"
 msgid "%d d ago"
 msgstr "pred %d d"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Export PEM kľúča vyžaduje PowerDNS 4.7 alebo novší."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "Pri exporte kľúča došlo k chybe: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Pri exporte PEM kľúča došlo k chybe: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Nepodarilo sa získať PEM kľúč. Server pravdepodobne neposkytuje súkromný "
-"kľúčový materiál pre tento kľúč."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nepodarilo sa získať súkromný kľúč z PowerDNS."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1499,29 +1491,39 @@ msgstr "Kľúč zóny bol úspešne vymazaný."
 msgid "Failed to delete the zone key."
 msgstr "Nepodarilo sa vymazať kľúč zóny."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Import PEM kľúča vyžaduje PowerDNS 4.7 alebo novší."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Import kľúčov vyžaduje PowerDNS 4.1 alebo novší."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Zadajte súkromný kľúč zakódovaný v PEM (musí obsahovať značky BEGIN/END)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "Súkromný kľúč nezodpovedá vybranému algoritmu."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "PEM kľúč úspešne importovaný."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
-msgstr "Import PEM kľúča zlyhal. PowerDNS server mohol formát odmietnuť."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
+msgstr ""
+"Súkromný kľúč sa nedá prečítať. Vložte súkromný kľúč vo formáte BIND alebo "
+"nešifrovaný PEM kľúč."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "Pri importe PEM kľúča došlo k chybe: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "Pri importe kľúča došlo k chybe: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "Kľúč úspešne importovaný."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Import kľúča zlyhal. PowerDNS ho odmietol."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "Import kľúča zlyhal."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nemáte oprávnenie spravovať DNSSEC pre túto zónu."
 
@@ -1708,11 +1710,11 @@ msgstr "Záznam bol úspešne odstránený."
 msgid "Provide at least one record"
 msgstr "Zadajte aspoň jeden záznam"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "Neplatný typ záznamu."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d záznamov bolo úspešne pridaných."
@@ -1751,7 +1753,7 @@ msgstr "Nemáte oprávnenie pridať záznam do tejto zóny."
 msgid "The %s field is required."
 msgstr "Pole %s je povinné."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "Neboli poskytnuté záznamy."
 
@@ -1759,17 +1761,17 @@ msgstr "Neboli poskytnuté záznamy."
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Záznam pridaný, ale vytvorenie PTR zlyhalo: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Bolo vytvorených aj %d zhodných záznamov."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Nepodarilo sa pridať %d záznamov."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nepodarilo sa pridať žiadne záznamy. Môžu obsahovať neplatné údaje."
 
@@ -2055,7 +2057,7 @@ msgstr ""
 "svojho správcu."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "Zmeniť heslo"
 
@@ -2425,7 +2427,7 @@ msgstr "Nemáte oprávnenie zobraziť žiadosti o zmenu."
 msgid "Bulk Registration"
 msgstr "Hromadná registrácia"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "Zóny boli úspešne pridané."
 
@@ -3366,7 +3368,9 @@ msgstr "Vaše zmeny boli odoslané na schválenie."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "Táto zóna vyžaduje schválenie zmien; na podanie žiadosti o zmenu použite editor zón."
+msgstr ""
+"Táto zóna vyžaduje schválenie zmien; na podanie žiadosti o zmenu použite "
+"editor zón."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3379,7 +3383,8 @@ msgstr "Od zóny sa nič neodlišuje, takže nebola podaná žiadna žiadosť."
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "Žiadosť o zmenu je príliš veľká na uloženie; rozdeľte ju na menšie časti."
+msgstr ""
+"Žiadosť o zmenu je príliš veľká na uloženie; rozdeľte ju na menšie časti."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3432,7 +3437,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "Túto skupinu nie je možné odstrániť: je posledným vlastníkom %s. Najprv pridajte k týmto zónam iného vlastníka."
+msgstr ""
+"Túto skupinu nie je možné odstrániť: je posledným vlastníkom %s. Najprv "
+"pridajte k týmto zónam iného vlastníka."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3454,7 +3461,7 @@ msgid ""
 msgstr ""
 "Nie je možné odstrániť posledného vlastníka: zóna by zostala bez vlastníka."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3462,11 +3469,37 @@ msgstr ""
 "Zadajte sieť v zápise CIDR (napríklad 192.168.1.0/24 alebo 2001:db8::/48) "
 "alebo názov reverznej zóny končiaci na in-addr.arpa alebo ip6.arpa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d ďalší"
+msgstr[1] "%d ďalšie"
+msgstr[2] "%d ďalších"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"%1$d záznam v zóne %2$s je teraz skrytý zónou %3$s: %4$s. Overte, že ho %3$s "
+"obsahuje, a potom ho odstráňte z %2$s."
+msgstr[1] ""
+"%1$d záznamy v zóne %2$s sú teraz skryté zónou %3$s: %4$s. Overte, že ich "
+"%3$s obsahuje, a potom ich odstráňte z %2$s."
+msgstr[2] ""
+"%1$d záznamov v zóne %2$s je teraz skrytých zónou %3$s: %4$s. Overte, že ich "
+"%3$s obsahuje, a potom ich odstráňte z %2$s."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "Musí byť vybraný aspoň jeden používateľ alebo skupina."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "Nemáte povolenie vytvárať zóny pre iných používateľov."
 
@@ -3475,12 +3508,12 @@ msgstr "Nemáte povolenie vytvárať zóny pre iných používateľov."
 msgid "Unknown user ID: %s"
 msgstr "Neznáme ID používateľa: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Neznáme ID skupiny: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Môžete priradiť len skupiny, ktorých ste členom (nepovolené: %s)"
@@ -3489,11 +3522,11 @@ msgstr "Môžete priradiť len skupiny, ktorých ste členom (nepovolené: %s)"
 msgid "Invalid hostname."
 msgstr "Neplatný názov hostiteľa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "Zóna s týmto názvom už existuje."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4180,7 +4213,7 @@ msgstr "Obsah záznamu HHIT musí byť neprázdny blok zakódovaný v base64."
 msgid "Priority must be 0 for HHIT records."
 msgstr "Priorita musí byť 0 pre záznamy HHIT."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Priorita pre záznamy MX/SRV musí byť číslo medzi 0 a 65535."
 
@@ -4735,7 +4768,7 @@ msgstr ""
 "Neplatný formát záznamu LOC. Formát má byť: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "Neplatné znaky v poli názvu."
 
@@ -5076,6 +5109,12 @@ msgstr "Neplatná hodnota v poli priority. Záznamy ALIAS musia mať prioritu 0.
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "Pole obsahu nemôže byť prázdne."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5872,7 +5911,7 @@ msgstr "Hodnoty priority nad 100 sú neobvyklé a môžu byť zbytočné."
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "Neplatná hodnota poľa priority MX. Musí byť medzi 0 a 65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
@@ -5880,15 +5919,15 @@ msgstr ""
 "Pole priority sa pri záznamoch HTTPS nemá používať, pretože priorita je "
 "súčasťou obsahu."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "Záznam HTTPS musí obsahovať aspoň prioritu a cieľ."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "Priorita HTTPS záznamu musí byť medzi 0 a 65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
@@ -5896,59 +5935,80 @@ msgstr ""
 "Cieľ záznamu HTTPS musí byť buď \".\", alebo platný plne kvalifikovaný názov "
 "domény."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"Záznam HTTPS v režime AliasMode (priority=0) s cieľom \".\" nemôže mať podľa "
-"RFC 9460 žiadne parametre."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "V režime Alias (priorita = 0) nie sú SvcParams."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr "HTTPS parametre v key=value formáte oddelené medzerami."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr "Neznámy kľúč parametra HTTPS: \"%s\". Platné kľúče nájdete v RFC 9460."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "Pripojená verzia PowerDNS nedokáže načítať parameter %s."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr ""
 "Duplicitný kľúč parametra HTTPS: \"%s\". Každý kľúč sa môže vyskytnúť iba "
 "raz."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr ""
 "Hodnota ALPN musí byť zoznam identifikátorov protokolov oddelených čiarkami."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "Parameter no-default-alpn musí mať prázdnu hodnotu."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "Hodnota portu musí byť medzi 1 a 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "Neplatná IPv4 adresa v ipv4hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "Neplatná IPv6 adresa v ipv6hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "Cesta DoH musí začínať lomítkom (/)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "Hodnota ech musí byť zakódovaná v base64."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Hodnota tls-supported-groups musí byť zoznam čísel od 0 do 65535 oddelených čiarkami."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parameter mandatory nemôže uvádzať sám seba."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr ""
@@ -7710,7 +7770,7 @@ msgstr ""
 "Názov záznamu SOA sa musí zhodovať s vrcholom zóny \"%s\". Ponechajte pole "
 "názvu prázdne alebo zadajte \"@\"."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "Pole obsahu neobsahuje platnú hodnotu."
 
@@ -7814,7 +7874,7 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "Priorita musí byť 0 pre záznamy RESINFO."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
@@ -7822,23 +7882,19 @@ msgstr ""
 "Záznam SVCB musí začínať prioritou a cieľom: <priority> <target> "
 "[<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "Priorita SVCB musí byť medzi 0 a 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "Cieľ SVCB musí byť \".\" alebo platný hostiteľ."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "V režime Alias (priorita = 0) cieľ nemôže byť \".\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "V režime Alias (priorita = 0) nie sú SvcParams."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
@@ -7846,16 +7902,16 @@ msgstr ""
 "V režime Service (priorita > 0) s cieľom \".\" je potrebný aspoň jeden "
 "SvcParam."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr "Parametre SVCB musia byť key=value oddelené medzerami."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Neznámy kľúč parametra SVCB: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -9491,36 +9547,41 @@ msgstr "Okrem toho sa našli tieto upozornenia:"
 msgid "The following warnings were found:"
 msgstr "Nasledujúce upozornenia:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Nemáte oprávnenie pridať záznam do tejto šablóny."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Nemáte oprávnenie pridať tento typ záznamu do šablóny zóny."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "Chyba pri pridávaní záznamu šablóny zóny: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "Záznam nepatrí do tejto šablóny zóny."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "Chyba pri aktualizácii záznamu šablóny zóny: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Nemáte oprávnenie odstrániť tento typ záznamu zo šablóny zóny."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "Chyba pri odstraňovaní záznamu šablóny zóny: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "Pripojená verzia PowerDNS nedokáže načítať záznamy %s."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -10128,7 +10189,7 @@ msgstr "Zadajte hostiteľa, ako sa zobrazuje v zázname NS"
 msgid "Provide host name"
 msgstr "Zadajte názov hostiteľa"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "Účet"
 
@@ -10230,37 +10291,35 @@ msgstr "Deaktivovať"
 msgid "Activate"
 msgstr "Aktivovať"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Stiahnuť tento kľúč ako PEM"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Stiahnuť súkromný kľúč vo formáte BIND"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "Exportovať PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "Exportovať"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Odstrániť"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Importovať kľúč z PEM"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Vložte súkromný kľúč zakódovaný v PEM (RSA alebo ECDSA). PowerDNS 4.7+ určí "
-"veľkosť kľúča z obsahu PEM - vyberte zodpovedajúci algoritmus a úlohu kľúča."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "Súkromný PEM kľúč"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "Importovať kľúč"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Vložte súkromný kľúč vo formáte BIND (tak, ako je exportovaný tu alebo "
+"nástrojom dnssec-keygen) alebo nešifrovaný PEM kľúč (RSA, ECDSA, Ed25519 "
+"alebo Ed448). Vyberte algoritmus, pre ktorý bol kľúč vytvorený."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "Súkromný kľúč"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10387,7 +10446,7 @@ msgid "This record type is deprecated and should not be used for new records."
 msgstr ""
 "Tento typ záznamu je zastaraný a nemal by sa používať pre nové záznamy."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "Dôvod tejto zmeny"
 
@@ -10508,7 +10567,6 @@ msgid "All statuses"
 msgstr "Všetky stavy"
 
 #: templates/default/list_change_requests.html:41
-#, auto-english-fallback
 msgid "Filter"
 msgstr "Filter"
 
@@ -10592,7 +10650,7 @@ msgstr "zobrazuje prvých 20"
 msgid "more zones..."
 msgstr "viac zón..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "Dôležitá poznámka"
 
@@ -10722,7 +10780,7 @@ msgstr "Nástroje"
 msgid "Database"
 msgstr "Databáza"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10734,11 +10792,11 @@ msgstr "Môj profil"
 msgid "Password"
 msgstr "Heslo"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "Predvoľby"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "Odhlásiť sa"
 
@@ -11510,11 +11568,18 @@ msgstr "Key Signing Key - podpisuje záznamy DNSKEY v zóne"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - podpisuje všetky ostatné záznamy"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS zobrazuje kľúč ako KSK alebo ZSK len vtedy, keď má zóna aktívny KSK a aktívny ZSK s rovnakým algoritmom. Inak kľúč zobrazuje ako CSK, aj keď ste tu zvolili KSK alebo ZSK."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "Odporúčané nastavenia"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11554,7 +11619,7 @@ msgstr ""
 msgid "Add"
 msgstr "Pridať"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "Upraviť profil"
 
@@ -12195,10 +12260,6 @@ msgstr "Udalosť"
 msgid "Details"
 msgstr "Podrobnosti"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "Exportovať"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "Export záznamov"
@@ -12600,7 +12661,9 @@ msgstr "Chystáte sa vymazať záznam v zóne"
 msgid ""
 "The deletion is filed as a change request and happens once a reviewer "
 "approves it."
-msgstr "Odstránenie sa podá ako žiadosť o zmenu a vykoná sa, keď ju posudzovateľ schváli."
+msgstr ""
+"Odstránenie sa podá ako žiadosť o zmenu a vykoná sa, keď ju posudzovateľ "
+"schváli."
 
 #: templates/default/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -12623,7 +12686,7 @@ msgstr "Vymazať aj zodpovedajúci PTR záznam (ak existuje)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Vymazať aj zodpovedajúci A/AAAA záznam (ak existuje)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "Požiadať o odstránenie"
 
@@ -13077,7 +13140,7 @@ msgstr "Zahrňte zmes písmen, čísel a symbolov"
 msgid "Consider using a password manager"
 msgstr "Zvážte použitie správcu hesiel"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "Viacfaktorové overenie"
 
@@ -13658,7 +13721,7 @@ msgstr "Chystáte sa vymazať zónu"
 msgid "Zone Details"
 msgstr "Podrobnosti zóny"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13669,11 +13732,11 @@ msgstr ""
 "supermaster. Odstránenie zóny teraz bude znamenať len dočasné odstránenie. "
 "Kedykoľvek supermaster pošle notifikáciu pre túto zónu, zóna sa pridá znova!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "Áno, vymazať túto zónu"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "Nie, ponechať túto zónu"
 
@@ -13881,15 +13944,15 @@ msgstr "Chystáte sa vymazať viacero zón. Nemožno vrátiť."
 msgid "Zones to Delete"
 msgstr "Zóny na vymazanie"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "Poznámka"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Áno, vymazať tieto zóny"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Nie, ponechať tieto zóny"
 
@@ -13970,7 +14033,9 @@ msgstr "Chyba"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "Zóna sa od podania tejto žiadosti zmenila; označené zmeny už nezodpovedajú obsahu zóny. Schválením sa aj tak použijú."
+msgstr ""
+"Zóna sa od podania tejto žiadosti zmenila; označené zmeny už nezodpovedajú "
+"obsahu zóny. Schválením sa aj tak použijú."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -14016,7 +14081,9 @@ msgstr "Skúsiť znova"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "Znovu použije žiadosť po odstránení príčiny zlyhania. Akcie, ktoré už boli vykonané, sa preskočia."
+msgstr ""
+"Znovu použije žiadosť po odstránení príčiny zlyhania. Akcie, ktoré už boli "
+"vykonané, sa preskočia."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14330,11 +14397,11 @@ msgstr "Zoznam šablón zón"
 msgid "API Documentation"
 msgstr "API dokumentácia"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14342,7 +14409,7 @@ msgstr ""
 "Skontrolujte, či pdns_api.key v config/settings.php zodpovedá API kľúču "
 "nastavenému v PowerDNS."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14350,7 +14417,7 @@ msgstr ""
 "Skontrolujte, či pdns_api.server_name zodpovedá tomu, čo hlási PowerDNS "
 "(predvolene 'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14360,7 +14427,7 @@ msgstr ""
 "po importe zón priamo do databázy PowerDNS je častou príčinou jediný "
 "poškodený záznam, ktorý znemožní serializáciu zóny."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15710,66 +15777,67 @@ msgstr ""
 "(locale) nemusí byť v tomto systéme podporované. Kontaktujte svojho "
 "administrátora."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Kľúč úspešne importovaný."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Export PEM kľúča vyžaduje PowerDNS 4.7 alebo novší."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Súkromný kľúč nezodpovedá vybranému algoritmu."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Pri exporte PEM kľúča došlo k chybe: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Súkromný kľúč sa nedá prečítať. Vložte súkromný kľúč vo formáte BIND alebo nešifrovaný PEM kľúč."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Nepodarilo sa získať PEM kľúč. Server pravdepodobne neposkytuje súkromný "
+# OBSOLETE: "kľúčový materiál pre tento kľúč."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Import kľúča zlyhal. PowerDNS ho odmietol."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Import PEM kľúča vyžaduje PowerDNS 4.7 alebo novší."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "Import kľúča zlyhal."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Zadajte súkromný kľúč zakódovaný v PEM (musí obsahovať značky BEGIN/END)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Pri importe kľúča došlo k chybe: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM kľúč úspešne importovaný."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Pri exporte kľúča došlo k chybe: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr "Import PEM kľúča zlyhal. PowerDNS server mohol formát odmietnuť."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Nepodarilo sa získať súkromný kľúč z PowerDNS."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Pri importe PEM kľúča došlo k chybe: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Stiahnuť súkromný kľúč vo formáte BIND"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Záznam HTTPS v režime AliasMode (priority=0) s cieľom \".\" nemôže mať "
+# OBSOLETE: "podľa RFC 9460 žiadne parametre."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Súkromný kľúč"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "Parameter no-default-alpn musí mať prázdnu hodnotu."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Vložte súkromný kľúč vo formáte BIND (tak, ako je exportovaný tu alebo nástrojom dnssec-keygen) alebo nešifrovaný PEM kľúč (RSA, ECDSA, Ed25519 alebo Ed448). Vyberte algoritmus, pre ktorý bol kľúč vytvorený."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Stiahnuť tento kľúč ako PEM"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Import kľúčov vyžaduje PowerDNS 4.1 alebo novší."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Exportovať PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "%d ďalší"
-msgstr[1] "%d ďalšie"
-msgstr[2] "%d ďalších"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Importovať kľúč z PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "%1$d záznam v zóne %2$s je teraz skrytý zónou %3$s: %4$s. Overte, že ho %3$s obsahuje, a potom ho odstráňte z %2$s."
-msgstr[1] "%1$d záznamy v zóne %2$s sú teraz skryté zónou %3$s: %4$s. Overte, že ich %3$s obsahuje, a potom ich odstráňte z %2$s."
-msgstr[2] "%1$d záznamov v zóne %2$s je teraz skrytých zónou %3$s: %4$s. Overte, že ich %3$s obsahuje, a potom ich odstráňte z %2$s."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Vložte súkromný kľúč zakódovaný v PEM (RSA alebo ECDSA). PowerDNS 4.7+ "
+# OBSOLETE: "určí veľkosť kľúča z obsahu PEM - vyberte zodpovedajúci algoritmus a "
+# OBSOLETE: "úlohu kľúča."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Súkromný PEM kľúč"
+
+
+

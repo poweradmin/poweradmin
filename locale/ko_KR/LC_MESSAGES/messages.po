@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -923,7 +923,7 @@ msgstr ""
 "로 제거됩니다."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "키 유형"
 
@@ -1195,11 +1195,11 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "존 이름과 주 서버 주소가 필요합니다."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "잘못된 존입니다."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1207,7 +1207,7 @@ msgstr ""
 "이 존에는 아직 전송된 레코드가 없습니다. 주 존으로 변환하기 전에 전송이 완료"
 "될 때까지 기다리십시오."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "존이 주 존으로 변환되었습니다."
 
@@ -1445,21 +1445,13 @@ msgstr "%d시간 전"
 msgid "%d d ago"
 msgstr "%d일 전"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "PEM 키 내보내기에는 PowerDNS 4.7 이상이 필요합니다."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "키 내보내기 중 오류가 발생했습니다: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "PEM 키 내보내기 중 오류가 발생했습니다: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"PEM 키를 가져올 수 없습니다. 서버가 이 키의 개인 키 자료를 노출하지 않을 수 "
-"있습니다."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "PowerDNS에서 개인 키를 가져올 수 없습니다."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1481,29 +1473,39 @@ msgstr "존 키가 성공적으로 삭제되었습니다."
 msgid "Failed to delete the zone key."
 msgstr "존 키를 삭제하지 못했습니다."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "PEM 키 가져오기에는 PowerDNS 4.7 이상이 필요합니다."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "키 가져오기에는 PowerDNS 4.1 이상이 필요합니다."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "PEM 인코딩된 개인 키를 제공하세요 (BEGIN/END 마커가 포함되어야 함)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "개인 키가 선택한 알고리즘과 일치하지 않습니다."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "PEM 키를 성공적으로 가져왔습니다."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"PEM 키 가져오기에 실패했습니다. PowerDNS 서버가 형식을 거부했을 수 있습니다."
+"개인 키를 읽을 수 없습니다. BIND 형식의 개인 키 또는 암호화되지 않은 PEM 키"
+"를 붙여 넣으세요."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "PEM 키 가져오기 중 오류가 발생했습니다: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "키 가져오기 중 오류가 발생했습니다: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "키를 성공적으로 가져왔습니다."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "키 가져오기에 실패했습니다. PowerDNS가 키를 거부했습니다."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "키 가져오기에 실패했습니다."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "이 존의 DNSSEC을 관리할 권한이 없습니다."
 
@@ -1691,11 +1693,11 @@ msgstr "레코드가 성공적으로 삭제되었습니다."
 msgid "Provide at least one record"
 msgstr "최소 하나 이상의 레코드를 입력하세요"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "유효하지 않은 레코드 유형입니다."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d개의 레코드가 성공적으로 추가되었습니다."
@@ -1734,7 +1736,7 @@ msgstr "이 존에 레코드를 추가할 권한이 없습니다."
 msgid "The %s field is required."
 msgstr "%s 필드는 필수입니다."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "레코드가 제공되지 않았습니다."
 
@@ -1742,17 +1744,17 @@ msgstr "레코드가 제공되지 않았습니다."
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "레코드가 성공적으로 추가되었지만, PTR 레코드 생성에 실패했습니다: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d개의 일치하는 레코드도 생성되었습니다."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d개의 레코드 추가에 실패했습니다."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "레코드를 추가하지 못했습니다. 유효하지 않은 데이터를 포함하고 있을 수 있습니"
@@ -2038,7 +2040,7 @@ msgstr ""
 "시오."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "비밀번호 변경"
 
@@ -2407,7 +2409,7 @@ msgstr "변경 요청을 볼 권한이 없습니다."
 msgid "Bulk Registration"
 msgstr "일괄 등록"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "존이 성공적으로 추가되었습니다."
 
@@ -3310,7 +3312,9 @@ msgstr "변경 사항이 승인 요청으로 제출되었습니다."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "이 존은 변경에 승인이 필요합니다. 존 편집기를 사용하여 변경 요청을 제출하십시오."
+msgstr ""
+"이 존은 변경에 승인이 필요합니다. 존 편집기를 사용하여 변경 요청을 제출하십시"
+"오."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3323,7 +3327,8 @@ msgstr "존과 다른 점이 없어 요청이 접수되지 않았습니다."
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "변경 요청이 너무 커서 저장할 수 없습니다. 더 작은 단위로 나누어 제출하십시오."
+msgstr ""
+"변경 요청이 너무 커서 저장할 수 없습니다. 더 작은 단위로 나누어 제출하십시오."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3374,7 +3379,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "이 그룹은 삭제할 수 없습니다: %s의 마지막 소유자입니다. 먼저 해당 존에 다른 소유자를 추가하십시오."
+msgstr ""
+"이 그룹은 삭제할 수 없습니다: %s의 마지막 소유자입니다. 먼저 해당 존에 다른 "
+"소유자를 추가하십시오."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3394,7 +3401,7 @@ msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
 msgstr "마지막 소유자를 제거할 수 없습니다: 존의 소유자가 없어집니다."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3402,11 +3409,29 @@ msgstr ""
 "CIDR 표기법의 네트워크(예: 192.168.1.0/24 또는 2001:db8::/48) 또는 in-"
 "addr.arpa 또는 ip6.arpa로 끝나는 역방향 존 이름을 입력하세요."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "외 %d개"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"존 %2$s의 레코드 %1$d개가 이제 존 %3$s에 의해 가려집니다: %4$s. %3$s에 해당 "
+"레코드가 있는지 확인한 후 %2$s에서 삭제하세요."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "최소 한 명의 사용자 또는 그룹을 소유자로 선택해야 합니다."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "다른 사용자를 위한 존을 생성할 권한이 없습니다."
 
@@ -3415,12 +3440,12 @@ msgstr "다른 사용자를 위한 존을 생성할 권한이 없습니다."
 msgid "Unknown user ID: %s"
 msgstr "알 수 없는 사용자 ID: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "알 수 없는 그룹 ID: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "본인이 속한 그룹만 할당할 수 있습니다 (허용되지 않음: %s)"
@@ -3429,11 +3454,11 @@ msgstr "본인이 속한 그룹만 할당할 수 있습니다 (허용되지 않�
 msgid "Invalid hostname."
 msgstr "유효하지 않은 호스트명입니다."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "이 이름의 존이 이미 존재합니다."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4118,7 +4143,7 @@ msgstr "HHIT 레코드 내용은 비어 있지 않은 base64 인코딩된 blob�
 msgid "Priority must be 0 for HHIT records."
 msgstr "HHIT 레코드의 우선순위는 0이어야 합니다."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV 레코드의 우선순위는 0에서 65535 사이의 숫자여야 합니다."
 
@@ -4672,7 +4697,7 @@ msgstr ""
 "유효하지 않은 LOC 레코드 형식입니다. 형식: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 "
 "[s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "이름 필드에 유효하지 않은 문자가 있습니다."
 
@@ -5012,6 +5037,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "콘텐츠 필드는 비어 있을 수 없습니다."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5800,7 +5831,7 @@ msgstr "100 이상의 우선순위 값은 일반적이지 않으며 불필요할
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "MX 우선순위 필드의 값이 잘못되었습니다. 0에서 65535 사이여야 합니다."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
@@ -5808,72 +5839,93 @@ msgstr ""
 "HTTPS 레코드의 경우 우선순위가 콘텐츠의 일부이므로 우선순위 필드를 사용하지 "
 "않아야 합니다."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "HTTPS 레코드에는 최소한 우선순위와 대상 값이 포함되어야 합니다."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "HTTPS 레코드 우선순위는 0에서 65535 사이의 숫자여야 합니다."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
 msgstr ""
 "HTTPS 레코드 대상은 \".\" 또는 유효한 정규화된 도메인 이름이어야 합니다."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"RFC 9460에 따라 대상이 \".\"인 AliasMode(우선순위=0)의 HTTPS 레코드는 매개변"
-"수를 가질 수 없습니다."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "별칭 모드(우선순위 = 0)에서는 SvcParams가 허용되지 않습니다."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr "HTTPS 레코드 매개변수는 공백으로 구분된 key=value 형식이어야 합니다."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr ""
 "알 수 없는 HTTPS 매개변수 키: \"%s\". 유효한 키는 RFC 9460을 참조하십시오."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "연결된 PowerDNS 버전에서는 %s 매개변수를 불러올 수 없습니다."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr "중복된 HTTPS 매개변수 키: \"%s\". 각 키는 한 번만 나타날 수 있습니다."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr "ALPN 값은 쉼표로 구분된 프로토콜 식별자 목록이어야 합니다."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "no-default-alpn 매개변수는 빈 값을 가져야 합니다."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "포트 값은 1에서 65535 사이의 숫자여야 합니다."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "ipv4hint의 잘못된 IPv4 주소: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "ipv6hint의 잘못된 IPv6 주소: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "DoH 경로는 슬래시(/)로 시작해야 합니다."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "ech 값은 base64로 인코딩되어야 합니다."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups 값은 0에서 65535 사이의 숫자를 쉼표로 구분한 목록이어야 합니다."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "mandatory 매개변수는 자기 자신을 나열할 수 없습니다."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr "매개변수 \"%s\"는 필수로 표시되어 있지만 레코드에 포함되지 않았습니다."
@@ -7641,7 +7693,7 @@ msgstr ""
 "SOA 레코드 이름은 존 정점 \"%s\"과(와) 일치해야 합니다. 이름 필드를 비워 두거"
 "나 \"@\"를 입력하십시오."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "콘텐츠 필드에 적절한 값이 없습니다."
 
@@ -7745,7 +7797,7 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "RESINFO 레코드의 우선순위는 0이어야 합니다."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
@@ -7753,23 +7805,19 @@ msgstr ""
 "SVCB 레코드는 우선순위와 대상으로 시작해야 합니다: <priority> <target> "
 "[<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "SVCB 우선순위는 0에서 65535 사이여야 합니다."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "SVCB 대상은 \".\" 또는 유효한 호스트 이름이어야 합니다."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "별칭 모드(우선순위 = 0)에서는 대상이 \".\"일 수 없습니다."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "별칭 모드(우선순위 = 0)에서는 SvcParams가 허용되지 않습니다."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
@@ -7777,16 +7825,16 @@ msgstr ""
 "서비스 모드(우선순위 > 0)에서 대상이 \".\"인 경우 최소 하나의 SvcParam이 필요"
 "합니다."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr "SVCB 매개변수는 공백으로 구분된 key=value 형식이어야 합니다."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "알 수 없는 SVCB 매개변수 키: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr "중복된 SVCB 매개변수 키: \"%s\". 각 키는 한 번만 나타날 수 있습니다."
@@ -9414,36 +9462,41 @@ msgstr "또한 다음 경고가 발견되었습니다:"
 msgid "The following warnings were found:"
 msgstr "다음 경고가 발견되었습니다:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "이 존 템플릿에 레코드를 추가할 권한이 없습니다."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "이 레코드 유형을 존 템플릿에 추가할 권한이 없습니다."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "존 템플릿 레코드를 추가하는 중 오류가 발생했습니다: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "이 레코드는 이 존 템플릿에 속하지 않습니다."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "존 템플릿 레코드 업데이트 오류: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "이 레코드 유형을 존 템플릿에서 삭제할 권한이 없습니다."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "존 템플릿 레코드 삭제 오류: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "연결된 PowerDNS 버전에서는 %s 레코드를 불러올 수 없습니다."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -10046,7 +10099,7 @@ msgstr "NS 레코드에 표시된 그대로 호스트 이름을 입력하세요"
 msgid "Provide host name"
 msgstr "호스트 이름을 입력하세요"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "계정"
 
@@ -10147,37 +10200,35 @@ msgstr "비활성화"
 msgid "Activate"
 msgstr "활성화"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "이 키를 PEM으로 다운로드"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "개인 키를 BIND 형식으로 다운로드"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "PEM 내보내기"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "내보내기"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "삭제"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "PEM에서 키 가져오기"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"PEM 인코딩된 개인 키를 붙여 넣으세요 (RSA 또는 ECDSA). PowerDNS 4.7+는 PEM 콘"
-"텐츠에서 키 크기를 추론합니다 - 일치하는 알고리즘과 키 역할을 선택하세요."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "PEM 개인 키"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "키 가져오기"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"BIND 형식의 개인 키 (여기서 또는 dnssec-keygen으로 내보낸 것) 또는 암호화되"
+"지 않은 PEM 키 (RSA, ECDSA, Ed25519 또는 Ed448)를 붙여 넣으세요. 키를 만들 "
+"때 사용한 알고리즘을 선택하세요."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "개인 키"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10304,7 +10355,7 @@ msgstr ""
 "이 레코드 유형은 더 이상 사용되지 않으므로 새 레코드에는 사용하지 않아야 합니"
 "다."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "이 변경의 사유"
 
@@ -10509,7 +10560,7 @@ msgstr "처음 20개 표시"
 msgid "more zones..."
 msgstr "개 존 더 보기..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "중요 사항"
 
@@ -10637,7 +10688,7 @@ msgstr "도구"
 msgid "Database"
 msgstr "데이터베이스"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10649,11 +10700,11 @@ msgstr "내 프로필"
 msgid "Password"
 msgstr "비밀번호"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "환경설정"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "로그아웃"
 
@@ -11414,11 +11465,18 @@ msgstr "Key Signing Key - 존의 DNSKEY 레코드에 서명합니다"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - 존의 다른 모든 레코드에 서명합니다"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS는 영역에 같은 알고리즘의 활성 KSK와 활성 ZSK가 있는 동안에만 키를 KSK 또는 ZSK로 표시합니다. 그렇지 않으면 여기서 KSK 또는 ZSK를 선택했더라도 키를 CSK로 표시합니다."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "권장 설정"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11458,7 +11516,7 @@ msgstr ""
 msgid "Add"
 msgstr "추가"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "프로필 편집"
 
@@ -12095,10 +12153,6 @@ msgstr "이벤트"
 msgid "Details"
 msgstr "상세 정보"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "내보내기"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "로그 내보내기"
@@ -12522,7 +12576,7 @@ msgstr "해당 PTR 레코드도 삭제 (있는 경우)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "해당 A/AAAA 레코드도 삭제 (있는 경우)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "삭제 요청"
 
@@ -12971,7 +13025,7 @@ msgstr "문자, 숫자, 기호를 혼합하여 포함"
 msgid "Consider using a password manager"
 msgstr "비밀번호 관리자 사용 고려"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "다중 인증"
 
@@ -13547,7 +13601,7 @@ msgstr "다음 존을 삭제하려고 합니다"
 msgid "Zone Details"
 msgstr "존 상세 정보"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13558,11 +13612,11 @@ msgstr ""
 "제하면 임시로만 제거됩니다. supermaster가 이 존에 대한 알림을 보내면 다시 추"
 "가됩니다!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "네, 이 존을 삭제합니다"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "아니요, 이 존을 유지합니다"
 
@@ -13770,15 +13824,15 @@ msgstr "여러 존을 삭제하려고 합니다. 이 작업은 취소할 수 없
 msgid "Zones to Delete"
 msgstr "삭제할 존"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "참고"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "네, 이러한 존을 삭제합니다"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "아니요, 이러한 존을 유지합니다"
 
@@ -13858,7 +13912,9 @@ msgstr "오류"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "이 요청이 접수된 이후 존이 변경되었습니다. 표시된 변경 사항이 현재 존 내용과 일치하지 않습니다. 승인하면 그대로 적용됩니다."
+msgstr ""
+"이 요청이 접수된 이후 존이 변경되었습니다. 표시된 변경 사항이 현재 존 내용과 "
+"일치하지 않습니다. 승인하면 그대로 적용됩니다."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -13904,7 +13960,8 @@ msgstr "다시 시도"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "실패 원인을 해결한 후 요청을 다시 적용합니다. 이미 반영된 작업은 건너뜁니다."
+msgstr ""
+"실패 원인을 해결한 후 요청을 다시 적용합니다. 이미 반영된 작업은 건너뜁니다."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14215,11 +14272,11 @@ msgstr "존 템플릿 목록"
 msgid "API Documentation"
 msgstr "API 문서"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14227,7 +14284,7 @@ msgstr ""
 "config/settings.php의 pdns_api.key가 PowerDNS에 설정된 API 키와 일치하는지 확"
 "인하십시오."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14235,7 +14292,7 @@ msgstr ""
 "pdns_api.server_name이 PowerDNS가 보고하는 값(기본값 'localhost')과 일치하는"
 "지 확인하십시오."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14245,7 +14302,7 @@ msgstr ""
 "존을 PowerDNS 데이터베이스에 직접 가져온 후에는 형식이 잘못된 단일 레코드가 "
 "존 직렬화를 실패시키는 것이 흔한 원인입니다."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15575,62 +15632,68 @@ msgstr ""
 "로케일을 설정하지 못했습니다. 선택한 로케일이 이 시스템에서 지원되지 않을 수 "
 "있습니다. 관리자에게 문의하십시오."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "키를 성공적으로 가져왔습니다."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM 키 내보내기에는 PowerDNS 4.7 이상이 필요합니다."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "개인 키가 선택한 알고리즘과 일치하지 않습니다."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "PEM 키 내보내기 중 오류가 발생했습니다: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "개인 키를 읽을 수 없습니다. BIND 형식의 개인 키 또는 암호화되지 않은 PEM 키를 붙여 넣으세요."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM 키를 가져올 수 없습니다. 서버가 이 키의 개인 키 자료를 노출하지 않을 "
+# OBSOLETE: "수 있습니다."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "키 가져오기에 실패했습니다. PowerDNS가 키를 거부했습니다."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM 키 가져오기에는 PowerDNS 4.7 이상이 필요합니다."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "키 가져오기에 실패했습니다."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr "PEM 인코딩된 개인 키를 제공하세요 (BEGIN/END 마커가 포함되어야 함)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "키 가져오기 중 오류가 발생했습니다: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM 키를 성공적으로 가져왔습니다."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "키 내보내기 중 오류가 발생했습니다: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM 키 가져오기에 실패했습니다. PowerDNS 서버가 형식을 거부했을 수 있습니"
+# OBSOLETE: "다."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "PowerDNS에서 개인 키를 가져올 수 없습니다."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "PEM 키 가져오기 중 오류가 발생했습니다: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "개인 키를 BIND 형식으로 다운로드"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "RFC 9460에 따라 대상이 \".\"인 AliasMode(우선순위=0)의 HTTPS 레코드는 매개"
+# OBSOLETE: "변수를 가질 수 없습니다."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "개인 키"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "no-default-alpn 매개변수는 빈 값을 가져야 합니다."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "BIND 형식의 개인 키 (여기서 또는 dnssec-keygen으로 내보낸 것) 또는 암호화되지 않은 PEM 키 (RSA, ECDSA, Ed25519 또는 Ed448)를 붙여 넣으세요. 키를 만들 때 사용한 알고리즘을 선택하세요."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "이 키를 PEM으로 다운로드"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "키 가져오기에는 PowerDNS 4.1 이상이 필요합니다."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "PEM 내보내기"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "외 %d개"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "PEM에서 키 가져오기"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "존 %2$s의 레코드 %1$d개가 이제 존 %3$s에 의해 가려집니다: %4$s. %3$s에 해당 레코드가 있는지 확인한 후 %2$s에서 삭제하세요."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM 인코딩된 개인 키를 붙여 넣으세요 (RSA 또는 ECDSA). PowerDNS 4.7+는 "
+# OBSOLETE: "PEM 콘텐츠에서 키 크기를 추론합니다 - 일치하는 알고리즘과 키 역할을 선택하"
+# OBSOLETE: "세요."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "PEM 개인 키"
+
+
+

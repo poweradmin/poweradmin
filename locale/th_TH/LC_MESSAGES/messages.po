@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -912,7 +912,7 @@ msgstr ""
 "ช่องว่างและการขึ้นบรรทัดใหม่จะถูกลบออกโดยอัตโนมัติ"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "ชนิดกุญแจ"
 
@@ -1173,17 +1173,17 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "จำเป็นต้องระบุชื่อโซนและที่อยู่เซิร์ฟเวอร์หลัก"
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "โซนไม่ถูกต้อง"
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
 msgstr "โซนนี้ยังไม่มีเรกคอร์ดที่ถ่ายโอนมา รอให้การถ่ายโอนเสร็จสมบูรณ์ก่อนที่จะแปลงเป็นโซนหลัก"
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "โซนถูกแปลงเป็นโซนหลักแล้ว"
 
@@ -1421,19 +1421,13 @@ msgstr "%d ชม. ที่แล้ว"
 msgid "%d d ago"
 msgstr "%d วันที่แล้ว"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "การส่งออกกุญแจ PEM ต้องการ PowerDNS 4.7 หรือใหม่กว่า"
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "เกิดข้อผิดพลาดระหว่างทำการส่งออกกุญแจ: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "เกิดข้อผิดพลาดระหว่างทำการส่งออกกุญแจ PEM: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr "ไม่สามารถรับกุญแจ PEM ได้ เครื่องแม่ข่ายอาจจะไม่ได้เปิดเผยกุญแจส่วนตัวสำหรับกุญแจนี้"
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "ไม่สามารถรับกุญแจส่วนตัวจาก PowerDNS ได้"
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1455,28 +1449,38 @@ msgstr "ลบกุญแจของโซนเรียบร้อยแล
 msgid "Failed to delete the zone key."
 msgstr "ล้มเหลวในการลบกุญแจของโซน"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "การนำเข้ากุญแจ PEM ต้องการ PowerDNS 4.7 หรือใหม่กว่า"
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "การนำเข้ากุญแจต้องการ PowerDNS 4.1 หรือใหม่กว่า"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "กรุณาระบุกุญแจส่วนตัวที่เข้ารหัสแบบ PEM (ต้องมีเครื่องหมาย BEGIN/END)"
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "กุญแจส่วนตัวไม่ตรงกับอัลกอริทึมที่เลือก"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "การนำเข้ากุญแจ PEM สำเร็จ"
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
-msgstr "ล้มเหลวในการนำเข้ากุญแจ PEM เซิร์ฟเวอร์ PowerDNS อาจจะปฏิเสธรูปแบบนี้"
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
+msgstr ""
+"ไม่สามารถอ่านกุญแจส่วนตัวได้ กรุณาวางกุญแจส่วนตัวในรูปแบบ BIND หรือกุญแจ PEM ที่ไม่ได้เข้ารหัส"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "เกิดข้อผิดพลาดระหว่างทำการนำเข้ากุญแจ PEM: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "เกิดข้อผิดพลาดระหว่างทำการนำเข้ากุญแจ: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "นำเข้ากุญแจสำเร็จแล้ว"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "ล้มเหลวในการนำเข้ากุญแจ PowerDNS ปฏิเสธกุญแจนี้"
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "ล้มเหลวในการนำเข้ากุญแจ"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "คุณไม่ได้รับอนุญาตให้จัดการ DNSSEC สำหรับโซนนี้"
 
@@ -1655,11 +1659,11 @@ msgstr "ลบเรกคอร์ดเรียบร้อยแล้ว"
 msgid "Provide at least one record"
 msgstr "โปรดระบุเรกคอร์ดอย่างน้อยหนึ่งรายการ"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "ชนิดของเรกคอร์ดไม่ถูกต้อง"
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "เพิ่มเรกคอร์ด %d รายการสำเร็จ"
@@ -1698,7 +1702,7 @@ msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอ
 msgid "The %s field is required."
 msgstr "ต้องระบุฟิลด์ %s"
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "ไม่มีการระบุเรกคอร์ด"
 
@@ -1706,17 +1710,17 @@ msgstr "ไม่มีการระบุเรกคอร์ด"
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "เพิ่มเรกคอร์ดเรียบร้อยแล้ว แต่การสร้างเรกคอร์ด PTR ล้มเหลว: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "สร้างเรกคอร์ดที่ตรงกัน %d รายการด้วย"
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "เพิ่มเรกคอร์ด %d รายการล้มเหลว"
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "ไม่สามารถเพิ่มเรกคอร์ดใด ๆ ได้ อาจมีข้อมูลที่ไม่ถูกต้อง"
 
@@ -1987,7 +1991,7 @@ msgstr ""
 "ผู้ใช้การตรวจสอบสิทธิ์ภายนอกไม่สามารถเปลี่ยนแปลงรหัสผ่านได้ที่นี่ กรุณาติดต่อผู้ดูแลระบบของคุณ"
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "เปลี่ยนรหัสผ่าน"
 
@@ -2346,7 +2350,7 @@ msgstr "คุณไม่มีสิทธิ์ดูคำขอเปลี
 msgid "Bulk Registration"
 msgstr "การลงทะเบียนแบบกลุ่ม"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "เพิ่มโซนเรียบร้อยแล้ว"
 
@@ -3323,7 +3327,7 @@ msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
 msgstr "ไม่สามารถลบเจ้าของคนสุดท้ายได้: จะทำให้โซนนี้ไม่มีเจ้าของ"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3331,11 +3335,29 @@ msgstr ""
 "ป้อนเครือข่ายในรูปแบบ CIDR (เช่น 192.168.1.0/24 หรือ 2001:db8::/48) "
 "หรือชื่อโซนย้อนกลับที่ลงท้ายด้วย in-addr.arpa หรือ ip6.arpa"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "อีก %d รายการ"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"ระเบียน %1$d รายการในโซน %2$s ถูกซ่อนโดยโซน %3$s แล้ว: %4$s ตรวจสอบให้แน่ใจว่า %3$s "
+"มีระเบียนเหล่านี้ จากนั้นลบออกจาก %2$s"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "ต้องเลือกผู้ใช้หรือกลุ่มอย่างน้อยหนึ่งรายการเป็นเจ้าของ"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "คุณไม่มีสิทธิ์ในการสร้างโซนสำหรับผู้ใช้อื่น ๆ"
 
@@ -3344,12 +3366,12 @@ msgstr "คุณไม่มีสิทธิ์ในการสร้าง
 msgid "Unknown user ID: %s"
 msgstr "ไม่ทราบรหัสผู้ใช้: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "ID กลุ่มที่ไม่รู้จัก: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "คุณสามารถมอบหมายเฉพาะกลุ่มที่คุณเป็นสมาชิกเท่านั้น (ไม่อนุญาต: %s)"
@@ -3358,11 +3380,11 @@ msgstr "คุณสามารถมอบหมายเฉพาะกลุ
 msgid "Invalid hostname."
 msgstr "ชื่อโฮสต์ไม่ถูกต้อง"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "มีโซนที่ชื่อนี้อยู่แล้ว"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4023,7 +4045,7 @@ msgstr "เนื้อหาเรกคอร์ด HHIT ต้องเป็
 msgid "Priority must be 0 for HHIT records."
 msgstr "ลำดับความสำคัญต้องเป็น 0 สำหรับเรกคอร์ด HHIT"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "ความสำคัญสำหรับบันทึก MX/SRV ต้องเป็นเลขระหว่าง 0 กับ 65535"
 
@@ -4550,7 +4572,7 @@ msgstr ""
 "รูปแบบบันทึก LOC ไม่ถูกต้อง รูปแบบควรเป็น: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] "
 "{\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "อักขระไม่ถูกต้องในช่องข้อมูลชื่อ"
 
@@ -4867,6 +4889,12 @@ msgstr "ค่าในช่องลำดับความสำคัญไ
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "ช่องเนื้อหาไม่สามารถว่างได้"
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5615,77 +5643,98 @@ msgstr "ค่าลำดับความสำคัญที่สูงก
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "ค่าในช่องลำดับความสำคัญของ MX ไม่ถูกต้อง ต้องอยู่ระหว่าง 0 ถึง 65535"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
 msgstr ""
 "ไม่ควรใช้ช่องลำดับความสำคัญสำหรับบันทึก HTTPS เนื่องจากลำดับความสำคัญเป็นส่วนหนึ่งของเนื้อหา"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "บันทึก HTTPS ต้องมีอย่างน้อยค่าลำดับความสำคัญและค่าเป้าหมาย"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "ลำดับความสำคัญของบันทึก HTTPS ต้องเป็นตัวเลขระหว่าง 0 ถึง 65535"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
 msgstr "เป้าหมายของบันทึก HTTPS ต้องเป็น \".\" หรือชื่อโดเมนแบบเต็มที่ถูกต้อง"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"บันทึก HTTPS ในโหมด AliasMode (priority=0) ที่มีเป้าหมายเป็น \".\" "
-"ไม่สามารถมีพารามิเตอร์ได้ ตาม RFC 9460"
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "ในโหมด Alias (priority = 0) ไม่อนุญาตให้ใช้ SvcParams"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr "พารามิเตอร์ของบันทึก HTTPS ต้องอยู่ในรูปแบบ key=value คั่นด้วยช่องว่าง"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr "คีย์พารามิเตอร์ HTTPS ที่ไม่รู้จัก: \"%s\" ดู RFC 9460 สำหรับคีย์ที่ถูกต้อง"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "PowerDNS เวอร์ชันที่เชื่อมต่ออยู่ไม่สามารถโหลดพารามิเตอร์ %s ได้"
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr "คีย์พารามิเตอร์ HTTPS ซ้ำ: \"%s\" แต่ละคีย์ปรากฏได้เพียงครั้งเดียว"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr "ค่า ALPN ต้องเป็นรายการตัวระบุโพรโทคอลที่คั่นด้วยเครื่องหมายจุลภาค"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "พารามิเตอร์ no-default-alpn ต้องมีค่าว่างเปล่า"
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "ค่าพอร์ตต้องเป็นตัวเลขระหว่าง 1 ถึง 65535"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "ที่อยู่ IPv4 ไม่ถูกต้องใน ipv4hint: \"%s\""
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "ที่อยู่ IPv6 ไม่ถูกต้องใน ipv6hint: \"%s\""
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "พาธของ DoH ต้องเริ่มต้นด้วยเครื่องหมายทับ (/)"
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "ค่า ech ต้องเข้ารหัสเป็น base64"
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "ค่า tls-supported-groups ต้องเป็นรายการตัวเลขระหว่าง 0 ถึง 65535 ที่คั่นด้วยเครื่องหมายจุลภาค"
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "พารามิเตอร์ mandatory ไม่สามารถระบุตัวเองได้"
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr "พารามิเตอร์ \"%s\" ถูกทำเครื่องหมายว่าจำเป็นแต่ไม่ได้รวมอยู่ในเรกคอร์ด"
@@ -7330,7 +7379,7 @@ msgid ""
 "or enter \"@\"."
 msgstr "ชื่อเรกคอร์ด SOA ต้องตรงกับ apex ของโซน \"%s\" ปล่อยช่องชื่อว่างไว้หรือป้อน \"@\""
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "ช่องเนื้อหาของคุณมีค่าที่ไม่ถูกต้อง"
 
@@ -7428,7 +7477,7 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "ลำดับความสำคัญต้องเป็น 0 สำหรับเรกคอร์ด RESINFO"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
@@ -7436,23 +7485,19 @@ msgstr ""
 "บันทึก SVCB ต้องเริ่มต้นด้วยลำดับความสำคัญและเป้าหมาย: <priority> <target> "
 "[<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "ลำดับความสำคัญของ SVCB ต้องอยู่ระหว่าง 0 ถึง 65535"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "เป้าหมายของ SVCB ต้องเป็น \".\" หรือชื่อโฮสต์ที่ถูกต้อง"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "ในโหมด Alias (priority = 0) เป้าหมายต้องไม่เป็น \".\""
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "ในโหมด Alias (priority = 0) ไม่อนุญาตให้ใช้ SvcParams"
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
@@ -7460,16 +7505,16 @@ msgstr ""
 "ในโหมด Service (priority > 0) ที่มีเป้าหมายเป็น \".\" ต้องมี SvcParam "
 "อย่างน้อยหนึ่งรายการ"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr "พารามิเตอร์ของ SVCB ต้องอยู่ในรูปแบบ key=value แยกด้วยช่องว่าง"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "คีย์พารามิเตอร์ SVCB ที่ไม่รู้จัก: \"%s\""
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr "คีย์พารามิเตอร์ SVCB ซ้ำ: \"%s\" แต่ละคีย์ปรากฏได้เพียงครั้งเดียว"
@@ -9002,36 +9047,41 @@ msgstr "นอกจากนี้ ยังพบคำเตือนต่�
 msgid "The following warnings were found:"
 msgstr "พบคำเตือนต่อไปนี้:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดลงในแม่แบบโซนนี้"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดชนิดนี้ลงในเทมเพลตโซน."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "เกิดข้อผิดพลาดในการเพิ่มเรกคอร์ดของแม่แบบโซน: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "เรกคอร์ดนี้ไม่ได้อยู่ในแม่แบบโซนนี้"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "เกิดข้อผิดพลาดในการปรับปรุงเรกคอร์ดของแม่แบบโซน: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "คุณไม่มีสิทธิ์ลบเรกคอร์ดชนิดนี้ออกจากเทมเพลตโซน."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "เกิดข้อผิดพลาดในการลบเรกคอร์ดของแม่แบบโซน: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "PowerDNS เวอร์ชันที่เชื่อมต่ออยู่ไม่สามารถโหลดเรคคอร์ด %s ได้"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -9631,7 +9681,7 @@ msgstr "ใส่ชื่อโฮสต์ตามที่ปรากฏใ
 msgid "Provide host name"
 msgstr "ให้ชื่อโฮสต์"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "บัญชี"
 
@@ -9732,37 +9782,34 @@ msgstr "ยกเลิกการทำงาน"
 msgid "Activate"
 msgstr "เปิดใช้งาน"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "ดาวน์โหลดกุญแจนี้เป็นไฟล์ PEM"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "ดาวน์โหลดกุญแจส่วนตัวในรูปแบบ BIND"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "ส่งออกเป็น PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "ส่งออก"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "ลบ"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "นำเข้ากุญแจจาก PEM"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"วางกุญแจส่วนตัวที่เข้ารหัสแบบ PEM (RSA หรือ ECDSA) PowerDNS 4.7+ "
-"จะหาขนาดกุญแจจากเนื้อหา PEM - เลือกอัลกอริทึมและบทบาทของกุญแจให้ตรงกัน"
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "กุญแจส่วนตัวของ PEM"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "นำเข้ากุญแจ"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"วางกุญแจส่วนตัวในรูปแบบ BIND (ตามที่ส่งออกจากที่นี่หรือจาก dnssec-keygen) หรือกุญแจ PEM "
+"ที่ไม่ได้เข้ารหัส (RSA, ECDSA, Ed25519 หรือ Ed448) เลือกอัลกอริทึมที่ใช้สร้างกุญแจนี้"
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "กุญแจส่วนตัว"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -9886,7 +9933,7 @@ msgstr "ตั้งค่าเนื้อหา"
 msgid "This record type is deprecated and should not be used for new records."
 msgstr "ชนิดของบันทึกนี้ถูกยกเลิก และไม่ควรใช้สำหรับบันทึกใหม่"
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "เหตุผลของการเปลี่ยนแปลงนี้"
 
@@ -10090,7 +10137,7 @@ msgstr "แสดง 20 อันดับแรก"
 msgid "more zones..."
 msgstr "โซนเพิ่มเติม..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "บันทึกย่อที่สำคัญ"
 
@@ -10215,7 +10262,7 @@ msgstr "เครื่องมือ"
 msgid "Database"
 msgstr "ฐานข้อมูล"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "ค่าปริยายของ TTL"
 
@@ -10227,11 +10274,11 @@ msgstr "โพรไฟล์ของฉัน"
 msgid "Password"
 msgstr "รหัสผ่าน"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "ปรับแต่ง"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "ออกจากระบบ"
 
@@ -10991,11 +11038,18 @@ msgstr "กุญแจสำหรับเซ็นกุญแจ - ลงน
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "กุญแจสำหรับเซ็นโซน - ลงนามเรกคอร์ดอื่น ๆ ทั้งหมดในโซน"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS จะแสดงคีย์เป็น KSK หรือ ZSK เฉพาะเมื่อโซนมี KSK ที่ใช้งานอยู่และ ZSK ที่ใช้งานอยู่ซึ่งใช้อัลกอริทึมเดียวกันเท่านั้น มิฉะนั้นจะแสดงคีย์เป็น CSK แม้ว่าคุณจะเลือก KSK หรือ ZSK ที่นี่ก็ตาม"
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "ตั้งค่าแนะนำ"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11035,7 +11089,7 @@ msgstr ""
 msgid "Add"
 msgstr "เพิ่ม"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "แก้ไขโพรไฟล์"
 
@@ -11661,10 +11715,6 @@ msgstr "เหตุการณ์"
 msgid "Details"
 msgstr "รายละเอียด"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "ส่งออก"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "ส่งออกปูมบันทึก"
@@ -12083,7 +12133,7 @@ msgstr "ลบบันทึก PTR ที่ตรงกันด้วย (�
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "ลบบันทึก A/AAAA ที่สอดคล้องกันด้วย (ถ้ามี)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "ขอให้ลบ"
 
@@ -12532,7 +12582,7 @@ msgstr "ใช้ตัวอักษร ตัวเลข และสัญ�
 msgid "Consider using a password manager"
 msgstr "พิจารณาใช้ตัวจัดการรหัสผ่าน"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "การตรวจสอบสิทธิ์แบบหลายปัจจัย"
 
@@ -13100,7 +13150,7 @@ msgstr "คุณกำลังจะลบโซน"
 msgid "Zone Details"
 msgstr "รายละเอียดโซน"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13111,11 +13161,11 @@ msgstr ""
 "การลบโซนตอนนี้จะเป็นการลบชั่วคราวเท่านั้น เมื่อใดก็ตามที่ supermaster "
 "ส่งการแจ้งเตือนสำหรับโซนนี้ โซนจะถูกเพิ่มกลับมาอีกครั้ง!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "ใช่ ลบโซนนี้"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "ไม่ เก็บโซนนี้ไว้"
 
@@ -13320,15 +13370,15 @@ msgstr "คุณกำลังจะลบโซนหลายโซน ก�
 msgid "Zones to Delete"
 msgstr "โซนที่จะลบ"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "บันทึกย่อ"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "ใช่ ลบโซนเหล่านี้"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "ไม่ เก็บโซนพวกนี้ไว้"
 
@@ -13408,7 +13458,10 @@ msgstr "ข้อผิดพลาด"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "โซนมีการเปลี่ยนแปลงหลังจากที่ยื่นคำขอนี้ การเปลี่ยนแปลงที่ทำเครื่องหมายไว้ไม่ตรงกับข้อมูลในโซนอีกต่อไป การอนุมัติจะยังนำการเปลี่ยนแปลงเหล่านั้นไปใช้"
+msgstr ""
+"โซนมีการเปลี่ยนแปลงหลังจากที่ยื่นคำขอนี้ "
+"การเปลี่ยนแปลงที่ทำเครื่องหมายไว้ไม่ตรงกับข้อมูลในโซนอีกต่อไป "
+"การอนุมัติจะยังนำการเปลี่ยนแปลงเหล่านั้นไปใช้"
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -13758,18 +13811,18 @@ msgstr "รายการต้นแบบโซน"
 msgid "API Documentation"
 msgstr "เอกสาร API"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "PowerDNS API ผิดพลาด"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 msgstr ""
 "ตรวจสอบว่า pdns_api.key ใน config/settings.php ตรงกับคีย์ API ที่ตั้งค่าไว้ใน PowerDNS"
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -13777,7 +13830,7 @@ msgstr ""
 "ตรวจสอบว่า pdns_api.server_name ตรงกับสิ่งที่ PowerDNS รายงาน (ค่าปริยายคือ "
 "'localhost')"
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -13787,7 +13840,7 @@ msgstr ""
 "สาเหตุที่พบบ่อยหลังจากนำเข้าโซนเข้าสู่ฐานข้อมูล PowerDNS โดยตรง "
 "คือมีเรกคอร์ดที่มีรูปแบบไม่ถูกต้องเพียงรายการเดียว ซึ่งทำให้การสร้างข้อมูลโซนล้มเหลว"
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15084,62 +15137,63 @@ msgid ""
 msgstr ""
 "ไม่สามารถตั้งค่า locale ได้. locale ที่เลือกอาจไม่รองรับบนระบบนี้. กรุณาติดต่อผู้ดูแลระบบของคุณ."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "นำเข้ากุญแจสำเร็จแล้ว"
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "การส่งออกกุญแจ PEM ต้องการ PowerDNS 4.7 หรือใหม่กว่า"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "กุญแจส่วนตัวไม่ตรงกับอัลกอริทึมที่เลือก"
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "เกิดข้อผิดพลาดระหว่างทำการส่งออกกุญแจ PEM: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "ไม่สามารถอ่านกุญแจส่วนตัวได้ กรุณาวางกุญแจส่วนตัวในรูปแบบ BIND หรือกุญแจ PEM ที่ไม่ได้เข้ารหัส"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr "ไม่สามารถรับกุญแจ PEM ได้ เครื่องแม่ข่ายอาจจะไม่ได้เปิดเผยกุญแจส่วนตัวสำหรับกุญแจนี้"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "ล้มเหลวในการนำเข้ากุญแจ PowerDNS ปฏิเสธกุญแจนี้"
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "การนำเข้ากุญแจ PEM ต้องการ PowerDNS 4.7 หรือใหม่กว่า"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "ล้มเหลวในการนำเข้ากุญแจ"
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr "กรุณาระบุกุญแจส่วนตัวที่เข้ารหัสแบบ PEM (ต้องมีเครื่องหมาย BEGIN/END)"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "เกิดข้อผิดพลาดระหว่างทำการนำเข้ากุญแจ: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "การนำเข้ากุญแจ PEM สำเร็จ"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "เกิดข้อผิดพลาดระหว่างทำการส่งออกกุญแจ: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr "ล้มเหลวในการนำเข้ากุญแจ PEM เซิร์ฟเวอร์ PowerDNS อาจจะปฏิเสธรูปแบบนี้"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "ไม่สามารถรับกุญแจส่วนตัวจาก PowerDNS ได้"
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "เกิดข้อผิดพลาดระหว่างทำการนำเข้ากุญแจ PEM: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "ดาวน์โหลดกุญแจส่วนตัวในรูปแบบ BIND"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "บันทึก HTTPS ในโหมด AliasMode (priority=0) ที่มีเป้าหมายเป็น \".\" "
+# OBSOLETE: "ไม่สามารถมีพารามิเตอร์ได้ ตาม RFC 9460"
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "กุญแจส่วนตัว"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "พารามิเตอร์ no-default-alpn ต้องมีค่าว่างเปล่า"
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "วางกุญแจส่วนตัวในรูปแบบ BIND (ตามที่ส่งออกจากที่นี่หรือจาก dnssec-keygen) หรือกุญแจ PEM ที่ไม่ได้เข้ารหัส (RSA, ECDSA, Ed25519 หรือ Ed448) เลือกอัลกอริทึมที่ใช้สร้างกุญแจนี้"
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "ดาวน์โหลดกุญแจนี้เป็นไฟล์ PEM"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "การนำเข้ากุญแจต้องการ PowerDNS 4.1 หรือใหม่กว่า"
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "ส่งออกเป็น PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "อีก %d รายการ"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "นำเข้ากุญแจจาก PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "ระเบียน %1$d รายการในโซน %2$s ถูกซ่อนโดยโซน %3$s แล้ว: %4$s ตรวจสอบให้แน่ใจว่า %3$s มีระเบียนเหล่านี้ จากนั้นลบออกจาก %2$s"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "วางกุญแจส่วนตัวที่เข้ารหัสแบบ PEM (RSA หรือ ECDSA) PowerDNS 4.7+ "
+# OBSOLETE: "จะหาขนาดกุญแจจากเนื้อหา PEM - เลือกอัลกอริทึมและบทบาทของกุญแจให้ตรงกัน"
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "กุญแจส่วนตัวของ PEM"
+
+
+

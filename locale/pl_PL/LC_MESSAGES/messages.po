@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -943,7 +943,7 @@ msgstr ""
 "linie zostaną automatycznie usunięte."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "Typ klucza"
 
@@ -1217,11 +1217,11 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "Nazwa strefy i adres serwera nadrzędnego są wymagane."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "Nieprawidłowa strefa."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1229,7 +1229,7 @@ msgstr ""
 "Ta strefa nie ma jeszcze przeniesionych rekordów. Poczekaj na zakończenie "
 "transferu przed przekonwertowaniem jej na strefę nadrzędną."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "Strefa została przekonwertowana na strefę nadrzędną."
 
@@ -1474,21 +1474,13 @@ msgstr "%d godz. temu"
 msgid "%d d ago"
 msgstr "%d d temu"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Eksport kluczy PEM wymaga PowerDNS 4.7 lub nowszego."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "Wystąpił błąd podczas eksportu klucza: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Wystąpił błąd podczas eksportu klucza PEM: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Nie udało się pobrać klucza PEM. Serwer może nie udostępniać materiału "
-"klucza prywatnego dla tego klucza."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nie udało się pobrać klucza prywatnego z PowerDNS."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1510,30 +1502,39 @@ msgstr "Klucz strefy został pomyślnie usunięty."
 msgid "Failed to delete the zone key."
 msgstr "Nie udało się usunąć klucza strefy."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Import kluczy PEM wymaga PowerDNS 4.7 lub nowszego."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Import kluczy wymaga PowerDNS 4.1 lub nowszego."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Podaj klucz prywatny w formacie PEM (musi zawierać znaczniki BEGIN/END)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "Klucz prywatny nie pasuje do wybranego algorytmu."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "Klucz PEM zaimportowany pomyślnie."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"Nie udało się zaimportować klucza PEM. Serwer PowerDNS mógł odrzucić format."
+"Nie można odczytać klucza prywatnego. Wklej klucz prywatny w formacie BIND "
+"lub niezaszyfrowany klucz PEM."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "Wystąpił błąd podczas importu klucza PEM: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "Wystąpił błąd podczas importu klucza: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "Klucz zaimportowany pomyślnie."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Nie udało się zaimportować klucza. PowerDNS go odrzucił."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "Nie udało się zaimportować klucza."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nie masz uprawnień do zarządzania DNSSEC dla tej strefy."
 
@@ -1726,11 +1727,11 @@ msgstr "Rekord został pomyślnie usunięty."
 msgid "Provide at least one record"
 msgstr "Podaj co najmniej jeden rekord"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "Nieprawidłowy typ rekordu."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "Pomyślnie dodano %d rekordów."
@@ -1769,7 +1770,7 @@ msgstr "Nie masz uprawnień do dodawania rekordu do tej strefy."
 msgid "The %s field is required."
 msgstr "Pole %s jest wymagane."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "Nie podano żadnych rekordów."
 
@@ -1778,17 +1779,17 @@ msgid "Record successfully added, but PTR record creation failed: "
 msgstr ""
 "Rekord został pomyślnie dodany, ale utworzenie rekordu PTR nie powiodło się: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Utworzono również %d pasujących rekordów."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Nie udało się dodać %d rekordów."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Nie udało się dodać żadnych rekordów. Mogą zawierać nieprawidłowe dane."
@@ -2082,7 +2083,7 @@ msgstr ""
 "Skontaktuj się z administratorem."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "Zmień hasło"
 
@@ -2454,7 +2455,7 @@ msgstr "Nie masz uprawnień do przeglądania wniosków o zmianę."
 msgid "Bulk Registration"
 msgstr "Rejestracja zbiorcza"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "Strefy zostały pomyślnie dodane."
 
@@ -3403,7 +3404,9 @@ msgstr "Twoje zmiany zostały wysłane do zatwierdzenia."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "Ta strefa wymaga zatwierdzania zmian; użyj edytora strefy, aby złożyć wniosek o zmianę."
+msgstr ""
+"Ta strefa wymaga zatwierdzania zmian; użyj edytora strefy, aby złożyć "
+"wniosek o zmianę."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3416,7 +3419,9 @@ msgstr "Nic nie różni się od strefy, więc nie złożono żadnego wniosku."
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "Wniosek o zmianę jest za duży, aby go zapisać; podziel go na mniejsze zgłoszenia."
+msgstr ""
+"Wniosek o zmianę jest za duży, aby go zapisać; podziel go na mniejsze "
+"zgłoszenia."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3468,7 +3473,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "Nie można usunąć tej grupy: jest ostatnim właścicielem %s. Najpierw dodaj innego właściciela do tych stref."
+msgstr ""
+"Nie można usunąć tej grupy: jest ostatnim właścicielem %s. Najpierw dodaj "
+"innego właściciela do tych stref."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3490,7 +3497,7 @@ msgid ""
 msgstr ""
 "Nie można usunąć ostatniego właściciela: strefa pozostałaby bez właściciela."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3498,12 +3505,38 @@ msgstr ""
 "Wprowadź sieć w notacji CIDR (na przykład 192.168.1.0/24 lub 2001:db8::/48) "
 "lub nazwę strefy odwrotnej kończącą się na in-addr.arpa lub ip6.arpa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "jeszcze %d"
+msgstr[1] "jeszcze %d"
+msgstr[2] "jeszcze %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"%1$d rekord w strefie %2$s jest teraz ukryty przez strefę %3$s: %4$s. "
+"Upewnij się, że %3$s go zawiera, a następnie usuń go z %2$s."
+msgstr[1] ""
+"%1$d rekordy w strefie %2$s są teraz ukryte przez strefę %3$s: %4$s. Upewnij "
+"się, że %3$s je zawiera, a następnie usuń je z %2$s."
+msgstr[2] ""
+"%1$d rekordów w strefie %2$s jest teraz ukrytych przez strefę %3$s: %4$s. "
+"Upewnij się, że %3$s je zawiera, a następnie usuń je z %2$s."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr ""
 "Przynajmniej jeden użytkownik lub grupa musi być wybrany jako właściciel."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "Nie masz uprawnień do tworzenia stref dla innych użytkowników."
 
@@ -3512,12 +3545,12 @@ msgstr "Nie masz uprawnień do tworzenia stref dla innych użytkowników."
 msgid "Unknown user ID: %s"
 msgstr "Nieznane ID użytkownika: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Nieznane ID grupy: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Można przypisywać tylko grupy, do których należysz (niedozwolone: %s)"
@@ -3526,11 +3559,11 @@ msgstr "Można przypisywać tylko grupy, do których należysz (niedozwolone: %s
 msgid "Invalid hostname."
 msgstr "Nieprawidłowa nazwa hosta."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "Istnieje już strefa o tej nazwie."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4230,7 +4263,7 @@ msgstr "Zawartość rekordu HHIT musi być niepustym blobem zakodowanym w base64
 msgid "Priority must be 0 for HHIT records."
 msgstr "Priorytet musi wynosić 0 dla rekordów HHIT."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Priorytet dla rekordów MX/SRV musi być liczbą między 0 a 65535."
 
@@ -4792,7 +4825,7 @@ msgstr ""
 "\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
 "[vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "Nieprawidłowe znaki w polu nazwy."
 
@@ -5143,6 +5176,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "Pole zawartości nie może być puste."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5963,7 +6002,7 @@ msgstr "Wartości priorytetu powyżej 100 są nietypowe i mogą być niepotrzebn
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "Nieprawidłowa wartość pola priorytetu MX. Musi być między 0 a 65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
@@ -5971,15 +6010,15 @@ msgstr ""
 "Pole priorytetu nie powinno być używane dla rekordów HTTPS ponieważ "
 "priorytet jest częścią zawartości."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "Rekord HTTPS musi zawierać co najmniej wartości priorytetu i celu."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "Priorytet rekordu HTTPS musi być liczbą między 0 a 65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
@@ -5987,63 +6026,84 @@ msgstr ""
 "Cel rekordu HTTPS musi być albo \".\" albo prawidłową w pełni kwalifikowaną "
 "nazwą domeny."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"Rekord HTTPS w trybie aliasu (priorytet=0) z celem \".\" nie może mieć "
-"parametrów zgodnie z RFC 9460."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "W trybie aliasu (priorytet = 0) żadne SvcParams nie są dozwolone."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr ""
 "Parametry rekordu HTTPS muszą być w formacie key=value oddzielone spacjami."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr ""
 "Nieznany klucz parametru HTTPS: \"%s\". Zobacz RFC 9460 dla prawidłowych "
 "kluczy."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "Podłączona wersja PowerDNS nie może wczytać parametru %s."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr ""
 "Duplikat klucza parametru HTTPS: \"%s\". Każdy klucz może pojawić się tylko "
 "raz."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr ""
 "Wartość ALPN musi być listą identyfikatorów protokołów oddzielonych "
 "przecinkami."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "Parametr no-default-alpn musi mieć pustą wartość."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "Wartość portu musi być liczbą między 1 a 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "Nieprawidłowy adres IPv4 w ipv4hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "Nieprawidłowy adres IPv6 w ipv6hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "Ścieżka DoH musi zaczynać się od ukośnika (/)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "Wartość ech musi być zakodowana w base64."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Wartość tls-supported-groups musi być listą liczb od 0 do 65535 oddzielonych przecinkami."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametr mandatory nie może wymieniać samego siebie."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr ""
@@ -7853,7 +7913,7 @@ msgstr ""
 "Nazwa rekordu SOA musi odpowiadać wierzchołkowi strefy \"%s\". Pozostaw pole "
 "nazwy puste lub wpisz \"@\"."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "Pole zawartości ma nieprawidłową wartość."
 
@@ -7960,7 +8020,7 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "Priorytet musi wynosić 0 dla rekordów RESINFO."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
@@ -7968,23 +8028,19 @@ msgstr ""
 "Rekord SVCB musi zaczynać się od priorytetu i celu: <priorytet> <cel> "
 "[<parametry>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "Priorytet SVCB musi być między 0 a 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "Cel SVCB musi być albo \".\" albo prawidłową nazwą hosta."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "W trybie aliasu (priorytet = 0) cel nie może być \".\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "W trybie aliasu (priorytet = 0) żadne SvcParams nie są dozwolone."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
@@ -7992,16 +8048,16 @@ msgstr ""
 "W trybie usługi (priorytet > 0) z celem \".\" wymagany jest co najmniej "
 "jeden SvcParam.jeden SvcParam."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr "Parametry SVCB muszą być w formacie key=value oddzielone spacjami."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Nieznany klucz parametru SVCB: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -9668,36 +9724,41 @@ msgstr "Dodatkowo znaleziono następujące ostrzeżenia:"
 msgid "The following warnings were found:"
 msgstr "Znaleziono następujące ostrzeżenia:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Nie masz uprawnień do dodawania rekordu do tego szablonu strefy."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Nie masz uprawnień do dodania tego typu rekordu do szablonu strefy."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "Błąd podczas dodawania rekordu szablonu strefy: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "Rekord nie należy do tego szablonu strefy."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "Błąd aktualizacji rekordu szablonu strefy: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Nie masz uprawnień do usunięcia tego typu rekordu z szablonu strefy."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "Błąd usuwania rekordu szablonu strefy: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "Podłączona wersja PowerDNS nie może wczytać rekordów %s."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -10311,7 +10372,7 @@ msgstr "Wprowadź nazwę hosta tak, jak pojawia się w rekordzie NS"
 msgid "Provide host name"
 msgstr "Podaj nazwę hosta"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "Konto"
 
@@ -10415,38 +10476,35 @@ msgstr "Dezaktywuj"
 msgid "Activate"
 msgstr "Aktywuj"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Pobierz ten klucz jako PEM"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Pobierz klucz prywatny w formacie BIND"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "Eksportuj PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "Eksportuj"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Usuń"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Importuj klucz z PEM"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Wklej klucz prywatny zakodowany w PEM (RSA lub ECDSA). PowerDNS 4.7+ "
-"wyznacza rozmiar klucza z zawartości PEM - wybierz odpowiedni algorytm i "
-"rolę klucza."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "Klucz prywatny PEM"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "Importuj klucz"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Wklej klucz prywatny w formacie BIND (tak jak wyeksportowany tutaj lub przez "
+"dnssec-keygen) albo niezaszyfrowany klucz PEM (RSA, ECDSA, Ed25519 lub "
+"Ed448). Wybierz algorytm, dla którego klucz został utworzony."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "Klucz prywatny"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10573,7 +10631,7 @@ msgstr ""
 "Ten typ rekordu jest przestarzały i nie powinien być używany do nowych "
 "rekordów."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "Powód tej zmiany"
 
@@ -10781,7 +10839,7 @@ msgstr "pokazywanie pierwszych 20"
 msgid "more zones..."
 msgstr "więcej stref..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "Ważna uwaga"
 
@@ -10911,7 +10969,7 @@ msgstr "Narzędzia"
 msgid "Database"
 msgstr "Baza danych"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10923,11 +10981,11 @@ msgstr "Mój profil"
 msgid "Password"
 msgstr "Hasło"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "Preferencje"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "Wyloguj"
 
@@ -11715,11 +11773,18 @@ msgid "Zone Signing Key - signs all other records in the zone"
 msgstr ""
 "Klucz podpisu strefy (ZSK) - podpisuje wszystkie inne rekordy w strefie"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS pokazuje klucz jako KSK lub ZSK tylko wtedy, gdy strefa ma aktywny KSK i aktywny ZSK z tym samym algorytmem. W przeciwnym razie pokazuje klucz jako CSK, nawet jeśli wybrano tutaj KSK lub ZSK."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "Zalecane ustawienia"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11759,7 +11824,7 @@ msgstr ""
 msgid "Add"
 msgstr "Dodaj"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "Edytuj profil"
 
@@ -12409,10 +12474,6 @@ msgstr "Zdarzenie"
 msgid "Details"
 msgstr "Szczegóły"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "Eksportuj"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "Eksportuj dzienniki"
@@ -12816,7 +12877,9 @@ msgstr "Zamierzasz usunąć rekord w strefie"
 msgid ""
 "The deletion is filed as a change request and happens once a reviewer "
 "approves it."
-msgstr "Usunięcie jest składane jako wniosek o zmianę i nastąpi po zatwierdzeniu przez recenzenta."
+msgstr ""
+"Usunięcie jest składane jako wniosek o zmianę i nastąpi po zatwierdzeniu "
+"przez recenzenta."
 
 #: templates/default/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -12838,7 +12901,7 @@ msgstr "Usuń także odpowiedni rekord PTR (jeśli istnieje)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Usuń również odpowiadający rekord A/AAAA (jeśli istnieje)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "Złóż wniosek o usunięcie"
 
@@ -13296,7 +13359,7 @@ msgstr "Użyj kombinacji liter, cyfr i symboli"
 msgid "Consider using a password manager"
 msgstr "Rozważ użycie menedżera haseł"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "Uwierzytelnianie wieloskładnikowe"
 
@@ -13887,7 +13950,7 @@ msgstr "Zamierzasz usunąć strefę"
 msgid "Zone Details"
 msgstr "Szczegóły strefy"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13899,11 +13962,11 @@ msgstr ""
 "Za każdym razem, gdy supermaster wyśle powiadomienie dla tej strefy, "
 "zostanie ona dodana ponownie!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "Tak, usuń tę strefę"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "Nie, zachowaj tę strefę"
 
@@ -14110,15 +14173,15 @@ msgstr "Zamierzasz usunąć wiele stref. Ta czynność nie może być cofnięta.
 msgid "Zones to Delete"
 msgstr "Strefy do usunięcia"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "Uwaga"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Tak, usuń te strefy"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Nie, zachowaj te strefy"
 
@@ -14199,7 +14262,9 @@ msgstr "Błąd"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "Strefa zmieniła się od złożenia tego wniosku; zaznaczone zmiany nie odpowiadają już zawartości strefy. Zatwierdzenie nadal je zastosuje."
+msgstr ""
+"Strefa zmieniła się od złożenia tego wniosku; zaznaczone zmiany nie "
+"odpowiadają już zawartości strefy. Zatwierdzenie nadal je zastosuje."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -14245,7 +14310,9 @@ msgstr "Spróbuj ponownie"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "Ponownie stosuje wniosek po usunięciu przyczyny błędu. Działania, które już zostały wykonane, są pomijane."
+msgstr ""
+"Ponownie stosuje wniosek po usunięciu przyczyny błędu. Działania, które już "
+"zostały wykonane, są pomijane."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14560,11 +14627,11 @@ msgstr "Lista szablonów stref"
 msgid "API Documentation"
 msgstr "Dokumentacja API"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14572,7 +14639,7 @@ msgstr ""
 "Sprawdź, czy pdns_api.key w config/settings.php odpowiada kluczowi API "
 "skonfigurowanemu w PowerDNS."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14580,7 +14647,7 @@ msgstr ""
 "Sprawdź, czy pdns_api.server_name odpowiada nazwie zgłaszanej przez PowerDNS "
 "(domyślnie 'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14591,7 +14658,7 @@ msgstr ""
 "PowerDNS jest jeden nieprawidłowo sformułowany rekord, który uniemożliwia "
 "serializację strefy."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15943,66 +16010,69 @@ msgstr ""
 "Nie udało się ustawić ustawień regionalnych. Wybrane ustawienia regionalne "
 "mogą nie być obsługiwane w tym systemie. Skontaktuj się z administratorem."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Klucz zaimportowany pomyślnie."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Eksport kluczy PEM wymaga PowerDNS 4.7 lub nowszego."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Klucz prywatny nie pasuje do wybranego algorytmu."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Wystąpił błąd podczas eksportu klucza PEM: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Nie można odczytać klucza prywatnego. Wklej klucz prywatny w formacie BIND lub niezaszyfrowany klucz PEM."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Nie udało się pobrać klucza PEM. Serwer może nie udostępniać materiału "
+# OBSOLETE: "klucza prywatnego dla tego klucza."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Nie udało się zaimportować klucza. PowerDNS go odrzucił."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Import kluczy PEM wymaga PowerDNS 4.7 lub nowszego."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "Nie udało się zaimportować klucza."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Podaj klucz prywatny w formacie PEM (musi zawierać znaczniki BEGIN/END)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Wystąpił błąd podczas importu klucza: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "Klucz PEM zaimportowany pomyślnie."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Wystąpił błąd podczas eksportu klucza: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Nie udało się zaimportować klucza PEM. Serwer PowerDNS mógł odrzucić "
+# OBSOLETE: "format."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Nie udało się pobrać klucza prywatnego z PowerDNS."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Wystąpił błąd podczas importu klucza PEM: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Pobierz klucz prywatny w formacie BIND"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Rekord HTTPS w trybie aliasu (priorytet=0) z celem \".\" nie może mieć "
+# OBSOLETE: "parametrów zgodnie z RFC 9460."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Klucz prywatny"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "Parametr no-default-alpn musi mieć pustą wartość."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Wklej klucz prywatny w formacie BIND (tak jak wyeksportowany tutaj lub przez dnssec-keygen) albo niezaszyfrowany klucz PEM (RSA, ECDSA, Ed25519 lub Ed448). Wybierz algorytm, dla którego klucz został utworzony."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Pobierz ten klucz jako PEM"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Import kluczy wymaga PowerDNS 4.1 lub nowszego."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Eksportuj PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "jeszcze %d"
-msgstr[1] "jeszcze %d"
-msgstr[2] "jeszcze %d"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Importuj klucz z PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "%1$d rekord w strefie %2$s jest teraz ukryty przez strefę %3$s: %4$s. Upewnij się, że %3$s go zawiera, a następnie usuń go z %2$s."
-msgstr[1] "%1$d rekordy w strefie %2$s są teraz ukryte przez strefę %3$s: %4$s. Upewnij się, że %3$s je zawiera, a następnie usuń je z %2$s."
-msgstr[2] "%1$d rekordów w strefie %2$s jest teraz ukrytych przez strefę %3$s: %4$s. Upewnij się, że %3$s je zawiera, a następnie usuń je z %2$s."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Wklej klucz prywatny zakodowany w PEM (RSA lub ECDSA). PowerDNS 4.7+ "
+# OBSOLETE: "wyznacza rozmiar klucza z zawartości PEM - wybierz odpowiedni algorytm i "
+# OBSOLETE: "rolę klucza."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Klucz prywatny PEM"
+
+
+

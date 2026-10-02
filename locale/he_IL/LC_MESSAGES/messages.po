@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -920,7 +920,7 @@ msgstr ""
 "יוסרו באופן אוטומטי."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "סוג מפתח"
 
@@ -1186,18 +1186,18 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "שם האזור וכתובת השרת הראשי נדרשים."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "אזור לא תקין."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
 msgstr ""
 "לאזור זה עדיין אין רשומות שהועברו. המתן להשלמת ההעברה לפני המרתו לאזור ראשי."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "האזור הומר לאזור ראשי."
 
@@ -1436,20 +1436,13 @@ msgstr "לפני %d שעות"
 msgid "%d d ago"
 msgstr "לפני %d ימים"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "יצוא מפתח PEM דורש PowerDNS 4.7 או חדש יותר."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "אירעה שגיאה בעת ייצוא המפתח: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "אירעה שגיאה בעת ייצוא מפתח PEM: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"לא ניתן לאחזר את מפתח PEM. ייתכן שהשרת אינו חושף חומר מפתח פרטי עבור מפתח זה."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "לא ניתן לאחזר את המפתח הפרטי מ-PowerDNS."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1471,28 +1464,39 @@ msgstr "מפתח אזורי נמחק בהצלחה."
 msgid "Failed to delete the zone key."
 msgstr "נכשל למחוק את מפתח האזור."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "ייבוא מפתח PEM דורש PowerDNS 4.7 או חדש יותר."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "ייבוא מפתחות דורש PowerDNS 4.1 או חדש יותר."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "לספק מפתח פרטי מקודד PEM (חייב להכיל סימני BEGIN/END)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "המפתח הפרטי אינו תואם לאלגוריתם שנבחר."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "מפתח PEM יובא בהצלחה."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
-msgstr "ייבוא מפתח PEM נכשל. ייתכן ששרת PowerDNS דחה את הפורמט."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
+msgstr ""
+"לא ניתן לקרוא את המפתח הפרטי. הדבק מפתח פרטי בפורמט BIND או מפתח PEM לא "
+"מוצפן."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "אירעה שגיאה בעת ייבוא מפתח PEM: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "אירעה שגיאה בעת ייבוא המפתח: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "המפתח יובא בהצלחה."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "ייבוא המפתח נכשל. PowerDNS דחה אותו."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "ייבוא המפתח נכשל."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "אין לך רשות לנהל DNSSEC עבור אזור זה."
 
@@ -1671,11 +1675,11 @@ msgstr "הרשומה נמחקה בהצלחה."
 msgid "Provide at least one record"
 msgstr "יש לספק לפחות רשומה אחת"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "סוג רשומה לא חוקי"
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d רשומות נוספו בהצלחה."
@@ -1714,7 +1718,7 @@ msgstr "אין לך רשות להוסיף רשומה לאזור הזה."
 msgid "The %s field is required."
 msgstr "שדה %s נדרש."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "לא סופקו רשומות."
 
@@ -1722,17 +1726,17 @@ msgstr "לא סופקו רשומות."
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "הרשומה נוספה בהצלחה, אך יצירת רשומת ה-PTR נכשלה: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d רשומות תואמות נוצרו גם כן."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d רשומות לא נוספו."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "לא ניתן היה להוסיף אף רשומה. ייתכן שהן מכילות נתונים לא חוקיים."
 
@@ -2011,7 +2015,7 @@ msgstr ""
 "שלך."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "שינוי הסיסמה"
 
@@ -2371,7 +2375,7 @@ msgstr "אין לך רשות לצפות בבקשות שינוי."
 msgid "Bulk Registration"
 msgstr "רישום מרוכז"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "אזורים נוספו בהצלחה."
 
@@ -3280,7 +3284,8 @@ msgstr "השינויים שלך נשלחו לאישור."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "אזור זה מחייב אישור לשינויים; השתמש בעורך האזורים כדי להגיש בקשת שינוי."
+msgstr ""
+"אזור זה מחייב אישור לשינויים; השתמש בעורך האזורים כדי להגיש בקשת שינוי."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3344,7 +3349,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "לא ניתן למחוק קבוצה זו: היא הבעלים האחרון של %s. הוסף בעלים נוסף לאזורים אלה קודם."
+msgstr ""
+"לא ניתן למחוק קבוצה זו: היא הבעלים האחרון של %s. הוסף בעלים נוסף לאזורים אלה "
+"קודם."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3363,7 +3370,7 @@ msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
 msgstr "לא ניתן להסיר את הבעלים האחרונים: זה יעזוב את האזור ללא בעלות."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3371,11 +3378,33 @@ msgstr ""
 "הזן רשת בסימון CIDR (לדוגמה 192.168.1.0/24 או 2001:db8::/48) או שם אזור הפוך "
 "המסתיים ב-in-addr.arpa או ip6.arpa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "עוד %d"
+msgstr[1] "עוד %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"%1$d רשומה באזור %2$s מוסתרת כעת על ידי האזור %3$s: %4$s. ודאו ש-%3$s מכיל "
+"אותה, ולאחר מכן מחקו אותה מ-%2$s."
+msgstr[1] ""
+"%1$d רשומות באזור %2$s מוסתרות כעת על ידי האזור %3$s: %4$s. ודאו ש-%3$s מכיל "
+"אותן, ולאחר מכן מחקו אותן מ-%2$s."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "לפחות משתמש או קבוצה צריכים להיבחר כבעלים."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "אין לך רשות ליצור אזורים למשתמשים אחרים."
 
@@ -3384,12 +3413,12 @@ msgstr "אין לך רשות ליצור אזורים למשתמשים אחרים
 msgid "Unknown user ID: %s"
 msgstr "מזהה משתמש לא ידוע: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "מזהי קבוצה לא ידועים: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "אתה יכול להקצות רק קבוצות שאתה חבר בהן (לא מורשות: %s)"
@@ -3398,11 +3427,11 @@ msgstr "אתה יכול להקצות רק קבוצות שאתה חבר בהן (�
 msgid "Invalid hostname."
 msgstr "שם מארח לא חוקי"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "יש כבר אזור עם השם הזה."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4072,7 +4101,7 @@ msgstr "תוכן רשומת HHIT חייב להיות בלוב מקודד base64 
 msgid "Priority must be 0 for HHIT records."
 msgstr "העדיפות חייבת להיות 0 עבור רשומות HHIT."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "עדיפות עבור רשומות MX/SRV חייב להיות מספר בין 0 ל 65535."
 
@@ -4618,7 +4647,7 @@ msgstr ""
 "פורמט רשומת LOC לא חוקי. הפורמט צריך להיות: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "תווים לא חוקיים בשדה השם."
 
@@ -4942,6 +4971,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "שדה תוכן לא יכול להיות ריק."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5711,76 +5746,97 @@ msgstr "ערכי עדיפות מעל 100 הם יוצאי דופן ועשויים
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "ערך לא חוקי עבור שדה העדיפות של MX. חייב להיות בין 0 ל-65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
 msgstr "שדה עדיפות לא צריך לשמש עבור רשומות HTTPS כעדיפות היא חלק מהתוכן."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "רשומות HTTPS חייבות להכיל לפחות עדיפות וערכי יעד."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "העדיפות של רשומת HTTPS חייבת להיות מספר בין 0 ל-65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
 msgstr "היעד של רשומת HTTPS חייב להיות \".\" או שם דומיין מלא ותקין."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"רשומת HTTPS במצב AliasMode (priority=0) עם היעד \".\" אינה יכולה לכלול "
-"פרמטרים על פי RFC 9460."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "במצב Alias (priority = 0), אין SvcParams מותר."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr "הפרמטרים של רשומת HTTPS חייבים להיות בפורמט key=value מופרדים ברווחים."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr "מפתח פרמטר HTTPS לא ידוע: \"%s\". ראו RFC 9460 עבור מפתחות חוקיים."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "גרסת PowerDNS המחוברת אינה יכולה לטעון את הפרמטר %s."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr "מפתח פרמטר HTTPS כפול: \"%s\". כל מפתח יכול להופיע רק פעם אחת."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr "ערך ALPN חייב להיות רשימה של מזהי פרוטוקול מופרדים בפסיקים."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "הפרמטר no-default-alpn חייב לקבל ערך ריק."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "ערך הפורט חייב להיות מספר בין 1 ל-65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "כתובת IPv4 לא חוקית ב-ipv4hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "כתובת IPv6 לא חוקית ב-ipv6hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "נתיב DoH חייב להתחיל בקו נטוי (/)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "ערך ה-ech חייב להיות מקודד ב-base64."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "ערך ה-tls-supported-groups חייב להיות רשימת מספרים בין 0 ל-65535, מופרדים בפסיקים."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "הפרמטר mandatory אינו יכול לכלול את עצמו."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr "הפרמטר \"%s\" מסומן כחובה אך אינו נכלל ברשומה."
@@ -7482,7 +7538,7 @@ msgstr ""
 "שם רשומת SOA חייב להתאים לקודקוד האזור \"%s\". השאר את שדה השם ריק או הזן "
 "\"@\"."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "לשדה התוכן שלך אין ערך לגיטימי."
 
@@ -7586,45 +7642,41 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "העדיפות חייבת להיות 0 עבור רשומות RESINFO."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
 msgstr ""
 "רשומת SVCB חייבת להתחיל בעדיפות וביעד: <priority> <target> [<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "עדיפות SVCB צריכה להיות בין 0 ל 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "יעד SVCB חייב להיות \".\" או שם מארח חוקי."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "במצב Alias (priority = 0), היעד אינו יכול להיות \".\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "במצב Alias (priority = 0), אין SvcParams מותר."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr "במצב שירות (priority > 0) עם יעד \".\", נדרש לפחות SvcParam אחד."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr "פרמטרי SVCB חייבים להיות בפורמט key=value המופרדים ברווחים."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "מפתח פרמטר SVCB לא ידוע: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr "מפתח פרמטר SVCB כפול: \"%s\". כל מפתח יכול להופיע רק פעם אחת."
@@ -9213,36 +9265,41 @@ msgstr "בנוסף נמצאו האזהרות הבאות:"
 msgid "The following warnings were found:"
 msgstr "האזהרות הבאות נמצאו:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "אין לך הרשאה להוסיף רשומה לתבנית אזור זו."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "אין לך הרשאה להוסיף סוג רשומה זה לתבנית אזור."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "שגיאה בהוספת רשומת תבנית האזור: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "הרשומה אינה שייכת לתבנית אזור זו."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "שגיאה בעדכון רשומת תבנית האזור: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "אין לך הרשאה למחוק סוג רשומה זה מתבנית אזור."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "שגיאה במחיקת רשומת תבנית האזור: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "גרסת PowerDNS המחוברת אינה יכולה לטעון רשומות %s."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -9844,7 +9901,7 @@ msgstr "הזן את שם המארח כפי שהוא מופיע ברשומת NS"
 msgid "Provide host name"
 msgstr "ספק שם מארח"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "חשבון"
 
@@ -9945,37 +10002,35 @@ msgstr "השבת"
 msgid "Activate"
 msgstr "הפעל"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "הורד את המפתח כ-PEM"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "הורד את המפתח הפרטי בפורמט BIND"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "יצוא PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "יצוא"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "מחק"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "ייבוא מפתח מ-PEM"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"הדבק מפתח פרטי מקודד ב-PEM (RSA או ECDSA). PowerDNS 4.7+ מסיק את גודל המפתח "
-"מתוכן ה-PEM - בחר את האלגוריתם ותפקיד המפתח המתאימים."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "מפתח פרטי PEM"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "יבוא מפתח"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"הדבק מפתח פרטי בפורמט BIND (כפי שמיוצא כאן או על ידי dnssec-keygen) או מפתח "
+"PEM לא מוצפן (RSA, ECDSA, Ed25519 או Ed448). בחר את האלגוריתם שעבורו נוצר "
+"המפתח."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "מפתח פרטי"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10100,7 +10155,7 @@ msgstr "לספק תוכן"
 msgid "This record type is deprecated and should not be used for new records."
 msgstr "סוג רשומה זה מיושן ואין להשתמש בו עבור רשומות חדשות."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "סיבת השינוי"
 
@@ -10304,7 +10359,7 @@ msgstr "מוצגים 20 הראשונים"
 msgid "more zones..."
 msgstr "יותר אזורים..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "הערה חשובה"
 
@@ -10430,7 +10485,7 @@ msgstr "כלים"
 msgid "Database"
 msgstr "מסד נתונים"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "ברירות מחדל של TTL"
 
@@ -10442,11 +10497,11 @@ msgstr "הפרופיל שלי"
 msgid "Password"
 msgstr "סיסמה"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "העדפות"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "התנתק"
 
@@ -11206,11 +11261,18 @@ msgstr "Key Signing Key - חותם על רשומות ה-DNSKEY באזור"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - חותם על כל הרשומות האחרות באזור"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS מציג מפתח כ-KSK או כ-ZSK רק כל עוד יש באזור KSK פעיל ו-ZSK פעיל עם אותו אלגוריתם. אחרת הוא מציג את המפתח כ-CSK, גם אם בחרת כאן KSK או ZSK."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "הגדרות מומלצות"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11250,7 +11312,7 @@ msgstr ""
 msgid "Add"
 msgstr "הוסף"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "עריכת פרופיל"
 
@@ -11883,10 +11945,6 @@ msgstr "אירוע"
 msgid "Details"
 msgstr "פרטים"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "יצוא"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "ייצוא יומנים"
@@ -12308,7 +12366,7 @@ msgstr "מחק גם את רשומת ה-PTR המתאימה (אם קיימת)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "מחק גם את רשומת ה-A/AAAA המתאימה (אם קיימת)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "בקש מחיקה"
 
@@ -12760,7 +12818,7 @@ msgstr "כולל שילוב של אותיות, מספרים וסמלים"
 msgid "Consider using a password manager"
 msgstr "שקול להשתמש במנהל סיסמאות"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "אימות רב-שלבי"
 
@@ -13334,7 +13392,7 @@ msgstr "אתה עומד למחוק את האזור"
 msgid "Zone Details"
 msgstr "פרטי אזור"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13345,11 +13403,11 @@ msgstr ""
 "כעת תגרום להסרה זמנית בלבד. בכל פעם שה-supermaster ישלח התראה עבור אזור זה, "
 "הוא יתווסף שוב!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "כן, למחוק את האזור הזה"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "לא, שמור על האזור הזה"
 
@@ -13555,15 +13613,15 @@ msgstr "אתה עומד למחוק מספר אזורים. לא ניתן לבטל
 msgid "Zones to Delete"
 msgstr "אזורים למחיקה"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "הערה"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "כן, למחוק את האזורים האלה"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "לא, שמור את האזורים האלה"
 
@@ -13642,7 +13700,9 @@ msgstr "שגיאה"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "האזור השתנה מאז שבקשה זו הוגשה; השינויים המסומנים אינם תואמים יותר את תוכן האזור. אישור עדיין יחיל אותם."
+msgstr ""
+"האזור השתנה מאז שבקשה זו הוגשה; השינויים המסומנים אינם תואמים יותר את תוכן "
+"האזור. אישור עדיין יחיל אותם."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -14000,11 +14060,11 @@ msgstr "רשימת תבניות אזור"
 msgid "API Documentation"
 msgstr "תיעוד API"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "שגיאת API של PowerDNS"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14012,7 +14072,7 @@ msgstr ""
 "בדוק כי pdns_api.key בקובץ config/settings.php תואם למפתח ה-API המוגדר "
 "ב-PowerDNS."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14020,7 +14080,7 @@ msgstr ""
 "בדוק ש-pdns_api.server_name תואם למה ש-PowerDNS מדווח (ברירת מחדל "
 "'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14030,7 +14090,7 @@ msgstr ""
 "נפוץ לאחר ייבוא אזורים ישירות למסד הנתונים של PowerDNS הוא רשומה פגומה אחת "
 "שגורמת לכישלון בהסדרת האזור."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15340,64 +15400,65 @@ msgstr ""
 "הגדרת השפה נכשלה. ייתכן שהשפה שנבחרה אינה נתמכת במערכת זו. יש לפנות למנהל "
 "המערכת."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "המפתח יובא בהצלחה."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "יצוא מפתח PEM דורש PowerDNS 4.7 או חדש יותר."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "המפתח הפרטי אינו תואם לאלגוריתם שנבחר."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "אירעה שגיאה בעת ייצוא מפתח PEM: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "לא ניתן לקרוא את המפתח הפרטי. הדבק מפתח פרטי בפורמט BIND או מפתח PEM לא מוצפן."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "לא ניתן לאחזר את מפתח PEM. ייתכן שהשרת אינו חושף חומר מפתח פרטי עבור מפתח "
+# OBSOLETE: "זה."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "ייבוא המפתח נכשל. PowerDNS דחה אותו."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "ייבוא מפתח PEM דורש PowerDNS 4.7 או חדש יותר."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "ייבוא המפתח נכשל."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr "לספק מפתח פרטי מקודד PEM (חייב להכיל סימני BEGIN/END)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "אירעה שגיאה בעת ייבוא המפתח: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "מפתח PEM יובא בהצלחה."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "אירעה שגיאה בעת ייצוא המפתח: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr "ייבוא מפתח PEM נכשל. ייתכן ששרת PowerDNS דחה את הפורמט."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "לא ניתן לאחזר את המפתח הפרטי מ-PowerDNS."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "אירעה שגיאה בעת ייבוא מפתח PEM: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "הורד את המפתח הפרטי בפורמט BIND"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "רשומת HTTPS במצב AliasMode (priority=0) עם היעד \".\" אינה יכולה לכלול "
+# OBSOLETE: "פרמטרים על פי RFC 9460."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "מפתח פרטי"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "הפרמטר no-default-alpn חייב לקבל ערך ריק."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "הדבק מפתח פרטי בפורמט BIND (כפי שמיוצא כאן או על ידי dnssec-keygen) או מפתח PEM לא מוצפן (RSA, ECDSA, Ed25519 או Ed448). בחר את האלגוריתם שעבורו נוצר המפתח."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "הורד את המפתח כ-PEM"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "ייבוא מפתחות דורש PowerDNS 4.1 או חדש יותר."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "יצוא PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "עוד %d"
-msgstr[1] "עוד %d"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "ייבוא מפתח מ-PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "%1$d רשומה באזור %2$s מוסתרת כעת על ידי האזור %3$s: %4$s. ודאו ש-%3$s מכיל אותה, ולאחר מכן מחקו אותה מ-%2$s."
-msgstr[1] "%1$d רשומות באזור %2$s מוסתרות כעת על ידי האזור %3$s: %4$s. ודאו ש-%3$s מכיל אותן, ולאחר מכן מחקו אותן מ-%2$s."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "הדבק מפתח פרטי מקודד ב-PEM (RSA או ECDSA). PowerDNS 4.7+ מסיק את גודל "
+# OBSOLETE: "המפתח מתוכן ה-PEM - בחר את האלגוריתם ותפקיד המפתח המתאימים."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "מפתח פרטי PEM"
+
+
+

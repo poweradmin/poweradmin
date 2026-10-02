@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -952,7 +952,7 @@ msgstr ""
 "baharu akan dibuang secara automatik."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "Jenis Kekunci"
 
@@ -1233,11 +1233,11 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "Nama zon dan alamat pelayan utama diperlukan."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "Zon tidak sah."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1245,7 +1245,7 @@ msgstr ""
 "Zon ini belum mempunyai rekod yang dipindahkan. Tunggu pemindahan selesai "
 "sebelum menukarnya kepada zon utama."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "Zon telah ditukar kepada zon utama."
 
@@ -1490,21 +1490,13 @@ msgstr "%d jam lalu"
 msgid "%d d ago"
 msgstr "%d hari lalu"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Eksport kunci PEM memerlukan PowerDNS 4.7 atau lebih baharu."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "Ralat berlaku semasa mengeksport kunci: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Ralat telah berlaku semasa mengeksport kunci PEM: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Tidak dapat mengambil kunci PEM. Pelayan mungkin tidak mendedahkan bahan "
-"kunci persendirian untuk kunci ini."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Tidak dapat mengambil kunci persendirian daripada PowerDNS."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1526,30 +1518,39 @@ msgstr "Kunci zon telah berjaya dipadam."
 msgid "Failed to delete the zone key."
 msgstr "Gagal memadam kunci zon."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Import kunci PEM memerlukan PowerDNS 4.7 atau lebih baharu."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Mengimport kunci memerlukan PowerDNS 4.1 atau lebih baharu."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Berikan kunci peribadi berkod PEM (mesti mengandungi penanda BEGIN/END)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "Kunci persendirian tidak sepadan dengan algoritma yang dipilih."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "Kunci PEM telah diimport dengan sukses."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"Gagal mengimport kunci PEM. Pelayan PowerDNS mungkin menolak format tersebut."
+"Kunci persendirian tidak dapat dibaca. Tampal kunci persendirian dalam "
+"format BIND atau kunci PEM yang tidak disulitkan."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "Ralat berlaku semasa mengimport kunci PEM: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "Ralat berlaku semasa mengimport kunci: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "Kunci berjaya diimport."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Gagal mengimport kunci. PowerDNS menolaknya."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "Gagal mengimport kunci."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Anda tidak mempunyai kebenaran untuk mengurus DNSSEC bagi zon ini."
 
@@ -1737,11 +1738,11 @@ msgstr "Rekod telah berjaya dipadam."
 msgid "Provide at least one record"
 msgstr "Berikan sekurang-kurangnya satu rekod"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "Jenis rekod tidak sah."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d rekod telah berjaya ditambah."
@@ -1780,7 +1781,7 @@ msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod pada zon ini."
 msgid "The %s field is required."
 msgstr "Medan %s diperlukan."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "Tiada rekod diberikan."
 
@@ -1788,17 +1789,17 @@ msgstr "Tiada rekod diberikan."
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Rekod berjaya ditambah, tetapi penciptaan rekod PTR gagal: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d rekod yang sepadan juga telah dicipta."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d rekod gagal ditambah."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Gagal menambah sebarang rekod. Ia mungkin mengandungi data yang tidak sah."
@@ -2090,7 +2091,7 @@ msgstr ""
 "Sila hubungi pentadbir anda."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "Tukar kata laluan"
 
@@ -2121,7 +2122,8 @@ msgstr "Permintaan perubahan ini tidak mempunyai snapshot zon."
 
 #: lib/Application/Controller/Zone/ChangeRequestController.php:114
 msgid "You do not have permission to review this change request."
-msgstr "Anda tidak mempunyai kebenaran untuk menyemak permintaan perubahan ini."
+msgstr ""
+"Anda tidak mempunyai kebenaran untuk menyemak permintaan perubahan ini."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:52
 msgid "Only the requester can cancel this request."
@@ -2229,7 +2231,8 @@ msgstr "Katalog telah berjaya diubah."
 
 #: lib/Application/Controller/Zone/EditController.php:487
 msgid "You do not have permission to change this zone to that type."
-msgstr "Anda tidak mempunyai kebenaran untuk menukar zon ini kepada jenis tersebut."
+msgstr ""
+"Anda tidak mempunyai kebenaran untuk menukar zon ini kepada jenis tersebut."
 
 #: lib/Application/Controller/Zone/EditController.php:490
 msgid "Zone type has been changed successfully."
@@ -2463,7 +2466,7 @@ msgstr "Anda tidak mempunyai kebenaran untuk melihat permintaan perubahan."
 msgid "Bulk Registration"
 msgstr "Pendaftaran Pukal"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "Zon telah berjaya ditambah."
 
@@ -3374,7 +3377,9 @@ msgstr "Perubahan anda telah diserahkan untuk kelulusan."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "Zon ini memerlukan kelulusan untuk perubahan; gunakan editor zon untuk menyerahkan permintaan perubahan."
+msgstr ""
+"Zon ini memerlukan kelulusan untuk perubahan; gunakan editor zon untuk "
+"menyerahkan permintaan perubahan."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3382,12 +3387,15 @@ msgstr "Permintaan perubahan ini sudah diputuskan."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:54
 msgid "Nothing differs from the zone, so no request was filed."
-msgstr "Tiada apa-apa yang berbeza daripada zon, jadi tiada permintaan diserahkan."
+msgstr ""
+"Tiada apa-apa yang berbeza daripada zon, jadi tiada permintaan diserahkan."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "Permintaan perubahan terlalu besar untuk disimpan; bahagikannya kepada serahan yang lebih kecil."
+msgstr ""
+"Permintaan perubahan terlalu besar untuk disimpan; bahagikannya kepada "
+"serahan yang lebih kecil."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3440,7 +3448,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "Tidak boleh memadam kumpulan ini: ia adalah pemilik terakhir bagi %s. Tambah pemilik lain kepada zon tersebut terlebih dahulu."
+msgstr ""
+"Tidak boleh memadam kumpulan ini: ia adalah pemilik terakhir bagi %s. Tambah "
+"pemilik lain kepada zon tersebut terlebih dahulu."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3463,7 +3473,7 @@ msgstr ""
 "Tidak dapat membuang pemilik terakhir: ini akan meninggalkan zon tanpa "
 "sebarang pemilikan."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3472,12 +3482,30 @@ msgstr ""
 "2001:db8::/48) atau nama zon songsang yang berakhir dengan in-addr.arpa atau "
 "ip6.arpa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d lagi"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"%1$d rekod dalam zon %2$s kini disembunyikan oleh zon %3$s: %4$s. Pastikan "
+"%3$s mengandunginya, kemudian padamkannya daripada %2$s."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr ""
 "Sekurang-kurangnya satu pengguna atau kumpulan mesti dipilih sebagai pemilik."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "Anda tidak mempunyai kebenaran untuk mencipta zon bagi pengguna lain."
 
@@ -3486,12 +3514,12 @@ msgstr "Anda tidak mempunyai kebenaran untuk mencipta zon bagi pengguna lain."
 msgid "Unknown user ID: %s"
 msgstr "ID pengguna tidak diketahui: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "ID kumpulan yang tidak diketahui: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr ""
@@ -3502,11 +3530,11 @@ msgstr ""
 msgid "Invalid hostname."
 msgstr "Nama host tidak sah."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "Sudah ada zon dengan nama ini."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4207,7 +4235,7 @@ msgstr "Kandungan rekod HHIT mestilah blob berkod base64 yang tidak kosong."
 msgid "Priority must be 0 for HHIT records."
 msgstr "Keutamaan mestilah 0 untuk rekod HHIT."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Keutamaan bagi rekod MX/SRV mestilah nombor antara 0 dan 65535."
 
@@ -4770,7 +4798,7 @@ msgstr ""
 "Format rekod LOC tidak sah. Format sepatutnya: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "Aksara tidak sah dalam medan nama."
 
@@ -5123,6 +5151,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "Medan kandungan tidak boleh kosong."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5932,7 +5966,7 @@ msgstr ""
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "Nilai tidak sah bagi medan keutamaan MX. Mestilah antara 0 dan 65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
@@ -5940,16 +5974,16 @@ msgstr ""
 "Medan keutamaan tidak patut digunakan bagi rekod HTTPS kerana keutamaan "
 "ialah sebahagian daripada kandungan."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr ""
 "Rekod HTTPS mesti mengandungi sekurang-kurangnya nilai keutamaan dan sasaran."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "Keutamaan rekod HTTPS mestilah nombor antara 0 dan 65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
@@ -5957,63 +5991,84 @@ msgstr ""
 "Sasaran rekod HTTPS mestilah \".\" atau nama domain layak sepenuhnya yang "
 "sah."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"Rekod HTTPS dalam AliasMode (priority=0) dengan target \".\" tidak boleh "
-"mempunyai parameter menurut RFC 9460."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "Dalam Mod Alias (keutamaan = 0), tiada SvcParams yang dibenarkan."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr ""
 "Parameter rekod HTTPS mestilah dalam format key=value yang dipisahkan oleh "
 "ruang."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr ""
 "Kunci parameter HTTPS tidak diketahui: \"%s\". Lihat RFC 9460 untuk kunci "
 "yang sah."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "Versi PowerDNS yang disambungkan tidak dapat memuatkan parameter %s."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr ""
 "Kunci parameter duplikasi HTTPS: \"%s\". Setiap kunci hanya boleh muncul "
 "sekali."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr ""
 "Nilai ALPN mestilah senarai pengecam protokol yang dipisahkan dengan koma."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "Parameter no-default-alpn mesti mempunyai nilai kosong."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "Nilai port mestilah nombor antara 1 dan 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "Alamat IPv4 tidak sah dalam ipv4hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "Alamat IPv6 tidak sah dalam ipv6hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "Laluan DoH mesti bermula dengan garis miring ke hadapan (/)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "Nilai ech mesti dikodkan dalam base64."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Nilai tls-supported-groups mesti senarai nombor antara 0 hingga 65535 yang dipisahkan dengan koma."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parameter mandatory tidak boleh menyenaraikan dirinya sendiri."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr ""
@@ -7818,7 +7873,7 @@ msgstr ""
 "Nama rekod SOA mesti sepadan dengan apex zon \"%s\". Biarkan medan nama "
 "kosong atau masukkan \"@\"."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "Medan kandungan anda tidak mempunyai nilai yang sah."
 
@@ -7923,7 +7978,7 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "Keutamaan mestilah 0 untuk rekod RESINFO."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
@@ -7931,23 +7986,19 @@ msgstr ""
 "Rekod SVCB mesti bermula dengan keutamaan dan target: <priority> <target> "
 "[<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "Keutamaan SVCB mesti antara 0 dan 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "Target SVCB mesti sama ada \".\" atau nama host yang sah."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "Dalam Mod Alias (keutamaan = 0), sasaran tidak boleh \".\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "Dalam Mod Alias (keutamaan = 0), tiada SvcParams yang dibenarkan."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
@@ -7955,18 +8006,18 @@ msgstr ""
 "Dalam Mod Perkhidmatan (keutamaan > 0) dengan sasaran \".\", sekurang-"
 "kurangnya satu SvcParam diperlukan."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr ""
 "Parameter SVCB mesti berada dalam format key=value yang dipisahkan oleh "
 "ruang."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Kunci parameter SVCB tidak diketahui: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -9628,31 +9679,31 @@ msgstr "Selain itu, amaran berikut dijumpai:"
 msgid "The following warnings were found:"
 msgstr "Amaran berikut dijumpai:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
 "Anda tidak mempunyai kebenaran untuk menambah rekod ke templat zon ini."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
 "Anda tidak mempunyai kebenaran untuk menambah jenis rekod ini ke dalam "
 "templat zon."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "Ralat semasa menambah rekod templat zon: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "Rekod ini bukan milik templat zon ini."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "Ralat semasa mengemas kini rekod templat zon: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -9660,9 +9711,14 @@ msgstr ""
 "Anda tidak mempunyai kebenaran untuk memadam jenis rekod ini daripada "
 "templat zon."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "Ralat semasa memadam rekod templat zon: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "Versi PowerDNS yang disambungkan tidak dapat memuatkan rekod %s."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -10272,7 +10328,7 @@ msgstr "Masukkan nama host seperti yang tampak dalam rekod NS"
 msgid "Provide host name"
 msgstr "Menyediakan nama host"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "Akaun"
 
@@ -10376,38 +10432,36 @@ msgstr "Nyahaktifkan"
 msgid "Activate"
 msgstr "Aktifkan"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Muaturun kunci ini sebagai PEM"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Muaturun kunci persendirian dalam format BIND"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "Eksport PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "Eksport"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Padam"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Import kunci dari PEM"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Tampal kunci persendirian berkod-PEM (RSA atau ECDSA). PowerDNS 4.7+ "
-"memperoleh saiz kunci daripada kandungan PEM - pilih algoritma dan peranan "
-"kunci yang sepadan."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "Kunci persendirian PEM"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "Import kunci"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Tampal kunci persendirian dalam format BIND (seperti yang dieksport di sini "
+"atau oleh dnssec-keygen) atau kunci PEM yang tidak disulitkan (RSA, ECDSA, "
+"Ed25519 atau Ed448). Pilih algoritma yang digunakan untuk mencipta kunci "
+"tersebut."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "Kunci persendirian"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10538,7 +10592,7 @@ msgid "This record type is deprecated and should not be used for new records."
 msgstr ""
 "Jenis rekod ini sudah usang dan tidak boleh digunakan untuk rekod baru."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "Sebab perubahan ini"
 
@@ -10665,7 +10719,6 @@ msgid "All statuses"
 msgstr "Semua status"
 
 #: templates/default/list_change_requests.html:41
-#, auto-english-fallback
 msgid "Filter"
 msgstr "Filter"
 
@@ -10750,7 +10803,7 @@ msgstr "menunjukkan 20 pertama"
 msgid "more zones..."
 msgstr "Lebih banyak zon..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "Catatan Penting"
 
@@ -10880,7 +10933,7 @@ msgstr "Peralatan"
 msgid "Database"
 msgstr "Pangkalan data"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "Default TTL"
 
@@ -10892,11 +10945,11 @@ msgstr "Profil Saya"
 msgid "Password"
 msgstr "Kata Laluan"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "Keutamaan"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "Logkeluar"
 
@@ -11684,11 +11737,18 @@ msgstr "Kunci Penandatangan Kunci - menandatangani rekod DNSKEY di zon"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Kunci Penandatangan Zon - menandatangani semua rekod lain di zon"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS hanya memaparkan kunci sebagai KSK atau ZSK selagi zon mempunyai KSK aktif dan ZSK aktif dengan algoritma yang sama. Jika tidak, kunci dipaparkan sebagai CSK, walaupun anda memilih KSK atau ZSK di sini."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "Tetapan Disyorkan"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11728,7 +11788,7 @@ msgstr ""
 msgid "Add"
 msgstr "Tambah"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "Sunting profil"
 
@@ -12375,10 +12435,6 @@ msgstr "Peristiwa"
 msgid "Details"
 msgstr "Perincian"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "Eksport"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "Eksport Log"
@@ -12781,7 +12837,9 @@ msgstr "Anda akan memadam rekod dalam zon"
 msgid ""
 "The deletion is filed as a change request and happens once a reviewer "
 "approves it."
-msgstr "Pemadaman diserahkan sebagai permintaan perubahan dan berlaku setelah penyemak menyetujuinya."
+msgstr ""
+"Pemadaman diserahkan sebagai permintaan perubahan dan berlaku setelah "
+"penyemak menyetujuinya."
 
 #: templates/default/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -12803,7 +12861,7 @@ msgstr "Juga padam rekod PTR yang berkaitan (jika ada)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Juga padam rekod A/AAAA yang berkaitan (jika ada)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "Minta pemadaman"
 
@@ -13260,7 +13318,7 @@ msgstr "Buat campuran huruf, angka, dan simbol"
 msgid "Consider using a password manager"
 msgstr "Pertimbangkan untuk menggunakan pengurus kata laluan"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "Pengesahan Multi-Faktor"
 
@@ -13848,7 +13906,7 @@ msgstr "Anda akan memadam zon"
 msgid "Zone Details"
 msgstr "Butiran Zon"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13860,11 +13918,11 @@ msgstr ""
 "kali supermaster menghantar notifikasi untuk zon ini, ia akan ditambah "
 "semula!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "Ya, padam zon ini"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "Tidak, kekalkan zon ini"
 
@@ -14072,15 +14130,15 @@ msgstr "Anda akan memadam berbilang zon. Tindakan ini tidak dapat dibatalkan."
 msgid "Zones to Delete"
 msgstr "Zon untuk Dipadam"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "Catatan"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Ya, padam zon ini"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Tidak, kekalkan zon-zon ini"
 
@@ -14160,7 +14218,10 @@ msgstr "Ralat"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "Zon telah berubah sejak permintaan ini diserahkan; perubahan yang ditanda tidak lagi sepadan dengan kandungan zon. Menyetujuinya tetap akan menerapkan perubahan tersebut."
+msgstr ""
+"Zon telah berubah sejak permintaan ini diserahkan; perubahan yang ditanda "
+"tidak lagi sepadan dengan kandungan zon. Menyetujuinya tetap akan menerapkan "
+"perubahan tersebut."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -14206,7 +14267,9 @@ msgstr "Cuba lagi"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "Menerapkan permintaan semula selepas punca kegagalan diperbaiki. Tindakan yang sudah berjaya akan dilangkau."
+msgstr ""
+"Menerapkan permintaan semula selepas punca kegagalan diperbaiki. Tindakan "
+"yang sudah berjaya akan dilangkau."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14522,11 +14585,11 @@ msgstr "Senarai templat zon"
 msgid "API Documentation"
 msgstr "Dokumentasi API"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "Ralat API PowerDNS"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14534,7 +14597,7 @@ msgstr ""
 "Periksa bahawa pdns_api.key dalam config/settings.php sepadan dengan kunci "
 "API yang dikonfigurasikan dalam PowerDNS."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14542,7 +14605,7 @@ msgstr ""
 "Periksa bahawa pdns_api.server_name sepadan dengan apa yang dilaporkan "
 "PowerDNS (lalai 'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14552,7 +14615,7 @@ msgstr ""
 "puncanya - pencetus biasa selepas mengimport zon terus ke pangkalan data "
 "PowerDNS ialah satu rekod cacat yang gagal serialisasi zon."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15906,62 +15969,69 @@ msgstr ""
 "Gagal menetapkan lokal. Lokal yang dipilih mungkin tidak disokong pada "
 "sistem ini. Sila hubungi pentadbir anda."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Kunci berjaya diimport."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Eksport kunci PEM memerlukan PowerDNS 4.7 atau lebih baharu."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Kunci persendirian tidak sepadan dengan algoritma yang dipilih."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Ralat telah berlaku semasa mengeksport kunci PEM: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Kunci persendirian tidak dapat dibaca. Tampal kunci persendirian dalam format BIND atau kunci PEM yang tidak disulitkan."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Tidak dapat mengambil kunci PEM. Pelayan mungkin tidak mendedahkan bahan "
+# OBSOLETE: "kunci persendirian untuk kunci ini."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Gagal mengimport kunci. PowerDNS menolaknya."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Import kunci PEM memerlukan PowerDNS 4.7 atau lebih baharu."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "Gagal mengimport kunci."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Berikan kunci peribadi berkod PEM (mesti mengandungi penanda BEGIN/END)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Ralat berlaku semasa mengimport kunci: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "Kunci PEM telah diimport dengan sukses."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Ralat berlaku semasa mengeksport kunci: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Gagal mengimport kunci PEM. Pelayan PowerDNS mungkin menolak format "
+# OBSOLETE: "tersebut."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Tidak dapat mengambil kunci persendirian daripada PowerDNS."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Ralat berlaku semasa mengimport kunci PEM: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Muaturun kunci persendirian dalam format BIND"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Rekod HTTPS dalam AliasMode (priority=0) dengan target \".\" tidak boleh "
+# OBSOLETE: "mempunyai parameter menurut RFC 9460."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Kunci persendirian"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "Parameter no-default-alpn mesti mempunyai nilai kosong."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Tampal kunci persendirian dalam format BIND (seperti yang dieksport di sini atau oleh dnssec-keygen) atau kunci PEM yang tidak disulitkan (RSA, ECDSA, Ed25519 atau Ed448). Pilih algoritma yang digunakan untuk mencipta kunci tersebut."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Muaturun kunci ini sebagai PEM"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Mengimport kunci memerlukan PowerDNS 4.1 atau lebih baharu."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Eksport PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "%d lagi"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Import kunci dari PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "%1$d rekod dalam zon %2$s kini disembunyikan oleh zon %3$s: %4$s. Pastikan %3$s mengandunginya, kemudian padamkannya daripada %2$s."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Tampal kunci persendirian berkod-PEM (RSA atau ECDSA). PowerDNS 4.7+ "
+# OBSOLETE: "memperoleh saiz kunci daripada kandungan PEM - pilih algoritma dan "
+# OBSOLETE: "peranan kunci yang sepadan."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Kunci persendirian PEM"
+
+
+

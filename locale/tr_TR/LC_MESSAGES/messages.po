@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -943,7 +943,7 @@ msgstr ""
 "satırlar otomatik olarak kaldırılacak."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "Anahtar tipi"
 
@@ -1217,11 +1217,11 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "Bölge adı ve birincil sunucu adresi gereklidir."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "Geçersiz bölge."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1229,7 +1229,7 @@ msgstr ""
 "Bu bölgenin henüz aktarılmış kaydı yok. Onu birincil bölgeye dönüştürmeden "
 "önce aktarımın tamamlanmasını bekleyin."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "Bölge birincil bölgeye dönüştürüldü."
 
@@ -1473,21 +1473,13 @@ msgstr "%d s önce"
 msgid "%d d ago"
 msgstr "%d g önce"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "PEM anahtar dışa aktarımı PowerDNS 4.7 veya daha yenisini gerektirir."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "Anahtar dışa aktarılırken bir hata oluştu: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "PEM anahtarı dışa aktarılırken bir hata oluştu: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"PEM anahtarı alınamadı. Sunucu bu anahtar için özel anahtar materyalini "
-"sunmuyor olabilir."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Özel anahtar PowerDNS'ten alınamadı."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1509,31 +1501,39 @@ msgstr "Zon anahtarı başarıyla silindi."
 msgid "Failed to delete the zone key."
 msgstr "Zon anahtarı silinemedi."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "PEM anahtar içe aktarımı PowerDNS 4.7 veya daha yenisini gerektirir."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Anahtar içe aktarımı PowerDNS 4.1 veya daha yenisini gerektirir."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"PEM ile kodlanmış bir özel anahtar sağlayın (BEGIN/END işaretçilerini "
-"içermelidir)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "Özel anahtar seçilen algoritmayla eşleşmiyor."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "PEM anahtarı başarıyla içe aktarıldı."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"PEM anahtarı içe aktarılamadı. PowerDNS sunucusu biçimi reddetmiş olabilir."
+"Özel anahtar okunamadı. BIND biçiminde bir özel anahtar veya şifrelenmemiş "
+"bir PEM anahtarı yapıştırın."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "PEM anahtarı içe aktarılırken bir hata oluştu: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "Anahtar içe aktarılırken bir hata oluştu: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "Anahtar başarıyla içe aktarıldı."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Anahtar içe aktarılamadı. PowerDNS anahtarı reddetti."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "Anahtar içe aktarılamadı."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Bu bölge için DNSSEC yönetme izniniz bulunmamaktadır."
 
@@ -1718,11 +1718,11 @@ msgstr "Kayıt başarıyla silindi."
 msgid "Provide at least one record"
 msgstr "En az bir kayıt sağlayın"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "Geçersiz kayıt tipi."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d kayıt başarıyla eklendi."
@@ -1761,7 +1761,7 @@ msgstr "Bu alana kayıt ekleme yetkiniz bulunmuyor."
 msgid "The %s field is required."
 msgstr "%s alanı zorunludur."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "Kayıt sağlanmadı."
 
@@ -1769,17 +1769,17 @@ msgstr "Kayıt sağlanmadı."
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Kayıt başarıyla eklendi, ancak PTR kaydı oluşturma başarısız: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d eşleşen kayıt da oluşturuldu."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d kayıt eklenemedi."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Hiçbir kayıt eklenemedi. Geçersiz veri içerebilirler."
 
@@ -2071,7 +2071,7 @@ msgstr ""
 "Lütfen yöneticinizle iletişime geçin."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "Şifre değiştir"
 
@@ -2441,7 +2441,7 @@ msgstr "Değişiklik isteklerini görme izniniz bulunmamaktadır."
 msgid "Bulk Registration"
 msgstr "Toplu Kayıt"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "Zonlar başarıyla eklendi."
 
@@ -3362,7 +3362,9 @@ msgstr "Değişiklikleriniz onaya gönderildi."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "Bu zon değişiklikler için onay gerektiriyor; değişiklik isteği göndermek için zon düzenleyicisini kullanın."
+msgstr ""
+"Bu zon değişiklikler için onay gerektiriyor; değişiklik isteği göndermek "
+"için zon düzenleyicisini kullanın."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3375,7 +3377,8 @@ msgstr "Zondan farklı bir şey yok, bu nedenle istek gönderilmedi."
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "Değişiklik isteği saklanamayacak kadar büyük; daha küçük gönderimlere bölün."
+msgstr ""
+"Değişiklik isteği saklanamayacak kadar büyük; daha küçük gönderimlere bölün."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3426,7 +3429,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "Bu grup silinemez: %s için kalan son sahip. Önce bu zonlara başka bir sahip ekleyin."
+msgstr ""
+"Bu grup silinemez: %s için kalan son sahip. Önce bu zonlara başka bir sahip "
+"ekleyin."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3446,7 +3451,7 @@ msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
 msgstr "Son sahip kaldırılamaz: bölge sahipsiz kalır."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3454,11 +3459,34 @@ msgstr ""
 "CIDR notasyonuyla bir ağ (örneğin 192.168.1.0/24 veya 2001:db8::/48) ya da "
 "in-addr.arpa veya ip6.arpa ile biten bir ters zon adı girin."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d tane daha"
+msgstr[1] "%d tane daha"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"%2$s zonundaki %1$d kayıt artık %3$s zonu tarafından gizleniyor: %4$s. %3$s "
+"zonunun bu kaydı içerdiğinden emin olun, ardından onu %2$s zonundan silin."
+msgstr[1] ""
+"%2$s zonundaki %1$d kayıt artık %3$s zonu tarafından gizleniyor: %4$s. %3$s "
+"zonunun bu kayıtları içerdiğinden emin olun, ardından bunları %2$s zonundan "
+"silin."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "Sahip olarak en az bir kullanıcı veya grup seçilmelidir."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "Diğer kullanıcılar için bölge oluşturma izniniz yok."
 
@@ -3467,12 +3495,12 @@ msgstr "Diğer kullanıcılar için bölge oluşturma izniniz yok."
 msgid "Unknown user ID: %s"
 msgstr "Bilinmeyen kullanıcı ID'si: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Bilinmeyen grup kimliği: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr ""
@@ -3482,11 +3510,11 @@ msgstr ""
 msgid "Invalid hostname."
 msgstr "Geçersiz sunucu adı."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "Bu adda zaten bir zon var."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4183,7 +4211,7 @@ msgstr ""
 msgid "Priority must be 0 for HHIT records."
 msgstr "HHIT kayıtları için öncelik 0 olmalıdır."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV kayıtları için öncelik 0 ile 65535 arasında bir sayı olmalıdır."
 
@@ -4744,7 +4772,7 @@ msgstr ""
 "\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
 "[vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "Ad alanında geçersiz karakterler."
 
@@ -5094,6 +5122,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "İçerik alanı boş olamaz."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5897,7 +5931,7 @@ msgstr "100'ün üzerindeki öncelik değerleri olağandışı ve gereksiz olabi
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "MX öncelik alanı için geçersiz değer. 0 ile 65535 arasında olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
@@ -5905,15 +5939,15 @@ msgstr ""
 "Öncelik içeriğin bir parçası olduğu için HTTPS kayıtları için öncelik alanı "
 "kullanılmamalıdır."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "HTTPS kaydı en azından öncelik ve hedef değerlerini içermelidir."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "HTTPS kayfí önceliği 0 ile 65535 arasında bir sayı olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
@@ -5921,63 +5955,84 @@ msgstr ""
 "HTTPS kayfí hedefi ya \".\" ya da geçerli bir tam nitelikli domain adı "
 "olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"RFC 9460'a göre hedefi \".\" olan AliasMode'daki (priority=0) HTTPS kaydı "
-"parametre sahip olamaz."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "Alias Modunda (öncelik = 0), SvcParams kullanılamaz."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr ""
 "HTTPS kayfí parametreleri boşluklarla ayrılmış key=value formatında "
 "olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr ""
 "Bilinmeyen HTTPS parametre anahtarı: \"%s\". Geçerli anahtarlar için RFC "
 "9460'ı inceleyin."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "Bağlı PowerDNS sürümü %s parametresini yükleyemiyor."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr ""
 "Kopya HTTPS parametre anahtarı: \"%s\". Her anahtar sadece bir kez "
 "görünebilir."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr ""
 "ALPN değeri vergülle ayrılmış protokol tanımlayıcıları listesi olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "no-default-alpn parametresi boş bir değere sahip olmalıdır."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "Port değeri 1 ile 65535 arasında bir sayı olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "ipv4hint'te geçersiz IPv4 adresi: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "ipv6hint'te geçersiz IPv6 adresi: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "DoH yolu eğik çizgi (/) ile başlamalıdır."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "ech değeri base64 ile kodlanmış olmalıdır."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups değeri, 0 ile 65535 arasındaki sayıların virgülle ayrılmış bir listesi olmalıdır."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "mandatory parametresi kendisini listeleyemez."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr ""
@@ -7763,7 +7818,7 @@ msgstr ""
 "SOA kaydı adı bölge kökü \"%s\" ile eşleşmelidir. Ad alanını boş bırakın "
 "veya \"@\" girin."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "İçerik alanınız geçerli bir değere sahip değil."
 
@@ -7867,47 +7922,43 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "RESINFO kayıtları için öncelik 0 olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
 msgstr ""
 "SVCB kaydı öncelik ve hedefle başlamalıdır: <priority> <target> [<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "SVCB önceliği 0 ile 65535 arasında olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "SVCB hedefi ya \".\" ya da geçerli bir hostname olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "Alias Modunda (öncelik = 0), hedef \".\" olamaz."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "Alias Modunda (öncelik = 0), SvcParams kullanılamaz."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr ""
 "Servis Modunda (öncelik > 0) \".\" hedefiyle, en az bir SvcParam gereklidir."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr ""
 "SVCB parametreleri boşluklarla ayrılmış key=value formatında olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Bilinmeyen SVCB parametre anahtarı: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -9567,36 +9618,41 @@ msgstr "Ayrıca, aşağıdaki uyarılar bulundu:"
 msgid "The following warnings were found:"
 msgstr "Aşağıdaki uyarılar bulundu:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Bu zon şablonuna kayıt ekleme yetkiniz yok."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Bu kayıt türünü bir bölge şablonuna ekleme izniniz yok."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "Zon şablonu kaydı eklenirken hata: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "Kayıt bu zon şablonuna ait değil."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "Zon şablonu kaydı güncelleme hatası: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Bu kayıt türünü bir bölge şablonundan silme izniniz yok."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "Zon şablonu kaydı silme hatası: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "Bağlı PowerDNS sürümü %s kayıtlarını yükleyemiyor."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -10204,7 +10260,7 @@ msgstr "NS kaydında göründüğü gibi hostname girin"
 msgid "Provide host name"
 msgstr "Host adı sağlayın"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "Hesap"
 
@@ -10308,38 +10364,35 @@ msgstr "Devre Dışı Bırak"
 msgid "Activate"
 msgstr "Etkinleştir"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Bu anahtarı PEM olarak indir"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Özel anahtarı BIND biçiminde indir"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "PEM dışa aktar"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "Dışa Aktar"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Sil"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "PEM'den anahtar içe aktar"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"PEM ile kodlanmış bir özel anahtarı yapıştırın (RSA veya ECDSA). PowerDNS "
-"4.7+ anahtar boyutunu PEM içeriğinden çıkarır - eşleşen algoritmayı ve "
-"anahtar rolünü seçin."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "PEM özel anahtarı"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "Anahtarı içe aktar"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"BIND biçiminde bir özel anahtar (burada veya dnssec-keygen ile dışa "
+"aktarıldığı gibi) ya da şifrelenmemiş bir PEM anahtarı (RSA, ECDSA, Ed25519 "
+"veya Ed448) yapıştırın. Anahtarın oluşturulduğu algoritmayı seçin."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "Özel anahtar"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10469,7 +10522,7 @@ msgstr ""
 "Bu kayıt türü kullanımdan kaldırılmıştır ve yeni kayıtlar için "
 "kullanılmamalıdır."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "Bu değişikliğin nedeni"
 
@@ -10673,7 +10726,7 @@ msgstr "ilk 20 gösteriliyor"
 msgid "more zones..."
 msgstr "daha fazla bölge..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "Önemli Not"
 
@@ -10802,7 +10855,7 @@ msgstr "Araçlar"
 msgid "Database"
 msgstr "Veritabanı"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10814,11 +10867,11 @@ msgstr "Profilim"
 msgid "Password"
 msgstr "Şifre"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "Çıkış"
 
@@ -11602,11 +11655,18 @@ msgstr "Anahtar İmzalama Anahtarı - zondaki DNSKEY kayıtlarını imzalar"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zon İmzalama Anahtarı - zondaki diğer tüm kayıtları imzalar"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS bir anahtarı yalnızca bölgede aynı algoritmaya sahip etkin bir KSK ve etkin bir ZSK olduğu sürece KSK veya ZSK olarak gösterir. Aksi takdirde burada KSK veya ZSK seçmiş olsanız bile anahtarı CSK olarak gösterir."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "Önerilen Ayarlar"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11647,7 +11707,7 @@ msgstr ""
 msgid "Add"
 msgstr "Ekle"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "Profili düzenle"
 
@@ -12296,10 +12356,6 @@ msgstr "Olay"
 msgid "Details"
 msgstr "Detaylar"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "Dışa Aktar"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "Günlükleri dışa aktar"
@@ -12704,7 +12760,9 @@ msgstr "Bu zondaki bir kaydı silmek üzeresiniz"
 msgid ""
 "The deletion is filed as a change request and happens once a reviewer "
 "approves it."
-msgstr "Silme işlemi değişiklik isteği olarak gönderilir ve bir inceleyen onayladığında gerçekleşir."
+msgstr ""
+"Silme işlemi değişiklik isteği olarak gönderilir ve bir inceleyen "
+"onayladığında gerçekleşir."
 
 #: templates/default/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -12727,7 +12785,7 @@ msgstr "Karşılık gelen PTR kaydını da sil (varsa)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Karşılık gelen A/AAAA kaydını da sil (varsa)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "Silme isteği gönder"
 
@@ -13185,7 +13243,7 @@ msgstr "Harf, sayı ve sembollerin karışımını dahil edin"
 msgid "Consider using a password manager"
 msgstr "Bir şifre yöneticisi kullanmayı düşünün"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "Çok Faktörlü Kimlik Doğrulama (MFA)"
 
@@ -13772,7 +13830,7 @@ msgstr "Zonu silmek üzeresiniz"
 msgid "Zone Details"
 msgstr "Zon Detayları"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13784,11 +13842,11 @@ msgstr ""
 "sonuçlanacaktır. Supermaster bu bölge için bir bildirim gönderdiğinde, "
 "tekrar eklenecektir!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "Evet, bu zonu sil"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "Hayır, bu zonu tut"
 
@@ -13996,15 +14054,15 @@ msgstr "Birden fazla zon silmek üzeresiniz. Bu işlem geri alınamaz."
 msgid "Zones to Delete"
 msgstr "Silinecek Zonlar"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "Not"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Evet, bu zonları sil"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Hayır, bu zonları tut"
 
@@ -14085,7 +14143,9 @@ msgstr "Hata"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "Bu istek gönderildikten sonra zon değişti; işaretlenen değişiklikler artık zonun içeriğiyle eşleşmiyor. Onaylamak yine de bunları uygular."
+msgstr ""
+"Bu istek gönderildikten sonra zon değişti; işaretlenen değişiklikler artık "
+"zonun içeriğiyle eşleşmiyor. Onaylamak yine de bunları uygular."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -14131,7 +14191,9 @@ msgstr "Yeniden dene"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "Hatanın nedeni giderildikten sonra isteği yeniden uygular. Daha önce tamamlanmış işlemler atlanır."
+msgstr ""
+"Hatanın nedeni giderildikten sonra isteği yeniden uygular. Daha önce "
+"tamamlanmış işlemler atlanır."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14446,11 +14508,11 @@ msgstr "Zon şablonlarını listele"
 msgid "API Documentation"
 msgstr "API Belgelendirmesi"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14458,7 +14520,7 @@ msgstr ""
 "config/settings.php içindeki pdns_api.key değerinin PowerDNS'te "
 "yapılandırılan API anahtarıyla eşleştiğini denetleyin."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14466,7 +14528,7 @@ msgstr ""
 "pdns_api.server_name değerinin PowerDNS'in bildirdiği adla eşleştiğini "
 "denetleyin (varsayılan 'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14477,7 +14539,7 @@ msgstr ""
 "görülen bir neden, bölge serileştirmesini başarısız kılan hatalı "
 "biçimlendirilmiş tek bir kayıttır."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15823,64 +15885,72 @@ msgstr ""
 "Yerel ayar uygulanamadı. Seçilen yerel ayar bu sistemde desteklenmiyor "
 "olabilir. Lütfen yöneticinizle iletişime geçin."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Anahtar başarıyla içe aktarıldı."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM anahtar dışa aktarımı PowerDNS 4.7 veya daha yenisini gerektirir."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Özel anahtar seçilen algoritmayla eşleşmiyor."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "PEM anahtarı dışa aktarılırken bir hata oluştu: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Özel anahtar okunamadı. BIND biçiminde bir özel anahtar veya şifrelenmemiş bir PEM anahtarı yapıştırın."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM anahtarı alınamadı. Sunucu bu anahtar için özel anahtar materyalini "
+# OBSOLETE: "sunmuyor olabilir."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Anahtar içe aktarılamadı. PowerDNS anahtarı reddetti."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM anahtar içe aktarımı PowerDNS 4.7 veya daha yenisini gerektirir."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "Anahtar içe aktarılamadı."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM ile kodlanmış bir özel anahtar sağlayın (BEGIN/END işaretçilerini "
+# OBSOLETE: "içermelidir)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Anahtar içe aktarılırken bir hata oluştu: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM anahtarı başarıyla içe aktarıldı."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Anahtar dışa aktarılırken bir hata oluştu: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM anahtarı içe aktarılamadı. PowerDNS sunucusu biçimi reddetmiş "
+# OBSOLETE: "olabilir."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Özel anahtar PowerDNS'ten alınamadı."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "PEM anahtarı içe aktarılırken bir hata oluştu: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Özel anahtarı BIND biçiminde indir"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "RFC 9460'a göre hedefi \".\" olan AliasMode'daki (priority=0) HTTPS kaydı "
+# OBSOLETE: "parametre sahip olamaz."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Özel anahtar"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "no-default-alpn parametresi boş bir değere sahip olmalıdır."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "BIND biçiminde bir özel anahtar (burada veya dnssec-keygen ile dışa aktarıldığı gibi) ya da şifrelenmemiş bir PEM anahtarı (RSA, ECDSA, Ed25519 veya Ed448) yapıştırın. Anahtarın oluşturulduğu algoritmayı seçin."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Bu anahtarı PEM olarak indir"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Anahtar içe aktarımı PowerDNS 4.1 veya daha yenisini gerektirir."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "PEM dışa aktar"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "%d tane daha"
-msgstr[1] "%d tane daha"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "PEM'den anahtar içe aktar"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "%2$s zonundaki %1$d kayıt artık %3$s zonu tarafından gizleniyor: %4$s. %3$s zonunun bu kaydı içerdiğinden emin olun, ardından onu %2$s zonundan silin."
-msgstr[1] "%2$s zonundaki %1$d kayıt artık %3$s zonu tarafından gizleniyor: %4$s. %3$s zonunun bu kayıtları içerdiğinden emin olun, ardından bunları %2$s zonundan silin."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM ile kodlanmış bir özel anahtarı yapıştırın (RSA veya ECDSA). PowerDNS "
+# OBSOLETE: "4.7+ anahtar boyutunu PEM içeriğinden çıkarır - eşleşen algoritmayı ve "
+# OBSOLETE: "anahtar rolünü seçin."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "PEM özel anahtarı"
+
+
+

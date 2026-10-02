@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Latvian\n"
@@ -931,7 +931,7 @@ msgstr ""
 "un jaunrindas tiks automātiski noņemtas."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "atslēgas veids"
 
@@ -1202,11 +1202,11 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "Nepieciešams zonas nosaukums un primārā servera adrese."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "Nederīga zona."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1214,7 +1214,7 @@ msgstr ""
 "Šai zonai vēl nav pārsūtītu ierakstu. Pirms pārvēršanas par primāro zonu "
 "uzgaidiet, līdz pārsūtīšana ir pabeigta."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "Zona ir pārvērsta par primāro zonu."
 
@@ -1455,21 +1455,13 @@ msgstr "pirms %d st"
 msgid "%d d ago"
 msgstr "pirms %d d"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "PEM atslēgas eksportam nepieciešams PowerDNS 4.7 vai jaunāks."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "Eksportējot atslēgu, radās kļūda: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Eksportējot PEM atslēgu, radās kļūda: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Nevarēja izgūt PEM atslēgu. Serveris, iespējams, neizpauž šīs atslēgas "
-"privāto atslēgas materiālu."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nevarēja izgūt privāto atslēgu no PowerDNS."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1491,30 +1483,39 @@ msgstr "Zonas atslēga veiksmīgi dzēsta."
 msgid "Failed to delete the zone key."
 msgstr "Neizdevās dzēst zonas atslēgu."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "PEM atslēgas importam nepieciešams PowerDNS 4.7 vai jaunāks."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Atslēgu importam nepieciešams PowerDNS 4.1 vai jaunāks."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "Norādiet PEM kodētu privāto atslēgu (jāsatur BEGIN/END marķieri)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "Privātā atslēga neatbilst izvēlētajam algoritmam."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "PEM atslēga veiksmīgi importēta."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"Neizdevās importēt PEM atslēgu. PowerDNS serveris, iespējams, noraidīja "
-"formātu."
+"Privāto atslēgu nevarēja nolasīt. Ielīmējiet privāto atslēgu BIND formātā "
+"vai nešifrētu PEM atslēgu."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "Importējot PEM atslēgu, radās kļūda: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "Importējot atslēgu, radās kļūda: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "Atslēga veiksmīgi importēta."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Neizdevās importēt atslēgu. PowerDNS to noraidīja."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "Neizdevās importēt atslēgu."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Jums nav atļaujas pārvaldīt DNSSEC šai zonai."
 
@@ -1697,11 +1698,11 @@ msgstr "Ieraksts veiksmīgi dzēsts."
 msgid "Provide at least one record"
 msgstr "Norādiet vismaz vienu ierakstu"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "Nederīgs ieraksta veids."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d ieraksti ir veiksmīgi pievienoti."
@@ -1740,7 +1741,7 @@ msgstr "Jums nav atļaujas pievienot ierakstu šai zonai."
 msgid "The %s field is required."
 msgstr "Lauks %s ir nepieciešams."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "Netika sniegti ieraksti."
 
@@ -1748,17 +1749,17 @@ msgstr "Netika sniegti ieraksti."
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Ieraksts pievienots, bet PTR ieraksta izveide neizdevās: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Tika izveidoti arī %d atbilstoši ieraksti."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Neizdevās pievienot %d ierakstus."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Netika pievienoti ieraksti. Tie var saturēt nederīgus datus."
 
@@ -2039,7 +2040,7 @@ msgstr ""
 "sazinieties ar savu administratoru."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "Mainīt paroli"
 
@@ -2407,7 +2408,7 @@ msgstr "Jums nav atļaujas skatīt izmaiņu pieprasījumus."
 msgid "Bulk Registration"
 msgstr "Masveida reģistrācija"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "Zonas veiksmīgi pievienotas."
 
@@ -3346,7 +3347,9 @@ msgstr "Jūsu izmaiņas tika iesniegtas apstiprināšanai."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "Šai zonai izmaiņām nepieciešams apstiprinājums; izmantojiet zonas redaktoru, lai iesniegtu izmaiņu pieprasījumu."
+msgstr ""
+"Šai zonai izmaiņām nepieciešams apstiprinājums; izmantojiet zonas redaktoru, "
+"lai iesniegtu izmaiņu pieprasījumu."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3359,7 +3362,9 @@ msgstr "Nekas neatšķiras no zonas, tāpēc pieprasījums netika iesniegts."
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "Izmaiņu pieprasījums ir pārāk liels, lai to saglabātu; sadaliet to mazākos iesniegumos."
+msgstr ""
+"Izmaiņu pieprasījums ir pārāk liels, lai to saglabātu; sadaliet to mazākos "
+"iesniegumos."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3411,7 +3416,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "Nevar dzēst šo grupu: tā ir pēdējais %s īpašnieks. Vispirms pievienojiet šīm zonām citu īpašnieku."
+msgstr ""
+"Nevar dzēst šo grupu: tā ir pēdējais %s īpašnieks. Vispirms pievienojiet šīm "
+"zonām citu īpašnieku."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3433,7 +3440,7 @@ msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
 msgstr "Nevar noņemt pēdējo īpašnieku: zona paliktu bez īpašnieka."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3441,11 +3448,37 @@ msgstr ""
 "Ievadiet tīklu CIDR pierakstā (piemēram, 192.168.1.0/24 vai 2001:db8::/48) "
 "vai reversās zonas nosaukumu, kas beidzas ar in-addr.arpa vai ip6.arpa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "vēl %d"
+msgstr[1] "vēl %d"
+msgstr[2] "vēl %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"%1$d ieraksts zonā %2$s tagad ir paslēpts ar zonu %3$s: %4$s. "
+"Pārliecinieties, ka %3$s to satur, un pēc tam izdzēsiet to no %2$s."
+msgstr[1] ""
+"%1$d ieraksti zonā %2$s tagad ir paslēpti ar zonu %3$s: %4$s. "
+"Pārliecinieties, ka %3$s tos satur, un pēc tam izdzēsiet tos no %2$s."
+msgstr[2] ""
+"%1$d ierakstu zonā %2$s tagad ir paslēpti ar zonu %3$s: %4$s. "
+"Pārliecinieties, ka %3$s tos satur, un pēc tam izdzēsiet tos no %2$s."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "Jāatlasa vismaz viens lietotājs vai grupa kā īpašnieks."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "Jums nav atļaujas izveidot zonas citiem lietotājiem."
 
@@ -3454,12 +3487,12 @@ msgstr "Jums nav atļaujas izveidot zonas citiem lietotājiem."
 msgid "Unknown user ID: %s"
 msgstr "Nezināms lietotāja ID: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Nezināms grupas ID: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Varat piešķirt tikai grupas, kurās esat dalībnieks (nav atļauts: %s)"
@@ -3468,11 +3501,11 @@ msgstr "Varat piešķirt tikai grupas, kurās esat dalībnieks (nav atļauts: %s
 msgid "Invalid hostname."
 msgstr "Nederīgs resursdatora nosaukums."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "Zona ar šādu nosaukumu jau eksistē."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4160,7 +4193,7 @@ msgstr "HHIT ieraksta saturam jābūt netukšam base64 kodētam blokam."
 msgid "Priority must be 0 for HHIT records."
 msgstr "HHIT ierakstiem prioritātei jābūt 0."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV prioritātei jābūt skaitlim 0-65535."
 
@@ -4708,7 +4741,7 @@ msgstr ""
 "Nederīgs LOC ieraksta formāts. Formātam jābūt: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "Nederīgas rakstzīmes nosaukuma laukā."
 
@@ -5041,6 +5074,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "Satura lauks nevar būt tukšs."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5814,22 +5853,22 @@ msgstr "Prioritātes virs 100 ir neparastas un, iespējams, nevajadzīgas."
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "Nederīga MX prioritātes vērtība. Jābūt 0-65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
 msgstr ""
 "HTTPS ierakstos prioritātes lauku neizmanto - prioritāte ir satura daļa."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "HTTPS ierakstam jāsatur vismaz prioritāte un mērķis."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "HTTPS ieraksta prioritātei jābūt skaitlim 0-65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
@@ -5837,55 +5876,77 @@ msgstr ""
 "HTTPS ieraksta mērķim jābūt vai nu \".\", vai derīgam pilnībā kvalificētam "
 "domēna vārdam (FQDN)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr ""
-"HTTPS AliasMode (prioritāte=0) ar \".\" nevar būt parametru (RFC 9460)."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "Alias režīmā (prioritāte = 0) SvcParams nav atļauti."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr "HTTPS parametriem jābūt key=value formātā, atdalītiem ar atstarpēm."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr "Nezināma HTTPS parametra atslēga: \"%s\". Skatiet RFC 9460."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "Pievienotā PowerDNS versija nevar ielādēt parametru %s."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr "Dublēta HTTPS parametra atslēga: \"%s\". Katra atslēga tikai reizi."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr "ALPN vērtībai jābūt ar komatu atdalītam protokolu sarakstam."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "no-default-alpn parametram jābūt tukšai vērtībai."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "Porta vērtībai jābūt skaitlim no 1 līdz 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "Nederīga IPv4 adrese ipv4hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "Nederīga IPv6 adrese ipv6hint: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "DoH ceļam jāsākas ar slīpsvītru (/)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "ech vērtībai jābūt kodētai base64 formātā."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups vērtībai jābūt ar komatiem atdalītam skaitļu sarakstam no 0 līdz 65535."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametrs mandatory nevar uzskaitīt pats sevi."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr "Parametrs \"%s\" ir obligāts, bet nav iekļauts ierakstā."
@@ -7590,7 +7651,7 @@ msgstr ""
 "SOA ieraksta nosaukumam jāatbilst zonas virsotnei \"%s\". Atstājiet "
 "nosaukuma lauku tukšu vai ievadiet \"@\"."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "Satura laukam nav derīgas vērtības."
 
@@ -7694,7 +7755,7 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "RESINFO ierakstiem prioritātei jābūt 0."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
@@ -7702,23 +7763,19 @@ msgstr ""
 "SVCB ierakstam jāsākas ar prioritāti un mērķi: <priority> <target> "
 "[<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "SVCB prioritātei jābūt starp 0 un 65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "SVCB mērķim jābūt \".\" vai derīgam resursdatoram."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "Alias režīmā (prioritāte = 0) mērķis nevar būt \".\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "Alias režīmā (prioritāte = 0) SvcParams nav atļauti."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
@@ -7726,16 +7783,16 @@ msgstr ""
 "Service režīmā (prioritāte > 0) ar \".\" mērķi nepieciešams vismaz viens "
 "SvcParam."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr "SVCB parametriem jābūt key=value formātā, atdalīti ar atstarpēm."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Nezināma SVCB parametra atslēga: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -9338,36 +9395,41 @@ msgstr "Papildus tika atrasti šādi brīdinājumi:"
 msgid "The following warnings were found:"
 msgstr "Tika atrasti šādi brīdinājumi:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Jums nav atļaujas pievienot ierakstu šai zonas veidnei."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Jums nav atļaujas pievienot šo ieraksta veidu zonas veidnei."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "Kļūda, pievienojot zonas veidnes ierakstu: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "Ieraksts nepieder šai zonas veidnei."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "Kļūda, atjauninot zonas veidnes ierakstu: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Jums nav atļaujas dzēst šo ieraksta veidu no zonas veidnes."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "Kļūda, dzēšot zonas veidnes ierakstu: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "Pievienotā PowerDNS versija nevar ielādēt %s ierakstus."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -9975,7 +10037,7 @@ msgstr "Ievadiet resursdatoru, kā tas parādās NS ierakstā"
 msgid "Provide host name"
 msgstr "Norādiet resursdatora vārdu"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "Konts"
 
@@ -10077,38 +10139,35 @@ msgstr "Deaktivizēt"
 msgid "Activate"
 msgstr "Aktivizēt"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Lejupielādēt šo atslēgu kā PEM"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Lejupielādēt privāto atslēgu BIND formātā"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "Eksportēt PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "Eksportēt"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Dzēst"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Importēt atslēgu no PEM"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Ielīmējiet PEM kodētu privāto atslēgu (RSA vai ECDSA). PowerDNS 4.7+ "
-"atslēgas izmēru izsecina no PEM satura - izvēlieties atbilstošo algoritmu un "
-"atslēgas lomu."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "PEM privātā atslēga"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "Importēt atslēgu"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Ielīmējiet privāto atslēgu BIND formātā (kā tā eksportēta šeit vai ar dnssec-"
+"keygen) vai nešifrētu PEM atslēgu (RSA, ECDSA, Ed25519 vai Ed448). "
+"Izvēlieties algoritmu, kuram atslēga tika izveidota."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "Privātā atslēga"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10234,7 +10293,7 @@ msgstr "Norādiet saturu"
 msgid "This record type is deprecated and should not be used for new records."
 msgstr "Šis ieraksta veids ir novecojis un nav jālieto jauniem ierakstiem."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "Šīs izmaiņas iemesls"
 
@@ -10438,7 +10497,7 @@ msgstr "rāda pirmos 20"
 msgid "more zones..."
 msgstr "vairāk zonu..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "Svarīga piezīme"
 
@@ -10568,7 +10627,7 @@ msgstr "Rīki"
 msgid "Database"
 msgstr "Datubāze"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10580,11 +10639,11 @@ msgstr "Mans profils"
 msgid "Password"
 msgstr "Parole"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "Preferences"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "Iziet"
 
@@ -11353,11 +11412,18 @@ msgstr "Key Signing Key - paraksta DNSKEY ierakstus zonā"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - paraksta visus pārējos ierakstus zonā"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS rāda atslēgu kā KSK vai ZSK tikai tik ilgi, kamēr zonā ir aktīva KSK un aktīva ZSK ar to pašu algoritmu. Pretējā gadījumā atslēga tiek rādīta kā CSK, pat ja šeit izvēlējāties KSK vai ZSK."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "Ieteicamie iestatījumi"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11397,7 +11463,7 @@ msgstr ""
 msgid "Add"
 msgstr "Pievienot"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "Rediģēt profilu"
 
@@ -12035,10 +12101,6 @@ msgstr "Notikums"
 msgid "Details"
 msgstr "Detaļas"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "Eksportēt"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "Eksportēt žurnālus"
@@ -12442,7 +12504,9 @@ msgstr "Jūs gatavojaties dzēst ierakstu zonā"
 msgid ""
 "The deletion is filed as a change request and happens once a reviewer "
 "approves it."
-msgstr "Dzēšana tiek iesniegta kā izmaiņu pieprasījums un notiek, tiklīdz izskatītājs to apstiprina."
+msgstr ""
+"Dzēšana tiek iesniegta kā izmaiņu pieprasījums un notiek, tiklīdz "
+"izskatītājs to apstiprina."
 
 #: templates/default/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -12464,7 +12528,7 @@ msgstr "Dzēst arī atbilstošo PTR ierakstu (ja eksistē)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Dzēst arī atbilstošo A/AAAA ierakstu (ja eksistē)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "Pieprasīt dzēšanu"
 
@@ -12916,7 +12980,7 @@ msgstr "Iekļaujiet burtu, ciparu un simbolu kombināciju"
 msgid "Consider using a password manager"
 msgstr "Apsveriet paroles pārvaldnieka izmantošanu"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "Daudzfaktoru autentifikācija"
 
@@ -13493,7 +13557,7 @@ msgstr "Jūs gatavojaties dzēst zonu"
 msgid "Zone Details"
 msgstr "Zonas detaļas"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13505,11 +13569,11 @@ msgstr ""
 "kad supermaster serveris nosūtīs paziņojumu par šo zonu, tā tiks pievienota "
 "no jauna!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "Jā, dzēst šo zonu"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "Nē, paturēt šo zonu"
 
@@ -13717,15 +13781,15 @@ msgstr "Jūs gatavojaties dzēst vairākas zonas. Šo darbību nevar atsaukt."
 msgid "Zones to Delete"
 msgstr "Dzēšamās zonas"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "Piezīme"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Jā, dzēst šīs zonas"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Nē, paturēt šīs zonas"
 
@@ -13806,7 +13870,9 @@ msgstr "Kļūda"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "Zona ir mainījusies kopš šī pieprasījuma iesniegšanas; atzīmētās izmaiņas vairs neatbilst zonas saturam. Apstiprināšana tās tomēr piemēros."
+msgstr ""
+"Zona ir mainījusies kopš šī pieprasījuma iesniegšanas; atzīmētās izmaiņas "
+"vairs neatbilst zonas saturam. Apstiprināšana tās tomēr piemēros."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
@@ -13852,7 +13918,9 @@ msgstr "Mēģināt vēlreiz"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "Piemēro pieprasījumu vēlreiz pēc tam, kad kļūdas iemesls ir novērsts. Jau izpildītās darbības tiek izlaistas."
+msgstr ""
+"Piemēro pieprasījumu vēlreiz pēc tam, kad kļūdas iemesls ir novērsts. Jau "
+"izpildītās darbības tiek izlaistas."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14162,11 +14230,11 @@ msgstr "Zonu veidņu saraksts"
 msgid "API Documentation"
 msgstr "API dokumentācija"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14174,7 +14242,7 @@ msgstr ""
 "Pārbaudiet, vai pdns_api.key failā config/settings.php sakrīt ar PowerDNS "
 "konfigurēto API atslēgu."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14182,7 +14250,7 @@ msgstr ""
 "Pārbaudiet, vai pdns_api.server_name sakrīt ar to, ko ziņo PowerDNS "
 "(noklusējums 'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14192,7 +14260,7 @@ msgstr ""
 "- bieži sastopams izraisītājs pēc zonu importēšanas tieši PowerDNS datubāzē "
 "ir viens nepareizi formatēts ieraksts, kas neļauj serializēt zonu."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15534,66 +15602,67 @@ msgstr ""
 "Neizdevās iestatīt lokalizāciju. Izvēlētā lokalizācija, iespējams, nav "
 "atbalstīta šajā sistēmā. Lūdzu, sazinieties ar savu administratoru."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Atslēga veiksmīgi importēta."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM atslēgas eksportam nepieciešams PowerDNS 4.7 vai jaunāks."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Privātā atslēga neatbilst izvēlētajam algoritmam."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Eksportējot PEM atslēgu, radās kļūda: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Privāto atslēgu nevarēja nolasīt. Ielīmējiet privāto atslēgu BIND formātā vai nešifrētu PEM atslēgu."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Nevarēja izgūt PEM atslēgu. Serveris, iespējams, neizpauž šīs atslēgas "
+# OBSOLETE: "privāto atslēgas materiālu."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Neizdevās importēt atslēgu. PowerDNS to noraidīja."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM atslēgas importam nepieciešams PowerDNS 4.7 vai jaunāks."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "Neizdevās importēt atslēgu."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr "Norādiet PEM kodētu privāto atslēgu (jāsatur BEGIN/END marķieri)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Importējot atslēgu, radās kļūda: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM atslēga veiksmīgi importēta."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Eksportējot atslēgu, radās kļūda: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Neizdevās importēt PEM atslēgu. PowerDNS serveris, iespējams, noraidīja "
+# OBSOLETE: "formātu."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Nevarēja izgūt privāto atslēgu no PowerDNS."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Importējot PEM atslēgu, radās kļūda: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Lejupielādēt privāto atslēgu BIND formātā"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "HTTPS AliasMode (prioritāte=0) ar \".\" nevar būt parametru (RFC 9460)."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Privātā atslēga"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "no-default-alpn parametram jābūt tukšai vērtībai."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Ielīmējiet privāto atslēgu BIND formātā (kā tā eksportēta šeit vai ar dnssec-keygen) vai nešifrētu PEM atslēgu (RSA, ECDSA, Ed25519 vai Ed448). Izvēlieties algoritmu, kuram atslēga tika izveidota."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Lejupielādēt šo atslēgu kā PEM"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Atslēgu importam nepieciešams PowerDNS 4.1 vai jaunāks."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Eksportēt PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "vēl %d"
-msgstr[1] "vēl %d"
-msgstr[2] "vēl %d"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Importēt atslēgu no PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "%1$d ieraksts zonā %2$s tagad ir paslēpts ar zonu %3$s: %4$s. Pārliecinieties, ka %3$s to satur, un pēc tam izdzēsiet to no %2$s."
-msgstr[1] "%1$d ieraksti zonā %2$s tagad ir paslēpti ar zonu %3$s: %4$s. Pārliecinieties, ka %3$s tos satur, un pēc tam izdzēsiet tos no %2$s."
-msgstr[2] "%1$d ierakstu zonā %2$s tagad ir paslēpti ar zonu %3$s: %4$s. Pārliecinieties, ka %3$s tos satur, un pēc tam izdzēsiet tos no %2$s."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Ielīmējiet PEM kodētu privāto atslēgu (RSA vai ECDSA). PowerDNS 4.7+ "
+# OBSOLETE: "atslēgas izmēru izsecina no PEM satura - izvēlieties atbilstošo algoritmu "
+# OBSOLETE: "un atslēgas lomu."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "PEM privātā atslēga"
+
+
+

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 23:03+0300\n"
+"POT-Creation-Date: 2026-10-02 09:05+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Finnish\n"
@@ -927,7 +927,7 @@ msgstr ""
 "ja rivinvaihdot poistetaan automaattisesti."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
-#: templates/default/dnssec.html:151 templates/default/dnssec_add_key.html:39
+#: templates/default/dnssec.html:149 templates/default/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "avaimen tyyppi"
 
@@ -1198,11 +1198,11 @@ msgstr ""
 msgid "Zone name and primary server address are required."
 msgstr "Alueen nimi ja ensisijaisen palvelimen osoite ovat pakollisia."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:159
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:164
 msgid "Invalid zone."
 msgstr "Virheellinen alue."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:166
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:171
 msgid ""
 "This zone has no transferred records yet. Wait for the transfer to complete "
 "before converting it to a primary zone."
@@ -1210,7 +1210,7 @@ msgstr ""
 "Tällä alueella ei ole vielä siirrettyjä tietueita. Odota siirron "
 "valmistumista ennen sen muuntamista ensisijaiseksi alueeksi."
 
-#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:179
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:184
 msgid "Zone has been converted to a primary zone."
 msgstr "Alue on muunnettu ensisijaiseksi alueeksi."
 
@@ -1452,21 +1452,13 @@ msgstr "%d t sitten"
 msgid "%d d ago"
 msgstr "%d pv sitten"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:45
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "PEM-avaimen vienti edellyttää PowerDNS 4.7:ää tai uudempaa."
+#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:48
+msgid "An error occurred while exporting the key: "
+msgstr "Avaimen viennissä tapahtui virhe: "
 
 #: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:54
-msgid "An error occurred while exporting the PEM key: "
-msgstr "PEM-avaimen vienti epäonnistui: "
-
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php:60
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"PEM-avainta ei voitu noutaa. Palvelin ei välttämättä jaa yksityisen avaimen "
-"materiaalia tälle avaimelle."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Yksityistä avainta ei voitu noutaa PowerDNS:stä."
 
 #: lib/Application/Controller/Dnssec/DnssecToggleKeyController.php:36
 msgid "Invalid key ID."
@@ -1488,29 +1480,39 @@ msgstr "Alueen avain poistettu onnistuneesti."
 msgid "Failed to delete the zone key."
 msgstr "Alueavaimen poisto epäonnistui."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:45
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "PEM-avaimen tuonti edellyttää PowerDNS 4.7:ää tai uudempaa."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:52
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Avainten tuonti edellyttää PowerDNS 4.1:tä tai uudempaa."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:68
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "Anna PEM-koodattu yksityinen avain (sisältäen BEGIN/END-merkit)."
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:66
+msgid "The private key does not match the selected algorithm."
+msgstr "Yksityinen avain ei vastaa valittua algoritmia."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:76
-msgid "PEM key imported successfully."
-msgstr "PEM-avain tuotiin onnistuneesti."
-
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:79
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:67
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"PEM-avaimen tuonti epäonnistui. PowerDNS-palvelin on saattanut hylätä muodon."
+"Yksityistä avainta ei voitu lukea. Liitä BIND-muotoinen yksityinen avain tai "
+"salaamaton PEM-avain."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:83
-msgid "An error occurred while importing the PEM key: "
-msgstr "PEM-avaimen tuonti epäonnistui: "
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:75
+msgid "An error occurred while importing the key: "
+msgstr "Avaimen tuonnissa tapahtui virhe: "
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:82
+msgid "Key imported successfully."
+msgstr "Avain tuotiin onnistuneesti."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:89
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Avaimen tuonti epäonnistui. PowerDNS hylkäsi sen."
+
+#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php:90
+msgid "Failed to import the key."
+msgstr "Avaimen tuonti epäonnistui."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:77
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Sinulla ei ole oikeutta hallita tämän alueen DNSSEC:iä."
 
@@ -1692,11 +1694,11 @@ msgstr "Tietue poistettu onnistuneesti."
 msgid "Provide at least one record"
 msgstr "Anna vähintään yksi tietue"
 
-#: lib/Application/Controller/Record/BulkRecordAddController.php:175
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:90
 msgid "Invalid record type."
 msgstr "Virheellinen tietuetyyppi."
 
-#: lib/Application/Controller/Record/AddRecordController.php:285
+#: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d tietuetta lisätty onnistuneesti."
@@ -1735,7 +1737,7 @@ msgstr "Sinulla ei ole oikeutta lisätä tietuetta tälle alueelle."
 msgid "The %s field is required."
 msgstr "Kenttä %s on pakollinen."
 
-#: lib/Application/Controller/Record/AddRecordController.php:234
+#: lib/Application/Controller/Record/AddRecordController.php:236
 msgid "No records were provided."
 msgstr "Tietueita ei annettu."
 
@@ -1743,17 +1745,17 @@ msgstr "Tietueita ei annettu."
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Tietue lisätty onnistuneesti, mutta PTR-tietueen luonti epäonnistui: "
 
-#: lib/Application/Controller/Record/AddRecordController.php:287
+#: lib/Application/Controller/Record/AddRecordController.php:289
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Luotiin myös %d vastaavaa tietuetta."
 
-#: lib/Application/Controller/Record/AddRecordController.php:290
+#: lib/Application/Controller/Record/AddRecordController.php:292
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d tietueen lisäys epäonnistui."
 
-#: lib/Application/Controller/Record/AddRecordController.php:318
+#: lib/Application/Controller/Record/AddRecordController.php:320
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Tietueita ei voitu lisätä. Ne voivat sisältää virheellistä dataa."
 
@@ -2036,7 +2038,7 @@ msgstr ""
 "täällä. Ota yhteyttä järjestelmänvalvojaasi."
 
 #: lib/Application/Controller/Auth/ChangePasswordController.php:80
-#: templates/modern/header.html:401
+#: templates/modern/header.html:408
 msgid "Change password"
 msgstr "Vaihda salasana"
 
@@ -2406,7 +2408,7 @@ msgstr "Sinulla ei ole oikeutta tarkastella muutospyyntöjä."
 msgid "Bulk Registration"
 msgstr "Joukkorekisteröinti"
 
-#: lib/Application/Controller/Zone/BulkRegistrationController.php:120
+#: lib/Application/Controller/Zone/BulkRegistrationController.php:121
 msgid "Zones have been added successfully."
 msgstr "Alueet on lisätty onnistuneesti."
 
@@ -3330,7 +3332,9 @@ msgstr "Muutoksesi lähetettiin hyväksyttäväksi."
 msgid ""
 "This zone requires approval for changes; use the zone editor to submit a "
 "change request."
-msgstr "Tämä alue vaatii muutoksille hyväksynnän; lähetä muutospyyntö alueen muokkaimella."
+msgstr ""
+"Tämä alue vaatii muutoksille hyväksynnän; lähetä muutospyyntö alueen "
+"muokkaimella."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:51
 msgid "This change request has already been decided."
@@ -3343,7 +3347,8 @@ msgstr "Mikään ei poikkea alueesta, joten pyyntöä ei jätetty."
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:57
 msgid ""
 "The change request is too large to store; split it into smaller submissions."
-msgstr "Muutospyyntö on liian suuri tallennettavaksi; jaa se pienempiin lähetyksiin."
+msgstr ""
+"Muutospyyntö on liian suuri tallennettavaksi; jaa se pienempiin lähetyksiin."
 
 #: lib/Application/Service/Zone/ChangeRequestMessages.php:68
 msgid "The change request has been approved and applied."
@@ -3394,7 +3399,9 @@ msgstr ""
 msgid ""
 "Cannot delete this group: it is the last owner of %s. Add another owner to "
 "those zones first."
-msgstr "Tätä ryhmää ei voi poistaa: se on kohteen %s viimeinen omistaja. Lisää näille alueille ensin toinen omistaja."
+msgstr ""
+"Tätä ryhmää ei voi poistaa: se on kohteen %s viimeinen omistaja. Lisää "
+"näille alueille ensin toinen omistaja."
 
 #: lib/Application/Service/Zone/ZoneOwnershipMessages.php:66
 msgid "Add another user owner first (zone ownership mode is users_only)."
@@ -3414,7 +3421,7 @@ msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
 msgstr "Viimeistä omistajaa ei voi poistaa: vyöhyke jäisi ilman omistajaa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:40
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:45
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
@@ -3422,11 +3429,33 @@ msgstr ""
 "Anna verkko CIDR-muodossa (esimerkiksi 192.168.1.0/24 tai 2001:db8::/48) tai "
 "käänteisen alueen nimi, joka päättyy päätteeseen in-addr.arpa tai ip6.arpa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:69
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:59
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d muu"
+msgstr[1] "%d muuta"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:64
+#, php-format
+msgid ""
+"%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves it, then delete it from %2$s."
+msgid_plural ""
+"%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
+"serves them, then delete them from %2$s."
+msgstr[0] ""
+"%1$d tietue alueella %2$s on nyt alueen %3$s piilottama: %4$s. Varmista, "
+"että %3$s sisältää sen, ja poista se sitten alueelta %2$s."
+msgstr[1] ""
+"%1$d tietuetta alueella %2$s on nyt alueen %3$s piilottamia: %4$s. Varmista, "
+"että %3$s sisältää ne, ja poista ne sitten alueelta %2$s."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
 msgid "At least one user or group must be selected as owner."
 msgstr "Vähintään yksi käyttäjä tai ryhmä on valittava omistajaksi."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:55
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:87
 msgid "You do not have permission to create zones for other users."
 msgstr "Sinulla ei ole oikeutta luoda vyöhykkeitä muille käyttäjille."
 
@@ -3435,12 +3464,12 @@ msgstr "Sinulla ei ole oikeutta luoda vyöhykkeitä muille käyttäjille."
 msgid "Unknown user ID: %s"
 msgstr "Tuntematon käyttäjätunniste: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:57
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:89
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Tuntematon ryhmätunnus: %s"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:58
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:90
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Voit määrittää vain ryhmiä, joihin kuulut (ei sallittu: %s)"
@@ -3449,11 +3478,11 @@ msgstr "Voit määrittää vain ryhmiä, joihin kuulut (ei sallittu: %s)"
 msgid "Invalid hostname."
 msgstr "Virheellinen palvelimen nimi."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:71
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:103
 msgid "There is already a zone with this name."
 msgstr "Tämän niminen alue on jo olemassa."
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:72
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:104
 msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
@@ -4148,7 +4177,7 @@ msgstr ""
 msgid "Priority must be 0 for HHIT records."
 msgstr "Prioriteetin on oltava 0 HHIT-tietueille."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:170
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:179
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV-prioriteetin on oltava numero välillä 0-65535."
 
@@ -4698,7 +4727,7 @@ msgstr ""
 "\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
 "[vp[\"m\"]]]]."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:69
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
 msgstr "Virheellisiä merkkejä nimikentässä."
 
@@ -5036,6 +5065,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:55
 msgid "Content field cannot be empty."
 msgstr "Sisältökenttä ei voi olla tyhjä."
+
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:66
+msgid ""
+"Generic record data must be \"\\# <length> <hex>\" with the length matching "
+"the hex data."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5814,21 +5849,21 @@ msgstr "Yli 100:n prioriteetit ovat epätavallisia eivätkä välttämättömiä
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
 msgstr "Virheellinen MX-prioriteettikentän arvo. On oltava 0-65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:93
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
 msgstr "HTTPS-tietueissa prioriteetti on sisällössä, ei erillisessä kentässä."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:115
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
 msgid "HTTPS record must contain at least priority and target values."
 msgstr "HTTPS-tietueessa on oltava vähintään prioriteetti ja kohde."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:122
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:129
 msgid "HTTPS record priority must be a number between 0 and 65535."
 msgstr "HTTPS-tietueen prioriteetin on oltava numero välillä 0-65535."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:131
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:138
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
@@ -5836,55 +5871,78 @@ msgstr ""
 "HTTPS-tietueen kohteen on oltava joko \".\" tai kelvollinen täysin "
 "määritelty verkkotunnus."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:143
-msgid ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
-msgstr "HTTPS AliasMode (prioriteetti=0) \".\" ei saa parametreja (RFC 9460)."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
+msgstr "Alias-tilassa (prioriteetti = 0) SvcParams ei ole sallittu."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:205
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr "HTTPS-parametrien on oltava key=value-muodossa välilyönneillä."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr "Tuntematon HTTPS-parametriavain: \"%s\". Katso RFC 9460."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, php-format
+msgid "The connected PowerDNS version cannot load the %s parameter."
+msgstr "Yhdistetty PowerDNS-versio ei voi ladata parametria %s."
+
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:224
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr "Kaksoiskappale HTTPS-parametriavain: \"%s\". Jokainen vain kerran."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr ""
 "ALPN-arvon on oltava pilkulla erotettu protokollatunnisteiden luettelo."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-msgid "The no-default-alpn parameter must have an empty value."
-msgstr "no-default-alpn-parametrin on oltava tyhjä."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:250
 msgid "Port value must be a number between 1 and 65535."
 msgstr "Porttiarvon on oltava numero välillä 1-65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:259
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
 msgstr "Virheellinen IPv4-osoite ipv4hint-kentässä: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:255
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:269
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
 msgstr "Virheellinen IPv6-osoite ipv6hint-kentässä: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:277
 msgid "DoH path must start with a forward slash (/)."
 msgstr "DoH-polun on alettava vinoviivalla (/)."
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:276
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:283
+msgid "The ech value must be base64 encoded."
+msgstr "ech-arvon on oltava base64-koodattu."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:289
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups-arvon on oltava pilkuilla eroteltu luettelo lukuja väliltä 0–65535."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:302
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametri mandatory ei voi luetella itseään."
+
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:304
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr "Parametri \"%s\" on pakollinen mutta ei ole tietueessa."
@@ -7630,7 +7688,7 @@ msgstr ""
 "SOA-tietueen nimen on vastattava alueen juurta \"%s\". Jätä nimikenttä "
 "tyhjäksi tai kirjoita \"@\"."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:107
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:116
 msgid "Your content field doesnt have a legit value."
 msgstr "Sisältökentässä ei ole kelvollista arvoa."
 
@@ -7735,30 +7793,26 @@ msgstr ""
 msgid "Priority must be 0 for RESINFO records."
 msgstr "Prioriteetin on oltava 0 RESINFO-tietueille."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
 msgstr ""
 "SVCB alkaa prioriteetilla ja kohteella: <priority> <target> [<params>...]"
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "SVCB-prioriteetin on oltava välillä 0-65535."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "SVCB-kohteen on oltava \".\" tai kelvollinen palvelinnimi."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr "Alias-tilassa (prioriteetti = 0) kohde ei voi olla \".\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:148
-msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "Alias-tilassa (prioriteetti = 0) SvcParams ei ole sallittu."
-
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
@@ -7766,17 +7820,17 @@ msgstr ""
 "Service-tilassa (prioriteetti > 0) \".\" kohteella tarvitaan vähintään yksi "
 "SvcParam."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:218
 msgid "SVCB parameters must be in key=value format separated by spaces."
 msgstr ""
 "SVCB-parametrien on oltava key=value-muodossa välilyönneillä eroteltuina."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:227
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Tuntematon SVCB-parametriavain: \"%s\"."
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:234
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -9393,36 +9447,41 @@ msgstr "Lisäksi löytyi seuraavat varoitukset:"
 msgid "The following warnings were found:"
 msgstr "Löytyi seuraavat varoitukset:"
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:99
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:108
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Sinulla ei ole oikeutta lisätä tietuetta tähän aluemalliin."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:159
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:168
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Sinulla ei ole oikeutta lisätä tätä tietuetyyppiä aluemalliin."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:129
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:138
 msgid "Error adding zone template record: "
 msgstr "Virhe lisättäessä aluemallin tietuetta: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:218
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:227
 msgid "The record does not belong to this zone template."
 msgstr "Tietue ei kuulu tähän aluemalliin."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:197
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:206
 msgid "Error updating zone template record: "
 msgstr "Virhe aluemallin tietueen päivityksessä: "
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:223
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:232
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Sinulla ei ole oikeutta poistaa tätä tietuetyyppiä aluemallista."
 
-#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:229
+#: lib/Domain/Service/Template/ZoneTemplateRecordService.php:238
 msgid "Error deleting zone template record: "
 msgstr "Virhe aluemallin tietueen poistossa: "
+
+#: lib/Domain/Service/Dns/DnsRecordValidationService.php:93
+#, php-format
+msgid "The connected PowerDNS version cannot load %s records."
+msgstr "Yhdistetty PowerDNS-versio ei voi ladata %s-tietueita."
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:128
 msgid "Zone template not found."
@@ -10033,7 +10092,7 @@ msgstr "Syötä palvelimen nimi sellaisena kuin se näkyy NS-tietueessa"
 msgid "Provide host name"
 msgstr "Anna palvelimen nimi"
 
-#: templates/default/header.html:277 templates/modern/header.html:382
+#: templates/default/header.html:282 templates/modern/header.html:389
 msgid "Account"
 msgstr "Tili"
 
@@ -10135,37 +10194,35 @@ msgstr "Poista käytöstä"
 msgid "Activate"
 msgstr "Aktivoi"
 
-#: templates/default/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Lataa avain PEM-muodossa"
+#: templates/default/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Lataa yksityinen avain BIND-muodossa"
 
-#: templates/default/dnssec.html:125
-msgid "Export PEM"
-msgstr "Vie PEM"
+#: templates/default/list_record_changes.html:194
+msgid "Export"
+msgstr "Vie"
 
 #: templates/modern/api_keys.html:82 templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Poista"
 
-#: templates/default/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Tuo avain PEM:stä"
-
-#: templates/default/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Liitä PEM-koodattu yksityinen avain (RSA tai ECDSA). PowerDNS 4.7+ päättelee "
-"avaimen koon PEM-sisällöstä - valitse vastaava algoritmi ja avaimen rooli."
-
-#: templates/default/dnssec.html:167
-msgid "PEM private key"
-msgstr "Yksityinen PEM-avain"
-
-#: templates/default/dnssec.html:172
+#: templates/default/dnssec.html:143 templates/default/dnssec.html:170
 msgid "Import key"
 msgstr "Tuo avain"
+
+#: templates/default/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Liitä BIND-muotoinen yksityinen avain (sellaisena kuin se viedään täältä tai "
+"dnssec-keygen-työkalulla) tai salaamaton PEM-avain (RSA, ECDSA, Ed25519 tai "
+"Ed448). Valitse algoritmi, jolle avain on luotu."
+
+#: templates/default/dnssec.html:165
+msgid "Private key"
+msgstr "Yksityinen avain"
 
 #: templates/default/list_networks.html:8
 msgid "Network Mapping:"
@@ -10290,7 +10347,7 @@ msgstr "Anna sisältö"
 msgid "This record type is deprecated and should not be used for new records."
 msgstr "Tämä tietuetyyppi on vanhentunut, ei uusille tietueille."
 
-#: templates/default/delete_domain.html:64
+#: templates/default/delete_domain.html:66
 msgid "Reason for this change"
 msgstr "Muutoksen syy"
 
@@ -10494,7 +10551,7 @@ msgstr "näytetään ensimmäiset 20"
 msgid "more zones..."
 msgstr "lisää alueita..."
 
-#: templates/default/delete_domain.html:54
+#: templates/default/delete_domain.html:56
 msgid "Important Note"
 msgstr "Tärkeä huomautus"
 
@@ -10624,7 +10681,7 @@ msgstr "Työkalut"
 msgid "Database"
 msgstr "Tietokanta"
 
-#: templates/default/index.html:319
+#: templates/modern/header.html:367
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10636,11 +10693,11 @@ msgstr "Oma profiili"
 msgid "Password"
 msgstr "Salasana"
 
-#: templates/default/header.html:289 templates/modern/header.html:395
+#: templates/default/header.html:294 templates/modern/header.html:402
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: templates/modern/header.html:459
+#: templates/modern/header.html:466
 msgid "Logout"
 msgstr "Kirjaudu ulos"
 
@@ -11412,11 +11469,18 @@ msgstr "Key Signing Key - allekirjoittaa alueen DNSKEY-tietueet"
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - allekirjoittaa muut alueen tietueet"
 
-#: templates/default/dnssec_add_key.html:158
+#: templates/default/dnssec_add_key.html:155
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS näyttää avaimen KSK- tai ZSK-avaimena vain, kun vyöhykkeellä on aktiivinen KSK ja aktiivinen ZSK samalla algoritmilla. Muuten se näyttää avaimen CSK-avaimena, vaikka olisit valinnut tässä KSK:n tai ZSK:n."
+
+#: templates/default/dnssec_add_key.html:159
 msgid "Recommended Settings"
 msgstr "Suositellut asetukset"
 
-#: templates/default/dnssec_add_key.html:159
+#: templates/default/dnssec_add_key.html:160
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11457,7 +11521,7 @@ msgstr ""
 msgid "Add"
 msgstr "Lisää"
 
-#: templates/modern/header.html:389
+#: templates/modern/header.html:396
 msgid "Edit profile"
 msgstr "Muokkaa profiilia"
 
@@ -12094,10 +12158,6 @@ msgstr "Tapahtuma"
 msgid "Details"
 msgstr "Tiedot"
 
-#: templates/default/list_record_changes.html:194
-msgid "Export"
-msgstr "Vie"
-
 #: templates/default/list_record_changes.html:171
 msgid "Export Logs"
 msgstr "Vie lokit"
@@ -12497,7 +12557,8 @@ msgstr "Olet poistamassa tietuetta alueelta"
 msgid ""
 "The deletion is filed as a change request and happens once a reviewer "
 "approves it."
-msgstr "Poisto jätetään muutospyyntönä ja tapahtuu, kun tarkistaja hyväksyy sen."
+msgstr ""
+"Poisto jätetään muutospyyntönä ja tapahtuu, kun tarkistaja hyväksyy sen."
 
 #: templates/default/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -12519,7 +12580,7 @@ msgstr "Poista myös vastaava PTR-tietue (jos olemassa)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Poista myös vastaava A/AAAA-tietue (jos olemassa)"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Request deletion"
 msgstr "Pyydä poistoa"
 
@@ -12970,7 +13031,7 @@ msgstr "Käytä kirjainten, numeroiden ja symbolien yhdistelmää"
 msgid "Consider using a password manager"
 msgstr "Harkitse salasanahallinnan käyttöä"
 
-#: templates/modern/header.html:408
+#: templates/modern/header.html:415
 msgid "Multi-Factor Authentication"
 msgstr "Monivaiheinen todennus"
 
@@ -13547,7 +13608,7 @@ msgstr "Olet poistamassa aluetta"
 msgid "Zone Details"
 msgstr "Alueen tiedot"
 
-#: templates/default/delete_domains.html:53
+#: templates/default/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13558,11 +13619,11 @@ msgstr ""
 "supermaster. Alueen poistaminen nyt on vain väliaikaista: aina kun "
 "supermaster lähettää tästä alueesta ilmoituksen, alue lisätään uudelleen!"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "Yes, delete this zone"
 msgstr "Kyllä, poista tämä alue"
 
-#: templates/default/delete_domain.html:68
+#: templates/default/delete_domain.html:70
 msgid "No, keep this zone"
 msgstr "Ei, säilytä tämä alue"
 
@@ -13770,15 +13831,15 @@ msgstr "Olet poistamassa useita alueita. Toimintoa ei voi peruuttaa."
 msgid "Zones to Delete"
 msgstr "Poistettavat alueet"
 
-#: templates/default/delete_domains.html:30
+#: templates/default/delete_domains.html:32
 msgid "Note"
 msgstr "Huomautus"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Kyllä, poista nämä alueet"
 
-#: templates/default/delete_domains.html:64
+#: templates/default/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Ei, säilytä nämä alueet"
 
@@ -13859,11 +13920,14 @@ msgstr "Virhe"
 msgid ""
 "The zone has changed since this request was filed; the marked changes no "
 "longer match what the zone holds. Approving still applies them."
-msgstr "Alue on muuttunut sen jälkeen, kun tämä pyyntö jätettiin; merkityt muutokset eivät enää vastaa alueen sisältöä. Hyväksyminen toteuttaa ne silti."
+msgstr ""
+"Alue on muuttunut sen jälkeen, kun tämä pyyntö jätettiin; merkityt muutokset "
+"eivät enää vastaa alueen sisältöä. Hyväksyminen toteuttaa ne silti."
 
 #: templates/default/change_request.html:61
 msgid "The zone serial has moved since this request was filed."
-msgstr "Alueen sarjanumero on muuttunut sen jälkeen, kun tämä pyyntö jätettiin."
+msgstr ""
+"Alueen sarjanumero on muuttunut sen jälkeen, kun tämä pyyntö jätettiin."
 
 #: templates/default/change_request.html:61
 msgid "Filed at serial"
@@ -13905,7 +13969,9 @@ msgstr "Yritä uudelleen"
 msgid ""
 "Applies the request again after the cause of the failure was fixed. Actions "
 "that already landed are skipped."
-msgstr "Toteuttaa pyynnön uudelleen, kun virheen syy on korjattu. Jo tehdyt toimet ohitetaan."
+msgstr ""
+"Toteuttaa pyynnön uudelleen, kun virheen syy on korjattu. Jo tehdyt toimet "
+"ohitetaan."
 
 #: templates/default/change_request.html:165
 msgid "Approve"
@@ -14217,11 +14283,11 @@ msgstr "Aluemallien luettelo"
 msgid "API Documentation"
 msgstr "API-dokumentaatio"
 
-#: templates/default/header.html:332 templates/modern/header.html:506
+#: templates/default/header.html:337 templates/modern/header.html:513
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:336 templates/modern/header.html:510
+#: templates/default/header.html:341 templates/modern/header.html:517
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14229,7 +14295,7 @@ msgstr ""
 "Tarkista, että config/settings.php-tiedoston pdns_api.key vastaa "
 "PowerDNS:ään määritettyä API-avainta."
 
-#: templates/default/header.html:338 templates/modern/header.html:512
+#: templates/default/header.html:343 templates/modern/header.html:519
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14237,7 +14303,7 @@ msgstr ""
 "Tarkista, että pdns_api.server_name vastaa PowerDNS:n ilmoittamaa nimeä "
 "(oletus 'localhost')."
 
-#: templates/default/header.html:340 templates/modern/header.html:514
+#: templates/default/header.html:345 templates/modern/header.html:521
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14247,7 +14313,7 @@ msgstr ""
 "aiheuttaja alueiden suoran tietokantatuonnin jälkeen on yksittäinen "
 "virheellinen tietue, joka estää alueen sarjallistamisen."
 
-#: templates/default/header.html:342 templates/modern/header.html:516
+#: templates/default/header.html:347 templates/modern/header.html:523
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15591,64 +15657,67 @@ msgstr ""
 "Kieliasetuksen määrittäminen epäonnistui. Valittua kieliasetusta ei ehkä "
 "tueta tässä järjestelmässä. Ota yhteyttä ylläpitäjään."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Avain tuotiin onnistuneesti."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM-avaimen vienti edellyttää PowerDNS 4.7:ää tai uudempaa."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Yksityinen avain ei vastaa valittua algoritmia."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "PEM-avaimen vienti epäonnistui: "
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Yksityistä avainta ei voitu lukea. Liitä BIND-muotoinen yksityinen avain tai salaamaton PEM-avain."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM-avainta ei voitu noutaa. Palvelin ei välttämättä jaa yksityisen "
+# OBSOLETE: "avaimen materiaalia tälle avaimelle."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Avaimen tuonti epäonnistui. PowerDNS hylkäsi sen."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM-avaimen tuonti edellyttää PowerDNS 4.7:ää tai uudempaa."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Failed to import the key."
-msgstr "Avaimen tuonti epäonnistui."
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr "Anna PEM-koodattu yksityinen avain (sisältäen BEGIN/END-merkit)."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Avaimen tuonnissa tapahtui virhe: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM-avain tuotiin onnistuneesti."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Avaimen viennissä tapahtui virhe: "
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM-avaimen tuonti epäonnistui. PowerDNS-palvelin on saattanut hylätä "
+# OBSOLETE: "muodon."
 
-#: lib/Application/Controller/Dnssec/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Yksityistä avainta ei voitu noutaa PowerDNS:stä."
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "PEM-avaimen tuonti epäonnistui: "
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Lataa yksityinen avain BIND-muodossa"
+# OBSOLETE: msgid ""
+# OBSOLETE: "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
+# OBSOLETE: "parameters according to RFC 9460."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "HTTPS AliasMode (prioriteetti=0) \".\" ei saa parametreja (RFC 9460)."
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Yksityinen avain"
+# OBSOLETE: msgid "The no-default-alpn parameter must have an empty value."
+# OBSOLETE: msgstr "no-default-alpn-parametrin on oltava tyhjä."
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Liitä BIND-muotoinen yksityinen avain (sellaisena kuin se viedään täältä tai dnssec-keygen-työkalulla) tai salaamaton PEM-avain (RSA, ECDSA, Ed25519 tai Ed448). Valitse algoritmi, jolle avain on luotu."
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Lataa avain PEM-muodossa"
 
-#: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Avainten tuonti edellyttää PowerDNS 4.1:tä tai uudempaa."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Vie PEM"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%d more"
-msgid_plural "%d more"
-msgstr[0] "%d muu"
-msgstr[1] "%d muuta"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Tuo avain PEM:stä"
 
-#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
-#, php-format
-msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
-msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
-msgstr[0] "%1$d tietue alueella %2$s on nyt alueen %3$s piilottama: %4$s. Varmista, että %3$s sisältää sen, ja poista se sitten alueelta %2$s."
-msgstr[1] "%1$d tietuetta alueella %2$s on nyt alueen %3$s piilottamia: %4$s. Varmista, että %3$s sisältää ne, ja poista ne sitten alueelta %2$s."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Liitä PEM-koodattu yksityinen avain (RSA tai ECDSA). PowerDNS 4.7+ "
+# OBSOLETE: "päättelee avaimen koon PEM-sisällöstä - valitse vastaava algoritmi ja "
+# OBSOLETE: "avaimen rooli."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Yksityinen PEM-avain"
+
+
+
