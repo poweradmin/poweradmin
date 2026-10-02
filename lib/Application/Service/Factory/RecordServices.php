@@ -122,7 +122,11 @@ final class RecordServices
      */
     public function dnsValidatorRegistry(): DnsValidatorRegistry
     {
-        return $this->dnsValidatorRegistry ??= new DnsValidatorRegistry($this->config, $this->services->dnsBackendProvider());
+        return $this->dnsValidatorRegistry ??= new DnsValidatorRegistry(
+            $this->config,
+            $this->services->dnsBackendProvider(),
+            fn() => $this->services->backend()->pdnsCapabilities()
+        );
     }
 
     public function emailTemplateService(): EmailTemplateService

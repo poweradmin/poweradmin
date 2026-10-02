@@ -199,20 +199,51 @@ final readonly class PdnsCapabilities
      */
     public function supportsRecordType(string $type): bool
     {
-        $type = strtoupper(trim($type));
+        $minVersion = self::recordTypeMinVersion($type);
 
-        $minVersion = match ($type) {
+        if ($minVersion === null) {
+            return true;
+        }
+        return $this->isAtLeast($minVersion);
+    }
+
+    /**
+     * The first PowerDNS version that understands the record type, or null when
+     * every supported version does.
+     */
+    public static function recordTypeMinVersion(string $type): ?string
+    {
+        return match (strtoupper(trim($type))) {
             'SVCB', 'HTTPS', 'APL' => '4.4.0',
             'CSYNC', 'NID', 'L32', 'L64', 'LP' => '4.5.0',
             'ZONEMD' => '4.8.0',
             'RESINFO', 'WALLET', 'HHIT', 'BRID' => '5.1.0',
             default => null,
         };
+    }
 
-        if ($minVersion === null) {
-            return true;
-        }
-        return $this->isAtLeast($minVersion);
+    /**
+     * Whether the connected server can load an SVCB/HTTPS parameter written by
+     * this name. Older servers cannot load the record at all. An unknown version
+     * allows the name, since SQL-only setups never learn the version.
+     */
+    public function supportsSvcParam(string $key): bool
+    {
+        $minVersion = self::svcParamMinVersion($key);
+
+        return $minVersion === null || $this->isAtLeast($minVersion, true);
+    }
+
+    /**
+     * The first PowerDNS version that knows the SVCB/HTTPS parameter name, or null
+     * when every supported version does.
+     */
+    public static function svcParamMinVersion(string $key): ?string
+    {
+        return match (strtolower($key)) {
+            'dohpath', 'ohttp', 'tls-supported-groups' => '5.1.0',
+            default => null,
+        };
     }
 
     /* ----- API endpoints ---------------------------------------------- */

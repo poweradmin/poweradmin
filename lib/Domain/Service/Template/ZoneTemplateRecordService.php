@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service\Template;
 
+use Closure;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Exception;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
@@ -45,13 +47,20 @@ class ZoneTemplateRecordService
     private DnsBackendProviderInterface $backendProvider;
     private DnsFormatter $dnsFormatter;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;
+    /** @var (Closure(): PdnsCapabilities)|null */
+    private ?Closure $capabilities;
 
+    /**
+     * @param (Closure(): PdnsCapabilities)|null $capabilities Resolves the connected PowerDNS version
+     */
     public function __construct(
         ZoneTemplateRepositoryInterface $repository,
         ZoneTemplateAccessPolicy $access,
         ConfigurationInterface $config,
-        DnsBackendProviderInterface $backendProvider
+        DnsBackendProviderInterface $backendProvider,
+        ?Closure $capabilities = null
     ) {
+        $this->capabilities = $capabilities;
         $this->repository = $repository;
         $this->access = $access;
         $this->config = $config;
@@ -68,7 +77,7 @@ class ZoneTemplateRecordService
     private function validateTemplateRecord(string $name, string $type, string $content, mixed $ttl, mixed $prio): ValidationResult
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
-            new DnsValidatorRegistry($this->config, $this->backendProvider)
+            new DnsValidatorRegistry($this->config, $this->backendProvider, $this->capabilities)
         );
 
         return $this->recordValidationService->validate(

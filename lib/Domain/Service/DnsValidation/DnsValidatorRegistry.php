@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Closure;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -35,11 +37,19 @@ class DnsValidatorRegistry
     private ConfigurationInterface $config;
     private DnsBackendProviderInterface $backendProvider;
     private HostnameValidator $hostnameValidator;
+    /** @var (Closure(): PdnsCapabilities)|null */
+    private ?Closure $capabilitiesResolver;
+    private ?PdnsCapabilities $capabilities = null;
 
-    public function __construct(ConfigurationInterface $config, DnsBackendProviderInterface $backendProvider)
+    /**
+     * @param (Closure(): PdnsCapabilities)|null $capabilities Resolves the connected PowerDNS version,
+     *     called only when a version-dependent type or SVCB/HTTPS parameter is validated
+     */
+    public function __construct(ConfigurationInterface $config, DnsBackendProviderInterface $backendProvider, ?Closure $capabilities = null)
     {
         $this->config = $config;
         $this->backendProvider = $backendProvider;
+        $this->capabilitiesResolver = $capabilities;
         $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
         $this->registerValidators();
     }
@@ -72,7 +82,7 @@ class DnsValidatorRegistry
             RecordType::EUI64 => new EUI64RecordValidator($this->hostnameValidator),
             RecordType::HHIT => new HHITRecordValidator($this->hostnameValidator),
             RecordType::HINFO => new HINFORecordValidator($this->hostnameValidator),
-            RecordType::HTTPS => new HTTPSRecordValidator($this->hostnameValidator),
+            RecordType::HTTPS => new HTTPSRecordValidator($this->hostnameValidator, $this->svcParamSupported(...)),
             RecordType::IPSECKEY => new IPSECKEYRecordValidator($this->hostnameValidator),
             RecordType::KEY => new KEYRecordValidator($this->hostnameValidator),
             RecordType::KX => new KXRecordValidator($this->hostnameValidator),
@@ -101,7 +111,7 @@ class DnsValidatorRegistry
             RecordType::SPF => new SPFRecordValidator($this->hostnameValidator),
             RecordType::SRV => new SRVRecordValidator($this->hostnameValidator),
             RecordType::SSHFP => new SSHFPRecordValidator($this->hostnameValidator),
-            RecordType::SVCB => new SVCBRecordValidator($this->hostnameValidator),
+            RecordType::SVCB => new SVCBRecordValidator($this->hostnameValidator, null, $this->svcParamSupported(...)),
             RecordType::TKEY => new TKEYRecordValidator($this->hostnameValidator),
             RecordType::TLSA => new TLSARecordValidator($this->hostnameValidator),
             RecordType::TSIG => new TSIGRecordValidator($this->hostnameValidator),
@@ -146,6 +156,35 @@ class DnsValidatorRegistry
         }
 
         return false;
+    }
+
+    /**
+     * False only when the connected PowerDNS version is known and predates the type.
+     */
+    public function isTypeSupportedByServer(string $recordType): bool
+    {
+        $minVersion = PdnsCapabilities::recordTypeMinVersion($recordType);
+        if ($minVersion === null) {
+            return true;
+        }
+
+        $capabilities = $this->capabilities();
+        return $capabilities === null || !$capabilities->isKnown() || $capabilities->isAtLeast($minVersion);
+    }
+
+    private function svcParamSupported(string $key): bool
+    {
+        return PdnsCapabilities::svcParamMinVersion($key) === null
+            || ($this->capabilities()?->supportsSvcParam($key) ?? true);
+    }
+
+    private function capabilities(): ?PdnsCapabilities
+    {
+        if ($this->capabilitiesResolver === null) {
+            return null;
+        }
+
+        return $this->capabilities ??= ($this->capabilitiesResolver)();
     }
 
     /**

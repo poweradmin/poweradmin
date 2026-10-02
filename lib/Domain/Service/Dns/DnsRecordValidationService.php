@@ -89,6 +89,9 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         if (!$this->validatorRegistry->isKnownType($type)) {
             return ValidationResult::failure(_('Invalid record type.'));
         }
+        if (!$this->validatorRegistry->isTypeSupportedByServer($type)) {
+            return ValidationResult::failure(sprintf(_('The connected PowerDNS version cannot load %s records.'), $type));
+        }
 
         // Get the appropriate validator for this record type
         $validator = $this->validatorRegistry->getValidator($type);

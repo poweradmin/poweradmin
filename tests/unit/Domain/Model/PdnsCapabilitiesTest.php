@@ -282,4 +282,16 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertTrue($caps->supportsRecordType('A'));
         $this->assertTrue($caps->supportsRecordType('CNAME'));
     }
+
+    public function testSvcParamNamesAddedIn51NeedThatVersionButUnknownAllowsThem(): void
+    {
+        foreach (['dohpath', 'ohttp', 'tls-supported-groups', 'DOHPATH'] as $key) {
+            $this->assertFalse(PdnsCapabilities::fromVersion('5.0.4')->supportsSvcParam($key), $key);
+            $this->assertTrue(PdnsCapabilities::fromVersion('5.1.0')->supportsSvcParam($key), $key);
+            $this->assertTrue(PdnsCapabilities::fromVersion(null)->supportsSvcParam($key), $key);
+        }
+
+        $this->assertTrue(PdnsCapabilities::fromVersion('4.7.0')->supportsSvcParam('alpn'));
+        $this->assertTrue(PdnsCapabilities::fromVersion('4.7.0')->supportsSvcParam('key65000'));
+    }
 }

@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DefaultRecordValidator;
@@ -116,6 +117,53 @@ class DnsValidatorRegistryTest extends TestCase
         // A narrowed list does not refuse types that have a validator
         $this->assertTrue($registry->isKnownType(RecordType::MX));
         $this->assertFalse($registry->isKnownType('TYPE65282'));
+    }
+
+    public function testVersionDependentTypeIsRefusedOnlyWhenTheServerIsKnownToBeOlder(): void
+    {
+        $this->assertFalse($this->registryFor('4.9.0')->isTypeSupportedByServer('WALLET'));
+        $this->assertTrue($this->registryFor('5.1.0')->isTypeSupportedByServer('WALLET'));
+        // SQL-only setups never learn the version, so nothing is refused there
+        $this->assertTrue($this->registryFor(null)->isTypeSupportedByServer('WALLET'));
+        $this->assertTrue($this->registry->isTypeSupportedByServer('WALLET'));
+    }
+
+    public function testVersionIsLookedUpOnlyForVersionDependentInput(): void
+    {
+        $lookups = 0;
+        $registry = new DnsValidatorRegistry(new FakeConfiguration(), $this->createMock(DnsBackendProviderInterface::class), function () use (&$lookups) {
+            $lookups++;
+            return PdnsCapabilities::fromVersion('4.9.0');
+        });
+
+        $this->assertTrue($registry->isTypeSupportedByServer(RecordType::A));
+        $this->assertTrue($registry->getValidator(RecordType::SVCB)->validate('1 svc.example.com alpn=h2', 'x.example.com', '', 3600, 86400)->isValid());
+        $this->assertSame(0, $lookups);
+
+        $registry->isTypeSupportedByServer('WALLET');
+        $registry->isTypeSupportedByServer('ZONEMD');
+        $this->assertSame(1, $lookups);
+    }
+
+    public function testSvcParamNamesFromPowerDns51AreRefusedOnOlderServers(): void
+    {
+        foreach ([RecordType::SVCB, RecordType::HTTPS] as $type) {
+            foreach (['dohpath=/dns-query{?dns}', 'ohttp', 'tls-supported-groups=29'] as $param) {
+                $content = '1 svc.example.com alpn=h2 ' . $param;
+                $this->assertFalse($this->registryFor('4.9.0')->getValidator($type)->validate($content, 'x.example.com', '', 3600, 86400)->isValid(), "$type $param on 4.9");
+                $this->assertTrue($this->registryFor('5.1.0')->getValidator($type)->validate($content, 'x.example.com', '', 3600, 86400)->isValid(), "$type $param on 5.1");
+                $this->assertTrue($this->registryFor(null)->getValidator($type)->validate($content, 'x.example.com', '', 3600, 86400)->isValid(), "$type $param unknown");
+            }
+        }
+    }
+
+    private function registryFor(?string $version): DnsValidatorRegistry
+    {
+        return new DnsValidatorRegistry(
+            new FakeConfiguration(),
+            $this->createMock(DnsBackendProviderInterface::class),
+            fn() => PdnsCapabilities::fromVersion($version)
+        );
     }
 
     /**

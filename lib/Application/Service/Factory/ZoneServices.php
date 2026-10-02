@@ -317,7 +317,8 @@ final class ZoneServices
             $this->zoneTemplateRepository(),
             $this->zoneTemplateAccessPolicy(),
             $this->config,
-            $this->services->dnsBackendProvider()
+            $this->services->dnsBackendProvider(),
+            fn() => $this->services->backend()->pdnsCapabilities()
         );
     }
 

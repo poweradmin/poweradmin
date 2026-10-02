@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Closure;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -38,12 +39,18 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private IPAddressValidator $ipValidator;
+    /** @var (Closure(string): bool)|null */
+    private ?Closure $svcParamSupported;
 
-    public function __construct(HostnameValidator $hostnameValidator, ?IPAddressValidator $ipValidator = null)
+    /**
+     * @param (Closure(string): bool)|null $svcParamSupported Whether the connected PowerDNS knows a parameter name
+     */
+    public function __construct(HostnameValidator $hostnameValidator, ?IPAddressValidator $ipValidator = null, ?Closure $svcParamSupported = null)
     {
         $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
+        $this->svcParamSupported = $svcParamSupported;
     }
 
     /**
@@ -218,6 +225,8 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
                 $errors[] = sprintf(_('Use the parameter name instead of "%s".'), $key);
             } elseif (!isset($validKeys[$key]) && !self::isGenericKey($key)) {
                 $errors[] = sprintf(_('Unknown SVCB parameter key: "%s".'), $key);
+            } elseif ($this->svcParamSupported !== null && !($this->svcParamSupported)($key)) {
+                $errors[] = sprintf(_('The connected PowerDNS version cannot load the %s parameter.'), $key);
             }
 
             // Check for duplicate keys (not allowed as per RFC)

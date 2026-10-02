@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\Backend\DnsDataService;
 use Poweradmin\Application\Service\Backend\DnssecProviderFactory;
+use Poweradmin\Application\Service\Backend\PdnsVersionService;
 use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
 use Poweradmin\Application\Service\Backend\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -44,6 +45,7 @@ use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
@@ -79,6 +81,7 @@ final class BackendServices
     private bool $apiClientResolved = false;
     private ?PowerdnsStatusService $powerdnsStatusService = null;
     private ?ZoneSyncService $zoneSyncService = null;
+    private ?PdnsCapabilities $pdnsCapabilities = null;
 
     public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ActorInterface $actor, SessionInterface $session)
     {
@@ -117,6 +120,27 @@ final class BackendServices
         }
 
         return $this->apiClient;
+    }
+
+    /**
+     * The connected PowerDNS version, from the session cache or one fetch when the
+     * cache is empty or expired; unknown when no PowerDNS API is configured.
+     */
+    public function pdnsCapabilities(): PdnsCapabilities
+    {
+        if ($this->pdnsCapabilities === null) {
+            // A version cached before the API was unconfigured no longer describes the server
+            if ((string)$this->config->get('pdns_api', 'url', '') === '' || (string)$this->config->get('pdns_api', 'key', '') === '') {
+                return $this->pdnsCapabilities = PdnsCapabilities::fromVersion(null);
+            }
+            // An expired entry is refreshed first and only used when the refresh fails
+            if (PdnsVersionService::getCachedInfo($this->session) === null) {
+                PdnsVersionService::refreshFromConfig($this->config, $this->logger, $this->session);
+            }
+            $this->pdnsCapabilities = PdnsCapabilities::fromServerInfo(PdnsVersionService::getCachedInfo($this->session, true));
+        }
+
+        return $this->pdnsCapabilities;
     }
 
     public function repositoryFactory(?DnsBackendProviderInterface $backendProvider = null): RepositoryFactory

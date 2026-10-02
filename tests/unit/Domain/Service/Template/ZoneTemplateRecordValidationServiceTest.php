@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Template;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\Template\ZoneTemplateRecordValidationService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -169,5 +170,18 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
         // Applying the template writes the record without validating it again
         $this->assertFalse($this->validate('www.[ZONE]', 'TYPE65280', '\# 2 zz'));
         $this->assertFalse($this->validate('www.[ZONE]', 'FOO', '[CUSTOM_IP]'));
+    }
+
+    public function testRejectsTypeTheConnectedServerCannotLoad(): void
+    {
+        $config = ConfigurationManager::getInstance();
+        $service = new ZoneTemplateRecordValidationService(
+            new DnsValidatorRegistry($config, $this->sqliteBackendProvider(), fn() => PdnsCapabilities::fromVersion('4.9.0'))
+        );
+
+        $result = $service->validate('pay.[ZONE]', 'WALLET', 'BTC 1abc', 3600, 0, 3600);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('cannot load WALLET records', $result->getFirstError());
     }
 }

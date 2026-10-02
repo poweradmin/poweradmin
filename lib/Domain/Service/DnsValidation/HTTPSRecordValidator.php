@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Closure;
 use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
@@ -38,11 +39,17 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
+    /** @var (Closure(string): bool)|null */
+    private ?Closure $svcParamSupported;
 
-    public function __construct(HostnameValidator $hostnameValidator)
+    /**
+     * @param (Closure(string): bool)|null $svcParamSupported Whether the connected PowerDNS knows a parameter name
+     */
+    public function __construct(HostnameValidator $hostnameValidator, ?Closure $svcParamSupported = null)
     {
         $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
+        $this->svcParamSupported = $svcParamSupported;
     }
 
     /**
@@ -207,6 +214,9 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
             }
             if (!isset($validKeys[$key]) && !SVCBRecordValidator::isGenericKey($key)) {
                 return ValidationResult::failure(sprintf(_('Unknown HTTPS parameter key: "%s". See RFC 9460 for valid keys.'), $key));
+            }
+            if ($this->svcParamSupported !== null && !($this->svcParamSupported)($key)) {
+                return ValidationResult::failure(sprintf(_('The connected PowerDNS version cannot load the %s parameter.'), $key));
             }
 
             // Check for duplicate keys (not allowed as per RFC)
