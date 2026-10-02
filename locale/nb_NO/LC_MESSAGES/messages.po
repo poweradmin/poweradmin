@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-28 01:30+0300\n"
+"POT-Creation-Date: 2026-10-02 09:21+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -959,7 +959,7 @@ msgstr ""
 "linjeskift fjernes automatisk."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+#: templates/modern/dnssec.html:149 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "Nøkkeltype"
 
@@ -1941,7 +1941,7 @@ msgstr "Ugyldig posttype."
 msgid "Record could not be added."
 msgstr "Post kunne ikke legges til."
 
-#: lib/Application/Controller/AddRecordController.php:529
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d post(er) har blitt lagt til."
@@ -2171,7 +2171,7 @@ msgstr "Soner har blitt oppdatert."
 msgid "You do not have permission to create new zone templates."
 msgstr "Du har ikke tillatelse til å opprette nye sonemaler."
 
-#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Sonemal med dette navnet eksisterer allerede, vennligst velg et annet."
 
@@ -2371,7 +2371,7 @@ msgstr "Vennligst oppgi alle påkrevde felt."
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Post lagt til. En tilhørende PTR-post ble også opprettet."
 
-#: lib/Application/Controller/AddRecordController.php:510
+#: lib/Application/Controller/AddRecordController.php:512
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Post lagt til, men PTR-post opprettelse mislyktes: "
 
@@ -2427,21 +2427,21 @@ msgstr ""
 msgid "Record successfully added."
 msgstr "Post lagt til."
 
-#: lib/Application/Controller/AddRecordController.php:460
+#: lib/Application/Controller/AddRecordController.php:462
 msgid "No records were provided."
 msgstr "Ingen poster ble oppgitt."
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d matchende post(er) ble også opprettet."
 
-#: lib/Application/Controller/AddRecordController.php:534
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d post(er) kunne ikke legges til."
 
-#: lib/Application/Controller/AddRecordController.php:539
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2449,7 +2449,7 @@ msgstr ""
 "Noen poster kunne ikke legges til. De eksisterer kanskje allerede eller "
 "inneholder ugyldige data."
 
-#: lib/Application/Controller/AddRecordController.php:569
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Kunne ikke legge til noen poster. De inneholder kanskje ugyldige data."
 
@@ -2506,27 +2506,19 @@ msgstr "Kunne ikke starte OIDC-autentisering: "
 msgid "Group logs"
 msgstr "Gruppelogger"
 
-#: lib/Application/Controller/DnssecKeyExportController.php:72
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Eksport av PEM-nøkler krever PowerDNS 4.7 eller nyere."
+#: lib/Application/Controller/DnssecKeyExportController.php:84
+msgid "An error occurred while exporting the key: "
+msgstr "Det oppstod en feil under eksport av nøkkelen: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Det oppstod en feil under eksport av PEM-nøkkelen: "
-
-#: lib/Application/Controller/DnssecKeyExportController.php:96
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Kunne ikke hente PEM-nøkkelen. Serveren eksponerer kanskje ikke privat "
-"nøkkelmateriale for denne nøkkelen."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Kunne ikke hente den private nøkkelen fra PowerDNS."
 
 #: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "Du har ikke tillatelse til å legge til en hovedsone."
 
-#: lib/Application/Controller/AddZoneMasterController.php:84
+#: lib/Application/Controller/AddZoneMasterController.php:85
 msgid "Add Primary Zone"
 msgstr "Legg til primærsone"
 
@@ -2555,7 +2547,7 @@ msgstr ""
 "2001:db8::/48) eller et navn på en revers sone som slutter på in-addr.arpa "
 "eller ip6.arpa."
 
-#: lib/Application/Controller/AddZoneMasterController.php:309
+#: lib/Application/Controller/AddZoneMasterController.php:320
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2563,7 +2555,7 @@ msgstr ""
 "Sonen ble opprettet, men DNSSEC-signering ble hoppet over på grunn av "
 "valideringsfeil:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:332
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2572,11 +2564,11 @@ msgstr ""
 "godkjent, men PowerDNS API returnerte en feil. Sjekk PowerDNS-logger for "
 "detaljer."
 
-#: lib/Application/Controller/AddZoneMasterController.php:327
+#: lib/Application/Controller/AddZoneMasterController.php:338
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Sonen er opprettet og signert med DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:331
+#: lib/Application/Controller/AddZoneMasterController.php:342
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2922,7 +2914,7 @@ msgstr "Ugyldig sjekktype"
 msgid "You have logged out."
 msgstr "Du har logget ut."
 
-#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:941
 msgid "You do not have the permission to add a zone template."
 msgstr "Du har ikke tillatelse til å legge til en sonemal."
 
@@ -2955,7 +2947,7 @@ msgstr "Du har ikke tillatelse til å legge til en slave-sone."
 msgid "Add Secondary Zone"
 msgstr "Legg til sekundærsone"
 
-#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
+#: lib/Domain/Model/ZoneTemplate.php:466 lib/Domain/Model/ZoneTemplate.php:512
 msgid "You do not have the permission to delete zone templates."
 msgstr "Du har ikke tillatelse til å slette sonemaler."
 
@@ -3053,27 +3045,33 @@ msgstr "Du har ikke tillatelse til å legge til en ny supermaster."
 msgid "The supermaster has been added successfully."
 msgstr "Supermasteren har blitt lagt til."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:80
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Import av PEM-nøkler krever PowerDNS 4.7 eller nyere."
+#: lib/Application/Controller/DnssecKeyImportController.php:82
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Import av nøkler krever PowerDNS 4.1 eller nyere."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:114
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "Oppgi en PEM-kodet privat nøkkel (må inneholde BEGIN/END-markører)."
+#: lib/Application/Controller/DnssecKeyImportController.php:119
+msgid "The private key does not match the selected algorithm."
+msgstr "Den private nøkkelen stemmer ikke overens med den valgte algoritmen."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:122
-msgid "PEM key imported successfully."
-msgstr "PEM-nøkkelen ble importert."
-
-#: lib/Application/Controller/DnssecKeyImportController.php:125
+#: lib/Application/Controller/DnssecKeyImportController.php:120
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"Import av PEM-nøkkel mislyktes. PowerDNS-serveren kan ha avvist formatet."
+"Den private nøkkelen kunne ikke leses. Lim inn en privat nøkkel i BIND-"
+"format eller en ukryptert PEM-nøkkel."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:129
-msgid "An error occurred while importing the PEM key: "
-msgstr "Det oppstod en feil under import av PEM-nøkkelen: "
+#: lib/Application/Controller/DnssecKeyImportController.php:128
+msgid "Key imported successfully."
+msgstr "Nøkkelen ble importert."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:131
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Import av nøkkelen mislyktes. PowerDNS avviste den."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:135
+msgid "An error occurred while importing the key: "
+msgstr "Det oppstod en feil under import av nøkkelen: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3258,7 +3256,7 @@ msgstr ""
 "kontakt administrator."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
+#: templates/modern/change_password.html:43 templates/modern/header.html:402
 msgid "Change password"
 msgstr "Endre passord"
 
@@ -3816,27 +3814,27 @@ msgstr "Feil ved angivelse av standard sone-mal: "
 msgid "Error clearing default zone template: "
 msgstr "Feil ved fjerning av standard sone-mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
+#: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:1017
 msgid "Error creating zone template: "
 msgstr "Feil ved opprettelse av sonemal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
+#: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
 msgstr "Feil ved tillegging av standard SOA post til mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:494
+#: lib/Domain/Model/ZoneTemplate.php:496
 msgid "Error deleting zone template: "
 msgstr "Feil ved sletting av sonemal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:518
+#: lib/Domain/Model/ZoneTemplate.php:520
 msgid "Error deleting user zone templates: "
 msgstr "Feil ved sletting av brukersonemaler: "
 
-#: lib/Domain/Model/ZoneTemplate.php:646
+#: lib/Domain/Model/ZoneTemplate.php:648
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Du har ikke tillatelse til å legge til en post i denne sonemalen."
 
-#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
+#: lib/Domain/Model/ZoneTemplate.php:653 lib/Domain/Model/ZoneTemplate.php:765
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Du har ikke tilgang til å legge denne oppføringstypen til en sonemal."
@@ -3849,33 +3847,33 @@ msgstr "Innholdsfeltet ditt har ikke en gyldig verdi."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Prioritet for MX/SRV poster må være et tall mellom 0 og 65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:695
+#: lib/Domain/Model/ZoneTemplate.php:697
 msgid "Error adding zone template record: "
 msgstr "Feil ved tillegging av post i sonemal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
+#: lib/Domain/Model/ZoneTemplate.php:755 lib/Domain/Model/ZoneTemplate.php:840
 msgid "The record does not belong to this zone template."
 msgstr "Posten tilhører ikke denne sonemalen."
 
-#: lib/Domain/Model/ZoneTemplate.php:815
+#: lib/Domain/Model/ZoneTemplate.php:817
 msgid "Error updating zone template record: "
 msgstr "Feil ved oppdatering av sonemalpost: "
 
-#: lib/Domain/Model/ZoneTemplate.php:844
+#: lib/Domain/Model/ZoneTemplate.php:846
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Du har ikke tilgang til å slette denne oppføringstypen fra en sonemal."
 
-#: lib/Domain/Model/ZoneTemplate.php:853
+#: lib/Domain/Model/ZoneTemplate.php:855
 msgid "Error deleting zone template record: "
 msgstr "Feil ved sletting av sonemalpost: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
+#: lib/Domain/Model/ZoneTemplate.php:921
 msgid "Error checking template ownership: "
 msgstr "Feil ved kontroll av maleierskap: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1005
+#: lib/Domain/Model/ZoneTemplate.php:1009
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3884,35 +3882,35 @@ msgstr ""
 "Disse oppføringstypene ble utelatt fra malen fordi du ikke har tilgang til å "
 "legge dem til: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
+#: lib/Domain/Model/ZoneTemplate.php:1148
 msgid "Error retrieving zones using template: "
 msgstr "Feil ved henting av soner som bruker mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1244
+#: lib/Domain/Model/ZoneTemplate.php:1248
 msgid "Failed to get list of zones using template: "
 msgstr "Kunne ikke hente liste over soner som bruker mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1262
+#: lib/Domain/Model/ZoneTemplate.php:1266
 msgid "You do not have the permission to edit a zone template."
 msgstr "Du har ikke tillatelse til å redigere en sonemal."
 
-#: lib/Domain/Model/ZoneTemplate.php:1311
+#: lib/Domain/Model/ZoneTemplate.php:1315
 msgid "Error unlinking zone from template: "
 msgstr "Feil ved frakobling av sone fra mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1360
+#: lib/Domain/Model/ZoneTemplate.php:1364
 msgid "Error retrieving zones: "
 msgstr "Feil ved henting av soner: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1379
+#: lib/Domain/Model/ZoneTemplate.php:1383
 msgid "Error checking template name existence: "
 msgstr "Feil ved kontroll av malnavn eksistens: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1400
+#: lib/Domain/Model/ZoneTemplate.php:1404
 msgid "Error looking up template by name: "
 msgstr "Feil ved oppslag av mal etter navn: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1423
+#: lib/Domain/Model/ZoneTemplate.php:1427
 msgid "Error checking template existence: "
 msgstr "Feil ved kontroll av mal eksistens: "
 
@@ -10071,7 +10069,7 @@ msgstr "Angi vertsnavnet slik det fremgår i NS-posten"
 msgid "Provide host name"
 msgstr "Oppgi vertsnavn"
 
-#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:376
+#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:383
 msgid "Account"
 msgstr "Konto"
 
@@ -10175,37 +10173,35 @@ msgstr "Deaktiver"
 msgid "Activate"
 msgstr "Aktiver"
 
-#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Last ned nøkkelen som PEM"
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Last ned den private nøkkelen i BIND-format"
 
-#: templates/default/dnssec.html:125 templates/modern/dnssec.html:125
-msgid "Export PEM"
-msgstr "Eksporter PEM"
+#: templates/modern/list_record_changes.html:194
+msgid "Export"
+msgstr "Eksporter"
 
 #: templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Slett"
 
-#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Importer nøkkel fra PEM"
-
-#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Lim inn en PEM-kodet privat nøkkel (RSA eller ECDSA). PowerDNS 4.7+ utleder "
-"nøkkelstørrelsen fra PEM-innholdet - velg passende algoritme og nøkkelrolle."
-
-#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
-msgid "PEM private key"
-msgstr "Privat PEM-nøkkel"
-
-#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+#: templates/modern/dnssec.html:143 templates/modern/dnssec.html:170
 msgid "Import key"
 msgstr "Importer nøkkel"
+
+#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Lim inn en privat nøkkel i BIND-format (slik den eksporteres her eller av "
+"dnssec-keygen) eller en ukryptert PEM-nøkkel (RSA, ECDSA, Ed25519 eller "
+"Ed448). Velg algoritmen nøkkelen ble laget for."
+
+#: templates/default/dnssec.html:165 templates/modern/dnssec.html:165
+msgid "Private key"
+msgstr "Privat nøkkel"
 
 #: templates/default/list_networks.html:8 templates/modern/list_networks.html:8
 msgid "Network Mapping:"
@@ -10481,7 +10477,7 @@ msgstr "viser de første 20"
 msgid "more zones..."
 msgstr "flere soner..."
 
-#: templates/modern/delete_domain.html:50
+#: templates/modern/delete_domain.html:52
 msgid "Important Note"
 msgstr "Viktig merknad"
 
@@ -10612,7 +10608,7 @@ msgstr "Verktøy"
 msgid "Database"
 msgstr "Database"
 
-#: templates/default/index.html:319 templates/modern/index.html:319
+#: templates/modern/index.html:319 templates/modern/header.html:361
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10625,11 +10621,11 @@ msgstr "Min profil"
 msgid "Password"
 msgstr "Passord"
 
-#: templates/modern/index.html:589 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:396
 msgid "Preferences"
 msgstr "Innstillinger"
 
-#: templates/modern/header.html:453
+#: templates/modern/header.html:460
 msgid "Logout"
 msgstr "Logg ut"
 
@@ -11277,7 +11273,7 @@ msgstr "Rader per side:"
 msgid "There are no reverse zones to show in this listing."
 msgstr "Det er ingen omvendte soner å vise i denne listen."
 
-#: templates/modern/search.html:176 templates/modern/delete_domains.html:28
+#: templates/modern/search.html:176 templates/modern/delete_domains.html:29
 msgid "Owner"
 msgstr "Eier"
 
@@ -11343,7 +11339,7 @@ msgstr "NOTIFY sendt ved serienummer %serial%"
 msgid "Delete zone(s)"
 msgstr "Slett sone(r)"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:77
 msgid "Add key"
 msgstr "Legg til nøkkel"
 
@@ -11376,11 +11372,11 @@ msgstr "Velg algoritme"
 msgid "Bits in length"
 msgstr "Antall bits i lengde"
 
-#: templates/modern/dnssec_add_key.html:70
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select bits length"
 msgstr "Velg bitlengde"
 
-#: templates/modern/dnssec_add_key.html:127
+#: templates/modern/dnssec_add_key.html:128
 msgid "Recommended bits for"
 msgstr "Anbefalte bits for"
 
@@ -11389,19 +11385,19 @@ msgstr "Anbefalte bits for"
 msgid "Warning:"
 msgstr "Advarsel:"
 
-#: templates/modern/dnssec_add_key.html:135
+#: templates/modern/dnssec_add_key.html:136
 msgid "bits is not recommended for"
 msgstr "bits anbefales ikke for"
 
-#: templates/modern/dnssec_add_key.html:171
+#: templates/modern/dnssec_add_key.html:172
 msgid "About DNSSEC Key Types"
 msgstr "Om DNSSEC-nøkkeltyper"
 
-#: templates/modern/dnssec_add_key.html:174
+#: templates/modern/dnssec_add_key.html:175
 msgid "Key Types Explained"
 msgstr "Nøkkeltyper forklart"
 
-#: templates/modern/dnssec_add_key.html:176
+#: templates/modern/dnssec_add_key.html:177
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11409,19 +11405,26 @@ msgstr ""
 "Kombinert signeringsnøkkel - fungerer som både KSK og ZSK (anbefales for "
 "PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:178
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Nøkkelsigneringsnøkkel - signerer DNSKEY-postene i sonen"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:179
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Sonesigneringsnøkkel - signerer alle andre poster i sonen"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/default/dnssec_add_key.html:181
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS viser en nøkkel som KSK eller ZSK bare så lenge sonen har en aktiv KSK og en aktiv ZSK med samme algoritme. Ellers vises nøkkelen som CSK, selv om du valgte KSK eller ZSK her."
+
+#: templates/modern/dnssec_add_key.html:184
 msgid "Recommended Settings"
 msgstr "Anbefalte innstillinger"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:185
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11461,7 +11464,7 @@ msgstr ""
 msgid "Add"
 msgstr "Legg til"
 
-#: templates/modern/edit_user.html:3 templates/modern/header.html:383
+#: templates/modern/edit_user.html:3 templates/modern/header.html:390
 msgid "Edit profile"
 msgstr "Rediger profil"
 
@@ -12112,10 +12115,6 @@ msgstr "Hendelse"
 #: templates/modern/_partials/log_list.html:103
 msgid "Details"
 msgstr "Detaljer"
-
-#: templates/modern/list_record_changes.html:194
-msgid "Export"
-msgstr "Eksporter"
 
 #: templates/modern/list_record_changes.html:171
 msgid "Export Logs"
@@ -12957,7 +12956,7 @@ msgstr "Inkluder en blanding av bokstaver, tall og symboler"
 msgid "Consider using a password manager"
 msgstr "Vurder å bruke en passordbehandler"
 
-#: templates/modern/header.html:402
+#: templates/modern/header.html:409
 msgid "Multi-Factor Authentication"
 msgstr "Flerfaktorautentisering"
 
@@ -13555,7 +13554,7 @@ msgstr "Du er i ferd med å slette sonen"
 msgid "Zone Details"
 msgstr "Sonedetaljer"
 
-#: templates/modern/delete_domains.html:53
+#: templates/modern/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13566,11 +13565,11 @@ msgstr ""
 "supermaster. Å slette sonen nå vil bare resultere i midlertidig fjerning. "
 "Når supermasteren sender et varsel for denne sonen, vil den legges til igjen!"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "Yes, delete this zone"
 msgstr "Ja, slett denne sonen"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "No, keep this zone"
 msgstr "Nei, behold denne sonen"
 
@@ -13779,15 +13778,15 @@ msgstr ""
 msgid "Zones to Delete"
 msgstr "Soner som skal slettes"
 
-#: templates/modern/delete_domains.html:30
+#: templates/modern/delete_domains.html:32
 msgid "Note"
 msgstr "Merknad"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Ja, slett disse sonene"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Nei, behold disse sonene"
 
@@ -14139,11 +14138,11 @@ msgstr "List sonemaler"
 msgid "API Documentation"
 msgstr "API-dokumentasjon"
 
-#: templates/default/header.html:327 templates/modern/header.html:500
+#: templates/default/header.html:332 templates/modern/header.html:507
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:331 templates/modern/header.html:504
+#: templates/default/header.html:336 templates/modern/header.html:511
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14151,7 +14150,7 @@ msgstr ""
 "Kontroller at pdns_api.key i config/settings.php stemmer med API-nøkkelen "
 "som er satt opp i PowerDNS."
 
-#: templates/default/header.html:333 templates/modern/header.html:506
+#: templates/default/header.html:338 templates/modern/header.html:513
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14159,7 +14158,7 @@ msgstr ""
 "Kontroller at pdns_api.server_name stemmer med det PowerDNS rapporterer "
 "(standard 'localhost')."
 
-#: templates/default/header.html:335 templates/modern/header.html:508
+#: templates/default/header.html:340 templates/modern/header.html:515
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14169,7 +14168,7 @@ msgstr ""
 "vanlig utløser etter at soner er importert direkte i PowerDNS-databasen, er "
 "én ugyldig oppføring som gjør at soneserialiseringen mislykkes."
 
-#: templates/default/header.html:337 templates/modern/header.html:510
+#: templates/default/header.html:342 templates/modern/header.html:517
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15512,46 +15511,57 @@ msgstr ""
 "Klarte ikke å angi språkinnstilling. Den valgte språkinnstillingen støttes "
 "kanskje ikke på dette systemet. Kontakt administratoren din."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Nøkkelen ble importert."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Eksport av PEM-nøkler krever PowerDNS 4.7 eller nyere."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Den private nøkkelen stemmer ikke overens med den valgte algoritmen."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Det oppstod en feil under eksport av PEM-nøkkelen: "
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Den private nøkkelen kunne ikke leses. Lim inn en privat nøkkel i BIND-format eller en ukryptert PEM-nøkkel."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Kunne ikke hente PEM-nøkkelen. Serveren eksponerer kanskje ikke privat "
+# OBSOLETE: "nøkkelmateriale for denne nøkkelen."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Import av nøkkelen mislyktes. PowerDNS avviste den."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Import av PEM-nøkler krever PowerDNS 4.7 eller nyere."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Det oppstod en feil under import av nøkkelen: "
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr "Oppgi en PEM-kodet privat nøkkel (må inneholde BEGIN/END-markører)."
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Det oppstod en feil under eksport av nøkkelen: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM-nøkkelen ble importert."
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Kunne ikke hente den private nøkkelen fra PowerDNS."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Import av PEM-nøkkel mislyktes. PowerDNS-serveren kan ha avvist formatet."
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Last ned den private nøkkelen i BIND-format"
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Det oppstod en feil under import av PEM-nøkkelen: "
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Privat nøkkel"
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Last ned nøkkelen som PEM"
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Lim inn en privat nøkkel i BIND-format (slik den eksporteres her eller av dnssec-keygen) eller en ukryptert PEM-nøkkel (RSA, ECDSA, Ed25519 eller Ed448). Velg algoritmen nøkkelen ble laget for."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Eksporter PEM"
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Import av nøkler krever PowerDNS 4.1 eller nyere."
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Importer nøkkel fra PEM"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Lim inn en PEM-kodet privat nøkkel (RSA eller ECDSA). PowerDNS 4.7+ "
+# OBSOLETE: "utleder nøkkelstørrelsen fra PEM-innholdet - velg passende algoritme og "
+# OBSOLETE: "nøkkelrolle."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Privat PEM-nøkkel"
+
+
+

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-28 01:30+0300\n"
+"POT-Creation-Date: 2026-10-02 09:21+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Romanian\n"
@@ -975,7 +975,7 @@ msgstr ""
 "Spațiile și liniile noi vor fi eliminate automat."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+#: templates/modern/dnssec.html:149 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "Tip cheie"
 
@@ -1981,7 +1981,7 @@ msgstr "Tip înregistrare invalid."
 msgid "Record could not be added."
 msgstr "Înregistrarea nu a putut fi adăugată."
 
-#: lib/Application/Controller/AddRecordController.php:529
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d înregistrări adăugate cu succes."
@@ -2215,7 +2215,7 @@ msgstr "Zonele au fost actualizate cu succes."
 msgid "You do not have permission to create new zone templates."
 msgstr "Nu aveți permisiunea de a crea șabloane de zonă noi."
 
-#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 "Un șablon de zonă cu acest nume există deja, vă rugăm să alegeți altul."
@@ -2425,7 +2425,7 @@ msgstr ""
 "Înregistrarea a fost adăugată cu succes. A fost creată și o înregistrare PTR "
 "corespunzătoare."
 
-#: lib/Application/Controller/AddRecordController.php:510
+#: lib/Application/Controller/AddRecordController.php:512
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr ""
 "Înregistrare adăugată cu succes, dar crearea înregistrării PTR a eșuat: "
@@ -2487,21 +2487,21 @@ msgstr ""
 msgid "Record successfully added."
 msgstr "Înregistrare adăugată cu succes."
 
-#: lib/Application/Controller/AddRecordController.php:460
+#: lib/Application/Controller/AddRecordController.php:462
 msgid "No records were provided."
 msgstr "Nu au fost furnizate înregistrări."
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Au fost create și %d înregistrări potrivite."
 
-#: lib/Application/Controller/AddRecordController.php:534
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Adăugarea a %d înregistrări a eșuat."
 
-#: lib/Application/Controller/AddRecordController.php:539
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2509,7 +2509,7 @@ msgstr ""
 "Unele înregistrări nu au putut fi adăugate. Este posibil să existe deja sau "
 "să conțină date invalide."
 
-#: lib/Application/Controller/AddRecordController.php:569
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Nu a putut fi adăugată nicio înregistrare. Este posibil ca acestea să "
@@ -2568,27 +2568,19 @@ msgstr "Inițierea autentificării OIDC a eșuat: "
 msgid "Group logs"
 msgstr "Jurnale grup"
 
-#: lib/Application/Controller/DnssecKeyExportController.php:72
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Exportul cheilor PEM necesită PowerDNS 4.7 sau mai nou."
+#: lib/Application/Controller/DnssecKeyExportController.php:84
+msgid "An error occurred while exporting the key: "
+msgstr "A apărut o eroare la exportul cheii: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
-msgid "An error occurred while exporting the PEM key: "
-msgstr "A apărut o eroare la exportul cheii PEM: "
-
-#: lib/Application/Controller/DnssecKeyExportController.php:96
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Nu s-a putut obține cheia PEM. Este posibil ca serverul să nu expună "
-"materialul cheii private pentru această cheie."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nu s-a putut obține cheia privată de la PowerDNS."
 
 #: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "Nu aveți permisiunea de a adăuga o zonă principală."
 
-#: lib/Application/Controller/AddZoneMasterController.php:84
+#: lib/Application/Controller/AddZoneMasterController.php:85
 msgid "Add Primary Zone"
 msgstr "Adaugă zonă primară"
 
@@ -2618,7 +2610,7 @@ msgstr ""
 "2001:db8::/48) sau un nume de zonă inversă care se termină în in-addr.arpa "
 "sau ip6.arpa."
 
-#: lib/Application/Controller/AddZoneMasterController.php:309
+#: lib/Application/Controller/AddZoneMasterController.php:320
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2626,7 +2618,7 @@ msgstr ""
 "Zona a fost creată cu succes, dar semnarea DNSSEC a fost omisă din cauza "
 "următoarelor erori de validare:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:332
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2635,11 +2627,11 @@ msgstr ""
 "reușit, dar API-ul PowerDNS a returnat o eroare. Consultați jurnalele "
 "PowerDNS pentru detalii."
 
-#: lib/Application/Controller/AddZoneMasterController.php:327
+#: lib/Application/Controller/AddZoneMasterController.php:338
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zona a fost creată și semnată cu DNSSEC cu succes."
 
-#: lib/Application/Controller/AddZoneMasterController.php:331
+#: lib/Application/Controller/AddZoneMasterController.php:342
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2993,7 +2985,7 @@ msgstr "Tip de verificare invalid"
 msgid "You have logged out."
 msgstr "Ați ieșit din cont."
 
-#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:941
 msgid "You do not have the permission to add a zone template."
 msgstr "Nu aveți permisiunea de a adăuga un șablon de zonă."
 
@@ -3026,7 +3018,7 @@ msgstr "Nu aveți permisiunea de a adăuga o zonă secundară."
 msgid "Add Secondary Zone"
 msgstr "Adaugă zonă secundară"
 
-#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
+#: lib/Domain/Model/ZoneTemplate.php:466 lib/Domain/Model/ZoneTemplate.php:512
 msgid "You do not have the permission to delete zone templates."
 msgstr "Nu aveți permisiunea de a șterge șabloanele de zonă."
 
@@ -3128,30 +3120,33 @@ msgstr "Nu aveți permisiunea de a adăuga un supermaster nou."
 msgid "The supermaster has been added successfully."
 msgstr "Supermasterul a fost adăugat cu succes."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:80
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Importul cheilor PEM necesită PowerDNS 4.7 sau mai nou."
+#: lib/Application/Controller/DnssecKeyImportController.php:82
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Importul cheilor necesită PowerDNS 4.1 sau mai nou."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:114
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Furnizați o cheie privată codificată în PEM (trebuie să conțină marcatori "
-"BEGIN/END)."
+#: lib/Application/Controller/DnssecKeyImportController.php:119
+msgid "The private key does not match the selected algorithm."
+msgstr "Cheia privată nu se potrivește cu algoritmul selectat."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:122
-msgid "PEM key imported successfully."
-msgstr "Cheia PEM a fost importată cu succes."
-
-#: lib/Application/Controller/DnssecKeyImportController.php:125
+#: lib/Application/Controller/DnssecKeyImportController.php:120
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"Importul cheii PEM a eșuat. Este posibil ca serverul PowerDNS să fi respins "
-"formatul."
+"Cheia privată nu a putut fi citită. Lipiți o cheie privată în format BIND "
+"sau o cheie PEM necriptată."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:129
-msgid "An error occurred while importing the PEM key: "
-msgstr "A apărut o eroare la importul cheii PEM: "
+#: lib/Application/Controller/DnssecKeyImportController.php:128
+msgid "Key imported successfully."
+msgstr "Cheia a fost importată cu succes."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:131
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Importul cheii a eșuat. PowerDNS a respins-o."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:135
+msgid "An error occurred while importing the key: "
+msgstr "A apărut o eroare la importul cheii: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3346,7 +3341,7 @@ msgstr ""
 "rugăm să contactați administratorul."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
+#: templates/modern/change_password.html:43 templates/modern/header.html:402
 msgid "Change password"
 msgstr "Schimbă parola"
 
@@ -3915,28 +3910,28 @@ msgstr "Eroare la setarea șablonului de zonă implicit: "
 msgid "Error clearing default zone template: "
 msgstr "Eroare la eliminarea șablonului de zonă implicit: "
 
-#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
+#: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:1017
 msgid "Error creating zone template: "
 msgstr "Eroare la crearea șablonului de zonă: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
+#: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
 msgstr "Eroare la adăugarea înregistrării SOA implicite în șablon: "
 
-#: lib/Domain/Model/ZoneTemplate.php:494
+#: lib/Domain/Model/ZoneTemplate.php:496
 msgid "Error deleting zone template: "
 msgstr "Eroare la ștergerea șablonului de zonă: "
 
-#: lib/Domain/Model/ZoneTemplate.php:518
+#: lib/Domain/Model/ZoneTemplate.php:520
 msgid "Error deleting user zone templates: "
 msgstr "Eroare la ștergerea șabloanelor de zonă ale utilizatorului: "
 
-#: lib/Domain/Model/ZoneTemplate.php:646
+#: lib/Domain/Model/ZoneTemplate.php:648
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
 "Nu aveți permisiunea de a adăuga o înregistrare în acest șablon de zonă."
 
-#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
+#: lib/Domain/Model/ZoneTemplate.php:653 lib/Domain/Model/ZoneTemplate.php:765
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
@@ -3953,19 +3948,19 @@ msgstr ""
 "Prioritatea pentru înregistrările MX/SRV trebuie să fie un număr între 0 și "
 "65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:695
+#: lib/Domain/Model/ZoneTemplate.php:697
 msgid "Error adding zone template record: "
 msgstr "Eroare la adăugarea înregistrării din șablonul de zonă: "
 
-#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
+#: lib/Domain/Model/ZoneTemplate.php:755 lib/Domain/Model/ZoneTemplate.php:840
 msgid "The record does not belong to this zone template."
 msgstr "Înregistrarea nu aparține acestui șablon de zonă."
 
-#: lib/Domain/Model/ZoneTemplate.php:815
+#: lib/Domain/Model/ZoneTemplate.php:817
 msgid "Error updating zone template record: "
 msgstr "Eroare la actualizarea înregistrării din șablonul de zonă: "
 
-#: lib/Domain/Model/ZoneTemplate.php:844
+#: lib/Domain/Model/ZoneTemplate.php:846
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3973,15 +3968,15 @@ msgstr ""
 "Nu aveți permisiunea de a șterge acest tip de înregistrare dintr-un șablon "
 "de zonă."
 
-#: lib/Domain/Model/ZoneTemplate.php:853
+#: lib/Domain/Model/ZoneTemplate.php:855
 msgid "Error deleting zone template record: "
 msgstr "Eroare la ștergerea înregistrării din șablonul de zonă: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
+#: lib/Domain/Model/ZoneTemplate.php:921
 msgid "Error checking template ownership: "
 msgstr "Eroare la verificarea proprietarului șablonului: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1005
+#: lib/Domain/Model/ZoneTemplate.php:1009
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3990,35 +3985,35 @@ msgstr ""
 "Aceste tipuri de înregistrări au fost omise din șablon deoarece nu aveți "
 "dreptul să le adăugați: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
+#: lib/Domain/Model/ZoneTemplate.php:1148
 msgid "Error retrieving zones using template: "
 msgstr "Eroare la obținerea zonelor care folosesc șablonul: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1244
+#: lib/Domain/Model/ZoneTemplate.php:1248
 msgid "Failed to get list of zones using template: "
 msgstr "Obținerea listei de zone care folosesc șablonul a eșuat: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1262
+#: lib/Domain/Model/ZoneTemplate.php:1266
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nu aveți permisiunea de a edita un șablon de zonă."
 
-#: lib/Domain/Model/ZoneTemplate.php:1311
+#: lib/Domain/Model/ZoneTemplate.php:1315
 msgid "Error unlinking zone from template: "
 msgstr "Eroare la deconectarea zonei de șablon: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1360
+#: lib/Domain/Model/ZoneTemplate.php:1364
 msgid "Error retrieving zones: "
 msgstr "Eroare la obținerea zonelor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1379
+#: lib/Domain/Model/ZoneTemplate.php:1383
 msgid "Error checking template name existence: "
 msgstr "Eroare la verificarea existenței numelui șablonului: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1400
+#: lib/Domain/Model/ZoneTemplate.php:1404
 msgid "Error looking up template by name: "
 msgstr "Eroare la căutarea șablonului după nume: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1423
+#: lib/Domain/Model/ZoneTemplate.php:1427
 msgid "Error checking template existence: "
 msgstr "Eroare la verificarea existenței șablonului: "
 
@@ -10530,7 +10525,7 @@ msgstr "Introduceți numele de gazdă așa cum apare în înregistrarea NS"
 msgid "Provide host name"
 msgstr "Furnizați nume gazdă"
 
-#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:376
+#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:383
 msgid "Account"
 msgstr "Cont"
 
@@ -10635,38 +10630,35 @@ msgstr "Dezactivează"
 msgid "Activate"
 msgstr "Activează"
 
-#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Descarcă această cheie ca PEM"
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Descarcă cheia privată în format BIND"
 
-#: templates/default/dnssec.html:125 templates/modern/dnssec.html:125
-msgid "Export PEM"
-msgstr "Exportă PEM"
+#: templates/modern/list_record_changes.html:194
+msgid "Export"
+msgstr "Exportă"
 
 #: templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Șterge"
 
-#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Importă cheia din PEM"
-
-#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Lipiți o cheie privată codificată în PEM (RSA sau ECDSA). PowerDNS 4.7+ "
-"deduce dimensiunea cheii din conținutul PEM - selectați algoritmul "
-"corespunzător și rolul cheii."
-
-#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
-msgid "PEM private key"
-msgstr "Cheie privată PEM"
-
-#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+#: templates/modern/dnssec.html:143 templates/modern/dnssec.html:170
 msgid "Import key"
 msgstr "Importă cheia"
+
+#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Lipiți o cheie privată în format BIND (așa cum este exportată aici sau de "
+"dnssec-keygen) sau o cheie PEM necriptată (RSA, ECDSA, Ed25519 sau Ed448). "
+"Selectați algoritmul pentru care a fost creată cheia."
+
+#: templates/default/dnssec.html:165 templates/modern/dnssec.html:165
+msgid "Private key"
+msgstr "Cheie privată"
 
 #: templates/default/list_networks.html:8 templates/modern/list_networks.html:8
 msgid "Network Mapping:"
@@ -10945,7 +10937,7 @@ msgstr "arată primele 20"
 msgid "more zones..."
 msgstr "mai multe zone..."
 
-#: templates/modern/delete_domain.html:50
+#: templates/modern/delete_domain.html:52
 msgid "Important Note"
 msgstr "Notă importantă"
 
@@ -11076,7 +11068,7 @@ msgstr "Instrumente"
 msgid "Database"
 msgstr "Bază de date"
 
-#: templates/default/index.html:319 templates/modern/index.html:319
+#: templates/modern/index.html:319 templates/modern/header.html:361
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -11089,11 +11081,11 @@ msgstr "Profilul meu"
 msgid "Password"
 msgstr "Parolă"
 
-#: templates/modern/index.html:589 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:396
 msgid "Preferences"
 msgstr "Preferințe"
 
-#: templates/modern/header.html:453
+#: templates/modern/header.html:460
 msgid "Logout"
 msgstr "Deconectare"
 
@@ -11753,7 +11745,7 @@ msgstr "Rânduri pe pagină:"
 msgid "There are no reverse zones to show in this listing."
 msgstr "Nu există zone inverse de afișat în această listă."
 
-#: templates/modern/search.html:176 templates/modern/delete_domains.html:28
+#: templates/modern/search.html:176 templates/modern/delete_domains.html:29
 msgid "Owner"
 msgstr "Proprietar"
 
@@ -11820,7 +11812,7 @@ msgstr "NOTIFY trimis la numărul de serie %serial%"
 msgid "Delete zone(s)"
 msgstr "Șterge zona/zonele"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:77
 msgid "Add key"
 msgstr "Adaugă cheie"
 
@@ -11852,11 +11844,11 @@ msgstr "Selectați algoritm"
 msgid "Bits in length"
 msgstr "Lungime în biți"
 
-#: templates/modern/dnssec_add_key.html:70
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select bits length"
 msgstr "Selectați lungimea biților"
 
-#: templates/modern/dnssec_add_key.html:127
+#: templates/modern/dnssec_add_key.html:128
 msgid "Recommended bits for"
 msgstr "Biți recomandați pentru"
 
@@ -11865,19 +11857,19 @@ msgstr "Biți recomandați pentru"
 msgid "Warning:"
 msgstr "Avertisment:"
 
-#: templates/modern/dnssec_add_key.html:135
+#: templates/modern/dnssec_add_key.html:136
 msgid "bits is not recommended for"
 msgstr "biți nu este recomandat pentru"
 
-#: templates/modern/dnssec_add_key.html:171
+#: templates/modern/dnssec_add_key.html:172
 msgid "About DNSSEC Key Types"
 msgstr "Despre tipurile de chei DNSSEC"
 
-#: templates/modern/dnssec_add_key.html:174
+#: templates/modern/dnssec_add_key.html:175
 msgid "Key Types Explained"
 msgstr "Tipuri de chei explicate"
 
-#: templates/modern/dnssec_add_key.html:176
+#: templates/modern/dnssec_add_key.html:177
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11885,19 +11877,26 @@ msgstr ""
 "Cheie combinată de semnare - servește atât ca KSK, cât și ca ZSK (recomandat "
 "pentru PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:178
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Key Signing Key - semnează înregistrările DNSKEY din zonă"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:179
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - semnează toate celelalte înregistrări din zonă"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/default/dnssec_add_key.html:181
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS afișează o cheie ca KSK sau ZSK doar cât timp zona are o KSK activă și o ZSK activă cu același algoritm. Altfel afișează cheia ca CSK, chiar dacă aici ați ales KSK sau ZSK."
+
+#: templates/modern/dnssec_add_key.html:184
 msgid "Recommended Settings"
 msgstr "Setări recomandate"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:185
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11937,7 +11936,7 @@ msgstr ""
 msgid "Add"
 msgstr "Adaugă"
 
-#: templates/modern/edit_user.html:3 templates/modern/header.html:383
+#: templates/modern/edit_user.html:3 templates/modern/header.html:390
 msgid "Edit profile"
 msgstr "Editează profil"
 
@@ -12596,10 +12595,6 @@ msgstr "Eveniment"
 #: templates/modern/_partials/log_list.html:103
 msgid "Details"
 msgstr "Detalii"
-
-#: templates/modern/list_record_changes.html:194
-msgid "Export"
-msgstr "Exportă"
 
 #: templates/modern/list_record_changes.html:171
 msgid "Export Logs"
@@ -13448,7 +13443,7 @@ msgstr "Includeți un amestec de litere, cifre și simboluri"
 msgid "Consider using a password manager"
 msgstr "Luați în considerare folosirea unui manager de parole"
 
-#: templates/modern/header.html:402
+#: templates/modern/header.html:409
 msgid "Multi-Factor Authentication"
 msgstr "Autentificare cu mai mulți factori"
 
@@ -14061,7 +14056,7 @@ msgstr "Sunteți pe cale să ștergeți zona"
 msgid "Zone Details"
 msgstr "Detalii zonă"
 
-#: templates/modern/delete_domains.html:53
+#: templates/modern/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -14073,11 +14068,11 @@ msgstr ""
 "eliminare temporară. De fiecare dată când supermasterul trimite o notificare "
 "pentru această zonă, ea va fi adăugată din nou!"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "Yes, delete this zone"
 msgstr "Da, șterge această zonă"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "No, keep this zone"
 msgstr "Nu, păstrează această zonă"
 
@@ -14290,15 +14285,15 @@ msgstr ""
 msgid "Zones to Delete"
 msgstr "Zone de șters"
 
-#: templates/modern/delete_domains.html:30
+#: templates/modern/delete_domains.html:32
 msgid "Note"
 msgstr "Notă"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Da, șterge aceste zone"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Nu, păstrează aceste zone"
 
@@ -14654,11 +14649,11 @@ msgstr "Listă șabloane zonă"
 msgid "API Documentation"
 msgstr "Documentație API"
 
-#: templates/default/header.html:327 templates/modern/header.html:500
+#: templates/default/header.html:332 templates/modern/header.html:507
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:331 templates/modern/header.html:504
+#: templates/default/header.html:336 templates/modern/header.html:511
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14666,7 +14661,7 @@ msgstr ""
 "Verificați dacă pdns_api.key din config/settings.php corespunde cheii API "
 "configurate în PowerDNS."
 
-#: templates/default/header.html:333 templates/modern/header.html:506
+#: templates/default/header.html:338 templates/modern/header.html:513
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14674,7 +14669,7 @@ msgstr ""
 "Verificați dacă pdns_api.server_name corespunde cu ceea ce raportează "
 "PowerDNS (implicit 'localhost')."
 
-#: templates/default/header.html:335 templates/modern/header.html:508
+#: templates/default/header.html:340 templates/modern/header.html:515
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14685,7 +14680,7 @@ msgstr ""
 "de date PowerDNS, este o singură înregistrare malformată care face ca "
 "serializarea zonei să eșueze."
 
-#: templates/default/header.html:337 templates/modern/header.html:510
+#: templates/default/header.html:342 templates/modern/header.html:517
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -16058,46 +16053,60 @@ msgstr ""
 "Setarea localizării a eșuat. Localizarea selectată poate să nu fie acceptată "
 "pe acest sistem. Contactați administratorul."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Cheia a fost importată cu succes."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Exportul cheilor PEM necesită PowerDNS 4.7 sau mai nou."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Cheia privată nu se potrivește cu algoritmul selectat."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "A apărut o eroare la exportul cheii PEM: "
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Cheia privată nu a putut fi citită. Lipiți o cheie privată în format BIND sau o cheie PEM necriptată."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Nu s-a putut obține cheia PEM. Este posibil ca serverul să nu expună "
+# OBSOLETE: "materialul cheii private pentru această cheie."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Importul cheii a eșuat. PowerDNS a respins-o."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Importul cheilor PEM necesită PowerDNS 4.7 sau mai nou."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "A apărut o eroare la importul cheii: "
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Furnizați o cheie privată codificată în PEM (trebuie să conțină marcatori "
+# OBSOLETE: "BEGIN/END)."
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "A apărut o eroare la exportul cheii: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "Cheia PEM a fost importată cu succes."
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Nu s-a putut obține cheia privată de la PowerDNS."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Importul cheii PEM a eșuat. Este posibil ca serverul PowerDNS să fi "
+# OBSOLETE: "respins formatul."
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Descarcă cheia privată în format BIND"
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "A apărut o eroare la importul cheii PEM: "
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Cheie privată"
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Descarcă această cheie ca PEM"
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Lipiți o cheie privată în format BIND (așa cum este exportată aici sau de dnssec-keygen) sau o cheie PEM necriptată (RSA, ECDSA, Ed25519 sau Ed448). Selectați algoritmul pentru care a fost creată cheia."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Exportă PEM"
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Importul cheilor necesită PowerDNS 4.1 sau mai nou."
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Importă cheia din PEM"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Lipiți o cheie privată codificată în PEM (RSA sau ECDSA). PowerDNS 4.7+ "
+# OBSOLETE: "deduce dimensiunea cheii din conținutul PEM - selectați algoritmul "
+# OBSOLETE: "corespunzător și rolul cheii."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Cheie privată PEM"
+
+
+

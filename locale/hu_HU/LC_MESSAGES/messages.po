@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-28 01:30+0300\n"
+"POT-Creation-Date: 2026-10-02 09:21+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Hungarian\n"
@@ -963,7 +963,7 @@ msgstr ""
 "és a sortörések automatikusan eltávolításra kerülnek."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+#: templates/modern/dnssec.html:149 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "kulcs típus"
 
@@ -1950,7 +1950,7 @@ msgstr "Érvénytelen rekord típus."
 msgid "Record could not be added."
 msgstr "A rekord nem adható hozzá."
 
-#: lib/Application/Controller/AddRecordController.php:529
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d rekord sikeresen hozzáadva."
@@ -2180,7 +2180,7 @@ msgstr "A zónák sikeresen frissítve."
 msgid "You do not have permission to create new zone templates."
 msgstr "Nincs jogosultsága új zóna sablon létrehozására."
 
-#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Ilyen nevű zóna sablon már létezik, kérjük, válasszon másikat."
 
@@ -2380,7 +2380,7 @@ msgstr "Töltse ki az összes kötelező mezőt."
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "A rekord sikeresen hozzáadva. A hozzá tartozó PTR rekord is létrejött."
 
-#: lib/Application/Controller/AddRecordController.php:510
+#: lib/Application/Controller/AddRecordController.php:512
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Rekord hozzáadva, de PTR létrehozás sikertelen: "
 
@@ -2437,21 +2437,21 @@ msgstr ""
 msgid "Record successfully added."
 msgstr "Rekord sikeresen hozzáadva."
 
-#: lib/Application/Controller/AddRecordController.php:460
+#: lib/Application/Controller/AddRecordController.php:462
 msgid "No records were provided."
 msgstr "Nem adtak meg rekordokat."
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d egyező rekord is létrejött."
 
-#: lib/Application/Controller/AddRecordController.php:534
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d rekord hozzáadása sikertelen."
 
-#: lib/Application/Controller/AddRecordController.php:539
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2459,7 +2459,7 @@ msgstr ""
 "Néhány rekordot nem sikerült hozzáadni. Lehet, hogy már léteznek, vagy "
 "érvénytelen adatokat tartalmaznak."
 
-#: lib/Application/Controller/AddRecordController.php:569
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Egyetlen rekord sem lett hozzáadva. Érvénytelen adatok lehetnek."
 
@@ -2516,27 +2516,19 @@ msgstr "Nem sikerült elindítani az OIDC hitelesítést: "
 msgid "Group logs"
 msgstr "csoport naplók"
 
-#: lib/Application/Controller/DnssecKeyExportController.php:72
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "A PEM kulcs exportálásához PowerDNS 4.7 vagy újabb szükséges."
+#: lib/Application/Controller/DnssecKeyExportController.php:84
+msgid "An error occurred while exporting the key: "
+msgstr "Hiba történt a kulcs exportálásakor: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Hiba történt a PEM kulcs exportálásakor: "
-
-#: lib/Application/Controller/DnssecKeyExportController.php:96
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"A PEM kulcs nem volt lekérhető. Lehet, hogy a kiszolgáló ehhez a kulcshoz "
-"nem tesz közzé privát kulcs anyagot."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "A privát kulcs nem volt lekérhető a PowerDNS-től."
 
 #: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "Nincs jogosultsága elsődleges zóna hozzáadására."
 
-#: lib/Application/Controller/AddZoneMasterController.php:84
+#: lib/Application/Controller/AddZoneMasterController.php:85
 msgid "Add Primary Zone"
 msgstr "Elsődleges zóna hozzáadása"
 
@@ -2566,7 +2558,7 @@ msgstr ""
 "2001:db8::/48) vagy egy fordított zóna nevét, amely in-addr.arpa vagy "
 "ip6.arpa végződésű."
 
-#: lib/Application/Controller/AddZoneMasterController.php:309
+#: lib/Application/Controller/AddZoneMasterController.php:320
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2574,7 +2566,7 @@ msgstr ""
 "A zóna sikeresen létrejött, de a DNSSEC aláírás ellenőrzési hibák miatt "
 "kimaradt:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:332
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2583,11 +2575,11 @@ msgstr ""
 "ellenőrzése rendben lezajlott, de a PowerDNS API hibát adott vissza. A "
 "részletekért ellenőrizze a PowerDNS naplóit."
 
-#: lib/Application/Controller/AddZoneMasterController.php:327
+#: lib/Application/Controller/AddZoneMasterController.php:338
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "A zóna sikeresen létrehozva és DNSSEC-kel aláírva."
 
-#: lib/Application/Controller/AddZoneMasterController.php:331
+#: lib/Application/Controller/AddZoneMasterController.php:342
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2932,7 +2924,7 @@ msgstr "Érvénytelen ellenőrzési típus"
 msgid "You have logged out."
 msgstr "Kijelentkezett."
 
-#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:941
 msgid "You do not have the permission to add a zone template."
 msgstr "Nincs jogosultsága zóna sablon hozzáadására."
 
@@ -2965,7 +2957,7 @@ msgstr "Nincs jogosultsága másodlagos zóna hozzáadására."
 msgid "Add Secondary Zone"
 msgstr "Másodlagos zóna hozzáadása"
 
-#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
+#: lib/Domain/Model/ZoneTemplate.php:466 lib/Domain/Model/ZoneTemplate.php:512
 msgid "You do not have the permission to delete zone templates."
 msgstr "Nincs jogosultsága zóna sablonok törlésére."
 
@@ -3067,30 +3059,33 @@ msgstr "Nincs jogosultsága új supermaster hozzáadására."
 msgid "The supermaster has been added successfully."
 msgstr "A supermaster sikeresen hozzáadva."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:80
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "A PEM kulcs importálásához PowerDNS 4.7 vagy újabb szükséges."
+#: lib/Application/Controller/DnssecKeyImportController.php:82
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "A kulcsok importálásához PowerDNS 4.1 vagy újabb szükséges."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:114
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Adjon meg egy PEM-kódolású privát kulcsot (BEGIN/END jelölőket tartalmaznia "
-"kell)."
+#: lib/Application/Controller/DnssecKeyImportController.php:119
+msgid "The private key does not match the selected algorithm."
+msgstr "A privát kulcs nem egyezik a kiválasztott algoritmussal."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:122
-msgid "PEM key imported successfully."
-msgstr "PEM kulcs sikeresen importálva."
-
-#: lib/Application/Controller/DnssecKeyImportController.php:125
+#: lib/Application/Controller/DnssecKeyImportController.php:120
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"A PEM kulcs importálása nem sikerült. A PowerDNS kiszolgáló elutasíthatta a "
-"formátumot."
+"A privát kulcs nem olvasható. Illesszen be egy BIND formátumú privát kulcsot "
+"vagy egy titkosítatlan PEM kulcsot."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:129
-msgid "An error occurred while importing the PEM key: "
-msgstr "Hiba történt a PEM kulcs importálásakor: "
+#: lib/Application/Controller/DnssecKeyImportController.php:128
+msgid "Key imported successfully."
+msgstr "Kulcs sikeresen importálva."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:131
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "A kulcs importálása nem sikerült. A PowerDNS elutasította."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:135
+msgid "An error occurred while importing the key: "
+msgstr "Hiba történt a kulcs importálásakor: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3277,7 +3272,7 @@ msgstr ""
 "jelszavukat. Forduljon a rendszergazdához."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
+#: templates/modern/change_password.html:43 templates/modern/header.html:402
 msgid "Change password"
 msgstr "Jelszó módosítása"
 
@@ -3844,27 +3839,27 @@ msgstr "Hiba az alapértelmezett zónasablon beállításakor: "
 msgid "Error clearing default zone template: "
 msgstr "Hiba az alapértelmezett zónasablon törlésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
+#: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:1017
 msgid "Error creating zone template: "
 msgstr "Hiba a zóna sablon létrehozásakor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
+#: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
 msgstr "Hiba az alapértelmezett SOA rekord hozzáadásakor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:494
+#: lib/Domain/Model/ZoneTemplate.php:496
 msgid "Error deleting zone template: "
 msgstr "Hiba a zóna sablon törlésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:518
+#: lib/Domain/Model/ZoneTemplate.php:520
 msgid "Error deleting user zone templates: "
 msgstr "Hiba a felhasználói zóna sablonok törlésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:646
+#: lib/Domain/Model/ZoneTemplate.php:648
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Nincs jogosultsága rekord hozzáadására ehhez a sablonhoz."
 
-#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
+#: lib/Domain/Model/ZoneTemplate.php:653 lib/Domain/Model/ZoneTemplate.php:765
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
@@ -3879,34 +3874,34 @@ msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr ""
 "Az MX/SRV rekordok prioritásának 0 és 65535 közötti számnak kell lennie."
 
-#: lib/Domain/Model/ZoneTemplate.php:695
+#: lib/Domain/Model/ZoneTemplate.php:697
 msgid "Error adding zone template record: "
 msgstr "Hiba a zóna sablon rekord hozzáadásakor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
+#: lib/Domain/Model/ZoneTemplate.php:755 lib/Domain/Model/ZoneTemplate.php:840
 msgid "The record does not belong to this zone template."
 msgstr "A rekord nem tartozik ehhez a zóna sablonhoz."
 
-#: lib/Domain/Model/ZoneTemplate.php:815
+#: lib/Domain/Model/ZoneTemplate.php:817
 msgid "Error updating zone template record: "
 msgstr "Hiba a zóna sablon rekord frissítésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:844
+#: lib/Domain/Model/ZoneTemplate.php:846
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr ""
 "Nincs jogosultsága ennek a rekordtípusnak a zónasablonból való törlésére."
 
-#: lib/Domain/Model/ZoneTemplate.php:853
+#: lib/Domain/Model/ZoneTemplate.php:855
 msgid "Error deleting zone template record: "
 msgstr "Hiba a zóna sablon rekord törlésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
+#: lib/Domain/Model/ZoneTemplate.php:921
 msgid "Error checking template ownership: "
 msgstr "Hiba a sablon tulajdonosának ellenőrzésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1005
+#: lib/Domain/Model/ZoneTemplate.php:1009
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3915,35 +3910,35 @@ msgstr ""
 "A következő rekordtípusok kimaradtak a sablonból, mert nem adhatja hozzá "
 "őket: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
+#: lib/Domain/Model/ZoneTemplate.php:1148
 msgid "Error retrieving zones using template: "
 msgstr "Hiba a sablont használó zónák lekérésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1244
+#: lib/Domain/Model/ZoneTemplate.php:1248
 msgid "Failed to get list of zones using template: "
 msgstr "Nem sikerült lekérni a sablont használó zónák listáját: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1262
+#: lib/Domain/Model/ZoneTemplate.php:1266
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nincs jogosultsága zóna sablon szerkesztésére."
 
-#: lib/Domain/Model/ZoneTemplate.php:1311
+#: lib/Domain/Model/ZoneTemplate.php:1315
 msgid "Error unlinking zone from template: "
 msgstr "Hiba a zóna sablonról való leválasztásakor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1360
+#: lib/Domain/Model/ZoneTemplate.php:1364
 msgid "Error retrieving zones: "
 msgstr "Hiba a zónák lekérésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1379
+#: lib/Domain/Model/ZoneTemplate.php:1383
 msgid "Error checking template name existence: "
 msgstr "Hiba a sablon név létezésének ellenőrzésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1400
+#: lib/Domain/Model/ZoneTemplate.php:1404
 msgid "Error looking up template by name: "
 msgstr "Hiba a sablon név szerinti keresésekor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1423
+#: lib/Domain/Model/ZoneTemplate.php:1427
 msgid "Error checking template existence: "
 msgstr "Hiba a sablon létezésének ellenőrzésekor: "
 
@@ -10285,7 +10280,7 @@ msgstr "Adja meg a gazdanevet az NS rekordban megjelenő formában"
 msgid "Provide host name"
 msgstr "Adja meg a gazdanevet"
 
-#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:376
+#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:383
 msgid "Account"
 msgstr "Fiók"
 
@@ -10388,38 +10383,35 @@ msgstr "Inaktiválás"
 msgid "Activate"
 msgstr "Aktiválás"
 
-#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Kulcs letöltése PEM formátumban"
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "A privát kulcs letöltése BIND formátumban"
 
-#: templates/default/dnssec.html:125 templates/modern/dnssec.html:125
-msgid "Export PEM"
-msgstr "PEM exportálása"
+#: templates/modern/list_record_changes.html:194
+msgid "Export"
+msgstr "Exportálás"
 
 #: templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Törlés"
 
-#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Kulcs importálása PEM-ből"
-
-#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Illesszen be egy PEM-kódolású privát kulcsot (RSA vagy ECDSA). A PowerDNS "
-"4.7+ a kulcs méretét a PEM tartalmából vezeti le - válassza ki a megfelelő "
-"algoritmust és kulcsszerepet."
-
-#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
-msgid "PEM private key"
-msgstr "PEM privát kulcs"
-
-#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+#: templates/modern/dnssec.html:143 templates/modern/dnssec.html:170
 msgid "Import key"
 msgstr "Kulcs importálása"
+
+#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Illesszen be egy BIND formátumú privát kulcsot (ahogy itt vagy a dnssec-"
+"keygen exportálja) vagy egy titkosítatlan PEM kulcsot (RSA, ECDSA, Ed25519 "
+"vagy Ed448). Válassza ki azt az algoritmust, amelyhez a kulcs készült."
+
+#: templates/default/dnssec.html:165 templates/modern/dnssec.html:165
+msgid "Private key"
+msgstr "Privát kulcs"
 
 #: templates/default/list_networks.html:8 templates/modern/list_networks.html:8
 msgid "Network Mapping:"
@@ -10694,7 +10686,7 @@ msgstr "első 20 mutatása"
 msgid "more zones..."
 msgstr "több zóna..."
 
-#: templates/modern/delete_domain.html:50
+#: templates/modern/delete_domain.html:52
 msgid "Important Note"
 msgstr "Fontos megjegyzés"
 
@@ -10825,7 +10817,7 @@ msgstr "Eszközök"
 msgid "Database"
 msgstr "Adatbázis"
 
-#: templates/default/index.html:319 templates/modern/index.html:319
+#: templates/modern/index.html:319 templates/modern/header.html:361
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10838,11 +10830,11 @@ msgstr "Saját profil"
 msgid "Password"
 msgstr "Jelszó"
 
-#: templates/modern/index.html:589 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:396
 msgid "Preferences"
 msgstr "Beállítások"
 
-#: templates/modern/header.html:453
+#: templates/modern/header.html:460
 msgid "Logout"
 msgstr "Kijelentkezés"
 
@@ -11490,7 +11482,7 @@ msgstr "Sor oldalanként:"
 msgid "There are no reverse zones to show in this listing."
 msgstr "Nincsenek fordított zónák a listában."
 
-#: templates/modern/search.html:176 templates/modern/delete_domains.html:28
+#: templates/modern/search.html:176 templates/modern/delete_domains.html:29
 msgid "Owner"
 msgstr "Tulajdonos"
 
@@ -11556,7 +11548,7 @@ msgstr "NOTIFY elküldve a %serial% sorszámnál"
 msgid "Delete zone(s)"
 msgstr "Zóná(ka)t törölni"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:77
 msgid "Add key"
 msgstr "Kulcs hozzáadása"
 
@@ -11589,11 +11581,11 @@ msgstr "Válasszon algoritmust"
 msgid "Bits in length"
 msgstr "Bit hossz"
 
-#: templates/modern/dnssec_add_key.html:70
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select bits length"
 msgstr "Válassza ki a bitek hosszát"
 
-#: templates/modern/dnssec_add_key.html:127
+#: templates/modern/dnssec_add_key.html:128
 msgid "Recommended bits for"
 msgstr "Javasolt bitek ehhez:"
 
@@ -11602,19 +11594,19 @@ msgstr "Javasolt bitek ehhez:"
 msgid "Warning:"
 msgstr "Figyelmeztetés:"
 
-#: templates/modern/dnssec_add_key.html:135
+#: templates/modern/dnssec_add_key.html:136
 msgid "bits is not recommended for"
 msgstr "bit nem ajánlott ehhez"
 
-#: templates/modern/dnssec_add_key.html:171
+#: templates/modern/dnssec_add_key.html:172
 msgid "About DNSSEC Key Types"
 msgstr "DNSSEC kulcs típusokról"
 
-#: templates/modern/dnssec_add_key.html:174
+#: templates/modern/dnssec_add_key.html:175
 msgid "Key Types Explained"
 msgstr "Kulcstípusok magyarázata"
 
-#: templates/modern/dnssec_add_key.html:176
+#: templates/modern/dnssec_add_key.html:177
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11622,19 +11614,26 @@ msgstr ""
 "Kombinált aláíró kulcs - egyszerre szolgál KSK-ként és ZSK-ként (PowerDNS "
 "4.0+ esetén ajánlott)"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:178
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Key Signing Key - aláírja a DNSKEY rekordokat"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:179
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - aláírja a többi rekordot"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/default/dnssec_add_key.html:181
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "A PowerDNS csak addig jelenít meg egy kulcsot KSK-ként vagy ZSK-ként, amíg a zónában van azonos algoritmusú aktív KSK és aktív ZSK. Egyébként a kulcsot CSK-ként jeleníti meg, még akkor is, ha itt KSK-t vagy ZSK-t választott."
+
+#: templates/modern/dnssec_add_key.html:184
 msgid "Recommended Settings"
 msgstr "Ajánlott beállítások"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:185
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11675,7 +11674,7 @@ msgstr ""
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: templates/modern/edit_user.html:3 templates/modern/header.html:383
+#: templates/modern/edit_user.html:3 templates/modern/header.html:390
 msgid "Edit profile"
 msgstr "Profil szerkesztése"
 
@@ -12327,10 +12326,6 @@ msgstr "Esemény"
 #: templates/modern/_partials/log_list.html:103
 msgid "Details"
 msgstr "Részletek"
-
-#: templates/modern/list_record_changes.html:194
-msgid "Export"
-msgstr "Exportálás"
 
 #: templates/modern/list_record_changes.html:171
 msgid "Export Logs"
@@ -13175,7 +13170,7 @@ msgstr "Keverjen betűket, számokat és szimbólumokat"
 msgid "Consider using a password manager"
 msgstr "Fontolja meg a jelszókezelő használatát"
 
-#: templates/modern/header.html:402
+#: templates/modern/header.html:409
 msgid "Multi-Factor Authentication"
 msgstr "Többtényezős hitelesítés"
 
@@ -13770,7 +13765,7 @@ msgstr "Hamarosan törli a zónát"
 msgid "Zone Details"
 msgstr "Zóna részletei"
 
-#: templates/modern/delete_domains.html:53
+#: templates/modern/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13781,11 +13776,11 @@ msgstr ""
 "supermaster. A zóna törlése most csak ideiglenes eltávolítást jelent. Amint "
 "a supermaster értesítést küld erről a zónáról, a zóna újra létrejön!"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "Yes, delete this zone"
 msgstr "Igen, töröljem ezt a zónát"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "No, keep this zone"
 msgstr "Nem, zóna megtartása"
 
@@ -13994,15 +13989,15 @@ msgstr "Több zónát készül törölni. Ez a művelet nem vonható vissza."
 msgid "Zones to Delete"
 msgstr "Törlendő zónák"
 
-#: templates/modern/delete_domains.html:30
+#: templates/modern/delete_domains.html:32
 msgid "Note"
 msgstr "Megjegyzés"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Igen, töröljem ezeket a zónákat"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Nem, zónák megtartása"
 
@@ -14353,11 +14348,11 @@ msgstr "Zóna sablonok listája"
 msgid "API Documentation"
 msgstr "API dokumentáció"
 
-#: templates/default/header.html:327 templates/modern/header.html:500
+#: templates/default/header.html:332 templates/modern/header.html:507
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:331 templates/modern/header.html:504
+#: templates/default/header.html:336 templates/modern/header.html:511
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14365,7 +14360,7 @@ msgstr ""
 "Ellenőrizze, hogy a config/settings.php fájlban lévő pdns_api.key megegyezik-"
 "e a PowerDNS-ben beállított API-kulccsal."
 
-#: templates/default/header.html:333 templates/modern/header.html:506
+#: templates/default/header.html:338 templates/modern/header.html:513
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14373,7 +14368,7 @@ msgstr ""
 "Ellenőrizze, hogy a pdns_api.server_name megegyezik-e a PowerDNS által "
 "jelentett névvel (alapértelmezés: 'localhost')."
 
-#: templates/default/header.html:335 templates/modern/header.html:508
+#: templates/default/header.html:340 templates/modern/header.html:515
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14384,7 +14379,7 @@ msgstr ""
 "importálta, gyakori kiváltó ok egyetlen hibás rekord, amely miatt a zóna "
 "sorosítása meghiúsul."
 
-#: templates/default/header.html:337 templates/modern/header.html:510
+#: templates/default/header.html:342 templates/modern/header.html:517
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15751,46 +15746,60 @@ msgstr ""
 "beállítást ez a rendszer valószínűleg nem támogatja. Kérjük, vegye fel a "
 "kapcsolatot a rendszergazdával."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Kulcs sikeresen importálva."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "A PEM kulcs exportálásához PowerDNS 4.7 vagy újabb szükséges."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "A privát kulcs nem egyezik a kiválasztott algoritmussal."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Hiba történt a PEM kulcs exportálásakor: "
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "A privát kulcs nem olvasható. Illesszen be egy BIND formátumú privát kulcsot vagy egy titkosítatlan PEM kulcsot."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "A PEM kulcs nem volt lekérhető. Lehet, hogy a kiszolgáló ehhez a kulcshoz "
+# OBSOLETE: "nem tesz közzé privát kulcs anyagot."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "A kulcs importálása nem sikerült. A PowerDNS elutasította."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "A PEM kulcs importálásához PowerDNS 4.7 vagy újabb szükséges."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Hiba történt a kulcs importálásakor: "
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Adjon meg egy PEM-kódolású privát kulcsot (BEGIN/END jelölőket "
+# OBSOLETE: "tartalmaznia kell)."
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Hiba történt a kulcs exportálásakor: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM kulcs sikeresen importálva."
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "A privát kulcs nem volt lekérhető a PowerDNS-től."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "A PEM kulcs importálása nem sikerült. A PowerDNS kiszolgáló elutasíthatta "
+# OBSOLETE: "a formátumot."
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "A privát kulcs letöltése BIND formátumban"
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Hiba történt a PEM kulcs importálásakor: "
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Privát kulcs"
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Kulcs letöltése PEM formátumban"
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Illesszen be egy BIND formátumú privát kulcsot (ahogy itt vagy a dnssec-keygen exportálja) vagy egy titkosítatlan PEM kulcsot (RSA, ECDSA, Ed25519 vagy Ed448). Válassza ki azt az algoritmust, amelyhez a kulcs készült."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "PEM exportálása"
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "A kulcsok importálásához PowerDNS 4.1 vagy újabb szükséges."
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Kulcs importálása PEM-ből"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Illesszen be egy PEM-kódolású privát kulcsot (RSA vagy ECDSA). A PowerDNS "
+# OBSOLETE: "4.7+ a kulcs méretét a PEM tartalmából vezeti le - válassza ki a "
+# OBSOLETE: "megfelelő algoritmust és kulcsszerepet."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "PEM privát kulcs"
+
+
+

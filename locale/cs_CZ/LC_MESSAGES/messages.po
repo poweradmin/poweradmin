@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-28 01:30+0300\n"
+"POT-Creation-Date: 2026-10-02 09:21+0300\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -955,7 +955,7 @@ msgstr ""
 "a konce řádků budou automaticky odstraněny."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+#: templates/modern/dnssec.html:149 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "Typ klíče"
 
@@ -1935,7 +1935,7 @@ msgstr "Neplatný typ záznamu."
 msgid "Record could not be added."
 msgstr "Záznam nemohl být přidán."
 
-#: lib/Application/Controller/AddRecordController.php:529
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d záznam(y) byly úspěšně přidány."
@@ -2167,7 +2167,7 @@ msgstr "Zóny byly úspěšně aktualizovány."
 msgid "You do not have permission to create new zone templates."
 msgstr "Nemáte oprávnění vytvářet nové šablony zón."
 
-#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Šablona zóny s tímto názvem již existuje, vyberte prosím jinou."
 
@@ -2370,7 +2370,7 @@ msgstr "Zadejte prosím všechna povinná pole."
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Záznam byl úspěšně přidán. Odpovídající PTR záznam byl také vytvořen."
 
-#: lib/Application/Controller/AddRecordController.php:510
+#: lib/Application/Controller/AddRecordController.php:512
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Záznam byl úspěšně přidán, ale vytvoření PTR záznamu selhalo: "
 
@@ -2426,21 +2426,21 @@ msgstr ""
 msgid "Record successfully added."
 msgstr "Záznam byl úspěšně přidán."
 
-#: lib/Application/Controller/AddRecordController.php:460
+#: lib/Application/Controller/AddRecordController.php:462
 msgid "No records were provided."
 msgstr "Nebyly poskytnuty žádné záznamy."
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Bylo také vytvořeno %d odpovídajících záznamů."
 
-#: lib/Application/Controller/AddRecordController.php:534
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d záznam(y) se nepodařilo přidat."
 
-#: lib/Application/Controller/AddRecordController.php:539
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2448,7 +2448,7 @@ msgstr ""
 "Některé záznamy nemohly být přidány. Možná již existují nebo obsahují "
 "neplatná data."
 
-#: lib/Application/Controller/AddRecordController.php:569
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nepodařilo se přidat žádné záznamy. Možná obsahují neplatná data."
 
@@ -2505,27 +2505,19 @@ msgstr "Nepodařilo se spustit OIDC ověření: "
 msgid "Group logs"
 msgstr "Protokoly skupin"
 
-#: lib/Application/Controller/DnssecKeyExportController.php:72
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Export PEM klíče vyžaduje PowerDNS 4.7 nebo novější."
+#: lib/Application/Controller/DnssecKeyExportController.php:84
+msgid "An error occurred while exporting the key: "
+msgstr "Při exportu klíče došlo k chybě: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
-msgid "An error occurred while exporting the PEM key: "
-msgstr "Při exportu PEM klíče došlo k chybě: "
-
-#: lib/Application/Controller/DnssecKeyExportController.php:96
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"Nepodařilo se získat PEM klíč. Server pravděpodobně neposkytuje soukromý "
-"klíčový materiál pro tento klíč."
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "Nepodařilo se získat soukromý klíč z PowerDNS."
 
 #: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "Nemáte oprávnění přidat hlavní zónu."
 
-#: lib/Application/Controller/AddZoneMasterController.php:84
+#: lib/Application/Controller/AddZoneMasterController.php:85
 msgid "Add Primary Zone"
 msgstr "Přidat primární zónu"
 
@@ -2553,7 +2545,7 @@ msgstr ""
 "Zadejte síť v zápisu CIDR (například 192.168.1.0/24 nebo 2001:db8::/48) nebo "
 "název reverzní zóny končící na in-addr.arpa nebo ip6.arpa."
 
-#: lib/Application/Controller/AddZoneMasterController.php:309
+#: lib/Application/Controller/AddZoneMasterController.php:320
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2561,7 +2553,7 @@ msgstr ""
 "Zóna byla úspěšně vytvořena, ale podepsání DNSSEC bylo přeskočeno kvůli "
 "chybám ověření:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:332
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2570,11 +2562,11 @@ msgstr ""
 "zóny proběhlo úspěšně, ale PowerDNS API vrátilo chybu. Zkontrolujte logy "
 "PowerDNS pro podrobnosti."
 
-#: lib/Application/Controller/AddZoneMasterController.php:327
+#: lib/Application/Controller/AddZoneMasterController.php:338
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zóna byla úspěšně vytvořena a podepsána pomocí DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:331
+#: lib/Application/Controller/AddZoneMasterController.php:342
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2923,7 +2915,7 @@ msgstr "Neplatný typ kontroly"
 msgid "You have logged out."
 msgstr "Byli jste odhlášeni."
 
-#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:941
 msgid "You do not have the permission to add a zone template."
 msgstr "Nemáte oprávnění přidat šablonu zóny."
 
@@ -2956,7 +2948,7 @@ msgstr "Nemáte oprávnění přidat podřízenou zónu."
 msgid "Add Secondary Zone"
 msgstr "Přidat sekundární zónu"
 
-#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
+#: lib/Domain/Model/ZoneTemplate.php:466 lib/Domain/Model/ZoneTemplate.php:512
 msgid "You do not have the permission to delete zone templates."
 msgstr "Nemáte oprávnění mazat šablony zón."
 
@@ -3055,27 +3047,33 @@ msgstr "Nemáte oprávnění přidat nový supermaster."
 msgid "The supermaster has been added successfully."
 msgstr "Supermaster byl úspěšně přidán."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:80
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Import PEM klíče vyžaduje PowerDNS 4.7 nebo novější."
+#: lib/Application/Controller/DnssecKeyImportController.php:82
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "Import klíčů vyžaduje PowerDNS 4.1 nebo novější."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:114
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Zadejte soukromý klíč zakódovaný v PEM (musí obsahovat značky BEGIN/END)."
+#: lib/Application/Controller/DnssecKeyImportController.php:119
+msgid "The private key does not match the selected algorithm."
+msgstr "Soukromý klíč neodpovídá vybranému algoritmu."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:122
-msgid "PEM key imported successfully."
-msgstr "PEM klíč úspěšně importován."
-
-#: lib/Application/Controller/DnssecKeyImportController.php:125
+#: lib/Application/Controller/DnssecKeyImportController.php:120
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
-msgstr "Import PEM klíče selhal. PowerDNS server mohl formát odmítnout."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
+msgstr ""
+"Soukromý klíč nelze přečíst. Vložte soukromý klíč ve formátu BIND nebo "
+"nešifrovaný PEM klíč."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:129
-msgid "An error occurred while importing the PEM key: "
-msgstr "Při importu PEM klíče došlo k chybě: "
+#: lib/Application/Controller/DnssecKeyImportController.php:128
+msgid "Key imported successfully."
+msgstr "Klíč úspěšně importován."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:131
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "Import klíče selhal. PowerDNS jej odmítl."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:135
+msgid "An error occurred while importing the key: "
+msgstr "Při importu klíče došlo k chybě: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3264,7 +3262,7 @@ msgstr ""
 "prosím svého administrátora."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
+#: templates/modern/change_password.html:43 templates/modern/header.html:402
 msgid "Change password"
 msgstr "Změnit heslo"
 
@@ -3826,27 +3824,27 @@ msgstr "Chyba při nastavování výchozí šablony zóny: "
 msgid "Error clearing default zone template: "
 msgstr "Chyba při rušení výchozí šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
+#: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:1017
 msgid "Error creating zone template: "
 msgstr "Chyba při vytváření šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
+#: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
 msgstr "Chyba při přidávání výchozího SOA záznamu do šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:494
+#: lib/Domain/Model/ZoneTemplate.php:496
 msgid "Error deleting zone template: "
 msgstr "Chyba při mazání šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:518
+#: lib/Domain/Model/ZoneTemplate.php:520
 msgid "Error deleting user zone templates: "
 msgstr "Chyba při mazání uživatelských šablon zón: "
 
-#: lib/Domain/Model/ZoneTemplate.php:646
+#: lib/Domain/Model/ZoneTemplate.php:648
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Nemáte oprávnění přidat záznam do této šablony zóny."
 
-#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
+#: lib/Domain/Model/ZoneTemplate.php:653 lib/Domain/Model/ZoneTemplate.php:765
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Nemáte oprávnění přidat tento typ záznamu do šablony zóny."
@@ -3859,33 +3857,33 @@ msgstr "Vaše pole obsahu nemá platnou hodnotu."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Priorita pro MX/SRV záznamy musí být číslo mezi 0 a 65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:695
+#: lib/Domain/Model/ZoneTemplate.php:697
 msgid "Error adding zone template record: "
 msgstr "Chyba při přidávání záznamu šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
+#: lib/Domain/Model/ZoneTemplate.php:755 lib/Domain/Model/ZoneTemplate.php:840
 msgid "The record does not belong to this zone template."
 msgstr "Tento záznam nepatří do této šablony zóny."
 
-#: lib/Domain/Model/ZoneTemplate.php:815
+#: lib/Domain/Model/ZoneTemplate.php:817
 msgid "Error updating zone template record: "
 msgstr "Chyba při aktualizaci záznamu šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:844
+#: lib/Domain/Model/ZoneTemplate.php:846
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Nemáte oprávnění odstranit tento typ záznamu ze šablony zóny."
 
-#: lib/Domain/Model/ZoneTemplate.php:853
+#: lib/Domain/Model/ZoneTemplate.php:855
 msgid "Error deleting zone template record: "
 msgstr "Chyba při mazání záznamu šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
+#: lib/Domain/Model/ZoneTemplate.php:921
 msgid "Error checking template ownership: "
 msgstr "Chyba při kontrole vlastnictví šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1005
+#: lib/Domain/Model/ZoneTemplate.php:1009
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3894,35 +3892,35 @@ msgstr ""
 "Tyto typy záznamů nebyly do šablony zahrnuty, protože je nemůžete přidávat: "
 "%s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
+#: lib/Domain/Model/ZoneTemplate.php:1148
 msgid "Error retrieving zones using template: "
 msgstr "Chyba při získávání zón používajících šablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1244
+#: lib/Domain/Model/ZoneTemplate.php:1248
 msgid "Failed to get list of zones using template: "
 msgstr "Nepodařilo se získat seznam zón používajících šablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1262
+#: lib/Domain/Model/ZoneTemplate.php:1266
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nemáte oprávnění upravovat šablonu zóny."
 
-#: lib/Domain/Model/ZoneTemplate.php:1311
+#: lib/Domain/Model/ZoneTemplate.php:1315
 msgid "Error unlinking zone from template: "
 msgstr "Chyba při odpojování zóny od šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1360
+#: lib/Domain/Model/ZoneTemplate.php:1364
 msgid "Error retrieving zones: "
 msgstr "Chyba při získávání zón: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1379
+#: lib/Domain/Model/ZoneTemplate.php:1383
 msgid "Error checking template name existence: "
 msgstr "Chyba při kontrole existence názvu šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1400
+#: lib/Domain/Model/ZoneTemplate.php:1404
 msgid "Error looking up template by name: "
 msgstr "Chyba při vyhledávání šablony podle názvu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1423
+#: lib/Domain/Model/ZoneTemplate.php:1427
 msgid "Error checking template existence: "
 msgstr "Chyba při kontrole existence šablony: "
 
@@ -10103,7 +10101,7 @@ msgstr "Zadejte hostname tak, jak se objevuje v NS záznamu"
 msgid "Provide host name"
 msgstr "Zadejte název hostitele"
 
-#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:376
+#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:383
 msgid "Account"
 msgstr "Účet"
 
@@ -10205,37 +10203,35 @@ msgstr "Deaktivovat"
 msgid "Activate"
 msgstr "Aktivovat"
 
-#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "Stáhnout klíč jako PEM"
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "Stáhnout soukromý klíč ve formátu BIND"
 
-#: templates/default/dnssec.html:125 templates/modern/dnssec.html:125
-msgid "Export PEM"
-msgstr "Exportovat PEM"
+#: templates/modern/list_record_changes.html:194
+msgid "Export"
+msgstr "Exportovat"
 
 #: templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "Smazat"
 
-#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "Importovat klíč z PEM"
-
-#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Vložte soukromý klíč zakódovaný v PEM (RSA nebo ECDSA). PowerDNS 4.7+ určí "
-"velikost klíče z obsahu PEM - vyberte odpovídající algoritmus a roli klíče."
-
-#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
-msgid "PEM private key"
-msgstr "Soukromý PEM klíč"
-
-#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+#: templates/modern/dnssec.html:143 templates/modern/dnssec.html:170
 msgid "Import key"
 msgstr "Importovat klíč"
+
+#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"Vložte soukromý klíč ve formátu BIND (tak, jak je exportován zde nebo "
+"nástrojem dnssec-keygen) nebo nešifrovaný PEM klíč (RSA, ECDSA, Ed25519 nebo "
+"Ed448). Vyberte algoritmus, pro který byl klíč vytvořen."
+
+#: templates/default/dnssec.html:165 templates/modern/dnssec.html:165
+msgid "Private key"
+msgstr "Soukromý klíč"
 
 #: templates/default/list_networks.html:8 templates/modern/list_networks.html:8
 msgid "Network Mapping:"
@@ -10508,7 +10504,7 @@ msgstr "zobrazeno prvních 20"
 msgid "more zones..."
 msgstr "další zóny..."
 
-#: templates/modern/delete_domain.html:50
+#: templates/modern/delete_domain.html:52
 msgid "Important Note"
 msgstr "Důležitá poznámka"
 
@@ -10639,7 +10635,7 @@ msgstr "Nástroje"
 msgid "Database"
 msgstr "Databáze"
 
-#: templates/default/index.html:319 templates/modern/index.html:319
+#: templates/modern/index.html:319 templates/modern/header.html:361
 msgid "TTL defaults"
 msgstr "TTL defaults"
 
@@ -10652,11 +10648,11 @@ msgstr "Můj profil"
 msgid "Password"
 msgstr "Heslo"
 
-#: templates/modern/index.html:589 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:396
 msgid "Preferences"
 msgstr "Předvolby"
 
-#: templates/modern/header.html:453
+#: templates/modern/header.html:460
 msgid "Logout"
 msgstr "Odhlásit"
 
@@ -11302,7 +11298,7 @@ msgstr "Řádků na stránku:"
 msgid "There are no reverse zones to show in this listing."
 msgstr "V tomto seznamu nejsou žádné reverzní zóny k zobrazení."
 
-#: templates/modern/search.html:176 templates/modern/delete_domains.html:28
+#: templates/modern/search.html:176 templates/modern/delete_domains.html:29
 msgid "Owner"
 msgstr "Vlastník"
 
@@ -11368,7 +11364,7 @@ msgstr "NOTIFY odesláno u sériového čísla %serial%"
 msgid "Delete zone(s)"
 msgstr "Smazat zónu/zóny"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:77
 msgid "Add key"
 msgstr "Přidat klíč"
 
@@ -11400,11 +11396,11 @@ msgstr "Vyberte algoritmus"
 msgid "Bits in length"
 msgstr "Počet bitů"
 
-#: templates/modern/dnssec_add_key.html:70
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select bits length"
 msgstr "Vyberte délku v bitech"
 
-#: templates/modern/dnssec_add_key.html:127
+#: templates/modern/dnssec_add_key.html:128
 msgid "Recommended bits for"
 msgstr "Doporučené bity pro"
 
@@ -11413,19 +11409,19 @@ msgstr "Doporučené bity pro"
 msgid "Warning:"
 msgstr "Varování:"
 
-#: templates/modern/dnssec_add_key.html:135
+#: templates/modern/dnssec_add_key.html:136
 msgid "bits is not recommended for"
 msgstr "bitů se nedoporučuje pro"
 
-#: templates/modern/dnssec_add_key.html:171
+#: templates/modern/dnssec_add_key.html:172
 msgid "About DNSSEC Key Types"
 msgstr "O typech DNSSEC klíčů"
 
-#: templates/modern/dnssec_add_key.html:174
+#: templates/modern/dnssec_add_key.html:175
 msgid "Key Types Explained"
 msgstr "Vysvětlení typů klíčů"
 
-#: templates/modern/dnssec_add_key.html:176
+#: templates/modern/dnssec_add_key.html:177
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11433,19 +11429,26 @@ msgstr ""
 "Kombinovaný podpisový klíč - slouží jako KSK i ZSK (doporučeno pro PowerDNS "
 "4.0+)"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:178
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Klíč pro podpis klíčů - podepisuje DNSKEY záznamy v zóně"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:179
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Klíč pro podpis zóny - podepisuje všechny ostatní záznamy v zóně"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/default/dnssec_add_key.html:181
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS zobrazuje klíč jako KSK nebo ZSK jen tehdy, když má zóna aktivní KSK a aktivní ZSK se stejným algoritmem. Jinak klíč zobrazuje jako CSK, i když jste zde zvolili KSK nebo ZSK."
+
+#: templates/modern/dnssec_add_key.html:184
 msgid "Recommended Settings"
 msgstr "Doporučená nastavení"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:185
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11485,7 +11488,7 @@ msgstr ""
 msgid "Add"
 msgstr "Přidat"
 
-#: templates/modern/edit_user.html:3 templates/modern/header.html:383
+#: templates/modern/edit_user.html:3 templates/modern/header.html:390
 msgid "Edit profile"
 msgstr "Upravit profil"
 
@@ -12138,10 +12141,6 @@ msgstr "Událost"
 #: templates/modern/_partials/log_list.html:103
 msgid "Details"
 msgstr "Podrobnosti"
-
-#: templates/modern/list_record_changes.html:194
-msgid "Export"
-msgstr "Exportovat"
 
 #: templates/modern/list_record_changes.html:171
 msgid "Export Logs"
@@ -12983,7 +12982,7 @@ msgstr "Zahrňte kombinaci písmen, číslic a symbolů"
 msgid "Consider using a password manager"
 msgstr "Zvažte použití správce hesel"
 
-#: templates/modern/header.html:402
+#: templates/modern/header.html:409
 msgid "Multi-Factor Authentication"
 msgstr "Vícefaktorové ověření"
 
@@ -13578,7 +13577,7 @@ msgstr "Chystáte se smazat zónu"
 msgid "Zone Details"
 msgstr "Podrobnosti zóny"
 
-#: templates/modern/delete_domains.html:53
+#: templates/modern/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13589,11 +13588,11 @@ msgstr ""
 "supermaster. Smazání zóny nyní povede pouze k dočasnému odstranění. Kdykoli "
 "supermaster pošle oznámení pro tuto zónu, bude opět přidána!"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "Yes, delete this zone"
 msgstr "Ano, smazat tuto zónu"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "No, keep this zone"
 msgstr "Ne, ponechat tuto zónu"
 
@@ -13801,15 +13800,15 @@ msgstr "Chystáte se smazat více zón. Tuto akci nelze vrátit zpět."
 msgid "Zones to Delete"
 msgstr "Zóny ke smazání"
 
-#: templates/modern/delete_domains.html:30
+#: templates/modern/delete_domains.html:32
 msgid "Note"
 msgstr "Poznámka"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "Ano, smazat tyto zóny"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "Ne, ponechat tyto zóny"
 
@@ -14158,11 +14157,11 @@ msgstr "Seznam šablon zón"
 msgid "API Documentation"
 msgstr "API dokumentace"
 
-#: templates/default/header.html:327 templates/modern/header.html:500
+#: templates/default/header.html:332 templates/modern/header.html:507
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:331 templates/modern/header.html:504
+#: templates/default/header.html:336 templates/modern/header.html:511
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -14170,7 +14169,7 @@ msgstr ""
 "Zkontrolujte, že pdns_api.key v config/settings.php odpovídá klíči API "
 "nastavenému v PowerDNS."
 
-#: templates/default/header.html:333 templates/modern/header.html:506
+#: templates/default/header.html:338 templates/modern/header.html:513
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -14178,7 +14177,7 @@ msgstr ""
 "Zkontrolujte, že pdns_api.server_name odpovídá tomu, co hlásí PowerDNS "
 "(výchozí 'localhost')."
 
-#: templates/default/header.html:335 templates/modern/header.html:508
+#: templates/default/header.html:340 templates/modern/header.html:515
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -14188,7 +14187,7 @@ msgstr ""
 "importu zón přímo do databáze PowerDNS to často způsobí jediný poškozený "
 "záznam, na kterém selže serializace zóny."
 
-#: templates/default/header.html:337 templates/modern/header.html:510
+#: templates/default/header.html:342 templates/modern/header.html:517
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15534,46 +15533,57 @@ msgstr ""
 "Nepodařilo se nastavit jazykové prostředí. Vybrané prostředí možná není v "
 "tomto systému podporováno. Kontaktujte prosím svého administrátora."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "Klíč úspěšně importován."
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Export PEM klíče vyžaduje PowerDNS 4.7 nebo novější."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "Soukromý klíč neodpovídá vybranému algoritmu."
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "Při exportu PEM klíče došlo k chybě: "
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "Soukromý klíč nelze přečíst. Vložte soukromý klíč ve formátu BIND nebo nešifrovaný PEM klíč."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Nepodařilo se získat PEM klíč. Server pravděpodobně neposkytuje soukromý "
+# OBSOLETE: "klíčový materiál pro tento klíč."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "Import klíče selhal. PowerDNS jej odmítl."
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "Import PEM klíče vyžaduje PowerDNS 4.7 nebo novější."
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "Při importu klíče došlo k chybě: "
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Zadejte soukromý klíč zakódovaný v PEM (musí obsahovat značky BEGIN/END)."
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "Při exportu klíče došlo k chybě: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM klíč úspěšně importován."
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "Nepodařilo se získat soukromý klíč z PowerDNS."
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr "Import PEM klíče selhal. PowerDNS server mohl formát odmítnout."
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "Stáhnout soukromý klíč ve formátu BIND"
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "Při importu PEM klíče došlo k chybě: "
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "Soukromý klíč"
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "Stáhnout klíč jako PEM"
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "Vložte soukromý klíč ve formátu BIND (tak, jak je exportován zde nebo nástrojem dnssec-keygen) nebo nešifrovaný PEM klíč (RSA, ECDSA, Ed25519 nebo Ed448). Vyberte algoritmus, pro který byl klíč vytvořen."
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "Exportovat PEM"
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "Import klíčů vyžaduje PowerDNS 4.1 nebo novější."
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "Importovat klíč z PEM"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Vložte soukromý klíč zakódovaný v PEM (RSA nebo ECDSA). PowerDNS 4.7+ "
+# OBSOLETE: "určí velikost klíče z obsahu PEM - vyberte odpovídající algoritmus a roli "
+# OBSOLETE: "klíče."
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "Soukromý PEM klíč"
+
+
+

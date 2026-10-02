@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-28 01:30+0300\n"
+"POT-Creation-Date: 2026-10-02 09:21+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -946,7 +946,7 @@ msgstr ""
 "स्वचालित रूप से हटा दी जाएँगी।"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+#: templates/modern/dnssec.html:149 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
 msgstr "कुंजी प्रकार"
 
@@ -1911,7 +1911,7 @@ msgstr "अमान्य रिकॉर्ड प्रकार।"
 msgid "Record could not be added."
 msgstr "रिकॉर्ड जोड़ा नहीं जा सकता।"
 
-#: lib/Application/Controller/AddRecordController.php:529
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d रिकॉर्ड सफलतापूर्वक जोड़ा गया है।"
@@ -2137,7 +2137,7 @@ msgstr "ज़ोन सफलतापूर्वक अद्यतन कि
 msgid "You do not have permission to create new zone templates."
 msgstr "आपको नए ज़ोन टेम्प्लेट बनाने की अनुमति नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "इस नाम का ज़ोन टेम्पलेट पहले से मौजूद है, कृपया कोई दूसरा नाम चुनें।"
 
@@ -2335,7 +2335,7 @@ msgstr "कृपया सभी आवश्यक फ़ील्ड प्�
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया। एक मिलान करने वाला PTR रिकॉर्ड भी बनाया गया।"
 
-#: lib/Application/Controller/AddRecordController.php:510
+#: lib/Application/Controller/AddRecordController.php:512
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया, लेकिन PTR रिकॉर्ड निर्माण विफल रहा: "
 
@@ -2390,28 +2390,28 @@ msgstr ""
 msgid "Record successfully added."
 msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया।"
 
-#: lib/Application/Controller/AddRecordController.php:460
+#: lib/Application/Controller/AddRecordController.php:462
 msgid "No records were provided."
 msgstr "कोई रिकॉर्ड प्रदान नहीं किया गया था।"
 
-#: lib/Application/Controller/AddRecordController.php:531
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d मिलान रिकॉर्ड भी बनाया गया था।"
 
-#: lib/Application/Controller/AddRecordController.php:534
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d रिकॉर्ड जोड़ने में विफल रहे।"
 
-#: lib/Application/Controller/AddRecordController.php:539
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr ""
 "कुछ रिकॉर्ड नहीं जोड़ा जा सकता है। वे पहले से ही मौजूद हो सकते हैं या अवैध डेटा हो सकते हैं।"
 
-#: lib/Application/Controller/AddRecordController.php:569
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "किसी भी रिकॉर्ड को जोड़ने में विफल रहा। उनमें अमान्य डेटा हो सकता है।"
 
@@ -2468,27 +2468,19 @@ msgstr "OIDC प्रमाणीकरण शुरू करने में 
 msgid "Group logs"
 msgstr "समूह लॉग"
 
-#: lib/Application/Controller/DnssecKeyExportController.php:72
-msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "PEM कुंजी निर्यात PowerDNS 4.7 या नए की आवश्यकता है।"
+#: lib/Application/Controller/DnssecKeyExportController.php:84
+msgid "An error occurred while exporting the key: "
+msgstr "कुंजी निर्यात करते समय एक त्रुटि हुई: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
-msgid "An error occurred while exporting the PEM key: "
-msgstr "PEM कुंजी निर्यात करते समय एक त्रुटि हुई: "
-
-#: lib/Application/Controller/DnssecKeyExportController.php:96
-msgid ""
-"Could not retrieve the PEM key. The server may not expose private key "
-"material for this key."
-msgstr ""
-"PEM कुंजी को पुनर्प्राप्त नहीं कर सका। सर्वर इस कुंजी के लिए निजी कुंजी सामग्री को उजागर "
-"नहीं कर सकता है।"
+msgid "Could not retrieve the private key from PowerDNS."
+msgstr "PowerDNS से निजी कुंजी पुनर्प्राप्त नहीं की जा सकी।"
 
 #: lib/Domain/Service/Dns/DomainManager.php:451
 msgid "You do not have the permission to add a master zone."
 msgstr "आपको मास्टर ज़ोन जोड़ने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/AddZoneMasterController.php:84
+#: lib/Application/Controller/AddZoneMasterController.php:85
 msgid "Add Primary Zone"
 msgstr "प्राथमिक ज़ोन जोड़ें"
 
@@ -2516,7 +2508,7 @@ msgstr ""
 "CIDR नोटेशन में एक नेटवर्क दर्ज करें (उदाहरण के लिए 192.168.1.0/24 या 2001:db8::/48) "
 "या in-addr.arpa या ip6.arpa पर समाप्त होने वाला रिवर्स ज़ोन नाम।"
 
-#: lib/Application/Controller/AddZoneMasterController.php:309
+#: lib/Application/Controller/AddZoneMasterController.php:320
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2524,7 +2516,7 @@ msgstr ""
 "ज़ोन सफलतापूर्वक बनाया गया था, लेकिन DNSSEC हस्ताक्षर सत्यापन त्रुटियों के कारण छोड़ "
 "दिया गया था:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:332
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2533,11 +2525,11 @@ msgstr ""
 "पारित हो गया, लेकिन PowerDNS API ने एक त्रुटि लौटाई। विवरण के लिए PowerDNS लॉग की "
 "जाँच करें।"
 
-#: lib/Application/Controller/AddZoneMasterController.php:327
+#: lib/Application/Controller/AddZoneMasterController.php:338
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "सफलतापूर्वक DNSSEC के साथ ज़ोन बनाया गया है और हस्ताक्षर किया गया है।"
 
-#: lib/Application/Controller/AddZoneMasterController.php:331
+#: lib/Application/Controller/AddZoneMasterController.php:342
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2879,7 +2871,7 @@ msgstr "अमान्य जांच प्रकार"
 msgid "You have logged out."
 msgstr "आपने लॉग आउट किया है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:941
 msgid "You do not have the permission to add a zone template."
 msgstr "आपके पास एक ज़ोन टेम्पलेट जोड़ने की अनुमति नहीं है।"
 
@@ -2912,7 +2904,7 @@ msgstr "आपको स्लेव ज़ोन जोड़ने की अ�
 msgid "Add Secondary Zone"
 msgstr "माध्यमिक ज़ोन जोड़ें"
 
-#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
+#: lib/Domain/Model/ZoneTemplate.php:466 lib/Domain/Model/ZoneTemplate.php:512
 msgid "You do not have the permission to delete zone templates."
 msgstr "आपके पास ज़ोन टेम्प्लेट को हटाने की अनुमति नहीं है।"
 
@@ -3008,28 +3000,33 @@ msgstr "आपको एक नया supermaster जोड़ने की अ�
 msgid "The supermaster has been added successfully."
 msgstr "supermaster को सफलतापूर्वक जोड़ा गया है।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:80
-msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "PEM कुंजी आयात PowerDNS 4.7 या नए की आवश्यकता है।"
+#: lib/Application/Controller/DnssecKeyImportController.php:82
+msgid "Importing keys requires PowerDNS 4.1 or newer."
+msgstr "कुंजियाँ आयात करने के लिए PowerDNS 4.1 या नया संस्करण आवश्यक है।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:114
-msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "एक PEM-encoded निजी कुंजी प्रदान करें (इसमें BEGIN/END मार्कर होने चाहिए)।"
+#: lib/Application/Controller/DnssecKeyImportController.php:119
+msgid "The private key does not match the selected algorithm."
+msgstr "निजी कुंजी चयनित एल्गोरिथ्म से मेल नहीं खाती।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:122
-msgid "PEM key imported successfully."
-msgstr "PEM कुंजी सफलतापूर्वक आयात किया।"
-
-#: lib/Application/Controller/DnssecKeyImportController.php:125
+#: lib/Application/Controller/DnssecKeyImportController.php:120
 msgid ""
-"Failed to import PEM key. The PowerDNS server may have rejected the format."
+"The private key could not be read. Paste a BIND private key or an "
+"unencrypted PEM key."
 msgstr ""
-"PEM कुंजी आयात करने में विफल रहा। संभव है कि PowerDNS सर्वर ने प्रारूप को अस्वीकार कर "
-"दिया हो।"
+"निजी कुंजी पढ़ी नहीं जा सकी। BIND प्रारूप में निजी कुंजी या बिना एन्क्रिप्ट की गई PEM कुंजी "
+"पेस्ट करें।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:129
-msgid "An error occurred while importing the PEM key: "
-msgstr "PEM कुंजी आयात करते समय एक त्रुटि हुई: "
+#: lib/Application/Controller/DnssecKeyImportController.php:128
+msgid "Key imported successfully."
+msgstr "कुंजी सफलतापूर्वक आयात की गई।"
+
+#: lib/Application/Controller/DnssecKeyImportController.php:131
+msgid "Failed to import the key. PowerDNS rejected it."
+msgstr "कुंजी आयात करने में विफल रहा। PowerDNS ने इसे अस्वीकार कर दिया।"
+
+#: lib/Application/Controller/DnssecKeyImportController.php:135
+msgid "An error occurred while importing the key: "
+msgstr "कुंजी आयात करते समय एक त्रुटि हुई: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3209,7 +3206,7 @@ msgstr ""
 "संपर्क करें।"
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
+#: templates/modern/change_password.html:43 templates/modern/header.html:402
 msgid "Change password"
 msgstr "पासवर्ड बदलें"
 
@@ -3762,27 +3759,27 @@ msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट सेट
 msgid "Error clearing default zone template: "
 msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट को साफ़ करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
+#: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:1017
 msgid "Error creating zone template: "
 msgstr "ज़ोन टेम्पलेट बनाने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:426
+#: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
 msgstr "टेम्पलेट में डिफ़ॉल्ट SOA रिकॉर्ड जोड़ने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:494
+#: lib/Domain/Model/ZoneTemplate.php:496
 msgid "Error deleting zone template: "
 msgstr "ज़ोन टेम्पलेट को हटाने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:518
+#: lib/Domain/Model/ZoneTemplate.php:520
 msgid "Error deleting user zone templates: "
 msgstr "उपयोगकर्ता ज़ोन टेम्प्लेट को हटाने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:646
+#: lib/Domain/Model/ZoneTemplate.php:648
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "आपको इस ज़ोन टेम्पलेट में रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
+#: lib/Domain/Model/ZoneTemplate.php:653 lib/Domain/Model/ZoneTemplate.php:765
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "आपको इस रिकॉर्ड प्रकार को ज़ोन टेम्पलेट में जोड़ने की अनुमति नहीं है।"
@@ -3795,68 +3792,68 @@ msgstr "आपकी सामग्री क्षेत्र में व�
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV रिकॉर्ड के लिए प्राथमिकता 0 और 65535 के बीच एक नंबर होना चाहिए।"
 
-#: lib/Domain/Model/ZoneTemplate.php:695
+#: lib/Domain/Model/ZoneTemplate.php:697
 msgid "Error adding zone template record: "
 msgstr "ज़ोन टेम्पलेट रिकॉर्ड जोड़ने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
+#: lib/Domain/Model/ZoneTemplate.php:755 lib/Domain/Model/ZoneTemplate.php:840
 msgid "The record does not belong to this zone template."
 msgstr "यह रिकॉर्ड इस ज़ोन टेम्पलेट से संबंधित नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:815
+#: lib/Domain/Model/ZoneTemplate.php:817
 msgid "Error updating zone template record: "
 msgstr "ज़ोन टेम्पलेट रिकॉर्ड अद्यतन करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:844
+#: lib/Domain/Model/ZoneTemplate.php:846
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "आपको इस रिकॉर्ड प्रकार को ज़ोन टेम्पलेट से हटाने की अनुमति नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:853
+#: lib/Domain/Model/ZoneTemplate.php:855
 msgid "Error deleting zone template record: "
 msgstr "ज़ोन टेम्पलेट रिकॉर्ड को हटाने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:919
+#: lib/Domain/Model/ZoneTemplate.php:921
 msgid "Error checking template ownership: "
 msgstr "टेम्पलेट स्वामित्व की जांच करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1005
+#: lib/Domain/Model/ZoneTemplate.php:1009
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 msgstr "ये रिकॉर्ड प्रकार टेम्पलेट में शामिल नहीं किए गए क्योंकि आप इन्हें जोड़ नहीं सकते: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1144
+#: lib/Domain/Model/ZoneTemplate.php:1148
 msgid "Error retrieving zones using template: "
 msgstr "टेम्पलेट का उपयोग करके ज़ोनों को पुनः प्राप्त करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1244
+#: lib/Domain/Model/ZoneTemplate.php:1248
 msgid "Failed to get list of zones using template: "
 msgstr "टेम्पलेट का उपयोग करके ज़ोनों की सूची प्राप्त करने में विफल: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1262
+#: lib/Domain/Model/ZoneTemplate.php:1266
 msgid "You do not have the permission to edit a zone template."
 msgstr "आपको किसी ज़ोन टेम्पलेट को संपादित करने की अनुमति नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:1311
+#: lib/Domain/Model/ZoneTemplate.php:1315
 msgid "Error unlinking zone from template: "
 msgstr "टेम्पलेट से ज़ोन को अनलिंक करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1360
+#: lib/Domain/Model/ZoneTemplate.php:1364
 msgid "Error retrieving zones: "
 msgstr "ज़ोनों को पुनः प्राप्त करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1379
+#: lib/Domain/Model/ZoneTemplate.php:1383
 msgid "Error checking template name existence: "
 msgstr "टेम्पलेट नाम अस्तित्व की जांच करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1400
+#: lib/Domain/Model/ZoneTemplate.php:1404
 msgid "Error looking up template by name: "
 msgstr "नाम से टेम्पलेट देखने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1423
+#: lib/Domain/Model/ZoneTemplate.php:1427
 msgid "Error checking template existence: "
 msgstr "टेम्पलेट अस्तित्व की जाँच करने में त्रुटि: "
 
@@ -9938,7 +9935,7 @@ msgstr "NS रिकॉर्ड में दिखाई देने के �
 msgid "Provide host name"
 msgstr "होस्ट नाम प्रदान करें"
 
-#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:376
+#: templates/modern/delete_supermaster.html:32 templates/modern/header.html:383
 msgid "Account"
 msgstr "खाता"
 
@@ -10041,37 +10038,35 @@ msgstr "निष्क्रिय करें"
 msgid "Activate"
 msgstr "सक्रिय करें"
 
-#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
-msgid "Download this key as PEM"
-msgstr "इस कुंजी को PEM के रूप में डाउनलोड करें"
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download the private key in BIND format"
+msgstr "निजी कुंजी को BIND प्रारूप में डाउनलोड करें"
 
-#: templates/default/dnssec.html:125 templates/modern/dnssec.html:125
-msgid "Export PEM"
-msgstr "PEM निर्यात करें"
+#: templates/modern/list_record_changes.html:194
+msgid "Export"
+msgstr "निर्यात"
 
 #: templates/modern/list_perm_templ.html:56
 msgid "Delete"
 msgstr "डिलीट"
 
-#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
-msgid "Import key from PEM"
-msgstr "PEM से कुंजी आयात करें"
-
-#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
-msgid ""
-"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
-"key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"एक PEM-encoded निजी कुंजी (RSA या ECDSA) पेस्ट करें। PowerDNS 4.7+ PEM सामग्री से "
-"कुंजी आकार प्राप्त करता है - मिलान एल्गोरिदम और कुंजी भूमिका का चयन करें।"
-
-#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
-msgid "PEM private key"
-msgstr "PEM निजी कुंजी"
-
-#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+#: templates/modern/dnssec.html:143 templates/modern/dnssec.html:170
 msgid "Import key"
 msgstr "कुंजी आयात करें"
+
+#: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
+msgid ""
+"Paste a private key in BIND format (as exported here or by dnssec-keygen) or "
+"an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm "
+"the key was made for."
+msgstr ""
+"BIND प्रारूप में निजी कुंजी (जैसा यहाँ या dnssec-keygen द्वारा निर्यात किया जाता है) या "
+"बिना एन्क्रिप्ट की गई PEM कुंजी (RSA, ECDSA, Ed25519 या Ed448) पेस्ट करें। वह "
+"एल्गोरिथ्म चुनें जिसके लिए कुंजी बनाई गई थी।"
+
+#: templates/default/dnssec.html:165 templates/modern/dnssec.html:165
+msgid "Private key"
+msgstr "निजी कुंजी"
 
 #: templates/default/list_networks.html:8 templates/modern/list_networks.html:8
 msgid "Network Mapping:"
@@ -10342,7 +10337,7 @@ msgstr "पहले 20 दिखा रहे हैं"
 msgid "more zones..."
 msgstr "अधिक ज़ोन ..."
 
-#: templates/modern/delete_domain.html:50
+#: templates/modern/delete_domain.html:52
 msgid "Important Note"
 msgstr "महत्वपूर्ण नोट"
 
@@ -10468,7 +10463,7 @@ msgstr "उपकरण"
 msgid "Database"
 msgstr "डेटाबेस"
 
-#: templates/default/index.html:319 templates/modern/index.html:319
+#: templates/modern/index.html:319 templates/modern/header.html:361
 msgid "TTL defaults"
 msgstr "TTL डिफ़ॉल्ट"
 
@@ -10481,11 +10476,11 @@ msgstr "मेरी प्रोफ़ाइल"
 msgid "Password"
 msgstr "पासवर्ड"
 
-#: templates/modern/index.html:589 templates/modern/header.html:389
+#: templates/modern/index.html:589 templates/modern/header.html:396
 msgid "Preferences"
 msgstr "प्राथमिकता"
 
-#: templates/modern/header.html:453
+#: templates/modern/header.html:460
 msgid "Logout"
 msgstr "लॉग आउट"
 
@@ -11126,7 +11121,7 @@ msgstr "प्रति पृष्ठ पंक्तियों:"
 msgid "There are no reverse zones to show in this listing."
 msgstr "इस सूची में दिखाने के लिए कोई रिवर्स ज़ोन नहीं हैं।"
 
-#: templates/modern/search.html:176 templates/modern/delete_domains.html:28
+#: templates/modern/search.html:176 templates/modern/delete_domains.html:29
 msgid "Owner"
 msgstr "मालिक"
 
@@ -11191,7 +11186,7 @@ msgstr "सीरियल %serial% पर NOTIFY भेजा गया"
 msgid "Delete zone(s)"
 msgstr "डिलीट ज़ोन(s)"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:77
 msgid "Add key"
 msgstr "कुंजी जोड़ें"
 
@@ -11223,11 +11218,11 @@ msgstr "एल्गोरिथ्म चुनें"
 msgid "Bits in length"
 msgstr "लंबाई में बिट्स"
 
-#: templates/modern/dnssec_add_key.html:70
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select bits length"
 msgstr "बिट लंबाई चुनें"
 
-#: templates/modern/dnssec_add_key.html:127
+#: templates/modern/dnssec_add_key.html:128
 msgid "Recommended bits for"
 msgstr "के लिए अनुशंसित बिट्स"
 
@@ -11236,19 +11231,19 @@ msgstr "के लिए अनुशंसित बिट्स"
 msgid "Warning:"
 msgstr "चेतावनी:"
 
-#: templates/modern/dnssec_add_key.html:135
+#: templates/modern/dnssec_add_key.html:136
 msgid "bits is not recommended for"
 msgstr "बिट के लिए अनुशंसित नहीं है"
 
-#: templates/modern/dnssec_add_key.html:171
+#: templates/modern/dnssec_add_key.html:172
 msgid "About DNSSEC Key Types"
 msgstr "DNSSEC कुंजी प्रकार के बारे में"
 
-#: templates/modern/dnssec_add_key.html:174
+#: templates/modern/dnssec_add_key.html:175
 msgid "Key Types Explained"
 msgstr "कुंजी प्रकार समझाया"
 
-#: templates/modern/dnssec_add_key.html:176
+#: templates/modern/dnssec_add_key.html:177
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -11256,19 +11251,26 @@ msgstr ""
 "संयुक्त हस्ताक्षर कुंजी - दोनों KSK और ZSK (PowerDNS 4.0+ के लिए सिफारिश की) के रूप में "
 "कार्य करता है।"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:178
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "कुंजी साइनिंग कुंजी - ज़ोन में DNSKEY रिकॉर्ड पर हस्ताक्षर करता है"
 
-#: templates/modern/dnssec_add_key.html:178
+#: templates/modern/dnssec_add_key.html:179
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "ज़ोन साइनिंग कुंजी - ज़ोन के अन्य सभी रिकॉर्ड पर हस्ताक्षर करती है"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/default/dnssec_add_key.html:181
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS किसी कुंजी को KSK या ZSK के रूप में केवल तभी दिखाता है जब ज़ोन में समान एल्गोरिदम वाली एक सक्रिय KSK और एक सक्रिय ZSK हो। अन्यथा वह कुंजी को CSK के रूप में दिखाता है, भले ही आपने यहाँ KSK या ZSK चुना हो।"
+
+#: templates/modern/dnssec_add_key.html:184
 msgid "Recommended Settings"
 msgstr "अनुशंसित सेटिंग्स"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:185
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11308,7 +11310,7 @@ msgstr ""
 msgid "Add"
 msgstr "जोड़ें"
 
-#: templates/modern/edit_user.html:3 templates/modern/header.html:383
+#: templates/modern/edit_user.html:3 templates/modern/header.html:390
 msgid "Edit profile"
 msgstr "प्रोफ़ाइल संपादित करें"
 
@@ -11950,10 +11952,6 @@ msgstr "घटना"
 #: templates/modern/_partials/log_list.html:103
 msgid "Details"
 msgstr "विवरण"
-
-#: templates/modern/list_record_changes.html:194
-msgid "Export"
-msgstr "निर्यात"
 
 #: templates/modern/list_record_changes.html:171
 msgid "Export Logs"
@@ -12793,7 +12791,7 @@ msgstr "अक्षरों, संख्याओं और प्रती�
 msgid "Consider using a password manager"
 msgstr "पासवर्ड मैनेजर का उपयोग करके विचार करें"
 
-#: templates/modern/header.html:402
+#: templates/modern/header.html:409
 msgid "Multi-Factor Authentication"
 msgstr "बहु-फैक्टर प्रमाणीकरण"
 
@@ -13382,7 +13380,7 @@ msgstr "आप ज़ोन को हटाने वाले हैं"
 msgid "Zone Details"
 msgstr "ज़ोन विवरण"
 
-#: templates/modern/delete_domains.html:53
+#: templates/modern/delete_domains.html:57
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -13393,11 +13391,11 @@ msgstr ""
 "हटाने पर वह केवल अस्थायी रूप से हटेगा। जब भी supermaster इस ज़ोन के लिए अधिसूचना "
 "भेजेगा, इसे फिर से जोड़ दिया जाएगा!"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "Yes, delete this zone"
 msgstr "हाँ, इस ज़ोन को हटा दें"
 
-#: templates/modern/delete_domain.html:58
+#: templates/modern/delete_domain.html:60
 msgid "No, keep this zone"
 msgstr "नहीं, इस ज़ोन को बनाए रखें"
 
@@ -13605,15 +13603,15 @@ msgstr "आप कई ज़ोन हटाने वाले हैं। य
 msgid "Zones to Delete"
 msgstr "ज़ोन डिलीट"
 
-#: templates/modern/delete_domains.html:30
+#: templates/modern/delete_domains.html:32
 msgid "Note"
 msgstr "नोट"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "Yes, delete these zones"
 msgstr "हाँ, इन ज़ोन को हटा दें"
 
-#: templates/modern/delete_domains.html:64
+#: templates/modern/delete_domains.html:68
 msgid "No, keep these zones"
 msgstr "नहीं, इन ज़ोन को बनाए रखें"
 
@@ -13958,11 +13956,11 @@ msgstr "ज़ोन टेम्पलेट सूची"
 msgid "API Documentation"
 msgstr "API प्रलेखन"
 
-#: templates/default/header.html:327 templates/modern/header.html:500
+#: templates/default/header.html:332 templates/modern/header.html:507
 msgid "PowerDNS API error"
 msgstr "PowerDNS API त्रुटि"
 
-#: templates/default/header.html:331 templates/modern/header.html:504
+#: templates/default/header.html:336 templates/modern/header.html:511
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -13970,7 +13968,7 @@ msgstr ""
 "जाँच करें कि config/settings.php में pdns_api.key उस API कुंजी से मेल खाता है जो "
 "PowerDNS में कॉन्फ़िगर की गई है।"
 
-#: templates/default/header.html:333 templates/modern/header.html:506
+#: templates/default/header.html:338 templates/modern/header.html:513
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -13978,7 +13976,7 @@ msgstr ""
 "जाँच करें कि pdns_api.server_name उससे मेल खाता है जो PowerDNS रिपोर्ट करता है "
 "(डिफ़ॉल्ट 'localhost')।"
 
-#: templates/default/header.html:335 templates/modern/header.html:508
+#: templates/default/header.html:340 templates/modern/header.html:515
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -13988,7 +13986,7 @@ msgstr ""
 "PowerDNS डेटाबेस में सीधे ज़ोनों को आयात करने के बाद एक सामान्य ट्रिगर एक एकल विकृत "
 "रिकॉर्ड है जो ज़ोन सीरियलाइजेशन को विफल करता है।"
 
-#: templates/default/header.html:337 templates/modern/header.html:510
+#: templates/default/header.html:342 templates/modern/header.html:517
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -15310,46 +15308,57 @@ msgstr ""
 "लोकेल सेट करने में विफल। चयनित लोकेल इस सिस्टम पर समर्थित नहीं हो सकता है। कृपया अपने "
 "प्रशासक से संपर्क करें।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Key imported successfully."
-msgstr "कुंजी सफलतापूर्वक आयात की गई।"
+# OBSOLETE: msgid "PEM key export requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM कुंजी निर्यात PowerDNS 4.7 या नए की आवश्यकता है।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key does not match the selected algorithm."
-msgstr "निजी कुंजी चयनित एल्गोरिथ्म से मेल नहीं खाती।"
+# OBSOLETE: msgid "An error occurred while exporting the PEM key: "
+# OBSOLETE: msgstr "PEM कुंजी निर्यात करते समय एक त्रुटि हुई: "
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "The private key could not be read. Paste a BIND private key or an unencrypted PEM key."
-msgstr "निजी कुंजी पढ़ी नहीं जा सकी। BIND प्रारूप में निजी कुंजी या बिना एन्क्रिप्ट की गई PEM कुंजी पेस्ट करें।"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Could not retrieve the PEM key. The server may not expose private key "
+# OBSOLETE: "material for this key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM कुंजी को पुनर्प्राप्त नहीं कर सका। सर्वर इस कुंजी के लिए निजी कुंजी सामग्री को "
+# OBSOLETE: "उजागर नहीं कर सकता है।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Failed to import the key. PowerDNS rejected it."
-msgstr "कुंजी आयात करने में विफल रहा। PowerDNS ने इसे अस्वीकार कर दिया।"
+# OBSOLETE: msgid "PEM key import requires PowerDNS 4.7 or newer."
+# OBSOLETE: msgstr "PEM कुंजी आयात PowerDNS 4.7 या नए की आवश्यकता है।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "An error occurred while importing the key: "
-msgstr "कुंजी आयात करते समय एक त्रुटि हुई: "
+# OBSOLETE: msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+# OBSOLETE: msgstr "एक PEM-encoded निजी कुंजी प्रदान करें (इसमें BEGIN/END मार्कर होने चाहिए)।"
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "An error occurred while exporting the key: "
-msgstr "कुंजी निर्यात करते समय एक त्रुटि हुई: "
+# OBSOLETE: msgid "PEM key imported successfully."
+# OBSOLETE: msgstr "PEM कुंजी सफलतापूर्वक आयात किया।"
 
-#: lib/Application/Controller/DnssecKeyExportController.php
-msgid "Could not retrieve the private key from PowerDNS."
-msgstr "PowerDNS से निजी कुंजी पुनर्प्राप्त नहीं की जा सकी।"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Failed to import PEM key. The PowerDNS server may have rejected the "
+# OBSOLETE: "format."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PEM कुंजी आयात करने में विफल रहा। संभव है कि PowerDNS सर्वर ने प्रारूप को अस्वीकार कर "
+# OBSOLETE: "दिया हो।"
 
-#: templates/default/dnssec.html
-msgid "Download the private key in BIND format"
-msgstr "निजी कुंजी को BIND प्रारूप में डाउनलोड करें"
+# OBSOLETE: msgid "An error occurred while importing the PEM key: "
+# OBSOLETE: msgstr "PEM कुंजी आयात करते समय एक त्रुटि हुई: "
 
-#: templates/default/dnssec.html
-msgid "Private key"
-msgstr "निजी कुंजी"
+# OBSOLETE: msgid "Download this key as PEM"
+# OBSOLETE: msgstr "इस कुंजी को PEM के रूप में डाउनलोड करें"
 
-#: templates/default/dnssec.html
-msgid "Paste a private key in BIND format (as exported here or by dnssec-keygen) or an unencrypted PEM key (RSA, ECDSA, Ed25519 or Ed448). Select the algorithm the key was made for."
-msgstr "BIND प्रारूप में निजी कुंजी (जैसा यहाँ या dnssec-keygen द्वारा निर्यात किया जाता है) या बिना एन्क्रिप्ट की गई PEM कुंजी (RSA, ECDSA, Ed25519 या Ed448) पेस्ट करें। वह एल्गोरिथ्म चुनें जिसके लिए कुंजी बनाई गई थी।"
+# OBSOLETE: msgid "Export PEM"
+# OBSOLETE: msgstr "PEM निर्यात करें"
 
-#: lib/Application/Controller/DnssecKeyImportController.php
-msgid "Importing keys requires PowerDNS 4.1 or newer."
-msgstr "कुंजियाँ आयात करने के लिए PowerDNS 4.1 या नया संस्करण आवश्यक है।"
+# OBSOLETE: msgid "Import key from PEM"
+# OBSOLETE: msgstr "PEM से कुंजी आयात करें"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+# OBSOLETE: "key size from the PEM contents - select the matching algorithm and key "
+# OBSOLETE: "role."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "एक PEM-encoded निजी कुंजी (RSA या ECDSA) पेस्ट करें। PowerDNS 4.7+ PEM सामग्री से "
+# OBSOLETE: "कुंजी आकार प्राप्त करता है - मिलान एल्गोरिदम और कुंजी भूमिका का चयन करें।"
+
+# OBSOLETE: msgid "PEM private key"
+# OBSOLETE: msgstr "PEM निजी कुंजी"
+
+
+
