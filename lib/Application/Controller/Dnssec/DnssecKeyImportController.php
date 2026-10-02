@@ -69,7 +69,7 @@ class DnssecKeyImportController extends DnssecKeyController
         }
 
         try {
-            $result = $this->services()->dnssecKeyService()->importKey($zoneIdInt, $domainName, $keyType, $isc, false);
+            $result = $this->services()->dnssecKeyService()->importKey($zoneIdInt, $domainName, $keyType, $isc, false, $this->getPdnsCapabilities());
         } catch (Exception $e) {
             $this->logger->error('Exception importing DNSSEC key: {error}', ['error' => $e->getMessage()]);
             $this->refuse($zoneId, _('An error occurred while importing the key: ') . $e->getMessage());

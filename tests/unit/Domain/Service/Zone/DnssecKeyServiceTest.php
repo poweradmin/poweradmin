@@ -382,6 +382,21 @@ class DnssecKeyServiceTest extends TestCase
         $this->assertSame(Refusal::INVALID_INPUT, $badKey->refusal);
     }
 
+    public function testImportRefusesAlgorithmsNotOfferedForNewKeys(): void
+    {
+        $this->dnssec->expects($this->never())->method('importZoneKeyFromPrivateKey');
+
+        $dsa = str_replace('Algorithm: 13 (ECDSAP256SHA256)', 'Algorithm: 3 (DSA)', self::ISC_KEY);
+        $result = $this->service()->importKey(self::ZONE_ID, self::ZONE, 'zsk', $dsa, false);
+        $this->assertSame(DnssecKeyOutcome::INVALID_ALGORITHM, $result->outcome);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
+        $this->assertNotContains('dsa', $result->allowedAlgorithms);
+
+        $ed448 = str_replace('Algorithm: 13 (ECDSAP256SHA256)', 'Algorithm: 16 (ED448)', self::ISC_KEY);
+        $oldServer = $this->service()->importKey(self::ZONE_ID, self::ZONE, 'zsk', $ed448, false, PdnsCapabilities::fromVersion('4.4.0'));
+        $this->assertSame(DnssecKeyOutcome::INVALID_ALGORITHM, $oldServer->outcome);
+    }
+
     public function testImportRefusesPresignedZonesAndOutages(): void
     {
         $this->dnssec->expects($this->never())->method('importZoneKeyFromPrivateKey');

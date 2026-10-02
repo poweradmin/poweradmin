@@ -494,7 +494,7 @@ class ZoneDnssecKeysController extends PublicApiController
         }
 
         try {
-            $result = $this->keyService()->importKey($zoneId, $zoneName, $type, $privateKey, $active);
+            $result = $this->keyService()->importKey($zoneId, $zoneName, $type, $privateKey, $active, $this->getPdnsCapabilities());
             if ($result->key !== null) {
                 return $this->returnApiResponse($this->formatKey($result->key), true, 'DNSSEC key imported successfully', 201);
             }
@@ -502,6 +502,7 @@ class ZoneDnssecKeysController extends PublicApiController
             // Fixed English texts: none of them may echo the private key
             $message = match ($result->outcome) {
                 DnssecKeyOutcome::INVALID_TYPE => 'Missing or invalid required field: type (ksk, zsk or csk)',
+                DnssecKeyOutcome::INVALID_ALGORITHM => 'The private key uses an unsupported algorithm (one of: ' . implode(', ', $result->allowedAlgorithms) . ')',
                 DnssecKeyOutcome::INVALID_PRIVATE_KEY => 'Missing or invalid required field: privatekey (an ISC/BIND private key with "Private-key-format: v1.x"; PEM keys can be imported with pdnsutil import-zone-key-pem)',
                 DnssecKeyOutcome::KEY_REJECTED => 'PowerDNS rejected the private key',
                 default => null,

@@ -140,23 +140,35 @@ class DnssecKeyService
 
     /**
      * Import a key from an existing ISC/BIND private key. PowerDNS derives the
-     * algorithm and size from the key; the created key carries them.
+     * algorithm and size from the key; the created key carries them. The key's
+     * algorithm must be one offered for new keys.
      *
      * The private key is only passed on to PowerDNS: it is not audited, logged
      * or part of the result.
+     *
+     * @param PdnsCapabilities|null $capabilities The connected server, which decides the algorithms accepted
      */
     public function importKey(
         int $zoneId,
         string $zoneName,
         string $type,
         #[\SensitiveParameter] string $privateKey,
-        bool $active
+        bool $active,
+        ?PdnsCapabilities $capabilities = null
     ): DnssecKeyResult {
         if (!DnssecKeyType::isValid($type)) {
             return new DnssecKeyResult(DnssecKeyOutcome::INVALID_TYPE);
         }
         if (!self::isIscPrivateKey($privateKey)) {
             return new DnssecKeyResult(DnssecKeyOutcome::INVALID_PRIVATE_KEY);
+        }
+
+        $allowedAlgorithms = array_values(DnssecAlgorithmName::getSupportedAlgorithmsForCapabilities($capabilities));
+        if (
+            preg_match('/^Algorithm:\s*(\d+)/mi', trim($privateKey), $match) !== 1
+            || !in_array(DnssecAlgorithmName::fromAlgorithmId((int)$match[1]), $allowedAlgorithms, true)
+        ) {
+            return new DnssecKeyResult(DnssecKeyOutcome::INVALID_ALGORITHM, allowedAlgorithms: $allowedAlgorithms);
         }
 
         $keys = $this->writableKeys($zoneName);

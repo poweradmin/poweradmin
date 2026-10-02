@@ -426,6 +426,20 @@ class ZoneDnssecKeysControllerTest extends TestCase
         $this->assertStringNotContainsString('8oJBqwnnl8', (string)$response->getContent());
     }
 
+    public function testAKeyWithAnUnsupportedAlgorithmIsA400BeforePowerDnsIsAsked(): void
+    {
+        $this->allowManage();
+        $this->dnssecProvider->expects($this->never())->method('importZoneKeyFromPrivateKey');
+
+        $dsaKey = str_replace('Algorithm: 13 (ECDSAP256SHA256)', 'Algorithm: 3 (DSA)', self::ISC_KEY);
+        $response = $this->controller(['id' => 1, 'action' => 'import'], self::importBody('zsk', $dsaKey))->callImportKey();
+        [$status, $body] = self::decode($response);
+
+        $this->assertSame(400, $status);
+        $this->assertStringStartsWith('The private key uses an unsupported algorithm (one of: ', $body['message']);
+        $this->assertStringNotContainsString('PrivateKey:', (string)$response->getContent());
+    }
+
     public function testAFailedImportIsAServerErrorAndIsNotAudited(): void
     {
         $this->allowManage();
