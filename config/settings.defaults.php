@@ -193,7 +193,7 @@ return [
      * DNS Settings
      */
     'dns' => [
-        'backend' => 'sql',                        // DNS data backend: 'sql' (default, direct database) or 'api' (PowerDNS REST API, experimental) (added in 4.3.0)
+        'backend' => 'sql',                        // DNS data backend: 'sql' (default, direct database) or 'api' (PowerDNS REST API) (added in 4.3.0)
         'hostmaster' => 'hostmaster.example.com',  // Default hostmaster email address
         'ns1' => 'ns1.example.com',
         'ns2' => 'ns2.example.com',
