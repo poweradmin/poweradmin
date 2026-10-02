@@ -194,4 +194,14 @@ class DefaultRecordValidatorTest extends TestCase
             'empty data' => ['\# 0'],
         ];
     }
+
+    public function testANumberedTypeOnlyAcceptsGenericData(): void
+    {
+        $validator = new DefaultRecordValidator($this->configMock, 'TYPE65280');
+
+        $this->assertFalse($validator->validate('abcd', 'record.example.com', '', 3600, 86400)->isValid());
+        $this->assertTrue($validator->validate('\# 2 abcd', 'record.example.com', '', 3600, 86400)->isValid());
+        // Another unlisted type name keeps the old leniency for its own syntax
+        $this->assertTrue((new DefaultRecordValidator($this->configMock, 'CUSTOM'))->validate('abcd', 'record.example.com', '', 3600, 86400)->isValid());
+    }
 }
