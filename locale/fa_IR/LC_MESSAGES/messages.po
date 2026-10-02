@@ -15713,3 +15713,17 @@ msgstr "یک کلید خصوصی با قالب BIND (همان‌طور که ای
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "واردات کلیدها نیاز به PowerDNS 4.1 یا جدیدتر دارد."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d مورد دیگر"
+msgstr[1] "%d مورد دیگر"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d رکورد در منطقه %2$s اکنون توسط منطقه %3$s پنهان شده است: %4$s. مطمئن شوید که %3$s آن را در بر دارد، سپس آن را از %2$s حذف کنید."
+msgstr[1] "%1$d رکورد در منطقه %2$s اکنون توسط منطقه %3$s پنهان شده‌اند: %4$s. مطمئن شوید که %3$s آن‌ها را در بر دارد، سپس آن‌ها را از %2$s حذف کنید."

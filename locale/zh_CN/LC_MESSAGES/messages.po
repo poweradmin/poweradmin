@@ -14796,3 +14796,17 @@ msgstr "粘贴 BIND 格式的私钥 (如此处或 dnssec-keygen 导出的格式)
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "导入密钥需要 PowerDNS 4.1 或更新版本。"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "另外 %d 条"
+msgstr[1] "另外 %d 条"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "区域 %2$s 中的 %1$d 条记录现在被区域 %3$s 隐藏：%4$s。请确认 %3$s 包含这些记录，然后从 %2$s 中删除它们。"
+msgstr[1] "区域 %2$s 中的 %1$d 条记录现在被区域 %3$s 隐藏：%4$s。请确认 %3$s 包含这些记录，然后从 %2$s 中删除它们。"

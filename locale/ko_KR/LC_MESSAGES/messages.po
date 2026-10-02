@@ -15622,3 +15622,15 @@ msgstr "BIND 형식의 개인 키 (여기서 또는 dnssec-keygen으로 내보�
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "키 가져오기에는 PowerDNS 4.1 이상이 필요합니다."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "외 %d개"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "존 %2$s의 레코드 %1$d개가 이제 존 %3$s에 의해 가려집니다: %4$s. %3$s에 해당 레코드가 있는지 확인한 후 %2$s에서 삭제하세요."

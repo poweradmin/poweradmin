@@ -15567,3 +15567,17 @@ msgstr "BIND प्रारूप में निजी कुंजी (ज�
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "कुंजियाँ आयात करने के लिए PowerDNS 4.1 या नया संस्करण आवश्यक है।"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d और"
+msgstr[1] "%d और"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "ज़ोन %2$s का %1$d रिकॉर्ड अब ज़ोन %3$s द्वारा छिपा दिया गया है: %4$s. सुनिश्चित करें कि %3$s में यह मौजूद है, फिर इसे %2$s से हटा दें।"
+msgstr[1] "ज़ोन %2$s के %1$d रिकॉर्ड अब ज़ोन %3$s द्वारा छिपा दिए गए हैं: %4$s. सुनिश्चित करें कि %3$s में ये मौजूद हैं, फिर इन्हें %2$s से हटा दें।"

@@ -15889,3 +15889,19 @@ msgstr "Įklijuokite BIND formato privatųjį raktą (tokį, koks eksportuojamas
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Raktų importui reikia PowerDNS 4.1 arba naujesnio."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "dar %d"
+msgstr[1] "dar %d"
+msgstr[2] "dar %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d įrašas zonoje %2$s dabar yra paslėptas zonos %3$s: %4$s. Įsitikinkite, kad %3$s jį turi, tada ištrinkite jį iš %2$s."
+msgstr[1] "%1$d įrašai zonoje %2$s dabar yra paslėpti zonos %3$s: %4$s. Įsitikinkite, kad %3$s juos turi, tada ištrinkite juos iš %2$s."
+msgstr[2] "%1$d įrašų zonoje %2$s dabar yra paslėpta zonos %3$s: %4$s. Įsitikinkite, kad %3$s juos turi, tada ištrinkite juos iš %2$s."

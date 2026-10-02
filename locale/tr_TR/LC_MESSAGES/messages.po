@@ -15870,3 +15870,17 @@ msgstr "BIND biçiminde bir özel anahtar (burada veya dnssec-keygen ile dışa 
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Anahtar içe aktarımı PowerDNS 4.1 veya daha yenisini gerektirir."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d tane daha"
+msgstr[1] "%d tane daha"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%2$s zonundaki %1$d kayıt artık %3$s zonu tarafından gizleniyor: %4$s. %3$s zonunun bu kaydı içerdiğinden emin olun, ardından onu %2$s zonundan silin."
+msgstr[1] "%2$s zonundaki %1$d kayıt artık %3$s zonu tarafından gizleniyor: %4$s. %3$s zonunun bu kayıtları içerdiğinden emin olun, ardından bunları %2$s zonundan silin."

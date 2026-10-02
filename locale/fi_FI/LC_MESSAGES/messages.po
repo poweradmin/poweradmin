@@ -15638,3 +15638,17 @@ msgstr "Liitä BIND-muotoinen yksityinen avain (sellaisena kuin se viedään tä
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Avainten tuonti edellyttää PowerDNS 4.1:tä tai uudempaa."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d muu"
+msgstr[1] "%d muuta"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d tietue alueella %2$s on nyt alueen %3$s piilottama: %4$s. Varmista, että %3$s sisältää sen, ja poista se sitten alueelta %2$s."
+msgstr[1] "%1$d tietuetta alueella %2$s on nyt alueen %3$s piilottamia: %4$s. Varmista, että %3$s sisältää ne, ja poista ne sitten alueelta %2$s."

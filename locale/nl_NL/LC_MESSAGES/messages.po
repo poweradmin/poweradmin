@@ -16032,3 +16032,17 @@ msgstr "Plak een privésleutel in BIND-formaat (zoals hier of door dnssec-keygen
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Het importeren van sleutels vereist PowerDNS 4.1 of nieuwer."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "nog %d"
+msgstr[1] "nog %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d record in zone %2$s wordt nu verborgen door zone %3$s: %4$s. Zorg dat %3$s het bevat en verwijder het daarna uit %2$s."
+msgstr[1] "%1$d records in zone %2$s worden nu verborgen door zone %3$s: %4$s. Zorg dat %3$s ze bevat en verwijder ze daarna uit %2$s."

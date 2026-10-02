@@ -16151,3 +16151,17 @@ msgstr "Pegue una clave privada en formato BIND (tal como se exporta aquí o con
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "La importación de claves requiere PowerDNS 4.1 o superior."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d más"
+msgstr[1] "%d más"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d registro de la zona %2$s queda ahora oculto por la zona %3$s: %4$s. Asegúrese de que %3$s lo contenga y, después, elimínelo de %2$s."
+msgstr[1] "%1$d registros de la zona %2$s quedan ahora ocultos por la zona %3$s: %4$s. Asegúrese de que %3$s los contenga y, después, elimínelos de %2$s."

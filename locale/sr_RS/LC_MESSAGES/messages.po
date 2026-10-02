@@ -15628,3 +15628,19 @@ msgstr "Налепите приватни кључ у BIND формату (он�
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Увоз кључева захтева PowerDNS 4.1 или новији."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "још %d"
+msgstr[1] "још %d"
+msgstr[2] "још %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d запис у зони %2$s сада је скривен зоном %3$s: %4$s. Уверите се да га %3$s садржи, а затим га обришите из %2$s."
+msgstr[1] "%1$d записа у зони %2$s сада су скривена зоном %3$s: %4$s. Уверите се да их %3$s садржи, а затим их обришите из %2$s."
+msgstr[2] "%1$d записа у зони %2$s сада је скривено зоном %3$s: %4$s. Уверите се да их %3$s садржи, а затим их обришите из %2$s."

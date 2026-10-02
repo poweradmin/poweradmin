@@ -15387,3 +15387,17 @@ msgstr "הדבק מפתח פרטי בפורמט BIND (כפי שמיוצא כאן
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "ייבוא מפתחות דורש PowerDNS 4.1 או חדש יותר."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "עוד %d"
+msgstr[1] "עוד %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d רשומה באזור %2$s מוסתרת כעת על ידי האזור %3$s: %4$s. ודאו ש-%3$s מכיל אותה, ולאחר מכן מחקו אותה מ-%2$s."
+msgstr[1] "%1$d רשומות באזור %2$s מוסתרות כעת על ידי האזור %3$s: %4$s. ודאו ש-%3$s מכיל אותן, ולאחר מכן מחקו אותן מ-%2$s."

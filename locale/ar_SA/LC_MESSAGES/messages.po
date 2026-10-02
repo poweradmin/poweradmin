@@ -15544,3 +15544,25 @@ msgstr "ألصق مفتاحاً خاصاً بصيغة BIND (كما يُصدَّ�
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "يتطلب استيراد المفاتيح إصدار PowerDNS 4.1 أو أحدث."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d أخرى"
+msgstr[1] "%d أخرى"
+msgstr[2] "%d أخرى"
+msgstr[3] "%d أخرى"
+msgstr[4] "%d أخرى"
+msgstr[5] "%d أخرى"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d سجلات في المنطقة %2$s أصبحت الآن مخفية بواسطة المنطقة %3$s: %4$s. تأكد من أن %3$s يتضمنها، ثم احذفها من %2$s."
+msgstr[1] "%1$d سجل في المنطقة %2$s أصبح الآن مخفيًا بواسطة المنطقة %3$s: %4$s. تأكد من أن %3$s يتضمنه، ثم احذفه من %2$s."
+msgstr[2] "%1$d سجلان في المنطقة %2$s أصبحا الآن مخفيين بواسطة المنطقة %3$s: %4$s. تأكد من أن %3$s يتضمنهما، ثم احذفهما من %2$s."
+msgstr[3] "%1$d سجلات في المنطقة %2$s أصبحت الآن مخفية بواسطة المنطقة %3$s: %4$s. تأكد من أن %3$s يتضمنها، ثم احذفها من %2$s."
+msgstr[4] "%1$d سجلًا في المنطقة %2$s أصبحت الآن مخفية بواسطة المنطقة %3$s: %4$s. تأكد من أن %3$s يتضمنها، ثم احذفها من %2$s."
+msgstr[5] "%1$d سجل في المنطقة %2$s أصبحت الآن مخفية بواسطة المنطقة %3$s: %4$s. تأكد من أن %3$s يتضمنها، ثم احذفها من %2$s."

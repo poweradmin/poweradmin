@@ -16014,3 +16014,17 @@ msgstr "Illesszen be egy BIND formátumú privát kulcsot (ahogy itt vagy a dnss
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "A kulcsok importálásához PowerDNS 4.1 vagy újabb szükséges."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "további %d"
+msgstr[1] "további %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "A(z) %2$s zóna %1$d rekordját mostantól a(z) %3$s zóna elrejti: %4$s. Győződjön meg róla, hogy a(z) %3$s tartalmazza, majd törölje a(z) %2$s zónából."
+msgstr[1] "A(z) %2$s zóna %1$d rekordját mostantól a(z) %3$s zóna elrejti: %4$s. Győződjön meg róla, hogy a(z) %3$s tartalmazza őket, majd törölje őket a(z) %2$s zónából."

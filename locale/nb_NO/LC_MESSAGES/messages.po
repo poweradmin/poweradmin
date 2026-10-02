@@ -15774,3 +15774,17 @@ msgstr "Lim inn en privat nøkkel i BIND-format (slik den eksporteres her eller 
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Import av nøkler krever PowerDNS 4.1 eller nyere."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d til"
+msgstr[1] "%d til"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d post i sonen %2$s er nå skjult av sonen %3$s: %4$s. Sørg for at %3$s inneholder den, og slett den deretter fra %2$s."
+msgstr[1] "%1$d poster i sonen %2$s er nå skjult av sonen %3$s: %4$s. Sørg for at %3$s inneholder dem, og slett dem deretter fra %2$s."

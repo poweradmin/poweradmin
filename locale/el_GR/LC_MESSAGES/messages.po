@@ -16370,3 +16370,17 @@ msgstr "Επικολλήστε ένα ιδιωτικό κλειδί σε μορ�
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Η εισαγωγή κλειδιών απαιτεί PowerDNS 4.1 ή νεότερη."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d ακόμη"
+msgstr[1] "%d ακόμη"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d εγγραφή στη ζώνη %2$s αποκρύπτεται πλέον από τη ζώνη %3$s: %4$s. Βεβαιωθείτε ότι η %3$s την περιέχει και, στη συνέχεια, διαγράψτε την από τη %2$s."
+msgstr[1] "%1$d εγγραφές στη ζώνη %2$s αποκρύπτονται πλέον από τη ζώνη %3$s: %4$s. Βεβαιωθείτε ότι η %3$s τις περιέχει και, στη συνέχεια, διαγράψτε τις από τη %2$s."

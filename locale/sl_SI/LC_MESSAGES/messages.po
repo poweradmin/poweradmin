@@ -15882,3 +15882,21 @@ msgstr "Prilepite zasebni ključ v obliki BIND (kot je izvožen tukaj ali z dnss
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Uvoz ključev zahteva PowerDNS 4.1 ali novejši."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "še %d"
+msgstr[1] "še %d"
+msgstr[2] "še %d"
+msgstr[3] "še %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d zapis v coni %2$s je zdaj skrit s cono %3$s: %4$s. Prepričajte se, da ga %3$s vsebuje, nato ga izbrišite iz %2$s."
+msgstr[1] "%1$d zapisa v coni %2$s sta zdaj skrita s cono %3$s: %4$s. Prepričajte se, da ju %3$s vsebuje, nato ju izbrišite iz %2$s."
+msgstr[2] "%1$d zapisi v coni %2$s so zdaj skriti s cono %3$s: %4$s. Prepričajte se, da jih %3$s vsebuje, nato jih izbrišite iz %2$s."
+msgstr[3] "%1$d zapisov v coni %2$s je zdaj skritih s cono %3$s: %4$s. Prepričajte se, da jih %3$s vsebuje, nato jih izbrišite iz %2$s."

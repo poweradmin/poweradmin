@@ -15796,3 +15796,19 @@ msgstr "Vložte soukromý klíč ve formátu BIND (tak, jak je exportován zde n
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Import klíčů vyžaduje PowerDNS 4.1 nebo novější."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d další"
+msgstr[1] "%d další"
+msgstr[2] "%d dalších"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d záznam v zóně %2$s je nyní skryt zónou %3$s: %4$s. Ověřte, že jej %3$s obsahuje, a poté jej odstraňte z %2$s."
+msgstr[1] "%1$d záznamy v zóně %2$s jsou nyní skryty zónou %3$s: %4$s. Ověřte, že je %3$s obsahuje, a poté je odstraňte z %2$s."
+msgstr[2] "%1$d záznamů v zóně %2$s je nyní skryto zónou %3$s: %4$s. Ověřte, že je %3$s obsahuje, a poté je odstraňte z %2$s."

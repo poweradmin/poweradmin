@@ -15953,3 +15953,15 @@ msgstr "Tampal kunci persendirian dalam format BIND (seperti yang dieksport di s
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Mengimport kunci memerlukan PowerDNS 4.1 atau lebih baharu."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "%d lagi"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d rekod dalam zon %2$s kini disembunyikan oleh zon %3$s: %4$s. Pastikan %3$s mengandunginya, kemudian padamkannya daripada %2$s."

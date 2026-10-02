@@ -16324,3 +16324,19 @@ msgstr "Lipiți o cheie privată în format BIND (așa cum este exportată aici 
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Importul cheilor necesită PowerDNS 4.1 sau mai nou."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "încă %d"
+msgstr[1] "încă %d"
+msgstr[2] "încă %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d înregistrare din zona %2$s este acum ascunsă de zona %3$s: %4$s. Asigurați-vă că %3$s o conține, apoi ștergeți-o din %2$s."
+msgstr[1] "%1$d înregistrări din zona %2$s sunt acum ascunse de zona %3$s: %4$s. Asigurați-vă că %3$s le conține, apoi ștergeți-le din %2$s."
+msgstr[2] "%1$d de înregistrări din zona %2$s sunt acum ascunse de zona %3$s: %4$s. Asigurați-vă că %3$s le conține, apoi ștergeți-le din %2$s."

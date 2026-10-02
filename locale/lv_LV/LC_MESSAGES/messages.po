@@ -15581,3 +15581,19 @@ msgstr "Ielīmējiet privāto atslēgu BIND formātā (kā tā eksportēta šeit
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "Atslēgu importam nepieciešams PowerDNS 4.1 vai jaunāks."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "vēl %d"
+msgstr[1] "vēl %d"
+msgstr[2] "vēl %d"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "%1$d ieraksts zonā %2$s tagad ir paslēpts ar zonu %3$s: %4$s. Pārliecinieties, ka %3$s to satur, un pēc tam izdzēsiet to no %2$s."
+msgstr[1] "%1$d ieraksti zonā %2$s tagad ir paslēpti ar zonu %3$s: %4$s. Pārliecinieties, ka %3$s tos satur, un pēc tam izdzēsiet tos no %2$s."
+msgstr[2] "%1$d ierakstu zonā %2$s tagad ir paslēpti ar zonu %3$s: %4$s. Pārliecinieties, ka %3$s tos satur, un pēc tam izdzēsiet tos no %2$s."

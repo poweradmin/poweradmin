@@ -15831,3 +15831,15 @@ msgstr "BIND 形式の秘密鍵 (ここで、または dnssec-keygen でエク�
 #: lib/Application/Controller/Dnssec/DnssecKeyImportController.php
 msgid "Importing keys requires PowerDNS 4.1 or newer."
 msgstr "鍵のインポートには PowerDNS 4.1 以降が必要です。"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%d more"
+msgid_plural "%d more"
+msgstr[0] "他 %d 件"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php
+#, php-format
+msgid "%1$d record in zone %2$s is now hidden by zone %3$s: %4$s. Make sure %3$s serves it, then delete it from %2$s."
+msgid_plural "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s serves them, then delete them from %2$s."
+msgstr[0] "ゾーン %2$s の %1$d 件のレコードが、ゾーン %3$s によって隠されるようになりました: %4$s。%3$s にこれらが含まれていることを確認してから、%2$s から削除してください。"
