@@ -5042,7 +5042,7 @@ msgstr "Sisu väli ei saa olla tühi."
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "Üldised kirje andmed peavad olema kujul \"\\# <length> <hex>\", kusjuures pikkus peab vastama kuueteistkümnendandmetele."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5848,12 +5848,12 @@ msgstr "HTTPS parameetrid peavad olema key=value vormingus tühikutega."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "Parameeter %s on kirjutatud ilma väärtuse või \"=\"-ta."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "Kasutage parameetri nime, mitte \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format

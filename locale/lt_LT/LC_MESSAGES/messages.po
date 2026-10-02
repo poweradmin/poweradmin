@@ -5161,7 +5161,7 @@ msgstr "Turinio laukas negali būti tuščias."
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "Bendrieji įrašo duomenys turi būti \"\\# <length> <hex>\", o ilgis turi atitikti šešioliktainius duomenis."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -6008,12 +6008,12 @@ msgstr "HTTPS įrašo parametrai turi būti key=value formatu, atskirti tarpais.
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "Parametras %s parašytas be reikšmės arba \"=\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "Vietoj \"%s\" naudokite parametro pavadinimą."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format

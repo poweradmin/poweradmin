@@ -5079,7 +5079,7 @@ msgstr "Satura lauks nevar būt tukšs."
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "Vispārīgajiem ieraksta datiem jābūt formā \"\\# <length> <hex>\", garumam atbilstot heksadecimālajiem datiem."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5888,12 +5888,12 @@ msgstr "HTTPS parametriem jābūt key=value formātā, atdalītiem ar atstarpēm
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "Parametrs %s ir uzrakstīts bez vērtības vai \"=\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "Izmantojiet parametra nosaukumu \"%s\" vietā."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format

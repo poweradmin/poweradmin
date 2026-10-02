@@ -5228,7 +5228,7 @@ msgstr "El campo de contenido no puede estar vacío."
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "Los datos genéricos del registro deben ser \"\\# <length> <hex>\", con una longitud que coincida con los datos hexadecimales."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -6096,12 +6096,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "El parámetro %s está escrito sin valor ni \"=\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "Use el nombre del parámetro en lugar de \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format

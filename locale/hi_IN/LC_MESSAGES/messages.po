@@ -5036,7 +5036,7 @@ msgstr "सामग्री क्षेत्र खाली नहीं �
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "सामान्य रिकॉर्ड डेटा \"\\# <length> <hex>\" होना चाहिए, जिसकी लंबाई हेक्स डेटा से मेल खाती हो।"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5849,12 +5849,12 @@ msgstr "HTTPS रिकॉर्ड पैरामीटर स्पेस द
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "%s पैरामीटर बिना मान या \"=\" के लिखा गया है।"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "\"%s\" के बजाय पैरामीटर नाम का उपयोग करें।"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format

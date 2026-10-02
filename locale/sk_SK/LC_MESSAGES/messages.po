@@ -5114,7 +5114,7 @@ msgstr "Pole obsahu nemôže byť prázdne."
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "Všeobecné údaje záznamu musia mať tvar \"\\# <length> <hex>\" a dĺžka musí zodpovedať šestnástkovým údajom."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5947,12 +5947,12 @@ msgstr "HTTPS parametre v key=value formáte oddelené medzerami."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "Parameter %s je zapísaný bez hodnoty alebo \"=\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "Použite názov parametra namiesto \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format

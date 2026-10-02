@@ -4817,7 +4817,7 @@ msgstr "内容字段不能为空。"
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "通用记录数据必须为 \"\\# <length> <hex>\"，且长度与十六进制数据一致。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5564,12 +5564,12 @@ msgstr "HTTPS 记录参数必须是以空格分隔的 key=value 格式。"
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "%s 参数缺少值或 \"=\"。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "请使用参数名称，而不是 \"%s\"。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format

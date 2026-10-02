@@ -5088,7 +5088,7 @@ msgstr "لا يمكن أن يكون حقل المحتوى فارغاً."
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "يجب أن تكون بيانات السجل العامة بالصيغة \"\\# <length> <hex>\" مع طول يطابق البيانات الست عشرية."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5898,12 +5898,12 @@ msgstr "يجب أن تكون معاملات سجل HTTPS بصيغة key=value م
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "المعامل %s مكتوب دون قيمة أو \"=\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "استخدم اسم المعامل بدلاً من \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format

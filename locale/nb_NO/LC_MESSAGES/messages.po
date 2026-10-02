@@ -5113,7 +5113,7 @@ msgstr "Innholdsfeltet kan ikke være tomt."
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "Generiske postdata må være \"\\# <length> <hex>\", der lengden samsvarer med hex-dataene."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -5933,12 +5933,12 @@ msgstr "HTTPS-postparametere må være i key=value-format adskilt med mellomrom.
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "Parameteren %s er skrevet uten verdi eller \"=\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "Bruk parameternavnet i stedet for \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format

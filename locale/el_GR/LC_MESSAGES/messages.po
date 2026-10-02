@@ -5277,7 +5277,7 @@ msgstr "Το πεδίο περιεχομένου δεν μπορεί να είν
 msgid ""
 "Generic record data must be \"\\# <length> <hex>\" with the length matching "
 "the hex data."
-msgstr ""
+msgstr "Τα γενικά δεδομένα εγγραφής πρέπει να έχουν τη μορφή \"\\# <length> <hex>\", με μήκος που αντιστοιχεί στα δεκαεξαδικά δεδομένα."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:91
 msgid "NSEC record content cannot be empty."
@@ -6168,12 +6168,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "The %s parameter is written without a value or \"=\"."
-msgstr ""
+msgstr "Η παράμετρος %s είναι γραμμένη χωρίς τιμή ή \"=\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:225
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
-msgstr ""
+msgstr "Χρησιμοποιήστε το όνομα της παραμέτρου αντί για \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:216
 #, php-format
