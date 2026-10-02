@@ -1,8 +1,8 @@
 <?php
 
 /**
- * PostgreSQL family: Poweradmin and PowerDNS share the pdns database. The LDAP block stays
- * off here; the ldap container fixtures only match the MySQL user rows.
+ * PostgreSQL family: Poweradmin and PowerDNS share the pdns database. LDAP comes from the
+ * base settings; import-test-data.sh adds the matching LDAP users here too.
  */
 
 return [
@@ -16,5 +16,4 @@ return [
         'charset' => 'utf8',
     ],
     'pdns_api' => ['url' => 'http://pdns-pgsql:8081'],
-    'ldap' => ['enabled' => false],
 ];

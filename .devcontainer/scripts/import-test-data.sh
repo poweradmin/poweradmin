@@ -117,6 +117,12 @@ mysql_fixture() { # $1=poweradmin db $2=pdns db $3=file
         -e "s/ pdns\./ $2./g" "$3"
 }
 
+# The MySQL LDAP user fixture without its USE line and backticks, which the
+# PostgreSQL and SQLite instances read as plain SQL
+portable_ldap_users_sql() {
+    sed -e '/^USE /d' -e 's/`//g' "$SQL_DIR/add-ldap-test-users.sql"
+}
+
 # Creates the API instance's databases in devcontainers that predate them, and
 # loads the PowerDNS schema into the new one.
 ensure_mysql_api_databases() {
@@ -547,6 +553,15 @@ import_pgsql_db() {
             fi
         fi
 
+        # LDAP-linked users (testuser, testuser2) match the entries the ldap container bootstraps
+        if [ -f "$SQL_DIR/add-ldap-test-users.sql" ]; then
+            if portable_ldap_users_sql | docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -v ON_ERROR_STOP=1 -U "$PGSQL_USER" -d "$target_db" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ PostgreSQL LDAP test users imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  LDAP test users import had issues (may already exist)${NC}"
+            fi
+        fi
+
         # Import group test data (memberships, zone-group assignments)
         if [ -f "$SQL_DIR/test-groups-pgsql.sql" ]; then
             echo -e "${YELLOW}📦 Importing group memberships and zone-group assignments...${NC}"
@@ -640,6 +655,15 @@ import_sqlite_db() {
                 echo -e "${GREEN}✅ SQLite extra test data imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  Extra test data import had issues (may already exist)${NC}"
+            fi
+        fi
+
+        # LDAP-linked users (testuser, testuser2) match the entries the ldap container bootstraps
+        if [ -f "$SQL_DIR/add-ldap-test-users.sql" ]; then
+            if portable_ldap_users_sql | docker exec -i "$SQLITE_CONTAINER" sqlite3 -bail "$db_path" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ SQLite LDAP test users imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  LDAP test users import had issues (may already exist)${NC}"
             fi
         fi
 
@@ -821,7 +845,7 @@ main() {
         echo -e "${BLUE}Test credentials:${NC}"
         echo "  Username: admin, manager, client, viewer, noperm, inactive"
         echo "  Password: Poweradmin123"
-        echo "  LDAP (MySQL instance): testuser / testpass123, testuser2 / testpass456"
+        echo "  LDAP (every instance): testuser / testpass123, testuser2 / testpass456"
         echo ""
         echo -e "${BLUE}Test zones:${NC}"
         echo "  Forward zones:"
