@@ -245,7 +245,7 @@ class ZoneOwnersController extends PublicApiController
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
-    #[OA\Response(response: 409, description: 'User is already an owner of this zone (single mode only)')]
+    #[OA\Response(response: 409, description: 'User is already an owner of this zone (single mode only), or the zone ID is shared with another zone')]
     #[OA\Response(response: 500, description: 'Failed to add owner due to a server error')]
     private function addOwner(): JsonResponse
     {

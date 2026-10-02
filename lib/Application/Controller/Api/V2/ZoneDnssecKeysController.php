@@ -462,7 +462,7 @@ class ZoneDnssecKeysController extends PublicApiController
             type: 'object'
         )
     )]
-    #[OA\Response(response: 400, description: 'Invalid input, a private key PowerDNS rejected, or DNSSEC not enabled on the server')]
+    #[OA\Response(response: 400, description: 'Invalid input, a private key PowerDNS rejected, a key algorithm not offered for new keys, or DNSSEC not enabled on the server')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
