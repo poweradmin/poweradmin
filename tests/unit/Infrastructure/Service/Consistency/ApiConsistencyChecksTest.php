@@ -204,6 +204,29 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertSame(['fixed' => 0, 'failed' => 0], $checker->fixAllZonesWithCanonicalIdIssue());
     }
 
+    public function testSharedZoneIdsListsBothZonesAndTheGrantsTheyIgnore(): void
+    {
+        $this->zoneRow(5, 5, 1, 'created.example.com');
+        $this->zoneRow(12, 5, 2, 'migrated.example.com');
+        $this->zoneRow(13, 5, 3, null);
+        $this->zoneRow(30, 30, 2, 'plain.example.com');
+        $this->zoneRow(31, 30, 3, null);
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (5, 7), (30, 7)");
+
+        $result = $this->checker()->checkSharedZoneIds();
+
+        $this->assertSame('warning', $result['status']);
+        $this->assertSame([['id' => 5, 'names' => 'created.example.com, migrated.example.com', 'ignored_owners' => 1, 'ignored_groups' => 1]], $result['data']);
+    }
+
+    public function testSharedZoneIdsPassesWhenEveryIdNamesOneZone(): void
+    {
+        $this->zoneRow(30, 30, 2, 'plain.example.com');
+        $this->zoneRow(31, 30, 3, null);
+
+        $this->assertSame('success', $this->checker()->checkSharedZoneIds()['status']);
+    }
+
     public function testSlaveZonesHaveMastersReadsTheMasterFromTheZoneList(): void
     {
         $this->zones([
@@ -312,6 +335,7 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertSame([
             'zones_have_owners',
             'zones_have_canonical_ids',
+            'shared_zone_ids',
             'slave_zones_have_masters',
             'records_belong_to_zones',
             'duplicate_soa_records',

@@ -153,6 +153,43 @@
             </div>
         </div>
 
+        <!-- Check: Zone IDs shared by two zones -->
+        <div class="card mb-3">
+            <div class="card-header py-2">
+                <strong class="small">{% trans %}Zone IDs Shared By Two Zones{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="alert {% if results.shared_zone_ids.status == 'success' %}alert-success{% elseif results.shared_zone_ids.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0 py-2">
+                    {{ results.shared_zone_ids.message }}
+                </div>
+                {% if results.shared_zone_ids.data is not empty %}
+                    <p class="small text-muted mt-3 mb-0">{% trans %}Extra owners and group grants on these IDs are ignored. Only the direct owner of the zone the ID opens keeps access.{% endtrans %}</p>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}Zone ID{% endtrans %}</th>
+                                    <th>{% trans %}Zones{% endtrans %}</th>
+                                    <th>{% trans %}Ignored owners{% endtrans %}</th>
+                                    <th>{% trans %}Ignored groups{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for zone in results.shared_zone_ids.data %}
+                                    <tr>
+                                        <td>{{ zone.id }}</td>
+                                        <td>{{ zone.names }}</td>
+                                        <td>{{ zone.ignored_owners }}</td>
+                                        <td>{{ zone.ignored_groups }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
         <!-- Check 2: Slave zones without master IPs -->
         <div class="card mb-3">
             <div class="card-header py-2">

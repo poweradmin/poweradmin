@@ -92,6 +92,12 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         return ConsistencyReport::allClear(_('All zones have a canonical ID'));
     }
 
+    /** SQL mode keys every zone by its unique domains.id, so no id can be shared. */
+    public function checkSharedZoneIds(): array
+    {
+        return ConsistencyReport::allClear(_('No zone ID is shared by two zones'));
+    }
+
     public function checkSlaveZonesHaveMasters(): array
     {
         $stmt = $this->db->query("
@@ -182,6 +188,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         return [
             'zones_have_owners' => $this->checkZonesHaveOwners(),
             'zones_have_canonical_ids' => $this->checkZonesHaveCanonicalIds(),
+            'shared_zone_ids' => $this->checkSharedZoneIds(),
             'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters(),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->checkDuplicateSOARecords(),

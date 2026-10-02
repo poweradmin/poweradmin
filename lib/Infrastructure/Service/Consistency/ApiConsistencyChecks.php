@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Service\Consistency;
 
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use Exception;
@@ -92,6 +93,34 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         return ConsistencyReport::build($stranded, _('All zones have a canonical ID'), 'warning', _('%d zones found without a canonical ID'));
     }
 
+    /**
+     * Zone ids a zone created here and a migrated zone share (see SharedZoneIds). Their
+     * extra owners and group grants are ignored until the zones are separated.
+     */
+    public function checkSharedZoneIds(): array
+    {
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', true);
+        $names = $this->db->prepare("SELECT zone_name FROM zones WHERE zone_name IS NOT NULL AND $canonicalId = :id ORDER BY zone_name");
+        $owners = $this->db->prepare("SELECT COUNT(*) FROM zones WHERE zone_name IS NULL AND domain_id = :id");
+        $groups = $this->db->prepare("SELECT COUNT(*) FROM zones_groups WHERE domain_id = :id");
+
+        $shared = [];
+        foreach (SharedZoneIds::all($this->db) as $zoneId) {
+            foreach ([$names, $owners, $groups] as $stmt) {
+                $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            $shared[] = [
+                'id' => $zoneId,
+                'names' => implode(', ', $names->fetchAll(PDO::FETCH_COLUMN)),
+                'ignored_owners' => (int)$owners->fetchColumn(),
+                'ignored_groups' => (int)$groups->fetchColumn(),
+            ];
+        }
+
+        return ConsistencyReport::build($shared, _('No zone ID is shared by two zones'), 'warning', _('%d zone IDs are shared by two zones'));
+    }
+
     public function checkSlaveZonesHaveMasters(): array
     {
         return $this->masterReport($this->backend->getZones());
@@ -130,6 +159,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         $results = [
             'zones_have_owners' => $this->ownerReport($zones),
             'zones_have_canonical_ids' => $this->checkZonesHaveCanonicalIds(),
+            'shared_zone_ids' => $this->checkSharedZoneIds(),
             'slave_zones_have_masters' => $this->masterReport($zones),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->duplicateSoaReport($zones),

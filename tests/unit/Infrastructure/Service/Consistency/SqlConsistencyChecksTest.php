@@ -248,6 +248,7 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame([
             'zones_have_owners',
             'zones_have_canonical_ids',
+            'shared_zone_ids',
             'slave_zones_have_masters',
             'records_belong_to_zones',
             'duplicate_soa_records',

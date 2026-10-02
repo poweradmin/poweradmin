@@ -37,6 +37,13 @@ interface ConsistencyCheckerInterface
     /** @return array{status: string, message: string, data: array} */
     public function checkZonesHaveCanonicalIds(): array;
 
+    /**
+     * Zone ids two zones share, whose extra owners and group grants are therefore ignored.
+     *
+     * @return array{status: string, message: string, data: array}
+     */
+    public function checkSharedZoneIds(): array;
+
     /** @return array{status: string, message: string, data: array} */
     public function checkSlaveZonesHaveMasters(): array;
 
