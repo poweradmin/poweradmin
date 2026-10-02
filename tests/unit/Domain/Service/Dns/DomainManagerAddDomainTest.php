@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
@@ -517,6 +518,20 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
+    public function testFailedCleanupIsLoggedSoTheLeftoverZoneCanBeRemoved(): void
+    {
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('createZone')->willReturn(self::DOMAIN_ID);
+        $this->backend->method('addRecord')->willReturn(false);
+        $this->backend->method('deleteZone')->willReturn(false);
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with($this->stringContains('Failed to clean up orphaned zone'), ['domain' => 'new.example', 'id' => self::DOMAIN_ID]);
+
+        $result = $this->manager(logger: $logger)->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none');
+
+        $this->assertFalse($result->success);
+    }
+
     public function testTemplateRecordFailureNamesTheTypeAndCleansUp(): void
     {
         $this->seedTemplateRecords([
@@ -594,7 +609,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
     /**
      * @param string[] $callerPermissions
      */
-    private function manager(array $callerPermissions = [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD]): DomainManager
+    private function manager(array $callerPermissions = [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD], ?LoggerInterface $logger = null): DomainManager
     {
         return new DomainManager(
             new PdoTransaction($this->db),
@@ -613,7 +628,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
             new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $this->backend->allocatesZoneIdsLocally()), $this->config, $this->backend),
             new StubActor(self::CALLER_ID),
-            new NullLogger()
+            $logger ?? new NullLogger()
         );
     }
 

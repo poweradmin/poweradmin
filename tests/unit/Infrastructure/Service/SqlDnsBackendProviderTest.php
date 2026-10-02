@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
@@ -163,6 +164,22 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertEquals(42, $result);
     }
 
+    public function testCreateZoneWritesTheSecondaryPrimaryInTheSameRow(): void
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT)");
+        $provider = new SqlDnsBackendProvider($db, $this->mockConfig, new NullLogger());
+
+        $secondary = $provider->createZone('slave.example', 'SLAVE', '192.0.2.1');
+        $native = $provider->createZone('native.example', 'NATIVE', '192.0.2.1');
+
+        $rows = $db->query('SELECT id, type, master FROM domains ORDER BY id')->fetchAll(PDO::FETCH_ASSOC);
+        $this->assertSame([
+            ['id' => $secondary, 'type' => 'SLAVE', 'master' => '192.0.2.1'],
+            ['id' => $native, 'type' => 'NATIVE', 'master' => null],
+        ], $rows);
+    }
+
     public function testSetZoneSerialPolicyReplacesMetadataRows(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
@@ -193,54 +210,48 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertTrue($this->provider->setZoneSerialPolicy(42, 'example.com', ['account' => 'evil']));
     }
 
-    public function testCreateSlaveZoneSetsMaster(): void
+    #[DataProvider('replicatingZoneProvider')]
+    public function testReplicatingZoneSetsMasterInTheSingleInsert(string $type, string $master): void
     {
-        $stmtInsert = $this->createMock(PDOStatement::class);
-        $stmtInsert->expects($this->once())->method('execute');
-        $stmtInsert->method('bindValue');
+        $bound = [];
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())->method('execute');
+        $stmt->method('bindValue')->willReturnCallback(function (string $param, mixed $value) use (&$bound): bool {
+            $bound[$param] = $value;
+            return true;
+        });
 
-        $stmtUpdate = $this->createMock(PDOStatement::class);
-        $stmtUpdate->expects($this->once())->method('execute');
-        $stmtUpdate->method('bindValue');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmtInsert, $stmtUpdate);
+        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmt);
         $this->mockDb->method('lastInsertId')->willReturn('43');
 
-        $result = $this->provider->createZone('slave.example.com', 'SLAVE', '192.168.1.1');
-
-        $this->assertEquals(43, $result);
+        $this->assertSame(43, $this->provider->createZone('zone.example.com', $type, $master));
+        $this->assertSame($master, $bound[':master']);
     }
 
-    public function testCreateConsumerZoneSetsMaster(): void
+    public static function replicatingZoneProvider(): array
     {
-        $stmtInsert = $this->createMock(PDOStatement::class);
-        $stmtInsert->expects($this->once())->method('execute');
-        $stmtInsert->method('bindValue');
-
-        $stmtUpdate = $this->createMock(PDOStatement::class);
-        $stmtUpdate->expects($this->once())->method('execute');
-        $stmtUpdate->method('bindValue');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmtInsert, $stmtUpdate);
-        $this->mockDb->method('lastInsertId')->willReturn('44');
-
-        $result = $this->provider->createZone('catalog.example.com', 'CONSUMER', '192.0.2.42');
-
-        $this->assertEquals(44, $result);
+        return [
+            'slave' => ['SLAVE', '192.168.1.1'],
+            'consumer' => ['CONSUMER', '192.0.2.42'],
+        ];
     }
 
     public function testCreateProducerZoneDoesNotSetMaster(): void
     {
-        $stmtInsert = $this->createMock(PDOStatement::class);
-        $stmtInsert->expects($this->once())->method('execute');
-        $stmtInsert->method('bindValue');
+        $bound = [];
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())->method('execute');
+        $stmt->method('bindValue')->willReturnCallback(function (string $param, mixed $value) use (&$bound): bool {
+            $bound[$param] = $value;
+            return true;
+        });
 
-        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmtInsert);
+        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmt);
         $this->mockDb->method('lastInsertId')->willReturn('45');
 
-        $result = $this->provider->createZone('catalog.example.com', 'PRODUCER', '');
-
-        $this->assertEquals(45, $result);
+        $this->assertSame(45, $this->provider->createZone('catalog.example.com', 'PRODUCER', '192.0.2.42'));
+        $this->assertArrayHasKey(':master', $bound);
+        $this->assertNull($bound[':master']);
     }
 
     public function testDeleteZoneDeletesAllRelatedTables(): void

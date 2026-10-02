@@ -251,8 +251,8 @@ final class DomainManager implements DomainManagerInterface
             $this->applySerialPolicy($domain_id, $domain, $soaEditApi);
         }
 
-        $this->transaction->begin();
         try {
+            $this->transaction->begin();
             $zone_id = $this->createZoneShell($domain_id, $owner, $zone_template);
             $this->assignInitialOwnership($domain_id, $zone_id, $owner, $zone_template, $groupIds);
 
@@ -483,7 +483,9 @@ final class DomainManager implements DomainManagerInterface
     private function cleanupZoneOnFailure(int $domainId, string $domain): void
     {
         try {
-            $this->backendProvider->deleteZone($domainId, $domain);
+            if (!$this->backendProvider->deleteZone($domainId, $domain)) {
+                $this->logger->error('Failed to clean up orphaned zone {domain} (id {id}) after local failure; remove it by hand', ['domain' => $domain, 'id' => $domainId]);
+            }
         } catch (\Exception $e) {
             $this->logger->error('Failed to clean up orphaned zone {domain} after local failure: {error}', ['domain' => $domain, 'error' => $e->getMessage()]);
         }

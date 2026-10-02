@@ -68,22 +68,16 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->prepare("INSERT INTO $domainsTable (name, type) VALUES (:domain, :type)");
+        // One statement, so a failure cannot leave a row without its primary
+        $master = ZoneType::replicatesFromPrimary($type) && $slaveMaster !== '' ? $slaveMaster : null;
+        $stmt = $this->db->prepare("INSERT INTO $domainsTable (name, type, master) VALUES (:domain, :type, :master)");
         $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        $stmt->bindValue(':master', $master, $master === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $stmt->execute();
 
         // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
-        $domainId = (int)$this->db->lastInsertId('domains_id_seq');
-
-        if (ZoneType::replicatesFromPrimary($type) && $slaveMaster !== '') {
-            $stmt = $this->db->prepare("UPDATE $domainsTable SET master = :master WHERE id = :id");
-            $stmt->bindValue(':master', $slaveMaster, PDO::PARAM_STR);
-            $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
-            $stmt->execute();
-        }
-
-        return $domainId;
+        return (int)$this->db->lastInsertId('domains_id_seq');
     }
 
     public function deleteZone(int $domainId, string $zoneName): bool
