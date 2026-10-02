@@ -117,7 +117,7 @@ class DnsValidatorRegistry
      */
     public function getValidator(string $recordType): DnsRecordValidatorInterface
     {
-        return $this->validators[$recordType] ?? new DefaultRecordValidator($this->config);
+        return $this->validators[$recordType] ?? new DefaultRecordValidator($this->config, $recordType);
     }
 
     /**
