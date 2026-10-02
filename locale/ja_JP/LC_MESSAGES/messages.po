@@ -15910,5 +15910,36 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "PEM 秘密鍵"
 
+#: lib/Domain/Service/Dns/DomainManager.php:643
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "このゾーンに所有者を追加できません。IDが別のゾーンと共有されています。管理者に分離を依頼してください。"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:98
+msgid "No zone ID is shared by two zones"
+msgstr "2 つのゾーンで共有されているゾーンID はありません"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#, php-format
+msgid "%d zone IDs are shared by two zones"
+msgstr "%d 個のゾーンIDが 2 つのゾーンで共有されています"
+
+#: templates/default/database_consistency.html:159
+#: templates/modern/database_consistency.html:159
+msgid "Zone IDs Shared By Two Zones"
+msgstr "2 つのゾーンで共有されているゾーンID"
+
+#: templates/default/database_consistency.html:166
+#: templates/modern/database_consistency.html:166
+msgid "Extra owners and group grants on these IDs are ignored. Only the direct owner of the zone the ID opens keeps access."
+msgstr "これらのIDに対する追加の所有者とグループ権限は無視されます。IDが開くゾーンの直接の所有者のみがアクセスを保持します。"
+
+#: templates/default/database_consistency.html:173
+#: templates/modern/database_consistency.html:173
+msgid "Ignored owners"
+msgstr "無視された所有者"
+
+#: templates/default/database_consistency.html:174
+#: templates/modern/database_consistency.html:174
+msgid "Ignored groups"
+msgstr "無視されたグループ"

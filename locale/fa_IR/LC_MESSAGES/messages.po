@@ -15796,5 +15796,36 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "کلید خصوصی PEM"
 
+#: lib/Domain/Service/Dns/DomainManager.php:643
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "نمی‌توان به این منطقه مالک افزود: شناسه آن با منطقه دیگری مشترک است. از یک مدیر بخواهید آن‌ها را جدا کند."
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:98
+msgid "No zone ID is shared by two zones"
+msgstr "هیچ شناسه منطقه‌ای بین دو منطقه مشترک نیست"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#, php-format
+msgid "%d zone IDs are shared by two zones"
+msgstr "%d شناسه منطقه بین دو منطقه مشترک است"
+
+#: templates/default/database_consistency.html:159
+#: templates/modern/database_consistency.html:159
+msgid "Zone IDs Shared By Two Zones"
+msgstr "شناسه‌های منطقه مشترک بین دو منطقه"
+
+#: templates/default/database_consistency.html:166
+#: templates/modern/database_consistency.html:166
+msgid "Extra owners and group grants on these IDs are ignored. Only the direct owner of the zone the ID opens keeps access."
+msgstr "مالکان اضافی و دسترسی‌های گروهی روی این شناسه‌ها نادیده گرفته می‌شوند. فقط مالک مستقیم منطقه‌ای که شناسه باز می‌کند دسترسی را حفظ می‌کند."
+
+#: templates/default/database_consistency.html:173
+#: templates/modern/database_consistency.html:173
+msgid "Ignored owners"
+msgstr "مالکان نادیده‌گرفته‌شده"
+
+#: templates/default/database_consistency.html:174
+#: templates/modern/database_consistency.html:174
+msgid "Ignored groups"
+msgstr "گروه‌های نادیده‌گرفته‌شده"

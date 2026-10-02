@@ -15915,5 +15915,36 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "Privat PEM-nyckel"
 
+#: lib/Domain/Service/Dns/DomainManager.php:643
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Det går inte att lägga till ägare i den här zonen: dess ID delas med en annan zon. Be en administratör att skilja dem åt."
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:98
+msgid "No zone ID is shared by two zones"
+msgstr "Inget zon-ID delas av två zoner"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#, php-format
+msgid "%d zone IDs are shared by two zones"
+msgstr "%d zon-ID:n delas av två zoner"
+
+#: templates/default/database_consistency.html:159
+#: templates/modern/database_consistency.html:159
+msgid "Zone IDs Shared By Two Zones"
+msgstr "Zon-ID:n som delas av två zoner"
+
+#: templates/default/database_consistency.html:166
+#: templates/modern/database_consistency.html:166
+msgid "Extra owners and group grants on these IDs are ignored. Only the direct owner of the zone the ID opens keeps access."
+msgstr "Extra ägare och grupptilldelningar på dessa ID:n ignoreras. Endast den direkta ägaren av zonen som ID:t öppnar behåller åtkomsten."
+
+#: templates/default/database_consistency.html:173
+#: templates/modern/database_consistency.html:173
+msgid "Ignored owners"
+msgstr "Ignorerade ägare"
+
+#: templates/default/database_consistency.html:174
+#: templates/modern/database_consistency.html:174
+msgid "Ignored groups"
+msgstr "Ignorerade grupper"

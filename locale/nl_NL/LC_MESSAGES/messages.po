@@ -16118,5 +16118,36 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "PEM privésleutel"
 
+#: lib/Domain/Service/Dns/DomainManager.php:643
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Aan deze zone kunnen geen eigenaren worden toegevoegd: de ID wordt gedeeld met een andere zone. Vraag een beheerder ze te scheiden."
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:98
+msgid "No zone ID is shared by two zones"
+msgstr "Geen zone-ID wordt door twee zones gedeeld"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#, php-format
+msgid "%d zone IDs are shared by two zones"
+msgstr "%d zone-ID's worden door twee zones gedeeld"
+
+#: templates/default/database_consistency.html:159
+#: templates/modern/database_consistency.html:159
+msgid "Zone IDs Shared By Two Zones"
+msgstr "Zone-ID's gedeeld door twee zones"
+
+#: templates/default/database_consistency.html:166
+#: templates/modern/database_consistency.html:166
+msgid "Extra owners and group grants on these IDs are ignored. Only the direct owner of the zone the ID opens keeps access."
+msgstr "Extra eigenaren en groepstoewijzingen op deze ID's worden genegeerd. Alleen de directe eigenaar van de zone die de ID opent, behoudt toegang."
+
+#: templates/default/database_consistency.html:173
+#: templates/modern/database_consistency.html:173
+msgid "Ignored owners"
+msgstr "Genegeerde eigenaren"
+
+#: templates/default/database_consistency.html:174
+#: templates/modern/database_consistency.html:174
+msgid "Ignored groups"
+msgstr "Genegeerde groepen"

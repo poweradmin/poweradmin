@@ -15200,5 +15200,36 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "กุญแจส่วนตัวของ PEM"
 
+#: lib/Domain/Service/Dns/DomainManager.php:643
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "ไม่สามารถเพิ่มเจ้าของให้โซนนี้ได้: รหัสของโซนนี้ใช้ร่วมกับโซนอื่น โปรดขอให้ผู้ดูแลระบบแยกโซนทั้งสอง"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:98
+msgid "No zone ID is shared by two zones"
+msgstr "ไม่มี รหัสโซนที่ใช้ร่วมกันระหว่างสองโซน"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#, php-format
+msgid "%d zone IDs are shared by two zones"
+msgstr "มี รหัสโซน %d รายการที่ใช้ร่วมกันระหว่างสองโซน"
+
+#: templates/default/database_consistency.html:159
+#: templates/modern/database_consistency.html:159
+msgid "Zone IDs Shared By Two Zones"
+msgstr "รหัสโซนที่ใช้ร่วมกันระหว่างสองโซน"
+
+#: templates/default/database_consistency.html:166
+#: templates/modern/database_consistency.html:166
+msgid "Extra owners and group grants on these IDs are ignored. Only the direct owner of the zone the ID opens keeps access."
+msgstr "เจ้าของเพิ่มเติมและสิทธิ์ของกลุ่มบนรหัสเหล่านี้จะถูกละเว้น มีเพียงเจ้าของโดยตรงของโซนที่รหัสเปิดเท่านั้นที่ยังคงสิทธิ์เข้าถึง"
+
+#: templates/default/database_consistency.html:173
+#: templates/modern/database_consistency.html:173
+msgid "Ignored owners"
+msgstr "เจ้าของที่ถูกละเว้น"
+
+#: templates/default/database_consistency.html:174
+#: templates/modern/database_consistency.html:174
+msgid "Ignored groups"
+msgstr "กลุ่มที่ถูกละเว้น"

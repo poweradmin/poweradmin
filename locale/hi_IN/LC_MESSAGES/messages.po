@@ -15649,5 +15649,36 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "PEM निजी कुंजी"
 
+#: lib/Domain/Service/Dns/DomainManager.php:643
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "इस ज़ोन में स्वामी नहीं जोड़े जा सकते: इसकी आईडी किसी अन्य ज़ोन के साथ साझा है। उन्हें अलग करने के लिए किसी व्यवस्थापक से कहें।"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:98
+msgid "No zone ID is shared by two zones"
+msgstr "कोई भी ज़ोन आईडी दो ज़ोन द्वारा साझा नहीं है"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#, php-format
+msgid "%d zone IDs are shared by two zones"
+msgstr "%d ज़ोन आईडी दो ज़ोन द्वारा साझा हैं"
+
+#: templates/default/database_consistency.html:159
+#: templates/modern/database_consistency.html:159
+msgid "Zone IDs Shared By Two Zones"
+msgstr "दो ज़ोन द्वारा साझा ज़ोन आईडी"
+
+#: templates/default/database_consistency.html:166
+#: templates/modern/database_consistency.html:166
+msgid "Extra owners and group grants on these IDs are ignored. Only the direct owner of the zone the ID opens keeps access."
+msgstr "इन आईडी पर अतिरिक्त स्वामी और समूह अनुमतियाँ अनदेखी की जाती हैं। केवल उस ज़ोन का प्रत्यक्ष स्वामी पहुँच बनाए रखता है जिसे आईडी खोलती है।"
+
+#: templates/default/database_consistency.html:173
+#: templates/modern/database_consistency.html:173
+msgid "Ignored owners"
+msgstr "अनदेखे स्वामी"
+
+#: templates/default/database_consistency.html:174
+#: templates/modern/database_consistency.html:174
+msgid "Ignored groups"
+msgstr "अनदेखे समूह"

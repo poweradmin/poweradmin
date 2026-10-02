@@ -16354,5 +16354,36 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "Eochair phríobháideach PEM"
 
+#: lib/Domain/Service/Dns/DomainManager.php:643
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Ní féidir úinéirí a chur leis an gcrios seo: tá a ID roinnte le crios eile. Iarr ar riarthóir iad a scaradh."
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:98
+msgid "No zone ID is shared by two zones"
+msgstr "Níl aon ID crios roinnte ag dhá chrios"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#, php-format
+msgid "%d zone IDs are shared by two zones"
+msgstr "Tá %d ID crios roinnte ag dhá chrios"
+
+#: templates/default/database_consistency.html:159
+#: templates/modern/database_consistency.html:159
+msgid "Zone IDs Shared By Two Zones"
+msgstr "IDanna crios roinnte ag dhá chrios"
+
+#: templates/default/database_consistency.html:166
+#: templates/modern/database_consistency.html:166
+msgid "Extra owners and group grants on these IDs are ignored. Only the direct owner of the zone the ID opens keeps access."
+msgstr "Déantar neamhaird d'úinéirí breise agus de dheontais ghrúpa ar na IDanna seo. Ní choinníonn ach úinéir díreach an chrios a osclaíonn an ID rochtain."
+
+#: templates/default/database_consistency.html:173
+#: templates/modern/database_consistency.html:173
+msgid "Ignored owners"
+msgstr "Úinéirí a ndearnadh neamhaird díobh"
+
+#: templates/default/database_consistency.html:174
+#: templates/modern/database_consistency.html:174
+msgid "Ignored groups"
+msgstr "Grúpaí a ndearnadh neamhaird díobh"

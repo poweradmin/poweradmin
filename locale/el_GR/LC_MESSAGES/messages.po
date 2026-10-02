@@ -16463,5 +16463,36 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "Ιδιωτικό κλειδί PEM"
 
+#: lib/Domain/Service/Dns/DomainManager.php:643
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Δεν μπορούν να προστεθούν κάτοχοι σε αυτή τη ζώνη: το ID της είναι κοινό με άλλη ζώνη. Ζητήστε από έναν διαχειριστή να τις διαχωρίσει."
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:98
+msgid "No zone ID is shared by two zones"
+msgstr "Κανένα ID ζώνης δεν είναι κοινό σε δύο ζώνες"
 
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:121
+#, php-format
+msgid "%d zone IDs are shared by two zones"
+msgstr "%d ID ζωνών είναι κοινά σε δύο ζώνες"
+
+#: templates/default/database_consistency.html:159
+#: templates/modern/database_consistency.html:159
+msgid "Zone IDs Shared By Two Zones"
+msgstr "ID ζωνών κοινά σε δύο ζώνες"
+
+#: templates/default/database_consistency.html:166
+#: templates/modern/database_consistency.html:166
+msgid "Extra owners and group grants on these IDs are ignored. Only the direct owner of the zone the ID opens keeps access."
+msgstr "Οι επιπλέον κάτοχοι και τα δικαιώματα ομάδων σε αυτά τα ID αγνοούνται. Πρόσβαση διατηρεί μόνο ο άμεσος κάτοχος της ζώνης που ανοίγει το ID."
+
+#: templates/default/database_consistency.html:173
+#: templates/modern/database_consistency.html:173
+msgid "Ignored owners"
+msgstr "Κάτοχοι που αγνοούνται"
+
+#: templates/default/database_consistency.html:174
+#: templates/modern/database_consistency.html:174
+msgid "Ignored groups"
+msgstr "Ομάδες που αγνοούνται"
