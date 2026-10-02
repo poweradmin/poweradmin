@@ -337,7 +337,7 @@ return [
 
         // Audit logging - tracks user, zone, and group operations
         'database_enabled' => false,               // Write audit events to database log tables (log_users, log_zones, log_groups, log_record_changes) (added in 3.2.0)
-        'require_change_comment' => false,         // Require a reason for bulk record changes (added in 4.5.0)
+        'require_change_comment' => false,         // Require a reason for bulk record changes and change requests (added in 4.5.0)
 
         // Per-request API audit logging (writes to log_api; requires database_enabled)
         'api_request_logging' => false,            // Log every public API request; permission violations (401/403) are logged regardless (added in 4.5.0)
@@ -374,18 +374,18 @@ return [
         'default_permission_template' => 'Guest',       // Template for auto-provisioned users when no mapping matches (added in 4.5.0)
         'groups_attribute' => 'memberOf',               // LDAP attribute holding group memberships (added in 4.5.0)
 
-        // Maps LDAP groups (full DN or its first RDN value, e.g. 'dns-admins'
-        // from 'cn=dns-admins,ou=groups,dc=example,dc=com') to permission
-        // template names, same semantics as the oidc/saml sections (added in 4.5.0)
+        // Maps LDAP groups to permission template names. Keys must equal the
+        // groups_attribute value exactly, so the full DN for memberOf; same
+        // semantics as the oidc/saml sections (added in 4.5.0)
         'permission_template_mapping' => [
-            // 'dns-admins' => 'Administrator',
+            // 'cn=dns-admins,ou=groups,dc=example,dc=com' => 'Administrator',
             // 'cn=dns-operators,ou=groups,dc=example,dc=com' => 'Viewer',
         ],
 
         // Maps LDAP groups to Poweradmin group name(s), 1:n supported (added in 4.5.0)
         'group_mapping' => [
-            // 'dns-admins' => 'Administrators',
-            // 'dns-operators' => ['Zone Managers', 'Editors'],
+            // 'cn=dns-admins,ou=groups,dc=example,dc=com' => 'Administrators',
+            // 'cn=dns-operators,ou=groups,dc=example,dc=com' => ['Zone Managers', 'Editors'],
         ],
         'session_cache_timeout' => 300,                 // Session cache timeout in seconds (5 minutes). Set to 0 to disable caching. (added in 4.1.0)
         // Examples:
