@@ -148,6 +148,11 @@ class DnsValidatorRegistry
             return true;
         }
 
+        // A numbered type an admin lists must still fit the 16-bit type field
+        if (preg_match('/^TYPE(\d+)$/i', $recordType, $matches) === 1 && (int)$matches[1] > 65535) {
+            return false;
+        }
+
         foreach (['domain_record_types', 'reverse_record_types'] as $key) {
             $configured = $this->config->get('dns', $key);
             if (is_array($configured) && in_array($recordType, $configured, true)) {

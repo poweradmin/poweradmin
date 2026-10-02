@@ -108,7 +108,7 @@ class DnsValidatorRegistryTest extends TestCase
     public function testIsKnownTypeAcceptsTypesTheAdminConfigured(): void
     {
         $registry = new DnsValidatorRegistry(
-            new FakeConfiguration(['dns' => ['domain_record_types' => ['A', 'TYPE65280'], 'reverse_record_types' => ['PTR', 'TYPE65281']]]),
+            new FakeConfiguration(['dns' => ['domain_record_types' => ['A', 'TYPE65280', 'TYPE65536'], 'reverse_record_types' => ['PTR', 'TYPE65281']]]),
             $this->createMock(DnsBackendProviderInterface::class)
         );
 
@@ -117,6 +117,8 @@ class DnsValidatorRegistryTest extends TestCase
         // A narrowed list does not refuse types that have a validator
         $this->assertTrue($registry->isKnownType(RecordType::MX));
         $this->assertFalse($registry->isKnownType('TYPE65282'));
+        // DNS types are 16-bit, so a listed TYPE65536 still cannot be stored
+        $this->assertFalse($registry->isKnownType('TYPE65536'));
     }
 
     public function testVersionDependentTypeIsRefusedOnlyWhenTheServerIsKnownToBeOlder(): void
