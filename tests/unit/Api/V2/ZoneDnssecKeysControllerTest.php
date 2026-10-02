@@ -104,6 +104,7 @@ class ZoneDnssecKeysControllerTest extends TestCase
             'active' => true,
             'dnskey' => self::RFC_DNSKEY,
             'ds' => [],
+            'sep' => false,
         ], $body['data'][0]);
     }
 

@@ -58,7 +58,22 @@ use Symfony\Component\HttpFoundation\JsonResponse;
         new OA\Property(property: 'bits', type: 'integer', example: 256),
         new OA\Property(property: 'active', type: 'boolean', example: true),
         new OA\Property(property: 'dnskey', type: 'string', nullable: true, example: '257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ=='),
-        new OA\Property(property: 'ds', type: 'array', items: new OA\Items(type: 'string'), example: ['12345 13 2 3dd8ee7d9ab0c6d8e4b2fd8a7e1cb3a2b7b0d4e5f6a7b8c9d0e1f2a3b4c5d6e7'], description: 'DS records; empty for a ZSK'),
+        new OA\Property(
+            property: 'ds',
+            type: 'array',
+            items: new OA\Items(type: 'string'),
+            example: ['12345 13 2 3dd8ee7d9ab0c6d8e4b2fd8a7e1cb3a2b7b0d4e5f6a7b8c9d0e1f2a3b4c5d6e7'],
+            description: 'DS records; empty for a key PowerDNS currently lists as ZSK'
+        ),
+        new OA\Property(
+            property: 'sep',
+            type: 'boolean',
+            nullable: true,
+            example: true,
+            description: 'Whether the key carries the SEP flag (DNSKEY flags 257), which is what PowerDNS stores. '
+                . '`type` is derived on every read: a key is listed as ksk or zsk only while the zone has an active '
+                . 'SEP and an active non-SEP key of the same algorithm, otherwise as csk. Null without a readable DNSKEY.'
+        ),
     ],
     type: 'object'
 )]
@@ -572,7 +587,7 @@ class ZoneDnssecKeysController extends PublicApiController
     }
 
     /**
-     * @return array{id: int, type: string, keytag: int, algorithm: ?string, algorithm_id: int, bits: int, active: bool, dnskey: ?string, ds: string[]}
+     * @return array{id: int, type: string, keytag: int, algorithm: ?string, algorithm_id: int, bits: int, active: bool, dnskey: ?string, ds: string[], sep: ?bool}
      */
     private function formatKey(CryptoKey $key): array
     {
@@ -588,6 +603,7 @@ class ZoneDnssecKeysController extends PublicApiController
             'active' => $key->isActive(),
             'dnskey' => $key->getDnskey(),
             'ds' => array_values($key->getDs()),
+            'sep' => $key->isSecureEntryPoint(),
         ];
     }
 }

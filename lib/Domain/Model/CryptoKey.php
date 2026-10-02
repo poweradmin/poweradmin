@@ -110,6 +110,20 @@ class CryptoKey
     }
 
     /**
+     * Whether the DNSKEY carries the SEP flag (257), or null without a readable one.
+     * PowerDNS stores only this; it derives ksk/zsk/csk from the other active keys on every read.
+     */
+    public function isSecureEntryPoint(): ?bool
+    {
+        $fields = $this->dnskeyFields();
+        if ($fields === [] || !ctype_digit($fields[0])) {
+            return null;
+        }
+
+        return ((int)$fields[0] & 1) === 1;
+    }
+
+    /**
      * The key tag of the DNSKEY record (RFC 4034, appendix B), or 0 without a
      * readable one. Computed rather than read off a DS record, which a ZSK lacks.
      */

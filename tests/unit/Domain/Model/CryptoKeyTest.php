@@ -146,4 +146,24 @@ class CryptoKeyTest extends TestCase
         $this->assertSame(0, (new CryptoKey(1, dnskey: '257 3 13 !!!'))->getKeyTag());
         $this->assertSame(13, (new CryptoKey(1, dnskey: '257 3 13 !!!'))->getAlgorithmId());
     }
+
+    /** @return array<string, array{0: ?string, 1: ?bool}> */
+    public static function secureEntryPointProvider(): array
+    {
+        return [
+            'ksk or csk' => ['257 3 13 AAAA', true],
+            'zsk' => ['256 3 13 AAAA', false],
+            'revoked ksk' => ['385 3 13 AAAA', true],
+            'no dnskey' => [null, null],
+            'unreadable flags' => ['x 3 13 AAAA', null],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('secureEntryPointProvider')]
+    public function testIsSecureEntryPointReadsTheStoredFlag(?string $dnskey, ?bool $expected): void
+    {
+        $key = new CryptoKey(1, 'csk', 256, 'ECDSAP256SHA256', true, $dnskey, []);
+
+        $this->assertSame($expected, $key->isSecureEntryPoint());
+    }
 }
