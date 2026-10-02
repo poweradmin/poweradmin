@@ -47,7 +47,7 @@ fi
 source "$CONFIG_FILE"
 
 USERNAME="${DYNAMIC_DNS_USER:-ddns_user}"
-PASSWORD="${DYNAMIC_DNS_PASS:-ddns_password}"
+PASSWORD="${DYNAMIC_DNS_PASS:-Ddns_Passw0rd}"
 HOSTNAME="${DYNAMIC_DNS_HOSTNAME:-test.example.com}"
 
 echo "API URL: $API_BASE_URL"
