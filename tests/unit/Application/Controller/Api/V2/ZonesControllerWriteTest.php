@@ -315,6 +315,7 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
             'data' => [
                 'zone' => [
                     'id' => self::ZONE_ID,
+                    'canonical_id' => self::ZONE_ID,
                     'name' => 'example.com',
                     'type' => 'MASTER',
                     'masters' => null,

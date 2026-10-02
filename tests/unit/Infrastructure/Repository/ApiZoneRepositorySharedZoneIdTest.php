@@ -124,6 +124,22 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $this->assertSame(1, $repository->countZones('own', self::CREATED_OWNER, 'all', 'reverse'));
         $this->assertSame(1, $repository->countZones('own', self::EXTRA_OWNER, 'all', 'reverse'));
         $this->assertSame(0, $repository->countZones('own', self::GROUP_MEMBER, 'all', 'reverse'));
+        $this->assertSame(1, $repository->countZones('own', self::MIGRATED_OWNER, 'all', 'reverse'), 'Only the zone 30; the zone id 5 does not open is not counted');
+        $this->assertSame(2, $repository->countZones('all', null, 'all', 'reverse'));
+    }
+
+    #[Test]
+    public function theV2ListShowsOnlyTheZoneASharedIdOpens(): void
+    {
+        $repository = $this->repository();
+
+        $scoped = $repository->getAllZonesFiltered([5, 30], null, null, null, null);
+        $this->assertSame(['30.168.192.in-addr.arpa', '5.168.192.in-addr.arpa'], array_column($scoped, 'name'));
+        $this->assertSame([30, 5], array_column($scoped, 'id'));
+        $this->assertSame(2, $repository->getZoneCountFiltered([5, 30], null, null));
+
+        $this->assertNotContains('12.168.192.in-addr.arpa', array_column($repository->getAllZonesFiltered(null, null, null, null, null), 'name'));
+        $this->assertSame(2, $repository->getReverseZoneCounts('all', self::CREATED_OWNER)['count_all'], 'Totals match the list');
     }
 
     #[Test]
@@ -142,7 +158,7 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
             $byName[$zone->name] = $zone->owners;
         }
         $this->assertSame(['creator'], $byName['5.168.192.in-addr.arpa']);
-        $this->assertSame(['migrator'], $byName['12.168.192.in-addr.arpa']);
+        $this->assertArrayNotHasKey('12.168.192.in-addr.arpa', $byName, 'The zone a shared id does not open is not listed under it');
     }
 
     #[Test]

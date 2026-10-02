@@ -47,6 +47,7 @@ class ZoneResourceTest extends TestCase
     {
         $this->assertSame([
             'id' => 81,
+            'canonical_id' => 81,
             'name' => 'example.com',
             'type' => 'SLAVE',
             'masters' => '192.0.2.1,192.0.2.2',

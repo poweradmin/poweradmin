@@ -148,4 +148,16 @@ class SharedZoneIdsTest extends TestCase
         $this->assertSame([30 => [8]], (new DbZoneGroupRepository($this->db, null, true))->findGroupIdsByDomainIds([5, 30]));
         $this->assertSame([5 => [7], 30 => [8]], (new DbZoneGroupRepository($this->db, null, false))->findGroupIdsByDomainIds([5, 30]));
     }
+
+    public function testListsBuiltFromTheBackendKeepOnlyTheZoneASharedIdOpens(): void
+    {
+        $this->seedCollision();
+
+        $opened = SharedZoneIds::openedNames($this->db);
+
+        $this->assertSame([5 => 'created.example.com'], $opened);
+        $this->assertTrue(SharedZoneIds::isOpenedZone($opened, ['id' => 5, 'name' => 'created.example.com.']));
+        $this->assertFalse(SharedZoneIds::isOpenedZone($opened, ['id' => 5, 'name' => 'migrated.example.com.']));
+        $this->assertTrue(SharedZoneIds::isOpenedZone($opened, ['id' => 30, 'name' => 'plain.example.com.']));
+    }
 }

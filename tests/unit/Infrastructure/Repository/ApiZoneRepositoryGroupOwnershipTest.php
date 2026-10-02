@@ -175,7 +175,7 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
     }
 
     #[Test]
-    public function listZonesReportsTheCanonicalIdNextToTheRowId(): void
+    public function zoneListsReportTheCanonicalIdAsTheId(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
             VALUES (7, 4011, 'migrated.example', 'MASTER', '', '', 1, 0), (8, 8, 'native.example', 'MASTER', '', '', 1, 0)");
@@ -185,7 +185,7 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $listed = array_column(array_values($this->repository()->listZones(1, true)), null, 'name');
 
         foreach ([$filtered, $listed] as $byName) {
-            $this->assertSame(7, (int)$byName['migrated.example']['id']);
+            $this->assertSame(4011, (int)$byName['migrated.example']['id']);
             $this->assertSame(4011, $byName['migrated.example']['canonical_id']);
             $this->assertSame(8, $byName['native.example']['canonical_id']);
         }
@@ -197,8 +197,9 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
             VALUES (7, 4011, 'migrated.example', 'MASTER', '', '', 1, 0), (8, 8, 'native.example', 'MASTER', '', '', 1, 0)");
 
-        $this->assertSame(['migrated.example'], array_column($this->repository()->getAllZonesFiltered([7], null, null, null, null), 'name'));
-        $this->assertSame(1, $this->repository()->getZoneCountFiltered([7], null, null));
-        $this->assertSame(0, $this->repository()->getZoneCountFiltered([9], null, null));
+        $this->assertSame(['migrated.example'], array_column($this->repository()->getAllZonesFiltered([4011], null, null, null, null), 'name'));
+        $this->assertSame(1, $this->repository()->getZoneCountFiltered([4011], null, null));
+        // The row id names no zone: scopes and visible ids are canonical
+        $this->assertSame(0, $this->repository()->getZoneCountFiltered([7], null, null));
     }
 }

@@ -89,6 +89,38 @@ final class SharedZoneIds
     }
 
     /**
+     * The name of the zone each shared id opens, keyed by that id. A list built from the
+     * backend's zone list keeps only these zones for a shared id.
+     *
+     * @return array<int, string>
+     */
+    public static function openedNames(PDO $db): array
+    {
+        $names = [];
+        foreach (self::all($db) as $sharedId) {
+            $stmt = $db->prepare(CanonicalZoneSql::selectByZoneId('zone_name'));
+            CanonicalZoneSql::bindZoneId($stmt, $sharedId);
+            $stmt->execute();
+            $names[$sharedId] = (string)$stmt->fetchColumn();
+        }
+
+        return $names;
+    }
+
+    /**
+     * Whether a zone from the backend's zone list is the one its id opens.
+     *
+     * @param array<int, string> $openedNames From openedNames()
+     * @param array<string, mixed> $zone A zone with id and name (with or without trailing dot)
+     */
+    public static function isOpenedZone(array $openedNames, array $zone): bool
+    {
+        $zoneId = (int)($zone['id'] ?? 0);
+
+        return !isset($openedNames[$zoneId]) || $openedNames[$zoneId] === rtrim((string)($zone['name'] ?? ''), '.');
+    }
+
+    /**
      * SQL selecting every shared canonical id, for queries that filter in SQL.
      */
     public static function sharedIdsSql(): string

@@ -98,6 +98,8 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                          AND z.zone_name NOT LIKE '%.ip6.arpa'
                          AND z.zone_name IS NOT NULL";
         }
+        $unreachable = $this->unreachableSharedRowsCondition('z');
+        $where .= $unreachable === null ? '' : " AND $unreachable";
 
 
         // IDN zones are excluded here so they do not all register as "x"; they are
@@ -161,6 +163,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
 
             // Built from the enum so an unknown filter cannot emit an empty AND ()
+            $query .= ($unreachable = $this->unreachableSharedRowsCondition('z')) === null ? '' : " AND $unreachable";
             $query .= " AND (" . $this->reverseZoneClause($reverseType) . ")) AS distinct_zones";
 
             $stmt = $this->db->prepare($query);
@@ -183,6 +186,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         // Built from the enum so an unknown filter cannot emit an empty AND ()
+        $query .= ($unreachable = $this->unreachableSharedRowsCondition('z')) === null ? '' : " AND $unreachable";
         $query .= " AND (" . $this->reverseZoneClause($reverseType) . ")";
 
         // Sorting. The Type column is offered as sortable, so it needs its own
@@ -397,18 +401,12 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
             $ownedIds = $this->getOwnedZoneIds($userId);
             $zones = array_filter($zones, fn($z) => in_array((int)($z['id'] ?? 0), $ownedIds, true));
-            // As in ownedZonesCondition(): for a shared id only the rows the user owns directly
-            $sharedIds = SharedZoneIds::sharedAmong($this->db, $ownedIds);
-            if ($sharedIds !== []) {
-                $stmt = $this->db->prepare(
-                    "SELECT zone_name FROM zones WHERE zone_name IS NOT NULL AND owner = :uid AND " . $this->canonicalId() . " IN (" . implode(',', $sharedIds) . ")"
-                );
-                $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
-                $stmt->execute();
-                $ownedNames = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                $zones = array_filter($zones, fn($z) => !in_array((int)($z['id'] ?? 0), $sharedIds, true)
-                    || in_array(rtrim((string)($z['name'] ?? ''), '.'), $ownedNames, true));
-            }
+        }
+
+        // As in the lists: a shared id counts only the zone it opens (see SharedZoneIds)
+        $openedNames = SharedZoneIds::openedNames($this->db);
+        if ($openedNames !== []) {
+            $zones = array_filter($zones, fn(array $zone): bool => SharedZoneIds::isOpenedZone($openedNames, $zone));
         }
 
         if ($letterStart !== 'all') {
@@ -438,6 +436,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                     COUNT(DISTINCT CASE WHEN z.zone_name LIKE '%.ip6.arpa' THEN z.id END) AS count_ipv6
                   FROM zones z";
         $query .= " WHERE z.zone_name IS NOT NULL AND (z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.ip6.arpa')";
+        $query .= ($unreachable = $this->unreachableSharedRowsCondition('z')) === null ? '' : " AND $unreachable";
         if ($permType === 'own') {
             $query .= " AND " . $this->ownedZonesCondition('z', $userId);
         }
@@ -464,6 +463,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         if ($userId !== null && !$viewOthers) {
             $query .= " AND " . $this->ownedZonesCondition('z', $userId);
         }
+        $query .= ($unreachable = $this->unreachableSharedRowsCondition('z')) === null ? '' : " AND $unreachable";
         if (isset($filters['type']) && in_array($filters['type'], ZoneKind::basicValues(), true)) {
             $query .= " AND z.zone_type = :type";
             $params[':type'] = $filters['type'];
@@ -489,13 +489,13 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 $apiName = $name . '.';
                 $stats = $zoneStats[$apiName] ?? [];
                 $zones[$name] = [
-                    'id' => $row['id'],
+                    'id' => (int)$row['canonical_id'],
                     'canonical_id' => (int)$row['canonical_id'],
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
                     // One API call per zone - safe because the query above is paged
-                    'count_records' => $this->backendProvider->countZoneRecords((int)$row['id']),
+                    'count_records' => $this->backendProvider->countZoneRecords((int)$row['canonical_id']),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],
@@ -505,7 +505,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
         }
 
-        $zones = $this->enrichZonesWithOwnership($zones);
+        $zones = $this->enrichZonesWithOwnership($zones, true);
 
         return array_values(array_map(ZoneSummary::fromRow(...), $zones));
     }
@@ -564,7 +564,8 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         // Look up forward zones in local zones table
         $suffixList = array_keys($domainSuffixes);
         $placeholders = implode(',', array_fill(0, count($suffixList), '?'));
-        $query = "SELECT id, zone_name as name FROM zones WHERE zone_name IN ($placeholders) AND zone_name NOT LIKE '%.arpa'";
+        $query = "SELECT " . $this->canonicalId('z') . " AS id, z.zone_name as name FROM zones z WHERE z.zone_name IN ($placeholders) AND z.zone_name NOT LIKE '%.arpa'";
+        $query .= ($unreachable = $this->unreachableSharedRowsCondition('z')) === null ? '' : " AND $unreachable";
         $stmt = $this->db->prepare($query);
         $paramIndex = 1;
         foreach ($suffixList as $suffix) {
@@ -997,15 +998,18 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         if ($zoneIds !== null && $zoneIds !== []) {
-            // Row ids. API-key scopes are stored as row ids, visible-zone ids are canonical;
-            // on a migrated install the two differ. Matching either would widen a scope
-            // under an id collision, so this stays narrow until id and canonical_id are one.
+            // Canonical ids, as API key scopes and visible-zone ids both are
             $placeholders = [];
             foreach (array_values($zoneIds) as $i => $zoneId) {
                 $placeholders[] = ":zone_id_$i";
                 $params[":zone_id_$i"] = (int)$zoneId;
             }
-            $conditions[] = "z.id IN (" . implode(', ', $placeholders) . ")";
+            $conditions[] = $this->canonicalId('z') . " IN (" . implode(', ', $placeholders) . ")";
+        }
+
+        $unreachable = $this->unreachableSharedRowsCondition('z');
+        if ($unreachable !== null) {
+            $conditions[] = $unreachable;
         }
 
         if ($nameFilter !== null && $nameFilter !== '') {
@@ -1016,6 +1020,24 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return [$conditions, $params];
     }
 
+    /**
+     * SQL leaving out the zone of a shared id that the id does not open (see SharedZoneIds):
+     * listed under that id it would link to the other zone. Null when no id is shared.
+     */
+    private function unreachableSharedRowsCondition(string $alias): ?string
+    {
+        $resolvedRows = [];
+        foreach (SharedZoneIds::all($this->db) as $sharedId) {
+            $resolvedRows[$sharedId] = (int)($this->resolveCanonicalRow($sharedId)['id'] ?? 0);
+        }
+        if ($resolvedRows === []) {
+            return null;
+        }
+
+        return "(" . $this->canonicalId($alias) . " NOT IN (" . implode(', ', array_keys($resolvedRows)) . ")"
+            . " OR $alias.id IN (" . implode(', ', $resolvedRows) . "))";
+    }
+
     public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array
     {
         if ($zoneIds !== null && empty($zoneIds)) {
@@ -1023,9 +1045,8 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
-        // canonical_id is what every other endpoint keys on; id stays the row id for
-        // one release so API clients can move over before the two are made equal.
-        $query = "SELECT z.id, " . $this->canonicalId('z') . " AS canonical_id,
+        // id is the canonical id every endpoint keys on; canonical_id stays for clients that read it
+        $query = "SELECT " . $this->canonicalId('z') . " AS id, " . $this->canonicalId('z') . " AS canonical_id,
                          z.zone_name as name, z.zone_type as type, z.zone_master as master,
                          COALESCE(z.owner, 0) as owner
                   FROM zones z
@@ -1046,6 +1067,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($results as &$row) {
+            $row['id'] = (int)$row['id'];
             $row['canonical_id'] = (int)$row['canonical_id'];
             $row['record_count'] = 0;
         }
@@ -1064,7 +1086,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
     private function coreRow(array $canonical, int $zoneId): array
     {
         return [
-            'id' => $canonical['id'],
+            'id' => self::canonicalIdOf($canonical),
             'name' => $canonical['zone_name'],
             'type' => $canonical['zone_type'],
             'master' => $canonical['zone_master'],

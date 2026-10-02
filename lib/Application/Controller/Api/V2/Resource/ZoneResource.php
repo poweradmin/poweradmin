@@ -44,8 +44,7 @@ final class ZoneResource
 
         return [
             'id' => (int)$zone['id'],
-            // Equal to id except for API-backend zones migrated from SQL mode; the
-            // value every other endpoint accepts. id will follow it in a later release.
+            // Equal to id since 4.6.0; kept for clients that read it
             'canonical_id' => (int)($zone['canonical_id'] ?? $zone['id']),
             'name' => $zone['name'],
             'type' => $zone['type'] ?? 'MASTER',
@@ -67,6 +66,7 @@ final class ZoneResource
 
         return [
             'id' => (int)$zone['id'],
+            'canonical_id' => (int)$zone['id'],
             'name' => $zone['name'],
             'type' => $zone['type'] ?? 'MASTER',
             'masters' => $masters !== '' ? $masters : null,

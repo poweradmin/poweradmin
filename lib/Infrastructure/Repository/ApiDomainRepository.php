@@ -142,6 +142,11 @@ final class ApiDomainRepository implements DomainRepositoryInterface
         $syncService->syncIfStale($needsDnssec);
 
         $allZones = $this->backendProvider->getZones($needsDnssec);
+        // A shared id lists only the zone it opens (see SharedZoneIds)
+        $openedNames = SharedZoneIds::openedNames($this->db);
+        if ($openedNames !== []) {
+            $allZones = array_values(array_filter($allZones, fn(array $zone): bool => SharedZoneIds::isOpenedZone($openedNames, $zone)));
+        }
 
         // Filter reverse zones if requested
         if ($excludeReverse) {
