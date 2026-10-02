@@ -476,4 +476,19 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
 
         $this->assertSame($saved, $this->service->createApiKey('my-key')->key);
     }
+
+    #[Test]
+    public function testZoneRestrictionsAreRefusedUntilStoredScopesAreCanonical(): void
+    {
+        $this->configureApi(['enabled' => true, 'max_keys_per_user' => 5]);
+        $this->grantPermissions([Permission::PERM_USER_IS_UEBERUSER]);
+        $this->apiKeyRepository->method('zoneScopesReady')->willReturn(false);
+        $this->apiKeyRepository->expects($this->never())->method('save');
+        $this->apiKeyRepository->expects($this->never())->method('saveZoneIds');
+
+        $result = $this->service->createApiKey('scoped', null, false, null, [5]);
+
+        $this->assertNull($result->key);
+        $this->assertSame(ApiKeyWriteResult::ERR_WRITE, $result->code);
+    }
 }

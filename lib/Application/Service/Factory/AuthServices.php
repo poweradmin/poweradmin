@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Service\Factory;
 
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
+use Poweradmin\Infrastructure\Service\ApiKeyZoneScopeMigration;
 use PDO;
 use Poweradmin\Infrastructure\Auth\BaconQrCodeRenderer;
 use Poweradmin\Infrastructure\Auth\Google2FaTotp;
@@ -192,7 +194,13 @@ final class AuthServices
 
     public function apiKeyRepository(): ApiKeyRepositoryInterface
     {
-        return $this->apiKeyRepository ??= new DbApiKeyRepository($this->db, $this->config);
+        if ($this->apiKeyRepository === null) {
+            // Every scope read goes through this repository, so scopes are canonical before the first one
+            $ready = (new ApiKeyZoneScopeMigration($this->db, DnsBackendProviderFactory::isApiBackend($this->config), $this->logger))->runOnce();
+            $this->apiKeyRepository = new DbApiKeyRepository($this->db, $this->config, null, $ready);
+        }
+
+        return $this->apiKeyRepository;
     }
 
     public function apiKeyService(): ApiKeyService

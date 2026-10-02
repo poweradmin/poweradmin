@@ -117,4 +117,10 @@ interface ApiKeyRepositoryInterface
      * @return void
      */
     public function saveZoneIds(int $apiKeyId, array $zoneIds): void;
+
+    /**
+     * Whether stored zone scopes hold the canonical zone ids the checks compare. While they
+     * do not, a restricted key matches no zone and new restrictions must not be saved.
+     */
+    public function zoneScopesReady(): bool;
 }

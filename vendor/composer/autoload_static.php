@@ -2118,6 +2118,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/SqlRecordRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\ZoneSearch' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ZoneSearch.php',
         'Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/ApiDnsBackendProvider.php',
+        'Poweradmin\\Infrastructure\\Service\\ApiKeyZoneScopeMigration' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/ApiKeyZoneScopeMigration.php',
         'Poweradmin\\Infrastructure\\Service\\Consistency\\AbstractConsistencyChecks' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php',
         'Poweradmin\\Infrastructure\\Service\\Consistency\\ApiConsistencyChecks' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php',
         'Poweradmin\\Infrastructure\\Service\\Consistency\\SqlConsistencyChecks' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php',

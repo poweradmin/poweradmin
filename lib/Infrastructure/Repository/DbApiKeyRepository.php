@@ -51,11 +51,19 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
      * @param ConfigurationInterface $config The configuration manager
      * @param LoggerInterface|null $logger The logger instance
      */
-    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
+    /**
+     * @param bool $zoneScopesReady False while the one-time scope migration has not run (see ApiKeyZoneScopeMigration)
+     */
+    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null, private readonly bool $zoneScopesReady = true)
     {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger ?? new NullLogger();
+    }
+
+    public function zoneScopesReady(): bool
+    {
+        return $this->zoneScopesReady;
     }
 
     /**
@@ -378,8 +386,10 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
         $stmt = $this->db->prepare("SELECT zone_id FROM api_key_zones WHERE api_key_id = :apiKeyId ORDER BY zone_id");
         $stmt->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
         $stmt->execute();
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
 
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        // Unmigrated values could name another zone; a restricted key then reaches none
+        return $this->zoneScopesReady || $zoneIds === [] ? $zoneIds : [0];
     }
 
     /**

@@ -1708,6 +1708,7 @@ return array(
     'Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository' => $baseDir . '/lib/Infrastructure/Repository/SqlRecordRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\ZoneSearch' => $baseDir . '/lib/Infrastructure/Repository/ZoneSearch.php',
     'Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider' => $baseDir . '/lib/Infrastructure/Service/ApiDnsBackendProvider.php',
+    'Poweradmin\\Infrastructure\\Service\\ApiKeyZoneScopeMigration' => $baseDir . '/lib/Infrastructure/Service/ApiKeyZoneScopeMigration.php',
     'Poweradmin\\Infrastructure\\Service\\Consistency\\AbstractConsistencyChecks' => $baseDir . '/lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php',
     'Poweradmin\\Infrastructure\\Service\\Consistency\\ApiConsistencyChecks' => $baseDir . '/lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php',
     'Poweradmin\\Infrastructure\\Service\\Consistency\\SqlConsistencyChecks' => $baseDir . '/lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php',

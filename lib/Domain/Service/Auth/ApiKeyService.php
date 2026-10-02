@@ -163,6 +163,10 @@ class ApiKeyService
             return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_LIMIT, _('You have reached the maximum number of API keys allowed.'), Refusal::CONFLICT);
         }
 
+        if ($zoneIds !== [] && !$this->apiKeyRepository->zoneScopesReady()) {
+            return $this->zoneScopesNotReady();
+        }
+
         $apiKey = new ApiKey(
             $name,
             ApiKey::generateSecretKey(),
@@ -201,6 +205,10 @@ class ApiKeyService
         }
         if (!$this->canManageKeys()) {
             return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to update API keys.'), Refusal::FORBIDDEN);
+        }
+
+        if ($zoneIds !== null && $zoneIds !== [] && !$this->apiKeyRepository->zoneScopesReady()) {
+            return $this->zoneScopesNotReady();
         }
 
         $apiKey->setName($name);
@@ -468,5 +476,10 @@ class ApiKeyService
         $valid = array_values(array_intersect(ApiKeyScope::OPERATIONS, $operations));
 
         return $valid === [] ? null : $valid;
+    }
+
+    private function zoneScopesNotReady(): ApiKeyWriteResult
+    {
+        return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_WRITE, _('Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log.'), Refusal::BACKEND_FAILURE);
     }
 }
