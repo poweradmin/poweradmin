@@ -31,7 +31,10 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
 {
     private TTLValidator $ttlValidator;
 
-    public function __construct()
+    /**
+     * @param string $recordType The type being validated; a TYPE<number> type only takes generic data
+     */
+    public function __construct(private readonly string $recordType = '')
     {
         $this->ttlValidator = new TTLValidator();
     }
@@ -62,7 +65,9 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
         }
 
         $trimmed = trim($content);
-        if (str_starts_with($trimmed, '\\#') && !self::isValidGenericContent($trimmed)) {
+        // PowerDNS reads a numbered type only in the generic form
+        $mustBeGeneric = preg_match('/^TYPE\\d+$/i', $this->recordType) === 1;
+        if (($mustBeGeneric || str_starts_with($trimmed, '\\#')) && !self::isValidGenericContent($trimmed)) {
             return ValidationResult::failure(_('Generic record data must be "\# <length> <hex>" with the length matching the hex data.'));
         }
 

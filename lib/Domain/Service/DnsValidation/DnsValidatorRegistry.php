@@ -133,7 +133,7 @@ class DnsValidatorRegistry
      */
     public function getValidator(string $recordType): DnsRecordValidatorInterface
     {
-        return $this->validators[$recordType] ?? new DefaultRecordValidator();
+        return $this->validators[$recordType] ?? new DefaultRecordValidator($recordType);
     }
 
     /**
