@@ -187,24 +187,36 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
             'ech' => true,             // 5: Encrypted ClientHello
             'ipv6hint' => true,        // 6: IPv6 address hints
             'dohpath' => true,         // 7: DNS over HTTPS path template
-            'odohconfig' => true       // 8: Oblivious DoH configuration
+            'ohttp' => true,           // 8: Oblivious HTTP gateway
+            'tls-supported-groups' => true, // 9: TLS key exchange groups
+            'mandatory' => true,       // 0: Parameters that must be understood
         ];
 
         // Track which parameters have been seen
         $seenParams = [];
         $errors = [];
+        $mandatoryParams = [];
 
         foreach ($paramsList as $param) {
-            // Each parameter should be in key=value format
-            if (!preg_match('/^([a-z0-9_-]+)=(.*)$/i', $param, $matches)) {
+            // key=value, except the flag keys PowerDNS only reads bare
+            if (!preg_match('/^([a-z0-9_-]+)(=(.*))?$/i', $param, $matches)) {
                 return ValidationResult::failure(_('SVCB parameters must be in key=value format separated by spaces.'));
             }
 
             $key = strtolower($matches[1]);
-            $value = $matches[2];
+            $value = $matches[3] ?? '';
+            $hasEquals = isset($matches[2]) && $matches[2] !== '';
+            if (in_array($key, ['no-default-alpn', 'ohttp'], true) === $hasEquals) {
+                if (!$hasEquals) {
+                    return ValidationResult::failure(_('SVCB parameters must be in key=value format separated by spaces.'));
+                }
+                return ValidationResult::failure(sprintf(_('The %s parameter is written without a value or "=".'), $key));
+            }
 
             // Check if the parameter key is allowed
-            if (!isset($validKeys[$key]) && !preg_match('/^key[0-9]+$/', $key)) {
+            if (preg_match('/^key[0-6]$/', $key)) {
+                $errors[] = sprintf(_('Use the parameter name instead of "%s".'), $key);
+            } elseif (!isset($validKeys[$key]) && !self::isGenericKey($key)) {
                 $errors[] = sprintf(_('Unknown SVCB parameter key: "%s".'), $key);
             }
 
@@ -220,13 +232,6 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
                     // ALPN values should be a comma-separated list of protocol identifiers
                     if (!preg_match('/^[a-z0-9,_-]+$/i', $value)) {
                         $errors[] = _('ALPN value must be a comma-separated list of protocol identifiers.');
-                    }
-                    break;
-
-                case 'no-default-alpn':
-                    // This parameter should have an empty value
-                    if ($value !== '') {
-                        $errors[] = _('The no-default-alpn parameter must have an empty value.');
                     }
                     break;
 
@@ -263,6 +268,31 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
                         $errors[] = _('DoH path must start with a forward slash (/).');
                     }
                     break;
+
+                case 'ech':
+                    if (!self::isBase64($value)) {
+                        $errors[] = _('The ech value must be base64 encoded.');
+                    }
+                    break;
+
+                case 'tls-supported-groups':
+                    if (!self::isUint16List($value)) {
+                        $errors[] = _('The tls-supported-groups value must be a comma-separated list of numbers between 0 and 65535.');
+                    }
+                    break;
+
+                case 'mandatory':
+                    $mandatoryParams = explode(',', $value);
+                    break;
+            }
+        }
+
+        foreach ($mandatoryParams as $mandatoryParam) {
+            $mandatoryParam = strtolower(trim($mandatoryParam));
+            if ($mandatoryParam === 'mandatory') {
+                $errors[] = _('The mandatory parameter cannot list itself.');
+            } elseif ($mandatoryParam === '' || !isset($seenParams[$mandatoryParam])) {
+                $errors[] = sprintf(_('Parameter "%s" is marked as mandatory but not included in the record.'), $mandatoryParam);
             }
         }
 
@@ -271,6 +301,41 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
         }
 
         return ValidationResult::success(true);
+    }
+
+    /**
+     * keyNNNNN form of a SvcParam key; the number is 16 bits. key0 to key6 have names in every
+     * supported PowerDNS, which reads those numbers in wire format, so they must be written by name.
+     */
+    public static function isGenericKey(string $key): bool
+    {
+        return preg_match('/^key(\d{1,5})$/', $key, $matches) === 1 && (int)$matches[1] >= 7 && (int)$matches[1] <= 65535;
+    }
+
+    /**
+     * Comma-separated 16-bit numbers, the form PowerDNS reads tls-supported-groups in.
+     */
+    public static function isUint16List(string $value): bool
+    {
+        foreach (explode(',', $value) as $part) {
+            if (!preg_match('/^\d{1,5}$/', $part) || (int)$part > 65535) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * PowerDNS cannot load a record whose ech value does not decode as base64.
+     */
+    public static function isBase64(string $value): bool
+    {
+        if (strlen($value) >= 2 && $value[0] === '"' && str_ends_with($value, '"')) {
+            $value = substr($value, 1, -1);
+        }
+
+        return $value !== '' && preg_match('/^[A-Za-z0-9+\/]+={0,2}$/', $value) === 1 && base64_decode($value, true) !== false;
     }
 
     /**

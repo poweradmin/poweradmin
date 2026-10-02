@@ -136,13 +136,9 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
         // - AliasMode (priority=0): Directs clients to other SVCB/HTTPS records
         // - ServiceMode (priority>0): Contains connection information
 
-        if ($priorityValue === 0) {
-            // AliasMode (priority=0) - check for "." target with parameters
-            if ($target === "." && count($parts) > 2 && !empty(trim($parts[2]))) {
-                return ValidationResult::failure(
-                    _('HTTPS record in AliasMode (priority=0) with target "." cannot have parameters according to RFC 9460.')
-                );
-            }
+        // PowerDNS cannot load an AliasMode record that carries parameters
+        if ($priorityValue === 0 && count($parts) > 2 && trim($parts[2]) !== '') {
+            return ValidationResult::failure(_('In Alias Mode (priority = 0), no SvcParams are allowed.'));
         }
 
         // If there are key-value parameters, validate them
@@ -179,28 +175,38 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
             'ech' => true,             // 5: Encrypted ClientHello
             'ipv6hint' => true,        // 6: IPv6 address hints
             'dohpath' => true,         // 7: DNS over HTTPS path template
-            'odohconfig' => true,      // 8: Oblivious DoH configuration
+            'ohttp' => true,           // 8: Oblivious HTTP gateway
+            'tls-supported-groups' => true, // 9: TLS key exchange groups
             'mandatory' => true        // 9: Parameters that must be understood (RFC 9460 Section 8)
         ];
 
         // Track which parameters have been seen
         $seenParams = [];
-        $errors = [];
-        $warnings = [];
         $mandatoryParams = [];
 
         foreach ($paramsList as $param) {
-            // Each parameter should be in key=value format
-            if (!preg_match('/^([a-z0-9_-]+)=(.*)$/i', $param, $matches)) {
+            // key=value, except the flag keys PowerDNS only reads bare
+            if (!preg_match('/^([a-z0-9_-]+)(=(.*))?$/i', $param, $matches)) {
                 return ValidationResult::failure(_('HTTPS record parameters must be in key=value format separated by spaces.'));
             }
 
             $key = strtolower($matches[1]);
-            $value = $matches[2];
+            $value = $matches[3] ?? '';
+            $hasEquals = isset($matches[2]) && $matches[2] !== '';
+            if (in_array($key, ['no-default-alpn', 'ohttp'], true) === $hasEquals) {
+                if (!$hasEquals) {
+                    return ValidationResult::failure(_('HTTPS record parameters must be in key=value format separated by spaces.'));
+                }
+                return ValidationResult::failure(sprintf(_('The %s parameter is written without a value or "=".'), $key));
+            }
 
             // Check if the parameter key is allowed
-            if (!isset($validKeys[$key]) && !preg_match('/^key[0-9]+$/', $key)) {
-                $warnings[] = sprintf(_('Unknown HTTPS parameter key: "%s". See RFC 9460 for valid keys.'), $key);
+            // PowerDNS cannot load a record with a key it does not know
+            if (preg_match('/^key[0-6]$/', $key)) {
+                return ValidationResult::failure(sprintf(_('Use the parameter name instead of "%s".'), $key));
+            }
+            if (!isset($validKeys[$key]) && !SVCBRecordValidator::isGenericKey($key)) {
+                return ValidationResult::failure(sprintf(_('Unknown HTTPS parameter key: "%s". See RFC 9460 for valid keys.'), $key));
             }
 
             // Check for duplicate keys (not allowed as per RFC)
@@ -220,13 +226,6 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
                     // ALPN values should be a comma-separated list of protocol identifiers
                     if (!preg_match('/^[a-z0-9,_-]+$/i', $value)) {
                         return ValidationResult::failure(_('ALPN value must be a comma-separated list of protocol identifiers.'));
-                    }
-                    break;
-
-                case 'no-default-alpn':
-                    // This parameter should have an empty value
-                    if ($value !== '') {
-                        return ValidationResult::failure(_('The no-default-alpn parameter must have an empty value.'));
                     }
                     break;
 
@@ -265,23 +264,33 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
                         return ValidationResult::failure(_('DoH path must start with a forward slash (/).'));
                     }
                     break;
+
+                case 'ech':
+                    if (!SVCBRecordValidator::isBase64($value)) {
+                        return ValidationResult::failure(_('The ech value must be base64 encoded.'));
+                    }
+                    break;
+
+                case 'tls-supported-groups':
+                    if (!SVCBRecordValidator::isUint16List($value)) {
+                        return ValidationResult::failure(_('The tls-supported-groups value must be a comma-separated list of numbers between 0 and 65535.'));
+                    }
+                    break;
             }
         }
 
         // Verify all mandatory parameters are present
         foreach ($mandatoryParams as $mandatoryParam) {
-            $param = trim($mandatoryParam);
-            if (!empty($param) && !isset($seenParams[$param])) {
+            $param = strtolower(trim($mandatoryParam));
+            if ($param === 'mandatory') {
+                return ValidationResult::failure(_('The mandatory parameter cannot list itself.'));
+            }
+            if ($param === '' || !isset($seenParams[$param])) {
                 return ValidationResult::failure(sprintf(
                     _('Parameter "%s" is marked as mandatory but not included in the record.'),
                     $param
                 ));
             }
-        }
-
-        // Return success with warnings if any
-        if (!empty($warnings)) {
-            return ValidationResult::success(['warnings' => $warnings]);
         }
 
         return ValidationResult::success(true);

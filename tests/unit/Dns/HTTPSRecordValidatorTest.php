@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\HTTPSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -219,26 +220,9 @@ class HTTPSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        // With our current implementation, unknown parameters are allowed with warnings
-        // but since the warnings might not be directly accessible, we'll just check validity
-        $this->assertTrue($result->isValid());
-
-        // Try to access the data to see if warnings are there
-        $data = $result->getData();
-        if ($result->hasWarnings()) {
-            $warnings = $result->getWarnings();
-            $found = false;
-            foreach ($warnings as $warning) {
-                if (strpos($warning, 'unknown') !== false) {
-                    $found = true;
-                    break;
-                }
-            }
-            // If warnings are accessible, they should mention "unknown"
-            if (!empty($warnings)) {
-                $this->assertTrue($found);
-            }
-        }
+        // PowerDNS cannot load the record, so it is refused rather than warned about
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Unknown HTTPS parameter key', $result->getFirstError());
     }
 
     /**
@@ -341,7 +325,7 @@ class HTTPSRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('AliasMode', $result->getFirstError());
+        $this->assertStringContainsString('Alias Mode', $result->getFirstError());
     }
 
     /**
@@ -463,5 +447,62 @@ class HTTPSRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Each of these makes PowerDNS answer SERVFAIL for the name and abort AXFR of the zone.
+     */
+    #[DataProvider('contentPowerDnsCannotLoadProvider')]
+    public function testRejectsContentPowerDnsCannotLoad(string $content): void
+    {
+        $this->assertFalse($this->validator->validate($content, 'host.example.com', '', 3600, 86400)->isValid());
+    }
+
+    public static function contentPowerDnsCannotLoadProvider(): array
+    {
+        return [
+            'alias mode with params' => ['0 svc.example.com port=443'],
+            'unknown key name' => ['1 svc.example.com foo=bar'],
+            'key number above 16 bits' => ['1 svc.example.com key65536=x'],
+            'odohconfig is not a key' => ['1 svc.example.com odohconfig=AAAA'],
+            'ech not base64' => ['1 svc.example.com ech=notbase64%%'],
+            'ech empty' => ['1 svc.example.com ech='],
+            'ech opening quote only' => ['1 svc.example.com ech="AAAA'],
+            'ech closing quote only' => ['1 svc.example.com ech=AAAA"'],
+            'ech empty quotes' => ['1 svc.example.com ech=""'],
+            'generic form of a named key' => ['1 svc.example.com alpn=h2 key1=h3'],
+            'generic form of port' => ['1 svc.example.com key3=443'],
+            'mandatory lists itself' => ['1 svc.example.com mandatory=mandatory,alpn alpn=h2'],
+            'no-default-alpn with equals' => ['1 svc.example.com alpn=h2 no-default-alpn='],
+            'ohttp with equals' => ['1 svc.example.com ohttp='],
+            'ohttp with value' => ['1 svc.example.com ohttp=""'],
+            'value key without equals' => ['1 svc.example.com alpn'],
+            'mandatory names an unknown key' => ['1 svc.example.com mandatory=foo'],
+            'mandatory names an absent key' => ['1 svc.example.com mandatory=port alpn=h2'],
+            'mandatory empty' => ['1 svc.example.com mandatory= alpn=h2'],
+            'tls-supported-groups not numeric' => ['1 svc.example.com tls-supported-groups=abc'],
+            'tls-supported-groups empty' => ['1 svc.example.com tls-supported-groups='],
+            'tls-supported-groups above 16 bits' => ['1 svc.example.com tls-supported-groups=29,70000'],
+        ];
+    }
+
+    #[DataProvider('contentPowerDnsLoadsProvider')]
+    public function testAcceptsContentPowerDnsLoads(string $content): void
+    {
+        $this->assertTrue($this->validator->validate($content, 'host.example.com', '', 3600, 86400)->isValid());
+    }
+
+    public static function contentPowerDnsLoadsProvider(): array
+    {
+        return [
+            'highest generic key' => ['1 svc.example.com key65535=x'],
+            'generic key PowerDNS before 5.1 has no name for' => ['1 svc.example.com key9=29'],
+            'mandatory' => ['1 svc.example.com mandatory=alpn alpn=h2'],
+            'bare no-default-alpn' => ['1 svc.example.com alpn=h2 no-default-alpn'],
+            'bare ohttp' => ['1 svc.example.com ohttp'],
+            'tls-supported-groups' => ['1 svc.example.com tls-supported-groups=29,23'],
+            'ech base64' => ['1 svc.example.com ech=AEj+DQBEAQAgACAdd+scUi0IYFsXnUIU7ko2Nd9+F8M26pAGZVpz/KrWPgAEAAEAAWQVZWNoLXNpdGVzLmV4YW1wbGUubmV0AAA='],
+            'ech quoted' => ['1 svc.example.com ech="AEj+DQBEAQAgACAdd+scUi0IYFsXnUIU7ko2Nd9+F8M26pAGZVpz/KrWPgAEAAEAAWQVZWNoLXNpdGVzLmV4YW1wbGUubmV0AAA="'],
+        ];
     }
 }
