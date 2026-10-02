@@ -1060,4 +1060,28 @@ class PowerdnsApiClientTest extends TestCase
 
         $this->assertSame(2, $calls);
     }
+
+    public function testFlushZoneCacheSendsTheCanonicalZoneName(): void
+    {
+        $this->mockHttpClient->expects($this->once())->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/cache/flush?domain=example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => ['count' => 1, 'result' => 'Cache flushed']]);
+
+        $this->assertTrue($this->apiClient->flushZoneCache('example.com'));
+    }
+
+    public function testFlushZoneCacheReportsARefusalAsFalse(): void
+    {
+        $this->mockHttpClient->method('makeRequest')
+            ->willReturn(['responseCode' => 422, 'data' => ['error' => "DNS Name 'example.com' is not canonical"]]);
+
+        $this->assertFalse($this->apiClient->flushZoneCache('example.com.'));
+    }
+
+    public function testFlushZoneCacheReportsAnApiErrorAsFalse(): void
+    {
+        $this->mockHttpClient->method('makeRequest')->willThrowException(new ApiErrorException('connection refused'));
+
+        $this->assertFalse($this->apiClient->flushZoneCache('example.com'));
+    }
 }

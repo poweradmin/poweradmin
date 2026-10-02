@@ -114,7 +114,8 @@ final class ZoneServices
             $this->logger,
             capabilities: $capabilities,
             signing: $this->zoneSigningService(),
-            domainRepository: $this->services->domainRepository()
+            domainRepository: $this->services->domainRepository(),
+            zoneCacheFlusher: $this->services->zoneCacheFlusher()
         );
     }
 
@@ -233,7 +234,8 @@ final class ZoneServices
             $this->templateRecordLinkRepository(),
             $this->zoneGroupRepository(),
             $this->zoneAccountSyncService(),
-            $this->services->actor()
+            $this->services->actor(),
+            zoneCacheFlusher: $this->services->zoneCacheFlusher()
         );
     }
 

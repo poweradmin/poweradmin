@@ -103,7 +103,8 @@ final class RecordServices
             $this->services->permissionService(),
             $this->recordChangeLog(),
             $this->services->templateRecordLinkRepository(),
-            $this->services->actor()
+            $this->services->actor(),
+            zoneCacheFlusher: $this->services->zoneCacheFlusher()
         );
     }
 
@@ -310,7 +311,8 @@ final class RecordServices
             new RecordCommentSyncService($comments, $this->services->recordRepository(), $this->services->dnsBackendProvider()),
             $this->services->auditService(),
             $this->config,
-            $this->logger
+            $this->logger,
+            $this->services->zoneCacheFlusher()
         );
     }
 

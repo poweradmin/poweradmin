@@ -90,6 +90,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
@@ -265,6 +266,11 @@ class ControllerServiceFactory implements ModuleServices
     public function dnssecProvider(): DnssecProviderInterface
     {
         return $this->backend->dnssecProvider();
+    }
+
+    public function zoneCacheFlusher(): ?ZoneCacheFlusherInterface
+    {
+        return $this->backend->zoneCacheFlusher();
     }
 
     public function dnsDataService(): DnsDataService

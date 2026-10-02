@@ -31,6 +31,7 @@ use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -66,6 +67,7 @@ class RecordManager implements RecordManagerInterface
     private TemplateRecordLinkRepositoryInterface $templateLinks;
     private Closure $dnssecProvider;
     private ?ZoneRectifierInterface $builtDnssecProvider = null;
+    private ?ZoneCacheFlusherInterface $zoneCacheFlusher;
 
     /**
      * Constructor
@@ -82,6 +84,7 @@ class RecordManager implements RecordManagerInterface
      * @param RecordChangeWriterInterface $changeLogger Receives the before/after record snapshots
      * @param TemplateRecordLinkRepositoryInterface $templateLinks Drops the template link of a deleted record
      * @param ActorInterface $actor The user the edit gates are about
+     * @param ZoneCacheFlusherInterface|null $zoneCacheFlusher Tells PowerDNS about committed writes, null when it needs no telling
      */
     public function __construct(
         TransactionInterface $transaction,
@@ -96,8 +99,10 @@ class RecordManager implements RecordManagerInterface
         RecordChangeWriterInterface $changeLogger,
         TemplateRecordLinkRepositoryInterface $templateLinks,
         ActorInterface $actor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ) {
+        $this->zoneCacheFlusher = $zoneCacheFlusher;
         $this->transaction = $transaction;
         $this->templateLinks = $templateLinks;
         $this->config = $config;
@@ -540,6 +545,7 @@ class RecordManager implements RecordManagerInterface
         $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if (is_string($zoneName)) {
             $this->rectifyZone($zoneName);
+            $this->zoneCacheFlusher?->flushZone($zoneName);
         }
     }
 

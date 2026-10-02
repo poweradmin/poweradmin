@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -71,6 +72,7 @@ final class DomainManager implements DomainManagerInterface
     private TemplateRecordLinkRepositoryInterface $templateLinks;
     private ZoneGroupRepositoryInterface $zoneGroups;
     private ZoneAccountSyncService $accountSync;
+    private ?ZoneCacheFlusherInterface $zoneCacheFlusher;
 
     /**
      * Constructor
@@ -91,6 +93,7 @@ final class DomainManager implements DomainManagerInterface
      * @param ZoneGroupRepositoryInterface $zoneGroups Group ownership of the new zone
      * @param ZoneAccountSyncService $accountSync Mirrors the owner into the backend account field
      * @param ActorInterface $actor The user the ownership and permission checks are about
+     * @param ZoneCacheFlusherInterface|null $zoneCacheFlusher Tells PowerDNS about a committed zone, null when it needs no telling
      */
     public function __construct(
         TransactionInterface $transaction,
@@ -109,8 +112,10 @@ final class DomainManager implements DomainManagerInterface
         ZoneGroupRepositoryInterface $zoneGroups,
         ZoneAccountSyncService $accountSync,
         ActorInterface $actor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ) {
+        $this->zoneCacheFlusher = $zoneCacheFlusher;
         $this->templateLinks = $templateLinks;
         $this->zoneGroups = $zoneGroups;
         $this->accountSync = $accountSync;
@@ -270,6 +275,8 @@ final class DomainManager implements DomainManagerInterface
             $this->captureChange(function () use ($zoneLog): void {
                 $this->changeLogger->logZoneCreate($zoneLog);
             });
+            // Committed by now; without this PowerDNS refuses the zone until its zone cache refreshes
+            $this->zoneCacheFlusher?->flushZone($domain);
             return ZoneWriteResult::ok((int)$domain_id);
         } catch (ZoneCreationFailedException $e) {
             $this->cleanupFailedCreation($domain_id, $domain);
@@ -663,6 +670,12 @@ final class DomainManager implements DomainManagerInterface
         $canAddZones = $this->userHasPermission(Permission::PERM_ZONE_MASTER_ADD)
             || $this->userHasPermission(Permission::PERM_ZONE_SLAVE_ADD);
 
-        return $this->templateApplier->applyTemplate($zone_id, $zone_template_id, $dns_ttl, $canAddZones);
+        $result = $this->templateApplier->applyTemplate($zone_id, $zone_template_id, $dns_ttl, $canAddZones);
+        $zoneName = $result->success ? $this->domainRepository->getDomainNameById($zone_id) : null;
+        if (is_string($zoneName)) {
+            $this->zoneCacheFlusher?->flushZone($zoneName);
+        }
+
+        return $result;
     }
 }

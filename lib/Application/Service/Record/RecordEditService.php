@@ -26,6 +26,7 @@ use Exception;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
@@ -57,7 +58,8 @@ class RecordEditService
         private readonly RecordCommentSyncService $commentSync,
         private readonly AuditLoggerInterface $audit,
         private readonly ConfigurationInterface $config,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ) {
     }
 
@@ -92,6 +94,8 @@ class RecordEditService
             && ($this->config->get('dns', 'bump_serial_on_unchanged_save', true) || $this->savedRecordDiffers($request))
         ) {
             $this->soa->updateSOASerial($request->zoneId);
+            // The manager flushed before this bump, so the new serial needs its own flush
+            $this->zoneCacheFlusher?->flushZone($request->zoneName);
         }
 
         $stored = $this->records->getRecordFromId($request->recordId);

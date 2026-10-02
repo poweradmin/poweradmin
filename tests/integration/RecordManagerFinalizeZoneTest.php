@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 
 /**
  * Every single write ends by bumping the serial; a batch caller (bulk operations,
@@ -144,7 +145,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
         $manager->finalizeZone(self::ZONE_ID, false);
     }
 
-    private function makeRecordManager(SOARecordManagerInterface $soa, RecordChangeLogger $changeLogger, ?DnsBackendProviderInterface $backend = null): RecordManager
+    private function makeRecordManager(SOARecordManagerInterface $soa, RecordChangeLogger $changeLogger, ?DnsBackendProviderInterface $backend = null, ?ZoneCacheFlusherInterface $flusher = null): RecordManager
     {
         $config = $this->sqliteConfiguration(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
 
@@ -175,7 +176,18 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
             $this->permissionService($config),
             $changeLogger,
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
-            new SessionActor($this->session)
+            new SessionActor($this->session),
+            zoneCacheFlusher: $flusher
         );
+    }
+
+    public function testFinalizeZoneTellsPowerDnsAboutTheZoneEvenWithoutABump(): void
+    {
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->expects($this->exactly(2))->method('flushZone')->with('example.com');
+        $manager = $this->makeRecordManager($this->createMock(SOARecordManagerInterface::class), $this->createMock(RecordChangeLogger::class), flusher: $flusher);
+
+        $manager->finalizeZone(self::ZONE_ID);
+        $manager->finalizeZone(self::ZONE_ID, false);
     }
 }

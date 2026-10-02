@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -78,6 +79,7 @@ class ZoneManagementService
     private ?ZoneSigningService $signing;
     private RepositoryFactoryInterface $repositoryFactory;
     private ?DomainRepositoryInterface $domainRepository;
+    private ?ZoneCacheFlusherInterface $zoneCacheFlusher;
     private PermissionService $permissions;
     private ZoneTemplateService $zoneTemplates;
     private DomainManagerInterface|Closure $domainManager;
@@ -107,8 +109,10 @@ class ZoneManagementService
         ?LoggerInterface $logger = null,
         PdnsCapabilities|Closure|null $capabilities = null,
         ?ZoneSigningService $signing = null,
-        ?DomainRepositoryInterface $domainRepository = null
+        ?DomainRepositoryInterface $domainRepository = null,
+        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ) {
+        $this->zoneCacheFlusher = $zoneCacheFlusher;
         $this->zoneTemplates = $zoneTemplates;
         $this->repositoryFactory = $repositoryFactory;
         $this->zoneRepository = $zoneRepository;
@@ -421,11 +425,18 @@ class ZoneManagementService
         // clears it. Resolving zones.id here would need CanonicalZoneSql to tell the two
         // overlapping id spaces apart, and a plain domain_id lookup hits the wrong zone.
 
+        // Read before the delete, which leaves nothing to look the name up by
+        $zoneName = $zoneSnapshot['name'] ?? $this->domainRepository()->getDomainNameById($zoneId);
+
         // Delete the zone
         $success = $this->zoneRepository->deleteZone($zoneId);
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to delete zone', 'refusal' => Refusal::BACKEND_FAILURE, 'code' => self::ERR_ZONE_WRITE];
+        }
+
+        if (is_string($zoneName) && $zoneName !== '') {
+            $this->zoneCacheFlusher?->flushZone($zoneName);
         }
 
         if ($zoneSnapshot !== null) {

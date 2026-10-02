@@ -42,6 +42,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\TableNameService;
@@ -52,6 +53,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
+use Poweradmin\Infrastructure\Service\PdnsApiZoneCacheFlusher;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Psr\Log\LoggerInterface;
 
@@ -62,6 +64,8 @@ use Psr\Log\LoggerInterface;
  */
 final class BackendServices
 {
+    private const ZONE_CACHE_FLUSH_TIMEOUT = 3;
+
     private PDO $db;
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
@@ -82,6 +86,8 @@ final class BackendServices
     private ?PowerdnsStatusService $powerdnsStatusService = null;
     private ?ZoneSyncService $zoneSyncService = null;
     private ?PdnsCapabilities $pdnsCapabilities = null;
+    private ?ZoneCacheFlusherInterface $zoneCacheFlusher = null;
+    private bool $zoneCacheFlusherResolved = false;
 
     public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ActorInterface $actor, SessionInterface $session)
     {
@@ -141,6 +147,22 @@ final class BackendServices
         }
 
         return $this->pdnsCapabilities;
+    }
+
+    /**
+     * Null in API backend mode, where PowerDNS flushes on its own writes, and when
+     * no PowerDNS API is configured to send the flush to.
+     */
+    public function zoneCacheFlusher(): ?ZoneCacheFlusherInterface
+    {
+        if (!$this->zoneCacheFlusherResolved) {
+            $this->zoneCacheFlusherResolved = true;
+            // A short timeout: the flush only saves a cache wait, so it must not hold up a save
+            $client = $this->dnsBackendProvider()->isApiBackend() ? null : DnsBackendProviderFactory::createApiClient($this->config, $this->logger, self::ZONE_CACHE_FLUSH_TIMEOUT);
+            $this->zoneCacheFlusher = $client === null ? null : new PdnsApiZoneCacheFlusher($client, $this->logger);
+        }
+
+        return $this->zoneCacheFlusher;
     }
 
     public function repositoryFactory(?DnsBackendProviderInterface $backendProvider = null): RepositoryFactory

@@ -123,6 +123,22 @@ class PowerdnsApiClient
     }
 
     /**
+     * Drop PowerDNS's cached answers for a zone and (re)load it into the zone cache,
+     * so a zone written straight to the database is served without waiting.
+     */
+    public function flushZoneCache(string $zoneName): bool
+    {
+        // PowerDNS refuses a name without the trailing dot as not canonical
+        $domain = rawurlencode(rtrim($zoneName, '.') . '.');
+        // The caller logs a failure, so this stays quiet
+        try {
+            return $this->request('PUT', $this->buildEndpoint('/cache/flush?domain=' . $domain))['responseCode'] === 200;
+        } catch (ApiErrorException) {
+            return false;
+        }
+    }
+
+    /**
      * Rectify a zone
      *
      * @param Zone $zone

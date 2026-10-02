@@ -36,6 +36,7 @@ use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 
 #[CoversClass(ZoneManagementService::class)]
 class ZoneManagementServiceTest extends TestCase
@@ -254,5 +255,29 @@ class ZoneManagementServiceTest extends TestCase
         $result = $this->service->deleteZone(7);
 
         $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testDeleteZoneTellsPowerDnsTheZoneIsGoneOnlyAfterADelete(): void
+    {
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->expects($this->once())->method('flushZone')->with('gone.example');
+        $this->domainRepository->method('zoneIdExists')->willReturn(true);
+        $this->domainRepository->method('getDomainNameById')->willReturn('gone.example');
+        $this->zoneRepository->method('deleteZone')->willReturnOnConsecutiveCalls(false, true);
+        $service = new ZoneManagementService(
+            $this->zoneRepository,
+            $this->config,
+            $this->createMock(RepositoryFactoryInterface::class),
+            $this->createMock(PermissionService::class),
+            $this->createMock(RecordChangeWriterInterface::class),
+            $this->createMock(DomainManagerInterface::class),
+            $this->createMock(ZoneTemplateService::class),
+            domainRepository: $this->domainRepository,
+            zoneCacheFlusher: $flusher
+        );
+
+        $this->assertFalse($service->deleteZone(3)['success']);
+        $this->assertTrue($service->deleteZone(3)['success']);
     }
 }

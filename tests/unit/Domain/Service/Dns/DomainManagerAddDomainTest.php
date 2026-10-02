@@ -49,6 +49,7 @@ use TestHelpers\StubActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 
 /**
  * addDomain() drives zone creation end to end: refusal before any write,
@@ -609,7 +610,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
     /**
      * @param string[] $callerPermissions
      */
-    private function manager(array $callerPermissions = [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD], ?LoggerInterface $logger = null): DomainManager
+    private function manager(array $callerPermissions = [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD], ?LoggerInterface $logger = null, ?ZoneCacheFlusherInterface $flusher = null): DomainManager
     {
         return new DomainManager(
             new PdoTransaction($this->db),
@@ -628,7 +629,8 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
             new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $this->backend->allocatesZoneIdsLocally()), $this->config, $this->backend),
             new StubActor(self::CALLER_ID),
-            $logger ?? new NullLogger()
+            $logger ?? new NullLogger(),
+            $flusher
         );
     }
 
@@ -670,5 +672,22 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
     private function rows(string $sql): array
     {
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function testCreatedZoneIsAnnouncedToPowerDnsAndAFailedOneIsNot(): void
+    {
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('createZone')->willReturn(self::DOMAIN_ID);
+        $this->backend->method('addRecord')->willReturnOnConsecutiveCalls(false, true);
+        $this->backend->method('deleteZone')->willReturn(true);
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->expects($this->once())->method('flushZone')->with('second.example')->willReturnCallback(function (): void {
+            // PowerDNS reloads the zone on the flush, so it must not see pre-commit data
+            $this->assertFalse($this->db->inTransaction());
+        });
+        $manager = $this->manager(flusher: $flusher);
+
+        $this->assertFalse($manager->addDomain('first.example', self::CALLER_ID, 'MASTER', '', 'none')->success);
+        $this->assertTrue($manager->addDomain('second.example', self::CALLER_ID, 'MASTER', '', 'none')->success);
     }
 }
