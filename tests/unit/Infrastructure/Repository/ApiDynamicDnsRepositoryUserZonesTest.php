@@ -143,4 +143,21 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
 
         $this->assertSame([], $zones);
     }
+
+    public function testAGroupGrantNeverSuppliesTheEditRightOnASharedZoneId(): void
+    {
+        // User 2 owns zone 5 directly but their template cannot edit; their group's can.
+        // Migrated zone 12 shares canonical id 5, so the group grant on 5 is not honoured.
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (11, 'NoEdit')");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (2, 'owner', 11)");
+        $this->db->exec("INSERT INTO user_groups (id, name, perm_templ) VALUES (100, 'Editors', 10)");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (2, 100)");
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, owner) VALUES (5, 5, 'created.example', 2), (12, 5, 'migrated.example', 3)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (5, 100), (401, 100)");
+
+        $zones = $this->repository($this->providerReturningNames([5 => 'created.example', 401 => 'group.example']))
+            ->getUserZones(new User(2, 'hash', false));
+
+        $this->assertSame([401 => 'group.example'], $zones);
+    }
 }
