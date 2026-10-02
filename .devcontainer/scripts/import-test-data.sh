@@ -177,6 +177,9 @@ clean_mysql_db() {
 
     # Clear PowerDNS-owned data (tables stay in place, never dropped)
     docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$pdns_db" 2>/dev/null << 'EOSQL'
+DELETE FROM comments;
+DELETE FROM domainmetadata;
+DELETE FROM cryptokeys;
 DELETE FROM records;
 DELETE FROM domains;
 DELETE FROM supermasters;
@@ -257,6 +260,9 @@ clean_pgsql_db() {
     # Clear PowerDNS-owned data (tables stay in place); reset their sequences
     # so fixture domain/record ids stay deterministic.
     docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$target_db" > /dev/null 2>&1 << 'EOSQL'
+DELETE FROM comments;
+DELETE FROM domainmetadata;
+DELETE FROM cryptokeys;
 DELETE FROM records;
 DELETE FROM domains;
 DELETE FROM supermasters;
@@ -323,6 +329,9 @@ clean_sqlite_db() {
 
     # Clear PowerDNS-owned data (same file, tables stay in place)
     docker exec -i "$SQLITE_CONTAINER" sqlite3 "$db_path" > /dev/null 2>&1 << 'EOSQL'
+DELETE FROM comments;
+DELETE FROM domainmetadata;
+DELETE FROM cryptokeys;
 DELETE FROM records;
 DELETE FROM domains;
 DELETE FROM supermasters;
