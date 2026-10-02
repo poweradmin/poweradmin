@@ -32,6 +32,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 
 /**
  * Pins every check and fix of the API backend strategy: zone and record state
@@ -449,5 +450,24 @@ class ApiConsistencyChecksTest extends TestCase
 
         $this->assertFalse($this->checker()->createDefaultSOA(1));
         $this->assertFalse($this->checker()->createDefaultSOA(2));
+    }
+
+    public function testTheOwnerRepairPrefersTheUserTheZoneAccountNames(): void
+    {
+        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)");
+        $this->db->exec("INSERT INTO users (id, username) VALUES (4, 'alice')");
+        $this->zoneRow(1, 11, 0, 'auto.example');
+        $this->zoneRow(2, 12, 0, 'other.example');
+        $this->zones([
+            ['id' => 11, 'name' => 'auto.example', 'type' => 'SLAVE', 'account' => 'alice'],
+            ['id' => 12, 'name' => 'other.example', 'type' => 'SLAVE', 'account' => 'bob'],
+        ]);
+        $checker = new ApiConsistencyChecks($this->db, $this->provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), new AccountOwnerLookup($this->db));
+
+        $this->assertTrue($checker->fixZoneWithoutOwner(11, 9));
+        $this->assertTrue($checker->fixZoneWithoutOwner(12, 9));
+
+        $owners = $this->db->query('SELECT domain_id, owner FROM zones ORDER BY domain_id')->fetchAll(PDO::FETCH_KEY_PAIR);
+        $this->assertSame([11 => 4, 12 => 9], array_map('intval', $owners));
     }
 }

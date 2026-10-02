@@ -872,6 +872,8 @@ generate_config() {
     dns_bump_serial_on_unchanged_save=$(to_php_bool "${PA_DNS_BUMP_SERIAL_ON_UNCHANGED_SAVE:-true}")
     local dns_sync_zone_owner_to_account
     dns_sync_zone_owner_to_account=$(to_php_bool "${PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT:-false}")
+    local dns_adopt_zone_owner_from_account
+    dns_adopt_zone_owner_from_account=$(to_php_bool "${PA_DNS_ADOPT_ZONE_OWNER_FROM_ACCOUNT:-false}")
     local dns_parent_zone_ownership_check
     dns_parent_zone_ownership_check=$(to_php_bool "${PA_DNS_PARENT_ZONE_OWNERSHIP_CHECK:-true}")
 
@@ -1251,6 +1253,7 @@ return [
         'default_zone_template' => ${dns_default_zone_template},
         'zone_ownership_mode' => $(php_sq "${PA_DNS_ZONE_OWNERSHIP_MODE:-both}"),
         'sync_zone_owner_to_account' => ${dns_sync_zone_owner_to_account},
+        'adopt_zone_owner_from_account' => ${dns_adopt_zone_owner_from_account},
         'parent_zone_ownership_check' => ${dns_parent_zone_ownership_check},
         'strict_tld_check' => ${dns_strict_tld_check},
         'top_level_tld_check' => ${dns_top_level_tld_check},

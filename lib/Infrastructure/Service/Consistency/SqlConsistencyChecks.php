@@ -29,6 +29,7 @@ use PDO;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 
 /**
  * Consistency checks against the PowerDNS tables in the local database.
@@ -42,11 +43,22 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     public function __construct(
         private readonly PDO $db,
         TableNameService $tableNameService,
-        ZoneOwnerRepair $ownerRepair
+        ZoneOwnerRepair $ownerRepair,
+        ?AccountOwnerLookup $accountOwners = null
     ) {
-        parent::__construct($ownerRepair);
+        parent::__construct($ownerRepair, $accountOwners);
         $this->domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
         $this->recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
+    }
+
+    protected function zoneAccount(int $zoneId): ?string
+    {
+        $stmt = $this->db->prepare("SELECT account FROM {$this->domainsTable} WHERE id = :id");
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $account = $stmt->fetchColumn();
+
+        return is_string($account) ? $account : null;
     }
 
     public function checkZonesHaveOwners(): array

@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Service\Consistency;
 
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
+use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 
 /**
  * The backend-independent half of a consistency checker: zone ownership lives in
@@ -32,13 +33,28 @@ use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
  */
 abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
 {
-    public function __construct(private readonly ZoneOwnerRepair $ownerRepair)
-    {
+    /**
+     * @param AccountOwnerLookup|null $accountOwners Prefers the user a zone's PowerDNS account names (dns.adopt_zone_owner_from_account)
+     */
+    public function __construct(
+        private readonly ZoneOwnerRepair $ownerRepair,
+        private readonly ?AccountOwnerLookup $accountOwners = null
+    ) {
     }
 
     public function fixZoneWithoutOwner(int $zoneId, int $currentUserId): bool
     {
-        return $this->ownerRepair->assign($zoneId, $currentUserId);
+        $accountOwner = $this->accountOwners?->userIdFor($this->zoneAccount($zoneId) ?? '');
+
+        return $this->ownerRepair->assign($zoneId, $accountOwner ?? $currentUserId);
+    }
+
+    /**
+     * The zone's PowerDNS account, or null where this backend does not read it.
+     */
+    protected function zoneAccount(int $zoneId): ?string
+    {
+        return null;
     }
 
     public function fixAllZonesWithoutOwner(int $currentUserId): array

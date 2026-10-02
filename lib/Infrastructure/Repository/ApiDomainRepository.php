@@ -137,7 +137,7 @@ final class ApiDomainRepository implements DomainRepositoryInterface
         $needsEditedSerial = (bool)$iface_zonelist_signed_serial;
 
         // Sync local zones table with PowerDNS API before listing
-        $syncService = new ZoneSyncService($this->db, $this->backendProvider, new PhpSession());
+        $syncService = new ZoneSyncService($this->db, $this->backendProvider, new PhpSession(), accountOwners: AccountOwnerLookup::forConfig($this->db, $this->config));
         $syncService->syncIfStale($needsDnssec);
 
         $allZones = $this->backendProvider->getZones($needsDnssec);

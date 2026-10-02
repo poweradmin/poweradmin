@@ -2078,6 +2078,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Network\\EnvironmentProxyContext' => __DIR__ . '/../..' . '/lib/Infrastructure/Network/EnvironmentProxyContext.php',
         'Poweradmin\\Infrastructure\\Network\\PdpPublicSuffixList' => __DIR__ . '/../..' . '/lib/Infrastructure/Network/PdpPublicSuffixList.php',
         'Poweradmin\\Infrastructure\\Network\\ProxyContext' => __DIR__ . '/../..' . '/lib/Infrastructure/Network/ProxyContext.php',
+        'Poweradmin\\Infrastructure\\Repository\\AccountOwnerLookup' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/AccountOwnerLookup.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiDomainRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiDomainRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiDynamicDnsRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiDynamicDnsRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiRecordCommentRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiRecordCommentRepository.php',

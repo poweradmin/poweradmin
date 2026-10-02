@@ -48,6 +48,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
@@ -210,7 +211,7 @@ final class BackendServices
 
     public function dnsDataService(): DnsDataService
     {
-        return $this->dnsDataService ??= new DnsDataService($this->repositoryFactory(), $this->dnsBackendProvider(), $this->db, $this->actor);
+        return $this->dnsDataService ??= new DnsDataService($this->repositoryFactory(), $this->dnsBackendProvider(), $this->db, $this->actor, $this->accountOwnerLookup());
     }
 
     public function zoneMetadataStore(): ZoneMetadataStoreInterface
@@ -228,8 +229,8 @@ final class BackendServices
         $ownerRepair = new ZoneOwnerRepair($this->db);
 
         return $provider->isApiBackend()
-            ? new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), $ownerRepair)
-            : new SqlConsistencyChecks($this->db, new TableNameService($this->config), $ownerRepair);
+            ? new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), $ownerRepair, $this->accountOwnerLookup())
+            : new SqlConsistencyChecks($this->db, new TableNameService($this->config), $ownerRepair, $this->accountOwnerLookup());
     }
 
     public function powerdnsStatusService(): PowerdnsStatusService
@@ -243,6 +244,11 @@ final class BackendServices
      */
     public function zoneSyncService(): ZoneSyncService
     {
-        return $this->zoneSyncService ??= new ZoneSyncService($this->db, $this->dnsBackendProvider(), $this->session, 300, $this->logger);
+        return $this->zoneSyncService ??= new ZoneSyncService($this->db, $this->dnsBackendProvider(), $this->session, 300, $this->logger, accountOwners: $this->accountOwnerLookup());
+    }
+
+    private function accountOwnerLookup(): ?AccountOwnerLookup
+    {
+        return AccountOwnerLookup::forConfig($this->db, $this->config);
     }
 }

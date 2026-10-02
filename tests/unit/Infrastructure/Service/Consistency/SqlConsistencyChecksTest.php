@@ -29,6 +29,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
+use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 
 /**
  * Pins every check and fix of the SQL backend strategy against an in-memory
@@ -376,5 +377,22 @@ class SqlConsistencyChecksTest extends TestCase
     {
         $this->assertFalse($this->checker()->createDefaultSOA(404));
         $this->assertSame(0, $this->rows('records'));
+    }
+
+    public function testTheOwnerRepairPrefersTheUserTheZoneAccountNames(): void
+    {
+        $this->db->exec("ALTER TABLE domains ADD COLUMN account TEXT NULL");
+        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)");
+        $this->db->exec("INSERT INTO users (id, username) VALUES (4, 'alice')");
+        $this->db->exec("INSERT INTO domains (id, name, type, account) VALUES (1, 'auto.example', 'SLAVE', 'alice'), (2, 'other.example', 'SLAVE', 'bob')");
+        $config = ConfigurationManager::getInstance();
+        $config->initialize();
+        $checker = new SqlConsistencyChecks($this->db, new TableNameService($config), new ZoneOwnerRepair($this->db), new AccountOwnerLookup($this->db));
+
+        $this->assertTrue($checker->fixZoneWithoutOwner(1, 9));
+        $this->assertTrue($checker->fixZoneWithoutOwner(2, 9));
+
+        $owners = $this->db->query('SELECT domain_id, owner FROM zones ORDER BY domain_id')->fetchAll(PDO::FETCH_KEY_PAIR);
+        $this->assertSame([1 => 4, 2 => 9], array_map('intval', $owners));
     }
 }

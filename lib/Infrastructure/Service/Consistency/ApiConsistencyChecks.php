@@ -30,6 +30,7 @@ use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 
 /**
  * Consistency checks for the API backend: zone and record state comes from the
@@ -42,14 +43,32 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
 {
     private bool $recordReadFailed = false;
     private ?TransactionInterface $transactionPort = null;
+    /** @var array<int, string>|null */
+    private ?array $zoneAccounts = null;
 
     public function __construct(
         private readonly PDO $db,
         private readonly DnsBackendProviderInterface $backend,
         private readonly ApiStatusInterface $apiStatus,
-        ZoneOwnerRepair $ownerRepair
+        ZoneOwnerRepair $ownerRepair,
+        ?AccountOwnerLookup $accountOwners = null
     ) {
-        parent::__construct($ownerRepair);
+        parent::__construct($ownerRepair, $accountOwners);
+    }
+
+    /**
+     * Read from the PowerDNS zone list once per run, since "fix all" repairs zone after zone.
+     */
+    protected function zoneAccount(int $zoneId): ?string
+    {
+        if ($this->zoneAccounts === null) {
+            $this->zoneAccounts = [];
+            foreach ($this->backend->getZones(false) as $zone) {
+                $this->zoneAccounts[(int)($zone['id'] ?? 0)] = (string)($zone['account'] ?? '');
+            }
+        }
+
+        return $this->zoneAccounts[$zoneId] ?? null;
     }
 
     public function checkZonesHaveOwners(): array

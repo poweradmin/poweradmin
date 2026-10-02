@@ -30,6 +30,7 @@ use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 
 /**
  * Synchronizes zone metadata between the PowerDNS API and the local zones table.
@@ -47,6 +48,7 @@ class ZoneSyncService
     private ZoneReadBackendInterface $backendProvider;
     private LoggerInterface $logger;
     private SessionInterface $session;
+    private ?AccountOwnerLookup $accountOwners;
 
     /** @var int Minimum seconds between syncs */
     private int $syncInterval;
@@ -54,8 +56,19 @@ class ZoneSyncService
     /** @var string Session key for tracking last sync time */
     private const LAST_SYNC_KEY = 'zone_sync_last';
 
-    public function __construct(PDO $db, ZoneReadBackendInterface $backendProvider, SessionInterface $session, int $syncInterval = 300, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
-    {
+    /**
+     * @param AccountOwnerLookup|null $accountOwners Gives a new zone to the user its PowerDNS account names (dns.adopt_zone_owner_from_account)
+     */
+    public function __construct(
+        PDO $db,
+        ZoneReadBackendInterface $backendProvider,
+        SessionInterface $session,
+        int $syncInterval = 300,
+        ?LoggerInterface $logger = null,
+        ?TransactionInterface $transaction = null,
+        ?AccountOwnerLookup $accountOwners = null
+    ) {
+        $this->accountOwners = $accountOwners;
         $this->transaction = $transaction ?? new PdoTransaction($db);
         $this->session = $session;
         $this->db = $db;
@@ -183,7 +196,8 @@ class ZoneSyncService
     /**
      * Add zones that exist in the API but not in the local table.
      *
-     * New zones get no owner - they're available for assignment by admins.
+     * New zones get no owner - they're available for assignment by admins - unless
+     * account adoption is on and the zone's PowerDNS account is a Poweradmin username.
      */
     private function addMissingZones(array $apiZones, array $localZones): int
     {
@@ -199,7 +213,7 @@ class ZoneSyncService
 
         $insertStmt = $this->db->prepare(
             "INSERT INTO zones (domain_id, owner, zone_templ_id, comment, zone_name, zone_type, zone_master)
-             VALUES (NULL, 0, 0, '', :zone_name, :zone_type, :zone_master)"
+             VALUES (NULL, :owner, 0, '', :zone_name, :zone_type, :zone_master)"
         );
         $updateStmt = $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id");
 
@@ -214,6 +228,7 @@ class ZoneSyncService
         $count = 0;
         try {
             foreach ($missing as $name => $zone) {
+                $insertStmt->bindValue(':owner', $this->accountOwners?->userIdFor((string)($zone['account'] ?? '')) ?? 0, PDO::PARAM_INT);
                 $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);

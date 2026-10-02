@@ -1668,6 +1668,7 @@ return array(
     'Poweradmin\\Infrastructure\\Network\\EnvironmentProxyContext' => $baseDir . '/lib/Infrastructure/Network/EnvironmentProxyContext.php',
     'Poweradmin\\Infrastructure\\Network\\PdpPublicSuffixList' => $baseDir . '/lib/Infrastructure/Network/PdpPublicSuffixList.php',
     'Poweradmin\\Infrastructure\\Network\\ProxyContext' => $baseDir . '/lib/Infrastructure/Network/ProxyContext.php',
+    'Poweradmin\\Infrastructure\\Repository\\AccountOwnerLookup' => $baseDir . '/lib/Infrastructure/Repository/AccountOwnerLookup.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiDomainRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiDomainRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiDynamicDnsRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiDynamicDnsRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiRecordCommentRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiRecordCommentRepository.php',

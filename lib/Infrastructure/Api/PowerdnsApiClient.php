@@ -273,7 +273,7 @@ class PowerdnsApiClient
      * list under two different URLs.
      *
      * @param bool $withDnssec Match the endpoint a companion list call uses
-     * @return array<string, array{kind: string, masters: array<int, string>, catalog: string}>
+     * @return array<string, array{kind: string, masters: array<int, string>, catalog: string, account: string}>
      */
     public function getAllZoneKinds(bool $withDnssec = false): array
     {
@@ -290,6 +290,7 @@ class PowerdnsApiClient
                     'kind' => strtoupper((string)($zoneData['kind'] ?? '')),
                     'masters' => is_array($masters) ? array_values(array_map('strval', $masters)) : [],
                     'catalog' => self::canonicalZoneName((string)($zoneData['catalog'] ?? '')),
+                    'account' => (string)($zoneData['account'] ?? ''),
                 ];
             }
         }

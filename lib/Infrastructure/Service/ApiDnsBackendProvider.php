@@ -1007,6 +1007,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
                 'type' => $type,
                 'master' => $master,
                 'dnssec' => $zone->isSecured(),
+                'account' => (string)($kind['account'] ?? ''),
             ];
         }
 

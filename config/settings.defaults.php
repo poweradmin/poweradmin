@@ -216,6 +216,7 @@ return [
         'default_zone_template' => null,           // Pre-selected template on the add-zone form. Template id (int) or name (string); null for "none" (added in 4.4.0)
         'zone_ownership_mode' => 'both',           // Options: 'both', 'users_only', 'groups_only' (added in 4.4.0)
         'sync_zone_owner_to_account' => false,     // Mirror the oldest zone owner's username into the PowerDNS account field on ownership changes (added in 4.4.0)
+        'adopt_zone_owner_from_account' => false,  // Ownerless zones (e.g. from an autoprimary) go to the user their PowerDNS account names: API-mode zone sync, or the consistency repair (added in 4.6.0)
 
         // Validation Settings
         'strict_tld_check' => false,               // Strict validation of TLDs
