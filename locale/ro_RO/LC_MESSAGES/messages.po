@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:23+0300\n"
+"POT-Creation-Date: 2026-10-02 09:34+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Romanian\n"
@@ -1172,12 +1172,12 @@ msgstr "Numele zonei este obligatoriu."
 msgid "A zone with this name already exists."
 msgstr "O zonă cu acest nume există deja."
 
-#: lib/Application/Controller/BulkRegistrationController.php:151
+#: lib/Application/Controller/BulkRegistrationController.php:158
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "ID de grup necunoscut: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:163
+#: lib/Application/Controller/BulkRegistrationController.php:170
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Puteți atribui doar grupuri din care faceți parte (neautorizat: %s)"
@@ -1244,14 +1244,13 @@ msgstr "Eroare RDAP de la serverul %s"
 msgid "Invalid CSRF token."
 msgstr "Token CSRF invalid."
 
-#: lib/BaseController.php:674
+#: lib/BaseController.php:692
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "Set session key."
 
-#: lib/BaseController.php:678
-#, auto-english-fallback
+#: lib/BaseController.php:696
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -1259,18 +1258,18 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/BaseController.php:720
+#: lib/BaseController.php:738
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr "<a href=\"install/\">install/</a> lipsește."
 
-#: lib/BaseController.php:921
+#: lib/BaseController.php:940
 #, php-format
 msgid "The %s field is required."
 msgstr "Câmpul %s este obligatoriu."
 
-#: lib/BaseController.php:929
+#: lib/BaseController.php:948
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Câmpul %s trebuie să fie un număr."
@@ -1321,7 +1320,7 @@ msgstr "Fără permisiune."
 msgid "Invalid or unexpected input given."
 msgstr "Intrare invalidă sau neașteptată."
 
-#: lib/Domain/Model/UserManager.php:376
+#: lib/Domain/Model/UserManager.php:377
 msgid "You do not have the permission to delete this user."
 msgstr "Nu aveți permisiunea de a șterge utilizatorul."
 
@@ -1329,7 +1328,7 @@ msgstr "Nu aveți permisiunea de a șterge utilizatorul."
 msgid "You do not have permission to delete a superuser account."
 msgstr "Nu aveți permisiunea de a șterge cont superuser."
 
-#: lib/Application/Controller/EditUserController.php:594
+#: lib/Application/Controller/ZoneOwnershipController.php:187
 msgid "User does not exist."
 msgstr "Utilizatorul nu există."
 
@@ -1355,7 +1354,7 @@ msgstr "Comentariile zonă dezactivate."
 msgid "You do not have the permission to view this comment."
 msgstr "Nu aveți permisiunea de a vedea comentariul."
 
-#: lib/Domain/Service/Dns/RecordManager.php:495
+#: lib/Domain/Service/Dns/RecordManager.php:502
 msgid "You do not have the permission to edit this comment."
 msgstr "Nu aveți permisiunea de a edita comentariul."
 
@@ -1371,7 +1370,7 @@ msgstr "ID înregistrare invalid."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Nu aveți permisiunea de a șterge înregistrări."
 
-#: lib/Domain/Service/Dns/RecordManager.php:413
+#: lib/Domain/Service/Dns/RecordManager.php:419
 msgid "Record not found."
 msgstr "Înregistrare negăsită."
 
@@ -1493,7 +1492,7 @@ msgstr "Nu aveți permisiunea de a administra membri."
 msgid "Manage Group Members"
 msgstr "Administrează membrii grupului"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:115
+#: lib/Application/Controller/ManageGroupZonesController.php:121
 msgid "Invalid action."
 msgstr "Acțiune invalidă."
 
@@ -1663,33 +1662,32 @@ msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
 msgstr "%s doar 1 rând."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:453
-#, auto-english-fallback
+#: lib/Application/Controller/EditZoneMetadataController.php:454
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Metadata kind %s can only be changed by an administrator."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:558
+#: lib/Application/Controller/EditZoneMetadataController.php:559
 #: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr "Metadate custom."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:566
+#: lib/Application/Controller/EditZoneMetadataController.php:567
 #: templates/modern/pdns_status.html:403
 msgid "Value"
 msgstr "Valoare"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:620
+#: lib/Application/Controller/EditZoneMetadataController.php:621
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Personalizat"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:625
+#: lib/Application/Controller/EditZoneMetadataController.php:626
 msgid "Multi"
 msgstr "Multiplu"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:626
+#: lib/Application/Controller/EditZoneMetadataController.php:627
 msgid "Single"
 msgstr "Unic"
 
@@ -1743,7 +1741,7 @@ msgstr "activat"
 msgid "API key %s successfully."
 msgstr "Cheia API %s cu succes."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:111
+#: lib/Application/Controller/BatchPtrRecordController.php:112
 msgid "You do not have the permission to add records to this zone."
 msgstr "Nu aveți permisiunea de a adăuga la zonă."
 
@@ -1785,7 +1783,6 @@ msgid "The permission template has been updated successfully."
 msgstr "Șablonul permisiuni a fost actualizat cu succes."
 
 #: lib/Application/Controller/EditPermTemplController.php:170
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
@@ -1794,7 +1791,6 @@ msgstr ""
 "administrator rights."
 
 #: lib/Application/Controller/AddPermTemplController.php:146
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
@@ -1807,16 +1803,16 @@ msgstr ""
 msgid "Groups"
 msgstr "Grupuri"
 
-#: lib/Application/Controller/SearchController.php:50
+#: lib/Application/Controller/SearchController.php:51
 msgid "You do not have the permission to perform searches."
 msgstr "Nu aveți permisiunea de a face căutări."
 
-#: lib/Application/Controller/SearchController.php:54
+#: lib/Application/Controller/SearchController.php:55
 #: templates/modern/header.html:128 templates/modern/list_log_groups.html:44
 msgid "Search"
 msgstr "Căutare"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:79
 msgid "Invalid request method."
 msgstr "Metodă cerere invalidă."
 
@@ -1832,7 +1828,7 @@ msgstr "Membru eliminat cu succes din grup."
 msgid "User was not a member of this group."
 msgstr "Utilizatorul nu era membru al grupului."
 
-#: lib/Domain/Model/UserManager.php:1204
+#: lib/Domain/Model/UserManager.php:1205
 msgid "You do not have the permission to add a new user."
 msgstr "Nu aveți permisiunea de a adăuga utilizator nou."
 
@@ -1842,7 +1838,6 @@ msgid "Add User"
 msgstr "Adaugă utilizator"
 
 #: lib/Application/Controller/AddUserController.php:125
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
 msgstr "No non-superuser permission template is available to assign."
 
@@ -1875,7 +1870,7 @@ msgstr "Parolă generată, nu afișată."
 msgid "Please fill in all required fields correctly."
 msgstr "Completați corect toate câmpurile obligatorii."
 
-#: lib/Domain/Service/Dns/RecordManager.php:436
+#: lib/Domain/Service/Dns/RecordManager.php:442
 msgid "You do not have the permission to delete this record."
 msgstr "Nu aveți permisiunea de a șterge înregistrarea."
 
@@ -1921,7 +1916,7 @@ msgstr "Editează șablon zonă"
 msgid "There is no zone template with this ID."
 msgstr "Nu există șablon zonă cu acest ID."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:145
+#: lib/Application/Controller/EditZoneTemplRecordController.php:151
 msgid "Zone template has been updated successfully."
 msgstr "Șablonul zonă a fost actualizat cu succes."
 
@@ -1933,7 +1928,7 @@ msgstr "Zonele au fost actualizate cu succes."
 msgid "You do not have permission to create new zone templates."
 msgstr "Nu aveți permisiunea de a crea șabloane noi."
 
-#: lib/Domain/Model/ZoneTemplate.php:344 lib/Domain/Model/ZoneTemplate.php:1220
+#: lib/Domain/Model/ZoneTemplate.php:345 lib/Domain/Model/ZoneTemplate.php:1226
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Există deja."
 
@@ -2030,29 +2025,29 @@ msgstr "Tipul zonei a fost modificat cu succes."
 msgid "Slave master has been changed successfully."
 msgstr "Master secundar schimbat cu succes."
 
-#: lib/Application/Controller/EditController.php:321
+#: lib/Application/Controller/EditController.php:327
 msgid "Zone template has been changed successfully."
 msgstr "Șablonul zonă a fost modificat cu succes."
 
-#: lib/Application/Controller/EditController.php:333
+#: lib/Application/Controller/EditController.php:339
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC nu este activat pe server."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zona este deja semnată cu DNSSEC."
 
-#: lib/Application/Controller/EditController.php:358
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "Zona a fost semnată cu succes."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr "Verification DNSSEC failed."
 
-#: lib/Application/Controller/EditController.php:367
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2074,7 +2069,11 @@ msgstr "Unsigning cerut, verificare eșuată."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Eliminarea semnăturii a eșuat. Verificați logs."
 
-#: lib/Application/Controller/EditController.php:671
+#: lib/Application/Controller/EditController.php:597
+msgid "You do not have the permission to edit this zone."
+msgstr "Nu aveți permisiunea de a edita această zonă."
+
+#: lib/Application/Controller/EditController.php:691
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2084,25 +2083,29 @@ msgstr ""
 "serverului privind numărul de câmpuri. Cereți administratorului să mărească "
 "setarea PHP \"max_input_vars\"."
 
-#: lib/Application/Controller/EditController.php:779
+#: lib/Application/Controller/EditController.php:799
 msgid "Request has expired, please try again."
 msgstr "Cererea a expirat, încercați din nou."
 
-#: lib/Application/Controller/EditController.php:784
+#: lib/Application/Controller/EditController.php:804
 msgid "Zone has been updated successfully."
 msgstr "Zona a fost actualizată cu succes."
 
-#: lib/Application/Controller/EditController.php:786
+#: lib/Application/Controller/EditController.php:806
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr "SOA serial ↑."
 
-#: lib/Application/Controller/EditController.php:795
+#: lib/Application/Controller/EditController.php:815
 msgid "Zone has not been updated successfully."
 msgstr "Zona nu a fost actualizată cu succes."
 
-#: lib/Application/Controller/EditController.php:823
+#: lib/Domain/Service/Dns/RecordManager.php:232
+msgid "You do not have the permission to add a record to this zone."
+msgstr "Nu aveți permisiunea de a adăuga."
+
+#: lib/Application/Controller/EditController.php:856
 msgid "Please provide all required fields."
 msgstr "Furnizați toate câmpurile obligatorii."
 
@@ -2110,7 +2113,7 @@ msgstr "Furnizați toate câmpurile obligatorii."
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Adăugat. PTR creat."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:502
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Înregistrare adăugată, PTR eșuat: "
 
@@ -2154,40 +2157,36 @@ msgid ""
 "instead."
 msgstr "Cod nefolosibil, use recovery."
 
-#: lib/Domain/Service/Dns/RecordManager.php:229
-msgid "You do not have the permission to add a record to this zone."
-msgstr "Nu aveți permisiunea de a adăuga."
-
 #: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added."
 msgstr "Înregistrare adăugată cu succes."
 
-#: lib/Application/Controller/AddRecordController.php:456
+#: lib/Application/Controller/AddRecordController.php:452
 msgid "No records were provided."
 msgstr "Nu au fost furnizate înregistrări."
 
-#: lib/Application/Controller/AddRecordController.php:522
+#: lib/Application/Controller/AddRecordController.php:520
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d înregistrări au fost adăugate cu succes."
 
-#: lib/Application/Controller/AddRecordController.php:524
+#: lib/Application/Controller/AddRecordController.php:522
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Au fost create și %d înregistrări potrivite."
 
-#: lib/Application/Controller/AddRecordController.php:527
+#: lib/Application/Controller/AddRecordController.php:525
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Adăugarea a %d înregistrări a eșuat."
 
-#: lib/Application/Controller/AddRecordController.php:532
+#: lib/Application/Controller/AddRecordController.php:530
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr "Unele înregistrări nu au fost adăugate."
 
-#: lib/Application/Controller/AddRecordController.php:562
+#: lib/Application/Controller/AddRecordController.php:560
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nicio înregistrare adăugată."
 
@@ -2298,35 +2297,35 @@ msgstr ""
 "2001:db8::/48) sau un nume de zonă inversă care se termină în in-addr.arpa "
 "sau ip6.arpa."
 
-#: lib/Application/Controller/BulkRegistrationController.php:171
+#: lib/Application/Controller/BulkRegistrationController.php:178
 msgid "At least one user or group must be selected as owner."
 msgstr "Selectați cel puțin un proprietar."
 
-#: lib/Application/Controller/BulkRegistrationController.php:181
+#: lib/Application/Controller/BulkRegistrationController.php:188
 msgid "You do not have permission to create zones for other users."
 msgstr "Nu aveți permisiunea de a crea zone pentru alți utilizatori."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "There is already a zone with this name."
 msgstr "Există deja o zonă cu acest nume."
 
-#: lib/Application/Controller/AddZoneMasterController.php:268
+#: lib/Application/Controller/AddZoneMasterController.php:274
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr "Creat, DNSSEC skipped."
 
-#: lib/Application/Controller/AddZoneMasterController.php:280
+#: lib/Application/Controller/AddZoneMasterController.php:286
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr "DNSSEC failed."
 
-#: lib/Application/Controller/AddZoneMasterController.php:286
+#: lib/Application/Controller/AddZoneMasterController.php:292
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zonă creată și semnată DNSSEC cu succes."
 
-#: lib/Application/Controller/AddZoneMasterController.php:290
+#: lib/Application/Controller/AddZoneMasterController.php:296
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2340,16 +2339,16 @@ msgstr "Zona a fost adăugată cu succes."
 msgid "Batch PTR record creation is not enabled."
 msgstr "Crearea în masă a înregistrărilor PTR nu este activată."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:82
+#: lib/Application/Controller/BatchPtrRecordController.php:83
 msgid "You do not have permission to edit DNS records."
 msgstr "Nu aveți permisiunea de a edita înregistrări."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:87
+#: lib/Application/Controller/BatchPtrRecordController.php:88
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:178
 msgid "Batch PTR Records"
 msgstr "Înregistrări PTR în masă"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:102
+#: lib/Application/Controller/BatchPtrRecordController.php:103
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Crearea PTR în masă indisponibilă pentru zone inverse."
 
@@ -2468,23 +2467,23 @@ msgstr "Permisiuni insuficiente."
 msgid "Reverse Zones"
 msgstr "Zone inverse"
 
-#: lib/Application/Controller/ListForwardZonesController.php:229
+#: lib/Application/Controller/ListForwardZonesController.php:242
 msgid "You do not have the permission to see any zones."
 msgstr "Nu aveți permisiunea de a vedea zone."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:82
+#: lib/Application/Controller/ManageGroupZonesController.php:88
 msgid "You do not have permission to manage zone ownership."
 msgstr "Nu aveți permisiunea de a administra proprietate."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:96
+#: lib/Application/Controller/ManageGroupZonesController.php:102
 msgid "Manage Group Zones"
 msgstr "Administrează zonele grupului"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:234
+#: lib/Application/Controller/ManageGroupZonesController.php:240
 msgid "Please select at least one zone."
 msgstr "Selectați cel puțin o zonă."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:169
+#: lib/Application/Controller/ManageGroupZonesController.php:175
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
@@ -2492,7 +2491,7 @@ msgstr[0] "%d zone added to group."
 msgstr[1] "%d zones added to group."
 msgstr[2] "%d zones added to group."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:213
+#: lib/Application/Controller/ManageGroupZonesController.php:219
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
@@ -2500,7 +2499,7 @@ msgstr[0] "%d zone could not be added."
 msgstr[1] "%d zones could not be added."
 msgstr[2] "%d zones could not be added."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:255
+#: lib/Application/Controller/ManageGroupZonesController.php:261
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
@@ -2508,7 +2507,7 @@ msgstr[0] "%d zone removed from group."
 msgstr[1] "%d zones removed from group."
 msgstr[2] "%d zones removed from group."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:299
+#: lib/Application/Controller/ManageGroupZonesController.php:305
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2529,7 +2528,6 @@ msgid "The permission template has been added successfully."
 msgstr "Șablon permisiuni adăugat cu succes."
 
 #: lib/Application/Controller/AddPermTemplController.php:147
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "The permission template could not be added."
 
@@ -2611,7 +2609,7 @@ msgstr "Tip verificare invalid"
 msgid "You have logged out."
 msgstr "Ați ieșit din cont."
 
-#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:895
+#: lib/Domain/Model/ZoneTemplate.php:342 lib/Domain/Model/ZoneTemplate.php:899
 msgid "You do not have the permission to add a zone template."
 msgstr "Nu aveți permisiunea de a adăuga șablon zonă."
 
@@ -2655,7 +2653,7 @@ msgstr "Nume gazdă invalid."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Aceasta nu este IPv4 sau IPv6 validă."
 
-#: lib/Domain/Model/ZoneTemplate.php:442 lib/Domain/Model/ZoneTemplate.php:480
+#: lib/Domain/Model/ZoneTemplate.php:446 lib/Domain/Model/ZoneTemplate.php:484
 msgid "You do not have the permission to delete zone templates."
 msgstr "Nu aveți permisiunea de a șterge șabloane."
 
@@ -2675,21 +2673,59 @@ msgstr "Supermaster nu există."
 msgid "The supermaster has been updated successfully."
 msgstr "Supermaster actualizat cu succes."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "You do not have permission to manage group zones."
 msgstr "Nu aveți permisiunea de a administra zone grup."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:84
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:90
 msgid "Invalid group or zone ID."
 msgstr "ID grup sau zonă invalid."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:95
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:108
 msgid "Zone removed from group successfully."
 msgstr "Zonă eliminată cu succes din grup."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:110
 msgid "Zone was not owned by this group."
 msgstr "Zona nu aparținea acestui grup."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:307
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"Nu se poate elimina ultimul grup: modul de proprietate a zonei este "
+"groups_only și necesită cel puțin un grup. Adăugați mai întâi alt grup."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:313
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"Nu se poate elimina grupul: modul de proprietate a zonei este users_only și "
+"zona nu are proprietari utilizatori. Adăugați mai întâi un proprietar "
+"utilizator."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:341
+msgid "Add another owner or a group first."
+msgstr "Adăugați mai întâi un alt proprietar sau un grup."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:344
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr ""
+"Adăugați mai întâi un alt proprietar utilizator (modul de proprietate a "
+"zonei este users_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr ""
+"Adăugați mai întâi un grup (modul de proprietate a zonei este groups_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:301
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr ""
+"Nu se poate elimina ultimul proprietar: zona ar rămâne fără proprietar."
 
 #: lib/Application/Controller/ListForwardZonesController.php:64
 #: templates/modern/dnssec_delete_key.html:8
@@ -2765,7 +2801,7 @@ msgstr "Utilizatorul a fost actualizat cu succes."
 msgid "The user could not be updated."
 msgstr "Utilizatorul nu a putut fi actualizat."
 
-#: lib/Domain/Model/UserManager.php:565 lib/Domain/Model/UserManager.php:1184
+#: lib/Domain/Model/UserManager.php:566 lib/Domain/Model/UserManager.php:1185
 msgid "You do not have the permission to edit this user."
 msgstr "Nu aveți permisiunea de a edita utilizatorul."
 
@@ -2903,7 +2939,7 @@ msgstr "Nu puteți edita înregistrări în zonă SLAVE."
 msgid "You do not have permission to edit this record."
 msgstr "Nu aveți permisiunea de a edita înregistrarea."
 
-#: lib/Application/Controller/EditRecordController.php:331
+#: lib/Application/Controller/EditRecordController.php:334
 msgid "The record has been updated successfully."
 msgstr "Înregistrarea a fost actualizată cu succes."
 
@@ -3005,15 +3041,15 @@ msgstr "Supermaster șters cu succes."
 msgid "Bulk Registration"
 msgstr "Înregistrare în masă"
 
-#: lib/Application/Controller/BulkRegistrationController.php:132
+#: lib/Application/Controller/BulkRegistrationController.php:139
 msgid "Owner must be a numeric user ID."
 msgstr "Proprietarul trebuie să fie un ID de utilizator numeric."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "Zones has been added successfully."
 msgstr "Zonele au fost adăugate cu succes."
 
-#: lib/Application/Controller/BulkRegistrationController.php:212
+#: lib/Application/Controller/BulkRegistrationController.php:219
 msgid "Some zone(s) could not be added."
 msgstr "Unele zone nu au putut fi adăugate."
 
@@ -3043,17 +3079,15 @@ msgstr ""
 "Atribuirea de proprietar utilizator este dezactivată de modul curent de "
 "proprietate a zonei."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:188
+#: lib/Domain/Service/Dns/DomainManager.php:562
+msgid "The selected user already owns the zone."
+msgstr "Utilizatorul selectat deține deja zona."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:198
 msgid "Owner has been added successfully."
 msgstr "Proprietarul a fost adăugat cu succes."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:291
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr ""
-"Nu se poate elimina ultimul proprietar: zona ar rămâne fără proprietar."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
@@ -3062,7 +3096,7 @@ msgstr ""
 "zonei este users_only și necesită cel puțin un proprietar utilizator. "
 "Adăugați mai întâi altul."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
@@ -3071,60 +3105,28 @@ msgstr ""
 "este groups_only și zona nu are proprietari de grup. Adăugați mai întâi un "
 "grup."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "Proprietarul a fost eliminat cu succes."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:249
+#: lib/Application/Controller/ZoneOwnershipController.php:259
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr ""
 "Atribuirea proprietății de grup este dezactivată de modul curent de "
 "proprietate a zonei."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:261
+#: lib/Application/Controller/ZoneOwnershipController.php:271
 msgid "You do not have permission to assign this group."
 msgstr "Nu aveți permisiunea de a atribui grupul."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:269
+#: lib/Application/Controller/ZoneOwnershipController.php:279
 msgid "Group has been added successfully."
 msgstr "Grupul a fost adăugat cu succes."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:297
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr ""
-"Nu se poate elimina ultimul grup: modul de proprietate a zonei este "
-"groups_only și necesită cel puțin un grup. Adăugați mai întâi alt grup."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:303
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr ""
-"Nu se poate elimina grupul: modul de proprietate a zonei este users_only și "
-"zona nu are proprietari utilizatori. Adăugați mai întâi un proprietar "
-"utilizator."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:308
+#: lib/Application/Controller/ZoneOwnershipController.php:318
 msgid "Group has been removed successfully."
 msgstr "Grupul a fost eliminat cu succes."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:331
-msgid "Add another owner or a group first."
-msgstr "Adăugați mai întâi un alt proprietar sau un grup."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:334
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Adăugați mai întâi un alt proprietar utilizator (modul de proprietate a "
-"zonei este users_only)."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr ""
-"Adăugați mai întâi un grup (modul de proprietate a zonei este groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3171,11 +3173,11 @@ msgstr "Nu"
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Cont blocat temporar. Încercați mai târziu."
 
-#: lib/Application/Service/SqlAuthenticator.php:142
+#: lib/Application/Service/SqlAuthenticator.php:154
 msgid "The user account is disabled."
 msgstr "Contul utilizatorului este dezactivat."
 
-#: lib/Application/Service/SqlAuthenticator.php:223
+#: lib/Application/Service/SqlAuthenticator.php:235
 msgid "Authentication failed!"
 msgstr "Autentificare eșuată!"
 
@@ -3203,7 +3205,7 @@ msgstr "Autentificare eșuată: Sesiune invalidă"
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentificare eșuată"
 
-#: lib/Application/Service/LdapAuthenticator.php:249
+#: lib/Application/Service/LdapAuthenticator.php:250
 msgid "LDAP Authentication failed!"
 msgstr "Autentificare LDAP eșuată!"
 
@@ -3235,7 +3237,7 @@ msgstr "Acesta este un nume de zonă invalid."
 msgid "This template is assigned to at least one user and one group."
 msgstr "Șablonul atribuit cel puțin unui user și grup."
 
-#: lib/Domain/Model/UserManager.php:421
+#: lib/Domain/Model/UserManager.php:422
 msgid "This template is assigned to at least one user."
 msgstr "Șablonul este atribuit cel puțin unui utilizator."
 
@@ -3431,20 +3433,19 @@ msgid ""
 "database configuration."
 msgstr "DB error auth."
 
-#: lib/Domain/Model/UserManager.php:1216
+#: lib/Domain/Model/UserManager.php:1217
 msgid "Enter a valid email address."
 msgstr "Introduceți adresă email validă."
 
-#: lib/Domain/Model/UserManager.php:1208
+#: lib/Domain/Model/UserManager.php:1209
 msgid "Username exist already, please choose another one."
 msgstr "Numele utilizator există, alegeți altul."
 
-#: lib/Domain/Model/UserManager.php:1220
+#: lib/Domain/Model/UserManager.php:1221
 msgid "Email address already exists, please choose another one."
 msgstr "Adresa email există deja, alegeți alta."
 
-#: lib/Domain/Model/UserManager.php:995
-#, auto-english-fallback
+#: lib/Domain/Model/UserManager.php:996
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
@@ -3452,8 +3453,7 @@ msgstr ""
 "Changing your own permission template requires the permission to edit other "
 "users."
 
-#: lib/Domain/Model/UserManager.php:999
-#, auto-english-fallback
+#: lib/Domain/Model/UserManager.php:1000
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
@@ -3461,48 +3461,47 @@ msgstr ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
 
-#: lib/Domain/Model/UserManager.php:1212
+#: lib/Domain/Model/UserManager.php:1213
 msgid "Enter a valid user name."
 msgstr "Introduceți un nume utilizator valid."
 
-#: lib/Domain/Model/ZoneTemplate.php:284
+#: lib/Domain/Model/ZoneTemplate.php:285
 msgid "Zone template not found."
 msgstr "Șablonul de zonă nu a fost găsit."
 
-#: lib/Domain/Model/ZoneTemplate.php:288
+#: lib/Domain/Model/ZoneTemplate.php:289
 msgid "Only global zone templates can be set as the default."
 msgstr "Doar șabloanele de zonă globale pot fi setate ca implicite."
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Error setting default zone template: "
 msgstr "Eroare la setarea șablonului de zonă implicit: "
 
-#: lib/Domain/Model/ZoneTemplate.php:323
+#: lib/Domain/Model/ZoneTemplate.php:324
 msgid "Error clearing default zone template: "
 msgstr "Eroare la eliminarea șablonului de zonă implicit: "
 
-#: lib/Domain/Model/ZoneTemplate.php:369 lib/Domain/Model/ZoneTemplate.php:968
+#: lib/Domain/Model/ZoneTemplate.php:372 lib/Domain/Model/ZoneTemplate.php:974
 msgid "Error creating zone template: "
 msgstr "Eroare la crearea șablonului: "
 
-#: lib/Domain/Model/ZoneTemplate.php:405
+#: lib/Domain/Model/ZoneTemplate.php:408
 msgid "Error adding default SOA record to template: "
 msgstr "Eroare la adăugarea SOA implicit în șablon: "
 
-#: lib/Domain/Model/ZoneTemplate.php:464
+#: lib/Domain/Model/ZoneTemplate.php:468
 msgid "Error deleting zone template: "
 msgstr "Eroare la ștergerea șablonului: "
 
-#: lib/Domain/Model/ZoneTemplate.php:488
+#: lib/Domain/Model/ZoneTemplate.php:492
 msgid "Error deleting user zone templates: "
 msgstr "Eroare la ștergerea șabloanelor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:605
+#: lib/Domain/Model/ZoneTemplate.php:609
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Nu aveți permisiunea."
 
-#: lib/Domain/Model/ZoneTemplate.php:610 lib/Domain/Model/ZoneTemplate.php:745
-#, auto-english-fallback
+#: lib/Domain/Model/ZoneTemplate.php:614 lib/Domain/Model/ZoneTemplate.php:749
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
@@ -3516,20 +3515,19 @@ msgstr "Câmpul conținut nu are valoare validă."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Prioritate MX/SRV 0-65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:349
+#: lib/Domain/Service/Dns/RecordManager.php:354
 msgid "You do not have the permission to edit this record."
 msgstr "Nu aveți permisiunea de a edita înregistrarea."
 
-#: lib/Domain/Model/ZoneTemplate.php:735 lib/Domain/Model/ZoneTemplate.php:819
+#: lib/Domain/Model/ZoneTemplate.php:739 lib/Domain/Model/ZoneTemplate.php:823
 msgid "The record does not belong to this zone template."
 msgstr "Înregistrarea nu aparține acestui șablon de zonă."
 
-#: lib/Domain/Model/ZoneTemplate.php:797
+#: lib/Domain/Model/ZoneTemplate.php:801
 msgid "Error updating zone template record: "
 msgstr "Eroare la actualizarea înregistrării: "
 
-#: lib/Domain/Model/ZoneTemplate.php:825
-#, auto-english-fallback
+#: lib/Domain/Model/ZoneTemplate.php:829
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3537,16 +3535,15 @@ msgstr ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 
-#: lib/Domain/Model/ZoneTemplate.php:834
+#: lib/Domain/Model/ZoneTemplate.php:838
 msgid "Error deleting zone template record: "
 msgstr "Eroare la ștergerea înregistrării: "
 
-#: lib/Domain/Model/ZoneTemplate.php:856
+#: lib/Domain/Model/ZoneTemplate.php:860
 msgid "Error checking template ownership: "
 msgstr "Eroare la verificarea proprietarului: "
 
-#: lib/Domain/Model/ZoneTemplate.php:960
-#, auto-english-fallback
+#: lib/Domain/Model/ZoneTemplate.php:966
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3555,35 +3552,35 @@ msgstr ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1099
+#: lib/Domain/Model/ZoneTemplate.php:1105
 msgid "Error retrieving zones using template: "
 msgstr "Eroare la obținerea zonelor care folosesc șablonul: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1199
+#: lib/Domain/Model/ZoneTemplate.php:1205
 msgid "Failed to get list of zones using template: "
 msgstr "Obținerea listei de zone a eșuat: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1217
+#: lib/Domain/Model/ZoneTemplate.php:1223
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nu aveți permisiunea de a edita șablonul."
 
-#: lib/Domain/Model/ZoneTemplate.php:1265
+#: lib/Domain/Model/ZoneTemplate.php:1272
 msgid "Error unlinking zone from template: "
 msgstr "Eroare la deconectarea zonei de șablon: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1314
+#: lib/Domain/Model/ZoneTemplate.php:1321
 msgid "Error retrieving zones: "
 msgstr "Eroare la obținerea zonelor: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1333
+#: lib/Domain/Model/ZoneTemplate.php:1340
 msgid "Error checking template name existence: "
 msgstr "Eroare la verificarea numelui șablonului: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1354
+#: lib/Domain/Model/ZoneTemplate.php:1361
 msgid "Error looking up template by name: "
 msgstr "Eroare la căutarea șablonului după nume: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1377
+#: lib/Domain/Model/ZoneTemplate.php:1384
 msgid "Error checking template existence: "
 msgstr "Eroare la verificarea existenței șablonului: "
 
@@ -8127,71 +8124,68 @@ msgstr "SRV format."
 msgid "Unknown database type."
 msgstr "Tip bază de date necunoscut."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:91
+#: lib/Domain/Service/ReverseRecordCreator.php:92
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "Nu există zonă inversă pentru: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:99
+#: lib/Domain/Service/ReverseRecordCreator.php:100
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "Există deja PTR pentru %s spre %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:112
+#: lib/Domain/Service/ReverseRecordCreator.php:116
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 msgstr "PTR %s → %s exists."
 
-#: lib/Domain/Service/Dns/RecordManager.php:215
+#: lib/Domain/Service/Dns/RecordManager.php:218
 msgid "You do not have the permission to add SOA record."
 msgstr "Nu aveți permisiunea de a adăuga SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:219
+#: lib/Domain/Service/Dns/RecordManager.php:222
 msgid "You do not have the permission to add NS record."
 msgstr "Nu aveți permisiunea de a adăuga NS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:225
-#, auto-english-fallback
+#: lib/Domain/Service/Dns/RecordManager.php:228
 msgid "You do not have the permission to add LUA record."
 msgstr "You do not have the permission to add LUA record."
 
-#: lib/Domain/Service/Dns/RecordManager.php:270
+#: lib/Domain/Service/Dns/RecordManager.php:273
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Există deja."
 
-#: lib/Domain/Service/Dns/RecordManager.php:171
+#: lib/Domain/Service/Dns/RecordManager.php:172
 msgid "Failed to add record to DNS backend."
 msgstr "Adăugarea înregistrării în backend-ul DNS a eșuat."
 
-#: lib/Domain/Service/Dns/RecordManager.php:328
+#: lib/Domain/Service/Dns/RecordManager.php:333
 msgid "You do not have the permission to edit this SOA record."
 msgstr "Nu aveți permisiunea de a edita SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:333
+#: lib/Domain/Service/Dns/RecordManager.php:338
 msgid "You do not have the permission to edit this NS record."
 msgstr "Nu aveți permisiunea de a edita NS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:338
-#, auto-english-fallback
+#: lib/Domain/Service/Dns/RecordManager.php:343
 msgid "You do not have the permission to edit this LUA record."
 msgstr "You do not have the permission to edit this LUA record."
 
-#: lib/Domain/Service/Dns/RecordManager.php:387
+#: lib/Domain/Service/Dns/RecordManager.php:393
 msgid "Failed to update record in DNS backend."
 msgstr "Actualizarea înregistrării a eșuat."
 
-#: lib/Domain/Service/Dns/RecordManager.php:420
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have the permission to delete SOA records."
 msgstr "Nu aveți permisiunea de a șterge SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:425
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have the permission to delete NS records."
 msgstr "Nu aveți permisiunea de a șterge NS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:430
-#, auto-english-fallback
+#: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete LUA records."
 msgstr "You do not have the permission to delete LUA records."
 
@@ -8249,16 +8243,11 @@ msgstr "Actualizarea tipului zonei în backend a eșuat."
 msgid "Failed to update zone master in DNS backend."
 msgstr "Actualizarea master zonei a eșuat."
 
-#: lib/Domain/Service/Dns/DomainManager.php:562
-msgid "The selected user already owns the zone."
-msgstr "Utilizatorul selectat deține deja zona."
-
 #: lib/Domain/Service/Dns/DomainManager.php:597
 msgid "There must be at least one owner for a zone."
 msgstr "Trebuie cel puțin un proprietar."
 
 #: lib/Domain/Service/Dns/DomainManager.php:836
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Failed to update zone records: %s"
@@ -9422,7 +9411,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Exemplu: www,A,192.168.1.1,0,3600,web server"
 
 #: templates/modern/bulk_record_add.html:47
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
 
@@ -9723,35 +9711,35 @@ msgstr "Da, regenerează această cheie API"
 msgid "No, keep current key"
 msgstr "Nu, păstrează cheia curentă"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "Resetează parola"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "Solicită link nou de resetare"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "Parola nu îndeplinește cerințele"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "Introduceți noua parolă pentru"
 
-#: templates/modern/reset_password.html:45
+#: templates/modern/reset_password.html:38
 msgid "New Password"
 msgstr "Parolă nouă"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 msgid "Please provide a password"
 msgstr "Furnizați o parolă"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "Confirmă parola"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "Parolele nu se potrivesc"
 
@@ -9767,19 +9755,19 @@ msgstr "Lungime minimă"
 msgid "characters"
 msgstr "caractere"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "Cel puțin o literă mare"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "Cel puțin o literă mică"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "Cel puțin un număr"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "Cel puțin un caracter special"
 
@@ -9941,6 +9929,13 @@ msgstr "Key Signing Key - semnează DNSKEY"
 #: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - semnează restul"
+
+#: templates/default/dnssec_add_key.html:199
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS afișează o cheie ca KSK sau ZSK doar cât timp zona are o KSK activă și o ZSK activă cu același algoritm. Altfel afișează cheia ca CSK, chiar dacă aici ați ales KSK sau ZSK."
 
 #: templates/modern/dnssec_add_key.html:202
 msgid "Recommended Settings"
@@ -12271,7 +12266,6 @@ msgid "Unreachable"
 msgstr "Inaccesibil"
 
 #: templates/default/pdns_status.html:121 templates/modern/pdns_status.html:122
-#, auto-english-fallback
 msgid "Not checked"
 msgstr "Not checked"
 
@@ -12939,7 +12933,6 @@ msgid "RDAP results for"
 msgstr "Rezultate RDAP pentru"
 
 #: lib/Module/Rdap/templates/rdap.html:46
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Please enter a domain name to perform an RDAP lookup."
 
@@ -13515,7 +13508,6 @@ msgstr ""
 "generați fișierul de configurare."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
@@ -13667,7 +13659,6 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nu se poate conecta la baza de date PowerDNS \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:90
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
@@ -13675,21 +13666,4 @@ msgstr ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
 
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "După creare"
 
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "Schimbă proprietarul zonei"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Puteți transfera proprietatea zonei către un alt utilizator din lista de "
-# OBSOLETE: "utilizatori în orice moment."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "Gestionează utilizatorii"
-
-# OBSOLETE: msgid "Error"
-# OBSOLETE: msgstr "Eroare"

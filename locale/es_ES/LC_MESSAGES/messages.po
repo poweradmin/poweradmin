@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:23+0300\n"
+"POT-Creation-Date: 2026-10-02 09:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1287,12 +1287,12 @@ msgstr "El nombre de zona es obligatorio."
 msgid "A zone with this name already exists."
 msgstr "Ya existe una zona con este nombre."
 
-#: lib/Application/Controller/BulkRegistrationController.php:151
+#: lib/Application/Controller/BulkRegistrationController.php:158
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "ID de grupo desconocido(s): %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:163
+#: lib/Application/Controller/BulkRegistrationController.php:170
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Solo puede asignar grupos de los que es miembro (no permitido: %s)"
@@ -1359,7 +1359,7 @@ msgstr "Error al obtener información RDAP usando el servidor %s"
 msgid "Invalid CSRF token."
 msgstr "Token CSRF no válido."
 
-#: lib/BaseController.php:674
+#: lib/BaseController.php:692
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1367,8 +1367,7 @@ msgstr ""
 "Se está utilizando la clave de cifrado de sesión predeterminada, por favor, "
 "configúrela en su archivo de configuración."
 
-#: lib/BaseController.php:678
-#, auto-english-fallback
+#: lib/BaseController.php:696
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -1376,7 +1375,7 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/BaseController.php:720
+#: lib/BaseController.php:738
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1384,12 +1383,12 @@ msgstr ""
 "El directorio <a href=\"install/\">install/</a> existe, debe eliminarlo "
 "antes de continuar."
 
-#: lib/BaseController.php:921
+#: lib/BaseController.php:940
 #, php-format
 msgid "The %s field is required."
 msgstr "El campo %s es obligatorio."
 
-#: lib/BaseController.php:929
+#: lib/BaseController.php:948
 #, php-format
 msgid "The %s field must be a number."
 msgstr "El campo %s debe ser un número."
@@ -1446,7 +1445,7 @@ msgstr ""
 msgid "Invalid or unexpected input given."
 msgstr "Se ha proporcionado una entrada no válida o inesperada."
 
-#: lib/Domain/Model/UserManager.php:376
+#: lib/Domain/Model/UserManager.php:377
 msgid "You do not have the permission to delete this user."
 msgstr "No tiene permiso para eliminar este usuario."
 
@@ -1454,7 +1453,7 @@ msgstr "No tiene permiso para eliminar este usuario."
 msgid "You do not have permission to delete a superuser account."
 msgstr "No tiene permiso para eliminar una cuenta de superusuario."
 
-#: lib/Application/Controller/EditUserController.php:594
+#: lib/Application/Controller/ZoneOwnershipController.php:187
 msgid "User does not exist."
 msgstr "El usuario no existe."
 
@@ -1481,7 +1480,7 @@ msgstr ""
 msgid "You do not have the permission to view this comment."
 msgstr "No tiene permiso para ver este comentario."
 
-#: lib/Domain/Service/Dns/RecordManager.php:495
+#: lib/Domain/Service/Dns/RecordManager.php:502
 msgid "You do not have the permission to edit this comment."
 msgstr "No tiene permiso para editar este comentario."
 
@@ -1497,7 +1496,7 @@ msgstr "ID de registro inválido."
 msgid "You do not have permission to delete records in this zone."
 msgstr "No tiene permiso para eliminar registros en esta zona."
 
-#: lib/Domain/Service/Dns/RecordManager.php:413
+#: lib/Domain/Service/Dns/RecordManager.php:419
 msgid "Record not found."
 msgstr "Registro no encontrado."
 
@@ -1636,7 +1635,7 @@ msgstr "No tiene permiso para gestionar miembros del grupo."
 msgid "Manage Group Members"
 msgstr "Gestionar miembros del grupo"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:115
+#: lib/Application/Controller/ManageGroupZonesController.php:121
 msgid "Invalid action."
 msgstr "Acción no válida."
 
@@ -1815,13 +1814,12 @@ msgstr ""
 "El tipo de metadatos %s solo acepta un valor. Agregue solo una fila para "
 "este tipo."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:453
-#, auto-english-fallback
+#: lib/Application/Controller/EditZoneMetadataController.php:454
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Metadata kind %s can only be changed by an administrator."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:558
+#: lib/Application/Controller/EditZoneMetadataController.php:559
 #: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
@@ -1829,21 +1827,21 @@ msgstr ""
 "Tipo de metadatos personalizado almacenado directamente en la tabla "
 "domainmetadata de PowerDNS."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:566
+#: lib/Application/Controller/EditZoneMetadataController.php:567
 #: templates/modern/pdns_status.html:403
 msgid "Value"
 msgstr "Valor"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:620
+#: lib/Application/Controller/EditZoneMetadataController.php:621
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Personalizado"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:625
+#: lib/Application/Controller/EditZoneMetadataController.php:626
 msgid "Multi"
 msgstr "Multiple"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:626
+#: lib/Application/Controller/EditZoneMetadataController.php:627
 msgid "Single"
 msgstr "Unico"
 
@@ -1897,7 +1895,7 @@ msgstr "habilitada"
 msgid "API key %s successfully."
 msgstr "Clave API %s correctamente."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:111
+#: lib/Application/Controller/BatchPtrRecordController.php:112
 msgid "You do not have the permission to add records to this zone."
 msgstr "No tiene permisos para agregar registros a esta zona."
 
@@ -1939,7 +1937,6 @@ msgid "The permission template has been updated successfully."
 msgstr "La plantilla de permisos ha sido actualizada con éxito."
 
 #: lib/Application/Controller/EditPermTemplController.php:170
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
@@ -1948,7 +1945,6 @@ msgstr ""
 "administrator rights."
 
 #: lib/Application/Controller/AddPermTemplController.php:146
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
@@ -1961,16 +1957,16 @@ msgstr ""
 msgid "Groups"
 msgstr "Grupos"
 
-#: lib/Application/Controller/SearchController.php:50
+#: lib/Application/Controller/SearchController.php:51
 msgid "You do not have the permission to perform searches."
 msgstr "No tiene permiso para realizar búsquedas."
 
-#: lib/Application/Controller/SearchController.php:54
+#: lib/Application/Controller/SearchController.php:55
 #: templates/modern/header.html:128 templates/modern/list_log_groups.html:44
 msgid "Search"
 msgstr "Buscar"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:79
 msgid "Invalid request method."
 msgstr "Método de solicitud inválido."
 
@@ -1986,7 +1982,7 @@ msgstr "Miembro eliminado del grupo exitosamente."
 msgid "User was not a member of this group."
 msgstr "El usuario no era miembro de este grupo."
 
-#: lib/Domain/Model/UserManager.php:1204
+#: lib/Domain/Model/UserManager.php:1205
 msgid "You do not have the permission to add a new user."
 msgstr "No tiene permiso para añadir un nuevo usuario."
 
@@ -1996,7 +1992,6 @@ msgid "Add User"
 msgstr "Agregar Usuario"
 
 #: lib/Application/Controller/AddUserController.php:125
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
 msgstr "No non-superuser permission template is available to assign."
 
@@ -2033,7 +2028,7 @@ msgstr "Se generó una contraseña pero no se muestra por razones de seguridad."
 msgid "Please fill in all required fields correctly."
 msgstr "Por favor, complete todos los campos requeridos correctamente."
 
-#: lib/Domain/Service/Dns/RecordManager.php:436
+#: lib/Domain/Service/Dns/RecordManager.php:442
 msgid "You do not have the permission to delete this record."
 msgstr "No tiene permiso para eliminar este registro."
 
@@ -2079,7 +2074,7 @@ msgstr "Editar plantilla de zona"
 msgid "There is no zone template with this ID."
 msgstr "No hay ninguna plantilla de zona con este ID."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:145
+#: lib/Application/Controller/EditZoneTemplRecordController.php:151
 msgid "Zone template has been updated successfully."
 msgstr "La plantilla de zona ha sido actualizada con éxito."
 
@@ -2091,7 +2086,7 @@ msgstr "Las zonas se han actualizado correctamente."
 msgid "You do not have permission to create new zone templates."
 msgstr "No tiene permisos para crear nuevas plantillas de zona."
 
-#: lib/Domain/Model/ZoneTemplate.php:344 lib/Domain/Model/ZoneTemplate.php:1220
+#: lib/Domain/Model/ZoneTemplate.php:345 lib/Domain/Model/ZoneTemplate.php:1226
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Ya existe una plantilla de zona con este nombre, elija otro."
 
@@ -2186,23 +2181,23 @@ msgstr "El tipo de zona ha sido cambiado exitosamente."
 msgid "Slave master has been changed successfully."
 msgstr "El master esclavo ha sido cambiado exitosamente."
 
-#: lib/Application/Controller/EditController.php:321
+#: lib/Application/Controller/EditController.php:327
 msgid "Zone template has been changed successfully."
 msgstr "La plantilla de zona ha sido cambiada exitosamente."
 
-#: lib/Application/Controller/EditController.php:333
+#: lib/Application/Controller/EditController.php:339
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC no está habilitado en el servidor."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "La zona ya está firmada con DNSSEC."
 
-#: lib/Application/Controller/EditController.php:358
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "La zona se ha firmado correctamente."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2210,7 +2205,7 @@ msgstr ""
 "Firma de zona solicitada correctamente, pero la verificación falló. "
 "Verifique las claves DNSSEC."
 
-#: lib/Application/Controller/EditController.php:367
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2237,7 +2232,11 @@ msgstr ""
 "Error al desfirmar la zona. Verifique los registros de PowerDNS para más "
 "detalles."
 
-#: lib/Application/Controller/EditController.php:671
+#: lib/Application/Controller/EditController.php:597
+msgid "You do not have the permission to edit this zone."
+msgstr "No tiene permiso para editar esta zona."
+
+#: lib/Application/Controller/EditController.php:691
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2247,15 +2246,15 @@ msgstr ""
 "servidor en el número de campos. Pida a su administrador que aumente la "
 "configuración \"max_input_vars\" de PHP."
 
-#: lib/Application/Controller/EditController.php:779
+#: lib/Application/Controller/EditController.php:799
 msgid "Request has expired, please try again."
 msgstr "La solicitud ha expirado, inténtelo de nuevo."
 
-#: lib/Application/Controller/EditController.php:784
+#: lib/Application/Controller/EditController.php:804
 msgid "Zone has been updated successfully."
 msgstr "La zona se ha actualizado correctamente."
 
-#: lib/Application/Controller/EditController.php:786
+#: lib/Application/Controller/EditController.php:806
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2263,11 +2262,15 @@ msgstr ""
 "Zona guardada correctamente. No se realizaron cambios en los registros, pero "
 "se incrementó el serial SOA."
 
-#: lib/Application/Controller/EditController.php:795
+#: lib/Application/Controller/EditController.php:815
 msgid "Zone has not been updated successfully."
 msgstr "La zona no se ha actualizado correctamente."
 
-#: lib/Application/Controller/EditController.php:823
+#: lib/Domain/Service/Dns/RecordManager.php:232
+msgid "You do not have the permission to add a record to this zone."
+msgstr "No tiene permisos para agregar un registro a esta zona."
+
+#: lib/Application/Controller/EditController.php:856
 msgid "Please provide all required fields."
 msgstr "Proporcione todos los campos obligatorios."
 
@@ -2276,7 +2279,7 @@ msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
 "Registro agregado correctamente. También se creó un registro PTR coincidente."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:502
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr ""
 "Registro agregado correctamente, pero la creación del registro PTR falló: "
@@ -2327,34 +2330,30 @@ msgstr ""
 "No se pudo enviar el código de verificación a su correo electrónico. Use un "
 "código de recuperación en su lugar."
 
-#: lib/Domain/Service/Dns/RecordManager.php:229
-msgid "You do not have the permission to add a record to this zone."
-msgstr "No tiene permisos para agregar un registro a esta zona."
-
 #: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added."
 msgstr "Registro agregado exitosamente."
 
-#: lib/Application/Controller/AddRecordController.php:456
+#: lib/Application/Controller/AddRecordController.php:452
 msgid "No records were provided."
 msgstr "No se proporcionaron registros."
 
-#: lib/Application/Controller/AddRecordController.php:522
+#: lib/Application/Controller/AddRecordController.php:520
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d registro(s) se agregaron correctamente."
 
-#: lib/Application/Controller/AddRecordController.php:524
+#: lib/Application/Controller/AddRecordController.php:522
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "También se crearon %d registro(s) coincidente(s)."
 
-#: lib/Application/Controller/AddRecordController.php:527
+#: lib/Application/Controller/AddRecordController.php:525
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d registro(s) no se pudieron agregar."
 
-#: lib/Application/Controller/AddRecordController.php:532
+#: lib/Application/Controller/AddRecordController.php:530
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2362,7 +2361,7 @@ msgstr ""
 "Algunos registros no se pudieron agregar. Pueden existir ya o contener datos "
 "inválidos."
 
-#: lib/Application/Controller/AddRecordController.php:562
+#: lib/Application/Controller/AddRecordController.php:560
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Error al agregar cualquier registro. Pueden contener datos inválidos."
 
@@ -2473,19 +2472,19 @@ msgstr ""
 "2001:db8::/48) o un nombre de zona reversa que termine en in-addr.arpa o "
 "ip6.arpa."
 
-#: lib/Application/Controller/BulkRegistrationController.php:171
+#: lib/Application/Controller/BulkRegistrationController.php:178
 msgid "At least one user or group must be selected as owner."
 msgstr "Al menos un usuario o grupo debe ser seleccionado como propietario."
 
-#: lib/Application/Controller/BulkRegistrationController.php:181
+#: lib/Application/Controller/BulkRegistrationController.php:188
 msgid "You do not have permission to create zones for other users."
 msgstr "No tiene permiso para crear zonas para otros usuarios."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "There is already a zone with this name."
 msgstr "Ya existe una zona con este nombre."
 
-#: lib/Application/Controller/AddZoneMasterController.php:268
+#: lib/Application/Controller/AddZoneMasterController.php:274
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2493,7 +2492,7 @@ msgstr ""
 "La zona fue creada exitosamente, pero la firma DNSSEC fue omitida debido a "
 "errores de validación:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:280
+#: lib/Application/Controller/AddZoneMasterController.php:286
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2502,11 +2501,11 @@ msgstr ""
 "zona pasó, pero la API de PowerDNS devolvió un error. Verifique los "
 "registros de PowerDNS para más detalles."
 
-#: lib/Application/Controller/AddZoneMasterController.php:286
+#: lib/Application/Controller/AddZoneMasterController.php:292
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "La zona ha sido creada y firmada con DNSSEC exitosamente."
 
-#: lib/Application/Controller/AddZoneMasterController.php:290
+#: lib/Application/Controller/AddZoneMasterController.php:296
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2522,16 +2521,16 @@ msgstr "La zona se ha agregado correctamente."
 msgid "Batch PTR record creation is not enabled."
 msgstr "La creación por lotes de registros PTR no está habilitada."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:82
+#: lib/Application/Controller/BatchPtrRecordController.php:83
 msgid "You do not have permission to edit DNS records."
 msgstr "No tiene permisos para editar registros DNS."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:87
+#: lib/Application/Controller/BatchPtrRecordController.php:88
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:178
 msgid "Batch PTR Records"
 msgstr "Registros PTR por Lotes"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:102
+#: lib/Application/Controller/BatchPtrRecordController.php:103
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr ""
 "La creación por lotes de registros PTR no está disponible para zonas "
@@ -2652,44 +2651,44 @@ msgstr "No tiene permisos suficientes para ver esta página."
 msgid "Reverse Zones"
 msgstr "Zonas Reversas"
 
-#: lib/Application/Controller/ListForwardZonesController.php:229
+#: lib/Application/Controller/ListForwardZonesController.php:242
 msgid "You do not have the permission to see any zones."
 msgstr "No tiene permisos para ver ninguna zona."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:82
+#: lib/Application/Controller/ManageGroupZonesController.php:88
 msgid "You do not have permission to manage zone ownership."
 msgstr "No tiene permiso para gestionar la propiedad de la zona."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:96
+#: lib/Application/Controller/ManageGroupZonesController.php:102
 msgid "Manage Group Zones"
 msgstr "Gestionar zonas del grupo"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:234
+#: lib/Application/Controller/ManageGroupZonesController.php:240
 msgid "Please select at least one zone."
 msgstr "Por favor seleccione al menos una zona."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:169
+#: lib/Application/Controller/ManageGroupZonesController.php:175
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d zona añadida al grupo."
 msgstr[1] "%d zonas añadidas al grupo."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:213
+#: lib/Application/Controller/ManageGroupZonesController.php:219
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d zona no pudo ser añadida."
 msgstr[1] "%d zonas no pudieron ser añadidas."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:255
+#: lib/Application/Controller/ManageGroupZonesController.php:261
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d zona eliminada del grupo."
 msgstr[1] "%d zonas eliminadas del grupo."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:299
+#: lib/Application/Controller/ManageGroupZonesController.php:305
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2709,7 +2708,6 @@ msgid "The permission template has been added successfully."
 msgstr "La plantilla de permisos se ha agregado correctamente."
 
 #: lib/Application/Controller/AddPermTemplController.php:147
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "The permission template could not be added."
 
@@ -2792,7 +2790,7 @@ msgstr "Tipo de verificación inválido"
 msgid "You have logged out."
 msgstr "Ha cerrado sesión."
 
-#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:895
+#: lib/Domain/Model/ZoneTemplate.php:342 lib/Domain/Model/ZoneTemplate.php:899
 msgid "You do not have the permission to add a zone template."
 msgstr "No tiene permisos para agregar una plantilla de zona."
 
@@ -2836,7 +2834,7 @@ msgstr "Nombre de host no válido."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Esta no es una dirección IPv4 o IPv6 válida."
 
-#: lib/Domain/Model/ZoneTemplate.php:442 lib/Domain/Model/ZoneTemplate.php:480
+#: lib/Domain/Model/ZoneTemplate.php:446 lib/Domain/Model/ZoneTemplate.php:484
 msgid "You do not have the permission to delete zone templates."
 msgstr "No tiene permiso para eliminar plantillas de zona."
 
@@ -2856,21 +2854,59 @@ msgstr "El supermaster que está intentando editar no existe."
 msgid "The supermaster has been updated successfully."
 msgstr "El supermaster se ha actualizado correctamente."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "You do not have permission to manage group zones."
 msgstr "No tiene permiso para gestionar zonas de grupo."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:84
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:90
 msgid "Invalid group or zone ID."
 msgstr "ID de grupo o zona no válido."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:95
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:108
 msgid "Zone removed from group successfully."
 msgstr "Zona eliminada del grupo exitosamente."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:110
 msgid "Zone was not owned by this group."
 msgstr "La zona no era propiedad de este grupo."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:307
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"No se puede eliminar el último grupo: el modo de propiedad de zona es "
+"groups_only y requiere al menos un grupo. Agregue otro grupo primero."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:313
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"No se puede eliminar el grupo: el modo de propiedad de zona es users_only y "
+"la zona no tiene propietarios de usuario. Agregue un propietario de usuario "
+"primero."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:341
+msgid "Add another owner or a group first."
+msgstr "Agregue primero otro propietario o un grupo."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:344
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr ""
+"Agregue primero otro propietario de usuario (el modo de propiedad de zona es "
+"users_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr ""
+"Agregue primero un grupo (el modo de propiedad de zona es groups_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:301
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr ""
+"No se puede eliminar al último propietario: la zona quedaría sin propiedad."
 
 #: lib/Application/Controller/ListForwardZonesController.php:64
 #: templates/modern/dnssec_delete_key.html:8
@@ -2947,7 +2983,7 @@ msgstr "El usuario se ha actualizado correctamente."
 msgid "The user could not be updated."
 msgstr "El usuario no se pudo actualizar."
 
-#: lib/Domain/Model/UserManager.php:565 lib/Domain/Model/UserManager.php:1184
+#: lib/Domain/Model/UserManager.php:566 lib/Domain/Model/UserManager.php:1185
 msgid "You do not have the permission to edit this user."
 msgstr "No tiene permisos para editar este usuario."
 
@@ -3090,7 +3126,7 @@ msgstr "No puede editar registros en una zona SLAVE."
 msgid "You do not have permission to edit this record."
 msgstr "No tiene permiso para editar este registro."
 
-#: lib/Application/Controller/EditRecordController.php:331
+#: lib/Application/Controller/EditRecordController.php:334
 msgid "The record has been updated successfully."
 msgstr "El registro ha sido actualizado con éxito."
 
@@ -3199,15 +3235,15 @@ msgstr "El supermaster se ha eliminado correctamente."
 msgid "Bulk Registration"
 msgstr "Registro Masivo"
 
-#: lib/Application/Controller/BulkRegistrationController.php:132
+#: lib/Application/Controller/BulkRegistrationController.php:139
 msgid "Owner must be a numeric user ID."
 msgstr "El propietario debe ser un ID de usuario numérico."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "Zones has been added successfully."
 msgstr "Las zonas se han agregado correctamente."
 
-#: lib/Application/Controller/BulkRegistrationController.php:212
+#: lib/Application/Controller/BulkRegistrationController.php:219
 msgid "Some zone(s) could not be added."
 msgstr "Algunas zonas no se pudieron agregar."
 
@@ -3237,17 +3273,15 @@ msgstr ""
 "La asignación de propietario de usuario está deshabilitada por el modo "
 "actual de propiedad de zona."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:188
+#: lib/Domain/Service/Dns/DomainManager.php:562
+msgid "The selected user already owns the zone."
+msgstr "El usuario seleccionado ya posee la zona."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:198
 msgid "Owner has been added successfully."
 msgstr "El propietario ha sido agregado exitosamente."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:291
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr ""
-"No se puede eliminar al último propietario: la zona quedaría sin propiedad."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
@@ -3256,7 +3290,7 @@ msgstr ""
 "de zona es users_only y requiere al menos un propietario de usuario. Agregue "
 "otro primero."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
@@ -3265,60 +3299,28 @@ msgstr ""
 "es groups_only y la zona no tiene propietarios de grupo. Agregue un grupo "
 "primero."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "El propietario ha sido eliminado exitosamente."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:249
+#: lib/Application/Controller/ZoneOwnershipController.php:259
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr ""
 "La asignación de propiedad de grupo está deshabilitada por el modo actual de "
 "propiedad de zona."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:261
+#: lib/Application/Controller/ZoneOwnershipController.php:271
 msgid "You do not have permission to assign this group."
 msgstr "No tiene permiso para asignar este grupo."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:269
+#: lib/Application/Controller/ZoneOwnershipController.php:279
 msgid "Group has been added successfully."
 msgstr "El grupo ha sido agregado exitosamente."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:297
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr ""
-"No se puede eliminar el último grupo: el modo de propiedad de zona es "
-"groups_only y requiere al menos un grupo. Agregue otro grupo primero."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:303
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr ""
-"No se puede eliminar el grupo: el modo de propiedad de zona es users_only y "
-"la zona no tiene propietarios de usuario. Agregue un propietario de usuario "
-"primero."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:308
+#: lib/Application/Controller/ZoneOwnershipController.php:318
 msgid "Group has been removed successfully."
 msgstr "El grupo ha sido eliminado exitosamente."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:331
-msgid "Add another owner or a group first."
-msgstr "Agregue primero otro propietario o un grupo."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:334
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Agregue primero otro propietario de usuario (el modo de propiedad de zona es "
-"users_only)."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr ""
-"Agregue primero un grupo (el modo de propiedad de zona es groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3368,11 +3370,11 @@ msgstr "No"
 msgid "Account is temporarily locked. Please try again later."
 msgstr "La cuenta está temporalmente bloqueada. Inténtelo más tarde."
 
-#: lib/Application/Service/SqlAuthenticator.php:142
+#: lib/Application/Service/SqlAuthenticator.php:154
 msgid "The user account is disabled."
 msgstr "La cuenta de usuario está deshabilitada."
 
-#: lib/Application/Service/SqlAuthenticator.php:223
+#: lib/Application/Service/SqlAuthenticator.php:235
 msgid "Authentication failed!"
 msgstr "¡Autenticación fallida!"
 
@@ -3401,7 +3403,7 @@ msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Fallo de autenticación: No se puede crear o actualizar la cuenta de usuario"
 
-#: lib/Application/Service/LdapAuthenticator.php:249
+#: lib/Application/Service/LdapAuthenticator.php:250
 msgid "LDAP Authentication failed!"
 msgstr "¡Autenticación LDAP fallida!"
 
@@ -3433,7 +3435,7 @@ msgstr "Este es un nombre de zona inválido."
 msgid "This template is assigned to at least one user and one group."
 msgstr "Esta plantilla está asignada a al menos un usuario y un grupo."
 
-#: lib/Domain/Model/UserManager.php:421
+#: lib/Domain/Model/UserManager.php:422
 msgid "This template is assigned to at least one user."
 msgstr "Esta plantilla está asignada a al menos un usuario."
 
@@ -3634,20 +3636,19 @@ msgstr ""
 "Error de base de datos: No se puede verificar la autenticación del usuario. "
 "Por favor verifique su configuración de base de datos."
 
-#: lib/Domain/Model/UserManager.php:1216
+#: lib/Domain/Model/UserManager.php:1217
 msgid "Enter a valid email address."
 msgstr "Ingrese una dirección de correo electrónico válida."
 
-#: lib/Domain/Model/UserManager.php:1208
+#: lib/Domain/Model/UserManager.php:1209
 msgid "Username exist already, please choose another one."
 msgstr "El nombre de usuario ya existe, elija otro."
 
-#: lib/Domain/Model/UserManager.php:1220
+#: lib/Domain/Model/UserManager.php:1221
 msgid "Email address already exists, please choose another one."
 msgstr "La dirección de correo electrónico ya existe, elija otra."
 
-#: lib/Domain/Model/UserManager.php:995
-#, auto-english-fallback
+#: lib/Domain/Model/UserManager.php:996
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
@@ -3655,8 +3656,7 @@ msgstr ""
 "Changing your own permission template requires the permission to edit other "
 "users."
 
-#: lib/Domain/Model/UserManager.php:999
-#, auto-english-fallback
+#: lib/Domain/Model/UserManager.php:1000
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
@@ -3664,50 +3664,49 @@ msgstr ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
 
-#: lib/Domain/Model/UserManager.php:1212
+#: lib/Domain/Model/UserManager.php:1213
 msgid "Enter a valid user name."
 msgstr "Ingrese un nombre de usuario válido."
 
-#: lib/Domain/Model/ZoneTemplate.php:284
+#: lib/Domain/Model/ZoneTemplate.php:285
 msgid "Zone template not found."
 msgstr "Plantilla de zona no encontrada."
 
-#: lib/Domain/Model/ZoneTemplate.php:288
+#: lib/Domain/Model/ZoneTemplate.php:289
 msgid "Only global zone templates can be set as the default."
 msgstr ""
 "Solo las plantillas de zona globales pueden establecerse como "
 "predeterminadas."
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Error setting default zone template: "
 msgstr "Error al establecer la plantilla de zona predeterminada: "
 
-#: lib/Domain/Model/ZoneTemplate.php:323
+#: lib/Domain/Model/ZoneTemplate.php:324
 msgid "Error clearing default zone template: "
 msgstr "Error al eliminar la plantilla de zona predeterminada: "
 
-#: lib/Domain/Model/ZoneTemplate.php:369 lib/Domain/Model/ZoneTemplate.php:968
+#: lib/Domain/Model/ZoneTemplate.php:372 lib/Domain/Model/ZoneTemplate.php:974
 msgid "Error creating zone template: "
 msgstr "Error al crear la plantilla de zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:405
+#: lib/Domain/Model/ZoneTemplate.php:408
 msgid "Error adding default SOA record to template: "
 msgstr "Error al agregar registro SOA predeterminado a la plantilla: "
 
-#: lib/Domain/Model/ZoneTemplate.php:464
+#: lib/Domain/Model/ZoneTemplate.php:468
 msgid "Error deleting zone template: "
 msgstr "Error al eliminar la plantilla de zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:488
+#: lib/Domain/Model/ZoneTemplate.php:492
 msgid "Error deleting user zone templates: "
 msgstr "Error al eliminar las plantillas de zona del usuario: "
 
-#: lib/Domain/Model/ZoneTemplate.php:605
+#: lib/Domain/Model/ZoneTemplate.php:609
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "No tiene permisos para agregar un registro a esta plantilla de zona."
 
-#: lib/Domain/Model/ZoneTemplate.php:610 lib/Domain/Model/ZoneTemplate.php:745
-#, auto-english-fallback
+#: lib/Domain/Model/ZoneTemplate.php:614 lib/Domain/Model/ZoneTemplate.php:749
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
@@ -3721,20 +3720,19 @@ msgstr "Su campo de contenido no tiene un valor válido."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "La prioridad para registros MX/SRV debe ser un número entre 0 y 65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:349
+#: lib/Domain/Service/Dns/RecordManager.php:354
 msgid "You do not have the permission to edit this record."
 msgstr "No tiene permiso para editar este registro."
 
-#: lib/Domain/Model/ZoneTemplate.php:735 lib/Domain/Model/ZoneTemplate.php:819
+#: lib/Domain/Model/ZoneTemplate.php:739 lib/Domain/Model/ZoneTemplate.php:823
 msgid "The record does not belong to this zone template."
 msgstr "El registro no pertenece a esta plantilla de zona."
 
-#: lib/Domain/Model/ZoneTemplate.php:797
+#: lib/Domain/Model/ZoneTemplate.php:801
 msgid "Error updating zone template record: "
 msgstr "Error al actualizar el registro de la plantilla de zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:825
-#, auto-english-fallback
+#: lib/Domain/Model/ZoneTemplate.php:829
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3742,16 +3740,15 @@ msgstr ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 
-#: lib/Domain/Model/ZoneTemplate.php:834
+#: lib/Domain/Model/ZoneTemplate.php:838
 msgid "Error deleting zone template record: "
 msgstr "Error al eliminar el registro de la plantilla de zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:856
+#: lib/Domain/Model/ZoneTemplate.php:860
 msgid "Error checking template ownership: "
 msgstr "Error al verificar la propiedad de la plantilla: "
 
-#: lib/Domain/Model/ZoneTemplate.php:960
-#, auto-english-fallback
+#: lib/Domain/Model/ZoneTemplate.php:966
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3760,35 +3757,35 @@ msgstr ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1099
+#: lib/Domain/Model/ZoneTemplate.php:1105
 msgid "Error retrieving zones using template: "
 msgstr "Error al obtener zonas usando la plantilla: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1199
+#: lib/Domain/Model/ZoneTemplate.php:1205
 msgid "Failed to get list of zones using template: "
 msgstr "Error al obtener la lista de zonas usando la plantilla: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1217
+#: lib/Domain/Model/ZoneTemplate.php:1223
 msgid "You do not have the permission to edit a zone template."
 msgstr "No tiene permisos para editar una plantilla de zona."
 
-#: lib/Domain/Model/ZoneTemplate.php:1265
+#: lib/Domain/Model/ZoneTemplate.php:1272
 msgid "Error unlinking zone from template: "
 msgstr "Error al desvincular la zona de la plantilla: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1314
+#: lib/Domain/Model/ZoneTemplate.php:1321
 msgid "Error retrieving zones: "
 msgstr "Error al obtener las zonas: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1333
+#: lib/Domain/Model/ZoneTemplate.php:1340
 msgid "Error checking template name existence: "
 msgstr "Error al verificar la existencia del nombre de la plantilla: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1354
+#: lib/Domain/Model/ZoneTemplate.php:1361
 msgid "Error looking up template by name: "
 msgstr "Error al buscar la plantilla por nombre: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1377
+#: lib/Domain/Model/ZoneTemplate.php:1384
 msgid "Error checking template existence: "
 msgstr "Error al verificar la existencia de la plantilla: "
 
@@ -9447,17 +9444,17 @@ msgstr ""
 msgid "Unknown database type."
 msgstr "Tipo de base de datos desconocido."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:91
+#: lib/Domain/Service/ReverseRecordCreator.php:92
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "No hay zona reversa coincidente para: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:99
+#: lib/Domain/Service/ReverseRecordCreator.php:100
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "Ya existe un registro PTR para %s apuntando a %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:112
+#: lib/Domain/Service/ReverseRecordCreator.php:116
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -9467,54 +9464,51 @@ msgstr ""
 "que apunta a: %s. Tener múltiples registros PTR para la misma IP no es "
 "recomendado."
 
-#: lib/Domain/Service/Dns/RecordManager.php:215
+#: lib/Domain/Service/Dns/RecordManager.php:218
 msgid "You do not have the permission to add SOA record."
 msgstr "No tiene permiso para agregar registro SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:219
+#: lib/Domain/Service/Dns/RecordManager.php:222
 msgid "You do not have the permission to add NS record."
 msgstr "No tiene permiso para agregar registro NS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:225
-#, auto-english-fallback
+#: lib/Domain/Service/Dns/RecordManager.php:228
 msgid "You do not have the permission to add LUA record."
 msgstr "You do not have the permission to add LUA record."
 
-#: lib/Domain/Service/Dns/RecordManager.php:270
+#: lib/Domain/Service/Dns/RecordManager.php:273
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Ya existe un registro con este nombre de host, tipo y contenido."
 
-#: lib/Domain/Service/Dns/RecordManager.php:171
+#: lib/Domain/Service/Dns/RecordManager.php:172
 msgid "Failed to add record to DNS backend."
 msgstr "Error al añadir el registro al backend DNS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:328
+#: lib/Domain/Service/Dns/RecordManager.php:333
 msgid "You do not have the permission to edit this SOA record."
 msgstr "No tiene permiso para editar este registro SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:333
+#: lib/Domain/Service/Dns/RecordManager.php:338
 msgid "You do not have the permission to edit this NS record."
 msgstr "No tiene permiso para editar este registro NS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:338
-#, auto-english-fallback
+#: lib/Domain/Service/Dns/RecordManager.php:343
 msgid "You do not have the permission to edit this LUA record."
 msgstr "You do not have the permission to edit this LUA record."
 
-#: lib/Domain/Service/Dns/RecordManager.php:387
+#: lib/Domain/Service/Dns/RecordManager.php:393
 msgid "Failed to update record in DNS backend."
 msgstr "Error al actualizar el registro en el backend DNS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:420
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have the permission to delete SOA records."
 msgstr "No tiene permiso para eliminar registros SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:425
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have the permission to delete NS records."
 msgstr "No tiene permiso para eliminar registros NS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:430
-#, auto-english-fallback
+#: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete LUA records."
 msgstr "You do not have the permission to delete LUA records."
 
@@ -9572,16 +9566,11 @@ msgstr "Error al actualizar el tipo de zona en el backend DNS."
 msgid "Failed to update zone master in DNS backend."
 msgstr "Error al actualizar el maestro de zona en el backend DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:562
-msgid "The selected user already owns the zone."
-msgstr "El usuario seleccionado ya posee la zona."
-
 #: lib/Domain/Service/Dns/DomainManager.php:597
 msgid "There must be at least one owner for a zone."
 msgstr "Debe haber al menos un propietario para una zona."
 
 #: lib/Domain/Service/Dns/DomainManager.php:836
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Failed to update zone records: %s"
@@ -10791,7 +10780,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Ejemplo: www,A,192.168.1.1,0,3600,servidor web"
 
 #: templates/modern/bulk_record_add.html:47
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
 
@@ -11122,35 +11110,35 @@ msgstr "Sí, regenerar esta clave API"
 msgid "No, keep current key"
 msgstr "No, mantener clave actual"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "Restablecer Contraseña"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "Solicitar Nuevo Enlace de Restablecimiento"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "La contraseña no cumple los requisitos"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "Ingrese su nueva contraseña para"
 
-#: templates/modern/reset_password.html:45
+#: templates/modern/reset_password.html:38
 msgid "New Password"
 msgstr "Nueva Contraseña"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 msgid "Please provide a password"
 msgstr "Por favor proporcione una contraseña"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "Confirmar Contraseña"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "Las contraseñas no coinciden"
 
@@ -11166,19 +11154,19 @@ msgstr "Longitud mínima"
 msgid "characters"
 msgstr "caracteres"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "Al menos una letra mayúscula"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "Al menos una letra minúscula"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "Al menos un número"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "Al menos un carácter especial"
 
@@ -11342,6 +11330,13 @@ msgstr "Clave de Firma de Clave - firma los registros DNSKEY en la zona"
 #: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Clave de Firma de Zona - firma todos los otros registros en la zona"
+
+#: templates/default/dnssec_add_key.html:199
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS muestra una clave como KSK o ZSK solo mientras la zona tenga una KSK activa y una ZSK activa con el mismo algoritmo. En caso contrario, muestra la clave como CSK, aunque aquí haya elegido KSK o ZSK."
 
 #: templates/modern/dnssec_add_key.html:202
 msgid "Recommended Settings"
@@ -13829,7 +13824,6 @@ msgid "Unreachable"
 msgstr "No alcanzable"
 
 #: templates/default/pdns_status.html:121 templates/modern/pdns_status.html:122
-#, auto-english-fallback
 msgid "Not checked"
 msgstr "Not checked"
 
@@ -14536,7 +14530,6 @@ msgid "RDAP results for"
 msgstr "Resultados RDAP para"
 
 #: lib/Module/Rdap/templates/rdap.html:46
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Please enter a domain name to perform an RDAP lookup."
 
@@ -15120,7 +15113,6 @@ msgstr ""
 "genere el archivo de configuración."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
@@ -15277,7 +15269,6 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "No se puede conectar a la base de datos PowerDNS \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:90
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
@@ -15285,21 +15276,4 @@ msgstr ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
 
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "Tras la creación"
 
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "Cambiar propietario de la zona"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Puede transferir la propiedad de una zona a otro usuario desde la lista "
-# OBSOLETE: "de usuarios en cualquier momento."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "Gestionar usuarios"
-
-# OBSOLETE: msgid "Error"
-# OBSOLETE: msgstr "Error"

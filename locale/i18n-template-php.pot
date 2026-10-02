@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.4.2\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-09-27 20:00+0300\n"
+"POT-Creation-Date: 2026-10-02 09:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1907,7 +1907,7 @@ msgstr ""
 msgid "You do not have permission to create new zone templates."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:345 lib/Domain/Model/ZoneTemplate.php:1222
+#: lib/Domain/Model/ZoneTemplate.php:345 lib/Domain/Model/ZoneTemplate.php:1226
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 
@@ -2567,7 +2567,7 @@ msgstr ""
 msgid "You have logged out."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:342 lib/Domain/Model/ZoneTemplate.php:897
+#: lib/Domain/Model/ZoneTemplate.php:342 lib/Domain/Model/ZoneTemplate.php:899
 msgid "You do not have the permission to add a zone template."
 msgstr ""
 
@@ -2611,7 +2611,7 @@ msgstr ""
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:444 lib/Domain/Model/ZoneTemplate.php:482
+#: lib/Domain/Model/ZoneTemplate.php:446 lib/Domain/Model/ZoneTemplate.php:484
 msgid "You do not have the permission to delete zone templates."
 msgstr ""
 
@@ -3402,27 +3402,27 @@ msgstr ""
 msgid "Error clearing default zone template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:370 lib/Domain/Model/ZoneTemplate.php:970
+#: lib/Domain/Model/ZoneTemplate.php:372 lib/Domain/Model/ZoneTemplate.php:974
 msgid "Error creating zone template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:406
+#: lib/Domain/Model/ZoneTemplate.php:408
 msgid "Error adding default SOA record to template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:466
+#: lib/Domain/Model/ZoneTemplate.php:468
 msgid "Error deleting zone template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:490
+#: lib/Domain/Model/ZoneTemplate.php:492
 msgid "Error deleting user zone templates: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:607
+#: lib/Domain/Model/ZoneTemplate.php:609
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:612 lib/Domain/Model/ZoneTemplate.php:747
+#: lib/Domain/Model/ZoneTemplate.php:614 lib/Domain/Model/ZoneTemplate.php:749
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
@@ -3439,64 +3439,64 @@ msgstr ""
 msgid "You do not have the permission to edit this record."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:737 lib/Domain/Model/ZoneTemplate.php:821
+#: lib/Domain/Model/ZoneTemplate.php:739 lib/Domain/Model/ZoneTemplate.php:823
 msgid "The record does not belong to this zone template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:799
+#: lib/Domain/Model/ZoneTemplate.php:801
 msgid "Error updating zone template record: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:827
+#: lib/Domain/Model/ZoneTemplate.php:829
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:838
 msgid "Error deleting zone template record: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:858
+#: lib/Domain/Model/ZoneTemplate.php:860
 msgid "Error checking template ownership: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:962
+#: lib/Domain/Model/ZoneTemplate.php:966
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1101
+#: lib/Domain/Model/ZoneTemplate.php:1105
 msgid "Error retrieving zones using template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1201
+#: lib/Domain/Model/ZoneTemplate.php:1205
 msgid "Failed to get list of zones using template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:1223
 msgid "You do not have the permission to edit a zone template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1268
+#: lib/Domain/Model/ZoneTemplate.php:1272
 msgid "Error unlinking zone from template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1317
+#: lib/Domain/Model/ZoneTemplate.php:1321
 msgid "Error retrieving zones: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1336
+#: lib/Domain/Model/ZoneTemplate.php:1340
 msgid "Error checking template name existence: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1357
+#: lib/Domain/Model/ZoneTemplate.php:1361
 msgid "Error looking up template by name: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1380
+#: lib/Domain/Model/ZoneTemplate.php:1384
 msgid "Error checking template existence: "
 msgstr ""
 
@@ -9827,6 +9827,13 @@ msgstr ""
 
 #: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
+msgstr ""
+
+#: templates/default/dnssec_add_key.html:199
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
 msgstr ""
 
 #: templates/modern/dnssec_add_key.html:202

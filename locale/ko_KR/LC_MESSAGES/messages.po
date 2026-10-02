@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:23+0300\n"
+"POT-Creation-Date: 2026-10-02 09:34+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1210,13 +1210,17 @@ msgstr "이 존을 수정할 권한이 없습니다."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr "새 존을 가져올 수 없습니다: zone_ownership_mode가 groups_only이지만 그룹이 없습니다. 먼저 그룹을 만드세요."
+msgstr ""
+"새 존을 가져올 수 없습니다: zone_ownership_mode가 groups_only이지만 그룹이 없"
+"습니다. 먼저 그룹을 만드세요."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:247
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr "새 존을 가져올 수 없습니다: zone_ownership_mode가 groups_only이고 어떤 그룹의 구성원도 아닙니다. 관리자에게 먼저 그룹에 추가해 달라고 요청하세요."
+msgstr ""
+"새 존을 가져올 수 없습니다: zone_ownership_mode가 groups_only이고 어떤 그룹"
+"의 구성원도 아닙니다. 관리자에게 먼저 그룹에 추가해 달라고 요청하세요."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:263
 msgid "Import session expired. Please upload the file again."
@@ -1242,12 +1246,12 @@ msgstr "존 이름이 필요합니다."
 msgid "A zone with this name already exists."
 msgstr "이 이름의 존이 이미 존재합니다."
 
-#: lib/Application/Controller/BulkRegistrationController.php:151
+#: lib/Application/Controller/BulkRegistrationController.php:158
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "알 수 없는 그룹 ID: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:163
+#: lib/Application/Controller/BulkRegistrationController.php:170
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "본인이 속한 그룹만 할당할 수 있습니다 (허용되지 않음: %s)"
@@ -1256,7 +1260,9 @@ msgstr "본인이 속한 그룹만 할당할 수 있습니다 (허용되지 않�
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
-msgstr "가져오기를 통해 새 존을 만들 수 없습니다: 최소 한 개의 그룹을 선택하거나 \"사용자 소유자 없음\"을 선택 해제 상태로 두세요."
+msgstr ""
+"가져오기를 통해 새 존을 만들 수 없습니다: 최소 한 개의 그룹을 선택하거나 \"사"
+"용자 소유자 없음\"을 선택 해제 상태로 두세요."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:372
 msgid "Failed to create zone."
@@ -1312,14 +1318,13 @@ msgstr "서버 %s을(를) 사용하여 RDAP 정보를 가져오지 못했습니�
 msgid "Invalid CSRF token."
 msgstr "유효하지 않은 CSRF 토큰입니다."
 
-#: lib/BaseController.php:674
+#: lib/BaseController.php:692
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "기본 세션 암호화 키가 사용되고 있습니다. 구성 파일에서 설정하십시오."
 
-#: lib/BaseController.php:678
-#, auto-english-fallback
+#: lib/BaseController.php:696
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -1327,7 +1332,7 @@ msgstr ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
 
-#: lib/BaseController.php:720
+#: lib/BaseController.php:738
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1335,12 +1340,12 @@ msgstr ""
 "<a href=\"install/\">install/</a> 디렉터리가 존재합니다. 계속하기 전에 먼저 "
 "제거해야 합니다."
 
-#: lib/BaseController.php:921
+#: lib/BaseController.php:940
 #, php-format
 msgid "The %s field is required."
 msgstr "%s 필드는 필수입니다."
 
-#: lib/BaseController.php:929
+#: lib/BaseController.php:948
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%s 필드는 숫자여야 합니다."
@@ -1395,7 +1400,7 @@ msgstr "삭제할 유효한 레코드가 선택되지 않았거나 삭제 권한
 msgid "Invalid or unexpected input given."
 msgstr "유효하지 않거나 예상치 못한 입력이 제공되었습니다."
 
-#: lib/Domain/Model/UserManager.php:376
+#: lib/Domain/Model/UserManager.php:377
 msgid "You do not have the permission to delete this user."
 msgstr "이 사용자를 삭제할 권한이 없습니다."
 
@@ -1403,7 +1408,7 @@ msgstr "이 사용자를 삭제할 권한이 없습니다."
 msgid "You do not have permission to delete a superuser account."
 msgstr "슈퍼유저 계정을 삭제할 권한이 없습니다."
 
-#: lib/Application/Controller/EditUserController.php:594
+#: lib/Application/Controller/ZoneOwnershipController.php:187
 msgid "User does not exist."
 msgstr "사용자가 존재하지 않습니다."
 
@@ -1428,7 +1433,7 @@ msgstr "존 코멘트 기능이 구성에서 비활성화되어 있습니다."
 msgid "You do not have the permission to view this comment."
 msgstr "이 코멘트를 볼 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:495
+#: lib/Domain/Service/Dns/RecordManager.php:502
 msgid "You do not have the permission to edit this comment."
 msgstr "이 코멘트를 편집할 권한이 없습니다."
 
@@ -1444,7 +1449,7 @@ msgstr "유효하지 않은 레코드 ID입니다."
 msgid "You do not have permission to delete records in this zone."
 msgstr "이 존의 레코드를 삭제할 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:413
+#: lib/Domain/Service/Dns/RecordManager.php:419
 msgid "Record not found."
 msgstr "레코드를 찾을 수 없습니다."
 
@@ -1576,7 +1581,7 @@ msgstr "그룹 구성원을 관리할 권한이 없습니다."
 msgid "Manage Group Members"
 msgstr "그룹 멤버 관리"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:115
+#: lib/Application/Controller/ManageGroupZonesController.php:121
 msgid "Invalid action."
 msgstr "유효하지 않은 작업입니다."
 
@@ -1745,34 +1750,33 @@ msgstr ""
 "메타데이터 종류 %s은(는) 단일 값만 허용합니다. 이 종류에는 한 행만 추가하세"
 "요."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:453
-#, auto-english-fallback
+#: lib/Application/Controller/EditZoneMetadataController.php:454
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "메타데이터 종류 %s은(는) 관리자만 변경할 수 있습니다."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:558
+#: lib/Application/Controller/EditZoneMetadataController.php:559
 #: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr ""
 "PowerDNS domainmetadata 테이블에 직접 저장되는 사용자 정의 메타데이터 종류."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:566
+#: lib/Application/Controller/EditZoneMetadataController.php:567
 #: templates/modern/pdns_status.html:403
 msgid "Value"
 msgstr "값"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:620
+#: lib/Application/Controller/EditZoneMetadataController.php:621
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "사용자 지정"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:625
+#: lib/Application/Controller/EditZoneMetadataController.php:626
 msgid "Multi"
 msgstr "다중"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:626
+#: lib/Application/Controller/EditZoneMetadataController.php:627
 msgid "Single"
 msgstr "단일"
 
@@ -1826,7 +1830,7 @@ msgstr "활성화됨"
 msgid "API key %s successfully."
 msgstr "API 키가 성공적으로 %s되었습니다."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:111
+#: lib/Application/Controller/BatchPtrRecordController.php:112
 msgid "You do not have the permission to add records to this zone."
 msgstr "이 존에 레코드를 추가할 권한이 없습니다."
 
@@ -1868,14 +1872,13 @@ msgid "The permission template has been updated successfully."
 msgstr "권한 템플릿이 성공적으로 업데이트되었습니다."
 
 #: lib/Application/Controller/EditPermTemplController.php:170
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr "관리자 권한이 포함된 권한 템플릿을 수정하려면 관리자 권한이 필요합니다."
+msgstr ""
+"관리자 권한이 포함된 권한 템플릿을 수정하려면 관리자 권한이 필요합니다."
 
 #: lib/Application/Controller/AddPermTemplController.php:146
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
@@ -1886,16 +1889,16 @@ msgstr "권한 템플릿에서 관리자 권한을 부여하려면 관리자 권
 msgid "Groups"
 msgstr "그룹"
 
-#: lib/Application/Controller/SearchController.php:50
+#: lib/Application/Controller/SearchController.php:51
 msgid "You do not have the permission to perform searches."
 msgstr "검색을 수행할 권한이 없습니다."
 
-#: lib/Application/Controller/SearchController.php:54
+#: lib/Application/Controller/SearchController.php:55
 #: templates/modern/header.html:128 templates/modern/list_log_groups.html:44
 msgid "Search"
 msgstr "검색"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:79
 msgid "Invalid request method."
 msgstr "유효하지 않은 요청 방법입니다."
 
@@ -1911,7 +1914,7 @@ msgstr "구성원이 그룹에서 성공적으로 제거되었습니다."
 msgid "User was not a member of this group."
 msgstr "사용자가 이 그룹의 구성원이 아닙니다."
 
-#: lib/Domain/Model/UserManager.php:1204
+#: lib/Domain/Model/UserManager.php:1205
 msgid "You do not have the permission to add a new user."
 msgstr "새 사용자를 추가할 권한이 없습니다."
 
@@ -1921,7 +1924,6 @@ msgid "Add User"
 msgstr "사용자 추가"
 
 #: lib/Application/Controller/AddUserController.php:125
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
 msgstr "할당할 수 있는 일반 사용자용 권한 템플릿이 없습니다."
 
@@ -1954,7 +1956,7 @@ msgstr "비밀번호가 생성되었지만 보안상의 이유로 표시되지 �
 msgid "Please fill in all required fields correctly."
 msgstr "모든 필수 필드를 올바르게 입력하십시오."
 
-#: lib/Domain/Service/Dns/RecordManager.php:436
+#: lib/Domain/Service/Dns/RecordManager.php:442
 msgid "You do not have the permission to delete this record."
 msgstr "이 레코드를 삭제할 권한이 없습니다."
 
@@ -2000,7 +2002,7 @@ msgstr "존 템플릿 편집"
 msgid "There is no zone template with this ID."
 msgstr "이 ID의 존 템플릿이 없습니다."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:145
+#: lib/Application/Controller/EditZoneTemplRecordController.php:151
 msgid "Zone template has been updated successfully."
 msgstr "존 템플릿이 성공적으로 업데이트되었습니다."
 
@@ -2012,7 +2014,7 @@ msgstr "존이 성공적으로 업데이트되었습니다."
 msgid "You do not have permission to create new zone templates."
 msgstr "새 존 템플릿을 생성할 권한이 없습니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:344 lib/Domain/Model/ZoneTemplate.php:1220
+#: lib/Domain/Model/ZoneTemplate.php:345 lib/Domain/Model/ZoneTemplate.php:1226
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "이 이름의 존 템플릿이 이미 존재합니다. 다른 이름을 선택하십시오."
 
@@ -2105,23 +2107,23 @@ msgstr "존 유형이 성공적으로 변경되었습니다."
 msgid "Slave master has been changed successfully."
 msgstr "슬레이브 마스터가 성공적으로 변경되었습니다."
 
-#: lib/Application/Controller/EditController.php:321
+#: lib/Application/Controller/EditController.php:327
 msgid "Zone template has been changed successfully."
 msgstr "존 템플릿이 성공적으로 변경되었습니다."
 
-#: lib/Application/Controller/EditController.php:333
+#: lib/Application/Controller/EditController.php:339
 msgid "DNSSEC is not enabled on the server."
 msgstr "서버에서 DNSSEC이 활성화되어 있지 않습니다."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone is already signed with DNSSEC."
 msgstr "존이 이미 DNSSEC으로 서명되어 있습니다."
 
-#: lib/Application/Controller/EditController.php:358
+#: lib/Application/Controller/EditController.php:364
 msgid "Zone has been signed successfully."
 msgstr "존이 성공적으로 서명되었습니다."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:369
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2129,7 +2131,7 @@ msgstr ""
 "존 서명이 성공적으로 요청되었지만, 검증에 실패했습니다. DNSSEC 키를 확인하십"
 "시오."
 
-#: lib/Application/Controller/EditController.php:367
+#: lib/Application/Controller/EditController.php:373
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2154,7 +2156,11 @@ msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "존 서명 해제에 실패했습니다. 자세한 내용은 PowerDNS 로그를 확인하십시오."
 
-#: lib/Application/Controller/EditController.php:671
+#: lib/Application/Controller/EditController.php:597
+msgid "You do not have the permission to edit this zone."
+msgstr "이 존을 편집할 권한이 없습니다."
+
+#: lib/Application/Controller/EditController.php:691
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2163,15 +2169,15 @@ msgstr ""
 "양식이 필드 수에 대한 서버 제한을 초과하여 일부 레코드가 저장되지 않았습니"
 "다. 관리자에게 PHP \"max_input_vars\" 설정을 늘려 달라고 요청하세요."
 
-#: lib/Application/Controller/EditController.php:779
+#: lib/Application/Controller/EditController.php:799
 msgid "Request has expired, please try again."
 msgstr "요청이 만료되었습니다. 다시 시도하십시오."
 
-#: lib/Application/Controller/EditController.php:784
+#: lib/Application/Controller/EditController.php:804
 msgid "Zone has been updated successfully."
 msgstr "존이 성공적으로 업데이트되었습니다."
 
-#: lib/Application/Controller/EditController.php:786
+#: lib/Application/Controller/EditController.php:806
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2179,11 +2185,15 @@ msgstr ""
 "존이 성공적으로 저장되었습니다. 레코드 변경은 없었지만 SOA 시리얼이 증가되었"
 "습니다."
 
-#: lib/Application/Controller/EditController.php:795
+#: lib/Application/Controller/EditController.php:815
 msgid "Zone has not been updated successfully."
 msgstr "존이 성공적으로 업데이트되지 않았습니다."
 
-#: lib/Application/Controller/EditController.php:823
+#: lib/Domain/Service/Dns/RecordManager.php:232
+msgid "You do not have the permission to add a record to this zone."
+msgstr "이 존에 레코드를 추가할 권한이 없습니다."
+
+#: lib/Application/Controller/EditController.php:856
 msgid "Please provide all required fields."
 msgstr "모든 필수 필드를 제공하십시오."
 
@@ -2192,7 +2202,7 @@ msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
 "레코드가 성공적으로 추가되었습니다. 일치하는 PTR 레코드도 생성되었습니다."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:502
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "레코드가 성공적으로 추가되었지만, PTR 레코드 생성에 실패했습니다: "
 
@@ -2240,34 +2250,30 @@ msgid ""
 msgstr ""
 "이메일로 인증 코드를 발송할 수 없습니다. 대신 복구 코드를 사용하십시오."
 
-#: lib/Domain/Service/Dns/RecordManager.php:229
-msgid "You do not have the permission to add a record to this zone."
-msgstr "이 존에 레코드를 추가할 권한이 없습니다."
-
 #: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added."
 msgstr "레코드가 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/AddRecordController.php:456
+#: lib/Application/Controller/AddRecordController.php:452
 msgid "No records were provided."
 msgstr "레코드가 제공되지 않았습니다."
 
-#: lib/Application/Controller/AddRecordController.php:522
+#: lib/Application/Controller/AddRecordController.php:520
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d개의 레코드가 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/AddRecordController.php:524
+#: lib/Application/Controller/AddRecordController.php:522
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d개의 일치하는 레코드도 생성되었습니다."
 
-#: lib/Application/Controller/AddRecordController.php:527
+#: lib/Application/Controller/AddRecordController.php:525
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d개의 레코드 추가에 실패했습니다."
 
-#: lib/Application/Controller/AddRecordController.php:532
+#: lib/Application/Controller/AddRecordController.php:530
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2275,7 +2281,7 @@ msgstr ""
 "일부 레코드를 추가할 수 없습니다. 이미 존재하거나 유효하지 않은 데이터를 포함"
 "하고 있을 수 있습니다."
 
-#: lib/Application/Controller/AddRecordController.php:562
+#: lib/Application/Controller/AddRecordController.php:560
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "레코드를 추가하지 못했습니다. 유효하지 않은 데이터를 포함하고 있을 수 있습니"
@@ -2366,13 +2372,17 @@ msgstr "기본 존 추가"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr "존 소유권 모드가 groups_only이지만 그룹이 없습니다. 존을 추가하기 전에 그룹을 만드세요."
+msgstr ""
+"존 소유권 모드가 groups_only이지만 그룹이 없습니다. 존을 추가하기 전에 그룹"
+"을 만드세요."
 
 #: lib/Application/Controller/BulkRegistrationController.php:99
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr "존 소유권 모드가 groups_only이지만 어떤 그룹의 구성원도 아닙니다. 존을 만들기 전에 관리자에게 그룹에 추가해 달라고 요청하세요."
+msgstr ""
+"존 소유권 모드가 groups_only이지만 어떤 그룹의 구성원도 아닙니다. 존을 만들"
+"기 전에 관리자에게 그룹에 추가해 달라고 요청하세요."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:138
 msgid ""
@@ -2382,19 +2392,19 @@ msgstr ""
 "CIDR 표기법의 네트워크(예: 192.168.1.0/24 또는 2001:db8::/48) 또는 in-"
 "addr.arpa 또는 ip6.arpa로 끝나는 역방향 존 이름을 입력하세요."
 
-#: lib/Application/Controller/BulkRegistrationController.php:171
+#: lib/Application/Controller/BulkRegistrationController.php:178
 msgid "At least one user or group must be selected as owner."
 msgstr "최소 한 명의 사용자 또는 그룹을 소유자로 선택해야 합니다."
 
-#: lib/Application/Controller/BulkRegistrationController.php:181
+#: lib/Application/Controller/BulkRegistrationController.php:188
 msgid "You do not have permission to create zones for other users."
 msgstr "다른 사용자를 위한 존을 생성할 권한이 없습니다."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "There is already a zone with this name."
 msgstr "이 이름의 존이 이미 존재합니다."
 
-#: lib/Application/Controller/AddZoneMasterController.php:268
+#: lib/Application/Controller/AddZoneMasterController.php:274
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2402,7 +2412,7 @@ msgstr ""
 "존이 성공적으로 생성되었지만, 유효성 검사 오류로 인해 DNSSEC 서명을 건너뛰었"
 "습니다:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:280
+#: lib/Application/Controller/AddZoneMasterController.php:286
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2411,11 +2421,11 @@ msgstr ""
 "했지만, PowerDNS API에서 오류를 반환했습니다. 자세한 내용은 PowerDNS 로그를 "
 "확인하십시오."
 
-#: lib/Application/Controller/AddZoneMasterController.php:286
+#: lib/Application/Controller/AddZoneMasterController.php:292
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "존이 성공적으로 생성되고 DNSSEC으로 서명되었습니다."
 
-#: lib/Application/Controller/AddZoneMasterController.php:290
+#: lib/Application/Controller/AddZoneMasterController.php:296
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2431,16 +2441,16 @@ msgstr "존이 성공적으로 추가되었습니다."
 msgid "Batch PTR record creation is not enabled."
 msgstr "일괄 PTR 레코드 생성이 활성화되어 있지 않습니다."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:82
+#: lib/Application/Controller/BatchPtrRecordController.php:83
 msgid "You do not have permission to edit DNS records."
 msgstr "DNS 레코드를 편집할 권한이 없습니다."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:87
+#: lib/Application/Controller/BatchPtrRecordController.php:88
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:178
 msgid "Batch PTR Records"
 msgstr "일괄 PTR 레코드"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:102
+#: lib/Application/Controller/BatchPtrRecordController.php:103
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "역방향 존에서는 일괄 PTR 레코드 생성을 사용할 수 없습니다."
 
@@ -2559,41 +2569,41 @@ msgstr "이 페이지를 볼 수 있는 충분한 권한이 없습니다."
 msgid "Reverse Zones"
 msgstr "역방향 존"
 
-#: lib/Application/Controller/ListForwardZonesController.php:229
+#: lib/Application/Controller/ListForwardZonesController.php:242
 msgid "You do not have the permission to see any zones."
 msgstr "존을 볼 권한이 없습니다."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:82
+#: lib/Application/Controller/ManageGroupZonesController.php:88
 msgid "You do not have permission to manage zone ownership."
 msgstr "존 소유권을 관리할 권한이 없습니다."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:96
+#: lib/Application/Controller/ManageGroupZonesController.php:102
 msgid "Manage Group Zones"
 msgstr "그룹 존 관리"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:234
+#: lib/Application/Controller/ManageGroupZonesController.php:240
 msgid "Please select at least one zone."
 msgstr "최소 하나의 존을 선택하십시오."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:169
+#: lib/Application/Controller/ManageGroupZonesController.php:175
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d개의 존이 그룹에 추가되었습니다."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:213
+#: lib/Application/Controller/ManageGroupZonesController.php:219
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d개의 존을 추가할 수 없습니다."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:255
+#: lib/Application/Controller/ManageGroupZonesController.php:261
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d개의 존이 그룹에서 제거되었습니다."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:299
+#: lib/Application/Controller/ManageGroupZonesController.php:305
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2612,7 +2622,6 @@ msgid "The permission template has been added successfully."
 msgstr "권한 템플릿이 성공적으로 추가되었습니다."
 
 #: lib/Application/Controller/AddPermTemplController.php:147
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "권한 템플릿을 추가할 수 없습니다."
 
@@ -2694,7 +2703,7 @@ msgstr "유효하지 않은 검사 유형입니다"
 msgid "You have logged out."
 msgstr "로그아웃되었습니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:895
+#: lib/Domain/Model/ZoneTemplate.php:342 lib/Domain/Model/ZoneTemplate.php:899
 msgid "You do not have the permission to add a zone template."
 msgstr "존 템플릿을 추가할 권한이 없습니다."
 
@@ -2738,7 +2747,7 @@ msgstr "유효하지 않은 호스트명입니다."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "유효한 IPv4 또는 IPv6 주소가 아닙니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:442 lib/Domain/Model/ZoneTemplate.php:480
+#: lib/Domain/Model/ZoneTemplate.php:446 lib/Domain/Model/ZoneTemplate.php:484
 msgid "You do not have the permission to delete zone templates."
 msgstr "존 템플릿을 삭제할 권한이 없습니다."
 
@@ -2758,21 +2767,55 @@ msgstr "편집하려는 supermaster가 존재하지 않습니다."
 msgid "The supermaster has been updated successfully."
 msgstr "supermaster가 성공적으로 업데이트되었습니다."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "You do not have permission to manage group zones."
 msgstr "그룹 존을 관리할 권한이 없습니다."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:84
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:90
 msgid "Invalid group or zone ID."
 msgstr "유효하지 않은 그룹 또는 존 ID입니다."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:95
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:108
 msgid "Zone removed from group successfully."
 msgstr "존이 그룹에서 성공적으로 제거되었습니다."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:110
 msgid "Zone was not owned by this group."
 msgstr "존이 이 그룹의 소유가 아닙니다."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:307
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+"마지막 그룹을 제거할 수 없습니다: 존 소유권 모드가 groups_only이며 최소 한 개"
+"의 그룹이 필요합니다. 먼저 다른 그룹을 추가하세요."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:313
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+"그룹을 제거할 수 없습니다: 존 소유권 모드가 users_only이고 존에 사용자 소유자"
+"가 없습니다. 먼저 사용자 소유자를 추가하세요."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:341
+msgid "Add another owner or a group first."
+msgstr "먼저 다른 소유자 또는 그룹을 추가하세요."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:344
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr ""
+"먼저 다른 사용자 소유자를 추가하세요 (존 소유권 모드가 users_only입니다)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:346
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "먼저 그룹을 추가하세요 (존 소유권 모드가 groups_only입니다)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:301
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "마지막 소유자를 제거할 수 없습니다: 존의 소유자가 없어집니다."
 
 #: lib/Application/Controller/ListForwardZonesController.php:64
 #: templates/modern/dnssec_delete_key.html:8
@@ -2844,7 +2887,7 @@ msgstr "사용자가 성공적으로 업데이트되었습니다."
 msgid "The user could not be updated."
 msgstr "사용자를 업데이트할 수 없습니다."
 
-#: lib/Domain/Model/UserManager.php:565 lib/Domain/Model/UserManager.php:1184
+#: lib/Domain/Model/UserManager.php:566 lib/Domain/Model/UserManager.php:1185
 msgid "You do not have the permission to edit this user."
 msgstr "이 사용자를 편집할 권한이 없습니다."
 
@@ -2980,7 +3023,7 @@ msgstr "SLAVE 존에서는 레코드를 편집할 수 없습니다."
 msgid "You do not have permission to edit this record."
 msgstr "이 레코드를 편집할 권한이 없습니다."
 
-#: lib/Application/Controller/EditRecordController.php:331
+#: lib/Application/Controller/EditRecordController.php:334
 msgid "The record has been updated successfully."
 msgstr "레코드가 성공적으로 업데이트되었습니다."
 
@@ -3089,15 +3132,15 @@ msgstr "supermaster가 성공적으로 삭제되었습니다."
 msgid "Bulk Registration"
 msgstr "일괄 등록"
 
-#: lib/Application/Controller/BulkRegistrationController.php:132
+#: lib/Application/Controller/BulkRegistrationController.php:139
 msgid "Owner must be a numeric user ID."
 msgstr "소유자는 숫자 사용자 ID여야 합니다."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "Zones has been added successfully."
 msgstr "존이 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/BulkRegistrationController.php:212
+#: lib/Application/Controller/BulkRegistrationController.php:219
 msgid "Some zone(s) could not be added."
 msgstr "일부 존을 추가할 수 없습니다."
 
@@ -3125,71 +3168,50 @@ msgstr "기본 존 템플릿이 업데이트되었습니다."
 msgid "User-owner assignment is disabled by the current zone ownership mode."
 msgstr "현재 존 소유권 모드에서는 사용자 소유자 할당이 비활성화되어 있습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:188
+#: lib/Domain/Service/Dns/DomainManager.php:562
+msgid "The selected user already owns the zone."
+msgstr "선택한 사용자가 이미 이 존을 소유하고 있습니다."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:198
 msgid "Owner has been added successfully."
 msgstr "소유자가 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:291
-msgid ""
-"Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr "마지막 소유자를 제거할 수 없습니다: 존의 소유자가 없어집니다."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:233
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr "마지막 사용자 소유자를 제거할 수 없습니다: 존 소유권 모드가 users_only이며 최소 한 명의 사용자 소유자가 필요합니다. 먼저 다른 사용자 소유자를 추가하세요."
+msgstr ""
+"마지막 사용자 소유자를 제거할 수 없습니다: 존 소유권 모드가 users_only이며 최"
+"소 한 명의 사용자 소유자가 필요합니다. 먼저 다른 사용자 소유자를 추가하세요."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr "사용자 소유자를 제거할 수 없습니다: 존 소유권 모드가 groups_only이고 존에 그룹 소유자가 없습니다. 먼저 그룹을 추가하세요."
+msgstr ""
+"사용자 소유자를 제거할 수 없습니다: 존 소유권 모드가 groups_only이고 존에 그"
+"룹 소유자가 없습니다. 먼저 그룹을 추가하세요."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:236
+#: lib/Application/Controller/ZoneOwnershipController.php:246
 msgid "Owner has been removed successfully."
 msgstr "소유자가 성공적으로 제거되었습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:249
+#: lib/Application/Controller/ZoneOwnershipController.php:259
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
 msgstr "현재 존 소유권 모드에서는 그룹 소유권 할당이 비활성화되어 있습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:261
+#: lib/Application/Controller/ZoneOwnershipController.php:271
 msgid "You do not have permission to assign this group."
 msgstr "이 그룹을 할당할 권한이 없습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:269
+#: lib/Application/Controller/ZoneOwnershipController.php:279
 msgid "Group has been added successfully."
 msgstr "그룹이 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:297
-msgid ""
-"Cannot remove the last group: zone ownership mode is groups_only and "
-"requires at least one group. Add another group first."
-msgstr "마지막 그룹을 제거할 수 없습니다: 존 소유권 모드가 groups_only이며 최소 한 개의 그룹이 필요합니다. 먼저 다른 그룹을 추가하세요."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:303
-msgid ""
-"Cannot remove group: zone ownership mode is users_only and the zone has no "
-"user owners. Add a user owner first."
-msgstr "그룹을 제거할 수 없습니다: 존 소유권 모드가 users_only이고 존에 사용자 소유자가 없습니다. 먼저 사용자 소유자를 추가하세요."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:308
+#: lib/Application/Controller/ZoneOwnershipController.php:318
 msgid "Group has been removed successfully."
 msgstr "그룹이 성공적으로 제거되었습니다."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:331
-msgid "Add another owner or a group first."
-msgstr "먼저 다른 소유자 또는 그룹을 추가하세요."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:334
-msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "먼저 다른 사용자 소유자를 추가하세요 (존 소유권 모드가 users_only입니다)."
-
-#: lib/Application/Controller/ZoneOwnershipController.php:336
-msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "먼저 그룹을 추가하세요 (존 소유권 모드가 groups_only입니다)."
 
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3236,11 +3258,11 @@ msgstr "아니오"
 msgid "Account is temporarily locked. Please try again later."
 msgstr "계정이 일시적으로 잠겼습니다. 나중에 다시 시도하세요."
 
-#: lib/Application/Service/SqlAuthenticator.php:142
+#: lib/Application/Service/SqlAuthenticator.php:154
 msgid "The user account is disabled."
 msgstr "사용자 계정이 비활성화되었습니다."
 
-#: lib/Application/Service/SqlAuthenticator.php:223
+#: lib/Application/Service/SqlAuthenticator.php:235
 msgid "Authentication failed!"
 msgstr "인증에 실패했습니다!"
 
@@ -3268,7 +3290,7 @@ msgstr "인증 실패: 유효하지 않은 세션"
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "인증 실패: 사용자 계정을 생성하거나 업데이트할 수 없습니다"
 
-#: lib/Application/Service/LdapAuthenticator.php:249
+#: lib/Application/Service/LdapAuthenticator.php:250
 msgid "LDAP Authentication failed!"
 msgstr "LDAP 인증에 실패했습니다!"
 
@@ -3300,7 +3322,7 @@ msgstr "유효하지 않은 존 이름입니다."
 msgid "This template is assigned to at least one user and one group."
 msgstr "이 템플릿은 최소 한 명의 사용자와 한 개의 그룹에 할당되어 있습니다."
 
-#: lib/Domain/Model/UserManager.php:421
+#: lib/Domain/Model/UserManager.php:422
 msgid "This template is assigned to at least one user."
 msgstr "이 템플릿은 최소 한 명의 사용자에게 할당되어 있습니다."
 
@@ -3497,74 +3519,73 @@ msgstr ""
 "데이터베이스 오류: 사용자 인증을 확인할 수 없습니다. 데이터베이스 설정을 확인"
 "하세요."
 
-#: lib/Domain/Model/UserManager.php:1216
+#: lib/Domain/Model/UserManager.php:1217
 msgid "Enter a valid email address."
 msgstr "유효한 이메일 주소를 입력하세요."
 
-#: lib/Domain/Model/UserManager.php:1208
+#: lib/Domain/Model/UserManager.php:1209
 msgid "Username exist already, please choose another one."
 msgstr "사용자 이름이 이미 존재합니다. 다른 이름을 선택하세요."
 
-#: lib/Domain/Model/UserManager.php:1220
+#: lib/Domain/Model/UserManager.php:1221
 msgid "Email address already exists, please choose another one."
 msgstr "이메일 주소가 이미 존재합니다. 다른 주소를 선택하세요."
 
-#: lib/Domain/Model/UserManager.php:995
-#, auto-english-fallback
+#: lib/Domain/Model/UserManager.php:996
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr "자신의 권한 템플릿을 변경하려면 다른 사용자를 수정할 권한이 필요합니다."
+msgstr ""
+"자신의 권한 템플릿을 변경하려면 다른 사용자를 수정할 권한이 필요합니다."
 
-#: lib/Domain/Model/UserManager.php:999
-#, auto-english-fallback
+#: lib/Domain/Model/UserManager.php:1000
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr "관리자 권한이 포함된 권한 템플릿을 할당하려면 관리자 권한이 필요합니다."
+msgstr ""
+"관리자 권한이 포함된 권한 템플릿을 할당하려면 관리자 권한이 필요합니다."
 
-#: lib/Domain/Model/UserManager.php:1212
+#: lib/Domain/Model/UserManager.php:1213
 msgid "Enter a valid user name."
 msgstr "유효한 사용자 이름을 입력하세요."
 
-#: lib/Domain/Model/ZoneTemplate.php:284
+#: lib/Domain/Model/ZoneTemplate.php:285
 msgid "Zone template not found."
 msgstr "존 템플릿을 찾을 수 없습니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:288
+#: lib/Domain/Model/ZoneTemplate.php:289
 msgid "Only global zone templates can be set as the default."
 msgstr "전역 존 템플릿만 기본값으로 설정할 수 있습니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Error setting default zone template: "
 msgstr "기본 존 템플릿 설정 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:323
+#: lib/Domain/Model/ZoneTemplate.php:324
 msgid "Error clearing default zone template: "
 msgstr "기본 존 템플릿 해제 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:369 lib/Domain/Model/ZoneTemplate.php:968
+#: lib/Domain/Model/ZoneTemplate.php:372 lib/Domain/Model/ZoneTemplate.php:974
 msgid "Error creating zone template: "
 msgstr "존 템플릿 생성 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:405
+#: lib/Domain/Model/ZoneTemplate.php:408
 msgid "Error adding default SOA record to template: "
 msgstr "템플릿에 기본 SOA 레코드를 추가하는 중 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:464
+#: lib/Domain/Model/ZoneTemplate.php:468
 msgid "Error deleting zone template: "
 msgstr "존 템플릿 삭제 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:488
+#: lib/Domain/Model/ZoneTemplate.php:492
 msgid "Error deleting user zone templates: "
 msgstr "사용자 존 템플릿 삭제 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:605
+#: lib/Domain/Model/ZoneTemplate.php:609
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "이 존 템플릿에 레코드를 추가할 권한이 없습니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:610 lib/Domain/Model/ZoneTemplate.php:745
-#, auto-english-fallback
+#: lib/Domain/Model/ZoneTemplate.php:614 lib/Domain/Model/ZoneTemplate.php:749
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "이 레코드 유형을 존 템플릿에 추가할 권한이 없습니다."
@@ -3577,70 +3598,68 @@ msgstr "콘텐츠 필드에 적절한 값이 없습니다."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV 레코드의 우선순위는 0에서 65535 사이의 숫자여야 합니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:349
+#: lib/Domain/Service/Dns/RecordManager.php:354
 msgid "You do not have the permission to edit this record."
 msgstr "이 레코드를 편집할 권한이 없습니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:735 lib/Domain/Model/ZoneTemplate.php:819
+#: lib/Domain/Model/ZoneTemplate.php:739 lib/Domain/Model/ZoneTemplate.php:823
 msgid "The record does not belong to this zone template."
 msgstr "이 레코드는 이 존 템플릿에 속하지 않습니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:797
+#: lib/Domain/Model/ZoneTemplate.php:801
 msgid "Error updating zone template record: "
 msgstr "존 템플릿 레코드 업데이트 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:825
-#, auto-english-fallback
+#: lib/Domain/Model/ZoneTemplate.php:829
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "이 레코드 유형을 존 템플릿에서 삭제할 권한이 없습니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:834
+#: lib/Domain/Model/ZoneTemplate.php:838
 msgid "Error deleting zone template record: "
 msgstr "존 템플릿 레코드 삭제 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:856
+#: lib/Domain/Model/ZoneTemplate.php:860
 msgid "Error checking template ownership: "
 msgstr "템플릿 소유권 확인 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:960
-#, auto-english-fallback
+#: lib/Domain/Model/ZoneTemplate.php:966
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 msgstr "추가 권한이 없어 다음 레코드 유형은 템플릿에서 제외되었습니다: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1099
+#: lib/Domain/Model/ZoneTemplate.php:1105
 msgid "Error retrieving zones using template: "
 msgstr "템플릿을 사용하는 존 가져오기 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1199
+#: lib/Domain/Model/ZoneTemplate.php:1205
 msgid "Failed to get list of zones using template: "
 msgstr "템플릿을 사용하는 존 목록을 가져오지 못했습니다: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1217
+#: lib/Domain/Model/ZoneTemplate.php:1223
 msgid "You do not have the permission to edit a zone template."
 msgstr "존 템플릿을 편집할 권한이 없습니다."
 
-#: lib/Domain/Model/ZoneTemplate.php:1265
+#: lib/Domain/Model/ZoneTemplate.php:1272
 msgid "Error unlinking zone from template: "
 msgstr "템플릿에서 존을 연결 해제하는 중 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1314
+#: lib/Domain/Model/ZoneTemplate.php:1321
 msgid "Error retrieving zones: "
 msgstr "존을 가져오는 중 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1333
+#: lib/Domain/Model/ZoneTemplate.php:1340
 msgid "Error checking template name existence: "
 msgstr "템플릿 이름 존재 여부 확인 오류: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1354
+#: lib/Domain/Model/ZoneTemplate.php:1361
 msgid "Error looking up template by name: "
 msgstr "이름으로 템플릿을 조회하는 중 오류 발생: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1377
+#: lib/Domain/Model/ZoneTemplate.php:1384
 msgid "Error checking template existence: "
 msgstr "템플릿 존재 여부 확인 오류: "
 
@@ -3920,7 +3939,9 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "TLSA 레코드는 공백으로 구분된 usage, selector, matching-type 및 certificate-data를 포함해야 합니다."
+msgstr ""
+"TLSA 레코드는 공백으로 구분된 usage, selector, matching-type 및 certificate-"
+"data를 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -3993,7 +4014,9 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "Matching-type 0 (정확히 일치)은 권장되지 않습니다. SHA-256 (1)이 더 나은 호환성과 보안을 제공합니다."
+msgstr ""
+"Matching-type 0 (정확히 일치)은 권장되지 않습니다. SHA-256 (1)이 더 나은 호환"
+"성과 보안을 제공합니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4218,7 +4241,9 @@ msgstr "LP FQDN은 유효한 정규화된 도메인 이름이어야 합니다."
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr "AFSDB 레코드는 RFC 5864에 의해 폐기되었으며, AFS 서비스 위치 확인에는 SRV 레코드를 사용해야 합니다."
+msgstr ""
+"AFSDB 레코드는 RFC 5864에 의해 폐기되었으며, AFS 서비스 위치 확인에는 SRV 레"
+"코드를 사용해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
@@ -4995,7 +5020,9 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr "TSIG 레코드는 공백으로 구분된 algorithm-name, timestamp, fudge, mac, original-id, error 및 other-len을 최소한 포함해야 합니다."
+msgstr ""
+"TSIG 레코드는 공백으로 구분된 algorithm-name, timestamp, fudge, mac, "
+"original-id, error 및 other-len을 최소한 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5168,7 +5195,9 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "ZONEMD 레코드는 공백으로 구분된 serial, scheme, hash-algorithm 및 digest를 포함해야 합니다."
+msgstr ""
+"ZONEMD 레코드는 공백으로 구분된 serial, scheme, hash-algorithm 및 digest를 포"
+"함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5242,7 +5271,9 @@ msgstr "CERT 레코드 콘텐츠에 유효하지 않은 문자가 있습니다."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr "CERT 레코드는 공백으로 구분된 type, key-tag, algorithm 및 certificate-data를 포함해야 합니다."
+msgstr ""
+"CERT 레코드는 공백으로 구분된 type, key-tag, algorithm 및 certificate-data를 "
+"포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5548,7 +5579,9 @@ msgstr "TKEY 레코드의 우선순위 필드는 0이거나 비어 있어야 합
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr "TKEY 레코드는 DNS 데이터 인증용이 아니라 DNS 서버/리졸버 간의 키 설정을 위한 것입니다."
+msgstr ""
+"TKEY 레코드는 DNS 데이터 인증용이 아니라 DNS 서버/리졸버 간의 키 설정을 위한 "
+"것입니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
@@ -5558,30 +5591,40 @@ msgstr "TKEY 레코드 콘텐츠에 유효하지 않은 문자가 있습니다."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "TKEY 레코드는 공백으로 구분된 algorithm-name, inception-time, expiration-time, mode, error 및 key-data를 포함해야 합니다."
+msgstr ""
+"TKEY 레코드는 공백으로 구분된 algorithm-name, inception-time, expiration-"
+"time, mode, error 및 key-data를 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
 "TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr "TKEY 알고리즘 이름은 점으로 끝나는 유효한 도메인 이름이어야 합니다 (예: hmac-sha256.)."
+msgstr ""
+"TKEY 알고리즘 이름은 점으로 끝나는 유효한 도메인 이름이어야 합니다 (예: hmac-"
+"sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "TKEY 시작 시간은 유효한 Unix 타임스탬프 또는 YYYYMMDDHHmmSS 형식이어야 합니다."
+msgstr ""
+"TKEY 시작 시간은 유효한 Unix 타임스탬프 또는 YYYYMMDDHHmmSS 형식이어야 합니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "TKEY 만료 시간은 유효한 Unix 타임스탬프 또는 YYYYMMDDHHmmSS 형식이어야 합니다."
+msgstr ""
+"TKEY 만료 시간은 유효한 Unix 타임스탬프 또는 YYYYMMDDHHmmSS 형식이어야 합니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr "TKEY 모드는 1에서 5 사이의 숫자여야 합니다 (1: 서버 할당, 2: Diffie-Hellman 교환, 3: GSS-API 협상, 4: 리졸버 할당, 5: 키 삭제)."
+msgstr ""
+"TKEY 모드는 1에서 5 사이의 숫자여야 합니다 (1: 서버 할당, 2: Diffie-Hellman "
+"교환, 3: GSS-API 협상, 4: 리졸버 할당, 5: 키 삭제)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
@@ -5595,7 +5638,9 @@ msgstr "GSS-API 모드에서는 키 데이터에 GSS-API 토큰이 포함되어�
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr "Diffie-Hellman 모드는 중간자 공격을 방지하기 위해 TSIG 또는 SIG(0)로 인증해야 합니다."
+msgstr ""
+"Diffie-Hellman 모드는 중간자 공격을 방지하기 위해 TSIG 또는 SIG(0)로 인증해"
+"야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
@@ -5610,7 +5655,9 @@ msgstr "TKEY 오류는 0에서 23 사이의 유효한 DNS RCODE 번호여야 합
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:229
 msgid ""
 "TKEY key data must be valid base64-encoded data or a hexadecimal string."
-msgstr "TKEY 키 데이터는 유효한 base64로 인코딩된 데이터 또는 16진수 문자열이어야 합니다."
+msgstr ""
+"TKEY 키 데이터는 유효한 base64로 인코딩된 데이터 또는 16진수 문자열이어야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
@@ -5621,7 +5668,8 @@ msgstr "TKEY로 설정된 키는 존이 아니라 DNS 서버/리졸버와 연결
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr "TKEY 레코드 교환은 보호되어야 하며, 인증은 사용된 모드에 따라 달라집니다."
+msgstr ""
+"TKEY 레코드 교환은 보호되어야 하며, 인증은 사용된 모드에 따라 달라집니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
@@ -5633,13 +5681,17 @@ msgstr "원본 ID는 0에서 65535 사이의 숫자여야 합니다."
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
 "security."
-msgstr "레거시 알고리즘이 감지되었습니다. 보안 강화를 위해 HMAC-SHA256 이상의 알고리즘이 권장됩니다."
+msgstr ""
+"레거시 알고리즘이 감지되었습니다. 보안 강화를 위해 HMAC-SHA256 이상의 알고리"
+"즘이 권장됩니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
 "Custom algorithm name detected. Standard algorithm names like \"hmac-"
 "sha256.\" are recommended for better compatibility."
-msgstr "사용자 정의 알고리즘 이름이 감지되었습니다. 더 나은 호환성을 위해 \"hmac-sha256.\"과 같은 표준 알고리즘 이름이 권장됩니다."
+msgstr ""
+"사용자 정의 알고리즘 이름이 감지되었습니다. 더 나은 호환성을 위해 \"hmac-"
+"sha256.\"과 같은 표준 알고리즘 이름이 권장됩니다."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
@@ -5659,21 +5711,27 @@ msgstr "TTL 값은 음수일 수 없습니다. 0 이상이어야 합니다."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr "TTL 값이 허용 최대치(%d)를 초과합니다. RFC 2181은 이를 부호 있는 32비트 정수로 제한합니다."
+msgstr ""
+"TTL 값이 허용 최대치(%d)를 초과합니다. RFC 2181은 이를 부호 있는 32비트 정수"
+"로 제한합니다."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr "TTL 값(%d)이 권장 최소치인 %d초(5분)보다 작습니다. TTL 값이 낮으면 DNS 트래픽이 증가합니다."
+msgstr ""
+"TTL 값(%d)이 권장 최소치인 %d초(5분)보다 작습니다. TTL 값이 낮으면 DNS 트래픽"
+"이 증가합니다."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr "TTL 값(%d)이 권장 최대치인 %d초(1주)보다 큽니다. TTL 값이 높으면 DNS 업데이트가 지연됩니다."
+msgstr ""
+"TTL 값(%d)이 권장 최대치인 %d초(1주)보다 큽니다. TTL 값이 높으면 DNS 업데이트"
+"가 지연됩니다."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
@@ -5685,7 +5743,8 @@ msgstr "SOA 레코드 TTL(%d)이 권장 최소치인 %d초(1시간)보다 작습
 msgid ""
 "URI records should be protected with DNSSEC to prevent manipulation by "
 "attackers."
-msgstr "URI 레코드는 공격자에 의한 조작을 방지하기 위해 DNSSEC로 보호해야 합니다."
+msgstr ""
+"URI 레코드는 공격자에 의한 조작을 방지하기 위해 DNSSEC로 보호해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
@@ -5707,7 +5766,9 @@ msgstr "전화 관련 URI 스킴에는 민감한 개인 정보가 포함될 수 
 msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
-msgstr "\"file\" URI 스킴은 보안 위험을 초래할 수 있으며 공개 DNS 레코드에는 권장되지 않습니다."
+msgstr ""
+"\"file\" URI 스킴은 보안 위험을 초래할 수 있으며 공개 DNS 레코드에는 권장되"
+"지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
@@ -5729,17 +5790,22 @@ msgstr "URI는 비워 둘 수 없습니다."
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr "URI는 문자로 시작하고 그 뒤에 문자, 숫자, 더하기(+), 마침표(.), 하이픈(-)이 오는 유효한 스킴으로 시작해야 합니다."
+msgstr ""
+"URI는 문자로 시작하고 그 뒤에 문자, 숫자, 더하기(+), 마침표(.), 하이픈(-)이 "
+"오는 유효한 스킴으로 시작해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr "URI가 일반적이지 않은 프로토콜을 사용합니다. 더 나은 호환성을 위해 표준 URI 스킴 사용을 고려하세요."
+msgstr ""
+"URI가 일반적이지 않은 프로토콜을 사용합니다. 더 나은 호환성을 위해 표준 URI "
+"스킴 사용을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
-msgstr "이 프로토콜을 사용하는 URI는 프로토콜 이름 뒤에 \"://\"를 포함해야 합니다."
+msgstr ""
+"이 프로토콜을 사용하는 URI는 프로토콜 이름 뒤에 \"://\"를 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
@@ -5753,55 +5819,73 @@ msgstr "URI에는 제어 문자가 포함될 수 없습니다."
 msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
-msgstr "URI에 백슬래시 문자가 포함되어 있으며, 이는 시스템에 따라 다르게 해석될 수 있습니다."
+msgstr ""
+"URI에 백슬래시 문자가 포함되어 있으며, 이는 시스템에 따라 다르게 해석될 수 있"
+"습니다."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
 "URI contains \"..\" sequences, which may be used for directory traversal "
 "attacks."
-msgstr "URI에 \"..\" 시퀀스가 포함되어 있으며, 이는 디렉터리 트래버설 공격에 사용될 수 있습니다."
+msgstr ""
+"URI에 \"..\" 시퀀스가 포함되어 있으며, 이는 디렉터리 트래버설 공격에 사용될 "
+"수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:312
 msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
-msgstr "URI에 올바른 형식의 퍼센트 인코딩에 사용되지 않은 퍼센트 문자가 포함되어 있습니다."
+msgstr ""
+"URI에 올바른 형식의 퍼센트 인코딩에 사용되지 않은 퍼센트 문자가 포함되어 있습"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
-msgstr "URI의 호스트 이름에 ASCII가 아닌 문자가 포함되어 있습니다. 국제 도메인 이름에는 Punycode 사용을 고려하세요."
+msgstr ""
+"URI의 호스트 이름에 ASCII가 아닌 문자가 포함되어 있습니다. 국제 도메인 이름에"
+"는 Punycode 사용을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
 "Invalid key exchanger hostname. The exchanger field must be a valid domain "
 "name."
-msgstr "유효하지 않은 키 교환기 호스트 이름입니다. exchanger 필드는 유효한 도메인 이름이어야 합니다."
+msgstr ""
+"유효하지 않은 키 교환기 호스트 이름입니다. exchanger 필드는 유효한 도메인 이"
+"름이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:123
 msgid ""
 "IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
 "KX records MUST be ignored for security reasons."
-msgstr "중요: RFC 2230은 KX 레코드를 DNSSEC으로 서명하도록 요구합니다. 서명되지 않은 KX 레코드는 보안상의 이유로 반드시 무시해야 합니다."
+msgstr ""
+"중요: RFC 2230은 KX 레코드를 DNSSEC으로 서명하도록 요구합니다. 서명되지 않은 "
+"KX 레코드는 보안상의 이유로 반드시 무시해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr "RFC 2230에 따라 보안 DNS를 구현하지 않는 시스템은 KX 레코드를 완전히 무시해야 합니다."
+msgstr ""
+"RFC 2230에 따라 보안 DNS를 구현하지 않는 시스템은 KX 레코드를 완전히 무시해"
+"야 합니다."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr "키 교환기 호스트에 적절한 정방향 및 역방향 DNS 레코드가 구성되어 있는지 확인하십시오."
+msgstr ""
+"키 교환기 호스트에 적절한 정방향 및 역방향 DNS 레코드가 구성되어 있는지 확인"
+"하십시오."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
 "The key exchanger host should have appropriate A/AAAA records for type A/"
 "AAAA additional section processing."
-msgstr "키 교환기 호스트에는 A/AAAA 유형의 추가 섹션 처리를 위한 적절한 A/AAAA 레코드가 있어야 합니다."
+msgstr ""
+"키 교환기 호스트에는 A/AAAA 유형의 추가 섹션 처리를 위한 적절한 A/AAAA 레코드"
+"가 있어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
 msgid "Invalid value for KX preference field. Must be between 0 and 65535."
@@ -5811,7 +5895,9 @@ msgstr "KX preference 필드의 값이 잘못되었습니다. 0에서 65535 사�
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr "참고: MINFO 레코드 유형은 RFC 1035에서 실험적(EXPERIMENTAL)으로 표시되어 있습니다. 모든 곳에서 지원되지 않을 수 있습니다."
+msgstr ""
+"참고: MINFO 레코드 유형은 RFC 1035에서 실험적(EXPERIMENTAL)으로 표시되어 있습"
+"니다. 모든 곳에서 지원되지 않을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
@@ -5821,7 +5907,9 @@ msgstr "MINFO 레코드 내용은 비워 둘 수 없습니다."
 msgid ""
 "MINFO record must contain both responsible mailbox and error mailbox "
 "separated by a space (RFC 1035 Section 3.3.7)."
-msgstr "MINFO 레코드에는 공백으로 구분된 담당자 메일박스와 오류 메일박스가 모두 포함되어야 합니다(RFC 1035 Section 3.3.7)."
+msgstr ""
+"MINFO 레코드에는 공백으로 구분된 담당자 메일박스와 오류 메일박스가 모두 포함"
+"되어야 합니다(RFC 1035 Section 3.3.7)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
@@ -5831,13 +5919,17 @@ msgstr "담당자 메일박스 호스트 이름(RMAILBX)이 유효하지 않습�
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr "RFC 1035은 많은 메일링 리스트가 담당자 메일박스 필드에 \"list-name-request\" 메일박스를 사용한다고 언급합니다."
+msgstr ""
+"RFC 1035은 많은 메일링 리스트가 담당자 메일박스 필드에 \"list-name-request\" "
+"메일박스를 사용한다고 언급합니다."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr "RMAILBX에 \".\"(루트)를 사용하면 MINFO 레코드의 소유자가 스스로를 담당한다는 의미입니다."
+msgstr ""
+"RMAILBX에 \".\"(루트)를 사용하면 MINFO 레코드의 소유자가 스스로를 담당한다는 "
+"의미입니다."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -5847,19 +5939,25 @@ msgstr "오류 메일박스 호스트 이름(EMAILBX)이 유효하지 않습니�
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr "EMAILBX에 \".\"(루트)를 사용하면 오류를 메시지 발신자에게 반환해야 한다는 의미입니다."
+msgstr ""
+"EMAILBX에 \".\"(루트)를 사용하면 오류를 메시지 발신자에게 반환해야 한다는 의"
+"미입니다."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr "담당자 메일박스와 오류 메일박스가 동일합니다. 각 용도에 서로 다른 메일박스를 사용하는 것을 고려하세요."
+msgstr ""
+"담당자 메일박스와 오류 메일박스가 동일합니다. 각 용도에 서로 다른 메일박스를 "
+"사용하는 것을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr "MINFO 레코드의 우선순위 필드는 0이거나 비어 있어야 합니다. RFC 1035에 따라 MINFO는 우선순위 값을 사용하지 않습니다."
+msgstr ""
+"MINFO 레코드의 우선순위 필드는 0이거나 비어 있어야 합니다. RFC 1035에 따라 "
+"MINFO는 우선순위 값을 사용하지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
@@ -5912,13 +6010,16 @@ msgstr "메커니즘의 CIDR 길이가 유효하지 않습니다."
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr "ptr 메커니즘은 성능 문제로 인해 권장되지 않습니다(RFC 7208 Section 5.5)."
+msgstr ""
+"ptr 메커니즘은 성능 문제로 인해 권장되지 않습니다(RFC 7208 Section 5.5)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "\"all\" 메커니즘은 레코드의 마지막 메커니즘이어야 합니다(RFC 7208 Section 5.1)."
+msgstr ""
+"\"all\" 메커니즘은 레코드의 마지막 메커니즘이어야 합니다(RFC 7208 Section "
+"5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
@@ -5942,20 +6043,26 @@ msgstr "알 수 없는 메커니즘: %s"
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr "SPF 레코드에는 마무리하는 \"all\" 메커니즘 또는 \"redirect\" 수정자 중 하나가 있어야 합니다(RFC 7208 Section 4.6.2)."
+msgstr ""
+"SPF 레코드에는 마무리하는 \"all\" 메커니즘 또는 \"redirect\" 수정자 중 하나"
+"가 있어야 합니다(RFC 7208 Section 4.6.2)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr "SPF 레코드에 \"all\" 메커니즘과 \"redirect\" 수정자가 모두 있습니다. \"all\"이 있으면 \"redirect\" 수정자는 무시됩니다(RFC 7208 Section 6.1)."
+msgstr ""
+"SPF 레코드에 \"all\" 메커니즘과 \"redirect\" 수정자가 모두 있습니다. "
+"\"all\"이 있으면 \"redirect\" 수정자는 무시됩니다(RFC 7208 Section 6.1)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr "우선순위 필드의 값이 잘못되었습니다. CNAME 레코드의 우선순위 값은 0이어야 합니다."
+msgstr ""
+"우선순위 필드의 값이 잘못되었습니다. CNAME 레코드의 우선순위 값은 0이어야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
@@ -5965,7 +6072,8 @@ msgstr "유효한 CNAME이 아닙니다. 이 이름을 가진 레코드가 이�
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "유효한 CNAME이 아닙니다. 해당 레코드에 MX 또는 NS 레코드를 할당하셨습니까?"
+msgstr ""
+"유효한 CNAME이 아닙니다. 해당 레코드에 MX 또는 NS 레코드를 할당하셨습니까?"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
@@ -5986,7 +6094,9 @@ msgstr "권한 템플릿 이름은 필수이며 1-128자 사이여야 합니다.
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr "CNAME 대상은 유효한 최상위 도메인을 가진 정규화된 도메인 이름(FQDN)이어야 합니다."
+msgstr ""
+"CNAME 대상은 유효한 최상위 도메인을 가진 정규화된 도메인 이름(FQDN)이어야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -5996,7 +6106,9 @@ msgstr "DHCID 레코드 내용에 잘못된 문자가 있습니다."
 msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
-msgstr "RFC 4701 및 RFC 4703에 따라 DHCID 레코드는 대응하는 A 또는 AAAA 레코드와 같은 이름에 두어야 합니다."
+msgstr ""
+"RFC 4701 및 RFC 4703에 따라 DHCID 레코드는 대응하는 A 또는 AAAA 레코드와 같"
+"은 이름에 두어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
@@ -6007,25 +6119,34 @@ msgid ""
 "Per RFC 4703, DHCID records are used for collision detection when multiple "
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
-msgstr "RFC 4703에 따라 DHCID 레코드는 여러 DHCP 클라이언트가 같은 이름을 요구할 때 충돌을 감지하는 데 사용됩니다. DHCID 레코드가 있다는 것은 해당 이름이 DHCP 클라이언트에 의해 사용 중임을 나타냅니다."
+msgstr ""
+"RFC 4703에 따라 DHCID 레코드는 여러 DHCP 클라이언트가 같은 이름을 요구할 때 "
+"충돌을 감지하는 데 사용됩니다. DHCID 레코드가 있다는 것은 해당 이름이 DHCP 클"
+"라이언트에 의해 사용 중임을 나타냅니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "DHCID 레코드에는 유효한 base64 문자(A-Z, a-z, 0-9, +, /, =)만 포함되어야 합니다."
+msgstr ""
+"DHCID 레코드에는 유효한 base64 문자(A-Z, a-z, 0-9, +, /, =)만 포함되어야 합니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "DHCID 레코드의 base64 패딩이 잘못되었습니다. 등호(=)는 데이터 끝에만 나타나야 합니다."
+msgstr ""
+"DHCID 레코드의 base64 패딩이 잘못되었습니다. 등호(=)는 데이터 끝에만 나타나"
+"야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr "DHCID 레코드의 base64 길이가 잘못되었습니다. Base64 데이터는 패딩을 포함하여 4자의 배수여야 합니다."
+msgstr ""
+"DHCID 레코드의 base64 길이가 잘못되었습니다. Base64 데이터는 패딩을 포함하여 "
+"4자의 배수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
@@ -6035,39 +6156,52 @@ msgstr "DHCID 레코드에는 유효한 base64로 인코딩된 데이터가 포�
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr "DHCID 레코드가 너무 짧습니다. 디코딩된 데이터에는 최소 3바이트(유형 코드와 다이제스트)가 포함되어야 합니다."
+msgstr ""
+"DHCID 레코드가 너무 짧습니다. 디코딩된 데이터에는 최소 3바이트(유형 코드와 다"
+"이제스트)가 포함되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr "DHCID 식별자 유형 0x%04X은(는) RFC 4701에 정의된 표준 유형(0x0000, 0x0001, 0x0002)이 아닙니다."
+msgstr ""
+"DHCID 식별자 유형 0x%04X은(는) RFC 4701에 정의된 표준 유형(0x0000, 0x0001, "
+"0x0002)이 아닙니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "DHCID 다이제스트 유형 %d은(는) RFC 4701에 정의된 표준 유형(SHA-256의 경우 1)이 아닙니다."
+msgstr ""
+"DHCID 다이제스트 유형 %d은(는) RFC 4701에 정의된 표준 유형(SHA-256의 경우 1)"
+"이 아닙니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr "SHA-256 다이제스트(유형 1)를 사용하는 DHCID 레코드는 디코딩했을 때 최소 35바이트여야 합니다(식별자 유형 2바이트, 다이제스트 유형 1바이트, SHA-256 다이제스트 32바이트)."
+msgstr ""
+"SHA-256 다이제스트(유형 1)를 사용하는 DHCID 레코드는 디코딩했을 때 최소 35바"
+"이트여야 합니다(식별자 유형 2바이트, 다이제스트 유형 1바이트, SHA-256 다이제"
+"스트 32바이트)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
 "DHCID records should be updated only by authorized DHCP clients or servers "
 "to prevent conflicts and unauthorized DNS updates."
-msgstr "충돌과 승인되지 않은 DNS 업데이트를 방지하기 위해 DHCID 레코드는 권한이 있는 DHCP 클라이언트 또는 서버만 업데이트해야 합니다."
+msgstr ""
+"충돌과 승인되지 않은 DNS 업데이트를 방지하기 위해 DHCID 레코드는 권한이 있는 "
+"DHCP 클라이언트 또는 서버만 업데이트해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:208
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr "RFC 4701의 권장에 따라 안전한 DHCID 업데이트를 위해 DNSSEC 또는 TSIG 인증(RFC 3007) 사용을 고려하세요."
+msgstr ""
+"RFC 4701의 권장에 따라 안전한 DHCID 업데이트를 위해 DNSSEC 또는 TSIG 인증"
+"(RFC 3007) 사용을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -6081,13 +6215,17 @@ msgstr "RRSIG 레코드의 우선순위 필드는 0이거나 비어 있어야 �
 msgid ""
 "RRSIG records should only be created by your DNS server when signing a zone. "
 "Manual manipulation is not recommended."
-msgstr "RRSIG 레코드는 존에 서명할 때 DNS 서버에 의해서만 생성되어야 합니다. 수동 조작은 권장되지 않습니다."
+msgstr ""
+"RRSIG 레코드는 존에 서명할 때 DNS 서버에 의해서만 생성되어야 합니다. 수동 조"
+"작은 권장되지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "정기적인 키 롤오버는 권장되는 보안 관행입니다. ZSK는 1-3개월마다, KSK는 1-2년마다 교체하십시오."
+msgstr ""
+"정기적인 키 롤오버는 권장되는 보안 관행입니다. ZSK는 1-3개월마다, KSK는 1-2년"
+"마다 교체하십시오."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
@@ -6101,7 +6239,9 @@ msgstr "RRSIG 레코드에 잘못된 문자가 포함되어 있습니다."
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr "RRSIG 레코드에는 covered-type, algorithm, labels, original TTL, expiration, inception, key tag, signer name 및 signature가 포함되어야 합니다."
+msgstr ""
+"RRSIG 레코드에는 covered-type, algorithm, labels, original TTL, expiration, "
+"inception, key tag, signer name 및 signature가 포함되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
@@ -6115,55 +6255,73 @@ msgstr "RRSIG algorithm 필드는 숫자 값이어야 합니다."
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr "알고리즘 1 (RSA/MD5)은 더 이상 사용되지 않으며 암호학적 취약점 때문에 사용해서는 안 됩니다."
+msgstr ""
+"알고리즘 1 (RSA/MD5)은 더 이상 사용되지 않으며 암호학적 취약점 때문에 사용해"
+"서는 안 됩니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "알고리즘 3 (DSA/SHA1)은 안전하지 않은 것으로 간주되므로 더 강력한 알고리즘으로 교체해야 합니다."
+msgstr ""
+"알고리즘 3 (DSA/SHA1)은 안전하지 않은 것으로 간주되므로 더 강력한 알고리즘으"
+"로 교체해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "알고리즘 5 (RSA/SHA-1)은 안전하지 않은 것으로 간주되므로 더 강력한 알고리즘으로 교체해야 합니다."
+msgstr ""
+"알고리즘 5 (RSA/SHA-1)은 안전하지 않은 것으로 간주되므로 더 강력한 알고리즘으"
+"로 교체해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure. Consider using RSA/SHA-256 or newer algorithms."
-msgstr "알고리즘 7 (RSASHA1-NSEC3-SHA1)은 더 이상 안전하다고 여겨지지 않는 SHA-1을 사용합니다. RSA/SHA-256 또는 더 최신 알고리즘 사용을 고려하세요."
+msgstr ""
+"알고리즘 7 (RSASHA1-NSEC3-SHA1)은 더 이상 안전하다고 여겨지지 않는 SHA-1을 사"
+"용합니다. RSA/SHA-256 또는 더 최신 알고리즘 사용을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid ""
 "Algorithm 10 (RSA/SHA-512) provides strong security but may have "
 "interoperability issues with some validators."
-msgstr "알고리즘 10 (RSA/SHA-512)은 강력한 보안을 제공하지만 일부 검증기와 상호 운용성 문제가 있을 수 있습니다."
+msgstr ""
+"알고리즘 10 (RSA/SHA-512)은 강력한 보안을 제공하지만 일부 검증기와 상호 운용"
+"성 문제가 있을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
-msgstr "알고리즘 13 (ECDSA P-256 with SHA-256)은 RSA보다 작은 서명으로 우수한 보안을 제공합니다."
+msgstr ""
+"알고리즘 13 (ECDSA P-256 with SHA-256)은 RSA보다 작은 서명으로 우수한 보안을 "
+"제공합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "알고리즘 14 (ECDSA P-384 with SHA-384)는 RSA보다 작은 서명으로 강력한 보안을 제공합니다."
+msgstr ""
+"알고리즘 14 (ECDSA P-384 with SHA-384)는 RSA보다 작은 서명으로 강력한 보안을 "
+"제공합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
 "Algorithm 15 (ED25519) offers modern security but may have compatibility "
 "issues with older DNSSEC validators."
-msgstr "알고리즘 15 (ED25519)는 최신 보안을 제공하지만 오래된 DNSSEC 검증기와 호환성 문제가 있을 수 있습니다."
+msgstr ""
+"알고리즘 15 (ED25519)는 최신 보안을 제공하지만 오래된 DNSSEC 검증기와 호환성 "
+"문제가 있을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid ""
 "Algorithm 16 (ED448) offers strong modern security but may have "
 "compatibility issues with older DNSSEC validators."
-msgstr "알고리즘 16 (ED448)은 강력한 최신 보안을 제공하지만 오래된 DNSSEC 검증기와 호환성 문제가 있을 수 있습니다."
+msgstr ""
+"알고리즘 16 (ED448)은 강력한 최신 보안을 제공하지만 오래된 DNSSEC 검증기와 호"
+"환성 문제가 있을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid ""
@@ -6190,7 +6348,9 @@ msgstr "RRSIG original TTL은 유효한 양의 정수여야 합니다."
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
 "are generally preferred for faster recovery in case of key compromise."
-msgstr "Original TTL이 1일(86400)보다 큽니다. DNSSEC 레코드의 경우 키가 유출되었을 때 더 빠르게 복구할 수 있도록 일반적으로 짧은 TTL이 선호됩니다."
+msgstr ""
+"Original TTL이 1일(86400)보다 큽니다. DNSSEC 레코드의 경우 키가 유출되었을 "
+"때 더 빠르게 복구할 수 있도록 일반적으로 짧은 TTL이 선호됩니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
@@ -6204,19 +6364,24 @@ msgstr "RRSIG inception은 YYYYMMDDHHmmSS 형식이어야 합니다."
 msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
-msgstr "만료 시각은 시작 시각보다 이후여야 합니다. 이 서명은 유효해지기 전에 만료된 것으로 보입니다."
+msgstr ""
+"만료 시각은 시작 시각보다 이후여야 합니다. 이 서명은 유효해지기 전에 만료된 "
+"것으로 보입니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
-msgstr "치명적: 이 서명은 이미 만료되었습니다. DNSSEC 리졸버가 이를 검증하지 않습니다."
+msgstr ""
+"치명적: 이 서명은 이미 만료되었습니다. DNSSEC 리졸버가 이를 검증하지 않습니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
-msgstr "경고: 이 서명은 앞으로 7일 이내에 만료됩니다. 곧 갱신하는 것을 고려하세요."
+msgstr ""
+"경고: 이 서명은 앞으로 7일 이내에 만료됩니다. 곧 갱신하는 것을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
@@ -6226,14 +6391,18 @@ msgstr "이 서명은 앞으로 30일 이내에 만료됩니다. 갱신을 계�
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
-msgstr "경고: 이 서명은 아직 유효하지 않습니다. 시작 시각에 도달할 때까지 DNSSEC 리졸버가 이를 검증하지 않습니다."
+msgstr ""
+"경고: 이 서명은 아직 유효하지 않습니다. 시작 시각에 도달할 때까지 DNSSEC 리졸"
+"버가 이를 검증하지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr "서명 유효 기간이 90일을 초과하며, 이는 권장 관행보다 깁니다. 유효 기간이 길면 키가 유출되었을 때 취약성이 커집니다."
+msgstr ""
+"서명 유효 기간이 90일을 초과하며, 이는 권장 관행보다 깁니다. 유효 기간이 길"
+"면 키가 유출되었을 때 취약성이 커집니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -6250,7 +6419,8 @@ msgstr "RRSIG key tag는 0에서 65535 사이의 유효한 값이어야 합니�
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
-msgstr "RRSIG signer name은 정규화된 도메인 이름이어야 합니다(점으로 끝나야 함)."
+msgstr ""
+"RRSIG signer name은 정규화된 도메인 이름이어야 합니다(점으로 끝나야 함)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
@@ -6264,19 +6434,25 @@ msgstr "RRSIG signature는 비워 둘 수 없습니다."
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
-msgstr "서명이 유효한 base64 인코딩 데이터가 아닌 것 같습니다. RRSIG 서명은 base64로 인코딩되어야 합니다."
+msgstr ""
+"서명이 유효한 base64 인코딩 데이터가 아닌 것 같습니다. RRSIG 서명은 base64로 "
+"인코딩되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
-msgstr "RRSIG 레코드는 DNSSEC의 일부로 DNS 레코드에 대한 암호화 서명을 제공합니다. DNS 서버가 자동으로 관리해야 합니다."
+msgstr ""
+"RRSIG 레코드는 DNSSEC의 일부로 DNS 레코드에 대한 암호화 서명을 제공합니다. "
+"DNS 서버가 자동으로 관리해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
-msgstr "DNSSEC 유효성 검사를 유지하려면 RRSIG 레코드를 만료일 이전에 다시 생성해야 한다는 점에 유의하십시오."
+msgstr ""
+"DNSSEC 유효성 검사를 유지하려면 RRSIG 레코드를 만료일 이전에 다시 생성해야 한"
+"다는 점에 유의하십시오."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
@@ -6286,13 +6462,17 @@ msgstr "RP 레코드의 우선순위 필드는 0이거나 비어 있어야 합�
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr "RP 레코드는 RFC 1183(1990)에 정의되었으며 최신 DNS 구성에서는 널리 사용되지 않습니다."
+msgstr ""
+"RP 레코드는 RFC 1183(1990)에 정의되었으며 최신 DNS 구성에서는 널리 사용되지 "
+"않습니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
 "Consider including other contact methods besides RP records for critical "
 "domains."
-msgstr "중요한 도메인의 경우 RP 레코드 외에 다른 연락 수단도 포함하는 것을 고려하세요."
+msgstr ""
+"중요한 도메인의 경우 RP 레코드 외에 다른 연락 수단도 포함하는 것을 고려하세"
+"요."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
@@ -6310,42 +6490,55 @@ msgstr "RP 레코드에 잘못된 문자가 포함되어 있습니다."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "RP 레코드에는 mailbox-domain(mbox-dname)과 txt-record-domain(txt-dname)이 포함되어야 합니다."
+msgstr ""
+"RP 레코드에는 mailbox-domain(mbox-dname)과 txt-record-domain(txt-dname)이 포"
+"함되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
-msgstr "RP 레코드는 연락처 정보를 DNS에 노출하므로 개인정보 보호 및 보안 문제가 발생할 수 있습니다."
+msgstr ""
+"RP 레코드는 연락처 정보를 DNS에 노출하므로 개인정보 보호 및 보안 문제가 발생"
+"할 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
 "The RP record is less commonly used today. Consider using WHOIS records or "
 "other contact mechanisms instead."
-msgstr "RP 레코드는 오늘날 잘 사용되지 않습니다. 대신 WHOIS 레코드나 다른 연락처 수단을 사용하는 것을 고려하십시오."
+msgstr ""
+"RP 레코드는 오늘날 잘 사용되지 않습니다. 대신 WHOIS 레코드나 다른 연락처 수단"
+"을 사용하는 것을 고려하십시오."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:195
 msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
-msgstr "점(.)을 사용하지 않는 경우 txt-dname 필드에 해당하는 TXT 레코드가 존재하는지 확인하십시오."
+msgstr ""
+"점(.)을 사용하지 않는 경우 txt-dname 필드에 해당하는 TXT 레코드가 존재하는지 "
+"확인하십시오."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
 "Using \".\" for the mailbox domain indicates no responsible person is "
 "specified. This is not recommended for production domains."
-msgstr "메일박스 도메인에 \".\"을 사용하면 책임자가 지정되지 않았음을 의미합니다. 운영 도메인에는 권장되지 않습니다."
+msgstr ""
+"메일박스 도메인에 \".\"을 사용하면 책임자가 지정되지 않았음을 의미합니다. 운"
+"영 도메인에는 권장되지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP 메일박스 도메인은 정규화된 도메인 이름이어야 합니다(점으로 끝나야 함)."
+msgstr ""
+"RP 메일박스 도메인은 정규화된 도메인 이름이어야 합니다(점으로 끝나야 함)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
 "RP mailbox local part contains invalid characters. Only characters valid in "
 "email addresses are allowed."
-msgstr "RP 메일박스의 로컬 부분에 잘못된 문자가 있습니다. 이메일 주소에 사용할 수 있는 문자만 허용됩니다."
+msgstr ""
+"RP 메일박스의 로컬 부분에 잘못된 문자가 있습니다. 이메일 주소에 사용할 수 있"
+"는 문자만 허용됩니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
@@ -6356,11 +6549,14 @@ msgstr "메일박스 도메인은 이메일 주소를 나타냅니다: %s"
 msgid ""
 "RP mailbox domain part contains underscores, which are not allowed in domain "
 "names."
-msgstr "RP 메일박스 도메인 부분에 밑줄이 포함되어 있으며, 밑줄은 도메인 이름에 사용할 수 없습니다."
+msgstr ""
+"RP 메일박스 도메인 부분에 밑줄이 포함되어 있으며, 밑줄은 도메인 이름에 사용"
+"할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
 msgid "RP mailbox domain must include both local part and domain sections."
-msgstr "RP 메일박스 도메인에는 로컬 부분과 도메인 부분이 모두 포함되어야 합니다."
+msgstr ""
+"RP 메일박스 도메인에는 로컬 부분과 도메인 부분이 모두 포함되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:256
 msgid "RP mailbox domain contains empty label."
@@ -6386,13 +6582,17 @@ msgstr "RP 메일박스의 도메인 부분이 유효한 도메인 이름이 아
 msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
-msgstr "메일박스 도메인은 SOA 레코드의 RNAME 필드와 동일한 형식을 사용해야 하며, @는 점으로 바꿔야 합니다."
+msgstr ""
+"메일박스 도메인은 SOA 레코드의 RNAME 필드와 동일한 형식을 사용해야 하며, @는 "
+"점으로 바꿔야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
 "Using \".\" for the TXT domain indicates no additional information TXT "
 "record is available."
-msgstr "TXT 도메인에 \".\"을 사용하면 추가 정보를 담은 TXT 레코드가 없음을 의미합니다."
+msgstr ""
+"TXT 도메인에 \".\"을 사용하면 추가 정보를 담은 TXT 레코드가 없음을 의미합니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
@@ -6422,7 +6622,9 @@ msgstr "RP TXT 도메인이 최대 길이인 253자를 초과합니다."
 msgid ""
 "Ensure a TXT record exists at this domain name containing contact "
 "information for the responsible person."
-msgstr "이 도메인 이름에 책임자의 연락처 정보를 담은 TXT 레코드가 존재하는지 확인하십시오."
+msgstr ""
+"이 도메인 이름에 책임자의 연락처 정보를 담은 TXT 레코드가 존재하는지 확인하십"
+"시오."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
@@ -6433,13 +6635,17 @@ msgstr "도메인에 TXT 레코드를 생성해야 합니다: %s"
 msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
-msgstr "이 주소는 EUI-48 주소에서 파생된 EUI-64 주소로 보입니다(중간에 FF-FE가 포함되어 있음)."
+msgstr ""
+"이 주소는 EUI-48 주소에서 파생된 EUI-64 주소로 보입니다(중간에 FF-FE가 포함되"
+"어 있음)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
 "This appears to be an IPv6 interface identifier (has the universal/local bit "
 "flipped compared to standard EUI-64)."
-msgstr "이 주소는 IPv6 인터페이스 식별자로 보입니다(표준 EUI-64와 비교해 universal/local 비트가 반전되어 있음)."
+msgstr ""
+"이 주소는 IPv6 인터페이스 식별자로 보입니다(표준 EUI-64와 비교해 universal/"
+"local 비트가 반전되어 있음)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:128
 msgid "Priority field for EUI64 records must be 0 or empty."
@@ -6449,43 +6655,57 @@ msgstr "EUI64 레코드의 우선순위 필드는 0이거나 비어 있어야 �
 msgid ""
 "RFC 7043 recommends against publishing EUI-64 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr "RFC 7043은 개인정보 보호 문제가 발생할 수 있으므로 공개 DNS에 EUI-64 주소를 게시하지 않도록 권고합니다."
+msgstr ""
+"RFC 7043은 개인정보 보호 문제가 발생할 수 있으므로 공개 DNS에 EUI-64 주소를 "
+"게시하지 않도록 권고합니다."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:155
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "EUI64 레코드가 콜론 구분 기호(xx:xx:xx:xx:xx:xx:xx:xx)를 사용하고 있으나 하이픈 구분 기호(xx-xx-xx-xx-xx-xx-xx-xx)를 사용해야 합니다."
+msgstr ""
+"EUI64 레코드가 콜론 구분 기호(xx:xx:xx:xx:xx:xx:xx:xx)를 사용하고 있으나 하이"
+"픈 구분 기호(xx-xx-xx-xx-xx-xx-xx-xx)를 사용해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "EUI64 레코드에 구분 기호가 없습니다. 형식은 옥텟 사이에 하이픈을 넣은 xx-xx-xx-xx-xx-xx-xx-xx여야 합니다."
+msgstr ""
+"EUI64 레코드에 구분 기호가 없습니다. 형식은 옥텟 사이에 하이픈을 넣은 xx-xx-"
+"xx-xx-xx-xx-xx-xx여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "EUI64 레코드가 점으로 구분된 형식으로 보입니다. 형식은 xx-xx-xx-xx-xx-xx-xx-xx여야 합니다."
+msgstr ""
+"EUI64 레코드가 점으로 구분된 형식으로 보입니다. 형식은 xx-xx-xx-xx-xx-xx-xx-"
+"xx여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr "EUI64 레코드는 xx-xx-xx-xx-xx-xx-xx-xx 형식의 유효한 EUI-64 주소여야 합니다(x는 16진수 숫자)."
+msgstr ""
+"EUI64 레코드는 xx-xx-xx-xx-xx-xx-xx-xx 형식의 유효한 EUI-64 주소여야 합니다(x"
+"는 16진수 숫자)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
 "This appears to be a multicast address (the least significant bit of the "
 "first octet is set to 1)."
-msgstr "이 주소는 멀티캐스트 주소로 보입니다(첫 번째 옥텟의 최하위 비트가 1로 설정되어 있음)."
+msgstr ""
+"이 주소는 멀티캐스트 주소로 보입니다(첫 번째 옥텟의 최하위 비트가 1로 설정되"
+"어 있음)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:163
 msgid ""
 "This appears to be a locally administered address (the second least "
 "significant bit of the first octet is set to 1)."
-msgstr "이 주소는 로컬에서 관리되는 주소로 보입니다(첫 번째 옥텟의 두 번째 최하위 비트가 1로 설정되어 있음)."
+msgstr ""
+"이 주소는 로컬에서 관리되는 주소로 보입니다(첫 번째 옥텟의 두 번째 최하위 비"
+"트가 1로 설정되어 있음)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
@@ -6499,7 +6719,9 @@ msgstr "이 주소는 IANA OUI(00-00-5E) 주소로 보입니다."
 msgid ""
 "This DNAME record appears to be at zone apex. According to RFC 6672, using "
 "DNAME at the zone apex requires special handling for NS and related records."
-msgstr "이 DNAME 레코드는 존 apex에 있는 것으로 보입니다. RFC 6672에 따르면 존 apex에서 DNAME을 사용할 때는 NS 및 관련 레코드에 대한 특별한 처리가 필요합니다."
+msgstr ""
+"이 DNAME 레코드는 존 apex에 있는 것으로 보입니다. RFC 6672에 따르면 존 apex에"
+"서 DNAME을 사용할 때는 NS 및 관련 레코드에 대한 특별한 처리가 필요합니다."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
@@ -6513,7 +6735,9 @@ msgstr "DNAME 레코드는 자기 자신을 가리킬 수 없습니다."
 msgid ""
 "The DNAME target appears to be a subdomain of the owner name. This could "
 "create problematic circular references when resolving subdomains."
-msgstr "DNAME 대상이 소유자 이름의 하위 도메인으로 보입니다. 이는 하위 도메인을 확인할 때 문제가 되는 순환 참조를 만들 수 있습니다."
+msgstr ""
+"DNAME 대상이 소유자 이름의 하위 도메인으로 보입니다. 이는 하위 도메인을 확인"
+"할 때 문제가 되는 순환 참조를 만들 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
@@ -6523,37 +6747,49 @@ msgstr "DNAME 레코드의 우선순위 필드는 0이거나 비어 있어야 �
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr "RFC 6672에 따라 DNAME 레코드는 주어진 소유자 이름에서 고유해야 합니다(싱글톤 규칙)."
+msgstr ""
+"RFC 6672에 따라 DNAME 레코드는 주어진 소유자 이름에서 고유해야 합니다(싱글톤 "
+"규칙)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr "DNAME 레코드와 CNAME 레코드는 같은 소유자 이름에 함께 존재할 수 없습니다(RFC 6672 Section 2.3)."
+msgstr ""
+"DNAME 레코드와 CNAME 레코드는 같은 소유자 이름에 함께 존재할 수 없습니다(RFC "
+"6672 Section 2.3)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr "소유자 이름이 존 apex가 아닌 한, DNAME 레코드는 NS 레코드와 같은 소유자 이름에 나타날 수 없습니다."
+msgstr ""
+"소유자 이름이 존 apex가 아닌 한, DNAME 레코드는 NS 레코드와 같은 소유자 이름"
+"에 나타날 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
 "DNAME creates synthetic aliases for all subdomains of its owner name. "
 "Consider this carefully when planning your zone structure."
-msgstr "DNAME은 소유자 이름의 모든 하위 도메인에 대해 합성 별칭을 생성합니다. 존 구조를 계획할 때 이를 신중히 고려하십시오."
+msgstr ""
+"DNAME은 소유자 이름의 모든 하위 도메인에 대해 합성 별칭을 생성합니다. 존 구조"
+"를 계획할 때 이를 신중히 고려하십시오."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:101
 msgid ""
 "DS records should typically be placed at delegation points, not at the zone "
 "apex. Check if this is intentional."
-msgstr "DS 레코드는 일반적으로 존 apex가 아니라 위임 지점에 두어야 합니다. 의도한 것인지 확인하십시오."
+msgstr ""
+"DS 레코드는 일반적으로 존 apex가 아니라 위임 지점에 두어야 합니다. 의도한 것"
+"인지 확인하십시오."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:282
 msgid ""
 "This is a special CDS deletion record (RFC 8078) that signals the parent to "
 "remove the DS record."
-msgstr "이것은 상위 존에 DS 레코드를 제거하도록 알리는 특수 CDS 삭제 레코드(RFC 8078)입니다."
+msgstr ""
+"이것은 상위 존에 DS 레코드를 제거하도록 알리는 특수 CDS 삭제 레코드(RFC 8078)"
+"입니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:145
 msgid "Priority field for DS records must be 0 or empty."
@@ -6562,7 +6798,9 @@ msgstr "DS 레코드의 우선순위 필드는 0이거나 비어 있어야 합�
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr "DS 레코드는 다음 형식이어야 합니다: <key-tag> <algorithm> <digest-type> <digest>"
+msgstr ""
+"DS 레코드는 다음 형식이어야 합니다: <key-tag> <algorithm> <digest-type> "
+"<digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -6574,20 +6812,26 @@ msgstr "키 태그는 1에서 65535 사이의 숫자여야 합니다"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:211
 msgid "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
-msgstr "알고리즘은 다음 중 하나여야 합니다: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
+msgstr ""
+"알고리즘은 다음 중 하나여야 합니다: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, "
+"16"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:212
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr "%s(알고리즘 %d)은(는) RFC 8624에 따라 사용이 권장되는(RECOMMENDED) 알고리즘입니다."
+msgstr ""
+"%s(알고리즘 %d)은(는) RFC 8624에 따라 사용이 권장되는(RECOMMENDED) 알고리즘입"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr "%s(알고리즘 %d)은(는) 널리 사용되고 있으나 ECDSAP256SHA256(13) 또는 ED25519(15)와 같은 최신 알고리즘이 더 권장됩니다."
+msgstr ""
+"%s(알고리즘 %d)은(는) 널리 사용되고 있으나 ECDSAP256SHA256(13) 또는 "
+"ED25519(15)와 같은 최신 알고리즘이 더 권장됩니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
@@ -6599,30 +6843,43 @@ msgstr "%s(알고리즘 %d)은(는) RFC 8624에 따라 구현이 선택 사항�
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr "%s(알고리즘 %d)은(는) RFC 8624에 따라 사용이 권장되지 않습니다(NOT RECOMMENDED). 대신 ECDSAP256SHA256(13) 또는 ED25519(15)를 사용하는 것을 고려하십시오."
+msgstr ""
+"%s(알고리즘 %d)은(는) RFC 8624에 따라 사용이 권장되지 않습니다(NOT "
+"RECOMMENDED). 대신 ECDSAP256SHA256(13) 또는 ED25519(15)를 사용하는 것을 고려"
+"하십시오."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "다이제스트 유형은 다음 중 하나여야 합니다: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
+msgstr ""
+"다이제스트 유형은 다음 중 하나여야 합니다: 1 (SHA-1), 2 (SHA-256), 4 "
+"(SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
 "SHA-1 (digest type 1) is NOT RECOMMENDED for use according to RFC 8624. "
 "SHA-256 (digest type 2) is the recommended digest algorithm."
-msgstr "SHA-1(다이제스트 유형 1)은 RFC 8624에 따라 사용이 권장되지 않습니다(NOT RECOMMENDED). SHA-256(다이제스트 유형 2)이 권장되는 다이제스트 알고리즘입니다."
+msgstr ""
+"SHA-1(다이제스트 유형 1)은 RFC 8624에 따라 사용이 권장되지 않습니다(NOT "
+"RECOMMENDED). SHA-256(다이제스트 유형 2)이 권장되는 다이제스트 알고리즘입니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
 "SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
 "8624."
-msgstr "SHA-256(다이제스트 유형 2)은 RFC 8624에 따라 권장되는(RECOMMENDED) 다이제스트 알고리즘입니다."
+msgstr ""
+"SHA-256(다이제스트 유형 2)은 RFC 8624에 따라 권장되는(RECOMMENDED) 다이제스"
+"트 알고리즘입니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
 "but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
 "support."
-msgstr "SHA-384(다이제스트 유형 4)는 더 높은 보안 요구 사항에 적합한 선택이지만, 대부분의 환경에서는 SHA-256(다이제스트 유형 2)으로 충분하며 지원 범위도 더 넓습니다."
+msgstr ""
+"SHA-384(다이제스트 유형 4)는 더 높은 보안 요구 사항에 적합한 선택이지만, 대부"
+"분의 환경에서는 SHA-256(다이제스트 유형 2)으로 충분하며 지원 범위도 더 넓습니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
@@ -6641,55 +6898,74 @@ msgid ""
 "DS records establish a chain of trust from parent to child zones. The parent "
 "zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
-msgstr "DS 레코드는 상위 존에서 하위 존으로 이어지는 신뢰 체인을 구성합니다. 상위 존에는 이 DS 레코드가 있어야 하고, 하위 존에는 이에 대응하는 DNSKEY 레코드가 있어야 합니다."
+msgstr ""
+"DS 레코드는 상위 존에서 하위 존으로 이어지는 신뢰 체인을 구성합니다. 상위 존"
+"에는 이 DS 레코드가 있어야 하고, 하위 존에는 이에 대응하는 DNSKEY 레코드가 있"
+"어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
 "CSYNC records should only be placed at the zone apex (RFC 7477). This record "
 "may not be processed by parental agents."
-msgstr "CSYNC 레코드는 존 apex에만 두어야 합니다(RFC 7477). 이 레코드는 상위 에이전트에서 처리되지 않을 수 있습니다."
+msgstr ""
+"CSYNC 레코드는 존 apex에만 두어야 합니다(RFC 7477). 이 레코드는 상위 에이전트"
+"에서 처리되지 않을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr "CSYNC 레코드가 상위 에이전트에서 처리되려면 DNSSEC 서명이 필요합니다(RFC 7477). 존이 DNSSEC으로 올바르게 서명되었는지 확인하십시오."
+msgstr ""
+"CSYNC 레코드가 상위 에이전트에서 처리되려면 DNSSEC 서명이 필요합니다(RFC "
+"7477). 존이 DNSSEC으로 올바르게 서명되었는지 확인하십시오."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
-msgstr "존당 CSYNC 레코드는 하나만 존재해야 합니다(RFC 7477). 레코드가 여러 개이면 예기치 않은 동작이 발생할 수 있습니다."
+msgstr ""
+"존당 CSYNC 레코드는 하나만 존재해야 합니다(RFC 7477). 레코드가 여러 개이면 예"
+"기치 않은 동작이 발생할 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
 "No flags are set in this CSYNC record. The record may not be processed "
 "immediately by parental agents."
-msgstr "이 CSYNC 레코드에 설정된 플래그가 없습니다. 이 레코드는 상위 에이전트에서 즉시 처리되지 않을 수 있습니다."
+msgstr ""
+"이 CSYNC 레코드에 설정된 플래그가 없습니다. 이 레코드는 상위 에이전트에서 즉"
+"시 처리되지 않을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:142
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr "\"immediate\" 플래그(0x0001)가 설정되지 않았습니다. 상위 에이전트가 이 레코드의 처리를 지연할 수 있습니다."
+msgstr ""
+"\"immediate\" 플래그(0x0001)가 설정되지 않았습니다. 상위 에이전트가 이 레코드"
+"의 처리를 지연할 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr "\"soaminimum\" 플래그(0x0002)가 설정되지 않았습니다. SOA 일련번호 검증이 적용되지 않을 수 있습니다."
+msgstr ""
+"\"soaminimum\" 플래그(0x0002)가 설정되지 않았습니다. SOA 일련번호 검증이 적용"
+"되지 않을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
 "Invalid value for priority field. CSYNC records must have priority value of "
 "0."
-msgstr "우선순위 필드의 값이 잘못되었습니다. CSYNC 레코드의 우선순위 값은 0이어야 합니다."
+msgstr ""
+"우선순위 필드의 값이 잘못되었습니다. CSYNC 레코드의 우선순위 값은 0이어야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:196
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "CSYNC 레코드의 SOA Serial이 잘못되었습니다. 32비트 부호 없는 정수(0-4294967295)여야 합니다."
+msgstr ""
+"CSYNC 레코드의 SOA Serial이 잘못되었습니다. 32비트 부호 없는 정수"
+"(0-4294967295)여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -6697,18 +6973,22 @@ msgstr "CSYNC 레코드의 Flags가 잘못되었습니다. Flags는 숫자 값�
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
-msgstr "CSYNC 레코드의 Flags가 잘못되었습니다. Flags는 0에서 65535 사이여야 합니다."
+msgstr ""
+"CSYNC 레코드의 Flags가 잘못되었습니다. Flags는 0에서 65535 사이여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
 "Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
 "values are 0, 1, 2, or 3."
-msgstr "CSYNC 레코드의 Flags가 잘못되었습니다. 비트 0-1만 정의되어 있습니다(값 0-3). 유효한 값은 0, 1, 2 또는 3입니다."
+msgstr ""
+"CSYNC 레코드의 Flags가 잘못되었습니다. 비트 0-1만 정의되어 있습니다(값 0-3). "
+"유효한 값은 0, 1, 2 또는 3입니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
 "CSYNC record must specify at least one record type in the Type Bit Map field."
-msgstr "CSYNC 레코드는 Type Bit Map 필드에 하나 이상의 레코드 유형을 지정해야 합니다."
+msgstr ""
+"CSYNC 레코드는 Type Bit Map 필드에 하나 이상의 레코드 유형을 지정해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
 msgid "Invalid Type \""
@@ -6726,20 +7006,27 @@ msgstr "중복된 유형 \""
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
 "have specific NS record policies that can prevent successful synchronization."
-msgstr "NS 레코드 동기화는 신중하게 고려해야 합니다. 상위 존에 특정 NS 레코드 정책이 있어 동기화가 성공하지 못할 수 있습니다."
+msgstr ""
+"NS 레코드 동기화는 신중하게 고려해야 합니다. 상위 존에 특정 NS 레코드 정책이 "
+"있어 동기화가 성공하지 못할 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:266
 msgid ""
 "Note: The true wire format for CSYNC Type Bit Map follows RFC 4034 Section "
 "4.1.2 format. Poweradmin uses a simplified representation with space-"
 "separated record types."
-msgstr "참고: CSYNC Type Bit Map의 실제 와이어 형식은 RFC 4034 Section 4.1.2 형식을 따릅니다. Poweradmin은 공백으로 구분된 레코드 유형이라는 단순화된 표현을 사용합니다."
+msgstr ""
+"참고: CSYNC Type Bit Map의 실제 와이어 형식은 RFC 4034 Section 4.1.2 형식을 "
+"따릅니다. Poweradmin은 공백으로 구분된 레코드 유형이라는 단순화된 표현을 사용"
+"합니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
 "RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
 "type cannot be synchronized, no changes will be made by the parent."
-msgstr "RFC 7477은 CSYNC 처리에 \"전부 아니면 전무\" 방식을 요구합니다. 어느 한 유형이라도 동기화할 수 없으면 상위 존에서 아무런 변경도 수행하지 않습니다."
+msgstr ""
+"RFC 7477은 CSYNC 처리에 \"전부 아니면 전무\" 방식을 요구합니다. 어느 한 유형"
+"이라도 동기화할 수 없으면 상위 존에서 아무런 변경도 수행하지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
@@ -6749,60 +7036,79 @@ msgstr "EUI48 레코드의 우선순위는 0이어야 합니다."
 msgid ""
 "RFC 7043 recommends against publishing EUI-48 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr "RFC 7043은 개인정보 보호 문제가 발생할 수 있으므로 공개 DNS에 EUI-48 주소를 게시하지 않도록 권고합니다."
+msgstr ""
+"RFC 7043은 개인정보 보호 문제가 발생할 수 있으므로 공개 DNS에 EUI-48 주소를 "
+"게시하지 않도록 권고합니다."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:138
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "EUI48 레코드가 콜론 구분 기호(xx:xx:xx:xx:xx:xx)를 사용하고 있으나 하이픈 구분 기호(xx-xx-xx-xx-xx-xx)를 사용해야 합니다."
+msgstr ""
+"EUI48 레코드가 콜론 구분 기호(xx:xx:xx:xx:xx:xx)를 사용하고 있으나 하이픈 구"
+"분 기호(xx-xx-xx-xx-xx-xx)를 사용해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
-msgstr "EUI48 레코드에 구분 기호가 없습니다. 형식은 옥텟 사이에 하이픈을 넣은 xx-xx-xx-xx-xx-xx여야 합니다."
+msgstr ""
+"EUI48 레코드에 구분 기호가 없습니다. 형식은 옥텟 사이에 하이픈을 넣은 xx-xx-"
+"xx-xx-xx-xx여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
 "EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
-msgstr "EUI48 레코드가 Cisco 형식으로 보입니다. 형식은 xx-xx-xx-xx-xx-xx여야 합니다."
+msgstr ""
+"EUI48 레코드가 Cisco 형식으로 보입니다. 형식은 xx-xx-xx-xx-xx-xx여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 레코드는 xx-xx-xx-xx-xx-xx 형식의 유효한 MAC 주소여야 합니다(x는 16진수 숫자)."
+msgstr ""
+"EUI48 레코드는 xx-xx-xx-xx-xx-xx 형식의 유효한 MAC 주소여야 합니다(x는 16진"
+"수 숫자)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
 "This is the broadcast address (all-ones), which may not be valid in all "
 "contexts."
-msgstr "이 주소는 브로드캐스트 주소(모두 1)이며, 모든 상황에서 유효하지 않을 수 있습니다."
+msgstr ""
+"이 주소는 브로드캐스트 주소(모두 1)이며, 모든 상황에서 유효하지 않을 수 있습"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:149
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr "레코드 이름이 표준 역방향 DNS 존 이름으로 보이지 않습니다(IPv4는 .in-addr.arpa, IPv6는 .ip6.arpa로 끝나야 합니다)."
+msgstr ""
+"레코드 이름이 표준 역방향 DNS 존 이름으로 보이지 않습니다(IPv4는 .in-"
+"addr.arpa, IPv6는 .ip6.arpa로 끝나야 합니다)."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
-msgstr "PTR 레코드의 우선순위 필드는 0이거나 비어 있어야 합니다. 지정한 값은 무시됩니다."
+msgstr ""
+"PTR 레코드의 우선순위 필드는 0이거나 비어 있어야 합니다. 지정한 값은 무시됩니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:166
 msgid ""
 "PTR records should have corresponding forward (A/AAAA) records to avoid "
 "problems with services that check reverse DNS."
-msgstr "역방향 DNS를 확인하는 서비스에서 문제가 생기지 않도록 PTR 레코드에는 대응하는 정방향(A/AAAA) 레코드가 있어야 합니다."
+msgstr ""
+"역방향 DNS를 확인하는 서비스에서 문제가 생기지 않도록 PTR 레코드에는 대응하"
+"는 정방향(A/AAAA) 레코드가 있어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:167
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
-msgstr "메일 서버는 사용자의 서버에서 보낸 메일을 수신하기 위해 올바르게 구성된 역방향 DNS를 요구하는 경우가 많습니다."
+msgstr ""
+"메일 서버는 사용자의 서버에서 보낸 메일을 수신하기 위해 올바르게 구성된 역방"
+"향 DNS를 요구하는 경우가 많습니다."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
@@ -6826,7 +7132,8 @@ msgstr "유효하지 않은 IPv6 주소입니다: 콜론이 연속으로 두 개
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:122
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
-msgstr "유효하지 않은 IPv6 주소입니다: 확장했을 때 8개의 헥스텟이 있어야 합니다."
+msgstr ""
+"유효하지 않은 IPv6 주소입니다: 확장했을 때 8개의 헥스텟이 있어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
@@ -6882,7 +7189,9 @@ msgstr "CAA tag에는 ASCII 문자와 숫자만 포함할 수 있습니다."
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr "알 수 없는 태그 \"%s\"에 critical 플래그가 설정되어 있습니다. 이로 인해 인증서 발급이 실패할 수 있습니다."
+msgstr ""
+"알 수 없는 태그 \"%s\"에 critical 플래그가 설정되어 있습니다. 이로 인해 인증"
+"서 발급이 실패할 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
 msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
@@ -6921,7 +7230,9 @@ msgstr "contactemail 값은 유효한 이메일 주소여야 합니다."
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
-msgstr "contactphone 값에는 숫자, 공백 및 일반적인 전화번호 구두점만 포함할 수 있습니다."
+msgstr ""
+"contactphone 값에는 숫자, 공백 및 일반적인 전화번호 구두점만 포함할 수 있습니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
@@ -6961,24 +7272,32 @@ msgstr "입력한 호스트 이름 또는 레이블 중 하나가 너무 짧거�
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
-msgstr "ARPA 존에서는 서로 다른 레이블에 여러 개의 슬래시를 사용할 수 없습니다."
+msgstr ""
+"ARPA 존에서는 서로 다른 레이블에 여러 개의 슬래시를 사용할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
-msgstr "유효하지 않은 RFC 2317 형식입니다. subnet/prefix 형식을 사용하십시오(예: 0/26)."
+msgstr ""
+"유효하지 않은 RFC 2317 형식입니다. subnet/prefix 형식을 사용하십시오(예: "
+"0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
-msgstr "RFC 2317 표기법의 서브넷 번호가 유효하지 않습니다. IPv4의 경우 0-255여야 합니다."
+msgstr ""
+"RFC 2317 표기법의 서브넷 번호가 유효하지 않습니다. IPv4의 경우 0-255여야 합니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:159
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
-msgstr "RFC 2317 표기법의 서브넷이 유효하지 않습니다. IPv6의 경우 16진수(0-9, a-f)여야 합니다."
+msgstr ""
+"RFC 2317 표기법의 서브넷이 유효하지 않습니다. IPv6의 경우 16진수(0-9, a-f)여"
+"야 합니다."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
-msgstr "RFC 2317 표기법의 서브넷이 유효하지 않습니다. 숫자 또는 16진수여야 합니다."
+msgstr ""
+"RFC 2317 표기법의 서브넷이 유효하지 않습니다. 숫자 또는 16진수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
@@ -6988,7 +7307,9 @@ msgstr "RFC 2317 표기법의 접두사 길이가 유효하지 않습니다. 숫
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "RFC 2317의 IPv4 접두사 길이가 유효하지 않습니다. 일반적으로 24-32입니다(클래스리스 위임은 보통 25-31)."
+msgstr ""
+"RFC 2317의 IPv4 접두사 길이가 유효하지 않습니다. 일반적으로 24-32입니다(클래"
+"스리스 위임은 보통 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
@@ -7016,7 +7337,9 @@ msgstr "유효하지 않은 최상위 도메인을 사용하고 있습니다."
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr "SOA 검증 매개변수가 설정되지 않았습니다. 먼저 setSOAParams()를 호출하거나 인수로 전달하십시오."
+msgstr ""
+"SOA 검증 매개변수가 설정되지 않았습니다. 먼저 setSOAParams()를 호출하거나 인"
+"수로 전달하십시오."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:115
 msgid ""
@@ -7048,13 +7371,17 @@ msgstr "일련번호는 32비트 부호 없는 정수(0에서 4294967295)여야 
 msgid ""
 "Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
 "This is allowed but not recommended."
-msgstr "일련번호가 YYYYMMDDnn 형식을 사용하는 것으로 보이지만 유효하지 않은 날짜를 포함하고 있습니다. 허용되지만 권장되지는 않습니다."
+msgstr ""
+"일련번호가 YYYYMMDDnn 형식을 사용하는 것으로 보이지만 유효하지 않은 날짜를 포"
+"함하고 있습니다. 허용되지만 권장되지는 않습니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:245
 msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
-msgstr "SOA 레코드는 정확히 7개의 필드(primary NS, email, serial, refresh, retry, expire, minimum)를 가져야 합니다."
+msgstr ""
+"SOA 레코드는 정확히 7개의 필드(primary NS, email, serial, refresh, retry, "
+"expire, minimum)를 가져야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
@@ -7071,25 +7398,33 @@ msgstr "SOA %s 필드는 양의 정수여야 합니다."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr "SOA %s 값(%d)이 RFC 2308 권장 최소치(%d)보다 작습니다. 허용되지만 권장되지 않습니다."
+msgstr ""
+"SOA %s 값(%d)이 RFC 2308 권장 최소치(%d)보다 작습니다. 허용되지만 권장되지 않"
+"습니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
-msgstr "RFC 2308에 따르면 SOA retry 값은 refresh 값보다 작아야 합니다. 허용되지만 권장되지는 않습니다."
+msgstr ""
+"RFC 2308에 따르면 SOA retry 값은 refresh 값보다 작아야 합니다. 허용되지만 권"
+"장되지는 않습니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:296
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr "SOA minimum(부정 캐싱) 값이 24시간(86400)을 초과하며, RFC 2308에 따르면 과도할 수 있습니다."
+msgstr ""
+"SOA minimum(부정 캐싱) 값이 24시간(86400)을 초과하며, RFC 2308에 따르면 과도"
+"할 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr "SVCB 레코드는 우선순위와 대상으로 시작해야 합니다: <priority> <target> [<params>...]"
+msgstr ""
+"SVCB 레코드는 우선순위와 대상으로 시작해야 합니다: <priority> <target> "
+"[<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
@@ -7133,51 +7468,67 @@ msgstr "중복된 SVCB 매개변수 키: \"%s\". 각 키는 한 번만 나타날
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr "같은 이름의 CNAME 레코드를 여러 개 사용할 수 없습니다. 이는 DNS 규칙 위반이 됩니다."
+msgstr ""
+"같은 이름의 CNAME 레코드를 여러 개 사용할 수 없습니다. 이는 DNS 규칙 위반이 "
+"됩니다."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "CNAME 레코드는 같은 이름의 다른 레코드 유형과 함께 존재할 수 없습니다. 기존 %s 레코드가 발견되었습니다."
+msgstr ""
+"CNAME 레코드는 같은 이름의 다른 레코드 유형과 함께 존재할 수 없습니다. 기존 "
+"%s 레코드가 발견되었습니다."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
-msgstr "이 레코드는 같은 이름의 기존 CNAME 레코드와 충돌합니다. CNAME 레코드는 다른 레코드 유형과 함께 존재할 수 없습니다."
+msgstr ""
+"이 레코드는 같은 이름의 기존 CNAME 레코드와 충돌합니다. CNAME 레코드는 다른 "
+"레코드 유형과 함께 존재할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA 레코드의 로컬 부분 해시는 64자 SHA-256 16진수 해시여야 합니다. 형식은 다음과 같아야 합니다: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"SMIMEA 레코드의 로컬 부분 해시는 64자 SHA-256 16진수 해시여야 합니다. 형식은 "
+"다음과 같아야 합니다: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "SMIMEA 레코드 이름 형식은 다음과 같습니다: %s 같은 이메일 주소의 경우 SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"SMIMEA 레코드 이름 형식은 다음과 같습니다: %s 같은 이메일 주소의 경우 "
+"SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "표준 SMIMEA 이름 형식을 사용하지 않습니다. SMIMEA 레코드는 일반적으로 다음 형식을 사용해야 합니다: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"표준 SMIMEA 이름 형식을 사용하지 않습니다. SMIMEA 레코드는 일반적으로 다음 형"
+"식을 사용해야 합니다: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
 "Invalid value for priority field. SMIMEA records must have priority value of "
 "0."
-msgstr "우선순위 필드의 값이 잘못되었습니다. SMIMEA 레코드의 우선순위 값은 0이어야 합니다."
+msgstr ""
+"우선순위 필드의 값이 잘못되었습니다. SMIMEA 레코드의 우선순위 값은 0이어야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr "SMIMEA는 이메일 주소를 DNS에 노출시킵니다. SMIMEA 레코드를 게시할 때 개인정보 보호에 미치는 영향을 고려하십시오."
+msgstr ""
+"SMIMEA는 이메일 주소를 DNS에 노출시킵니다. SMIMEA 레코드를 게시할 때 개인정"
+"보 보호에 미치는 영향을 고려하십시오."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
@@ -7191,7 +7542,9 @@ msgstr "SMIMEA 레코드에 잘못된 문자가 포함되어 있습니다."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "SMIMEA 레코드에는 공백으로 구분된 usage, selector, matching-type 및 certificate-data가 포함되어야 합니다."
+msgstr ""
+"SMIMEA 레코드에는 공백으로 구분된 usage, selector, matching-type 및 "
+"certificate-data가 포함되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -7201,58 +7554,76 @@ msgstr "SMIMEA usage 필드는 0에서 3 사이의 숫자여야 합니다."
 msgid ""
 "PKIX-TA usage (0) requires the CA certificate to be in the certificate "
 "validation path. Ensure this CA is publicly known and trusted."
-msgstr "PKIX-TA usage(0)는 CA 인증서가 인증서 검증 경로에 있어야 합니다. 이 CA가 공개적으로 알려져 있고 신뢰되는지 확인하십시오."
+msgstr ""
+"PKIX-TA usage(0)는 CA 인증서가 인증서 검증 경로에 있어야 합니다. 이 CA가 공개"
+"적으로 알려져 있고 신뢰되는지 확인하십시오."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
 "PKIX validation rules. Ensure proper intermediate certificates are available."
-msgstr "PKIX-EE usage(1)는 최종 엔터티 인증서가 PKIX 검증 규칙에 따라 검증되어야 합니다. 적절한 중간 인증서를 사용할 수 있는지 확인하십시오."
+msgstr ""
+"PKIX-EE usage(1)는 최종 엔터티 인증서가 PKIX 검증 규칙에 따라 검증되어야 합니"
+"다. 적절한 중간 인증서를 사용할 수 있는지 확인하십시오."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
 "DANE-TA usage (2) designates this certificate as a trust anchor for "
 "validating the end entity certificate. Ensure this certificate is properly "
 "secured."
-msgstr "DANE-TA usage(2)는 이 인증서를 최종 엔터티 인증서 검증을 위한 신뢰 앵커로 지정합니다. 이 인증서가 적절히 보호되는지 확인하십시오."
+msgstr ""
+"DANE-TA usage(2)는 이 인증서를 최종 엔터티 인증서 검증을 위한 신뢰 앵커로 지"
+"정합니다. 이 인증서가 적절히 보호되는지 확인하십시오."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
 "DANE-EE usage (3) is recommended as it provides the simplest deployment with "
 "direct certificate usage without additional validation."
-msgstr "DANE-EE usage(3)는 추가 검증 없이 인증서를 직접 사용하는 가장 간단한 배포 방식을 제공하므로 권장됩니다."
+msgstr ""
+"DANE-EE usage(3)는 추가 검증 없이 인증서를 직접 사용하는 가장 간단한 배포 방"
+"식을 제공하므로 권장됩니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "SMIMEA selector 필드는 0(전체 인증서) 또는 1(SubjectPublicKeyInfo)이어야 합니다."
+msgstr ""
+"SMIMEA selector 필드는 0(전체 인증서) 또는 1(SubjectPublicKeyInfo)이어야 합니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
 "Selector 0 (Full certificate) means the entire certificate is matched. Using "
 "selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
-msgstr "selector 0(전체 인증서)은 인증서 전체가 일치함을 의미합니다. 인증서 갱신에 더 유연하므로 selector 1(SubjectPublicKeyInfo) 사용을 권장합니다."
+msgstr ""
+"selector 0(전체 인증서)은 인증서 전체가 일치함을 의미합니다. 인증서 갱신에 "
+"더 유연하므로 selector 1(SubjectPublicKeyInfo) 사용을 권장합니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:233
 msgid ""
 "Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
-msgstr "selector 1(SubjectPublicKeyInfo)은 공개 키가 동일하게 유지되는 한 SMIMEA 레코드를 수정하지 않고도 인증서를 갱신할 수 있으므로 권장됩니다."
+msgstr ""
+"selector 1(SubjectPublicKeyInfo)은 공개 키가 동일하게 유지되는 한 SMIMEA 레코"
+"드를 수정하지 않고도 인증서를 갱신할 수 있으므로 권장됩니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "SMIMEA matching type 필드는 0(정확히 일치), 1(SHA-256) 또는 2(SHA-512)여야 합니다."
+msgstr ""
+"SMIMEA matching type 필드는 0(정확히 일치), 1(SHA-256) 또는 2(SHA-512)여야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
 "Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
 "recommended for better performance and compatibility."
-msgstr "matching type 0(정확히 일치)은 원본 인증서 데이터를 사용합니다. 성능과 호환성을 높이려면 SHA-256(유형 1)을 권장합니다."
+msgstr ""
+"matching type 0(정확히 일치)은 원본 인증서 데이터를 사용합니다. 성능과 호환성"
+"을 높이려면 SHA-256(유형 1)을 권장합니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
@@ -7263,7 +7634,9 @@ msgstr "matching type 1(SHA-256)은 보안과 효율성의 균형이 좋습니�
 msgid ""
 "Matching type 2 (SHA-512) provides the highest security but may have "
 "compatibility issues with some implementations."
-msgstr "matching type 2(SHA-512)는 가장 높은 보안을 제공하지만 일부 구현에서는 호환성 문제가 있을 수 있습니다."
+msgstr ""
+"matching type 2(SHA-512)는 가장 높은 보안을 제공하지만 일부 구현에서는 호환"
+"성 문제가 있을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
@@ -7281,50 +7654,66 @@ msgstr "SMIMEA SHA-512 인증서 데이터는 128자여야 합니다."
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr "권장 SMIMEA 구성은 usage=3(DANE-EE), selector=1(SubjectPublicKeyInfo), matching-type=1(SHA-256)입니다."
+msgstr ""
+"권장 SMIMEA 구성은 usage=3(DANE-EE), selector=1(SubjectPublicKeyInfo), "
+"matching-type=1(SHA-256)입니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
 "WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
 "be widely supported."
-msgstr "경고: SMIMEA(RFC 8162)는 현재 실험적 프로토콜이며 널리 지원되지 않을 수 있습니다."
+msgstr ""
+"경고: SMIMEA(RFC 8162)는 현재 실험적 프로토콜이며 널리 지원되지 않을 수 있습"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
 "CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
 "SMIMEA offers NO security benefit."
-msgstr "중요: SMIMEA 레코드가 보안을 제공하려면 DNSSEC가 반드시 필요합니다. DNSSEC 없이는 SMIMEA에 아무런 보안 이점이 없습니다."
+msgstr ""
+"중요: SMIMEA 레코드가 보안을 제공하려면 DNSSEC가 반드시 필요합니다. DNSSEC 없"
+"이는 SMIMEA에 아무런 보안 이점이 없습니다."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:112
 msgid ""
 "NOTE: The L64 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "참고: L64 레코드 유형은 RFC 6742에서 정식 IETF 표준이 아닌 실험적 프로토콜로 정의되어 있습니다."
+msgstr ""
+"참고: L64 레코드 유형은 RFC 6742에서 정식 IETF 표준이 아닌 실험적 프로토콜로 "
+"정의되어 있습니다."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
 "L64 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "L64 레코드는 Identifier-Locator Network Protocol(ILNP)에서만 사용해야 합니다."
+msgstr ""
+"L64 레코드는 Identifier-Locator Network Protocol(ILNP)에서만 사용해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:114
 msgid ""
 "An IP host that is NOT ILNPv6-capable MUST NOT have L64 records in its DNS "
 "entries (RFC 6742 Section 3.2)."
-msgstr "ILNPv6를 지원하지 않는 IP 호스트는 DNS 항목에 L64 레코드를 포함해서는 안 됩니다(RFC 6742 3.2절)."
+msgstr ""
+"ILNPv6를 지원하지 않는 IP 호스트는 DNS 항목에 L64 레코드를 포함해서는 안 됩니"
+"다(RFC 6742 3.2절)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:119
 msgid ""
 "RFC 6742 recommends very low TTL values for L64 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr "RFC 6742는 로케이터 값이 자주 바뀔 수 있으므로 이동형 또는 멀티홈 노드의 L64 레코드에 매우 낮은 TTL 값을 권장합니다."
+msgstr ""
+"RFC 6742는 로케이터 값이 자주 바뀔 수 있으므로 이동형 또는 멀티홈 노드의 L64 "
+"레코드에 매우 낮은 TTL 값을 권장합니다."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:128
 msgid ""
 "L64 records for subnetworks (using wildcard DNS entries) are typically used "
 "when the named subnetwork is, was, or might become mobile (RFC 6742 Section "
 "3.2)."
-msgstr "서브네트워크용 L64 레코드(와일드카드 DNS 항목 사용)는 해당 서브네트워크가 이동형이거나, 이동형이었거나, 이동형이 될 수 있는 경우에 주로 사용됩니다(RFC 6742 3.2절)."
+msgstr ""
+"서브네트워크용 L64 레코드(와일드카드 DNS 항목 사용)는 해당 서브네트워크가 이"
+"동형이거나, 이동형이었거나, 이동형이 될 수 있는 경우에 주로 사용됩니다(RFC "
+"6742 3.2절)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:152
 msgid "L64 record must contain preference and locator64 separated by space."
@@ -7338,14 +7727,19 @@ msgstr "L64 preference는 0에서 65535 사이의 숫자여야 합니다."
 msgid ""
 "L64 locator must be a valid 64-bit hexadecimal IPv6 address segment "
 "consisting of exactly 4 groups of hex digits (e.g., 2001:0db8:1140:1000)."
-msgstr "L64 locator는 16진수 그룹 4개로 정확히 구성된 유효한 64비트 16진수 IPv6 주소 세그먼트여야 합니다(예: 2001:0db8:1140:1000)."
+msgstr ""
+"L64 locator는 16진수 그룹 4개로 정확히 구성된 유효한 64비트 16진수 IPv6 주소 "
+"세그먼트여야 합니다(예: 2001:0db8:1140:1000)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:172
 msgid ""
 "L64 locator should not use unspecified (0000:0000:0000:0000) or all-ones "
 "(ffff:ffff:ffff:ffff) addresses, as they may not be suitable for ILNP "
 "locators."
-msgstr "L64 locator에는 미지정 주소(0000:0000:0000:0000)나 모두 1인 주소(ffff:ffff:ffff:ffff)를 사용하지 않아야 합니다. ILNP 로케이터로 적합하지 않을 수 있습니다."
+msgstr ""
+"L64 locator에는 미지정 주소(0000:0000:0000:0000)나 모두 1인 주소"
+"(ffff:ffff:ffff:ffff)를 사용하지 않아야 합니다. ILNP 로케이터로 적합하지 않"
+"을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:179
 msgid "Each hexadecimal group in L64 locator must be 4 or fewer characters."
@@ -7364,7 +7758,9 @@ msgstr "CDNSKEY 레코드의 우선순위 필드는 0이거나 비어 있어야 
 msgid ""
 "RFC 7344 recommends that if you publish a CDNSKEY record, you should also "
 "publish a corresponding CDS record."
-msgstr "RFC 7344는 CDNSKEY 레코드를 게시하는 경우 그에 대응하는 CDS 레코드도 함께 게시할 것을 권장합니다."
+msgstr ""
+"RFC 7344는 CDNSKEY 레코드를 게시하는 경우 그에 대응하는 CDS 레코드도 함께 게"
+"시할 것을 권장합니다."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
@@ -7374,13 +7770,17 @@ msgstr "CDNSKEY 레코드 내용에 유효하지 않은 문자가 있습니다."
 msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
-msgstr "RFC 8078 정오표의 \"0 3 0 0\" 형식을 사용하고 있습니다. 표준 \"0 3 0 AA==\" 형식 사용을 고려하십시오."
+msgstr ""
+"RFC 8078 정오표의 \"0 3 0 0\" 형식을 사용하고 있습니다. 표준 \"0 3 0 AA==\" "
+"형식 사용을 고려하십시오."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
 "CDNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "CDNSKEY 레코드는 공백으로 구분된 flags, protocol, algorithm, public-key를 포함해야 합니다."
+msgstr ""
+"CDNSKEY 레코드는 공백으로 구분된 flags, protocol, algorithm, public-key를 포"
+"함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
@@ -7390,7 +7790,9 @@ msgstr "CDNSKEY flags는 0, 256 또는 257이어야 합니다."
 msgid ""
 "Flag 257 indicates a Key Signing Key (KSK). Ensure this key is properly "
 "managed according to your DNSSEC key rollover policy."
-msgstr "flags 257은 키 서명 키(KSK)를 나타냅니다. DNSSEC 키 롤오버 정책에 따라 이 키가 적절히 관리되는지 확인하십시오."
+msgstr ""
+"flags 257은 키 서명 키(KSK)를 나타냅니다. DNSSEC 키 롤오버 정책에 따라 이 키"
+"가 적절히 관리되는지 확인하십시오."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:189
 msgid "CDNSKEY protocol must be 3."
@@ -7404,19 +7806,25 @@ msgstr "CDNSKEY algorithm은 1에서 16 사이의 숫자여야 합니다."
 msgid ""
 "Algorithm 8 (RSASHA256) is being replaced with ECDSAP256SHA256 (13) due to "
 "shorter key and signature size, resulting in smaller DNS packets."
-msgstr "알고리즘 8(RSASHA256)은 키와 서명 크기가 더 짧아 DNS 패킷이 작아지는 ECDSAP256SHA256(13)으로 대체되고 있습니다."
+msgstr ""
+"알고리즘 8(RSASHA256)은 키와 서명 크기가 더 짧아 DNS 패킷이 작아지는 "
+"ECDSAP256SHA256(13)으로 대체되고 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:208
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr "알고리즘 10(RSASHA512)은 검증을 위해 반드시 지원되어야 하지만 서명용으로는 권장되지 않습니다."
+msgstr ""
+"알고리즘 10(RSASHA512)은 검증을 위해 반드시 지원되어야 하지만 서명용으로는 권"
+"장되지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
 "Base64 encoded data should be padded to a multiple of 4 bytes using \"=\" "
 "characters."
-msgstr "base64로 인코딩된 데이터는 \"=\" 문자를 사용하여 4바이트의 배수로 패딩해야 합니다."
+msgstr ""
+"base64로 인코딩된 데이터는 \"=\" 문자를 사용하여 4바이트의 배수로 패딩해야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
@@ -7442,25 +7850,33 @@ msgstr "LUA 레코드의 우선순위 필드는 0이거나 비어 있어야 합�
 msgid ""
 "WARNING: This LUA record contains potentially unsafe file or system "
 "operations. These may be blocked by PowerDNS security mechanisms."
-msgstr "경고: 이 LUA 레코드에 안전하지 않을 수 있는 파일 또는 시스템 작업이 포함되어 있습니다. PowerDNS 보안 메커니즘에 의해 차단될 수 있습니다."
+msgstr ""
+"경고: 이 LUA 레코드에 안전하지 않을 수 있는 파일 또는 시스템 작업이 포함되어 "
+"있습니다. PowerDNS 보안 메커니즘에 의해 차단될 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:141
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
-msgstr "이 LUA 레코드는 명시적 반환 모드(세미콜론으로 시작)를 사용합니다. Lua 스크립트가 적절한 값을 명시적으로 반환하는지 확인하세요."
+msgstr ""
+"이 LUA 레코드는 명시적 반환 모드(세미콜론으로 시작)를 사용합니다. Lua 스크립"
+"트가 적절한 값을 명시적으로 반환하는지 확인하세요."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
-msgstr "이 LUA 레코드는 일반적인 PowerDNS Lua 함수를 사용하지 않는 것으로 보입니다. 레코드 유형에 적절한 값을 반환하는지 확인하세요."
+msgstr ""
+"이 LUA 레코드는 일반적인 PowerDNS Lua 함수를 사용하지 않는 것으로 보입니다. "
+"레코드 유형에 적절한 값을 반환하는지 확인하세요."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr "경고: 이 LUA 레코드의 따옴표 짝이 맞지 않는 것으로 보이며, 이로 인해 구문 오류가 발생할 수 있습니다."
+msgstr ""
+"경고: 이 LUA 레코드의 따옴표 짝이 맞지 않는 것으로 보이며, 이로 인해 구문 오"
+"류가 발생할 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
@@ -7474,19 +7890,25 @@ msgstr "LUA 레코드의 중괄호 짝이 맞지 않습니다. 구문을 확인�
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr "명시적 반환 모드(세미콜론으로 시작)의 LUA 레코드에는 \"return\" 문이 최소 하나 포함되어야 합니다."
+msgstr ""
+"명시적 반환 모드(세미콜론으로 시작)의 LUA 레코드에는 \"return\" 문이 최소 하"
+"나 포함되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
-msgstr "암시적 반환 모드의 LUA 레코드는 올바른 함수 호출이거나 \"function\"과 \"end\" 키워드를 사용한 함수 정의여야 합니다."
+msgstr ""
+"암시적 반환 모드의 LUA 레코드는 올바른 함수 호출이거나 \"function\"과 "
+"\"end\" 키워드를 사용한 함수 정의여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
-msgstr "LUA 레코드에 위험할 수 있는 시스템 접근 함수가 포함되어 있습니다. PowerDNS 보안 제한에 의해 차단될 가능성이 높습니다."
+msgstr ""
+"LUA 레코드에 위험할 수 있는 시스템 접근 함수가 포함되어 있습니다. PowerDNS 보"
+"안 제한에 의해 차단될 가능성이 높습니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
 msgid "Priority field for SSHFP records must be 0 or empty"
@@ -7496,43 +7918,56 @@ msgstr "SSHFP 레코드의 우선순위 필드는 0이거나 비어 있어야 �
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr "SSHFP 레코드는 OpenSSH가 설치된 시스템에서 \"ssh-keygen -r hostname\" 명령으로 생성할 수 있습니다."
+msgstr ""
+"SSHFP 레코드는 OpenSSH가 설치된 시스템에서 \"ssh-keygen -r hostname\" 명령으"
+"로 생성할 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
 "For maximum security, publish both SHA-1 and SHA-256 fingerprints for "
 "compatibility, but prefer SHA-256 in clients."
-msgstr "최대한의 보안을 위해 호환성 목적으로 SHA-1과 SHA-256 지문을 모두 게시하되, 클라이언트에서는 SHA-256을 우선 사용하세요."
+msgstr ""
+"최대한의 보안을 위해 호환성 목적으로 SHA-1과 SHA-256 지문을 모두 게시하되, 클"
+"라이언트에서는 SHA-256을 우선 사용하세요."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:171
 msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
-msgstr "SSHFP 레코드는 공백으로 구분된 algorithm, fingerprint-type, fingerprint를 포함해야 합니다."
+msgstr ""
+"SSHFP 레코드는 공백으로 구분된 algorithm, fingerprint-type, fingerprint를 포"
+"함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
 "SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519), or 6 "
 "(Ed448)."
-msgstr "SSHFP algorithm은 1(RSA), 2(DSA), 3(ECDSA), 4(Ed25519) 또는 6(Ed448)이어야 합니다."
+msgstr ""
+"SSHFP algorithm은 1(RSA), 2(DSA), 3(ECDSA), 4(Ed25519) 또는 6(Ed448)이어야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
 "DSA keys are considered weak and are deprecated in many SSH implementations. "
 "Consider using RSA, Ed25519, or Ed448 instead."
-msgstr "DSA 키는 취약한 것으로 간주되며 많은 SSH 구현에서 더 이상 사용이 권장되지 않습니다. 대신 RSA, Ed25519 또는 Ed448 사용을 고려하세요."
+msgstr ""
+"DSA 키는 취약한 것으로 간주되며 많은 SSH 구현에서 더 이상 사용이 권장되지 않"
+"습니다. 대신 RSA, Ed25519 또는 Ed448 사용을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:189
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr "Ed25519 키는 최신 SSH 구현에서 우수한 보안과 성능을 제공하므로 권장됩니다."
+msgstr ""
+"Ed25519 키는 최신 SSH 구현에서 우수한 보안과 성능을 제공하므로 권장됩니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
 "Ed448 keys offer very high security but may not be supported by all SSH "
 "implementations."
-msgstr "Ed448 키는 매우 높은 보안을 제공하지만 모든 SSH 구현에서 지원되지 않을 수 있습니다."
+msgstr ""
+"Ed448 키는 매우 높은 보안을 제공하지만 모든 SSH 구현에서 지원되지 않을 수 있"
+"습니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
@@ -7542,13 +7977,16 @@ msgstr "SSHFP fingerprint type은 1(SHA-1) 또는 2(SHA-256)여야 합니다."
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr "SHA-1 지문은 더 이상 사용이 권장되지 않습니다. RFC 6594는 보안 강화를 위해 SHA-256 지문(유형 2) 사용을 권장합니다."
+msgstr ""
+"SHA-1 지문은 더 이상 사용이 권장되지 않습니다. RFC 6594는 보안 강화를 위해 "
+"SHA-256 지문(유형 2) 사용을 권장합니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
 "SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
 "than SHA-1."
-msgstr "SHA-256 지문은 RFC 6594에서 권장하며 SHA-1보다 더 나은 보안을 제공합니다."
+msgstr ""
+"SHA-256 지문은 RFC 6594에서 권장하며 SHA-1보다 더 나은 보안을 제공합니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
@@ -7567,13 +8005,17 @@ msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr "매우 중요: SSHFP 레코드가 보안 이점을 제공하려면 DNSSEC 검증이 반드시 필요합니다. DNSSEC이 없으면 중간자 공격을 전혀 막지 못합니다."
+msgstr ""
+"매우 중요: SSHFP 레코드가 보안 이점을 제공하려면 DNSSEC 검증이 반드시 필요합"
+"니다. DNSSEC이 없으면 중간자 공격을 전혀 막지 못합니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
 "Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
 "for server verification."
-msgstr "서버 검증에 SSHFP 레코드를 활용하려면 SSH 클라이언트에 \"VerifyHostKeyDNS yes\"를 설정하세요."
+msgstr ""
+"서버 검증에 SSHFP 레코드를 활용하려면 SSH 클라이언트에 \"VerifyHostKeyDNS "
+"yes\"를 설정하세요."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
@@ -7595,13 +8037,16 @@ msgstr "MR 레코드 내용은 유효한 도메인 이름이어야 합니다."
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr "MR 레코드 내용(새 메일박스)은 완전한 도메인 이름(점으로 끝남)이어야 합니다."
+msgstr ""
+"MR 레코드 내용(새 메일박스)은 완전한 도메인 이름(점으로 끝남)이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""
 "The new mailbox is the same as the old mailbox. MR records are intended for "
 "redirecting to a different mailbox."
-msgstr "새 메일박스가 이전 메일박스와 동일합니다. MR 레코드는 다른 메일박스로 연결하기 위한 것입니다."
+msgstr ""
+"새 메일박스가 이전 메일박스와 동일합니다. MR 레코드는 다른 메일박스로 연결하"
+"기 위한 것입니다."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
@@ -7611,7 +8056,9 @@ msgstr "MR 레코드의 우선순위 필드는 0이거나 비어 있어야 합�
 msgid ""
 "MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
 "modern mail systems."
-msgstr "MR 레코드는 RFC 1035에서 실험적(EXPERIMENTAL)으로 표시되었으며 최신 메일 시스템에서는 거의 사용되지 않습니다."
+msgstr ""
+"MR 레코드는 RFC 1035에서 실험적(EXPERIMENTAL)으로 표시되었으며 최신 메일 시스"
+"템에서는 거의 사용되지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
@@ -7622,7 +8069,9 @@ msgstr "MR 레코드 대신 표준 메일 전달 방식을 사용하는 것을 �
 msgid ""
 "The MR record indicates that the mail user has moved from the old mailbox to "
 "the new mailbox."
-msgstr "MR 레코드는 메일 사용자가 이전 메일박스에서 새 메일박스로 이동했음을 나타냅니다."
+msgstr ""
+"MR 레코드는 메일 사용자가 이전 메일박스에서 새 메일박스로 이동했음을 나타냅니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
 msgid "Priority field for KEY records must be 0 or empty"
@@ -7632,7 +8081,9 @@ msgstr "KEY 레코드의 우선순위 필드는 0이거나 비어 있어야 합�
 msgid ""
 "KEY records have been obsoleted by RFC 4034. For DNSSEC, use DNSKEY records "
 "instead."
-msgstr "KEY 레코드는 RFC 4034에 의해 폐기되었습니다. DNSSEC에는 대신 DNSKEY 레코드를 사용하세요."
+msgstr ""
+"KEY 레코드는 RFC 4034에 의해 폐기되었습니다. DNSSEC에는 대신 DNSKEY 레코드를 "
+"사용하세요."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."
@@ -7642,13 +8093,17 @@ msgstr "KEY 레코드는 모든 DNS 서버와 리졸버에서 지원되지 않�
 msgid ""
 "Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
 "used."
-msgstr "알고리즘 1(RSA/MD5)은 암호학적으로 취약한 것으로 간주되므로 사용하지 않아야 합니다."
+msgstr ""
+"알고리즘 1(RSA/MD5)은 암호학적으로 취약한 것으로 간주되므로 사용하지 않아야 "
+"합니다."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:146
 msgid ""
 "For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
 "instead of KEY records."
-msgstr "DNSSEC 존 키(flags=257, protocol=3)에는 KEY 레코드 대신 DNSKEY 레코드를 사용해야 합니다."
+msgstr ""
+"DNSSEC 존 키(flags=257, protocol=3)에는 KEY 레코드 대신 DNSKEY 레코드를 사용"
+"해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
@@ -7666,7 +8121,9 @@ msgstr "KEY flags는 0에서 65535 사이의 숫자여야 합니다."
 msgid ""
 "Unusual flag value. Common values are 0 (authentication prohibited), 256 "
 "(user key), or 257 (zone key)."
-msgstr "일반적이지 않은 flag 값입니다. 일반적인 값은 0(인증 금지), 256(사용자 키) 또는 257(존 키)입니다."
+msgstr ""
+"일반적이지 않은 flag 값입니다. 일반적인 값은 0(인증 금지), 256(사용자 키) 또"
+"는 257(존 키)입니다."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:202
 msgid "KEY protocol must be a number between 0 and 255."
@@ -7675,7 +8132,9 @@ msgstr "KEY protocol은 0에서 255 사이의 숫자여야 합니다."
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:208
 msgid ""
 "Unusual protocol value. Protocol 3 (DNSSEC) is most common for KEY records."
-msgstr "일반적이지 않은 protocol 값입니다. KEY 레코드에는 protocol 3(DNSSEC)이 가장 일반적입니다."
+msgstr ""
+"일반적이지 않은 protocol 값입니다. KEY 레코드에는 protocol 3(DNSSEC)이 가장 "
+"일반적입니다."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:213
 msgid "KEY algorithm must be a number between 0 and 255."
@@ -7685,7 +8144,9 @@ msgstr "KEY algorithm은 0에서 255 사이의 숫자여야 합니다."
 msgid ""
 "Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
 "(RSA/SHA-1), 8 (RSA/SHA-256)."
-msgstr "일반적이지 않은 algorithm 값입니다. 일반적인 값은 1(RSA/MD5), 2(DH), 3(DSA), 5(RSA/SHA-1), 8(RSA/SHA-256)입니다."
+msgstr ""
+"일반적이지 않은 algorithm 값입니다. 일반적인 값은 1(RSA/MD5), 2(DH), 3(DSA), "
+"5(RSA/SHA-1), 8(RSA/SHA-256)입니다."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:224
 msgid "KEY public key is required."
@@ -7703,7 +8164,9 @@ msgstr "DMARC 레코드는 _dmarc.<domain>에 배치해야 합니다."
 msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
-msgstr "우선순위 필드 값이 잘못되었습니다. DMARC 레코드의 우선순위 값은 0이어야 합니다."
+msgstr ""
+"우선순위 필드 값이 잘못되었습니다. DMARC 레코드의 우선순위 값은 0이어야 합니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
@@ -7713,7 +8176,9 @@ msgstr "DMARC 레코드는 \"v=DMARC1\"으로 시작해야 합니다"
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
-msgstr "DMARC 레코드가 255자 제한을 초과합니다. 복잡한 정책의 경우 정책을 단순화하거나 URI 참조 사용을 고려하세요."
+msgstr ""
+"DMARC 레코드가 255자 제한을 초과합니다. 복잡한 정책의 경우 정책을 단순화하거"
+"나 URI 참조 사용을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
@@ -7728,12 +8193,15 @@ msgid ""
 "Using \"p=none\" provides visibility into email authentication without "
 "affecting delivery. Consider a stricter policy once you've reviewed the "
 "reports."
-msgstr "\"p=none\"을 사용하면 메일 전달에 영향을 주지 않으면서 이메일 인증 상황을 파악할 수 있습니다. 보고서를 검토한 후에는 더 엄격한 정책을 고려하세요."
+msgstr ""
+"\"p=none\"을 사용하면 메일 전달에 영향을 주지 않으면서 이메일 인증 상황을 파"
+"악할 수 있습니다. 보고서를 검토한 후에는 더 엄격한 정책을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr "DMARC 하위 도메인 정책 태그(sp)는 none, quarantine, reject 중 하나여야 합니다"
+msgstr ""
+"DMARC 하위 도메인 정책 태그(sp)는 none, quarantine, reject 중 하나여야 합니다"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
@@ -7752,7 +8220,9 @@ msgstr "DMARC 백분율 태그(pct)는 0에서 100 사이여야 합니다"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "DMARC 정책이 메시지의 %d%%에만 적용됩니다. 이 설정은 정책을 단계적으로 배포하는 동안에만 사용해야 합니다."
+msgstr ""
+"DMARC 정책이 메시지의 %d%%에만 적용됩니다. 이 설정은 정책을 단계적으로 배포하"
+"는 동안에만 사용해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -7762,7 +8232,9 @@ msgstr "DMARC 보고 간격 태그(ri)는 양의 정수여야 합니다"
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr "DMARC 실패 보고 옵션 태그(fo)에는 0, 1, d, s 또는 콜론으로 구분된 조합만 포함되어야 합니다"
+msgstr ""
+"DMARC 실패 보고 옵션 태그(fo)에는 0, 1, d, s 또는 콜론으로 구분된 조합만 포함"
+"되어야 합니다"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -7792,13 +8264,17 @@ msgstr "필수 DMARC 태그 누락: %s"
 msgid ""
 "DMARC record does not specify any reporting URIs (rua or ruf). This may "
 "limit your ability to monitor authentication results."
-msgstr "DMARC 레코드에 보고용 URI(rua 또는 ruf)가 지정되어 있지 않습니다. 이로 인해 인증 결과를 모니터링하기 어려울 수 있습니다."
+msgstr ""
+"DMARC 레코드에 보고용 URI(rua 또는 ruf)가 지정되어 있지 않습니다. 이로 인해 "
+"인증 결과를 모니터링하기 어려울 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:109
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr "이것은 TXT 레코드 유형으로 처리되는 DMARC 레코드입니다. DMARC 레코드는 \"v=DMARC1\"으로 시작하는 내용의 TXT 레코드 유형을 사용해야 합니다."
+msgstr ""
+"이것은 TXT 레코드 유형으로 처리되는 DMARC 레코드입니다. DMARC 레코드는 "
+"\"v=DMARC1\"으로 시작하는 내용의 TXT 레코드 유형을 사용해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:179
 msgid "TXT record content must be enclosed in quotes."
@@ -7813,25 +8289,31 @@ msgstr "TXT 내용에 있는 모든 따옴표(\") 앞에는 백슬래시가 있�
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr "TXT 레코드 내용이 최대 길이인 %d바이트를 초과합니다. 내용 크기를 줄이십시오."
+msgstr ""
+"TXT 레코드 내용이 최대 길이인 %d바이트를 초과합니다. 내용 크기를 줄이십시오."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr "각 TXT 레코드 문자열은 255바이트 이하여야 합니다. 긴 내용은 여러 문자열로 나누세요."
+msgstr ""
+"각 TXT 레코드 문자열은 255바이트 이하여야 합니다. 긴 내용은 여러 문자열로 나"
+"누세요."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:225
 #, php-format
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr "전체 TXT 레코드 내용이 최대 길이인 %d바이트를 초과합니다. 내용 크기를 줄이십시오."
+msgstr ""
+"전체 TXT 레코드 내용이 최대 길이인 %d바이트를 초과합니다. 내용 크기를 줄이십"
+"시오."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
-msgstr "우선순위 필드 값이 잘못되었습니다. TXT 레코드의 우선순위 값은 0이어야 합니다."
+msgstr ""
+"우선순위 필드 값이 잘못되었습니다. TXT 레코드의 우선순위 값은 0이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
@@ -7840,13 +8322,16 @@ msgstr "IPv4 주소 형식이 잘못되었습니다."
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
-msgstr "우선순위 필드 값이 잘못되었습니다. A 레코드의 우선순위 값은 0이어야 합니다."
+msgstr ""
+"우선순위 필드 값이 잘못되었습니다. A 레코드의 우선순위 값은 0이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
-msgstr "RFC 7344에 따라 CDS 레코드는 하위 도메인이 아닌 존 정점(apex)에만 배치해야 합니다."
+msgstr ""
+"RFC 7344에 따라 CDS 레코드는 하위 도메인이 아닌 존 정점(apex)에만 배치해야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
@@ -7856,7 +8341,9 @@ msgstr "CDS 레코드의 우선순위 필드는 0이거나 비어 있어야 합�
 msgid ""
 "According to RFC 8078, CDS records should be stable for some time before "
 "parent zones accept them."
-msgstr "RFC 8078에 따르면 상위 존이 CDS 레코드를 수락하기 전에 해당 레코드가 일정 기간 안정적으로 유지되어야 합니다."
+msgstr ""
+"RFC 8078에 따르면 상위 존이 CDS 레코드를 수락하기 전에 해당 레코드가 일정 기"
+"간 안정적으로 유지되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:147
 msgid "Invalid characters in CDS record content."
@@ -7866,13 +8353,17 @@ msgstr "CDS 레코드 내용에 유효하지 않은 문자가 있습니다."
 msgid ""
 "This is a CDS deletion record as defined in RFC 8078. It signals that the "
 "corresponding DS records should be removed from the parent."
-msgstr "이것은 RFC 8078에 정의된 CDS 삭제 레코드입니다. 해당 DS 레코드를 상위 존에서 제거해야 함을 알립니다."
+msgstr ""
+"이것은 RFC 8078에 정의된 CDS 삭제 레코드입니다. 해당 DS 레코드를 상위 존에서 "
+"제거해야 함을 알립니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "CDS 레코드는 공백으로 구분된 key-tag, algorithm, digest-type, digest를 포함해야 합니다."
+msgstr ""
+"CDS 레코드는 공백으로 구분된 key-tag, algorithm, digest-type, digest를 포함해"
+"야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -7890,48 +8381,63 @@ msgstr "CDS digest type은 1(SHA-1), 2(SHA-256) 또는 4(SHA-384)여야 합니�
 msgid ""
 "SHA-1 (digest type 1) is deprecated for security reasons. Consider using "
 "SHA-256 (digest type 2) or SHA-384 (digest type 4) instead."
-msgstr "SHA-1(digest type 1)은 보안상의 이유로 더 이상 사용이 권장되지 않습니다. 대신 SHA-256(digest type 2) 또는 SHA-384(digest type 4) 사용을 고려하세요."
+msgstr ""
+"SHA-1(digest type 1)은 보안상의 이유로 더 이상 사용이 권장되지 않습니다. 대"
+"신 SHA-256(digest type 2) 또는 SHA-384(digest type 4) 사용을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:237
 #, php-format
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr "CDS 다이제스트는 선택한 다이제스트 유형에 대해 길이가 %d인 올바른 16진수 문자열이어야 합니다."
+msgstr ""
+"CDS 다이제스트는 선택한 다이제스트 유형에 대해 길이가 %d인 올바른 16진수 문자"
+"열이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
-msgstr "RFC 7344 권고에 따라 CDS 레코드에는 대응하는 CDNSKEY 레코드가 함께 있어야 합니다."
+msgstr ""
+"RFC 7344 권고에 따라 CDS 레코드에는 대응하는 CDNSKEY 레코드가 함께 있어야 합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
-msgstr "CDS 레코드는 존 정점(apex)에만 배치해야 하며 하위 도메인에는 배치하지 않아야 합니다."
+msgstr ""
+"CDS 레코드는 존 정점(apex)에만 배치해야 하며 하위 도메인에는 배치하지 않아야 "
+"합니다."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:112
 msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "참고: L32 레코드 유형은 RFC 6742에서 공식 IETF 표준이 아닌 실험적 프로토콜로 정의되어 있습니다."
+msgstr ""
+"참고: L32 레코드 유형은 RFC 6742에서 공식 IETF 표준이 아닌 실험적 프로토콜로 "
+"정의되어 있습니다."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
 "L32 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "L32 레코드는 Identifier-Locator Network Protocol(ILNP)에서만 사용해야 합니다."
+msgstr ""
+"L32 레코드는 Identifier-Locator Network Protocol(ILNP)에서만 사용해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
 "Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
 "in ILNP deployments."
-msgstr "사설 IP 주소(RFC 1918)를 L32 locator로 사용하면 ILNP 환경에서 도달 가능성이 제한될 수 있습니다."
+msgstr ""
+"사설 IP 주소(RFC 1918)를 L32 locator로 사용하면 ILNP 환경에서 도달 가능성이 "
+"제한될 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
 msgid ""
 "RFC 6742 recommends very low TTL values for L32 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr "RFC 6742는 locator 값이 자주 변경될 수 있으므로 모바일 또는 멀티홈 노드의 L32 레코드에는 매우 낮은 TTL 값을 권장합니다."
+msgstr ""
+"RFC 6742는 locator 값이 자주 변경될 수 있으므로 모바일 또는 멀티홈 노드의 "
+"L32 레코드에는 매우 낮은 TTL 값을 권장합니다."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
@@ -7953,13 +8459,17 @@ msgstr "L32 locator는 완전히 지정된 IPv4 주소여야 합니다."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "L32 locator에는 브로드캐스트 또는 미지정 주소(0.0.0.0 또는 255.255.255.255)를 사용할 수 없습니다."
+msgstr ""
+"L32 locator에는 브로드캐스트 또는 미지정 주소(0.0.0.0 또는 255.255.255.255)"
+"를 사용할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
-msgstr "우선순위 0은 유효하지만 일반적이지 않습니다. 일반적으로 SRV 레코드는 우선순위 10 이상부터 시작합니다."
+msgstr ""
+"우선순위 0은 유효하지만 일반적이지 않습니다. 일반적으로 SRV 레코드는 우선순"
+"위 10 이상부터 시작합니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
@@ -7969,27 +8479,35 @@ msgstr "SRV 레코드 이름은 _service._protocol.domain 형식이어야 합니
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
-msgstr "SRV 레코드의 service 값이 잘못되었습니다. 서비스 이름은 밑줄로 시작하고 그 뒤에 영숫자가 와야 합니다."
+msgstr ""
+"SRV 레코드의 service 값이 잘못되었습니다. 서비스 이름은 밑줄로 시작하고 그 뒤"
+"에 영숫자가 와야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
-msgstr "SRV 레코드의 protocol 값이 잘못되었습니다. 프로토콜은 밑줄로 시작하고 그 뒤에 영숫자가 와야 합니다."
+msgstr ""
+"SRV 레코드의 protocol 값이 잘못되었습니다. 프로토콜은 밑줄로 시작하고 그 뒤"
+"에 영숫자가 와야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "서비스 이름 \"%s\"은(는) 잘 알려진 서비스 목록에 없습니다. 허용되지만 일반적이지 않습니다."
+msgstr ""
+"서비스 이름 \"%s\"은(는) 잘 알려진 서비스 목록에 없습니다. 허용되지만 일반적"
+"이지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "프로토콜 \"%s\"은(는) 잘 알려진 프로토콜 목록에 없습니다. 일반적인 프로토콜은 _tcp와 _udp입니다."
+msgstr ""
+"프로토콜 \"%s\"은(는) 잘 알려진 프로토콜 목록에 없습니다. 일반적인 프로토콜"
+"은 _tcp와 _udp입니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -7999,7 +8517,9 @@ msgstr "SRV 레코드의 도메인 이름이 잘못되었습니다."
 msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
-msgstr "SRV 레코드 내용에는 weight, port, target(3개 필드)이 있어야 합니다. 우선순위는 우선순위 필드에 입력해야 합니다."
+msgstr ""
+"SRV 레코드 내용에는 weight, port, target(3개 필드)이 있어야 합니다. 우선순위"
+"는 우선순위 필드에 입력해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
@@ -8014,7 +8534,9 @@ msgstr "댕글링 포인터입니다."
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr "포트 %d은(는) 표준 포트 %d(%s 서비스)와(과) 다릅니다. 허용되지만 일반적이지 않습니다."
+msgstr ""
+"포트 %d은(는) 표준 포트 %d(%s 서비스)와(과) 다릅니다. 허용되지만 일반적이지 "
+"않습니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -8022,7 +8544,8 @@ msgstr "SRV target은 비워 둘 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr "target이 \".\"(서비스 없음)인 경우 port와 weight는 모두 0이어야 합니다."
+msgstr ""
+"target이 \".\"(서비스 없음)인 경우 port와 weight는 모두 0이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
@@ -8036,24 +8559,32 @@ msgstr "SRV 레코드의 우선순위 필드 값이 잘못되었습니다."
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr "미지정(::) 또는 루프백(::1) IPv6 주소는 AAAA 레코드에 사용하면 안 됩니다."
+msgstr ""
+"미지정(::) 또는 루프백(::1) IPv6 주소는 AAAA 레코드에 사용하면 안 됩니다."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
 "Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used."
-msgstr "사이트 로컬 IPv6 주소(fec0::/10)는 더 이상 사용되지 않으므로 사용하면 안 됩니다."
+msgstr ""
+"사이트 로컬 IPv6 주소(fec0::/10)는 더 이상 사용되지 않으므로 사용하면 안 됩니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr "우선순위 필드 값이 잘못되었습니다. AAAA 레코드의 우선순위 값은 0이어야 합니다."
+msgstr ""
+"우선순위 필드 값이 잘못되었습니다. AAAA 레코드의 우선순위 값은 0이어야 합니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr "NSEC3 레코드의 소유자 이름은 일반적으로 Base32hex로 인코딩된 해시 뒤에 존 이름이 오는 형식이어야 합니다(예: \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
+msgstr ""
+"NSEC3 레코드의 소유자 이름은 일반적으로 Base32hex로 인코딩된 해시 뒤에 존 이"
+"름이 오는 형식이어야 합니다(예: "
+"\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -8067,31 +8598,41 @@ msgstr "NSEC3 레코드에 유효하지 않은 문자가 있습니다."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr "RFC 5155 및 RFC 9077에 따르면 NSEC3 레코드의 TTL은 SOA의 minimum TTL 필드와 같아야 합니다."
+msgstr ""
+"RFC 5155 및 RFC 9077에 따르면 NSEC3 레코드의 TTL은 SOA의 minimum TTL 필드와 "
+"같아야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr "NSEC3 레코드는 DNSSEC의 일부이며 다른 DNSSEC 레코드(DNSKEY, RRSIG 등)와 함께 관리해야 합니다."
+msgstr ""
+"NSEC3 레코드는 DNSSEC의 일부이며 다른 DNSSEC 레코드(DNSKEY, RRSIG 등)와 함께 "
+"관리해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr "NSEC3 레코드는 일반적으로 DNSSEC를 지원하는 네임서버가 자동으로 생성하므로 수동으로 편집하는 것은 권장되지 않습니다."
+msgstr ""
+"NSEC3 레코드는 일반적으로 DNSSEC를 지원하는 네임서버가 자동으로 생성하므로 수"
+"동으로 편집하는 것은 권장되지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
 "NSEC3 records require a corresponding NSEC3PARAM record at the zone apex to "
 "indicate the NSEC3 parameters in use."
-msgstr "NSEC3 레코드에는 사용 중인 NSEC3 매개변수를 나타내기 위해 존 apex에 대응하는 NSEC3PARAM 레코드가 필요합니다."
+msgstr ""
+"NSEC3 레코드에는 사용 중인 NSEC3 매개변수를 나타내기 위해 존 apex에 대응하는 "
+"NSEC3PARAM 레코드가 필요합니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:207
 msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
-msgstr "NSEC3 레코드에는 최소한 해시 알고리즘, flags, iterations, salt, 다음 해시된 소유자 이름이 포함되어야 합니다."
+msgstr ""
+"NSEC3 레코드에는 최소한 해시 알고리즘, flags, iterations, salt, 다음 해시된 "
+"소유자 이름이 포함되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
@@ -8113,13 +8654,17 @@ msgstr "NSEC3 salt는 -(비어 있음을 의미) 또는 16진수 값이어야 �
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr "NSEC3의 다음 해시된 소유자 이름은 유효한 Base32hex 인코딩 값(문자 0-9 및 A-V 사용)이어야 합니다."
+msgstr ""
+"NSEC3의 다음 해시된 소유자 이름은 유효한 Base32hex 인코딩 값(문자 0-9 및 A-V "
+"사용)이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr "원래 소유자 이름에 어떤 RR 유형이 존재하는지 나타내려면 type bit maps가 있어야 합니다."
+msgstr ""
+"원래 소유자 이름에 어떤 RR 유형이 존재하는지 나타내려면 type bit maps가 있어"
+"야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
@@ -8130,19 +8675,25 @@ msgstr "NSEC3 레코드에 유효하지 않은 레코드 유형이 포함되어 
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr "DNSSEC로 서명된 존에서는 일반적으로 NSEC3의 type bit maps에 RRSIG 유형이 포함되어야 합니다."
+msgstr ""
+"DNSSEC로 서명된 존에서는 일반적으로 NSEC3의 type bit maps에 RRSIG 유형이 포함"
+"되어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr "이 NSEC3 레코드에는 SOA와 NS 유형이 모두 포함되어 있어 존 apex에 대한 것일 수 있습니다."
+msgstr ""
+"이 NSEC3 레코드에는 SOA와 NS 유형이 모두 포함되어 있어 존 apex에 대한 것일 "
+"수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr "NSEC3를 사용하는 존 apex에서는 일반적으로 DNSKEY와 함께 NSEC3PARAM 유형이 있어야 합니다."
+msgstr ""
+"NSEC3를 사용하는 존 apex에서는 일반적으로 DNSKEY와 함께 NSEC3PARAM 유형이 있"
+"어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
@@ -8164,31 +8715,41 @@ msgstr "도메인 이름 형식이 잘못되었습니다."
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
-msgstr "ENUM 도메인으로 보입니다. NAPTR 레코드는 E2U service 필드를 사용하고 RFC 6116을 따라야 합니다."
+msgstr ""
+"ENUM 도메인으로 보입니다. NAPTR 레코드는 E2U service 필드를 사용하고 RFC 6116"
+"을 따라야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
-msgstr "NAPTR 레코드의 복잡한 regexp 패턴은 디버그하고 유지 관리하기 어려울 수 있습니다."
+msgstr ""
+"NAPTR 레코드의 복잡한 regexp 패턴은 디버그하고 유지 관리하기 어려울 수 있습니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
-msgstr "이 레코드는 RFC 3403을 따릅니다. 일부 DNS 서버는 모든 NAPTR 기능을 완전히 지원하지 않을 수 있습니다."
+msgstr ""
+"이 레코드는 RFC 3403을 따릅니다. 일부 DNS 서버는 모든 NAPTR 기능을 완전히 지"
+"원하지 않을 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
-msgstr "우선순위 필드 값이 잘못되었습니다. NAPTR 레코드는 내용 필드 안에 우선순위를 포함하므로 우선순위 값은 0이어야 합니다."
+msgstr ""
+"우선순위 필드 값이 잘못되었습니다. NAPTR 레코드는 내용 필드 안에 우선순위를 "
+"포함하므로 우선순위 값은 0이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
-msgstr "NAPTR 레코드는 order, preference, flags, service, regexp, replacement 값을 포함해야 합니다."
+msgstr ""
+"NAPTR 레코드는 order, preference, flags, service, regexp, replacement 값을 포"
+"함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
@@ -8218,7 +8779,9 @@ msgstr "NAPTR 레코드의 regexp는 따옴표로 묶인 문자열이어야 합�
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr "NAPTR 레코드의 replacement는 \".\" 또는 유효한 정규화된 도메인 이름(FQDN)이어야 합니다."
+msgstr ""
+"NAPTR 레코드의 replacement는 \".\" 또는 유효한 정규화된 도메인 이름(FQDN)이어"
+"야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
@@ -8235,7 +8798,8 @@ msgstr "사용자 ID를 설정할 수 없습니다."
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
-msgstr "종단 flags \"S\", \"A\", \"U\", \"P\"는 다른 flags와 함께 사용하면 안 됩니다."
+msgstr ""
+"종단 flags \"S\", \"A\", \"U\", \"P\"는 다른 flags와 함께 사용하면 안 됩니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
@@ -8245,19 +8809,25 @@ msgstr "NAPTR regexp는 구분 문자로 시작해야 합니다."
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
-msgstr "NAPTR regexp는 delimiter+pattern+delimiter+replacement+delimiter+flags 형식이어야 합니다."
+msgstr ""
+"NAPTR regexp는 delimiter+pattern+delimiter+replacement+delimiter+flags 형식이"
+"어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "NAPTR regexp의 flags(세 번째 구분자 뒤)는 \"i\"만 포함하거나 비어 있어야 합니다."
+msgstr ""
+"NAPTR regexp의 flags(세 번째 구분자 뒤)는 \"i\"만 포함하거나 비어 있어야 합니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
-msgstr "ENUM NAPTR 레코드(RFC 6116)로 보입니다. 도메인이 e164.arpa 또는 사설 ENUM 트리 아래에 있는지 확인하십시오."
+msgstr ""
+"ENUM NAPTR 레코드(RFC 6116)로 보입니다. 도메인이 e164.arpa 또는 사설 ENUM 트"
+"리 아래에 있는지 확인하십시오."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
@@ -8275,7 +8845,9 @@ msgstr "NAPTR regexp가 너무 깁니다. 최대 길이는 1000자입니다."
 msgid ""
 "DNSKEY records are typically placed at the zone apex. This record does not "
 "appear to be at a zone apex, which is unusual for DNSSEC deployments."
-msgstr "DNSKEY 레코드는 일반적으로 존 apex에 배치됩니다. 이 레코드는 존 apex에 있지 않은 것으로 보이며, 이는 DNSSEC 배포에서는 이례적입니다."
+msgstr ""
+"DNSKEY 레코드는 일반적으로 존 apex에 배치됩니다. 이 레코드는 존 apex에 있지 "
+"않은 것으로 보이며, 이는 DNSSEC 배포에서는 이례적입니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
@@ -8285,7 +8857,9 @@ msgstr "DNSKEY 레코드의 우선순위 필드는 0이거나 비어 있어야 �
 msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "DNSKEY 레코드는 공백으로 구분된 flags, protocol, algorithm, public-key를 포함해야 합니다."
+msgstr ""
+"DNSKEY 레코드는 공백으로 구분된 flags, protocol, algorithm, public-key를 포함"
+"해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
@@ -8295,19 +8869,25 @@ msgstr "DNSKEY flags는 0, 256 또는 257이어야 합니다."
 msgid ""
 "Flag value 0 indicates this key is NOT intended for use as a zone key in "
 "DNSSEC. Make sure this is intentional."
-msgstr "flags 값 0은 이 키가 DNSSEC에서 존 키로 사용되도록 의도되지 않았음을 나타냅니다. 의도한 것인지 확인하십시오."
+msgstr ""
+"flags 값 0은 이 키가 DNSSEC에서 존 키로 사용되도록 의도되지 않았음을 나타냅니"
+"다. 의도한 것인지 확인하십시오."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:160
 msgid ""
 "Flag value 256 indicates this is a Zone Signing Key (ZSK) with Zone Key bit "
 "set and SEP bit unset."
-msgstr "flags 값 256은 Zone Key 비트가 설정되고 SEP 비트가 해제된 존 서명 키(ZSK)임을 나타냅니다."
+msgstr ""
+"flags 값 256은 Zone Key 비트가 설정되고 SEP 비트가 해제된 존 서명 키(ZSK)임"
+"을 나타냅니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:162
 msgid ""
 "Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
 "and SEP bits set."
-msgstr "flags 값 257은 Zone Key와 SEP 비트가 모두 설정된 키 서명 키(KSK)임을 나타냅니다."
+msgstr ""
+"flags 값 257은 Zone Key와 SEP 비트가 모두 설정된 키 서명 키(KSK)임을 나타냅니"
+"다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
@@ -8321,7 +8901,9 @@ msgstr "DNSKEY algorithm은 1에서 16 사이의 숫자여야 합니다."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr "RFC 8624에 따르면 ECDSAP256SHA256(알고리즘 13)이 DNSSEC 서명에 권장되는 알고리즘입니다."
+msgstr ""
+"RFC 8624에 따르면 ECDSAP256SHA256(알고리즘 13)이 DNSSEC 서명에 권장되는 알고"
+"리즘입니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -8333,21 +8915,26 @@ msgstr ""
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr "%s(알고리즘 %d)은(는) RFC 8624에서 구현이 선택 사항으로 명시되어 있습니다."
+msgstr ""
+"%s(알고리즘 %d)은(는) RFC 8624에서 구현이 선택 사항으로 명시되어 있습니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr "%s(알고리즘 %d)은(는) RFC 8624에 따라 더 이상 사용되지 않습니다(DEPRECATED). 새로운 배포에는 이 알고리즘을 사용하지 마십시오."
+msgstr ""
+"%s(알고리즘 %d)은(는) RFC 8624에 따라 더 이상 사용되지 않습니다(DEPRECATED). "
+"새로운 배포에는 이 알고리즘을 사용하지 마십시오."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr "알고리즘 %d은(는) RFC 8624에 따라 구현해서는 안 됩니다. 이 값은 사용하지 말아야 합니다."
+msgstr ""
+"알고리즘 %d은(는) RFC 8624에 따라 구현해서는 안 됩니다. 이 값은 사용하지 말아"
+"야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -8357,7 +8944,9 @@ msgstr "DNSKEY 공개 키는 유효한 base64로 인코딩된 데이터여야 �
 msgid ""
 "RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
 "bits for RSA keys."
-msgstr "RSA 키 크기가 2048비트 미만입니다. RFC 8624는 RSA 키에 최소 2048비트를 권장합니다."
+msgstr ""
+"RSA 키 크기가 2048비트 미만입니다. RFC 8624는 RSA 키에 최소 2048비트를 권장합"
+"니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
@@ -8378,7 +8967,8 @@ msgstr "도메인에 대해 관리되는 존이 없습니다: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:89
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "역방향 존에서 IPv6 도메인 레코드를 추가하는 기능은 아직 지원되지 않습니다."
+msgstr ""
+"역방향 존에서 IPv6 도메인 레코드를 추가하는 기능은 아직 지원되지 않습니다."
 
 #: lib/Domain/Service/DomainRecordCreator.php:129
 msgid "This domain record was not valid and could not be added."
@@ -8423,7 +9013,9 @@ msgstr "API 키를 재생성할 권한이 없습니다."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr "존에 SOA 레코드가 없거나 활성 상태가 아닙니다. DNSSEC에는 SOA 레코드가 필요합니다."
+msgstr ""
+"존에 SOA 레코드가 없거나 활성 상태가 아닙니다. DNSSEC에는 SOA 레코드가 필요합"
+"니다."
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
@@ -8457,13 +9049,17 @@ msgstr "SOA 레코드의 내용 형식이 잘못되었습니다."
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr "SOA 형식은 다음과 같아야 합니다: primary-ns hostmaster serial refresh retry expire minimum"
+msgstr ""
+"SOA 형식은 다음과 같아야 합니다: primary-ns hostmaster serial refresh retry "
+"expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr "존의 apex에 NS(Name Server) 레코드가 없습니다. DNSSEC에는 apex NS 레코드가 최소 하나 필요합니다."
+msgstr ""
+"존의 apex에 NS(Name Server) 레코드가 없습니다. DNSSEC에는 apex NS 레코드가 최"
+"소 하나 필요합니다."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
@@ -8501,71 +9097,70 @@ msgstr ""
 msgid "Unknown database type."
 msgstr "알 수 없는 데이터베이스 유형입니다."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:91
+#: lib/Domain/Service/ReverseRecordCreator.php:92
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "%s에 대한 일치하는 역방향 존이 없습니다."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:99
+#: lib/Domain/Service/ReverseRecordCreator.php:100
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "%s에 대한 PTR 레코드가 %s을(를) 가리키며 이미 존재합니다."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:112
+#: lib/Domain/Service/ReverseRecordCreator.php:116
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr "역방향 레코드가 추가되었습니다. 경고: %s에 대한 PTR 레코드가 이미 존재하며 다음을 가리킵니다: %s. 같은 IP에 여러 PTR 레코드를 두는 것은 권장되지 않습니다."
+msgstr ""
+"역방향 레코드가 추가되었습니다. 경고: %s에 대한 PTR 레코드가 이미 존재하며 다"
+"음을 가리킵니다: %s. 같은 IP에 여러 PTR 레코드를 두는 것은 권장되지 않습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:215
+#: lib/Domain/Service/Dns/RecordManager.php:218
 msgid "You do not have the permission to add SOA record."
 msgstr "SOA 레코드를 추가할 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:219
+#: lib/Domain/Service/Dns/RecordManager.php:222
 msgid "You do not have the permission to add NS record."
 msgstr "NS 레코드를 추가할 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:225
-#, auto-english-fallback
+#: lib/Domain/Service/Dns/RecordManager.php:228
 msgid "You do not have the permission to add LUA record."
 msgstr "LUA 레코드를 추가할 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:270
+#: lib/Domain/Service/Dns/RecordManager.php:273
 msgid "A record with this hostname, type, and content already exists."
 msgstr "이 호스트 이름, 유형, 내용을 가진 레코드가 이미 존재합니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:171
+#: lib/Domain/Service/Dns/RecordManager.php:172
 msgid "Failed to add record to DNS backend."
 msgstr "DNS 백엔드에 레코드를 추가하지 못했습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:328
+#: lib/Domain/Service/Dns/RecordManager.php:333
 msgid "You do not have the permission to edit this SOA record."
 msgstr "이 SOA 레코드를 편집할 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:333
+#: lib/Domain/Service/Dns/RecordManager.php:338
 msgid "You do not have the permission to edit this NS record."
 msgstr "이 NS 레코드를 편집할 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:338
-#, auto-english-fallback
+#: lib/Domain/Service/Dns/RecordManager.php:343
 msgid "You do not have the permission to edit this LUA record."
 msgstr "이 LUA 레코드를 수정할 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:387
+#: lib/Domain/Service/Dns/RecordManager.php:393
 msgid "Failed to update record in DNS backend."
 msgstr "DNS 백엔드에서 레코드를 업데이트하지 못했습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:420
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have the permission to delete SOA records."
 msgstr "SOA 레코드를 삭제할 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:425
+#: lib/Domain/Service/Dns/RecordManager.php:431
 msgid "You do not have the permission to delete NS records."
 msgstr "NS 레코드를 삭제할 권한이 없습니다."
 
-#: lib/Domain/Service/Dns/RecordManager.php:430
-#, auto-english-fallback
+#: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete LUA records."
 msgstr "LUA 레코드를 삭제할 권한이 없습니다."
 
@@ -8623,16 +9218,11 @@ msgstr "DNS 백엔드에서 존 유형을 업데이트하지 못했습니다."
 msgid "Failed to update zone master in DNS backend."
 msgstr "DNS 백엔드에서 존 마스터를 업데이트하지 못했습니다."
 
-#: lib/Domain/Service/Dns/DomainManager.php:562
-msgid "The selected user already owns the zone."
-msgstr "선택한 사용자가 이미 이 존을 소유하고 있습니다."
-
 #: lib/Domain/Service/Dns/DomainManager.php:597
 msgid "There must be at least one owner for a zone."
 msgstr "존에는 최소 한 명의 소유자가 있어야 합니다."
 
 #: lib/Domain/Service/Dns/DomainManager.php:836
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "존 레코드를 업데이트하지 못했습니다: %s"
@@ -8657,7 +9247,8 @@ msgstr "중요: 새 API 키를 지금 저장하세요!"
 msgid ""
 "This is the only time your new API key will be displayed. Please save it now "
 "as you won't be able to see it again."
-msgstr "새 API 키는 이번에만 표시됩니다. 다시 확인할 수 없으므로 지금 저장하세요."
+msgstr ""
+"새 API 키는 이번에만 표시됩니다. 다시 확인할 수 없으므로 지금 저장하세요."
 
 #: templates/modern/api_key_created.html:23
 msgid "Name:"
@@ -8739,7 +9330,9 @@ msgstr "DNSSEC 키를 비활성화하려고 합니다 (ID"
 msgid ""
 "Deactivating an active key will affect the security of your zone and may "
 "cause validation failures."
-msgstr "활성 키를 비활성화하면 존의 보안에 영향을 주고 검증 실패가 발생할 수 있습니다."
+msgstr ""
+"활성 키를 비활성화하면 존의 보안에 영향을 주고 검증 실패가 발생할 수 있습니"
+"다."
 
 #: templates/modern/dnssec_edit_key.html:54
 msgid "Are you sure you want to proceed?"
@@ -8875,7 +9468,9 @@ msgstr "알림"
 msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr "이 레코드를 편집한 후에는 템플릿 페이지에서 \"존 업데이트\"를 클릭하여 이 템플릿을 사용하는 존을 업데이트하세요."
+msgstr ""
+"이 레코드를 편집한 후에는 템플릿 페이지에서 \"존 업데이트\"를 클릭하여 이 템"
+"플릿을 사용하는 존을 업데이트하세요."
 
 #: templates/modern/edit_zone_templ_record.html:32
 msgid "Edit record in zone template"
@@ -8923,14 +9518,20 @@ msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
 "and may cause issues. SOA and NS records are required at the domain root and "
 "cannot coexist with CNAME."
-msgstr "경고: 도메인 루트(존 정점)의 CNAME 레코드는 권장되지 않으며 문제를 일으킬 수 있습니다. 도메인 루트에는 SOA 및 NS 레코드가 필요하며 CNAME과 함께 존재할 수 없습니다."
+msgstr ""
+"경고: 도메인 루트(존 정점)의 CNAME 레코드는 권장되지 않으며 문제를 일으킬 수 "
+"있습니다. 도메인 루트에는 SOA 및 NS 레코드가 필요하며 CNAME과 함께 존재할 수 "
+"없습니다."
 
 #: templates/modern/add_zone_templ_record.html:83
 msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr "팁: SOA 레코드의 경우 이름에는 <code>[ZONE]</code>을, 내용에는 <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>을 사용하세요. DNS 존이 올바르게 작동하려면 SOA 레코드가 필요합니다."
+msgstr ""
+"팁: SOA 레코드의 경우 이름에는 <code>[ZONE]</code>을, 내용에는 <code>[NS1] "
+"[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>을 사용하세요. DNS 존이 "
+"올바르게 작동하려면 SOA 레코드가 필요합니다."
 
 #: templates/modern/edit_zone_templ_record.html:103
 msgid "Update record"
@@ -9078,7 +9679,9 @@ msgstr "중요"
 msgid ""
 "Ensure that the hostname matches exactly what appears in NS records, or "
 "slave zone creation may fail."
-msgstr "호스트 이름이 NS 레코드에 표시된 것과 정확히 일치하는지 확인하세요. 그렇지 않으면 슬레이브 존 생성이 실패할 수 있습니다."
+msgstr ""
+"호스트 이름이 NS 레코드에 표시된 것과 정확히 일치하는지 확인하세요. 그렇지 않"
+"으면 슬레이브 존 생성이 실패할 수 있습니다."
 
 #: templates/modern/edit_supermaster.html:87
 msgid "Validation"
@@ -9232,7 +9835,8 @@ msgstr "로그인으로 돌아가기"
 #: templates/modern/forgot_password.html:21
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
-msgstr "이메일 주소를 입력하시면 비밀번호를 재설정할 수 있는 링크를 보내드립니다."
+msgstr ""
+"이메일 주소를 입력하시면 비밀번호를 재설정할 수 있는 링크를 보내드립니다."
 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
@@ -9308,7 +9912,9 @@ msgstr "내용을 입력하세요"
 
 #: templates/modern/add_record.html:107 templates/modern/add_record.html:159
 msgid "This record type is deprecated and should not be used for new records."
-msgstr "이 레코드 유형은 더 이상 사용되지 않으므로 새 레코드에는 사용하지 않아야 합니다."
+msgstr ""
+"이 레코드 유형은 더 이상 사용되지 않으므로 새 레코드에는 사용하지 않아야 합니"
+"다."
 
 #: templates/modern/edit_perm_templ.html:52
 msgid "Update"
@@ -9404,7 +10010,8 @@ msgstr "정말로 다음 존을 제거하시겠습니까"
 msgid ""
 "The zone will remain in the system but this group will no longer have "
 "ownership."
-msgstr "존은 시스템에 그대로 남아 있지만 이 그룹은 더 이상 소유권을 갖지 않습니다."
+msgstr ""
+"존은 시스템에 그대로 남아 있지만 이 그룹은 더 이상 소유권을 갖지 않습니다."
 
 #: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
 msgid "You are about to delete the group"
@@ -9454,7 +10061,9 @@ msgstr "중요 사항"
 msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
-msgstr "구성원은 이 그룹이 소유한 모든 존에 대한 접근 권한을 잃게 됩니다. 남은 소유자가 없는 존은 계속 존재하지만 일반 사용자는 접근할 수 없습니다."
+msgstr ""
+"구성원은 이 그룹이 소유한 모든 존에 대한 접근 권한을 잃게 됩니다. 남은 소유자"
+"가 없는 존은 계속 존재하지만 일반 사용자는 접근할 수 없습니다."
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
 msgid "Yes, delete this group"
@@ -9628,7 +10237,9 @@ msgstr "템플릿 소개"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr "존 템플릿을 사용하면 새 존을 생성할 때 빠르게 적용할 수 있는 미리 정의된 DNS 레코드 집합을 만들 수 있습니다."
+msgstr ""
+"존 템플릿을 사용하면 새 존을 생성할 때 빠르게 적용할 수 있는 미리 정의된 DNS "
+"레코드 집합을 만들 수 있습니다."
 
 #: templates/modern/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
@@ -9658,7 +10269,9 @@ msgstr "팁 및 예시"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr "웹사이트 유형별로 서로 다른 템플릿을 만드세요(예: \"기본 웹사이트\", \"이메일 서버\")"
+msgstr ""
+"웹사이트 유형별로 서로 다른 템플릿을 만드세요(예: \"기본 웹사이트\", \"이메"
+"일 서버\")"
 
 #: templates/modern/add_zone_templ.html:98
 msgid ""
@@ -9794,7 +10407,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "예시: www,A,192.168.1.1,0,3600,web server"
 
 #: templates/modern/bulk_record_add.html:47
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "우선순위와 TTL은 선택 사항입니다(기본값: priority=0, ttl="
 
@@ -10107,35 +10719,35 @@ msgstr "네, 이 API 키를 재생성합니다"
 msgid "No, keep current key"
 msgstr "아니요, 현재 키를 유지합니다"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "비밀번호 재설정"
 
-#: templates/modern/reset_password.html:19
+#: templates/modern/reset_password.html:12
 msgid "Request New Reset Link"
 msgstr "새 재설정 링크 요청"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "비밀번호가 요구 사항을 충족하지 않습니다"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "다음에 대한 새 비밀번호를 입력하세요"
 
-#: templates/modern/reset_password.html:45
+#: templates/modern/reset_password.html:38
 msgid "New Password"
 msgstr "새 비밀번호"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 msgid "Please provide a password"
 msgstr "비밀번호를 입력하세요"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "비밀번호 확인"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "비밀번호가 일치하지 않습니다"
 
@@ -10151,19 +10763,19 @@ msgstr "최소 길이"
 msgid "characters"
 msgstr "자"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "대문자 최소 1개"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "소문자 최소 1개"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "숫자 최소 1개"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "특수 문자 최소 1개"
 
@@ -10326,6 +10938,13 @@ msgstr "Key Signing Key - 존의 DNSKEY 레코드에 서명합니다"
 #: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - 존의 다른 모든 레코드에 서명합니다"
+
+#: templates/default/dnssec_add_key.html:199
+msgid ""
+"PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and "
+"an active ZSK with the same algorithm. Otherwise it lists the key as CSK, "
+"even if you picked KSK or ZSK here."
+msgstr "PowerDNS는 영역에 같은 알고리즘의 활성 KSK와 활성 ZSK가 있는 동안에만 키를 KSK 또는 ZSK로 표시합니다. 그렇지 않으면 여기서 KSK 또는 ZSK를 선택했더라도 키를 CSK로 표시합니다."
 
 #: templates/modern/dnssec_add_key.html:202
 msgid "Recommended Settings"
@@ -11908,7 +12527,9 @@ msgstr "여러 값"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr "ALLOW-AXFR-FROM과 같은 메타데이터의 경우 동일한 종류로 여러 행을 추가하세요. 각 값은 값마다 한 행씩 별도로 저장됩니다."
+msgstr ""
+"ALLOW-AXFR-FROM과 같은 메타데이터의 경우 동일한 종류로 여러 행을 추가하세요. "
+"각 값은 값마다 한 행씩 별도로 저장됩니다."
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"
@@ -12312,7 +12933,9 @@ msgstr "도시"
 msgid ""
 "Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
 "the global server timezone."
-msgstr "사용자에게 전송되는 이메일(예: MFA 코드)의 타임스탬프에 사용됩니다. 비워두면 전역 서버 시간대를 상속합니다."
+msgstr ""
+"사용자에게 전송되는 이메일(예: MFA 코드)의 타임스탬프에 사용됩니다. 비워두면 "
+"전역 서버 시간대를 상속합니다."
 
 #: templates/modern/user_preferences.html:95
 msgid "Zone Options"
@@ -12740,7 +13363,6 @@ msgid "Unreachable"
 msgstr "접근 불가"
 
 #: templates/default/pdns_status.html:121 templates/modern/pdns_status.html:122
-#, auto-english-fallback
 msgid "Not checked"
 msgstr "확인되지 않음"
 
@@ -12844,20 +13466,27 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "config/settings.php의 pdns_api.key가 PowerDNS에 설정된 API 키와 일치하는지 확인하십시오."
+msgstr ""
+"config/settings.php의 pdns_api.key가 PowerDNS에 설정된 API 키와 일치하는지 확"
+"인하십시오."
 
 #: templates/default/header.html:329 templates/modern/header.html:498
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "pdns_api.server_name이 PowerDNS가 보고하는 값(기본값 'localhost')과 일치하는지 확인하십시오."
+msgstr ""
+"pdns_api.server_name이 PowerDNS가 보고하는 값(기본값 'localhost')과 일치하는"
+"지 확인하십시오."
 
 #: templates/default/header.html:331 templates/modern/header.html:500
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr "PowerDNS가 요청을 거부했습니다. 원인은 PowerDNS 서버 로그에서 확인하십시오. 존을 PowerDNS 데이터베이스에 직접 가져온 후에는 형식이 잘못된 단일 레코드가 존 직렬화를 실패시키는 것이 흔한 원인입니다."
+msgstr ""
+"PowerDNS가 요청을 거부했습니다. 원인은 PowerDNS 서버 로그에서 확인하십시오. "
+"존을 PowerDNS 데이터베이스에 직접 가져온 후에는 형식이 잘못된 단일 레코드가 "
+"존 직렬화를 실패시키는 것이 흔한 원인입니다."
 
 #: templates/default/header.html:333 templates/modern/header.html:502
 msgid ""
@@ -13418,7 +14047,6 @@ msgid "RDAP results for"
 msgstr "다음에 대한 RDAP 결과"
 
 #: lib/Module/Rdap/templates/rdap.html:46
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "RDAP 조회를 수행할 도메인 이름을 입력하십시오."
 
@@ -13443,13 +14071,18 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr "Poweradmin 테이블에만 제한된 권한(select, insert, update, delete)을 가진 데이터베이스 사용자를 생성하십시오. API 백엔드를 사용할 때는 PowerDNS 테이블 접근 권한이 필요하지 않습니다."
+msgstr ""
+"Poweradmin 테이블에만 제한된 권한(select, insert, update, delete)을 가진 데이"
+"터베이스 사용자를 생성하십시오. API 백엔드를 사용할 때는 PowerDNS 테이블 접"
+"근 권한이 필요하지 않습니다."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr "Poweradmin이 PowerDNS 테이블에 접근할 수 있도록 제한된 권한(select, insert, update, delete)을 가진 데이터베이스 사용자를 생성하십시오."
+msgstr ""
+"Poweradmin이 PowerDNS 테이블에 접근할 수 있도록 제한된 권한(select, insert, "
+"update, delete)을 가진 데이터베이스 사용자를 생성하십시오."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -13472,7 +14105,8 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr "SQLite를 사용하고 있으므로 제한된 권한의 새 사용자를 만들 필요가 없습니다."
+msgstr ""
+"SQLite를 사용하고 있으므로 제한된 권한의 새 사용자를 만들 필요가 없습니다."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
@@ -13587,13 +14221,17 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr "테이블 생성 권한이 있는 데이터베이스 연결을 설정하십시오. 필요하면 PowerDNS 위치를 별도로 지정할 수 있습니다."
+msgstr ""
+"테이블 생성 권한이 있는 데이터베이스 연결을 설정하십시오. 필요하면 PowerDNS "
+"위치를 별도로 지정할 수 있습니다."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr "Poweradmin 테이블(사용자, 권한, 존)을 위한 데이터베이스 연결을 설정하십시오. PowerDNS 테이블은 필요하지 않습니다."
+msgstr ""
+"Poweradmin 테이블(사용자, 권한, 존)을 위한 데이터베이스 연결을 설정하십시오. "
+"PowerDNS 테이블은 필요하지 않습니다."
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
@@ -13653,7 +14291,9 @@ msgstr "SQLite 데이터베이스 파일의 전체 경로"
 
 #: install/templates/step4.html.twig:170
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "파일이 존재해야 하고 웹 서버가 읽기/쓰기 권한을 가져야 합니다. 절대 경로를 사용하십시오."
+msgstr ""
+"파일이 존재해야 하고 웹 서버가 읽기/쓰기 권한을 가져야 합니다. 절대 경로를 사"
+"용하십시오."
 
 #: install/templates/step4.html.twig:178
 msgid "DB charset"
@@ -13665,7 +14305,8 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:185
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "새 테이블의 문자 집합입니다. 데이터베이스 기본값을 사용하려면 비워 두십시오."
+msgstr ""
+"새 테이블의 문자 집합입니다. 데이터베이스 기본값을 사용하려면 비워 두십시오."
 
 #: install/templates/step4.html.twig:190
 msgid "DB collation"
@@ -13674,7 +14315,9 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:197
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr "문자 비교에 사용할 콜레이션 규칙입니다. 데이터베이스 기본값을 사용하려면 비워 두십시오."
+msgstr ""
+"문자 비교에 사용할 콜레이션 규칙입니다. 데이터베이스 기본값을 사용하려면 비"
+"워 두십시오."
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
@@ -13805,12 +14448,17 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr "PowerDNS API 백엔드를 선택한 경우에도 Poweradmin은 자체 테이블(사용자, 권한, 존 메타데이터)을 설정된 데이터베이스에 보관합니다. 이 인증 정보는 PowerDNS용이 아니라 해당 데이터베이스용입니다."
+msgstr ""
+"PowerDNS API 백엔드를 선택한 경우에도 Poweradmin은 자체 테이블(사용자, 권한, "
+"존 메타데이터)을 설정된 데이터베이스에 보관합니다. 이 인증 정보는 PowerDNS용"
+"이 아니라 해당 데이터베이스용입니다."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr "제한된 접근 권한을 가진 Poweradmin 데이터베이스 사용자 이름입니다. 웹 UI 로그인용이 아닙니다."
+msgstr ""
+"제한된 접근 권한을 가진 Poweradmin 데이터베이스 사용자 이름입니다. 웹 UI 로그"
+"인용이 아닙니다."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -13900,13 +14548,15 @@ msgstr "중요 보안 안내:"
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr "Poweradmin 루트 디렉터리에서 \"install/\" 디렉터리를 반드시 삭제해야 합니다."
+msgstr ""
+"Poweradmin 루트 디렉터리에서 \"install/\" 디렉터리를 반드시 삭제해야 합니다."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr "보안 조치로서 install 디렉터리가 존재하면 Poweradmin은 동작하지 않습니다."
+msgstr ""
+"보안 조치로서 install 디렉터리가 존재하면 Poweradmin은 동작하지 않습니다."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -13943,7 +14593,9 @@ msgstr "계속하기 전에 다음을 확인하십시오:"
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr "데이터베이스 테이블이 생성된 상태로 PowerDNS가 설치되어 있음(또는 API 접근이 설정되어 있음)"
+msgstr ""
+"데이터베이스 테이블이 생성된 상태로 PowerDNS가 설치되어 있음(또는 API 접근이 "
+"설정되어 있음)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
@@ -13961,14 +14613,16 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr "데이터베이스 연결을 설정하고 관리자 계정을 만든 후 설정 파일을 생성합니다."
+msgstr ""
+"데이터베이스 연결을 설정하고 관리자 계정을 만든 후 설정 파일을 생성합니다."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "참고: PostgreSQL과 SQLite에서는 PowerDNS와 Poweradmin이 동일한 데이터베이스를 사용해야 합니다."
+msgstr ""
+"참고: PostgreSQL과 SQLite에서는 PowerDNS와 Poweradmin이 동일한 데이터베이스"
+"를 사용해야 합니다."
 
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
@@ -13989,19 +14643,23 @@ msgstr "외래 키 제약 조건 문제:"
 #: install/helpers/InstallStepHandler.php:209
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr "외래 키 제약 조건 때문에 설치 프로그램이 기존 테이블을 삭제할 수 없었습니다"
+msgstr ""
+"외래 키 제약 조건 때문에 설치 프로그램이 기존 테이블을 삭제할 수 없었습니다"
 
 #: install/helpers/InstallStepHandler.php:210
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr "사용자 지정 제약 조건이 있거나 다른 테이블이 해당 테이블을 참조하는 경우 재설치 중에 발생할 수 있습니다"
+msgstr ""
+"사용자 지정 제약 조건이 있거나 다른 테이블이 해당 테이블을 참조하는 경우 재설"
+"치 중에 발생할 수 있습니다"
 
 #: install/helpers/InstallStepHandler.php:211
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr "설치 프로그램을 실행하기 전에 외래 키 검사를 직접 비활성화해 볼 수 있습니다:"
+msgstr ""
+"설치 프로그램을 실행하기 전에 외래 키 검사를 직접 비활성화해 볼 수 있습니다:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
@@ -14015,7 +14673,9 @@ msgstr "SQLite 데이터베이스 파일이 존재하는지 확인하십시오"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr "웹 서버가 데이터베이스 파일에 대해 읽기 및 쓰기 권한을 가지고 있는지 확인하십시오"
+msgstr ""
+"웹 서버가 데이터베이스 파일에 대해 읽기 및 쓰기 권한을 가지고 있는지 확인하십"
+"시오"
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
@@ -14042,7 +14702,9 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr "SQLite 데이터베이스 파일 %s이(가) 존재하지 않습니다. 계속하기 전에 데이터베이스 파일을 생성하십시오."
+msgstr ""
+"SQLite 데이터베이스 파일 %s이(가) 존재하지 않습니다. 계속하기 전에 데이터베이"
+"스 파일을 생성하십시오."
 
 #: install/helpers/DatabaseHelper.php:183
 #, php-format
@@ -14075,20 +14737,26 @@ msgstr "API 백엔드를 사용할 때는 PowerDNS API 키가 필요합니다."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr "설정 파일을 찾을 수 없습니다. 계속하기 전에 config/settings.php 파일을 생성하십시오."
+msgstr ""
+"설정 파일을 찾을 수 없습니다. 계속하기 전에 config/settings.php 파일을 생성하"
+"십시오."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr "별도의 PowerDNS 데이터베이스는 MySQL에서만 지원됩니다. PostgreSQL과 SQLite에서는 동일한 데이터베이스를 사용하십시오."
+msgstr ""
+"별도의 PowerDNS 데이터베이스는 MySQL에서만 지원됩니다. PostgreSQL과 SQLite에"
+"서는 동일한 데이터베이스를 사용하십시오."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr "데이터베이스 \"%s\"에 PowerDNS 테이블이 없습니다: %s. 이 데이터베이스에 PowerDNS가 올바르게 설치되어 있는지 확인하십시오."
+msgstr ""
+"데이터베이스 \"%s\"에 PowerDNS 테이블이 없습니다: %s. 이 데이터베이스에 "
+"PowerDNS가 올바르게 설치되어 있는지 확인하십시오."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
@@ -14096,26 +14764,11 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS 데이터베이스 \"%s\"에 연결할 수 없습니다: %s"
 
 #: install/helpers/LocaleHandler.php:90
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "로케일을 설정하지 못했습니다. 선택한 로케일이 이 시스템에서 지원되지 않을 수 있습니다. 관리자에게 문의하십시오."
+msgstr ""
+"로케일을 설정하지 못했습니다. 선택한 로케일이 이 시스템에서 지원되지 않을 수 "
+"있습니다. 관리자에게 문의하십시오."
 
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "생성 후"
 
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "영역 소유자 변경"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "언제든지 사용자 목록에서 영역 소유권을 다른 사용자에게 양도할 수 있습니다."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "사용자 관리"
-
-# OBSOLETE: msgid "Error"
-# OBSOLETE: msgstr "오류"
