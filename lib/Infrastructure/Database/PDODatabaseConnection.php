@@ -53,7 +53,7 @@ class PDODatabaseConnection
 
             // Only allow one statement per query for MySQL
             if (in_array($credentials['db_type'], ['mysql', 'mysqli'])) {
-                $pdo->setAttribute(PDO::MYSQL_ATTR_DIRECT_QUERY, false);
+                $pdo->setAttribute(self::mysqlAttribute('DIRECT_QUERY'), false);
             }
 
             // Enable foreign key constraints for SQLite
@@ -248,29 +248,40 @@ class PDODatabaseConnection
 
         if ($sslEnabled) {
             // SSL is explicitly enabled
-            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $sslVerify;
+            $options[self::mysqlAttribute('SSL_VERIFY_SERVER_CERT')] = $sslVerify;
 
             // Set CA certificate if provided
             if (!empty($credentials['db_ssl_ca'])) {
-                $options[PDO::MYSQL_ATTR_SSL_CA] = $credentials['db_ssl_ca'];
+                $options[self::mysqlAttribute('SSL_CA')] = $credentials['db_ssl_ca'];
             }
 
             // Set client certificate if provided (for mutual TLS)
             if (!empty($credentials['db_ssl_cert'])) {
-                $options[PDO::MYSQL_ATTR_SSL_CERT] = $credentials['db_ssl_cert'];
+                $options[self::mysqlAttribute('SSL_CERT')] = $credentials['db_ssl_cert'];
             }
 
             // Set client key if provided (for mutual TLS)
             if (!empty($credentials['db_ssl_key'])) {
-                $options[PDO::MYSQL_ATTR_SSL_KEY] = $credentials['db_ssl_key'];
+                $options[self::mysqlAttribute('SSL_KEY')] = $credentials['db_ssl_key'];
             }
         } else {
             // SSL not explicitly enabled - disable verification for backwards compatibility.
             // Newer versions of MariaDB Connector/C enforce SSL verification by default,
             // which breaks connections to servers without SSL or with self-signed certificates.
-            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+            $options[self::mysqlAttribute('SSL_VERIFY_SERVER_CERT')] = false;
         }
 
         return $options;
+    }
+
+    /**
+     * A MySQL driver attribute by name. PHP 8.4 moved these to Pdo\Mysql::ATTR_* and 8.5
+     * deprecates the PDO::MYSQL_ATTR_* spelling; both carry the same value.
+     */
+    public static function mysqlAttribute(string $name): int
+    {
+        $current = 'Pdo\\Mysql::ATTR_' . $name;
+
+        return (int)constant(defined($current) ? $current : 'PDO::MYSQL_ATTR_' . $name);
     }
 }
