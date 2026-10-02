@@ -464,7 +464,7 @@ class ZoneDnssecControllerTest extends TestCase
         $this->assertSame([], $controller->soaBumps);
     }
 
-    public function testDisableReturns502WhenTheStateCannotBeReadBackAfterUnsigning(): void
+    public function testDisableFinishesTheChangeButReturns502WhenTheStateCannotBeReadBack(): void
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
@@ -477,6 +477,27 @@ class ZoneDnssecControllerTest extends TestCase
         $response = $controller->callSetStatus();
 
         $this->assertEquals(502, $response->getStatusCode());
-        $this->assertNull($controller->loggedChange);
+        $this->assertStringContainsString('disabled, but PowerDNS did not confirm', json_decode($response->getContent(), true)['message']);
+        $this->assertSame(false, $controller->loggedChange['enabled']);
+        $this->assertSame([1], $controller->soaBumps);
+    }
+
+    public function testEnableFinishesTheChangeButReturns502WhenTheStateCannotBeReadBack(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
+        $this->apiClient->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(false, null);
+        $this->dnssecProvider->expects($this->once())->method('secureZone')->willReturn(true);
+        $this->dnssecProvider->expects($this->once())->method('rectifyZone')->with('example.com');
+
+        $controller = $this->createController();
+        $controller->setRequestBody(json_encode(['enabled' => true]));
+        $response = $controller->callSetStatus();
+
+        $this->assertEquals(502, $response->getStatusCode());
+        $this->assertStringContainsString('enabled, but PowerDNS did not confirm', json_decode($response->getContent(), true)['message']);
+        $this->assertSame(true, $controller->loggedChange['enabled']);
     }
 }

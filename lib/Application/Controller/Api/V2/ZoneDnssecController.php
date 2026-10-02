@@ -295,25 +295,38 @@ class ZoneDnssecController extends PublicApiController
             // change took effect and return the resulting DS records in one pass.
             $status = $this->buildStatus($zoneName);
             if ($status instanceof JsonResponse) {
-                return $status;
+                // PowerDNS accepted the write, so its follow-up steps still run; only the confirmation is missing
+                $this->finishDnssecChange($zoneId, $zoneName, $enabled);
+                $message = $enabled
+                    ? 'DNSSEC was enabled, but PowerDNS did not confirm the new state'
+                    : 'DNSSEC was disabled, but PowerDNS did not confirm the new state';
+                return $this->returnApiError($message, 502);
             }
             if ($status['enabled'] !== $enabled) {
                 return $this->returnApiError('Failed to update DNSSEC status', 500);
             }
 
-            if ($enabled) {
-                $this->dnssecProvider->rectifyZone($zoneName);
-            } else {
-                $this->bumpSoaSerial($zoneId);
-            }
-
-            $this->logDnssecChange($zoneId, $zoneName, $enabled);
+            $this->finishDnssecChange($zoneId, $zoneName, $enabled);
 
             $message = $enabled ? 'DNSSEC enabled successfully' : 'DNSSEC disabled successfully';
             return $this->returnApiResponse($status, true, $message);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
+    }
+
+    /**
+     * Rectify after signing or bump the serial after unsigning, and audit the change, as the web UI does.
+     */
+    private function finishDnssecChange(int $zoneId, string $zoneName, bool $enabled): void
+    {
+        if ($enabled) {
+            $this->dnssecProvider->rectifyZone($zoneName);
+        } else {
+            $this->bumpSoaSerial($zoneId);
+        }
+
+        $this->logDnssecChange($zoneId, $zoneName, $enabled);
     }
 
     /**
