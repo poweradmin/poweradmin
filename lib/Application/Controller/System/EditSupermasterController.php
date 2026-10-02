@@ -82,6 +82,15 @@ class EditSupermasterController extends BaseController
             return;
         }
 
+        $stored = $this->storedEntry((string)$old_master_ip, (string)$old_ns_name)['account'] ?? null;
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
+        if (!$this->services()->zoneOwnershipFormResolver()->mayNameAccount($users, (int)$this->getCurrentUserId(), (string)$account, $stored)) {
+            $this->setMessage('edit_supermaster', 'error', _('You can only choose an account from the list.'));
+            // The refused account is not shown back: listing it would reveal that user
+            $this->showEditSuperMaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name);
+            return;
+        }
+
         $updated = $supermasterManager->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
         if ($updated->success) {
             $this->services()->auditService()->logSupermasterEdit($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name);
@@ -104,7 +113,7 @@ class EditSupermasterController extends BaseController
             return;
         }
 
-        $info = $supermasterManager->getSupermasterInfoFromIp($old_master_ip);
+        $info = $this->storedEntry((string)$old_master_ip, (string)$old_ns_name) ?? ['ns_name' => $old_ns_name, 'account' => ''];
 
         // If POST didn't provide values, use the existing ones
         if ($new_master_ip === null) {
@@ -121,9 +130,9 @@ class EditSupermasterController extends BaseController
 
         $users = $this->services()->userRepository()->getUsersWithZoneCounts();
         $selectableOwners = $this->services()->zoneOwnershipFormResolver()->selectableOwners($users, (int)$this->getCurrentUserId());
-        // The account holder stays listed even when the caller may not see other users.
+        // The stored account holder stays listed even when the caller may not see other users
         foreach ($users as $user) {
-            if ($user['username'] === $account && !in_array($user, $selectableOwners, true)) {
+            if ($user['username'] === $info['account'] && !in_array($user, $selectableOwners, true)) {
                 $selectableOwners[] = $user;
             }
         }
@@ -138,5 +147,21 @@ class EditSupermasterController extends BaseController
             'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'session_uid' => $this->getCurrentUserId()
         ]);
+    }
+
+    /**
+     * The entry of this IP and nameserver; an IP can carry several entries.
+     *
+     * @return array{master_ip: string, ns_name: string, account: string, fullname: string}|null
+     */
+    private function storedEntry(string $masterIp, string $nsName): ?array
+    {
+        foreach ($this->services()->supermasterManager()->getSupermasters() as $entry) {
+            if ($entry['master_ip'] === $masterIp && $entry['ns_name'] === $nsName) {
+                return $entry;
+            }
+        }
+
+        return null;
     }
 }

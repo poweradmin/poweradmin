@@ -48,6 +48,13 @@ class AddSupermasterController extends BaseController
 
     private function addSuperMaster($master_ip, $ns_name, $account): void
     {
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
+        if (!$this->services()->zoneOwnershipFormResolver()->mayNameAccount($users, (int)$this->getCurrentUserId(), (string)$account)) {
+            $this->setMessage('add_supermaster', 'error', _('You can only choose an account from the list.'));
+            $this->showAddSuperMaster($master_ip, $ns_name, $account);
+            return;
+        }
+
         $added = $this->services()->supermasterManager()->addSupermaster($master_ip, $ns_name, $account);
         if ($added->success) {
             $this->services()->auditService()->logSupermasterAdd($master_ip, $ns_name);

@@ -151,6 +151,28 @@ class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
         $this->assertSame('api wording', ZoneCreateFormMessages::ownershipError($result));
     }
 
+    public function testACallerWhoCannotSeeOthersMayOnlyNameThemselvesOrKeepTheStoredAccount(): void
+    {
+        $users = [['id' => self::CALLER_ID, 'username' => 'me'], ['id' => 9, 'username' => 'someone']];
+        $resolver = $this->resolver('both');
+
+        $this->assertTrue($resolver->mayNameAccount($users, self::CALLER_ID, 'me'));
+        $this->assertFalse($resolver->mayNameAccount($users, self::CALLER_ID, 'someone'));
+        $this->assertFalse($resolver->mayNameAccount($users, self::CALLER_ID, 'free-text'));
+        $this->assertTrue($resolver->mayNameAccount($users, self::CALLER_ID, 'someone', 'someone'));
+        // Keeping the stored account does not open other accounts
+        $this->assertFalse($resolver->mayNameAccount($users, self::CALLER_ID, 'someone', 'other'));
+    }
+
+    public function testACallerWhoSeesOthersKeepsTheFreeAccountField(): void
+    {
+        $users = [['id' => self::CALLER_ID, 'username' => 'me'], ['id' => 9, 'username' => 'someone']];
+        $resolver = $this->resolver('both', callerPermissions: [Permission::PERM_USER_VIEW_OTHERS]);
+
+        $this->assertTrue($resolver->mayNameAccount($users, self::CALLER_ID, 'someone'));
+        $this->assertTrue($resolver->mayNameAccount($users, self::CALLER_ID, 'free-text'));
+    }
+
     /**
      * @param int[] $memberOf groups the caller belongs to; every requested group exists
      */

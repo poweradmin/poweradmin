@@ -72,6 +72,28 @@ class ZoneOwnershipFormResolver
         return OwnerOptionsPresenter::offered($everyone, $users, $callerUserId);
     }
 
+    /**
+     * Whether the caller may store this autoprimary account. PowerDNS copies it into
+     * the zones it creates, so it names their owner: a caller who cannot see other
+     * users may only pick from the accounts the form offered, or keep the stored one.
+     *
+     * @param list<array<string, mixed>> $users Rows with 'id' and 'username' keys
+     */
+    public function mayNameAccount(array $users, int $callerUserId, string $account, ?string $storedAccount = null): bool
+    {
+        if ($this->canViewOthers($callerUserId) || ($storedAccount !== null && $account === $storedAccount)) {
+            return true;
+        }
+
+        foreach ($this->selectableOwners($users, $callerUserId) as $user) {
+            if (($user['username'] ?? null) === $account) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function canViewOthers(int $callerUserId): bool
     {
         return $this->permissions->hasPermission($callerUserId, Permission::PERM_USER_VIEW_OTHERS);
