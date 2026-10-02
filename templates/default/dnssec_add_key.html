@@ -178,6 +178,7 @@
                         <li><strong>KSK</strong> - {% trans %}Key Signing Key - signs the DNSKEY records in the zone{% endtrans %}</li>
                         <li><strong>ZSK</strong> - {% trans %}Zone Signing Key - signs all other records in the zone{% endtrans %}</li>
                     </ul>
+                    <p class="small text-muted mb-0" id="key-role-hint">{% trans %}PowerDNS lists a key as KSK or ZSK only while the zone has an active KSK and an active ZSK with the same algorithm. Otherwise it lists the key as CSK, even if you picked KSK or ZSK here.{% endtrans %}</p>
                 </div>
 
                 <div class="mb-3">
