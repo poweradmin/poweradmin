@@ -1763,6 +1763,11 @@ msgstr "Geben Sie mindestens einen Eintrag an"
 msgid "Invalid record type."
 msgstr "Ungültiger Eintragstyp."
 
+#: lib/Application/Controller/System/AddSupermasterController.php:53
+#: lib/Application/Controller/System/EditSupermasterController.php:88
+msgid "You can only choose an account from the list."
+msgstr "Sie können nur ein Konto aus der Liste auswählen."
+
 #: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."

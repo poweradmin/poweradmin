@@ -1702,6 +1702,11 @@ msgstr "Norādiet vismaz vienu ierakstu"
 msgid "Invalid record type."
 msgstr "Nederīgs ieraksta veids."
 
+#: lib/Application/Controller/System/AddSupermasterController.php:53
+#: lib/Application/Controller/System/EditSupermasterController.php:88
+msgid "You can only choose an account from the list."
+msgstr "Varat izvēlēties tikai kontu no saraksta."
+
 #: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."

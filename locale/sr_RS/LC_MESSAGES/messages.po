@@ -1716,6 +1716,11 @@ msgstr "Унесите бар један запис"
 msgid "Invalid record type."
 msgstr "Неважећи тип записа."
 
+#: lib/Application/Controller/System/AddSupermasterController.php:53
+#: lib/Application/Controller/System/EditSupermasterController.php:88
+msgid "You can only choose an account from the list."
+msgstr "Можете изабрати само налог са листе."
+
 #: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."

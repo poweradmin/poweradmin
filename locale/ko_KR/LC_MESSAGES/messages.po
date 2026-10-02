@@ -1697,6 +1697,11 @@ msgstr "최소 하나 이상의 레코드를 입력하세요"
 msgid "Invalid record type."
 msgstr "유효하지 않은 레코드 유형입니다."
 
+#: lib/Application/Controller/System/AddSupermasterController.php:53
+#: lib/Application/Controller/System/EditSupermasterController.php:88
+msgid "You can only choose an account from the list."
+msgstr "목록에 있는 계정만 선택할 수 있습니다."
+
 #: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."

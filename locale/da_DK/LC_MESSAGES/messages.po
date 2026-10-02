@@ -1739,6 +1739,11 @@ msgstr "Angiv mindst én record"
 msgid "Invalid record type."
 msgstr "Ugyldig recordtype."
 
+#: lib/Application/Controller/System/AddSupermasterController.php:53
+#: lib/Application/Controller/System/EditSupermasterController.php:88
+msgid "You can only choose an account from the list."
+msgstr "Du kan kun vælge en konto fra listen."
+
 #: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."

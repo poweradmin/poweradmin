@@ -1634,6 +1634,11 @@ msgstr "至少提供一个记录"
 msgid "Invalid record type."
 msgstr "记录类型无效。"
 
+#: lib/Application/Controller/System/AddSupermasterController.php:53
+#: lib/Application/Controller/System/EditSupermasterController.php:88
+msgid "You can only choose an account from the list."
+msgstr "只能从列表中选择账户。"
+
 #: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."

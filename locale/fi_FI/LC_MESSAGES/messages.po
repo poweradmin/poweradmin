@@ -1698,6 +1698,11 @@ msgstr "Anna vähintään yksi tietue"
 msgid "Invalid record type."
 msgstr "Virheellinen tietuetyyppi."
 
+#: lib/Application/Controller/System/AddSupermasterController.php:53
+#: lib/Application/Controller/System/EditSupermasterController.php:88
+msgid "You can only choose an account from the list."
+msgstr "Voit valita vain luettelossa olevan tilin."
+
 #: lib/Application/Controller/Record/AddRecordController.php:287
 #, php-format
 msgid "%d record(s) have been added successfully."
