@@ -136,14 +136,24 @@ class ZoneSigningServiceTest extends TestCase
         $this->assertSame(ZoneSigningOutcome::UNREACHABLE, $this->service()->unsign(self::ZONE_ID, self::ZONE)->outcome);
     }
 
-    public function testAStateThatCannotBeReadBackAfterSigningIsNotAuditedAsSigned(): void
+    public function testASigningPowerDnsAcceptedButDidNotConfirmIsStillRectifiedAndAudited(): void
     {
         $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(false, null);
         $this->dnssec->method('secureZone')->willReturn(true);
-        $this->dnssec->expects($this->never())->method('rectifyZone');
-        $this->audit->expects($this->never())->method('logDnssecSignZone');
+        $this->dnssec->expects($this->once())->method('rectifyZone')->with(self::ZONE);
+        $this->audit->expects($this->once())->method('logDnssecSignZone')->with(self::ZONE_ID, self::ZONE);
 
-        $this->assertSame(ZoneSigningOutcome::UNREACHABLE, $this->service()->sign(self::ZONE_ID, self::ZONE)->outcome);
+        $this->assertSame(ZoneSigningOutcome::UNCONFIRMED, $this->service()->sign(self::ZONE_ID, self::ZONE)->outcome);
+    }
+
+    public function testAnUnsigningPowerDnsAcceptedButDidNotConfirmStillBumpsTheSerialAndAudits(): void
+    {
+        $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(true, null);
+        $this->dnssec->method('unsecureZone')->willReturn(true);
+        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID)->willReturn(true);
+        $this->audit->expects($this->once())->method('logDnssecUnsignZone')->with(self::ZONE_ID, self::ZONE);
+
+        $this->assertSame(ZoneSigningOutcome::UNCONFIRMED, $this->service()->unsign(self::ZONE_ID, self::ZONE)->outcome);
     }
 
     private function service(): ZoneSigningService

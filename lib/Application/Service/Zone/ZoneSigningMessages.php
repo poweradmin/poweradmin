@@ -42,7 +42,7 @@ class ZoneSigningMessages
             ZoneSigningOutcome::PRESIGNED => ['error', _('This zone is presigned; DNSSEC keys are managed at the primary server.')],
             ZoneSigningOutcome::ALREADY_SIGNED => ['info', _('Zone is already signed with DNSSEC.')],
             ZoneSigningOutcome::INVALID_ZONE => ['error', $result->detail],
-            ZoneSigningOutcome::VERIFY_FAILED => ['warning', _('Zone signing requested successfully, but verification failed. Check DNSSEC keys.')],
+            ZoneSigningOutcome::VERIFY_FAILED, ZoneSigningOutcome::UNCONFIRMED => ['warning', _('Zone signing requested successfully, but verification failed. Check DNSSEC keys.')],
             default => ['error', _('Failed to sign zone. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.')],
         };
     }
@@ -56,7 +56,7 @@ class ZoneSigningMessages
             ZoneSigningOutcome::UNSIGNED => ['success', _('Zone has been unsigned successfully.')],
             ZoneSigningOutcome::PRESIGNED => ['error', _('This zone is presigned; DNSSEC keys are managed at the primary server.')],
             ZoneSigningOutcome::NOT_SIGNED => ['info', _('Zone is not currently signed with DNSSEC.')],
-            ZoneSigningOutcome::VERIFY_FAILED => ['warning', _('Zone unsigning requested successfully, but verification failed.')],
+            ZoneSigningOutcome::VERIFY_FAILED, ZoneSigningOutcome::UNCONFIRMED => ['warning', _('Zone unsigning requested successfully, but verification failed.')],
             default => ['error', _('Failed to unsign zone. Check PowerDNS logs for details.')],
         };
     }

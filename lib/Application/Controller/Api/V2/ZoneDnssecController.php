@@ -250,6 +250,10 @@ class ZoneDnssecController extends PublicApiController
 
             return match ($result->outcome) {
                 ZoneSigningOutcome::UNREACHABLE => $this->unreachable(),
+                ZoneSigningOutcome::UNCONFIRMED => $this->returnApiError(
+                    $enabled ? 'DNSSEC was enabled, but PowerDNS did not confirm the new state' : 'DNSSEC was disabled, but PowerDNS did not confirm the new state',
+                    RefusalStatus::of(Refusal::BACKEND_UNREACHABLE)
+                ),
                 ZoneSigningOutcome::SERVER_DISABLED => $this->returnApiError('DNSSEC is not enabled on the server', 400),
                 ZoneSigningOutcome::PRESIGNED => $this->returnApiError('DNSSEC for this zone is presigned and managed at the primary server', 409),
                 ZoneSigningOutcome::INVALID_ZONE => $this->returnApiError($result->detail, 400),

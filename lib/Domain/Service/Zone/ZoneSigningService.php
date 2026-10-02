@@ -76,7 +76,10 @@ class ZoneSigningService
         }
         $secured = $this->dnssec->fetchZoneSecured($zoneName);
         if ($secured === null) {
-            return new ZoneSigningResult(ZoneSigningOutcome::UNREACHABLE);
+            // PowerDNS accepted the write, so its follow-up steps still run; only the confirmation is missing
+            $this->dnssec->rectifyZone($zoneName);
+            $this->audit->logDnssecSignZone($zoneId, $zoneName);
+            return new ZoneSigningResult(ZoneSigningOutcome::UNCONFIRMED);
         }
         if (!$secured) {
             $this->logger->warning('DNSSEC signing verification failed for zone: {zone} - API returned success but zone not secured', ['zone' => $zoneName]);
@@ -109,7 +112,9 @@ class ZoneSigningService
         }
         $secured = $this->dnssec->fetchZoneSecured($zoneName);
         if ($secured === null) {
-            return new ZoneSigningResult(ZoneSigningOutcome::UNREACHABLE);
+            $this->soaRecordManager->updateSOASerial($zoneId);
+            $this->audit->logDnssecUnsignZone($zoneId, $zoneName);
+            return new ZoneSigningResult(ZoneSigningOutcome::UNCONFIRMED);
         }
         if ($secured) {
             $this->logger->warning('DNSSEC unsigning verification failed for zone: {zone} - API returned success but zone still secured', ['zone' => $zoneName]);

@@ -39,4 +39,6 @@ enum ZoneSigningOutcome: string
     case UNSECURE_FAILED = 'unsecure_failed';
     case VERIFY_FAILED = 'verify_failed';
     case UNREACHABLE = 'unreachable';
+    // PowerDNS accepted the write and the follow-up steps ran, but the new state could not be read back
+    case UNCONFIRMED = 'unconfirmed';
 }
