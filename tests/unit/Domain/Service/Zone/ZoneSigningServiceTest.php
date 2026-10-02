@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\ZoneValidationService;
 use Psr\Log\NullLogger;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 
 /**
  * Signing is refused before anything moves, bumps the serial only when it
@@ -156,14 +157,49 @@ class ZoneSigningServiceTest extends TestCase
         $this->assertSame(ZoneSigningOutcome::UNCONFIRMED, $this->service()->unsign(self::ZONE_ID, self::ZONE)->outcome);
     }
 
-    private function service(): ZoneSigningService
+    private function service(?ZoneCacheFlusherInterface $flusher = null): ZoneSigningService
     {
         return new ZoneSigningService(
             $this->dnssec,
             $this->validator,
             $this->soa,
             $this->audit,
-            new NullLogger()
+            new NullLogger(),
+            $flusher
         );
+    }
+
+    public function testSigningAndUnsigningTellPowerDnsOnceTheZoneChanged(): void
+    {
+        $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(false, true, true, false);
+        $this->dnssec->method('secureZone')->willReturn(true);
+        $this->dnssec->method('unsecureZone')->willReturn(true);
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->expects($this->exactly(2))->method('flushZone')->with(self::ZONE);
+        $service = $this->service($flusher);
+
+        $this->assertSame(ZoneSigningOutcome::SIGNED, $service->sign(self::ZONE_ID, self::ZONE)->outcome);
+        $this->assertSame(ZoneSigningOutcome::UNSIGNED, $service->unsign(self::ZONE_ID, self::ZONE)->outcome);
+    }
+
+    public function testAFailedUnsignDoesNotFlush(): void
+    {
+        $this->dnssec->method('fetchZoneSecured')->willReturn(true);
+        $this->dnssec->method('unsecureZone')->willReturn(false);
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->expects($this->never())->method('flushZone');
+
+        $this->assertSame(ZoneSigningOutcome::UNSECURE_FAILED, $this->service($flusher)->unsign(self::ZONE_ID, self::ZONE)->outcome);
+    }
+
+    public function testAFailedSignStillFlushesTheSerialItBumped(): void
+    {
+        $this->dnssec->method('fetchZoneSecured')->willReturn(false);
+        $this->dnssec->method('secureZone')->willReturn(false);
+        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID);
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->expects($this->once())->method('flushZone')->with(self::ZONE);
+
+        $this->assertSame(ZoneSigningOutcome::SECURE_FAILED, $this->service($flusher)->sign(self::ZONE_ID, self::ZONE)->outcome);
     }
 }

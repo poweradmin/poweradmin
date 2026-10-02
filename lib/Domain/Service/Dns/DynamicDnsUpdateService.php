@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service\Dns;
 use Closure;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Service\Auth\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\User;
@@ -50,7 +51,8 @@ readonly class DynamicDnsUpdateService
         private DynamicDnsRepositoryInterface $repository,
         private ?AuditLoggerInterface $auditService = null,
         private string $clientIp = '',
-        private ?Closure $requiresApproval = null
+        private ?Closure $requiresApproval = null,
+        private ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ) {
     }
 
@@ -110,10 +112,11 @@ readonly class DynamicDnsUpdateService
         ?array $allowedZoneIds = null,
         bool $mayRemoveRecords = true
     ): array {
-        $zoneId = $this->findOwningZoneId($user, $hostname);
-        if ($zoneId === null) {
+        $owningZone = $this->findOwningZone($user, $hostname);
+        if ($owningZone === null) {
             return $this->emptyResult('nohost', null);
         }
+        [$zoneId, $zoneName] = $owningZone;
 
         if ($allowedZoneIds !== null && !in_array($zoneId, $allowedZoneIds, true)) {
             return $this->emptyResult('forbidden', $zoneId);
@@ -130,7 +133,7 @@ readonly class DynamicDnsUpdateService
         }
 
         try {
-            $updateResult = $this->updateZone($zoneId, $hostname, $ipList, $dualstackUpdate, $mayRemoveRecords);
+            $updateResult = $this->updateZone($zoneId, $zoneName, $hostname, $ipList, $dualstackUpdate, $mayRemoveRecords);
         } catch (\Exception $e) {
             return $this->emptyResult('dnserr', $zoneId);
         }
@@ -178,28 +181,31 @@ readonly class DynamicDnsUpdateService
      * Pick the most-specific zone the user owns that contains the supplied hostname.
      * Avoids writing the same record into every owned zone, which would create
      * authoritative duplicates across unrelated zones.
+     *
+     * @return array{0: int, 1: string}|null The zone id and name
      */
-    private function findOwningZoneId(User $user, HostnameValue $hostname): ?int
+    private function findOwningZone(User $user, HostnameValue $hostname): ?array
     {
         $userZones = $this->authService->getUserZones($user);
         $fqdn = strtolower($hostname->getValue());
 
-        $bestZoneId = null;
+        $best = null;
         $bestLength = -1;
         foreach ($userZones as $zoneId => $zoneName) {
             $zone = strtolower($zoneName);
             $isMatch = DnsHelper::isWithinZone($fqdn, $zone);
             if ($isMatch && strlen($zone) > $bestLength) {
-                $bestZoneId = $zoneId;
+                $best = [$zoneId, $zoneName];
                 $bestLength = strlen($zone);
             }
         }
 
-        return $bestZoneId;
+        return $best;
     }
 
     private function updateZone(
         int $zoneId,
+        string $zoneName,
         HostnameValue $hostname,
         IpAddressList $ipList,
         bool $dualstackUpdate,
@@ -235,6 +241,7 @@ readonly class DynamicDnsUpdateService
 
         if ($wasUpdated) {
             $this->repository->updateSOASerial($zoneId);
+            $this->zoneCacheFlusher?->flushZone($zoneName);
         }
 
         return [

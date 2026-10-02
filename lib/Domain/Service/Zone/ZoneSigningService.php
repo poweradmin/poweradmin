@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\Zone;
 
 use Poweradmin\Domain\Port\AuditLoggerInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Port\ZoneSigningInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -40,7 +41,8 @@ class ZoneSigningService
         private readonly ZoneValidationService $validator,
         private readonly SOARecordManagerInterface $soaRecordManager,
         private readonly AuditLoggerInterface $audit,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ) {
     }
 
@@ -72,12 +74,15 @@ class ZoneSigningService
 
         if (!$this->dnssec->secureZone($zoneName)) {
             $this->logger->error('DNSSEC signing failed for zone: {zone}', ['zone' => $zoneName]);
+            // The serial bump above is already stored
+            $this->zoneCacheFlusher?->flushZone($zoneName);
             return new ZoneSigningResult(ZoneSigningOutcome::SECURE_FAILED);
         }
         $secured = $this->dnssec->fetchZoneSecured($zoneName);
         if ($secured === null) {
             // PowerDNS accepted the write, so its follow-up steps still run; only the confirmation is missing
             $this->dnssec->rectifyZone($zoneName);
+            $this->zoneCacheFlusher?->flushZone($zoneName);
             $this->audit->logDnssecSignZone($zoneId, $zoneName);
             return new ZoneSigningResult(ZoneSigningOutcome::UNCONFIRMED);
         }
@@ -87,6 +92,7 @@ class ZoneSigningService
         }
 
         $this->dnssec->rectifyZone($zoneName);
+        $this->zoneCacheFlusher?->flushZone($zoneName);
         $this->audit->logDnssecSignZone($zoneId, $zoneName);
 
         return new ZoneSigningResult(ZoneSigningOutcome::SIGNED);
@@ -113,6 +119,7 @@ class ZoneSigningService
         $secured = $this->dnssec->fetchZoneSecured($zoneName);
         if ($secured === null) {
             $this->soaRecordManager->updateSOASerial($zoneId);
+            $this->zoneCacheFlusher?->flushZone($zoneName);
             $this->audit->logDnssecUnsignZone($zoneId, $zoneName);
             return new ZoneSigningResult(ZoneSigningOutcome::UNCONFIRMED);
         }
@@ -122,6 +129,7 @@ class ZoneSigningService
         }
 
         $this->soaRecordManager->updateSOASerial($zoneId);
+        $this->zoneCacheFlusher?->flushZone($zoneName);
         $this->audit->logDnssecUnsignZone($zoneId, $zoneName);
 
         return new ZoneSigningResult(ZoneSigningOutcome::UNSIGNED);

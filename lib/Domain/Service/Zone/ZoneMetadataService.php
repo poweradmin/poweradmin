@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -52,7 +53,8 @@ class ZoneMetadataService
         private readonly PermissionService $permissions,
         private readonly AuditLoggerInterface $audit,
         private readonly RecordChangeWriterInterface $changeLogger,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        private readonly ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ) {
         $this->logger = $logger ?? new NullLogger();
     }
@@ -180,6 +182,8 @@ class ZoneMetadataService
         if (!$this->store->replaceAll($zoneId, $zoneName, $rows, $before)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED);
         }
+        // PowerDNS caches zone metadata; the flush drops that cache for the zone
+        $this->zoneCacheFlusher?->flushZone($zoneName);
         $this->log($zoneId, $zoneName, $before, $rows);
 
         return ZoneMetadataResult::ok();
@@ -218,6 +222,7 @@ class ZoneMetadataService
         if (!$this->store->replaceKind($zoneId, $zoneName, $kind, $values, $before)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED, $kind);
         }
+        $this->zoneCacheFlusher?->flushZone($zoneName);
         $this->log($zoneId, $zoneName, $before, $after);
 
         return ZoneMetadataResult::ok();
@@ -247,6 +252,7 @@ class ZoneMetadataService
         if (!$this->store->replaceKind($zoneId, $zoneName, $kind, [], $before)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED, $kind);
         }
+        $this->zoneCacheFlusher?->flushZone($zoneName);
         $this->log($zoneId, $zoneName, $before, $after);
 
         return ZoneMetadataResult::ok();

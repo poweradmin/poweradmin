@@ -140,7 +140,8 @@ final class ZoneServices
             new ZoneValidationService($this->services->recordRepository()),
             $this->services->soaRecordManager(),
             $this->services->auditService(),
-            $this->logger
+            $this->logger,
+            $this->services->zoneCacheFlusher()
         );
     }
 
@@ -200,7 +201,8 @@ final class ZoneServices
             $this->services->permissionService(),
             $this->services->auditService(),
             $this->services->recordChangeLogger(),
-            $this->logger
+            $this->logger,
+            $this->services->zoneCacheFlusher()
         );
     }
 

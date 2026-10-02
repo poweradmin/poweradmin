@@ -39,6 +39,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\PermissionServiceTestCase;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 
 /**
  * The metadata rules the editor and the API share: vocabulary and single-value
@@ -362,14 +363,40 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         return $this->service(new ApiZoneMetadataStore($apiClient), $this->config);
     }
 
-    private function service(ZoneMetadataStoreInterface $store, ConfigurationInterface $config): ZoneMetadataService
+    private function service(ZoneMetadataStoreInterface $store, ConfigurationInterface $config, ?ZoneCacheFlusherInterface $flusher = null): ZoneMetadataService
     {
         return new ZoneMetadataService(
             $store,
             $config,
             $this->buildPermissionService(adminUserIds: [self::ADMIN]),
             $this->audit,
-            $this->changeLogger
+            $this->changeLogger,
+            zoneCacheFlusher: $flusher
         );
+    }
+
+    public function testAStoredChangeIsAnnouncedToPowerDnsAndARefusedOneIsNot(): void
+    {
+        $this->store->method('load')->willReturn([]);
+        $this->store->method('replaceKind')->willReturnOnConsecutiveCalls(false, true);
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->expects($this->once())->method('flushZone')->with(self::ZONE);
+        $service = $this->service($this->store, $this->config, $flusher);
+
+        $this->assertSame(ZoneMetadataOutcome::WRITE_FAILED, $service->replaceKind(self::ZONE_ID, self::ZONE, 'ALLOW-AXFR-FROM', ['192.0.2.1'], self::ADMIN)->outcome);
+        $this->assertTrue($service->replaceKind(self::ZONE_ID, self::ZONE, 'ALLOW-AXFR-FROM', ['192.0.2.1'], self::ADMIN)->isOk());
+    }
+
+    public function testTheEditorSaveAndAKindDeleteAreAnnouncedToPowerDns(): void
+    {
+        $this->store->method('load')->willReturn([['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.1']]);
+        $this->store->method('replaceAll')->willReturn(true);
+        $this->store->method('replaceKind')->willReturn(true);
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->expects($this->exactly(2))->method('flushZone')->with(self::ZONE);
+        $service = $this->service($this->store, $this->config, $flusher);
+
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.2']], self::ADMIN)->isOk());
+        $this->assertTrue($service->deleteKind(self::ZONE_ID, self::ZONE, 'ALLOW-AXFR-FROM', self::ADMIN)->isOk());
     }
 }
