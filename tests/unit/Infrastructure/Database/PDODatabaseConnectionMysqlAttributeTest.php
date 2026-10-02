@@ -31,6 +31,10 @@ class PDODatabaseConnectionMysqlAttributeTest extends TestCase
     #[DataProvider('attributeProvider')]
     public function testResolvesToTheDriverValueOnThisPhp(string $name): void
     {
+        if (!extension_loaded('pdo_mysql')) {
+            $this->markTestSkipped('The MySQL PDO driver defines these constants');
+        }
+
         // PHP 8.5 deprecates the old spelling, so it is only read where the new one is missing
         $expected = defined('Pdo\\Mysql::ATTR_' . $name)
             ? constant('Pdo\\Mysql::ATTR_' . $name)
