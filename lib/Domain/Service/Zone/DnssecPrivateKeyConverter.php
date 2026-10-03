@@ -34,10 +34,10 @@ final class DnssecPrivateKeyConverter
     /** Far above an RSA-4096 key; refused before any parsing */
     public const MAX_INPUT_BYTES = 16384;
 
-    /** PKCS#8 v1 prefixes written by `openssl genpkey`, each followed by the raw seed */
-    private const EDDSA_PKCS8 = [
-        DnssecAlgorithm::ED25519 => ["\x30\x2e\x02\x01\x00\x30\x05\x06\x03\x2b\x65\x70\x04\x22\x04\x20", 32],
-        DnssecAlgorithm::ED448 => ["\x30\x47\x02\x01\x00\x30\x05\x06\x03\x2b\x65\x71\x04\x3b\x04\x39", 57],
+    /** RFC 8410 algorithm OIDs (DER content bytes) and their seed lengths */
+    private const EDDSA_OIDS = [
+        "\x2b\x65\x70" => [DnssecAlgorithm::ED25519, 32],
+        "\x2b\x65\x71" => [DnssecAlgorithm::ED448, 57],
     ];
 
     private const ECDSA_CURVES = [
@@ -175,13 +175,82 @@ final class DnssecPrivateKeyConverter
         if ($der === false) {
             return null;
         }
-        foreach (self::EDDSA_PKCS8 as $keyAlgorithm => [$prefix, $length]) {
-            if (strlen($der) === strlen($prefix) + $length && str_starts_with($der, $prefix)) {
-                return [$keyAlgorithm, substr($der, strlen($prefix))];
-            }
+
+        // RFC 5958 OneAsymmetricKey: version, AlgorithmIdentifier, OCTET STRING { OCTET STRING seed },
+        // [0] attributes OPTIONAL, [1] publicKey OPTIONAL; v1 (INTEGER 0) has no publicKey, v2 (INTEGER 1) has one
+        $outer = self::derElement($der, 0, 0x30);
+        if ($outer === null || $outer[1] !== strlen($der)) {
+            return null;
+        }
+        $body = $outer[0];
+        $version = self::derElement($body, 0, 0x02);
+        if ($version === null || ($version[0] !== "\x00" && $version[0] !== "\x01")) {
+            return null;
+        }
+        $algorithmIdentifier = self::derElement($body, $version[1], 0x30);
+        $oid = $algorithmIdentifier === null ? null : self::derElement($algorithmIdentifier[0], 0, 0x06);
+        // RFC 8410 section 3: no parameters, so the OID is the whole AlgorithmIdentifier
+        if ($oid === null || $oid[1] !== strlen($algorithmIdentifier[0]) || !isset(self::EDDSA_OIDS[$oid[0]])) {
+            return null;
+        }
+        [$keyAlgorithm, $length] = self::EDDSA_OIDS[$oid[0]];
+
+        $wrapped = self::derElement($body, $algorithmIdentifier[1], 0x04);
+        $seed = $wrapped === null ? null : self::derElement($wrapped[0], 0, 0x04);
+        if ($seed === null || $seed[1] !== strlen($wrapped[0]) || strlen($seed[0]) !== $length) {
+            return null;
         }
 
-        return null;
+        $offset = $wrapped[1];
+        $attributes = self::derElement($body, $offset, 0xa0);
+        if ($attributes !== null) {
+            $offset = $attributes[1];
+        }
+        $publicKey = self::derElement($body, $offset, 0x81);
+        if ($publicKey !== null) {
+            $offset = $publicKey[1];
+        }
+        // Nothing may follow, and only a v2 key carries the public key
+        if ($offset !== strlen($body) || ($publicKey !== null) !== ($version[0] === "\x01")) {
+            return null;
+        }
+
+        return [$keyAlgorithm, $seed[0]];
+    }
+
+    /**
+     * Read the DER element with the expected tag at $offset.
+     *
+     * @return array{0: string, 1: int}|null [content, offset just after the element]
+     */
+    private static function derElement(#[\SensitiveParameter] string $der, int $offset, int $tag): ?array
+    {
+        if (!isset($der[$offset + 1]) || ord($der[$offset]) !== $tag) {
+            return null;
+        }
+        $length = ord($der[$offset + 1]);
+        $position = $offset + 2;
+        if ($length > 0x7f) {
+            // Long form; two length bytes are far more than any key needs
+            $lengthBytes = $length & 0x7f;
+            if ($lengthBytes < 1 || $lengthBytes > 2 || !isset($der[$position + $lengthBytes - 1])) {
+                return null;
+            }
+            $length = 0;
+            for ($i = 0; $i < $lengthBytes; $i++) {
+                $length = ($length << 8) | ord($der[$position + $i]);
+            }
+            $position += $lengthBytes;
+            // DER uses the shortest form: below 128 the short form, no leading zero length byte
+            if ($length < 0x80 || ($lengthBytes === 2 && $length < 0x100)) {
+                return null;
+            }
+        }
+        if ($position + $length > strlen($der)) {
+            return null;
+        }
+
+        return [substr($der, $position, $length), $position + $length];
     }
 
     /**

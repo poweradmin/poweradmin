@@ -18,6 +18,18 @@ class DnssecPrivateKeyConverterTest extends TestCase
     private const ED448_PREFIX = '3047020100300506032b6571043b0439';
     private const X25519_PREFIX = '302e020100300506032b656e04220420';
 
+    // RFC 8410 section 10.3: the same Ed25519 key as PKCS#8 v1, and as v2 with attributes and the public key
+    private const RFC8410_V1 = "-----BEGIN PRIVATE KEY-----\n"
+        . "MC4CAQAwBQYDK2VwBCIEINTuctv5E1hK1bbY8fdp+K06/nwoy/HU++CXqI9EdVhC\n"
+        . "-----END PRIVATE KEY-----\n";
+    private const RFC8410_V2 = "-----BEGIN PRIVATE KEY-----\n"
+        . "MHICAQEwBQYDK2VwBCIEINTuctv5E1hK1bbY8fdp+K06/nwoy/HU++CXqI9EdVhC\n"
+        . "oB8wHQYKKoZIhvcNAQkJFDEPDA1DdXJkbGUgQ2hhaXJzgSEAGb9ECWmEzf6FQbrB\n"
+        . "Z9w7lshQhqowtrbLDFw4rXAxZuE=\n"
+        . "-----END PRIVATE KEY-----\n";
+    private const RFC8410_SEED = 'd4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842';
+    private const RFC8410_PUBLIC = '19bf44096984cdfe8541bac167dc3b96c85086aa30b6b6cb0c5c38ad703166e1';
+
     public function testIscKeyPassesThrough(): void
     {
         $this->assertSame(self::ISC_P256, DnssecPrivateKeyConverter::toIsc(self::ISC_P256, 'ecdsa256'));
@@ -123,6 +135,72 @@ class DnssecPrivateKeyConverterTest extends TestCase
         $this->assertSame(base64_encode((string)hex2bin(self::ED448_SEED)), $fields['PrivateKey']);
     }
 
+    public function testRfc8410Ed25519KeyIsReadInBothPkcs8Versions(): void
+    {
+        foreach (['v1' => self::RFC8410_V1, 'v2' => self::RFC8410_V2] as $version => $pem) {
+            $fields = $this->parse(DnssecPrivateKeyConverter::toIsc($pem, 'ed25519'));
+
+            $this->assertSame('15 (ED25519)', $fields['Algorithm'], $version);
+            $this->assertSame(base64_encode((string)hex2bin(self::RFC8410_SEED)), $fields['PrivateKey'], $version);
+        }
+    }
+
+    public function testRfc8410SeedYieldsThePublishedPublicKey(): void
+    {
+        if (!function_exists('sodium_crypto_sign_seed_keypair')) {
+            $this->markTestSkipped('sodium is not available');
+        }
+        $fields = $this->parse(DnssecPrivateKeyConverter::toIsc(self::RFC8410_V2, 'ed25519'));
+        $seed = base64_decode($fields['PrivateKey'], true);
+        $this->assertIsString($seed);
+
+        $this->assertSame(self::RFC8410_PUBLIC, bin2hex(sodium_crypto_sign_publickey(sodium_crypto_sign_seed_keypair($seed))));
+    }
+
+    public function testEd448Pkcs8V2KeyWithAPublicKeyIsConverted(): void
+    {
+        // RFC 5958 v2 (INTEGER 1) with a [1] publicKey of 57 bytes
+        $hex = '308183' . '020101' . '3005' . '06032b6571' . '043b0439' . self::ED448_SEED . '813a00' . str_repeat('ab', 57);
+
+        $fields = $this->parse(DnssecPrivateKeyConverter::toIsc($this->derPem($hex), 'ed448'));
+
+        $this->assertSame('16 (ED448)', $fields['Algorithm']);
+        $this->assertSame(base64_encode((string)hex2bin(self::ED448_SEED)), $fields['PrivateKey']);
+    }
+
+    public function testEd25519Pkcs8KeyWithAttributesIsConverted(): void
+    {
+        // v1 with a [0] attributes element: the empty SET of attributes
+        $hex = '3030' . '020100' . '3005' . '06032b6570' . '04220420' . self::ED25519_SEED . 'a000';
+
+        $fields = $this->parse(DnssecPrivateKeyConverter::toIsc($this->derPem($hex), 'ed25519'));
+
+        $this->assertSame(base64_encode((string)hex2bin(self::ED25519_SEED)), $fields['PrivateKey']);
+    }
+
+    public function testMalformedEdDsaStructuresAreUnreadable(): void
+    {
+        $seed = self::ED25519_SEED;
+        $algorithm = '3005' . '06032b6570';
+        $malformed = [
+            'version 2' => '302e' . '020102' . $algorithm . '04220420' . $seed,
+            'oid with parameters' => '3030' . '020100' . '3007' . '06032b6570' . '0500' . '04220420' . $seed,
+            'seed too short' => '302d' . '020100' . $algorithm . '0421041f' . substr($seed, 2),
+            'byte after the inner octet string' => '302f' . '020100' . $algorithm . '04230420' . $seed . '00',
+            'bit string instead of the inner octet string' => '302e' . '020100' . $algorithm . '04220320' . $seed,
+            'outer length too long' => '302f' . '020100' . $algorithm . '04220420' . $seed,
+            'trailing bytes after the sequence' => '302e' . '020100' . $algorithm . '04220420' . $seed . '00',
+            'stray byte after the private key' => '302f' . '020100' . $algorithm . '04220420' . $seed . '00',
+            'cut-off attributes' => '3030' . '020100' . $algorithm . '04220420' . $seed . 'a005',
+            'public key in a v1 key' => '3051' . '020100' . $algorithm . '04220420' . $seed . '812100' . str_repeat('ab', 32),
+            'v2 key without a public key' => '302e' . '020101' . $algorithm . '04220420' . $seed,
+            'long-form length below 128' => '30812e' . '020100' . $algorithm . '04220420' . $seed,
+        ];
+        foreach ($malformed as $case => $hex) {
+            $this->assertSame(DnssecKeyOutcome::INVALID_PRIVATE_KEY, DnssecPrivateKeyConverter::toIsc($this->derPem($hex), 'ed25519'), $case);
+        }
+    }
+
     public function testEd25519PemForAnotherAlgorithmIsRefused(): void
     {
         $pem = $this->pkcs8(self::ED25519_PREFIX, self::ED25519_SEED);
@@ -182,6 +260,11 @@ class DnssecPrivateKeyConverterTest extends TestCase
         openssl_pkey_export($key, $pem);
 
         $this->assertStringStartsWith((string)$number . ' (', $this->parse(DnssecPrivateKeyConverter::toIsc($pem, $name))['Algorithm']);
+    }
+
+    private function derPem(string $hex): string
+    {
+        return "-----BEGIN PRIVATE KEY-----\n" . chunk_split(base64_encode((string)hex2bin($hex)), 64, "\n") . "-----END PRIVATE KEY-----\n";
     }
 
     private function pkcs8(string $prefixHex, string $seedHex): string
