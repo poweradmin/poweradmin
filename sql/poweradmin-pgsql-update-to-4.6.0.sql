@@ -88,3 +88,21 @@ BEGIN
         END IF;
     END LOOP;
 END $$;
+
+-- Databases upgraded from 4.0.0-4.0.4 straight to 4.1.0 or later never ran the 4.0.5
+-- update (records_zone_templ primary key, #906), and no update added the zones indexes.
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'records_zone_templ' AND column_name = 'id'
+    ) THEN
+        CREATE SEQUENCE IF NOT EXISTS public.records_zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+        ALTER TABLE public.records_zone_templ ADD COLUMN id integer DEFAULT nextval('public.records_zone_templ_id_seq') NOT NULL;
+        ALTER TABLE public.records_zone_templ ADD CONSTRAINT records_zone_templ_pkey PRIMARY KEY (id);
+        ALTER SEQUENCE public.records_zone_templ_id_seq OWNED BY public.records_zone_templ.id;
+    END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS "idx_zones_domain_id" ON "public"."zones" USING btree ("domain_id");
+CREATE INDEX IF NOT EXISTS "idx_zones_owner" ON "public"."zones" USING btree ("owner");

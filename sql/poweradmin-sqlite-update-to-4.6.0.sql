@@ -46,3 +46,15 @@ WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_change_approve_own
 INSERT INTO perm_items (name, descr)
 SELECT 'zone_change_approve_others', 'User is allowed to review change requests for any zone'
 WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_change_approve_others');
+
+-- Databases upgraded from 4.0.0-4.0.4 straight to 4.1.0 or later never got the 4.0.5
+-- records_zone_templ primary key (#906). Copying rowid keeps ids, so a re-run changes nothing.
+BEGIN TRANSACTION;
+CREATE TABLE records_zone_templ_new (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
+INSERT INTO records_zone_templ_new (id, domain_id, record_id, zone_templ_id)
+SELECT rowid, domain_id, record_id, zone_templ_id FROM records_zone_templ;
+DROP TABLE records_zone_templ;
+ALTER TABLE records_zone_templ_new RENAME TO records_zone_templ;
+CREATE INDEX IF NOT EXISTS idx_records_zone_templ_domain_id ON records_zone_templ(domain_id);
+CREATE INDEX IF NOT EXISTS idx_records_zone_templ_zone_templ_id ON records_zone_templ(zone_templ_id);
+COMMIT;
