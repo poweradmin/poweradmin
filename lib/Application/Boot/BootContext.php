@@ -26,10 +26,15 @@ use PDO;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Enum\DnsBackendKind;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\SessionInterface;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 /**
  * What Kernel::boot() built for this process: the configuration, the logger,
@@ -38,6 +43,8 @@ use Psr\Log\LoggerInterface;
 final class BootContext
 {
     private ?PDO $db;
+    private ?string $backendRefusal = null;
+    private bool $backendChecked = false;
 
     /**
      * @param ModuleRegistry $moduleRegistry Already loaded; routes, templates and capabilities come from it
@@ -64,10 +71,34 @@ final class BootContext
     }
 
     /**
+     * Why the configured backend may not use this database, or null; checked once per process.
+     * The SQL backend refuses a database the API backend has written zone ids to (see BackendModeMarker).
+     */
+    public function backendRefusal(): ?string
+    {
+        if (!$this->backendChecked) {
+            $this->backendChecked = true;
+            if (!DnsBackendKind::fromConfig($this->config)->isApi()) {
+                $domainsTable = (new TableNameService($this->config))->getTable(PdnsTable::DOMAINS);
+                $this->backendRefusal = BackendModeMarker::sqlModeRefusal($this->database(), $domainsTable);
+            }
+        }
+
+        return $this->backendRefusal;
+    }
+
+    /**
      * The per-request service graph over this context, acting as the given actor.
+     *
+     * @throws RuntimeException When the configured backend may not use the database
      */
     public function services(ActorInterface $actor): ControllerServiceFactory
     {
+        $refusal = $this->backendRefusal();
+        if ($refusal !== null) {
+            throw new RuntimeException($refusal);
+        }
+
         return new ControllerServiceFactory($this->database(), $this->config, $this->logger, $actor, $this->session);
     }
 }

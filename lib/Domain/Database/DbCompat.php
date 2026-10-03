@@ -502,6 +502,16 @@ final class DbCompat
     }
 
     /**
+     * Whether the error is a missing column, as on a schema that predates the column's update.
+     * Covers MySQL, PostgreSQL and SQLite.
+     */
+    public static function isMissingColumn(PDOException $e): bool
+    {
+        $code = (string)$e->getCode();
+        return $code === '42S22' || $code === '42703' || str_contains(strtolower($e->getMessage()), 'no such column');
+    }
+
+    /**
      * Whether the error is a missing table, so read paths can degrade on an install whose
      * PHP code was deployed before its SQL update ran. Covers MySQL, PostgreSQL and SQLite.
      */

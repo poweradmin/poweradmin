@@ -356,6 +356,10 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtInsert->method('bindValue');
         $stmtInsert->method('execute');
 
+        // The allocator first records that the database now holds API-mode zone ids
+        $stmtMarker = $this->createMock(PDOStatement::class);
+        $stmtMarker->method('execute')->willReturn(true);
+
         // Next three prepares: the allocator reads zone ids, group assignments and key scopes (none)
         $stmtIds = $this->createMock(PDOStatement::class);
         $stmtIds->method('fetchAll')->willReturn([]);
@@ -367,6 +371,8 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
             $stmtSelect,
+            $stmtMarker,
+            $stmtMarker,
             $stmtInsert,
             $stmtIds,
             $stmtIds,

@@ -1647,6 +1647,7 @@ return array(
     'Poweradmin\\Infrastructure\\Configuration\\ConfigValidator' => $baseDir . '/lib/Infrastructure/Configuration/ConfigValidator.php',
     'Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager' => $baseDir . '/lib/Infrastructure/Configuration/ConfigurationManager.php',
     'Poweradmin\\Infrastructure\\Configuration\\ThemePathResolver' => $baseDir . '/lib/Infrastructure/Configuration/ThemePathResolver.php',
+    'Poweradmin\\Infrastructure\\Database\\BackendModeMarker' => $baseDir . '/lib/Infrastructure/Database/BackendModeMarker.php',
     'Poweradmin\\Infrastructure\\Database\\CanonicalZoneIdAllocator' => $baseDir . '/lib/Infrastructure/Database/CanonicalZoneIdAllocator.php',
     'Poweradmin\\Infrastructure\\Database\\DatabaseCredentialMapper' => $baseDir . '/lib/Infrastructure/Database/DatabaseCredentialMapper.php',
     'Poweradmin\\Infrastructure\\Database\\DatabaseSchemaService' => $baseDir . '/lib/Infrastructure/Database/DatabaseSchemaService.php',

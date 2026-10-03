@@ -53,7 +53,11 @@ class ZoneSyncServiceTest extends TestCase
         $idsStmt = $this->createMock(PDOStatement::class);
         $idsStmt->method('fetchAll')->willReturn([]);
 
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($insertStmt, $updateStmt, $idsStmt, $idsStmt, $idsStmt);
+        // The allocator first records that the database now holds API-mode zone ids
+        $markerStmt = $this->createMock(PDOStatement::class);
+        $markerStmt->method('execute')->willReturn(true);
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($insertStmt, $markerStmt, $markerStmt, $idsStmt, $idsStmt, $idsStmt, $updateStmt);
         $this->mockDb->method('lastInsertId')->willReturn('1');
 
         $result = $this->service->sync();

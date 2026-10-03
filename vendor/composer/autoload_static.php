@@ -2057,6 +2057,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Configuration\\ConfigValidator' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ConfigValidator.php',
         'Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ConfigurationManager.php',
         'Poweradmin\\Infrastructure\\Configuration\\ThemePathResolver' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ThemePathResolver.php',
+        'Poweradmin\\Infrastructure\\Database\\BackendModeMarker' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/BackendModeMarker.php',
         'Poweradmin\\Infrastructure\\Database\\CanonicalZoneIdAllocator' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/CanonicalZoneIdAllocator.php',
         'Poweradmin\\Infrastructure\\Database\\DatabaseCredentialMapper' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DatabaseCredentialMapper.php',
         'Poweradmin\\Infrastructure\\Database\\DatabaseSchemaService' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DatabaseSchemaService.php',

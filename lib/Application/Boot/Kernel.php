@@ -35,6 +35,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Port\SessionInterface;
@@ -102,6 +103,7 @@ final class Kernel
         self::loadLocale($context->config, $context->session);
 
         $db = $context->database();
+        self::refuseUnusableBackend($context);
         if ($authenticate) {
             (new SessionAuthenticator($db, $context->config, new HttpRequest(), $context->session))->authenticate();
         }
@@ -170,6 +172,31 @@ final class Kernel
         (new MessageService(new UserContextService(new PhpSession())))->displayDirectSystemError(
             'Invalid configuration: ' . implode('; ', $validator->getErrors())
         );
+    }
+
+    /**
+     * Stop before any page or API call reads a database the configured backend may not use
+     * (BootContext::backendRefusal()), answering in the format the caller expects.
+     */
+    private static function refuseUnusableBackend(BootContext $context): void
+    {
+        $refusal = $context->backendRefusal();
+        if ($refusal === null) {
+            return;
+        }
+
+        $context->logger->error($refusal . ' ' . BackendModeMarker::OVERRIDE_HINT);
+        if (RequestContext::expectsJsonOnError()) {
+            if (!headers_sent()) {
+                http_response_code(503);
+                header('Content-Type: application/json');
+            }
+            echo json_encode(RequestContext::isV2ApiRequest()
+                ? ['success' => false, 'data' => null, 'message' => $refusal]
+                : ['error' => true, 'message' => $refusal]);
+            exit;
+        }
+        (new MessageService(new UserContextService($context->session)))->displayDirectSystemError($refusal);
     }
 
     private static function assertConfigurationFileExists(): void

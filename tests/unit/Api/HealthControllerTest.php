@@ -222,4 +222,29 @@ class HealthControllerTest extends TestCase
         $this->assertStringNotContainsString('no_such_driver', $body);
         $this->assertStringNotContainsString('Unknown database type', $body);
     }
+
+    public function testADatabaseRefusedToTheSqlBackendIsReportedDown(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'pa_health_');
+        $db = new \PDO('sqlite:' . $file);
+        $db->exec("CREATE TABLE app_settings (setting_key TEXT PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
+        $db->exec("INSERT INTO app_settings (setting_key, setting_value) VALUES ('backend.zone_ids', 'api')");
+        $controller = new TestableHealthController($this->config([
+            'health' => ['enabled' => true],
+            'database' => ['type' => 'sqlite', 'file' => $file],
+            'dns' => ['backend' => 'sql'],
+        ]));
+        $controller->databaseResult = null;
+
+        try {
+            $payload = json_decode((string)$controller->buildResponse()->getContent(), true);
+            $this->assertSame('down', $payload['checks']['database']);
+
+            $db->exec("UPDATE app_settings SET setting_value = 'sql'");
+            $payload = json_decode((string)$controller->buildResponse()->getContent(), true);
+            $this->assertSame('ok', $payload['checks']['database']);
+        } finally {
+            unlink($file);
+        }
+    }
 }

@@ -29,6 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
@@ -51,6 +52,8 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     private ?ApiDnsBackendProvider $provider = null;
     private array $createdZones = [];
     private array $createdAutoprimaries = [];
+    /** The backend marker before the test, restored so the SQL-mode devcontainer instance keeps working. */
+    private string|false|null $backendMarker = null;
 
     private const PDNS_API_URL = 'http://localhost:8181';
     private const PDNS_API_KEY = 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA';
@@ -122,6 +125,15 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         ]);
 
         $this->provider = new ApiDnsBackendProvider($this->client, $this->poweradminDb, $config, new NullLogger());
+        $this->backendMarker = $this->readBackendMarker();
+    }
+
+    private function readBackendMarker(): string|false
+    {
+        $stmt = $this->poweradminDb->prepare("SELECT setting_value FROM app_settings WHERE setting_key = :key");
+        $stmt->execute([':key' => BackendModeMarker::MARKER]);
+
+        return $stmt->fetchColumn();
     }
 
     /**
@@ -158,6 +170,19 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
                 $stmt = $this->poweradminDb?->prepare("DELETE FROM zones WHERE zone_name = :name");
                 $stmt?->bindValue(':name', rtrim($zoneName, '.'));
                 $stmt?->execute();
+            } catch (Exception $e) {
+                // Ignore cleanup errors
+            }
+        }
+
+        // Creating zones marks the shared database as API mode; put back what was there
+        if ($this->backendMarker !== null && $this->poweradminDb !== null) {
+            try {
+                $this->poweradminDb->prepare("DELETE FROM app_settings WHERE setting_key = :key")->execute([':key' => BackendModeMarker::MARKER]);
+                if ($this->backendMarker !== false) {
+                    $this->poweradminDb->prepare("INSERT INTO app_settings (setting_key, setting_value, value_type) VALUES (:key, :value, 'string')")
+                        ->execute([':key' => BackendModeMarker::MARKER, ':value' => $this->backendMarker]);
+                }
             } catch (Exception $e) {
                 // Ignore cleanup errors
             }

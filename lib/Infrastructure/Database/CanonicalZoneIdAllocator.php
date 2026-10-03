@@ -53,6 +53,9 @@ final class CanonicalZoneIdAllocator
         }
         $zones = $db->prepare("SELECT id, domain_id FROM zones" . DbCompat::rowLock($this->driver));
         $zones->execute();
+        // Under the lock, so concurrent creators cannot both insert the marker. Rows written
+        // from here on carry canonical ids, which the SQL backend cannot read
+        BackendModeMarker::markApi($db);
         foreach ($zones->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $domainId = (int)($row['domain_id'] ?? 0);
             // A row without domain_id is keyed by its own id, which no other row can reuse

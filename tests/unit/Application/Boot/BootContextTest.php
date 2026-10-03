@@ -32,6 +32,8 @@ use TestHelpers\BootContexts;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\StubActor;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
+use RuntimeException;
 
 class BootContextTest extends TestCase
 {
@@ -69,11 +71,25 @@ class BootContextTest extends TestCase
 
     public function testServicesBuildTheGraphOverTheContextsDatabase(): void
     {
-        $context = BootContexts::over(new FakeConfiguration(['dns' => ['backend' => 'sql']]), $this->createMock(PDO::class));
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $context = BootContexts::over(new FakeConfiguration(['dns' => ['backend' => 'sql']]), $db);
 
         $services = $context->services(new StubActor(7));
 
         $this->assertInstanceOf(ControllerServiceFactory::class, $services);
         $this->assertSame(7, $services->actor()->userId());
+    }
+
+    public function testServicesRefuseTheSqlBackendOnADatabaseTheApiBackendWroteTo(): void
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db->exec("CREATE TABLE app_settings (setting_key TEXT PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
+        BackendModeMarker::markApi($db);
+        $context = BootContexts::over(new FakeConfiguration(['dns' => ['backend' => 'sql']]), $db);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(BackendModeMarker::SQL_MODE_REFUSAL);
+
+        $context->services(new StubActor(7));
     }
 }

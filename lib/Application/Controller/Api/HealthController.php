@@ -25,8 +25,11 @@ namespace Poweradmin\Application\Controller\Api;
 use Poweradmin\Application\Boot\BootContext;
 use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -125,6 +128,16 @@ class HealthController
 
             $db = Kernel::connect($credentials);
             $db->query('SELECT 1');
+
+            // Every other request is refused then, so the instance must not look ready
+            if (!DnsBackendProviderFactory::isApiBackend($this->config())) {
+                $domainsTable = (new TableNameService($this->config()))->getTable(PdnsTable::DOMAINS);
+                $refusal = BackendModeMarker::sqlModeRefusal($db, $domainsTable);
+                if ($refusal !== null) {
+                    $this->logger()->error('Health check: ' . $refusal . ' ' . BackendModeMarker::OVERRIDE_HINT);
+                    return self::STATUS_DOWN;
+                }
+            }
 
             return self::STATUS_OK;
         } catch (Throwable $e) {
