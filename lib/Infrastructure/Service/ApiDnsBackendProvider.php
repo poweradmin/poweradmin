@@ -126,6 +126,9 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
         }
 
         try {
+            // Locks the zones rows before the insert, so concurrent creators queue instead of deadlocking
+            $allocator = new CanonicalZoneIdAllocator($this->db);
+
             // Insert a placeholder entry. The caller will update it with owner/template info.
             $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (NULL, NULL, 0, :name, :type, :master)");
             $stmt->bindValue(':name', $domain);
@@ -133,14 +136,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
             $stmt->bindValue(':master', $slaveMaster);
             $stmt->execute();
 
-            $rowId = (int)$this->db->lastInsertId('zones_id_seq');
-
             // The canonical id: the row id, unless another zone or grant already uses that number
-            $zonesId = (new CanonicalZoneIdAllocator($this->db))->allocate($rowId);
-            $stmt = $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id");
-            $stmt->bindValue(':did', $zonesId, PDO::PARAM_INT);
-            $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
-            $stmt->execute();
+            $zonesId = $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
 
             if ($ownsTransaction) {
                 $this->transaction->commit();

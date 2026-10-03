@@ -49,6 +49,7 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
                 id INTEGER PRIMARY KEY,
                 domain_id INTEGER NULL DEFAULT NULL,
                 owner INTEGER NULL DEFAULT NULL,
+                comment TEXT NULL,
                 zone_templ_id INTEGER NOT NULL DEFAULT 0,
                 zone_name TEXT,
                 zone_type TEXT,
@@ -100,7 +101,8 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $zoneId = $this->provider()->createZone('example.com', 'MASTER');
 
         $this->assertSame(3, $zoneId);
-        $this->assertSame(['id' => 2, 'domain_id' => 3], array_map('intval', $this->db->query("SELECT id, domain_id FROM zones WHERE zone_name = 'example.com'")->fetch(PDO::FETCH_ASSOC)));
+        $this->assertSame(['id' => 3, 'domain_id' => 3], array_map('intval', $this->db->query("SELECT id, domain_id FROM zones WHERE zone_name = 'example.com'")->fetch(PDO::FETCH_ASSOC)));
+        $this->assertSame(4, $this->provider()->createZone('next.example.com', 'MASTER'), 'The next zone keeps its own id');
     }
 
     public function testAnExistingMigratedRowIsReturnedByItsCanonicalId(): void
@@ -127,7 +129,7 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         };
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $db->exec(
-            "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL,
+            "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, comment TEXT NULL,
              zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)"
         );
         $db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");

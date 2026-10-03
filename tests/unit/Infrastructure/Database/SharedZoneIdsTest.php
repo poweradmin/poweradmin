@@ -160,4 +160,17 @@ class SharedZoneIdsTest extends TestCase
         $this->assertFalse(SharedZoneIds::isOpenedZone($opened, ['id' => 5, 'name' => 'migrated.example.com.']));
         $this->assertTrue(SharedZoneIds::isOpenedZone($opened, ['id' => 30, 'name' => 'plain.example.com.']));
     }
+
+    public function testSharedIdsAreReadOncePerConnectionUntilForgotten(): void
+    {
+        $this->seedCollision();
+        $this->assertSame([5], SharedZoneIds::all($this->db));
+
+        $this->seed(40, 30, 'second.example.com', self::CREATED_OWNER);
+        $this->assertSame([5], SharedZoneIds::all($this->db), 'Cached for the request');
+        $this->assertSame([], SharedZoneIds::sharedAmong($this->db, [30]));
+
+        SharedZoneIds::forget($this->db);
+        $this->assertSame([5, 30], SharedZoneIds::all($this->db));
+    }
 }

@@ -26,13 +26,13 @@ use PDO;
 use Poweradmin\Domain\Database\DbCompat;
 
 /**
- * Picks the canonical id for zone rows this application creates in API backend mode.
+ * Settles the canonical id of zone rows this application creates in API backend mode.
  *
  * A new row keeps its own row id as canonical id unless another row, a group assignment or
- * an API key scope already uses that number as a zone id; then it gets the next number
- * above all of them, so it never takes over (or inherits the grants of) another zone's id.
- * The zones rows are read with a row lock, so concurrent creators wait for each other and
- * each sees the ids the other committed. Build one per transaction, after it has begun.
+ * an API key scope already uses that number as a zone id. Then the row itself moves to an
+ * id above all of them, so it never takes over (or inherits the grants of) another zone's
+ * id, and rows created after it get their own ids again. Build one per transaction before
+ * inserting: the zones rows are read with a lock, so concurrent creators queue up.
  */
 final class CanonicalZoneIdAllocator
 {
@@ -42,20 +42,16 @@ final class CanonicalZoneIdAllocator
     /** @var array<int, true> */
     private array $used = [];
     private int $highest = 0;
+    private string $driver;
 
-    public function __construct(PDO $db)
+    public function __construct(private readonly PDO $db)
     {
-        $driver = (string)$db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        if ($driver === 'pgsql') {
+        $this->driver = (string)$db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($this->driver === 'pgsql') {
             // Row locks only cover rows a statement sees; this serializes creators even with none
             $db->prepare("SELECT pg_advisory_xact_lock(" . self::PGSQL_LOCK_KEY . ")")->execute();
         }
-        $lock = DbCompat::rowLock($driver);
-        $zones = $db->prepare("SELECT id, domain_id FROM zones$lock");
-        // The first read waits for a concurrent creator to commit; on PostgreSQL it still sees
-        // its old snapshot, so a second statement reads the rows that creator committed
-        $zones->execute();
-        $zones->fetchAll();
+        $zones = $db->prepare("SELECT id, domain_id FROM zones" . DbCompat::rowLock($this->driver));
         $zones->execute();
         foreach ($zones->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $domainId = (int)($row['domain_id'] ?? 0);
@@ -76,12 +72,59 @@ final class CanonicalZoneIdAllocator
         }
     }
 
-    public function allocate(int $rowId): int
+    /**
+     * Give the row just inserted under $rowId its canonical id and return it; the row's id
+     * changes to that value too when its own id was taken.
+     */
+    public function settle(int $rowId): int
     {
-        $canonicalId = isset($this->used[$rowId]) ? max($this->highest, $rowId) + 1 : $rowId;
-        $this->used[$canonicalId] = true;
-        $this->highest = max($this->highest, $canonicalId, $rowId);
+        $zoneId = $rowId;
+        if (isset($this->used[$rowId])) {
+            $zoneId = max($this->highest, $rowId) + 1;
+            $this->moveRow($rowId, $zoneId);
+        } else {
+            $stmt = $this->db->prepare("UPDATE zones SET domain_id = :zone_id WHERE id = :id");
+            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+            $stmt->execute();
+        }
 
-        return $canonicalId;
+        $this->used[$zoneId] = true;
+        $this->highest = max($this->highest, $zoneId);
+        SharedZoneIds::forget($this->db);
+
+        return $zoneId;
+    }
+
+    private function moveRow(int $rowId, int $zoneId): void
+    {
+        $read = $this->db->prepare("SELECT owner, comment, zone_templ_id, zone_name, zone_type, zone_master FROM zones WHERE id = :id");
+        $read->bindValue(':id', $rowId, PDO::PARAM_INT);
+        $read->execute();
+        $row = $read->fetch(PDO::FETCH_ASSOC);
+
+        // Delete first: zone_name is unique
+        $delete = $this->db->prepare("DELETE FROM zones WHERE id = :id");
+        $delete->bindValue(':id', $rowId, PDO::PARAM_INT);
+        $delete->execute();
+
+        $insert = $this->db->prepare(
+            "INSERT INTO zones (id, domain_id, owner, comment, zone_templ_id, zone_name, zone_type, zone_master)
+             VALUES (:id, :domain_id, :owner, :comment, :zone_templ_id, :zone_name, :zone_type, :zone_master)"
+        );
+        $insert->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $insert->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $insert->bindValue(':owner', $row['owner'] ?? null, isset($row['owner']) ? PDO::PARAM_INT : PDO::PARAM_NULL);
+        $insert->bindValue(':comment', $row['comment'] ?? null, isset($row['comment']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
+        $insert->bindValue(':zone_templ_id', (int)($row['zone_templ_id'] ?? 0), PDO::PARAM_INT);
+        $insert->bindValue(':zone_name', $row['zone_name'] ?? null, isset($row['zone_name']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
+        $insert->bindValue(':zone_type', $row['zone_type'] ?? null, isset($row['zone_type']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
+        $insert->bindValue(':zone_master', $row['zone_master'] ?? null, isset($row['zone_master']) ? PDO::PARAM_STR : PDO::PARAM_NULL);
+        $insert->execute();
+
+        // MySQL and SQLite move their counters past an explicit id; PostgreSQL needs telling
+        if ($this->driver === 'pgsql') {
+            $this->db->prepare("SELECT setval('zones_id_seq', GREATEST((SELECT MAX(id) FROM zones), $zoneId))")->execute();
+        }
     }
 }
