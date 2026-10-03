@@ -18,6 +18,18 @@ class DnssecPrivateKeyConverterTest extends TestCase
     private const ED448_PREFIX = '3047020100300506032b6571043b0439';
     private const X25519_PREFIX = '302e020100300506032b656e04220420';
 
+    // RFC 8410 section 10.3: the same Ed25519 key as PKCS#8 v1, and as v2 with attributes and the public key
+    private const RFC8410_V1 = "-----BEGIN PRIVATE KEY-----\n"
+        . "MC4CAQAwBQYDK2VwBCIEINTuctv5E1hK1bbY8fdp+K06/nwoy/HU++CXqI9EdVhC\n"
+        . "-----END PRIVATE KEY-----\n";
+    private const RFC8410_V2 = "-----BEGIN PRIVATE KEY-----\n"
+        . "MHICAQEwBQYDK2VwBCIEINTuctv5E1hK1bbY8fdp+K06/nwoy/HU++CXqI9EdVhC\n"
+        . "oB8wHQYKKoZIhvcNAQkJFDEPDA1DdXJkbGUgQ2hhaXJzgSEAGb9ECWmEzf6FQbrB\n"
+        . "Z9w7lshQhqowtrbLDFw4rXAxZuE=\n"
+        . "-----END PRIVATE KEY-----\n";
+    private const RFC8410_SEED = 'd4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842';
+    private const RFC8410_PUBLIC = '19bf44096984cdfe8541bac167dc3b96c85086aa30b6b6cb0c5c38ad703166e1';
+
     public function testIscKeyPassesThrough(): void
     {
         $this->assertSame(self::ISC_P256, DnssecPrivateKeyConverter::toIsc(self::ISC_P256, 'ecdsa256'));
@@ -121,6 +133,57 @@ class DnssecPrivateKeyConverterTest extends TestCase
 
         $this->assertSame('16 (ED448)', $fields['Algorithm']);
         $this->assertSame(base64_encode((string)hex2bin(self::ED448_SEED)), $fields['PrivateKey']);
+    }
+
+    public function testRfc8410Ed25519KeyIsReadInBothPkcs8Versions(): void
+    {
+        foreach (['v1' => self::RFC8410_V1, 'v2' => self::RFC8410_V2] as $version => $pem) {
+            $fields = $this->parse(DnssecPrivateKeyConverter::toIsc($pem, 'ed25519'));
+
+            $this->assertSame('15 (ED25519)', $fields['Algorithm'], $version);
+            $this->assertSame(base64_encode((string)hex2bin(self::RFC8410_SEED)), $fields['PrivateKey'], $version);
+        }
+    }
+
+    public function testRfc8410SeedYieldsThePublishedPublicKey(): void
+    {
+        if (!function_exists('sodium_crypto_sign_seed_keypair')) {
+            $this->markTestSkipped('sodium is not available');
+        }
+        $fields = $this->parse(DnssecPrivateKeyConverter::toIsc(self::RFC8410_V2, 'ed25519'));
+        $seed = base64_decode($fields['PrivateKey'], true);
+        $this->assertIsString($seed);
+
+        $this->assertSame(self::RFC8410_PUBLIC, bin2hex(sodium_crypto_sign_publickey(sodium_crypto_sign_seed_keypair($seed))));
+    }
+
+    public function testEd448PkcsV2KeyWithAPublicKeyIsConverted(): void
+    {
+        // OneAsymmetricKey v1 with a [1] publicKey of 57 bytes
+        $der = (string)hex2bin('3081830201013005060' . '32b6571043b0439' . self::ED448_SEED . '813a00' . str_repeat('ab', 57));
+        $pem = "-----BEGIN PRIVATE KEY-----\n" . chunk_split(base64_encode($der), 64, "\n") . "-----END PRIVATE KEY-----\n";
+
+        $fields = $this->parse(DnssecPrivateKeyConverter::toIsc($pem, 'ed448'));
+
+        $this->assertSame('16 (ED448)', $fields['Algorithm']);
+        $this->assertSame(base64_encode((string)hex2bin(self::ED448_SEED)), $fields['PrivateKey']);
+    }
+
+    public function testMalformedEdDsaStructuresAreUnreadable(): void
+    {
+        $seed = self::ED25519_SEED;
+        $malformed = [
+            'version 2' => '302e020102300506032b657004220420' . $seed,
+            'oid with parameters' => '3030020100300706032b65700500' . '04220420' . $seed,
+            'seed too short' => '302d020100300506032b657004210420' . substr($seed, 2),
+            'outer length too long' => '302f020100300506032b657004220420' . $seed,
+            'trailing bytes' => '302e020100300506032b657004220420' . $seed . '00',
+        ];
+        foreach ($malformed as $case => $hex) {
+            $pem = "-----BEGIN PRIVATE KEY-----\n" . chunk_split(base64_encode((string)hex2bin($hex)), 64, "\n") . "-----END PRIVATE KEY-----\n";
+
+            $this->assertSame(DnssecKeyOutcome::INVALID_PRIVATE_KEY, DnssecPrivateKeyConverter::toIsc($pem, 'ed25519'), $case);
+        }
     }
 
     public function testEd25519PemForAnotherAlgorithmIsRefused(): void
