@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
 
@@ -1286,5 +1287,46 @@ class ConfigValidatorTest extends TestCase
         $validator->validate();
 
         $this->assertEmpty($validator->getWarnings());
+    }
+
+    /** @return array<array{string}> */
+    public static function removedPasswordEncryptionMethods(): array
+    {
+        return [['md5'], ['md5salt'], ['sha1'], ['']];
+    }
+
+    #[DataProvider('removedPasswordEncryptionMethods')]
+    public function testUnsupportedPasswordEncryptionIsInvalid(string $method): void
+    {
+        $validator = new ConfigValidator($this->passwordEncryptionConfig($method));
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('security.password_encryption', $validator->getErrors());
+    }
+
+    public function testSupportedPasswordEncryptionIsValid(): void
+    {
+        foreach (['bcrypt', 'argon2i', 'argon2id'] as $method) {
+            $validator = new ConfigValidator($this->passwordEncryptionConfig($method));
+
+            $this->assertTrue($validator->validate(), $method);
+        }
+    }
+
+    private function passwordEncryptionConfig(string $method): array
+    {
+        return [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+            'security' => ['password_encryption' => $method],
+        ];
     }
 }
