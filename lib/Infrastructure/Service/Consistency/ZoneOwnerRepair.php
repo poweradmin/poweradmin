@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Service\Consistency;
 
 use PDO;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
 
 /**
  * Writes a zone owner into the Poweradmin-native zones table. Ownership lives
@@ -30,7 +31,11 @@ use PDO;
  */
 final class ZoneOwnerRepair
 {
-    public function __construct(private readonly PDO $db)
+    /**
+     * @param string|null $domainsTable The PowerDNS domains table under the SQL backend, so an
+     *                                  inserted row gets the zone name; null under the API backend
+     */
+    public function __construct(private readonly PDO $db, private readonly ?string $domainsTable = null)
     {
     }
 
@@ -55,7 +60,11 @@ final class ZoneOwnerRepair
         );
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
+        $done = $stmt->execute();
+        if ($done && !$exists && $this->domainsTable !== null) {
+            SqlZoneNames::ensureNamed($this->db, $this->domainsTable, $zoneId);
+        }
 
-        return $stmt->execute();
+        return $done;
     }
 }

@@ -49,6 +49,7 @@ class DbZoneRepositoryAccountSyncTest extends SqliteIntegrationTestCase
         parent::setUp();
 
         $this->createZoneTables();
+        $this->createDomainsTable();
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES
             (" . self::ALICE . ", 'alice', 1), (" . self::BOB . ", 'bob', 1)");
 

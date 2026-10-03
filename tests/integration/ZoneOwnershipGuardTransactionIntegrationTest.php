@@ -187,11 +187,15 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
             : 'INTEGER PRIMARY KEY AUTOINCREMENT';
 
         $db->exec('DROP TABLE IF EXISTS zones');
+        $db->exec('DROP TABLE IF EXISTS domains');
+        $db->exec('DROP TABLE IF EXISTS api_key_zones');
         $db->exec('DROP TABLE IF EXISTS zones_groups');
         $db->exec('DROP TABLE IF EXISTS users');
         $db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username VARCHAR(64), fullname VARCHAR(64))");
-        $db->exec("CREATE TABLE zones (id $serial, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER DEFAULT 0)");
+        $db->exec("CREATE TABLE zones (id $serial, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER DEFAULT 0, zone_name VARCHAR(255), zone_type VARCHAR(8), zone_master VARCHAR(255))");
+        $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name VARCHAR(255) NOT NULL, master VARCHAR(128), type VARCHAR(8) NOT NULL DEFAULT 'NATIVE')");
         $db->exec("CREATE TABLE zones_groups (id $serial, domain_id INTEGER, group_id INTEGER, created_at TIMESTAMP)");
+        $db->exec("CREATE TABLE api_key_zones (id $serial, api_key_id INTEGER, zone_id INTEGER)");
     }
 
     /**

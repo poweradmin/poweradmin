@@ -36,6 +36,7 @@ use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Database\ZoneHealthSql;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
@@ -744,7 +745,16 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
 
         // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
-        return $this->db->lastInsertId('zones_id_seq');
+        $rowId = $this->db->lastInsertId('zones_id_seq');
+        $this->ensureNamed($domainId);
+
+        return $rowId;
+    }
+
+    /** Keeps the zone findable by name should the database later move to the API backend. */
+    private function ensureNamed(int $domainId): void
+    {
+        SqlZoneNames::ensureNamed($this->db, $this->tableNameService->getTable(PdnsTable::DOMAINS), $domainId);
     }
 
     public function deleteZoneShell(int $domainId): void
@@ -772,6 +782,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
         $stmt->execute();
+        if ($count == 0) {
+            $this->ensureNamed($zoneId);
+        }
     }
 
     /**
@@ -886,6 +899,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $added = $stmt->rowCount() > 0;
         if ($added) {
+            $this->ensureNamed($zoneId);
             $this->syncZoneAccount($zoneId);
         }
         return $added;
@@ -909,6 +923,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $removed = $stmt->rowCount() > 0;
         if ($removed) {
+            // The removed row may have been the one carrying the zone name, or the last row
+            SqlZoneNames::ensureNamedAfterOwnerRemoval($this->db, $this->tableNameService->getTable(PdnsTable::DOMAINS), $zoneId);
             $this->syncZoneAccount($zoneId);
         }
         return $removed;

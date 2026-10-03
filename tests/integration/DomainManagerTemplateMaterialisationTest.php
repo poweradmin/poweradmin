@@ -60,6 +60,7 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
         parent::setUp();
 
         $this->createZoneTables();
+        $this->createDomainsTable();
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, owner INTEGER NOT NULL)");
         $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, content TEXT NOT NULL, ttl INTEGER NOT NULL, prio INTEGER NOT NULL)");
         $this->db->exec("INSERT INTO zone_templ (id, name, owner) VALUES (" . self::TEMPLATE_ID . ", 'Standard', 0)");

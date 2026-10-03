@@ -84,6 +84,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
             $this->db->exec($sql);
         }
         $this->createZoneTables();
+        $this->createDomainsTable();
     }
 
     #[RunInSeparateProcess]

@@ -53,7 +53,10 @@ class DbUserRepositoryDeleteUserTest extends TestCase
                 "CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)",
                 "CREATE TABLE api_keys (id INTEGER PRIMARY KEY, name TEXT, created_by INTEGER)",
-                "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)",
+                "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)",
+                "CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, master TEXT, type TEXT NOT NULL DEFAULT 'NATIVE')",
+                "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)",
+                "CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)",
                 "CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)",
                 "CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER)",
                 "CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
@@ -131,5 +134,32 @@ class DbUserRepositoryDeleteUserTest extends TestCase
     private function rows(string $fromWhere): int
     {
         return (int)$this->db->query("SELECT COUNT(*) FROM $fromWhere")->fetchColumn();
+    }
+
+    public function testAZoneTheUserSharedKeepsItsNameOnTheRemainingOwner(): void
+    {
+        $this->db->exec("INSERT INTO domains (id, name) VALUES (20, 'shared.example')");
+        $this->db->exec("INSERT INTO zones (domain_id, owner, zone_name) VALUES (20, 1, 'shared.example'), (20, 2, NULL)");
+
+        $this->assertTrue($this->repository->deleteUser(1));
+
+        $this->assertSame(
+            [[2, 'shared.example']],
+            $this->db->query("SELECT owner, zone_name FROM zones WHERE domain_id = 20")->fetchAll(PDO::FETCH_NUM)
+        );
+    }
+
+    public function testAGroupOwnedZoneKeepsAnOwnerlessNamedRowWhenItsLastUserGoes(): void
+    {
+        $this->db->exec("INSERT INTO domains (id, name) VALUES (21, 'group.example')");
+        $this->db->exec("INSERT INTO zones (domain_id, owner, zone_name) VALUES (21, 1, 'group.example')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (21, 9)");
+
+        $this->assertTrue($this->repository->deleteUser(1));
+
+        $this->assertSame(
+            [[null, 'group.example']],
+            $this->db->query("SELECT owner, zone_name FROM zones WHERE domain_id = 21")->fetchAll(PDO::FETCH_NUM)
+        );
     }
 }

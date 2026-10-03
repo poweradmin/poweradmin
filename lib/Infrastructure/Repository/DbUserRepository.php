@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
@@ -32,6 +33,8 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\User\CreateUserCommand;
@@ -748,6 +751,10 @@ class DbUserRepository implements UserRepositoryInterface
             // Private zone templates die with their owner, as they always did in the web UI.
             (new DbZoneTemplateRepository($this->db, $this->config))->deleteZoneTemplatesOwnedBy($userId);
 
+            $stmt = $this->db->prepare("SELECT DISTINCT domain_id FROM zones WHERE owner = :userId AND domain_id IS NOT NULL");
+            $stmt->execute([':userId' => $userId]);
+            $ownedZoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
             // Memberships and ownership rows are cleared explicitly: the FK cascade
             // is not guaranteed on every schema.
             foreach (
@@ -765,6 +772,13 @@ class DbUserRepository implements UserRepositoryInterface
             ) {
                 $stmt = $this->db->prepare($query);
                 $stmt->execute([':userId' => $userId]);
+            }
+            if (!$this->isApiBackend) {
+                // The user's row may have carried the zone name, or been the zone's last row
+                $domainsTable = (new TableNameService($this->config))->getTable(PdnsTable::DOMAINS);
+                foreach ($ownedZoneIds as $zoneId) {
+                    SqlZoneNames::ensureNamedAfterOwnerRemoval($this->db, $domainsTable, $zoneId);
+                }
             }
 
             $this->transaction()->commit();

@@ -106,8 +106,9 @@ abstract class SqliteIntegrationTestCase extends TestCase
     {
         foreach (
             [
-                "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)",
+                "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)",
                 "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL, created_at TEXT)",
+                "CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER NOT NULL, zone_id INTEGER NOT NULL)",
                 "CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, record_id INTEGER, zone_templ_id INTEGER)",
                 "CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, record_id TEXT, zone_templ_id INTEGER)",
                 "CREATE TABLE zone_template_sync (id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL, zone_templ_id INTEGER, needs_sync INTEGER DEFAULT 0, last_synced TEXT, template_last_modified TEXT)",
@@ -115,6 +116,15 @@ abstract class SqliteIntegrationTestCase extends TestCase
         ) {
             $this->db->exec($sql);
         }
+    }
+
+    /**
+     * The PowerDNS domains table for SQL-backend fixtures whose backend is a stub; zone row
+     * writes read the zone name from it.
+     */
+    protected function createDomainsTable(): void
+    {
+        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, master TEXT, type TEXT NOT NULL DEFAULT 'NATIVE')");
     }
 
     protected function dnsBackendStub(bool $isApi): DnsBackendProviderInterface&MockObject

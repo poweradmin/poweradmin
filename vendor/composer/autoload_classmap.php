@@ -1657,6 +1657,7 @@ return array(
     'Poweradmin\\Infrastructure\\Database\\PdoTransaction' => $baseDir . '/lib/Infrastructure/Database/PdoTransaction.php',
     'Poweradmin\\Infrastructure\\Database\\SeedRepository' => $baseDir . '/lib/Infrastructure/Database/SeedRepository.php',
     'Poweradmin\\Infrastructure\\Database\\SharedZoneIds' => $baseDir . '/lib/Infrastructure/Database/SharedZoneIds.php',
+    'Poweradmin\\Infrastructure\\Database\\SqlZoneNames' => $baseDir . '/lib/Infrastructure/Database/SqlZoneNames.php',
     'Poweradmin\\Infrastructure\\Logger\\AuditLogWriter' => $baseDir . '/lib/Infrastructure/Logger/AuditLogWriter.php',
     'Poweradmin\\Infrastructure\\Logger\\ClassContextLogger' => $baseDir . '/lib/Infrastructure/Logger/ClassContextLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\DbApiLogger' => $baseDir . '/lib/Infrastructure/Logger/DbApiLogger.php',

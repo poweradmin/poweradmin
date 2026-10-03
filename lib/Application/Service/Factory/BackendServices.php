@@ -45,6 +45,7 @@ use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
@@ -226,11 +227,12 @@ final class BackendServices
     public function consistencyChecker(): ConsistencyCheckerInterface
     {
         $provider = $this->dnsBackendProvider();
-        $ownerRepair = new ZoneOwnerRepair($this->db);
+        if ($provider->isApiBackend()) {
+            return new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), $this->accountOwnerLookup());
+        }
+        $tableNames = new TableNameService($this->config);
 
-        return $provider->isApiBackend()
-            ? new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), $ownerRepair, $this->accountOwnerLookup())
-            : new SqlConsistencyChecks($this->db, new TableNameService($this->config), $ownerRepair, $this->accountOwnerLookup());
+        return new SqlConsistencyChecks($this->db, $tableNames, new ZoneOwnerRepair($this->db, $tableNames->getTable(PdnsTable::DOMAINS)), $this->accountOwnerLookup());
     }
 
     public function powerdnsStatusService(): PowerdnsStatusService

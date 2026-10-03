@@ -59,6 +59,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         parent::setUp();
 
         $this->createZoneTables();
+        $this->createDomainsTable();
 
         // A user holding no zone_*_add and no delete grant at all.
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . self::CLIENT_PERM_TEMPL_ID . ", 'Client')");

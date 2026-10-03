@@ -57,7 +57,8 @@ class RecordManagerEditZoneCommentTest extends PermissionServiceTestCase
     protected function setUp(): void
     {
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
+        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT, zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)");
+        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, master TEXT, type TEXT NOT NULL DEFAULT 'NATIVE')");
         $this->config = new FakeConfiguration([
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
             'dns' => ['ttl' => 3600],
