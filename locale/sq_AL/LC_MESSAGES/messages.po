@@ -3533,10 +3533,10 @@ msgid_plural ""
 "%1$d records in zone %2$s are now hidden by zone %3$s: %4$s. Make sure %3$s "
 "serves them, then delete them from %2$s."
 msgstr[0] ""
-"%1$d regjistrim në zonën %2$s tani fshihet nga zona %3$s: %4$s. Sigurohuni "
+"%1$d regjistrim në zonën %2$s është tani i fshehur nga zona %3$s: %4$s. Sigurohuni "
 "që %3$s e përmban, pastaj fshijeni nga %2$s."
 msgstr[1] ""
-"%1$d regjistrime në zonën %2$s tani fshihen nga zona %3$s: %4$s. Sigurohuni "
+"%1$d regjistrime në zonën %2$s janë tani të fshehura nga zona %3$s: %4$s. Sigurohuni "
 "që %3$s i përmban, pastaj fshijini nga %2$s."
 
 #: lib/Application/Service/Zone/ZoneCreateFormMessages.php:101
