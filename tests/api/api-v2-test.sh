@@ -1024,6 +1024,15 @@ test_zone_status_codes() {
     fi
     api_request_v2 "POST" "/zones" "$dup_zone" 409 "Reject duplicate zone name (already exists)"
 
+    # One zone id (#1559): every listed id is the canonical id and opens that same zone
+    api_request_v2 "GET" "/zones?per_page=1000" "" 200 "List zones for the id check"
+    assert_json "Every listed id equals canonical_id" "$LAST_RESPONSE_BODY" '[.data.zones[] | select(.id != .canonical_id)] | length' "0"
+    if [[ -n "$dup_zone_id" ]]; then
+        assert_json "The created zone is listed under the id the create returned" "$LAST_RESPONSE_BODY" "[.data.zones[] | select(.id == ${dup_zone_id}) | .name] | join(\",\")" "dup-status-test.example.com"
+        api_request_v2 "GET" "/zones/${dup_zone_id}" "" 200 "Open the created zone by its listed id"
+        assert_json "The listed id opens that zone" "$LAST_RESPONSE_BODY" '.data.zone.name' "dup-status-test.example.com"
+    fi
+
     # Operations on a non-existent zone return 404 (existence checked before permission)
     api_request_v2 "PUT" "/zones/999999" '{"type":"NATIVE"}' 404 "Update non-existent zone returns 404"
     assert_json "Update 404 uses v2 wrapper" "$LAST_RESPONSE_BODY" '.success' 'false'
