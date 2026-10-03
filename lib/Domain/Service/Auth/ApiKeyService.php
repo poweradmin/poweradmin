@@ -207,8 +207,12 @@ class ApiKeyService
             return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to update API keys.'), Refusal::FORBIDDEN);
         }
 
-        if ($zoneIds !== null && $zoneIds !== [] && !$this->apiKeyRepository->zoneScopesReady()) {
-            return $this->zoneScopesNotReady();
+        if ($zoneIds !== null && !$this->apiKeyRepository->zoneScopesReady()) {
+            if ($zoneIds !== []) {
+                return $this->zoneScopesNotReady();
+            }
+            // The form cannot show unmigrated restrictions, so an empty list must not clear them
+            $zoneIds = null;
         }
 
         $apiKey->setName($name);
@@ -476,6 +480,15 @@ class ApiKeyService
         $valid = array_values(array_intersect(ApiKeyScope::OPERATIONS, $operations));
 
         return $valid === [] ? null : $valid;
+    }
+
+    /**
+     * Whether zone restrictions can be shown and changed; false until the one-time scope
+     * move has run (see ApiKeyRepositoryInterface::zoneScopesReady()).
+     */
+    public function zoneScopesReady(): bool
+    {
+        return $this->apiKeyRepository->zoneScopesReady();
     }
 
     private function zoneScopesNotReady(): ApiKeyWriteResult

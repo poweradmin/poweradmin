@@ -213,6 +213,7 @@ class ApiKeysController extends BaseController
         // Show the add form
         $this->render('api_key_add.html', [
             'available_zones' => $this->getAssignableZones(),
+            'zone_scopes_ready' => $this->apiKeyService()->zoneScopesReady(),
             'available_operations' => ApiKeyScope::OPERATIONS,
         ]);
     }
@@ -286,6 +287,7 @@ class ApiKeysController extends BaseController
             'available_operations' => ApiKeyScope::OPERATIONS,
             'selected_zones' => $apiKey->getZoneIds() ?? [],
             'selected_operations' => $apiKey->getAllowedOperations() ?? [],
+            'zone_scopes_ready' => $this->apiKeyService()->zoneScopesReady(),
         ]);
     }
 
