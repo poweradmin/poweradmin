@@ -139,11 +139,16 @@ final class PageRenderer implements PageOutputInterface
         $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
         // Record forms read these in JS; one source keeps them in step with the validators.
         $nav = $this->navigationVisibility();
-        $this->app->addTwigGlobal('nav', $nav);
         // One count query, and only for users who get the Change requests entry
-        $this->app->addTwigGlobal('pending_change_requests', $nav['change_requests'] && $this->pendingChangeRequestCount !== null
-            ? (int)($this->pendingChangeRequestCount)()
-            : 0);
+        $pending = $nav['change_requests'] && $this->pendingChangeRequestCount !== null
+            ? ($this->pendingChangeRequestCount)()
+            : 0;
+        if ($pending === null) {
+            // The requests table is missing until the 4.6.0 schema update runs
+            $nav = $this->navigationVisibility(false);
+        }
+        $this->app->addTwigGlobal('nav', $nav);
+        $this->app->addTwigGlobal('pending_change_requests', (int)$pending);
         $this->app->addTwigGlobal('record_types_with_priority', RecordType::TYPES_WITH_PRIORITY);
         $this->app->addTwigGlobal('deprecated_record_types', RecordType::DEPRECATED_TYPES);
         // Page-size choices, so the dropdowns offer the configured value rather than
@@ -486,13 +491,18 @@ final class PageRenderer implements PageOutputInterface
      *
      * @return array<string, bool>
      */
-    private function navigationVisibility(): array
+    private function navigationVisibility(bool $changeRequestsAvailable = true): array
     {
         if (!$this->userContextService->isAuthenticated()) {
             return NavigationVisibility::build(static fn(string $permission): bool => false, $this->config, false);
         }
         $moduleNavItems = $this->moduleNavItems ??= $this->getModuleNavItems();
-        return NavigationVisibility::build(fn(string $permission): bool => $this->hasPermission($permission), $this->config, $moduleNavItems !== []);
+        return NavigationVisibility::build(
+            fn(string $permission): bool => $this->hasPermission($permission),
+            $this->config,
+            $moduleNavItems !== [],
+            $changeRequestsAvailable
+        );
     }
 
     private function getModuleNavItems(): array

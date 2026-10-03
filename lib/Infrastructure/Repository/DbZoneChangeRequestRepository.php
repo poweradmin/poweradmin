@@ -23,20 +23,43 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use PDOException;
+use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * SQL persistence for zone_change_requests, a Poweradmin-native table that is
- * never prefixed and is shared by the SQL and API backends.
+ * never prefixed and is shared by the SQL and API backends. Until the 4.6.0 schema
+ * update creates it, reads find nothing and writes fail.
  */
 final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterface
 {
     private const COLUMNS = 'id, zone_id, zone_name, kind, status, requester_id, requester_name, request_comment,
         base_serial, payload, reviewer_id, reviewer_name, review_comment, created_at, reviewed_at, applied_at, error, snapshot';
 
-    public function __construct(private readonly PDO $db)
+    private ?bool $available = null;
+
+    public function __construct(private readonly PDO $db, private readonly ?LoggerInterface $logger = null)
     {
+    }
+
+    public function isAvailable(): bool
+    {
+        if ($this->available !== null) {
+            return $this->available;
+        }
+        try {
+            $this->db->query('SELECT 1 FROM zone_change_requests WHERE 1 = 0');
+            return $this->available = true;
+        } catch (PDOException $e) {
+            if (!DbCompat::isMissingTable($e)) {
+                throw $e;
+            }
+            $this->logger?->error('approval.enabled is on but the zone_change_requests table is missing; run the 4.6.0 update script from sql/');
+            return $this->available = false;
+        }
     }
 
     public function create(
@@ -72,6 +95,9 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
 
     public function find(int $id): ?ZoneChangeRequest
     {
+        if (!$this->isAvailable()) {
+            return null;
+        }
         $stmt = $this->db->prepare('SELECT ' . self::COLUMNS . ' FROM zone_change_requests WHERE id = :id');
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -88,7 +114,7 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
     public function count(array $filters): int
     {
         [$where, $bindings] = $this->whereClause($filters);
-        if ($where === null) {
+        if ($where === null || !$this->isAvailable()) {
             return 0;
         }
 
@@ -124,7 +150,7 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
 
     public function countPendingByZone(array $zoneIds, ?array $reviewableZoneIds, int $requesterId): array
     {
-        if ($zoneIds === []) {
+        if ($zoneIds === [] || !$this->isAvailable()) {
             return [];
         }
         [$where, $bindings] = $this->whereClause([
@@ -214,7 +240,7 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
     private function select(array $filters, ?int $offset, ?int $limit): array
     {
         [$where, $bindings] = $this->whereClause($filters);
-        if ($where === null) {
+        if ($where === null || !$this->isAvailable()) {
             return [];
         }
 

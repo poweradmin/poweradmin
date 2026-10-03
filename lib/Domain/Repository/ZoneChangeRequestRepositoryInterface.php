@@ -71,6 +71,11 @@ interface ZoneChangeRequestRepositoryInterface
     /** @return list<ZoneChangeRequest> */
     public function listPendingForZone(int $zoneId): array;
 
+    /**
+     * False until the 4.6.0 schema update has created the requests table.
+     */
+    public function isAvailable(): bool;
+
     /** @param list<int>|null $zoneIds null for every zone, [] for none */
     public function countPending(?array $zoneIds): int;
 

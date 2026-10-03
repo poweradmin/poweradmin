@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Database;
 
+use PDOException;
+
 /**
  * DbCompat class provides compatibility methods for different database types.
  */
@@ -497,5 +499,22 @@ final class DbCompat
             'mysql', 'mysqli' => self::accentSensitiveEquals($db_type, $column, $placeholder),
             default => "LOWER($column) = LOWER($placeholder)",
         };
+    }
+
+    /**
+     * Whether the error is a missing table, so read paths can degrade on an install whose
+     * PHP code was deployed before its SQL update ran. Covers MySQL, PostgreSQL and SQLite.
+     */
+    public static function isMissingTable(PDOException $e): bool
+    {
+        $code = (string)$e->getCode();
+        if ($code === '42S02' || $code === '42P01') {
+            return true;
+        }
+        $message = strtolower($e->getMessage());
+        return str_contains($message, 'no such table')
+            || str_contains($message, "doesn't exist")
+            || str_contains($message, 'does not exist')
+            || str_contains($message, 'undefined table');
     }
 }

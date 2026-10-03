@@ -177,6 +177,7 @@ class ChangeApprovalContextTest extends TestCase
         $permissions->method('getChangeApprovePermissionLevel')->willReturn('none');
         $permissions->method('getEditPermissionLevel')->willReturn('none');
         $requests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $requests->method('isAvailable')->willReturn(true);
         $requests->expects($this->once())->method('countPendingByZone')
             ->with([self::ZONE_ID], [], self::USER_ID)
             ->willReturn([self::ZONE_ID => 2]);
@@ -192,9 +193,24 @@ class ChangeApprovalContextTest extends TestCase
         $permissions->method('getChangeApprovePermissionLevel')->willReturn('none');
         $permissions->method('getEditPermissionLevel')->willReturn('none');
 
-        $context = $this->context($this->config(true), $permissions, requests: $this->untouchedRequests());
+        $requests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $requests->method('isAvailable')->willReturn(true);
+        $requests->expects($this->never())->method('countPending');
+
+        $context = $this->context($this->config(true), $permissions, requests: $requests);
 
         $this->assertSame(0, $context->pendingReviewCount(self::USER_ID));
+    }
+
+    public function testARequestOnlyUserLearnsTheTableIsMissing(): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('getChangeApprovePermissionLevel')->willReturn('none');
+        $permissions->method('getEditPermissionLevel')->willReturn('own');
+        $requests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $requests->method('isAvailable')->willReturn(false);
+
+        $this->assertNull($this->context($this->config(true), $permissions, requests: $requests)->pendingReviewCount(self::USER_ID));
     }
 
     public function testTheBadgeCountAsksTheRepositoryForAReviewableScope(): void
@@ -203,8 +219,26 @@ class ChangeApprovalContextTest extends TestCase
         $permissions->method('getChangeApprovePermissionLevel')->willReturn('all');
         $permissions->method('getEditPermissionLevel')->willReturn('all');
         $requests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $requests->method('isAvailable')->willReturn(true);
         $requests->expects($this->once())->method('countPending')->with(null)->willReturn(5);
 
         $this->assertSame(5, $this->context($this->config(true), $permissions, requests: $requests)->pendingReviewCount(self::USER_ID));
+    }
+
+    public function testCountsStayEmptyWhileTheRequestsTableIsMissing(): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('getChangeRequestPermissionLevel')->willReturn('all');
+        $permissions->method('getChangeApprovePermissionLevel')->willReturn('all');
+        $permissions->method('getEditPermissionLevel')->willReturn('all');
+        $requests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $requests->method('isAvailable')->willReturn(false);
+        $requests->expects($this->never())->method('countPending');
+        $requests->expects($this->never())->method('countPendingByZone');
+
+        $context = $this->context($this->config(true), $permissions, requests: $requests);
+
+        $this->assertNull($context->pendingReviewCount(self::USER_ID));
+        $this->assertSame([], $context->pendingByZone(self::USER_ID, [self::ZONE_ID]));
     }
 }

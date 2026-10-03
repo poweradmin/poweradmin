@@ -212,7 +212,7 @@ final class RecordServices
 
     public function zoneChangeRequestRepository(): ZoneChangeRequestRepositoryInterface
     {
-        return $this->zoneChangeRequestRepository ??= new DbZoneChangeRequestRepository($this->db);
+        return $this->zoneChangeRequestRepository ??= new DbZoneChangeRequestRepository($this->db, $this->logger);
     }
 
     public function zoneChangeRequestService(): ZoneChangeRequestService

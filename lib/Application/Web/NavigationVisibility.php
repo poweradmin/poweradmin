@@ -34,9 +34,10 @@ final class NavigationVisibility
     /**
      * @param callable(string): bool $can Permission check for the current user
      * @param bool $hasModuleItems Whether any module contributes a Tools entry
+     * @param bool $changeRequestsAvailable False while the change requests table does not exist
      * @return array<string, bool>
      */
-    public static function build(callable $can, ConfigurationInterface $config, bool $hasModuleItems): array
+    public static function build(callable $can, ConfigurationInterface $config, bool $hasModuleItems, bool $changeRequestsAvailable = true): array
     {
         $dbLog = (bool)$config->get('logging', 'database_enabled');
         $apiEnabled = (bool)$config->get('api', 'enabled', false);
@@ -49,7 +50,7 @@ final class NavigationVisibility
             && (bool)$config->get('permissions', 'show_group_access_templates', true);
         $apiKeys = ($ueberuser || $can(Permission::PERM_API_MANAGE_KEYS)) && $apiEnabled;
         $consistency = $ueberuser && (bool)$config->get('interface', 'enable_consistency_checks', false);
-        $changeRequests = (bool)$config->get('approval', 'enabled', false)
+        $changeRequests = $changeRequestsAvailable && (bool)$config->get('approval', 'enabled', false)
             && ($ueberuser || $can(Permission::PERM_ZONE_CHANGE_REQUEST_OWN) || $can(Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS)
                 || $can(Permission::PERM_ZONE_CHANGE_APPROVE_OWN) || $can(Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS));
 

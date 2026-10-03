@@ -34,12 +34,13 @@ class NavigationVisibilityTest extends TestCase
      * @param array<string, array<string, mixed>> $config
      * @return array<string, bool>
      */
-    private function build(array $granted, array $config = [], bool $hasModuleItems = false): array
+    private function build(array $granted, array $config = [], bool $hasModuleItems = false, bool $changeRequestsAvailable = true): array
     {
         return NavigationVisibility::build(
             static fn(string $permission): bool => in_array($permission, $granted, true),
             new FakeConfiguration($config),
-            $hasModuleItems
+            $hasModuleItems,
+            $changeRequestsAvailable
         );
     }
 
@@ -118,6 +119,14 @@ class NavigationVisibilityTest extends TestCase
         // The entry opens the Zones menu even without a zone view grant.
         $this->assertTrue($this->build([Permission::PERM_ZONE_CHANGE_REQUEST_OWN], $on)['zones']);
         $this->assertFalse($this->build([Permission::PERM_USER_IS_UEBERUSER])['change_requests']);
+    }
+
+    public function testChangeRequestsAndTheMenuTheyOpenStayHiddenWithoutTheTable(): void
+    {
+        $nav = $this->build([Permission::PERM_ZONE_CHANGE_REQUEST_OWN], ['approval' => ['enabled' => true]], changeRequestsAvailable: false);
+
+        $this->assertFalse($nav['change_requests']);
+        $this->assertFalse($nav['zones']);
     }
 
     public function testBatchPtrNeedsAnEditGrantLikeItsPage(): void

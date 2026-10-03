@@ -577,7 +577,7 @@ abstract class BaseController
         return $this->changeApproval()->modeForZone($this->getCurrentUserId(), $zoneId);
     }
 
-    private function pendingChangeRequestCount(): int
+    private function pendingChangeRequestCount(): ?int
     {
         return $this->changeApproval()->pendingReviewCount($this->getCurrentUserId());
     }
@@ -772,7 +772,7 @@ abstract class BaseController
             fn(): array => $this->db instanceof DebugPDO ? $this->db->getQueries() : [],
             $userId !== null && $this->services()->userPreferenceService()->getWideLayout($userId),
             $this->session,
-            fn(): int => $this->pendingChangeRequestCount()
+            fn(): ?int => $this->pendingChangeRequestCount()
         );
     }
 

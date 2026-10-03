@@ -152,17 +152,30 @@ class ChangeApprovalContext
             return [];
         }
 
+        $requests = ($this->requests)();
+        if (!$requests->isAvailable()) {
+            return [];
+        }
+
         // The same requests the list page shows: the reviewed zones or the user's own
-        return ($this->requests)()->countPendingByZone($zoneIds, $this->reviewScope($userId), $userId);
+        return $requests->countPendingByZone($zoneIds, $this->reviewScope($userId), $userId);
     }
 
     /**
-     * Pending requests awaiting the user's review, for the navigation badge.
+     * Pending requests awaiting the user's review, for the navigation badge; null while
+     * the requests table does not exist yet, so the entry can be hidden.
      */
-    public function pendingReviewCount(?int $userId): int
+    public function pendingReviewCount(?int $userId): ?int
     {
+        if ($userId === null || !$this->enabled()) {
+            return 0;
+        }
+        $requests = ($this->requests)();
+        if (!$requests->isAvailable()) {
+            return null;
+        }
         $scope = $this->reviewScope($userId);
 
-        return $scope === [] ? 0 : ($this->requests)()->countPending($scope);
+        return $scope === [] ? 0 : $requests->countPending($scope);
     }
 }

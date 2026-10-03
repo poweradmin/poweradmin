@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
+use Psr\Log\LoggerInterface;
 
 /**
  * zone_change_requests round-trips the payload, lists newest first within a
@@ -65,6 +66,33 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
             )
         SQL);
         $this->repository = new DbZoneChangeRequestRepository($this->db);
+    }
+
+    public function testIsAvailableOnceTheTableExists(): void
+    {
+        $this->assertTrue($this->repository->isAvailable());
+    }
+
+    public function testIsNotAvailableBeforeTheSchemaUpdateAndLogsWhy(): void
+    {
+        $this->db->exec('DROP TABLE zone_change_requests');
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with($this->stringContains('4.6.0'));
+        $repository = new DbZoneChangeRequestRepository($this->db, $logger);
+
+        $this->assertFalse($repository->isAvailable());
+        $this->assertFalse($repository->isAvailable());
+    }
+
+    public function testReadsFindNothingBeforeTheSchemaUpdate(): void
+    {
+        $this->db->exec('DROP TABLE zone_change_requests');
+        $repository = new DbZoneChangeRequestRepository($this->db);
+
+        $this->assertNull($repository->find(1));
+        $this->assertSame([], $repository->listPendingForZone(42));
+        $this->assertSame(0, $repository->countPending(null));
+        $this->assertSame([], $repository->countPendingByZone([42], null, 7));
     }
 
     public function testCreateStoresThePayloadAndFindReadsItBack(): void
