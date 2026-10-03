@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `zone_change_requests` (
     KEY `idx_zone_change_requests_status` (`status`),
     KEY `idx_zone_change_requests_requester_id` (`requester_id`),
     KEY `idx_zone_change_requests_created_at` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Change approval permissions. No template is granted them automatically;
 -- admins opt in through the permission template editor.
