@@ -4,14 +4,13 @@
 # devcontainer databases so their schema matches the checked-out branch.
 #
 # Use after switching branches instead of a destructive --clean reimport.
-# Scripts are replayed in version order with per-statement error tolerance:
-# reapplying an already-applied script only produces harmless
-# "duplicate column"-style noise, which is counted and shown as a warning.
+# --from is required: pass the first version the databases do not have yet.
+# Do not replay older scripts: the SQLite 4.1.0-4.3.0 updates rebuild tables
+# and drop columns added after them, which can empty zones on the API database.
 #
 # Usage:
-#   ./apply-schema-updates.sh                 # all databases, from 4.0.0
-#   ./apply-schema-updates.sh --dbs mysql     # one database
-#   ./apply-schema-updates.sh --from 4.3.0    # skip older scripts
+#   ./apply-schema-updates.sh --from 4.6.0              # all databases
+#   ./apply-schema-updates.sh --from 4.6.0 --dbs mysql  # one database
 
 set -u
 
@@ -37,18 +36,23 @@ SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/pdns.db}"
 SQLITE_API_DB_PATH="${SQLITE_API_DB_PATH:-/data/pdns-api.db}"
 
 DBS="mysql,pgsql,sqlite"
-FROM_VERSION="4.0.0"
+FROM_VERSION=""
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --dbs) DBS="$2"; shift 2 ;;
         --from) FROM_VERSION="$2"; shift 2 ;;
         -h|--help)
-            grep '^#' "$0" | sed 's/^# \{0,1\}//' | head -14
+            grep '^#' "$0" | sed 's/^# \{0,1\}//' | head -13
             exit 0 ;;
         *) echo "Unknown option: $1"; exit 1 ;;
     esac
 done
+
+if [[ -z "$FROM_VERSION" ]]; then
+    echo "--from <version> is required, e.g. --from 4.6.0 (see --help)"
+    exit 1
+fi
 
 version_ge() { # $1 >= $2
     [[ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -1)" == "$2" ]]
@@ -99,4 +103,4 @@ for db in ${DBS//,/ }; do
     done
     [[ "$found" == 1 ]] || echo "  no update scripts >= $FROM_VERSION"
 done
-echo "Done. Re-run is safe: scripts are replayed tolerantly."
+echo "Done."

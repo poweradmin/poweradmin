@@ -5,6 +5,8 @@
 --
 -- Note: SQLite doesn't support ALTER COLUMN, so we recreate the table to make
 -- domain_id nullable.
+-- Run once, only on a database that has not had this update: it rebuilds tables and a
+-- second run drops the columns later updates added (and can empty zones in API mode).
 
 BEGIN TRANSACTION;
 
