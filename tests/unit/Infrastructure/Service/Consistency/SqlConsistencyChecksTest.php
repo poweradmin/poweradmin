@@ -47,6 +47,7 @@ class SqlConsistencyChecksTest extends TestCase
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, zone_templ_id INTEGER DEFAULT 0, zone_name TEXT NULL, zone_type TEXT NULL, zone_master TEXT NULL)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)");
     }
 
     private function checker(): SqlConsistencyChecks
@@ -240,7 +241,7 @@ class SqlConsistencyChecksTest extends TestCase
     public function testRunAllChecksReturnsEveryCheckKeyedByName(): void
     {
         $this->domain(1, 'example.com');
-        $this->zoneRow(1, 5);
+        $this->zoneRow(1, 5, 'example.com');
         $this->record(1, 1, 'example.com', 'SOA');
 
         $results = $this->checker()->runAllChecks();
@@ -248,6 +249,7 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame([
             'zones_have_owners',
             'zones_have_canonical_ids',
+            'zones_have_names',
             'shared_zone_ids',
             'group_grants_on_row_ids',
             'slave_zones_have_masters',
@@ -258,6 +260,52 @@ class SqlConsistencyChecksTest extends TestCase
         foreach ($results as $result) {
             $this->assertSame('success', $result['status']);
         }
+    }
+
+    public function testZonesWithoutANamedRowAreReportedAndNamedByTheFix(): void
+    {
+        $this->domain(1, 'a.example', 'SLAVE', '192.0.2.1');
+        $this->domain(2, 'b.example');
+        $this->zoneRow(1, 5);
+        $this->zoneRow(1, 6);
+        $this->zoneRow(2, 5, 'b.example');
+        $checker = $this->checker();
+
+        $report = $checker->checkZonesHaveNames();
+        $this->assertSame('warning', $report['status']);
+        $this->assertSame([['id' => 1, 'name' => 'a.example']], $report['data']);
+
+        $this->assertSame('success', $checker->fixOne('zones_without_names', 1, 0)['status']);
+        $this->assertSame('success', $checker->checkZonesHaveNames()['status']);
+        $this->assertSame(
+            ['a.example', null],
+            $this->db->query("SELECT zone_name FROM zones WHERE domain_id = 1 ORDER BY id")->fetchAll(PDO::FETCH_COLUMN)
+        );
+    }
+
+    public function testAGroupOwnedZoneWithoutRowsAndAStaleNameAreReportedAndFixed(): void
+    {
+        $this->domain(1, 'group.example');
+        $this->domain(2, 'renamed.example');
+        $this->domain(3, 'unused.example');
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (1, 9)");
+        $this->zoneRow(2, 5, 'old.example');
+        $checker = $this->checker();
+
+        $this->assertSame(
+            [['id' => 1, 'name' => 'group.example'], ['id' => 2, 'name' => 'renamed.example']],
+            $checker->checkZonesHaveNames()['data']
+        );
+
+        $this->assertSame(['fixed' => 2, 'failed' => 0], $checker->fixAllZonesWithoutName());
+        $this->assertSame('success', $checker->checkZonesHaveNames()['status']);
+        $this->assertSame(
+            [[1, null, 'group.example'], [2, 5, 'renamed.example']],
+            array_map(
+                static fn(array $r): array => [(int)$r[0], $r[1] === null ? null : (int)$r[1], $r[2]],
+                $this->db->query("SELECT domain_id, owner, zone_name FROM zones ORDER BY domain_id")->fetchAll(PDO::FETCH_NUM)
+            )
+        );
     }
 
     public function testFixZoneWithoutOwnerUpdatesAnExistingRowAndInsertsOtherwise(): void

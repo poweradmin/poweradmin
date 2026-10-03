@@ -362,6 +362,7 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertSame([
             'zones_have_owners',
             'zones_have_canonical_ids',
+            'zones_have_names',
             'shared_zone_ids',
             'group_grants_on_row_ids',
             'slave_zones_have_masters',

@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Service\Consistency;
 
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Domain\Port\TransactionInterface;
 use Exception;
 use PDO;
@@ -90,6 +91,31 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     public function checkZonesHaveCanonicalIds(): array
     {
         return ConsistencyReport::allClear(_('All zones have a canonical ID'));
+    }
+
+    public function checkZonesHaveNames(): array
+    {
+        // Only zones with owners or grants keyed by their id have something to lose
+        $stmt = $this->db->query(
+            "SELECT d.id, d.name FROM $this->domainsTable d
+             WHERE NOT EXISTS (SELECT 1 FROM zones n WHERE n.domain_id = d.id AND n.zone_name = d.name)
+               AND (EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id)
+                    OR EXISTS (SELECT 1 FROM zones_groups g WHERE g.domain_id = d.id)
+                    OR EXISTS (SELECT 1 FROM api_key_zones k WHERE k.zone_id = d.id))
+             ORDER BY d.name"
+        );
+
+        $unnamed = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $unnamed[] = ['id' => (int)$row['id'], 'name' => $row['name']];
+        }
+
+        return ConsistencyReport::build(
+            $unnamed,
+            _('All zones are ready for the API backend'),
+            'warning',
+            _('%d zones have no stored zone name; switching to the API backend would add them again without owners')
+        );
     }
 
     /** SQL mode keys every zone by its unique domains.id, so no id can be shared. */
@@ -194,6 +220,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         return [
             'zones_have_owners' => $this->checkZonesHaveOwners(),
             'zones_have_canonical_ids' => $this->checkZonesHaveCanonicalIds(),
+            'zones_have_names' => $this->checkZonesHaveNames(),
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
             'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters(),
@@ -211,6 +238,29 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     public function fixAllZonesWithCanonicalIdIssue(): array
     {
         return ['fixed' => 0, 'failed' => 0];
+    }
+
+    public function fixZoneName(int $zoneId): bool
+    {
+        SqlZoneNames::ensureNamed($this->db, $this->domainsTable, $zoneId, true);
+
+        $stmt = $this->db->prepare(
+            "SELECT 1 FROM zones n JOIN $this->domainsTable d ON d.id = n.domain_id
+             WHERE n.domain_id = :id AND n.zone_name = d.name"
+        );
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() !== false;
+    }
+
+    public function fixAllZonesWithoutName(): array
+    {
+        return ConsistencyReport::repairEach(
+            ConsistencyReport::findingIds($this->checkZonesHaveNames()),
+            fn(int $zoneId): bool => $this->fixZoneName($zoneId),
+            'fixed'
+        );
     }
 
     public function deleteSlaveZone(int $zoneId): bool

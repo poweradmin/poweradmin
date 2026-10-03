@@ -98,6 +98,7 @@ class DatabaseConsistencyController extends BaseController
     private const SINGLE_ITEM_ACTIONS = [
         'zones_without_owners' => 'fix',
         'zones_without_canonical_ids' => 'fix',
+        'zones_without_names' => 'fix',
         'slave_zones_without_masters' => 'delete',
         'orphaned_records' => 'delete',
         'duplicate_soa' => 'fix',

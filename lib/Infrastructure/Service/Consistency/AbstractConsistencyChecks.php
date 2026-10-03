@@ -71,6 +71,7 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
         [$repaired, $done, $failed] = match ($type) {
             'zones_without_owners' => [$this->fixZoneWithoutOwner($id, $currentUserId), _('Zone owner assigned successfully'), _('Failed to assign zone owner')],
             'zones_without_canonical_ids' => [$this->fixZoneCanonicalId($id), _('Zone canonical ID repaired'), _('Failed to repair zone canonical ID')],
+            'zones_without_names' => [$this->fixZoneName($id), _('Zone name stored'), _('Failed to store the zone name')],
             'slave_zones_without_masters' => [$this->deleteSlaveZone($id), _('Slave zone deleted successfully'), _('Failed to delete slave zone')],
             'orphaned_records' => [$this->deleteOrphanedRecord($id), _('Orphaned record deleted successfully'), _('Failed to delete orphaned record')],
             'duplicate_soa' => [$this->fixDuplicateSOA($id), _('Duplicate SOA records fixed successfully'), _('Failed to fix duplicate SOA records')],
@@ -97,6 +98,13 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
                 _('No zones without a canonical ID to fix'),
                 _('Repaired the canonical ID of %d zones'),
                 _('Repaired %d zones; %d failed')
+            ),
+            'zones_without_names' => ConsistencyReport::tally(
+                $this->fixAllZonesWithoutName(),
+                'fixed',
+                _('No zones without a stored name to fix'),
+                _('Stored the name of %d zones'),
+                _('Stored %d zone names; %d failed')
             ),
             default => ['status' => 'error', 'message' => _('Invalid check type')],
         };

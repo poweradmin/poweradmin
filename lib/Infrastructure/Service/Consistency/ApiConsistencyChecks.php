@@ -191,6 +191,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         $results = [
             'zones_have_owners' => $this->ownerReport($zones),
             'zones_have_canonical_ids' => $this->checkZonesHaveCanonicalIds(),
+            'zones_have_names' => $this->checkZonesHaveNames(),
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
             'slave_zones_have_masters' => $this->masterReport($zones),
@@ -219,6 +220,22 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         $stmt->execute();
 
         return $stmt->rowCount() > 0;
+    }
+
+    /** The zone sync names every zone it keeps, so API mode has nothing to report. */
+    public function checkZonesHaveNames(): array
+    {
+        return ConsistencyReport::allClear(_('All zones are ready for the API backend'));
+    }
+
+    public function fixZoneName(int $zoneId): bool
+    {
+        return false;
+    }
+
+    public function fixAllZonesWithoutName(): array
+    {
+        return ['fixed' => 0, 'failed' => 0];
     }
 
     public function fixAllZonesWithCanonicalIdIssue(): array

@@ -38,6 +38,14 @@ interface ConsistencyCheckerInterface
     public function checkZonesHaveCanonicalIds(): array;
 
     /**
+     * Zones with owners or grants but no zones row carrying their exact name, which a switch
+     * to the API backend would add again without them. Only the SQL backend can have them.
+     *
+     * @return array{status: string, message: string, data: array}
+     */
+    public function checkZonesHaveNames(): array;
+
+    /**
      * Zone ids two zones share, whose extra owners and group grants are therefore ignored.
      *
      * @return array{status: string, message: string, data: array}
@@ -82,6 +90,12 @@ interface ConsistencyCheckerInterface
 
     /** @return array{fixed: int, failed: int} */
     public function fixAllZonesWithCanonicalIdIssue(): array;
+
+    /** Give the zone a zones row carrying its PowerDNS name; $zoneId is the domains.id. */
+    public function fixZoneName(int $zoneId): bool;
+
+    /** @return array{fixed: int, failed: int} */
+    public function fixAllZonesWithoutName(): array;
 
     public function deleteSlaveZone(int $zoneId): bool;
 
