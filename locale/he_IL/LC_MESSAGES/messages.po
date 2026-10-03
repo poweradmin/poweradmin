@@ -15527,3 +15527,50 @@ msgstr "שיוכים אלה נוצרו דרך ה-API לפני 4.6.0 עם מזה�
 #: templates/modern/database_consistency.html:210
 msgid "Zone meant"
 msgstr "האזור הרצוי"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+msgid "All zones are ready for the API backend"
+msgstr "כל האזורים מוכנים ל-API backend"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#, php-format
+msgid "%d zones have no stored zone name; switching to the API backend would add them again without owners"
+msgstr "ל-%d אזורים אין שם אזור שמור; מעבר ל-API backend יוסיף אותם מחדש ללא בעלים"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Zone name stored"
+msgstr "שם האזור נשמר"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Failed to store the zone name"
+msgstr "שמירת שם האזור נכשלה"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "No zones without a stored name to fix"
+msgstr "אין אזורים ללא שם שמור לתיקון"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored the name of %d zones"
+msgstr "נשמר השם של %d אזורים"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored %d zone names; %d failed"
+msgstr "נשמרו %d שמות אזורים; %d נכשלו"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zones Without A Stored Name"
+msgstr "אזורים ללא שם שמור"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store the name of all listed zones?"
+msgstr "לשמור את השם של כל האזורים ברשימה?"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store zone name"
+msgstr "שמירת שם האזור"

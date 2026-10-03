@@ -15972,3 +15972,50 @@ msgstr "これらの割り当ては 4.6.0 より前に API からゾーンの行
 #: templates/modern/database_consistency.html:210
 msgid "Zone meant"
 msgstr "意図したゾーン"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+msgid "All zones are ready for the API backend"
+msgstr "すべてのゾーンが API バックエンドに対応できる状態です"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#, php-format
+msgid "%d zones have no stored zone name; switching to the API backend would add them again without owners"
+msgstr "保存されたゾーン名のないゾーンが %d 件あります。API バックエンドに切り替えると、所有者なしで再度追加されます"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Zone name stored"
+msgstr "ゾーン名を保存しました"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Failed to store the zone name"
+msgstr "ゾーン名を保存できませんでした"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "No zones without a stored name to fix"
+msgstr "修正が必要な、名前が保存されていないゾーンはありません"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored the name of %d zones"
+msgstr "%d 件のゾーンの名前を保存しました"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored %d zone names; %d failed"
+msgstr "%d 件のゾーン名を保存、%d 件失敗"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zones Without A Stored Name"
+msgstr "名前が保存されていないゾーン"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store the name of all listed zones?"
+msgstr "一覧にあるすべてのゾーンの名前を保存しますか？"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store zone name"
+msgstr "ゾーン名を保存"

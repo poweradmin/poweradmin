@@ -15711,3 +15711,50 @@ msgstr "ये असाइनमेंट 4.6.0 से पहले API के 
 #: templates/modern/database_consistency.html:210
 msgid "Zone meant"
 msgstr "इच्छित ज़ोन"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+msgid "All zones are ready for the API backend"
+msgstr "सभी ज़ोन API बैकेंड के लिए तैयार हैं"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#, php-format
+msgid "%d zones have no stored zone name; switching to the API backend would add them again without owners"
+msgstr "%d ज़ोन का कोई संग्रहीत ज़ोन नाम नहीं है; API बैकेंड पर स्विच करने से वे बिना मालिकों के फिर से जुड़ जाएँगे"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Zone name stored"
+msgstr "ज़ोन नाम संग्रहीत किया गया"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Failed to store the zone name"
+msgstr "ज़ोन नाम संग्रहीत करने में विफल"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "No zones without a stored name to fix"
+msgstr "ठीक करने के लिए बिना संग्रहीत नाम वाला कोई ज़ोन नहीं"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored the name of %d zones"
+msgstr "%d ज़ोन का नाम संग्रहीत किया गया"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored %d zone names; %d failed"
+msgstr "%d ज़ोन नाम संग्रहीत किए गए; %d विफल"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zones Without A Stored Name"
+msgstr "बिना संग्रहीत नाम वाले ज़ोन"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store the name of all listed zones?"
+msgstr "सूचीबद्ध सभी ज़ोन का नाम संग्रहीत करें?"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store zone name"
+msgstr "ज़ोन नाम संग्रहीत करें"

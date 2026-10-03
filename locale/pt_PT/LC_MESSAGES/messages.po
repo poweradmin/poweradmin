@@ -16226,3 +16226,50 @@ msgstr "Estas atribuições foram feitas através da API antes da 4.6.0 com o ID
 #: templates/modern/database_consistency.html:210
 msgid "Zone meant"
 msgstr "Zona pretendida"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+msgid "All zones are ready for the API backend"
+msgstr "Todas as zonas estão prontas para o backend da API"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#, php-format
+msgid "%d zones have no stored zone name; switching to the API backend would add them again without owners"
+msgstr "%d zonas não têm nome de zona armazenado; mudar para o backend da API voltaria a adicioná-las sem proprietários"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Zone name stored"
+msgstr "Nome da zona armazenado"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Failed to store the zone name"
+msgstr "Falha ao armazenar o nome da zona"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "No zones without a stored name to fix"
+msgstr "Nenhuma zona sem nome armazenado para corrigir"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored the name of %d zones"
+msgstr "Nome de %d zonas armazenado"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored %d zone names; %d failed"
+msgstr "%d nomes de zona armazenados; %d falharam"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zones Without A Stored Name"
+msgstr "Zonas sem nome armazenado"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store the name of all listed zones?"
+msgstr "Armazenar o nome de todas as zonas listadas?"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store zone name"
+msgstr "Armazenar nome da zona"

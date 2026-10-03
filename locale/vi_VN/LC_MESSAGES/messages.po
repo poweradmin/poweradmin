@@ -15904,3 +15904,50 @@ msgstr "Các phân công này được tạo qua API trước 4.6.0 bằng ID h�
 #: templates/modern/database_consistency.html:210
 msgid "Zone meant"
 msgstr "Vùng dự định"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+msgid "All zones are ready for the API backend"
+msgstr "Tất cả các vùng đã sẵn sàng cho backend API"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#, php-format
+msgid "%d zones have no stored zone name; switching to the API backend would add them again without owners"
+msgstr "%d vùng không có tên vùng được lưu trữ; chuyển sang backend API sẽ thêm lại chúng mà không có chủ sở hữu"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Zone name stored"
+msgstr "Đã lưu trữ tên vùng"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Failed to store the zone name"
+msgstr "Không thể lưu trữ tên vùng"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "No zones without a stored name to fix"
+msgstr "Không có vùng nào thiếu tên được lưu trữ cần sửa"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored the name of %d zones"
+msgstr "Đã lưu trữ tên của %d vùng"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored %d zone names; %d failed"
+msgstr "Đã lưu trữ %d tên vùng; %d thất bại"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zones Without A Stored Name"
+msgstr "Các vùng không có tên được lưu trữ"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store the name of all listed zones?"
+msgstr "Lưu trữ tên của tất cả các vùng được liệt kê?"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store zone name"
+msgstr "Lưu trữ tên vùng"

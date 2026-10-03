@@ -15262,3 +15262,50 @@ msgstr "การกำหนดเหล่านี้ถูกสร้าง
 #: templates/modern/database_consistency.html:210
 msgid "Zone meant"
 msgstr "โซนที่ตั้งใจไว้"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+msgid "All zones are ready for the API backend"
+msgstr "ทุกโซนพร้อมสำหรับแบ็คเอนต์ API แล้ว"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#, php-format
+msgid "%d zones have no stored zone name; switching to the API backend would add them again without owners"
+msgstr "%d โซนไม่มีชื่อโซนที่จัดเก็บไว้ การเปลี่ยนไปใช้แบ็คเอนต์ API จะเพิ่มโซนเหล่านี้อีกครั้งโดยไม่มีเจ้าของ"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Zone name stored"
+msgstr "จัดเก็บชื่อโซนแล้ว"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Failed to store the zone name"
+msgstr "จัดเก็บชื่อโซนไม่สำเร็จ"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "No zones without a stored name to fix"
+msgstr "ไม่มีโซนที่ไม่มีชื่อจัดเก็บไว้ให้แก้ไข"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored the name of %d zones"
+msgstr "จัดเก็บชื่อของ %d โซนแล้ว"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored %d zone names; %d failed"
+msgstr "จัดเก็บชื่อโซนแล้ว %d รายการ; ล้มเหลว %d"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zones Without A Stored Name"
+msgstr "โซนที่ไม่มีชื่อจัดเก็บไว้"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store the name of all listed zones?"
+msgstr "จัดเก็บชื่อของโซนทั้งหมดในรายการหรือไม่?"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store zone name"
+msgstr "จัดเก็บชื่อโซน"

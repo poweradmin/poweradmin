@@ -16141,3 +16141,50 @@ msgstr "Te przypisania utworzono przez API przed wersją 4.6.0 z ID wiersza stre
 #: templates/modern/database_consistency.html:210
 msgid "Zone meant"
 msgstr "Zamierzona strefa"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+msgid "All zones are ready for the API backend"
+msgstr "Wszystkie strefy są gotowe do backendu API"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#, php-format
+msgid "%d zones have no stored zone name; switching to the API backend would add them again without owners"
+msgstr "%d stref nie ma zapisanej nazwy strefy; przełączenie na backend API dodałoby je ponownie bez właścicieli"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Zone name stored"
+msgstr "Nazwa strefy zapisana"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Failed to store the zone name"
+msgstr "Nie udało się zapisać nazwy strefy"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "No zones without a stored name to fix"
+msgstr "Brak stref bez zapisanej nazwy do naprawienia"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored the name of %d zones"
+msgstr "Zapisano nazwę %d stref"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored %d zone names; %d failed"
+msgstr "Zapisano %d nazw stref; %d nie powiodło się"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zones Without A Stored Name"
+msgstr "Strefy bez zapisanej nazwy"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store the name of all listed zones?"
+msgstr "Zapisać nazwę wszystkich wymienionych stref?"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store zone name"
+msgstr "Zapisz nazwę strefy"

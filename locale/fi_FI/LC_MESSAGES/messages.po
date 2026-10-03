@@ -15786,3 +15786,50 @@ msgstr "Nämä määritykset tehtiin API:n kautta ennen versiota 4.6.0 alueen ri
 #: templates/modern/database_consistency.html:210
 msgid "Zone meant"
 msgstr "Tarkoitettu alue"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+msgid "All zones are ready for the API backend"
+msgstr "Kaikki alueet ovat valmiita API-taustajärjestelmää varten"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#, php-format
+msgid "%d zones have no stored zone name; switching to the API backend would add them again without owners"
+msgstr "%d alueella ei ole tallennettua aluenimeä; vaihto API-taustajärjestelmään lisäisi ne uudelleen ilman omistajia"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Zone name stored"
+msgstr "Alueen nimi tallennettu"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "Failed to store the zone name"
+msgstr "Alueen nimen tallennus epäonnistui"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+msgid "No zones without a stored name to fix"
+msgstr "Ei korjattavia alueita ilman tallennettua nimeä"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored the name of %d zones"
+msgstr "Tallennettiin %d alueen nimi"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php
+#, php-format
+msgid "Stored %d zone names; %d failed"
+msgstr "Tallennettiin %d alueen nimeä; %d epäonnistui"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zones Without A Stored Name"
+msgstr "Alueet ilman tallennettua nimeä"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store the name of all listed zones?"
+msgstr "Tallennetaanko kaikkien lueteltujen alueiden nimi?"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Store zone name"
+msgstr "Tallenna alueen nimi"
