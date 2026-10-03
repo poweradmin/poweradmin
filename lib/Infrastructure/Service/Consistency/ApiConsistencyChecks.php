@@ -121,6 +121,38 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         return ConsistencyReport::build($shared, _('No zone ID is shared by two zones'), 'warning', _('%d zone IDs are shared by two zones'));
     }
 
+    /**
+     * Group assignments made through the API before 4.6.0 hold the row id the zone list
+     * reported. Only those whose id is a migrated zone's row id and no zone's canonical id are
+     * listed: they certainly reach nothing. One that is also a canonical id cannot be told
+     * apart from a correct assignment, so it is left out.
+     */
+    public function checkGroupGrantsOnRowIds(): array
+    {
+        $canonical = CanonicalZoneSql::canonicalIdColumn('r', true);
+        $canonicalOther = CanonicalZoneSql::canonicalIdColumn('x', true);
+        $stmt = $this->db->prepare(
+            "SELECT zg.domain_id AS stored_id, ug.name AS group_name, r.zone_name AS row_zone
+             FROM zones_groups zg
+             INNER JOIN user_groups ug ON ug.id = zg.group_id
+             INNER JOIN zones r ON r.id = zg.domain_id AND r.zone_name IS NOT NULL AND $canonical <> r.id
+             WHERE NOT EXISTS (SELECT 1 FROM zones x WHERE x.zone_name IS NOT NULL AND $canonicalOther = zg.domain_id)
+             ORDER BY ug.name, zg.domain_id"
+        );
+        $stmt->execute();
+
+        $grants = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $grants[] = [
+                'id' => (int)$row['stored_id'],
+                'group' => $row['group_name'],
+                'row_zone' => $row['row_zone'],
+            ];
+        }
+
+        return ConsistencyReport::build($grants, _('All group assignments use canonical zone IDs'), 'warning', _('%d group assignments use a zone row ID'));
+    }
+
     public function checkSlaveZonesHaveMasters(): array
     {
         return $this->masterReport($this->backend->getZones());
@@ -160,6 +192,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
             'zones_have_owners' => $this->ownerReport($zones),
             'zones_have_canonical_ids' => $this->checkZonesHaveCanonicalIds(),
             'shared_zone_ids' => $this->checkSharedZoneIds(),
+            'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
             'slave_zones_have_masters' => $this->masterReport($zones),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->duplicateSoaReport($zones),

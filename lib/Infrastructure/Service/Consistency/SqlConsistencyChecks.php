@@ -98,6 +98,12 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         return ConsistencyReport::allClear(_('No zone ID is shared by two zones'));
     }
 
+    /** SQL mode keys zones by domains.id only, so no group assignment holds a row id. */
+    public function checkGroupGrantsOnRowIds(): array
+    {
+        return ConsistencyReport::allClear(_('All group assignments use canonical zone IDs'));
+    }
+
     public function checkSlaveZonesHaveMasters(): array
     {
         $stmt = $this->db->query("
@@ -189,6 +195,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             'zones_have_owners' => $this->checkZonesHaveOwners(),
             'zones_have_canonical_ids' => $this->checkZonesHaveCanonicalIds(),
             'shared_zone_ids' => $this->checkSharedZoneIds(),
+            'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
             'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters(),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->checkDuplicateSOARecords(),

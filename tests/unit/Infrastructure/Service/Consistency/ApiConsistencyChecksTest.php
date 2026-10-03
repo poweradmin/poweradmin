@@ -61,6 +61,7 @@ class ApiConsistencyChecksTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, zone_templ_id INTEGER DEFAULT 0, zone_name TEXT NULL)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT)");
 
         $this->provider = $this->createMock(DnsBackendProviderInterface::class);
         $this->provider->method('getRecordsByZoneId')->willReturnCallback(
@@ -227,6 +228,32 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertSame('success', $this->checker()->checkSharedZoneIds()['status']);
     }
 
+    public function testGroupGrantsOnRowIdsListOnlyThoseThatReachNoZone(): void
+    {
+        // Row 14 is migrated (canonical 12) and 14 names no zone; row 40 is migrated (canonical 41)
+        // but 40 is also row 27's canonical id, so a grant on 40 may be correct and is left out
+        $this->zoneRow(14, 12, 1, 'reverse.example.com');
+        $this->zoneRow(40, 41, 1, 'other.example.com');
+        $this->zoneRow(27, 40, 1, 'group.example.com');
+        $this->zoneRow(30, 30, 1, 'created.example.com');
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (7, 'Editors')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (14, 7), (12, 7), (40, 7), (30, 7)");
+
+        $result = $this->checker()->checkGroupGrantsOnRowIds();
+
+        $this->assertSame('warning', $result['status']);
+        $this->assertSame([['id' => 14, 'group' => 'Editors', 'row_zone' => 'reverse.example.com']], $result['data']);
+    }
+
+    public function testGroupGrantsOnCanonicalIdsPass(): void
+    {
+        $this->zoneRow(14, 12, 1, 'reverse.example.com');
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (7, 'Editors')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (12, 7)");
+
+        $this->assertSame('success', $this->checker()->checkGroupGrantsOnRowIds()['status']);
+    }
+
     public function testSlaveZonesHaveMastersReadsTheMasterFromTheZoneList(): void
     {
         $this->zones([
@@ -336,6 +363,7 @@ class ApiConsistencyChecksTest extends TestCase
             'zones_have_owners',
             'zones_have_canonical_ids',
             'shared_zone_ids',
+            'group_grants_on_row_ids',
             'slave_zones_have_masters',
             'records_belong_to_zones',
             'duplicate_soa_records',

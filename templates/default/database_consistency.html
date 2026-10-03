@@ -190,6 +190,41 @@
             </div>
         </div>
 
+        <!-- Check: Group assignments stored under a zone row ID -->
+        <div class="card mb-3">
+            <div class="card-header py-2">
+                <strong class="small">{% trans %}Group Assignments Under A Zone Row ID{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="alert {% if results.group_grants_on_row_ids.status == 'success' %}alert-success{% elseif results.group_grants_on_row_ids.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0 py-2">
+                    {{ results.group_grants_on_row_ids.message }}
+                </div>
+                {% if results.group_grants_on_row_ids.data is not empty %}
+                    <p class="small text-muted mt-3 mb-0">{% trans %}These assignments were made through the API before 4.6.0 with the zone's row ID, which now names no zone, so the group reaches nothing through them. Remove the assignment and assign the intended zone again.{% endtrans %}</p>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}Group{% endtrans %}</th>
+                                    <th>{% trans %}Zone ID{% endtrans %}</th>
+                                    <th>{% trans %}Zone meant{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for grant in results.group_grants_on_row_ids.data %}
+                                    <tr>
+                                        <td>{{ grant.group }}</td>
+                                        <td>{{ grant.id }}</td>
+                                        <td>{{ grant.row_zone }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
         <!-- Check 2: Slave zones without master IPs -->
         <div class="card mb-3">
             <div class="card-header py-2">

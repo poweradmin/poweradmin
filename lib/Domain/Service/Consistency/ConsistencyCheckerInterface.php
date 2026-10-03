@@ -44,6 +44,13 @@ interface ConsistencyCheckerInterface
      */
     public function checkSharedZoneIds(): array;
 
+    /**
+     * Group assignments stored under a zone's row id instead of its canonical id.
+     *
+     * @return array{status: string, message: string, data: array}
+     */
+    public function checkGroupGrantsOnRowIds(): array;
+
     /** @return array{status: string, message: string, data: array} */
     public function checkSlaveZonesHaveMasters(): array;
 
