@@ -16137,3 +16137,28 @@ msgstr "Figyelmen kívül hagyott csoportok"
 #: lib/Domain/Service/Auth/ApiKeyService.php:483
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "A zónakorlátozások nem menthetők, amíg a zóna ID-k frissítése le nem futott. Ellenőrizze a hibanaplót."
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:153
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:104
+msgid "All group assignments use canonical zone IDs"
+msgstr "Minden csoport-hozzárendelés kanonikus zóna ID-t használ"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:153
+#, php-format
+msgid "%d group assignments use a zone row ID"
+msgstr "%d csoport-hozzárendelés egy zóna sor-ID-jét használja"
+
+#: templates/default/database_consistency.html:196
+#: templates/modern/database_consistency.html:196
+msgid "Group Assignments Under A Zone Row ID"
+msgstr "Csoport-hozzárendelések zóna sor-ID alatt"
+
+#: templates/default/database_consistency.html:203
+#: templates/modern/database_consistency.html:203
+msgid "These assignments were made through the API before 4.6.0 with the zone's row ID, which now names no zone, so the group reaches nothing through them. Remove the assignment and assign the intended zone again."
+msgstr "Ezek a hozzárendelések a 4.6.0 előtt az API-n keresztül készültek a zóna sor-ID-jével, amely most egyetlen zónát sem jelöl, így a csoport rajtuk keresztül semmit sem ér el. Távolítsa el a hozzárendelést, és rendelje hozzá újra a szándékolt zónát."
+
+#: templates/default/database_consistency.html:210
+#: templates/modern/database_consistency.html:210
+msgid "Zone meant"
+msgstr "Szándékolt zóna"

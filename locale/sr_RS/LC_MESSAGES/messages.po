@@ -15753,3 +15753,28 @@ msgstr "Занемарене групе"
 #: lib/Domain/Service/Auth/ApiKeyService.php:483
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Ограничења зона не могу да се сачувају док се не изврши надоградња ID-ова зона. Проверите дневник грешака."
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:153
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:104
+msgid "All group assignments use canonical zone IDs"
+msgstr "Све групне доделе користе канонске ID-ове зона"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:153
+#, php-format
+msgid "%d group assignments use a zone row ID"
+msgstr "Групних додела са ID-ом реда зоне: %d"
+
+#: templates/default/database_consistency.html:196
+#: templates/modern/database_consistency.html:196
+msgid "Group Assignments Under A Zone Row ID"
+msgstr "Групне доделе под ID-ом реда зоне"
+
+#: templates/default/database_consistency.html:203
+#: templates/modern/database_consistency.html:203
+msgid "These assignments were made through the API before 4.6.0 with the zone's row ID, which now names no zone, so the group reaches nothing through them. Remove the assignment and assign the intended zone again."
+msgstr "Ове доделе су направљене преко API-ја пре 4.6.0 са ID-ом реда зоне, који сада не означава ниједну зону, па група преко њих не досеже ништа. Уклоните доделу и поново доделите намеравану зону."
+
+#: templates/default/database_consistency.html:210
+#: templates/modern/database_consistency.html:210
+msgid "Zone meant"
+msgstr "Намеравана зона"

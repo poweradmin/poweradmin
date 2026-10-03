@@ -15761,3 +15761,28 @@ msgstr "Ohitetut ryhmät"
 #: lib/Domain/Service/Auth/ApiKeyService.php:483
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Aluerajoituksia ei voi tallentaa ennen kuin alueiden tunnusten päivitys on ajettu. Tarkista virheloki."
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:153
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:104
+msgid "All group assignments use canonical zone IDs"
+msgstr "Kaikki ryhmämääritykset käyttävät alueiden kanonisia tunnuksia"
+
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php:153
+#, php-format
+msgid "%d group assignments use a zone row ID"
+msgstr "%d ryhmämääritystä käyttää alueen rivitunnusta"
+
+#: templates/default/database_consistency.html:196
+#: templates/modern/database_consistency.html:196
+msgid "Group Assignments Under A Zone Row ID"
+msgstr "Ryhmämääritykset alueen rivitunnuksella"
+
+#: templates/default/database_consistency.html:203
+#: templates/modern/database_consistency.html:203
+msgid "These assignments were made through the API before 4.6.0 with the zone's row ID, which now names no zone, so the group reaches nothing through them. Remove the assignment and assign the intended zone again."
+msgstr "Nämä määritykset tehtiin API:n kautta ennen versiota 4.6.0 alueen rivitunnuksella, joka ei nyt viittaa mihinkään alueeseen, joten ryhmä ei pääse niiden kautta minnekään. Poista määritys ja määritä tarkoitettu alue uudelleen."
+
+#: templates/default/database_consistency.html:210
+#: templates/modern/database_consistency.html:210
+msgid "Zone meant"
+msgstr "Tarkoitettu alue"
