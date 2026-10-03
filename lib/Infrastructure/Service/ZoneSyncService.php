@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
@@ -178,7 +180,7 @@ class ZoneSyncService
      */
     private function getLocalZones(): array
     {
-        $stmt = $this->db->query("SELECT id, zone_name, zone_type, zone_master FROM zones WHERE zone_name IS NOT NULL");
+        $stmt = $this->db->query("SELECT id, domain_id, zone_name, zone_type, zone_master FROM zones WHERE zone_name IS NOT NULL");
         if (!$stmt) {
             return [];
         }
@@ -186,6 +188,7 @@ class ZoneSyncService
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $zones[$row['zone_name']] = [
                 'id' => (int)$row['id'],
+                'canonical_id' => (int)(($row['domain_id'] ?? 0) ?: $row['id']),
                 'zone_type' => $row['zone_type'],
                 'zone_master' => $row['zone_master'],
             ];
@@ -226,6 +229,7 @@ class ZoneSyncService
         }
 
         $count = 0;
+        $allocator = null;
         try {
             foreach ($missing as $name => $zone) {
                 $insertStmt->bindValue(':owner', $this->accountOwners?->userIdFor((string)($zone['account'] ?? '')) ?? 0, PDO::PARAM_INT);
@@ -233,9 +237,12 @@ class ZoneSyncService
                 $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
                 if ($insertStmt->execute()) {
-                    // Set domain_id = id (self-referencing for API mode compatibility)
-                    $id = $this->db->lastInsertId('zones_id_seq');
-                    $updateStmt->execute([':did' => $id, ':id' => $id]);
+                    // The canonical id: the row id, unless another zone or grant already uses that number
+                    $id = (int)$this->db->lastInsertId('zones_id_seq');
+                    $allocator ??= new CanonicalZoneIdAllocator($this->db);
+                    $updateStmt->bindValue(':did', $allocator->allocate($id), PDO::PARAM_INT);
+                    $updateStmt->bindValue(':id', $id, PDO::PARAM_INT);
+                    $updateStmt->execute();
                     $count++;
                 }
             }
@@ -270,10 +277,16 @@ class ZoneSyncService
         $count = 0;
         foreach ($orphaned as $name => $local) {
             $zoneId = $local['id'];
+            $canonicalId = $local['canonical_id'] ?? $zoneId;
 
-            // Delete group associations
-            $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
-            $stmt->execute([':id' => $zoneId]);
+            // Grants and extra owners are keyed by the canonical id; on an id another zone
+            // shares they cannot be attributed, so they stay (see SharedZoneIds)
+            if (!SharedZoneIds::isShared($this->db, $canonicalId)) {
+                $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
+                $stmt->execute([':id' => $canonicalId]);
+                $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id");
+                $stmt->execute([':id' => $canonicalId]);
+            }
 
             // Delete zone record
             $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");

@@ -234,7 +234,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Mock: SELECT id FROM zones WHERE zone_name = :name -> returns existing id 42
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn(42);
+        $stmt->method('fetch')->willReturn(['id' => 42, 'domain_id' => 42]);
         $this->mockDb->method('prepare')->willReturn($stmt);
 
         $result = $this->provider->createZone('example.com', 'NATIVE');
@@ -256,7 +256,7 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn(43);
+        $stmt->method('fetch')->willReturn(['id' => 43, 'domain_id' => 43]);
         $this->mockDb->method('prepare')->willReturn($stmt);
 
         $result = $this->provider->createZone('slave.example.com', 'SLAVE', '192.168.1.1');
@@ -278,7 +278,7 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn(44);
+        $stmt->method('fetch')->willReturn(['id' => 44, 'domain_id' => 44]);
         $this->mockDb->method('prepare')->willReturn($stmt);
 
         $result = $this->provider->createZone('catalog.example.com', 'CONSUMER', '192.0.2.42');
@@ -299,7 +299,7 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn(45);
+        $stmt->method('fetch')->willReturn(['id' => 45, 'domain_id' => 45]);
         $this->mockDb->method('prepare')->willReturn($stmt);
 
         $result = $this->provider->createZone('catalog.example.com', 'PRODUCER', '');
@@ -321,7 +321,7 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn(43);
+        $stmt->method('fetch')->willReturn(['id' => 43, 'domain_id' => 43]);
         $this->mockDb->method('prepare')->willReturn($stmt);
 
         $result = $this->provider->createZone('slave.example.com', 'SLAVE', '192.0.2.1, 2001:db8::1');
@@ -349,14 +349,18 @@ class ApiDnsBackendProviderTest extends TestCase
         // First prepare: SELECT id FROM zones WHERE zone_name = :name -> false (not found)
         $stmtSelect = $this->createMock(PDOStatement::class);
         $stmtSelect->method('execute');
-        $stmtSelect->method('fetchColumn')->willReturn(false);
+        $stmtSelect->method('fetch')->willReturn(false);
 
         // Second prepare: INSERT INTO zones
         $stmtInsert = $this->createMock(PDOStatement::class);
         $stmtInsert->method('bindValue');
         $stmtInsert->method('execute');
 
-        // Third prepare: UPDATE zones SET domain_id = :id WHERE id = :id
+        // Next three prepares: the allocator reads zone ids, group assignments and key scopes (none)
+        $stmtIds = $this->createMock(PDOStatement::class);
+        $stmtIds->method('fetchAll')->willReturn([]);
+
+        // Last prepare: UPDATE zones SET domain_id = :did WHERE id = :id
         $stmtUpdate = $this->createMock(PDOStatement::class);
         $stmtUpdate->method('bindValue');
         $stmtUpdate->method('execute');
@@ -364,6 +368,9 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
             $stmtSelect,
             $stmtInsert,
+            $stmtIds,
+            $stmtIds,
+            $stmtIds,
             $stmtUpdate
         );
 

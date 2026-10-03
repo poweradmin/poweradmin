@@ -55,6 +55,8 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
                 zone_master TEXT
             )"
         );
+        $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)");
     }
 
     private function provider(?PDO $db = null): ApiDnsBackendProvider
@@ -90,6 +92,24 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->assertNotSame(0, (int)$row['domain_id'], 'domain_id must not be left at 0');
     }
 
+    public function testANewZoneNeverTakesAMigratedZonesId(): void
+    {
+        // Row 1 was migrated from SQL mode with domain_id 2, so the next row id is a taken zone id
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (1, 2, 'migrated.example')");
+
+        $zoneId = $this->provider()->createZone('example.com', 'MASTER');
+
+        $this->assertSame(3, $zoneId);
+        $this->assertSame(['id' => 2, 'domain_id' => 3], array_map('intval', $this->db->query("SELECT id, domain_id FROM zones WHERE zone_name = 'example.com'")->fetch(PDO::FETCH_ASSOC)));
+    }
+
+    public function testAnExistingMigratedRowIsReturnedByItsCanonicalId(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (7, 4011, 'example.com')");
+
+        $this->assertSame(4011, $this->provider()->createZone('example.com', 'MASTER'));
+    }
+
     public function testNoZonesRowSurvivesAFailedBackfill(): void
     {
         // The regression: the insert used to autocommit on its own, so a failure here left
@@ -110,6 +130,8 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
             "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL,
              zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)"
         );
+        $db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)");
         $db->failUpdates = true;
 
         try {

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
@@ -102,18 +103,19 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
         // Store zone_name in local zones table for API-mode identification.
         // The caller (DomainManager) will insert into zones table with the returned ID
         // as domain_id. We look up if there's already an entry with this zone_name.
-        $stmt = $this->db->prepare("SELECT id FROM zones WHERE zone_name = :name");
+        $stmt = $this->db->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
         $stmt->execute([':name' => $domain]);
-        $existingId = $stmt->fetchColumn();
+        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($existingId !== false) {
+        if (is_array($existing)) {
             // Update existing entry
             $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master WHERE id = :id");
             $stmt->bindValue(':type', strtoupper($type));
             $stmt->bindValue(':master', $slaveMaster);
-            $stmt->bindValue(':id', (int)$existingId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', (int)$existing['id'], PDO::PARAM_INT);
             $stmt->execute();
-            return (int)$existingId;
+            // Callers address the zone by its canonical id, which differs from the row id on migrated rows
+            return (int)($existing['domain_id'] ?: $existing['id']);
         }
 
         // The insert and its domain_id backfill must land together. Committed apart, an
@@ -131,12 +133,13 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
             $stmt->bindValue(':master', $slaveMaster);
             $stmt->execute();
 
-            $zonesId = (int)$this->db->lastInsertId('zones_id_seq');
+            $rowId = (int)$this->db->lastInsertId('zones_id_seq');
 
-            // Set domain_id = zones.id so existing code that uses domain_id works
+            // The canonical id: the row id, unless another zone or grant already uses that number
+            $zonesId = (new CanonicalZoneIdAllocator($this->db))->allocate($rowId);
             $stmt = $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id");
             $stmt->bindValue(':did', $zonesId, PDO::PARAM_INT);
-            $stmt->bindValue(':id', $zonesId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
             $stmt->execute();
 
             if ($ownsTransaction) {
