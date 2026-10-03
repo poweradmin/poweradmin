@@ -16007,3 +16007,7 @@ msgstr "Prezrti lastniki"
 #: templates/modern/database_consistency.html:174
 msgid "Ignored groups"
 msgstr "Prezrte skupine"
+
+#: lib/Domain/Service/Auth/ApiKeyService.php:483
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Omejitev con ni mogoče shraniti, dokler se ne izvede nadgradnja ID-jev con. Preverite dnevnik napak."

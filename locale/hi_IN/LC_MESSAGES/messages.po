@@ -15682,3 +15682,7 @@ msgstr "अनदेखे स्वामी"
 #: templates/modern/database_consistency.html:174
 msgid "Ignored groups"
 msgstr "अनदेखे समूह"
+
+#: lib/Domain/Service/Auth/ApiKeyService.php:483
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "ज़ोन आईडी अपग्रेड चलने तक ज़ोन प्रतिबंध सहेजे नहीं जा सकते। त्रुटि लॉग जाँचें।"

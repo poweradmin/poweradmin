@@ -16283,3 +16283,7 @@ msgstr "Pronarë të shpërfillur"
 #: templates/modern/database_consistency.html:174
 msgid "Ignored groups"
 msgstr "Grupe të shpërfillura"
+
+#: lib/Domain/Service/Auth/ApiKeyService.php:483
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Kufizimet e zonave nuk mund të ruhen derisa të kryhet përditësimi i ID-ve të zonave. Kontrolloni regjistrin e gabimeve."

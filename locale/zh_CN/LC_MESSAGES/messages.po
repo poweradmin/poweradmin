@@ -14901,3 +14901,7 @@ msgstr "已忽略的所有者"
 #: templates/modern/database_consistency.html:174
 msgid "Ignored groups"
 msgstr "已忽略的组"
+
+#: lib/Domain/Service/Auth/ApiKeyService.php:483
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "在区域 ID 升级运行之前，无法保存区域限制。请检查错误日志。"

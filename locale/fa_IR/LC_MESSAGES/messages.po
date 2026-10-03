@@ -15829,3 +15829,7 @@ msgstr "مالکان نادیده‌گرفته‌شده"
 #: templates/modern/database_consistency.html:174
 msgid "Ignored groups"
 msgstr "گروه‌های نادیده‌گرفته‌شده"
+
+#: lib/Domain/Service/Auth/ApiKeyService.php:483
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "محدودیت‌های منطقه تا اجرای ارتقای شناسه‌های منطقه قابل ذخیره نیستند. گزارش خطاها را بررسی کنید."

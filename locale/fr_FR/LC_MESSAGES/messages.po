@@ -16523,3 +16523,7 @@ msgstr "Propriétaires ignorés"
 #: templates/modern/database_consistency.html:174
 msgid "Ignored groups"
 msgstr "Groupes ignorés"
+
+#: lib/Domain/Service/Auth/ApiKeyService.php:483
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Les restrictions de zone ne peuvent pas être enregistrées tant que la mise à niveau des ID de zone n'a pas été exécutée. Consultez le journal des erreurs."
