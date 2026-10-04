@@ -37,6 +37,7 @@ use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
 use Symfony\Component\TypeInfo\Exception\InvalidArgumentException;
+use Symfony\Component\TypeInfo\Exception\LogicException;
 use Symfony\Component\TypeInfo\Exception\UnsupportedException;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\TypeInfo\Type\BackedEnumType;
@@ -60,6 +61,11 @@ final class StringTypeResolver implements TypeResolverInterface
      */
     private static array $classExistCache = [];
 
+    /**
+     * @var array<string, true>
+     */
+    private array $resolvingExtraTypeAliases = [];
+
     private readonly Lexer $lexer;
     private readonly TypeParser $parser;
 
@@ -76,7 +82,7 @@ final class StringTypeResolver implements TypeResolverInterface
             $this->parser = $parser ?? new TypeParser($config = new ParserConfig([]), new ConstExprParser($config));
         } else {
             $this->lexer = $lexer ?? new Lexer();
-            $this->parser = $parser ?? new TypeParser(new ConstExprParser());
+            $this->parser = $parser ?? new TypeParser(new ConstExprParser(true, true), true);
         }
     }
 
@@ -113,10 +119,18 @@ final class StringTypeResolver implements TypeResolverInterface
         if ($node instanceof ArrayShapeNode) {
             $shape = [];
             foreach ($node->items as $item) {
-                $shape[(string) $item->keyName] = [
+                $shapeItem = [
                     'type' => $this->getTypeFromNode($item->valueType, $typeContext),
                     'optional' => $item->optional,
                 ];
+
+                if (null === $item->keyName) {
+                    $shape[] = $shapeItem;
+
+                    continue;
+                }
+
+                $shape[$item->keyName instanceof ConstExprStringNode ? $item->keyName->value : (string) $item->keyName] = $shapeItem;
             }
 
             return Type::arrayShape(
@@ -141,7 +155,13 @@ final class StringTypeResolver implements TypeResolverInterface
 
         if ($node instanceof ConstTypeNode) {
             if ($node->constExpr instanceof ConstFetchNode) {
-                $className = match (strtolower($node->constExpr->className)) {
+                $classKeyword = strtolower($node->constExpr->className);
+
+                if (null === $typeContext && \in_array($classKeyword, ['self', 'static', 'parent'], true)) {
+                    throw new InvalidArgumentException(\sprintf('A "%s" must be provided to resolve "%s".', TypeContext::class, $classKeyword));
+                }
+
+                $className = match ($classKeyword) {
                     'self' => $typeContext->getDeclaringClass(),
                     'static' => $typeContext->getCalledClass(),
                     'parent' => $typeContext->getParentClass(),
@@ -169,17 +189,21 @@ final class StringTypeResolver implements TypeResolverInterface
                     }
                 }
 
+                if (!$types) {
+                    throw new \DomainException(\sprintf('No "%s" constant found in "%s".', $node->constExpr->name, $className));
+                }
+
                 return CollectionType::mergeCollectionValueTypes($types);
             }
 
-            return match ($node->constExpr::class) {
-                ConstExprArrayNode::class => Type::array(),
-                ConstExprFalseNode::class => Type::false(),
-                ConstExprFloatNode::class => Type::float(),
-                ConstExprIntegerNode::class => Type::int(),
-                ConstExprNullNode::class => Type::null(),
-                ConstExprStringNode::class => Type::string(),
-                ConstExprTrueNode::class => Type::true(),
+            return match (true) {
+                $node->constExpr instanceof ConstExprArrayNode => Type::array(),
+                $node->constExpr instanceof ConstExprFalseNode => Type::false(),
+                $node->constExpr instanceof ConstExprFloatNode => Type::float(),
+                $node->constExpr instanceof ConstExprIntegerNode => Type::int(),
+                $node->constExpr instanceof ConstExprNullNode => Type::null(),
+                $node->constExpr instanceof ConstExprStringNode => Type::string(),
+                $node->constExpr instanceof ConstExprTrueNode => Type::true(),
                 default => throw new \DomainException(\sprintf('Unhandled "%s" constant expression.', $node->constExpr::class)),
             };
         }
@@ -360,7 +384,17 @@ final class StringTypeResolver implements TypeResolverInterface
         }
 
         if (isset($this->extraTypeAliases[$identifier])) {
-            return $this->resolve($this->extraTypeAliases[$identifier]);
+            if (isset($this->resolvingExtraTypeAliases[$identifier])) {
+                throw new LogicException(\sprintf('Cannot resolve "%s" type alias as it is recursive.', $identifier));
+            }
+
+            $this->resolvingExtraTypeAliases[$identifier] = true;
+
+            try {
+                return $this->resolve($this->extraTypeAliases[$identifier]);
+            } finally {
+                unset($this->resolvingExtraTypeAliases[$identifier]);
+            }
         }
 
         throw new \DomainException(\sprintf('Unhandled "%s" identifier.', $identifier));
