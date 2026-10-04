@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Service\Consistency;
 
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 
 /**
@@ -38,6 +39,7 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
      */
     public function __construct(
         private readonly ZoneOwnerRepair $ownerRepair,
+        protected readonly DefaultSoaBuilder $defaultSoa,
         private readonly ?AccountOwnerLookup $accountOwners = null
     ) {
     }

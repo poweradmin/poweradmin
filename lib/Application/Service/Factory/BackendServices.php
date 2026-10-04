@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
@@ -228,11 +229,11 @@ final class BackendServices
     {
         $provider = $this->dnsBackendProvider();
         if ($provider->isApiBackend()) {
-            return new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), $this->accountOwnerLookup());
+            return new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup());
         }
         $tableNames = new TableNameService($this->config);
 
-        return new SqlConsistencyChecks($this->db, $tableNames, new ZoneOwnerRepair($this->db, $tableNames->getTable(PdnsTable::DOMAINS)), $this->accountOwnerLookup());
+        return new SqlConsistencyChecks($this->db, $tableNames, new ZoneOwnerRepair($this->db, $tableNames->getTable(PdnsTable::DOMAINS)), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup());
     }
 
     public function powerdnsStatusService(): PowerdnsStatusService

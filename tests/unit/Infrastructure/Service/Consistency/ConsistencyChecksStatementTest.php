@@ -33,6 +33,7 @@ use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
@@ -81,12 +82,12 @@ class ConsistencyChecksStatementTest extends TestCase
 
     private function sqlChecks(): ConsistencyCheckerInterface
     {
-        return new SqlConsistencyChecks($this->db, new TableNameService($this->config), new ZoneOwnerRepair($this->db));
+        return new SqlConsistencyChecks($this->db, new TableNameService($this->config), new ZoneOwnerRepair($this->db), new DefaultSoaBuilder($this->config));
     }
 
     private function apiChecks(DnsBackendProviderInterface $backend, ?ApiStatusInterface $apiStatus = null): ConsistencyCheckerInterface
     {
-        return new ApiConsistencyChecks($this->db, $backend, $apiStatus ?? new ApiStatusService($this->session), new ZoneOwnerRepair($this->db));
+        return new ApiConsistencyChecks($this->db, $backend, $apiStatus ?? new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), new DefaultSoaBuilder($this->config));
     }
 
     #[Test]

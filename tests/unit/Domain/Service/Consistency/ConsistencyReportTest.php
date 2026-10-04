@@ -77,12 +77,4 @@ class ConsistencyReportTest extends TestCase
     {
         $this->assertSame([5, 6], ConsistencyReport::findingIds(['data' => [['id' => '5'], ['id' => 6]]]));
     }
-
-    public function testDefaultSoaContentNamesTheZoneAndDatesTheSerial(): void
-    {
-        $this->assertSame(
-            'ns1.example.com hostmaster.example.com ' . date('Ymd') . '01 28800 7200 604800 86400',
-            ConsistencyReport::defaultSoaContent('example.com')
-        );
-    }
 }

@@ -1544,6 +1544,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Dns\\BatchReverseRecordCreator' => $baseDir . '/lib/Domain/Service/Dns/BatchReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\Dns\\BindZoneFileGenerator' => $baseDir . '/lib/Domain/Service/Dns/BindZoneFileGenerator.php',
     'Poweradmin\\Domain\\Service\\Dns\\BulkRecordParser' => $baseDir . '/lib/Domain/Service/Dns/BulkRecordParser.php',
+    'Poweradmin\\Domain\\Service\\Dns\\DefaultSoaBuilder' => $baseDir . '/lib/Domain/Service/Dns/DefaultSoaBuilder.php',
     'Poweradmin\\Domain\\Service\\Dns\\DnsFormatter' => $baseDir . '/lib/Domain/Service/Dns/DnsFormatter.php',
     'Poweradmin\\Domain\\Service\\Dns\\DnsRecordValidationService' => $baseDir . '/lib/Domain/Service/Dns/DnsRecordValidationService.php',
     'Poweradmin\\Domain\\Service\\Dns\\DnsRecordValidationServiceInterface' => $baseDir . '/lib/Domain/Service/Dns/DnsRecordValidationServiceInterface.php',

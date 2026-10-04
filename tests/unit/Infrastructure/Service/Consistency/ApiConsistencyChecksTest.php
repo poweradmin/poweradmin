@@ -27,8 +27,10 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Infrastructure\Session\ArraySession;
@@ -43,6 +45,9 @@ use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 class ApiConsistencyChecksTest extends TestCase
 {
     private ArraySession $session;
+
+    /** @var array<string, mixed> */
+    private array $dnsSettings = [];
 
     private PDO $db;
 
@@ -85,7 +90,15 @@ class ApiConsistencyChecksTest extends TestCase
 
     private function checker(?ApiStatusInterface $apiStatus = null): ApiConsistencyChecks
     {
-        return new ApiConsistencyChecks($this->db, $this->provider, $apiStatus ?? new ApiStatusService($this->session), new ZoneOwnerRepair($this->db));
+        return new ApiConsistencyChecks($this->db, $this->provider, $apiStatus ?? new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), $this->soaBuilder());
+    }
+
+    private function soaBuilder(): DefaultSoaBuilder
+    {
+        $config = $this->createStub(ConfigurationInterface::class);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $this->dnsSettings[$key] ?? $default);
+
+        return new DefaultSoaBuilder($config);
     }
 
     /** @param list<array<string, mixed>> $zones */
@@ -486,11 +499,20 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertSame([], $this->deletedRecords);
     }
 
-    public function testCreateDefaultSoaAddsTheRecordThroughTheProvider(): void
+    public function testCreateDefaultSoaFollowsTheConfiguredSoaSettings(): void
     {
+        $this->dnsSettings = [
+            'ns1' => 'ns.example.net',
+            'hostmaster' => 'admin.example.net',
+            'soa_refresh' => 1000,
+            'soa_retry' => 2000,
+            'soa_expire' => 3000,
+            'soa_minimum' => 4000,
+            'ttl' => 3600,
+        ];
         $this->provider->method('getZoneNameById')->willReturn('example.com');
         $this->provider->expects($this->once())->method('addRecordGetId')
-            ->with(1, 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com ' . date('Ymd') . '01 28800 7200 604800 86400', 86400, 0)
+            ->with(1, 'example.com', 'SOA', 'ns.example.net admin.example.net ' . date('Ymd') . '00 1000 2000 3000 4000', 3600, 0)
             ->willReturn('example.com./SOA');
 
         $this->assertTrue($this->checker()->createDefaultSOA(1));
@@ -515,7 +537,7 @@ class ApiConsistencyChecksTest extends TestCase
             ['id' => 11, 'name' => 'auto.example', 'type' => 'SLAVE', 'account' => 'alice'],
             ['id' => 12, 'name' => 'other.example', 'type' => 'SLAVE', 'account' => 'bob'],
         ]);
-        $checker = new ApiConsistencyChecks($this->db, $this->provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), new AccountOwnerLookup($this->db));
+        $checker = new ApiConsistencyChecks($this->db, $this->provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), $this->soaBuilder(), new AccountOwnerLookup($this->db));
 
         $this->assertTrue($checker->fixZoneWithoutOwner(11, 9));
         $this->assertTrue($checker->fixZoneWithoutOwner(12, 9));

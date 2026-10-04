@@ -365,18 +365,9 @@ final class DomainManager implements DomainManagerInterface
      */
     private function seedDefaultSoa(int $domain_id, string $domain): void
     {
-        $ns1 = $this->config->get('dns', 'ns1');
-        $hm = $this->config->get('dns', 'hostmaster');
-        $ttl = $this->config->get('dns', 'ttl');
-        $soa_refresh = $this->config->get('dns', 'soa_refresh', 28800);
-        $soa_retry = $this->config->get('dns', 'soa_retry', 7200);
-        $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
-        $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
-        $serial = date("Ymd") . "00";
+        $soa = new DefaultSoaBuilder($this->config);
 
-        $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
-
-        if (!$this->backendProvider->addRecord($domain_id, $domain, 'SOA', $soa_content, (int)$ttl, 0)) {
+        if (!$this->backendProvider->addRecord($domain_id, $domain, 'SOA', $soa->content(), $soa->ttl(), 0)) {
             throw new ZoneCreationFailedException(_('Failed to create SOA record for zone.'));
         }
     }

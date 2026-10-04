@@ -26,8 +26,10 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
@@ -187,7 +189,7 @@ class ZoneIdCrossEngineIntegrationTest extends TestCase
     public function testTheConsistencyQueriesRunOnEveryEngine(string $engine): void
     {
         $db = $this->connect($engine);
-        $checks = new ApiConsistencyChecks($db, $this->createStub(DnsBackendProviderInterface::class), $this->createStub(ApiStatusInterface::class), new ZoneOwnerRepair($db));
+        $checks = new ApiConsistencyChecks($db, $this->createStub(DnsBackendProviderInterface::class), $this->createStub(ApiStatusInterface::class), new ZoneOwnerRepair($db), new DefaultSoaBuilder($this->createStub(ConfigurationInterface::class)));
 
         $this->assertSame([['id' => 5, 'names' => 'created.example, migrated.example', 'ignored_owners' => 1, 'ignored_groups' => 1]], $checks->checkSharedZoneIds()['data']);
         $this->assertSame([['id' => 14, 'group' => 'Editors', 'row_zone' => 'reverse.example']], $checks->checkGroupGrantsOnRowIds()['data']);

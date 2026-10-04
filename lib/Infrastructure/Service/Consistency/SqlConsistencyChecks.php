@@ -28,6 +28,7 @@ use Poweradmin\Domain\Port\TransactionInterface;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
@@ -45,9 +46,10 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         private readonly PDO $db,
         TableNameService $tableNameService,
         ZoneOwnerRepair $ownerRepair,
+        DefaultSoaBuilder $defaultSoa,
         ?AccountOwnerLookup $accountOwners = null
     ) {
-        parent::__construct($ownerRepair, $accountOwners);
+        parent::__construct($ownerRepair, $defaultSoa, $accountOwners);
         $this->domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
         $this->recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
     }
@@ -329,13 +331,14 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
 
         $stmt = $this->db->prepare("
             INSERT INTO {$this->recordsTable} (domain_id, name, type, content, ttl, prio, disabled)
-            VALUES (:domain_id, :name, 'SOA', :content, 86400, 0, 0)
+            VALUES (:domain_id, :name, 'SOA', :content, :ttl, 0, 0)
         ");
 
         return $stmt->execute([
             'domain_id' => $zoneId,
             'name' => $zoneName,
-            'content' => ConsistencyReport::defaultSoaContent($zoneName),
+            'content' => $this->defaultSoa->content(),
+            'ttl' => $this->defaultSoa->ttl(),
         ]);
     }
 

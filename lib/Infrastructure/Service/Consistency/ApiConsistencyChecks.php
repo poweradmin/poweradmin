@@ -29,6 +29,7 @@ use Exception;
 use PDO;
 use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
@@ -52,9 +53,10 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         private readonly DnsBackendProviderInterface $backend,
         private readonly ApiStatusInterface $apiStatus,
         ZoneOwnerRepair $ownerRepair,
+        DefaultSoaBuilder $defaultSoa,
         ?AccountOwnerLookup $accountOwners = null
     ) {
-        parent::__construct($ownerRepair, $accountOwners);
+        parent::__construct($ownerRepair, $defaultSoa, $accountOwners);
     }
 
     /**
@@ -302,7 +304,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
             return false;
         }
 
-        $recordId = $this->backend->addRecordGetId($zoneId, $zoneName, 'SOA', ConsistencyReport::defaultSoaContent($zoneName), 86400, 0);
+        $recordId = $this->backend->addRecordGetId($zoneId, $zoneName, 'SOA', $this->defaultSoa->content(), $this->defaultSoa->ttl(), 0);
 
         return $recordId !== null;
     }

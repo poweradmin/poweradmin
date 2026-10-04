@@ -1954,6 +1954,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\Dns\\BatchReverseRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/BatchReverseRecordCreator.php',
         'Poweradmin\\Domain\\Service\\Dns\\BindZoneFileGenerator' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/BindZoneFileGenerator.php',
         'Poweradmin\\Domain\\Service\\Dns\\BulkRecordParser' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/BulkRecordParser.php',
+        'Poweradmin\\Domain\\Service\\Dns\\DefaultSoaBuilder' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/DefaultSoaBuilder.php',
         'Poweradmin\\Domain\\Service\\Dns\\DnsFormatter' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/DnsFormatter.php',
         'Poweradmin\\Domain\\Service\\Dns\\DnsRecordValidationService' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/DnsRecordValidationService.php',
         'Poweradmin\\Domain\\Service\\Dns\\DnsRecordValidationServiceInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/DnsRecordValidationServiceInterface.php',

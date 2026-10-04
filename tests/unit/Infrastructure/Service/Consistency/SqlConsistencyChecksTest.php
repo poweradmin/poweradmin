@@ -25,6 +25,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service\Consistency;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
@@ -39,6 +41,9 @@ use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 class SqlConsistencyChecksTest extends TestCase
 {
     private PDO $db;
+
+    /** @var array<string, mixed> */
+    private array $dnsSettings = [];
 
     protected function setUp(): void
     {
@@ -55,7 +60,15 @@ class SqlConsistencyChecksTest extends TestCase
         $config = ConfigurationManager::getInstance();
         $config->initialize();
 
-        return new SqlConsistencyChecks($this->db, new TableNameService($config), new ZoneOwnerRepair($this->db));
+        return new SqlConsistencyChecks($this->db, new TableNameService($config), new ZoneOwnerRepair($this->db), $this->soaBuilder());
+    }
+
+    private function soaBuilder(): DefaultSoaBuilder
+    {
+        $config = $this->createStub(ConfigurationInterface::class);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $this->dnsSettings[$key] ?? $default);
+
+        return new DefaultSoaBuilder($config);
     }
 
     private function domain(int $id, string $name, string $type = 'MASTER', ?string $master = null): void
@@ -407,8 +420,17 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame(1, $this->rows('records'));
     }
 
-    public function testCreateDefaultSoaInsertsARecordNamedAfterTheZone(): void
+    public function testCreateDefaultSoaInsertsARecordFromTheConfiguredSoaSettings(): void
     {
+        $this->dnsSettings = [
+            'ns1' => 'ns.example.net',
+            'hostmaster' => 'admin.example.net',
+            'soa_refresh' => 1000,
+            'soa_retry' => 2000,
+            'soa_expire' => 3000,
+            'soa_minimum' => 4000,
+            'ttl' => 3600,
+        ];
         $this->domain(1, 'example.com');
 
         $this->assertTrue($this->checker()->createDefaultSOA(1));
@@ -417,8 +439,8 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame(1, (int)$row['domain_id']);
         $this->assertSame('example.com', $row['name']);
         $this->assertSame('SOA', $row['type']);
-        $this->assertSame('ns1.example.com hostmaster.example.com ' . date('Ymd') . '01 28800 7200 604800 86400', $row['content']);
-        $this->assertSame(86400, (int)$row['ttl']);
+        $this->assertSame('ns.example.net admin.example.net ' . date('Ymd') . '00 1000 2000 3000 4000', $row['content']);
+        $this->assertSame(3600, (int)$row['ttl']);
         $this->assertSame(0, (int)$row['prio']);
         $this->assertSame(0, (int)$row['disabled']);
     }
@@ -437,7 +459,7 @@ class SqlConsistencyChecksTest extends TestCase
         $this->db->exec("INSERT INTO domains (id, name, type, account) VALUES (1, 'auto.example', 'SLAVE', 'alice'), (2, 'other.example', 'SLAVE', 'bob')");
         $config = ConfigurationManager::getInstance();
         $config->initialize();
-        $checker = new SqlConsistencyChecks($this->db, new TableNameService($config), new ZoneOwnerRepair($this->db), new AccountOwnerLookup($this->db));
+        $checker = new SqlConsistencyChecks($this->db, new TableNameService($config), new ZoneOwnerRepair($this->db), $this->soaBuilder(), new AccountOwnerLookup($this->db));
 
         $this->assertTrue($checker->fixZoneWithoutOwner(1, 9));
         $this->assertTrue($checker->fixZoneWithoutOwner(2, 9));

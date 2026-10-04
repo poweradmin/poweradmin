@@ -97,17 +97,6 @@ final class ConsistencyReport
         return ['status' => 'warning', 'message' => sprintf($partialFormat, $succeeded, $failed)];
     }
 
-    /** The SOA content written when a zone has no SOA record at all. */
-    public static function defaultSoaContent(string $zoneName): string
-    {
-        return sprintf(
-            '%s %s %s 28800 7200 604800 86400',
-            'ns1.' . $zoneName,
-            'hostmaster.' . $zoneName,
-            date('Ymd') . '01'
-        );
-    }
-
     /**
      * The ids of every finding, for handing to repairEach().
      *

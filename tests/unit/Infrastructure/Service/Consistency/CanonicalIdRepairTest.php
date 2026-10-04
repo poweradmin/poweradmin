@@ -23,6 +23,8 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Service\Consistency;
 
 use PDO;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
@@ -56,13 +58,13 @@ class CanonicalIdRepairTest extends TestCase
     {
         $ownerRepair = new ZoneOwnerRepair($this->db);
         if ($apiBackend) {
-            return new ApiConsistencyChecks($this->db, $this->createMock(DnsBackendProviderInterface::class), new ApiStatusService($this->session), $ownerRepair);
+            return new ApiConsistencyChecks($this->db, $this->createMock(DnsBackendProviderInterface::class), new ApiStatusService($this->session), $ownerRepair, new DefaultSoaBuilder($this->createStub(ConfigurationInterface::class)));
         }
 
         $config = ConfigurationManager::getInstance();
         $config->initialize();
 
-        return new SqlConsistencyChecks($this->db, new TableNameService($config), $ownerRepair);
+        return new SqlConsistencyChecks($this->db, new TableNameService($config), $ownerRepair, new DefaultSoaBuilder($config));
     }
 
     private function seed(int $id, ?int $domainId, ?string $name): void
