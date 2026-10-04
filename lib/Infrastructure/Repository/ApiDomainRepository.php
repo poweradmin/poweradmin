@@ -379,7 +379,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
         );
 
         $ownershipMap = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $domainId = (int)$row['canonical_id'];
             if (!isset($ownershipMap[$domainId])) {
                 $ownershipMap[$domainId] = [
