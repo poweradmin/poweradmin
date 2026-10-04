@@ -15747,3 +15747,39 @@ msgstr "هل تريد تخزين اسم جميع المناطق المدرجة؟
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "تخزين اسم المنطقة"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "تعذر وضع إشعار NOTIFY لهذه المنطقة في قائمة الانتظار. راجع سجلات PowerDNS لمعرفة التفاصيل."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "طُلب من PowerDNS إرسال NOTIFY لهذه المنطقة."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "يتطلب إرسال NOTIFY واجهة PowerDNS API الخلفية ومنطقة أساسية."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "لا يمكنك الموافقة على طلب التغيير الخاص بك."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "لا يوجد مراجع غير مقدم الطلب"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "لا يمكن لأي شخص آخر الموافقة على هذا الطلب، والموافقة على طلبك الخاص معطّلة."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "إرسال NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "جارٍ الإرسال..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "لقد قدمت هذا الطلب، لذلك يجب أن يوافق عليه مراجع آخر."

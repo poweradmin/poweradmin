@@ -15722,3 +15722,39 @@ msgstr "Kas salvestada kõigi loetletud tsoonide nimi?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Salvesta tsooni nimi"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "NOTIFY järjekorda lisamine sellele tsoonile ebaõnnestus. Üksikasjad leiate PowerDNS-i logidest."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS-ilt on küsitud NOTIFY saatmist selle tsooni jaoks."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "NOTIFY saatmiseks on vaja PowerDNS-i API taustaprogrammi ja primaarset tsooni."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Te ei saa oma muudatustaotlust kinnitada."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Esitaja kõrval pole ühtegi läbivaatajat"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Keegi teine ei saa seda taotlust kinnitada ja oma taotluse kinnitamine on välja lülitatud."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Saada NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Saatmine..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Esitasite selle taotluse ise, seega peab selle kinnitama teine läbivaataja."

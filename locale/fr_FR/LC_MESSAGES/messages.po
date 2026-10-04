@@ -16599,3 +16599,39 @@ msgstr "Enregistrer le nom de toutes les zones listées ?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Enregistrer le nom de la zone"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Impossible de mettre NOTIFY en file d'attente pour cette zone. Consultez les journaux de PowerDNS pour plus de détails."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS a reçu la demande d'envoyer NOTIFY pour cette zone."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "L'envoi de NOTIFY nécessite le backend API de PowerDNS et une zone primaire."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Vous ne pouvez pas approuver votre propre demande de modification."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Aucun réviseur autre que le demandeur"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Personne d'autre ne peut approuver cette demande, et l'approbation de sa propre demande est désactivée."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Envoyer NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Envoi..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Vous avez déposé cette demande, un autre réviseur doit donc l'approuver."

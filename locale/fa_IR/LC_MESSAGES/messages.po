@@ -15905,3 +15905,39 @@ msgstr "نام همه مناطق فهرست‌شده ذخیره شود؟"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "ذخیره نام منطقه"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "قرار دادن NOTIFY این منطقه در صف ناموفق بود. برای جزئیات، گزارش‌های PowerDNS را بررسی کنید."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "از PowerDNS خواسته شده است NOTIFY را برای این منطقه ارسال کند."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "ارسال NOTIFY به پشتیبان API در PowerDNS و یک منطقه اولیه نیاز دارد."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "شما نمی‌توانید درخواست تغییر خودتان را تأیید کنید."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "هیچ بازبینی جز درخواست‌کننده وجود ندارد"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "هیچ‌کس دیگری نمی‌تواند این درخواست را تأیید کند و تأیید درخواست خودتان خاموش است."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "ارسال NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "در حال ارسال..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "این درخواست را شما ثبت کرده‌اید، بنابراین بازبین دیگری باید آن را تأیید کند."

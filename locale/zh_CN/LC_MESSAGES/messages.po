@@ -14977,3 +14977,39 @@ msgstr "存储所有列出区域的名称？"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "存储区域名称"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "无法为此区域将 NOTIFY 加入队列。请查看 PowerDNS 日志了解详情。"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "已请求 PowerDNS 为此区域发送 NOTIFY。"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "发送 NOTIFY 需要 PowerDNS API 后端和主区域。"
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "您不能批准自己的变更请求。"
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "除请求者外没有审核者"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "没有其他人可以批准此请求，且已关闭批准自己的请求。"
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "发送 NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "发送中..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "此请求由您提交，因此必须由其他审核者批准。"

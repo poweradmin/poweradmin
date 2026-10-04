@@ -16572,3 +16572,39 @@ msgstr "Να αποθηκευτεί το όνομα όλων των ζωνών �
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Αποθήκευση ονόματος ζώνης"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Αποτυχία ένταξης του NOTIFY στην ουρά για αυτή τη ζώνη. Ελέγξτε τα αρχεία καταγραφής του PowerDNS για λεπτομέρειες."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "Το PowerDNS έλαβε εντολή να στείλει NOTIFY για αυτή τη ζώνη."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Η αποστολή NOTIFY απαιτεί το API backend του PowerDNS και μια πρωτεύουσα ζώνη."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Δεν μπορείτε να εγκρίνετε το δικό σας αίτημα αλλαγής."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Δεν υπάρχει εξεταστής εκτός από τον αιτούντα"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Κανείς άλλος δεν μπορεί να εγκρίνει αυτό το αίτημα και η έγκριση του δικού σας αιτήματος είναι απενεργοποιημένη."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Αποστολή NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Αποστολή..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Υποβάλατε εσείς αυτό το αίτημα, επομένως πρέπει να το εγκρίνει άλλος εξεταστής."

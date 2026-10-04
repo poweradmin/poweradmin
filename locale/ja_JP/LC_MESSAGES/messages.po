@@ -16019,3 +16019,39 @@ msgstr "一覧にあるすべてのゾーンの名前を保存しますか？"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "ゾーン名を保存"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "このゾーンのNOTIFYをキューに入れられませんでした。詳細はPowerDNSのログを確認してください。"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "このゾーンのNOTIFYを送信するようPowerDNSに要求しました。"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "NOTIFYを送信するには、PowerDNSのAPIバックエンドとプライマリゾーンが必要です。"
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "自分の変更リクエストを承認することはできません。"
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "申請者以外のレビュー担当者がいません"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "他に承認できる人がおらず、自分のリクエストの承認は無効になっています。"
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "NOTIFYを送信"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "送信中..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "このリクエストはあなたが申請したため、別のレビュー担当者が承認する必要があります。"

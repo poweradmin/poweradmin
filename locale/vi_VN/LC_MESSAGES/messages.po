@@ -15951,3 +15951,39 @@ msgstr "Lưu trữ tên của tất cả các vùng được liệt kê?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Lưu trữ tên vùng"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Không thể xếp NOTIFY của vùng này vào hàng đợi. Hãy kiểm tra nhật ký PowerDNS để biết chi tiết."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS đã được yêu cầu gửi NOTIFY cho vùng này."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Gửi NOTIFY cần có backend API của PowerDNS và một vùng chính."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Bạn không thể phê duyệt yêu cầu thay đổi của chính mình."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Không có người xét duyệt nào khác ngoài người yêu cầu"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Không ai khác có thể phê duyệt yêu cầu này, và việc tự phê duyệt yêu cầu của mình đang bị tắt."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Gửi NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Đang gửi..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Bạn đã tạo yêu cầu này, nên một người xét duyệt khác phải phê duyệt."

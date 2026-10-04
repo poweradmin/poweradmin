@@ -16147,3 +16147,39 @@ msgstr "Simpan nama semua zon yang disenaraikan?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Simpan nama zon"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Gagal mengantrekan NOTIFY untuk zon ini. Semak log PowerDNS untuk butiran."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS telah diminta menghantar NOTIFY untuk zon ini."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Menghantar NOTIFY memerlukan bahagian belakang API PowerDNS dan zon utama."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Anda tidak boleh meluluskan permintaan perubahan anda sendiri."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Tiada penyemak selain pemohon"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Tiada orang lain boleh meluluskan permintaan ini, dan kelulusan permintaan sendiri dimatikan."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Hantar NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Menghantar..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Anda yang memfailkan permintaan ini, jadi penyemak lain mesti meluluskannya."

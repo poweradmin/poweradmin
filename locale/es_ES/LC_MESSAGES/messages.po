@@ -16347,3 +16347,39 @@ msgstr "¿Almacenar el nombre de todas las zonas listadas?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Almacenar nombre de zona"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "No se pudo poner en cola NOTIFY para esta zona. Consulte los registros de PowerDNS para más detalles."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "Se ha pedido a PowerDNS que envíe NOTIFY para esta zona."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Enviar NOTIFY requiere el backend de API de PowerDNS y una zona primaria."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "No puede aprobar su propia solicitud de cambio."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Ningún revisor aparte del solicitante"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Nadie más puede aprobar esta solicitud y la aprobación de la propia solicitud está desactivada."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Enviar NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Enviando..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Usted presentó esta solicitud, por lo que otro revisor debe aprobarla."

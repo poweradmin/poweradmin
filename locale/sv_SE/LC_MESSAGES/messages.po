@@ -16024,3 +16024,39 @@ msgstr "Lagra namnet på alla listade zoner?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Lagra zonnamn"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Det gick inte att köa NOTIFY för den här zonen. Se PowerDNS-loggarna för detaljer."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS har ombetts skicka NOTIFY för den här zonen."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Att skicka NOTIFY kräver PowerDNS API-backend och en primär zon."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Du kan inte godkänna din egen ändringsbegäran."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Ingen annan granskare än begäraren"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Ingen annan kan godkänna den här begäran, och godkännande av din egen begäran är avstängt."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Skicka NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Skickar..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Du lämnade in den här begäran, så en annan granskare måste godkänna den."

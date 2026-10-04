@@ -15309,3 +15309,39 @@ msgstr "จัดเก็บชื่อของโซนทั้งหมด
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "จัดเก็บชื่อโซน"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "จัดคิว NOTIFY สำหรับโซนนี้ไม่สำเร็จ ตรวจสอบรายละเอียดในบันทึกของ PowerDNS"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "ได้ขอให้ PowerDNS ส่ง NOTIFY สำหรับโซนนี้แล้ว"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "การส่ง NOTIFY ต้องใช้แบ็กเอนด์ API ของ PowerDNS และโซนหลัก"
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "คุณไม่สามารถอนุมัติคำขอเปลี่ยนแปลงของตนเองได้"
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "ไม่มีผู้ตรวจสอบอื่นนอกจากผู้ยื่นคำขอ"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "ไม่มีผู้อื่นที่อนุมัติคำขอนี้ได้ และการอนุมัติคำขอของตนเองถูกปิดอยู่"
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "ส่ง NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "กำลังส่ง..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "คุณเป็นผู้ยื่นคำขอนี้ จึงต้องให้ผู้ตรวจสอบคนอื่นอนุมัติ"

@@ -16209,3 +16209,39 @@ msgstr "Tárolja az összes felsorolt zóna nevét?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Zónanév tárolása"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Nem sikerült sorba állítani a NOTIFY-t ehhez a zónához. A részletekért nézze meg a PowerDNS naplóit."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "A PowerDNS-t megkértük, hogy küldjön NOTIFY-t ehhez a zónához."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "A NOTIFY küldéséhez a PowerDNS API-háttér és egy elsődleges zóna szükséges."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Nem hagyhatja jóvá a saját módosítási kérelmét."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "A kérelmezőn kívül nincs felülvizsgáló"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Más nem hagyhatja jóvá ezt a kérelmet, a saját kérelem jóváhagyása pedig ki van kapcsolva."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "NOTIFY küldése"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Küldés..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Ezt a kérelmet Ön nyújtotta be, ezért egy másik felülvizsgálónak kell jóváhagynia."

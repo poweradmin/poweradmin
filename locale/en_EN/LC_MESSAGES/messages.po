@@ -15948,3 +15948,39 @@ msgstr "Store the name of all listed zones?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Store zone name"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS has been asked to send NOTIFY for this zone."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "You cannot approve your own change request."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "No reviewer other than the requester"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Nobody else can approve this request, and approving your own request is turned off."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Send NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Sending..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "You filed this request, so another reviewer must approve it."

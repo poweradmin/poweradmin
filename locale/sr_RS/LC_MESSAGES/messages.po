@@ -15825,3 +15825,39 @@ msgstr "Сачувати назив свих наведених зона?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Сачувај назив зоне"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Није успело стављање NOTIFY у ред за ову зону. Детаље потражите у PowerDNS логовима."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS је затражено да пошаље NOTIFY за ову зону."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Слање NOTIFY захтева PowerDNS API бекенд и примарну зону."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Не можете одобрити сопствени захтев за промену."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Нема прегледача осим подносиоца"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Нико други не може одобрити овај захтев, а одобравање сопственог захтева је искључено."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Пошаљи NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Слање..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Ви сте поднели овај захтев, па га мора одобрити други прегледач."

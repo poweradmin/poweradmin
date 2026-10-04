@@ -16066,3 +16066,39 @@ msgstr "Listelenen tüm zonların adı kaydedilsin mi?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Zon adını kaydet"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Bu bölge için NOTIFY kuyruğa alınamadı. Ayrıntılar için PowerDNS günlüklerine bakın."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS'ten bu bölge için NOTIFY göndermesi istendi."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "NOTIFY göndermek için PowerDNS API arka ucu ve birincil bir bölge gerekir."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Kendi değişiklik isteğinizi onaylayamazsınız."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "İsteği gönderen dışında inceleyen yok"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Başka kimse bu isteği onaylayamaz ve kendi isteğini onaylama kapalı."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "NOTIFY gönder"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Gönderiliyor..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Bu isteği siz gönderdiniz, bu yüzden başka bir inceleyenin onaylaması gerekir."

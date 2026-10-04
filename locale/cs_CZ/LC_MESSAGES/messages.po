@@ -15992,3 +15992,39 @@ msgstr "Uložit název všech uvedených zón?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Uložit název zóny"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Nepodařilo se zařadit NOTIFY pro tuto zónu do fronty. Podrobnosti najdete v logách PowerDNS."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS byl požádán o odeslání NOTIFY pro tuto zónu."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Odeslání NOTIFY vyžaduje API backend PowerDNS a primární zónu."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Nemůžete schválit vlastní žádost o změnu."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Žádný posuzovatel kromě žadatele"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Nikdo jiný nemůže tuto žádost schválit a schvalování vlastní žádosti je vypnuto."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Odeslat NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Odesílání..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Tuto žádost jste podali vy, takže ji musí schválit jiný posuzovatel."

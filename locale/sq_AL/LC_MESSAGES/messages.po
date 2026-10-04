@@ -16359,3 +16359,39 @@ msgstr "Të ruhet emri i të gjitha zonave të listuara?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Ruaj emrin e zonës"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Dështoi vendosja në radhë e NOTIFY për këtë zonë. Shiko regjistrat e PowerDNS për detaje."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS është kërkuar të dërgojë NOTIFY për këtë zonë."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Dërgimi i NOTIFY kërkon backend-in API të PowerDNS dhe një zonë primare."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Nuk mund ta miratosh kërkesën tënde për ndryshim."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Nuk ka shqyrtues tjetër përveç kërkuesit"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Askush tjetër nuk mund ta miratojë këtë kërkesë, dhe miratimi i kërkesës së vet është çaktivizuar."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Dërgo NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Po dërgohet..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Këtë kërkesë e ke paraqitur ti, ndaj duhet ta miratojë një shqyrtues tjetër."

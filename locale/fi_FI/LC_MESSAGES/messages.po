@@ -15833,3 +15833,39 @@ msgstr "Tallennetaanko kaikkien lueteltujen alueiden nimi?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Tallenna alueen nimi"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "NOTIFYn jonottaminen tälle alueelle epäonnistui. Katso lisätietoja PowerDNS:n lokeista."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS:ää on pyydetty lähettämään NOTIFY tälle alueelle."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "NOTIFYn lähettäminen vaatii PowerDNS:n API-taustajärjestelmän ja ensisijaisen alueen."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Et voi hyväksyä omaa muutospyyntöäsi."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Ei muuta tarkistajaa kuin pyynnön tekijä"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Kukaan muu ei voi hyväksyä tätä pyyntöä, ja oman pyynnön hyväksyminen on poistettu käytöstä."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Lähetä NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Lähetetään..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Teit tämän pyynnön itse, joten toisen tarkistajan on hyväksyttävä se."

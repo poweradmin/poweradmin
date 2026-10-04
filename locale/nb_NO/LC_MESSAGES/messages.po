@@ -15970,3 +15970,39 @@ msgstr "Lagre navnet på alle oppførte soner?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Lagre sonenavn"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Kunne ikke legge NOTIFY i kø for denne sonen. Se PowerDNS-loggene for detaljer."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS er bedt om å sende NOTIFY for denne sonen."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Sending av NOTIFY krever PowerDNS API-backend og en primær sone."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Du kan ikke godkjenne din egen endringsforespørsel."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Ingen annen vurderer enn innsenderen"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Ingen andre kan godkjenne denne forespørselen, og godkjenning av egen forespørsel er slått av."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Send NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Sender..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Du sendte inn denne forespørselen, så en annen vurderer må godkjenne den."

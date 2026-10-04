@@ -16227,3 +16227,39 @@ msgstr "De naam van alle vermelde zones opslaan?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Zonenaam opslaan"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "NOTIFY voor deze zone kon niet in de wachtrij worden geplaatst. Controleer de PowerDNS-logs voor details."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS is gevraagd NOTIFY voor deze zone te verzenden."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Voor het verzenden van NOTIFY zijn de PowerDNS API-backend en een primaire zone nodig."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "U kunt uw eigen wijzigingsverzoek niet goedkeuren."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Geen andere beoordelaar dan de aanvrager"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Niemand anders kan dit verzoek goedkeuren en het goedkeuren van een eigen verzoek is uitgeschakeld."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "NOTIFY verzenden"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Verzenden..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "U heeft dit verzoek ingediend, dus een andere beoordelaar moet het goedkeuren."

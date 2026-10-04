@@ -15758,3 +15758,39 @@ msgstr "सूचीबद्ध सभी ज़ोन का नाम सं�
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "ज़ोन नाम संग्रहीत करें"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "इस ज़ोन के लिए NOTIFY को कतार में लगाने में विफल। विवरण के लिए PowerDNS लॉग देखें।"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS से इस ज़ोन के लिए NOTIFY भेजने को कहा गया है।"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "NOTIFY भेजने के लिए PowerDNS API बैकएंड और एक प्राइमरी ज़ोन चाहिए।"
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "आप अपना खुद का परिवर्तन अनुरोध स्वीकृत नहीं कर सकते।"
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "अनुरोधकर्ता के अलावा कोई समीक्षक नहीं"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "कोई और इस अनुरोध को स्वीकृत नहीं कर सकता, और अपना अनुरोध स्वीकृत करना बंद है।"
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "NOTIFY भेजें"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "भेजा जा रहा है..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "यह अनुरोध आपने दर्ज किया था, इसलिए इसे कोई अन्य समीक्षक स्वीकृत करेगा।"

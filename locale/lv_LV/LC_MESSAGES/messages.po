@@ -15778,3 +15778,39 @@ msgstr "Saglabāt visu uzskaitīto zonu nosaukumu?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Saglabāt zonas nosaukumu"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Neizdevās ierindot NOTIFY šai zonai. Detalizētu informāciju skatiet PowerDNS žurnālos."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS ir pieprasīts nosūtīt NOTIFY šai zonai."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "NOTIFY sūtīšanai nepieciešama PowerDNS API aizmugursistēma un primārā zona."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Jūs nevarat apstiprināt savu izmaiņu pieprasījumu."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Nav cita izskatītāja, izņemot iesniedzēju"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Neviens cits nevar apstiprināt šo pieprasījumu, un sava pieprasījuma apstiprināšana ir izslēgta."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Sūtīt NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Sūta..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Šo pieprasījumu iesniedzāt jūs, tāpēc tas jāapstiprina citam izskatītājam."

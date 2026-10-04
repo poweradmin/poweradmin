@@ -16191,3 +16191,39 @@ msgstr "Сохранить имя всех перечисленных зон?"
 #: templates/modern/database_consistency.html
 msgid "Store zone name"
 msgstr "Сохранить имя зоны"
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details."
+msgstr "Не удалось поставить NOTIFY для этой зоны в очередь. Подробности смотрите в журналах PowerDNS."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "PowerDNS has been asked to send NOTIFY for this zone."
+msgstr "PowerDNS получил запрос на отправку NOTIFY для этой зоны."
+
+#: lib/Application/Controller/Zone/EditController.php
+msgid "Sending NOTIFY needs the PowerDNS API backend and a primary zone."
+msgstr "Для отправки NOTIFY нужны API-бэкенд PowerDNS и первичная зона."
+
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "You cannot approve your own change request."
+msgstr "Вы не можете одобрить собственный запрос на изменение."
+
+#: templates/default/list_change_requests.html
+msgid "No reviewer other than the requester"
+msgstr "Нет рецензента, кроме автора запроса"
+
+#: templates/default/list_change_requests.html
+msgid "Nobody else can approve this request, and approving your own request is turned off."
+msgstr "Больше никто не может одобрить этот запрос, а одобрение собственного запроса отключено."
+
+#: templates/default/edit.html
+msgid "Send NOTIFY"
+msgstr "Отправить NOTIFY"
+
+#: templates/default/edit.html
+msgid "Sending..."
+msgstr "Отправка..."
+
+#: templates/default/change_request.html
+msgid "You filed this request, so another reviewer must approve it."
+msgstr "Этот запрос создали вы, поэтому его должен одобрить другой рецензент."
