@@ -101,6 +101,7 @@ final class EditZonePresenter
         private readonly ?int $ptrDefaultTtl,
         private readonly array $typeDefaultTtls,
         private readonly bool $supportsZoneRetrieve,
+        private readonly bool $supportsZoneNotify,
         private readonly bool $recordIdsAreNumeric,
         private readonly bool $showRecordId,
         private readonly bool $showAddRecordForm,
@@ -189,6 +190,7 @@ final class EditZonePresenter
             'slave_master' => $this->slaveMaster,
             'zone_types' => $zoneTypes,
             'zone_replicates_from_primary' => ZoneType::replicatesFromPrimary($this->domainType),
+            'can_notify_zone' => $this->supportsZoneNotify && ZoneType::notifies($this->domainType),
             'can_retrieve_zone' => $this->supportsZoneRetrieve && $this->domainType === ZoneType::SLAVE && ($this->slaveMaster ?? '') !== '',
             // Catalog kinds are absent from the basic types, so the browser would preselect
             // the first option and one click would silently retype the zone.

@@ -1050,6 +1050,25 @@ class PowerdnsApiClient
         }
     }
 
+    /**
+     * Queue a NOTIFY to the secondaries of a primary zone.
+     *
+     * @param string $zoneName Zone name (with trailing dot)
+     * @return bool
+     */
+    public function notifyZone(string $zoneName): bool
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zoneName, '/notify');
+            $response = $this->request('PUT', $endpoint);
+
+            return $response && $response['responseCode'] === 200;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to notify zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
     // ---------------------------------------------------------------
     // RRset operations
     // ---------------------------------------------------------------

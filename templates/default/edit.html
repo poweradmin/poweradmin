@@ -894,6 +894,14 @@
                         {% else %}
                         <p><span class="badge bg-secondary">{{ domain_type | lower }}</span></p>
                         {% endif %}
+                        {% if meta_edit and can_notify_zone %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post" class="mt-2">
+                            {{ macros.csrf_field() }}
+                            <button class="btn btn-outline-secondary btn-sm" type="submit" name="notify_zone" data-busy-text="{% trans %}Sending...{% endtrans %}">
+                                <i class="bi bi-megaphone text-secondary"></i> {% trans %}Send NOTIFY{% endtrans %}
+                            </button>
+                        </form>
+                        {% endif %}
                     </div>
 
                     <!-- Primary IP, for zone kinds that replicate from one -->

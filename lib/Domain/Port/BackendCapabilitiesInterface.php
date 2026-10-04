@@ -124,6 +124,16 @@ interface BackendCapabilitiesInterface
     public function supportsZoneRetrieve(): bool;
 
     /**
+     * Whether a primary zone can be told to send NOTIFY on request.
+     *
+     * True for the API backend, which asks PowerDNS to queue the NOTIFY. False
+     * for the SQL backend, which has no way to trigger one.
+     *
+     * @return bool
+     */
+    public function supportsZoneNotify(): bool;
+
+    /**
      * Whether the local zone list is a mirror that can be refreshed from the server.
      *
      * True for the API backend, where the zones table is synced from PowerDNS.

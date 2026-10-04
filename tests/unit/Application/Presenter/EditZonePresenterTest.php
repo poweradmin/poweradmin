@@ -98,6 +98,7 @@ class EditZonePresenterTest extends TestCase
             'ptrDefaultTtl' => null,
             'typeDefaultTtls' => [],
             'supportsZoneRetrieve' => false,
+            'supportsZoneNotify' => false,
             'recordIdsAreNumeric' => true,
             'showRecordId' => true,
             'showAddRecordForm' => true,
@@ -215,6 +216,15 @@ class EditZonePresenterTest extends TestCase
         $this->assertFalse($this->present(['supportsZoneRetrieve' => true, 'domainType' => 'MASTER', 'slaveMaster' => '192.0.2.10'])['can_retrieve_zone']);
         $this->assertFalse($this->present(['supportsZoneRetrieve' => true, 'domainType' => 'SLAVE', 'slaveMaster' => null])['can_retrieve_zone']);
         $this->assertFalse($this->present(['supportsZoneRetrieve' => true, 'domainType' => 'SLAVE', 'slaveMaster' => ''])['can_retrieve_zone']);
+    }
+
+    public function testNotifyButtonNeedsTheApiBackendAndANotifyingKind(): void
+    {
+        $this->assertTrue($this->present(['supportsZoneNotify' => true, 'domainType' => 'MASTER'])['can_notify_zone']);
+        $this->assertTrue($this->present(['supportsZoneNotify' => true, 'domainType' => 'PRODUCER'])['can_notify_zone']);
+        $this->assertFalse($this->present(['supportsZoneNotify' => false, 'domainType' => 'MASTER'])['can_notify_zone']);
+        $this->assertFalse($this->present(['supportsZoneNotify' => true, 'domainType' => 'SLAVE'])['can_notify_zone']);
+        $this->assertFalse($this->present(['supportsZoneNotify' => true, 'domainType' => 'NATIVE'])['can_notify_zone']);
     }
 
     public function testCatalogKindsCannotBeRetypedFromTheBasicSelector(): void
@@ -367,7 +377,7 @@ class EditZonePresenterTest extends TestCase
         $expected = [
             'zone_id', 'zone_name', 'zone_name_to_display', 'idn_zone_name', 'zone_display_name', 'zone_comment',
             'zone_comment_conflict', 'stored_zone_comment', 'domain_type', 'slave_master', 'zone_types',
-            'zone_replicates_from_primary', 'can_retrieve_zone', 'zone_type_change_allowed', 'catalog_members_view',
+            'zone_replicates_from_primary', 'can_notify_zone', 'can_retrieve_zone', 'zone_type_change_allowed', 'catalog_members_view',
             'catalog_selector_view', 'catalog_producers', 'catalog_producer_id', 'catalog_name', 'zone_templates',
             'zone_template_id', 'zone_template_details', 'record_count', 'filtered_record_count', 'records',
             'stale_form_dropped', 'perm_view', 'perm_edit', 'perm_edit_ns_subzone', 'perm_meta_edit', 'meta_edit',

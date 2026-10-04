@@ -538,6 +538,16 @@ final class DomainManager implements DomainManagerInterface
     }
 
     /**
+     * Ask PowerDNS to send NOTIFY for a primary zone now.
+     *
+     * @param int $id Zone ID
+     */
+    public function notifyZone(int $id): bool
+    {
+        return $this->backendProvider->notifyZone($id);
+    }
+
+    /**
      * Change Zone Type
      *
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]

@@ -213,6 +213,40 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('MASTER'), ['dns' => ['backend' => 'api']]);
     }
 
+    public function testNotifyZonePostDispatchesNotifyZoneOnApiBackend(): void
+    {
+        $_POST = ['notify_zone' => '1'];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->once())
+            ->method('notifyZone')
+            ->with(42)
+            ->willReturn(true);
+
+        $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('MASTER'), ['dns' => ['backend' => 'api']]);
+    }
+
+    public function testNotifyZoneIsRefusedOnSqlBackend(): void
+    {
+        $_POST = ['notify_zone' => '1'];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('notifyZone');
+
+        $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('MASTER'), ['dns' => ['backend' => 'sql']]);
+    }
+
+    public function testNotifyZoneIsRefusedForSecondaryAndNativeZones(): void
+    {
+        $_POST = ['notify_zone' => '1'];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('notifyZone');
+
+        $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('SLAVE'), ['dns' => ['backend' => 'api']]);
+        $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('NATIVE'), ['dns' => ['backend' => 'api']]);
+    }
+
     public function testNoZoneMetaPostKeysIsNoop(): void
     {
         $_POST = ['unrelated_field' => 'foo'];
@@ -222,6 +256,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager->expects($this->never())->method('changeZoneSlaveMaster');
         $domainManager->expects($this->never())->method('updateZoneRecords');
         $domainManager->expects($this->never())->method('retrieveZone');
+        $domainManager->expects($this->never())->method('notifyZone');
 
         $this->invokeHandler($domainManager, 42);
     }

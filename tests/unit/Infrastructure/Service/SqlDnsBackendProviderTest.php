@@ -56,6 +56,7 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertTrue($this->provider->supportsGroupSort());
         $this->assertFalse($this->provider->providesSignedSerial());
         $this->assertFalse($this->provider->supportsZoneRetrieve());
+        $this->assertFalse($this->provider->supportsZoneNotify());
         $this->assertFalse($this->provider->syncsZoneListFromServer());
     }
 
@@ -144,6 +145,11 @@ class SqlDnsBackendProviderTest extends TestCase
     {
         // SQL backend cannot trigger an immediate transfer; PowerDNS handles it.
         $this->assertFalse($this->provider->retrieveZone(1));
+    }
+
+    public function testNotifyZoneReturnsFalse(): void
+    {
+        $this->assertFalse($this->provider->notifyZone(1));
     }
 
     // ---------------------------------------------------------------

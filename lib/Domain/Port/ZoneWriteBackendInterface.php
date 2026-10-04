@@ -81,6 +81,16 @@ interface ZoneWriteBackendInterface
     public function retrieveZone(int $domainId): bool;
 
     /**
+     * Queue a NOTIFY to the secondaries of a primary zone.
+     *
+     * Only the API backend can trigger this. The SQL backend returns false.
+     *
+     * @param int $domainId Domain ID
+     * @return bool
+     */
+    public function notifyZone(int $domainId): bool;
+
+    /**
      * Update zone account field.
      *
      * @param int $domainId Domain ID

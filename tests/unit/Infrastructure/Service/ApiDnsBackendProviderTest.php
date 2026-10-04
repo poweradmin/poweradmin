@@ -61,6 +61,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $this->assertTrue($this->provider->providesSignedSerial());
         $this->assertTrue($this->provider->supportsZoneRetrieve());
+        $this->assertTrue($this->provider->supportsZoneNotify());
         $this->assertTrue($this->provider->syncsZoneListFromServer());
         $this->assertFalse($this->provider->supportsRecordCountSort());
         $this->assertFalse($this->provider->supportsGroupSort());
@@ -214,6 +215,54 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockClient->expects($this->never())->method('retrieveZone');
 
         $this->assertFalse($this->provider->retrieveZone(42));
+    }
+
+    public function testNotifyZoneQueuesNotifyForPrimary(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturn(['zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->expects($this->once())
+            ->method('notifyZone')
+            ->with('example.com.')
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->notifyZone(42));
+    }
+
+    public function testNotifyZoneAsksPowerDnsForTheKindOfAnUnsyncedRow(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturn(['zone_name' => 'example.com', 'zone_type' => null]);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+        $this->mockClient->method('getZone')->with('example.com.', false)->willReturn(['kind' => 'Master', 'masters' => []]);
+
+        $this->mockClient->expects($this->once())->method('notifyZone')->with('example.com.')->willReturn(true);
+
+        $this->assertTrue($this->provider->notifyZone(42));
+    }
+
+    public function testNotifyZoneDoesNothingForAnUnknownZone(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturn(false);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->expects($this->never())->method('notifyZone');
+
+        $this->assertFalse($this->provider->notifyZone(42));
+    }
+
+    public function testNotifyZoneDoesNothingForSecondary(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturn(['zone_name' => 'example.com', 'zone_type' => 'SLAVE']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->expects($this->never())->method('notifyZone');
+
+        $this->assertFalse($this->provider->notifyZone(42));
     }
 
     // ---------------------------------------------------------------

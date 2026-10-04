@@ -192,6 +192,35 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertFalse($this->apiClient->retrieveZone('example.com.'));
     }
 
+    public function testNotifyZoneQueuesNotify(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/example.com./notify')
+            ->willReturn(['responseCode' => 200]);
+
+        $this->assertTrue($this->apiClient->notifyZone('example.com.'));
+    }
+
+    public function testNotifyZoneReturnsFalseOnNonSuccess(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/example.com./notify')
+            ->willReturn(['responseCode' => 400]);
+
+        $this->assertFalse($this->apiClient->notifyZone('example.com.'));
+    }
+
+    public function testNotifyZoneReturnsFalseWhenTheApiErrors(): void
+    {
+        $this->mockHttpClient->method('makeRequest')->willThrowException(new ApiErrorException('down'));
+
+        $this->assertFalse($this->apiClient->notifyZone('example.com.'));
+    }
+
     public function testGetZoneKeysWithDsRecords(): void
     {
         $zone = new Zone('example.com');

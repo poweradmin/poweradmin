@@ -58,6 +58,15 @@ interface DomainManagerInterface
     public function retrieveZone(int $id): bool;
 
     /**
+     * Ask the backend to send NOTIFY for a primary zone now
+     *
+     * @param int $id Zone ID
+     *
+     * @return bool true on success
+     */
+    public function notifyZone(int $id): bool;
+
+    /**
      * Change Slave Zone's Master IP Address
      *
      * @param int $zone_id Zone ID

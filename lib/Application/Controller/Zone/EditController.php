@@ -358,6 +358,7 @@ class EditController extends BaseController
             ptrDefaultTtl: $this->reverseTtlResolver()->getConfiguredReverseTtl(),
             typeDefaultTtls: $this->reverseTtlResolver()->getTypeDefaults(),
             supportsZoneRetrieve: $backend->supportsZoneRetrieve(),
+            supportsZoneNotify: $backend->supportsZoneNotify(),
             recordIdsAreNumeric: $backend->recordIdsAreNumeric(),
             showRecordId: $iface_show_id,
             showAddRecordForm: $iface_show_add_record_form,
@@ -498,6 +499,10 @@ class EditController extends BaseController
             $this->handleRetrieveZone($zone_id, $domainManager);
         }
 
+        if ($this->httpRequest->getPostParam('notify_zone') !== null) {
+            $this->handleNotifyZone($zone_id, $domainManager);
+        }
+
         if ($this->httpRequest->getPostParam('catalog_change') !== null) {
             $this->handleCatalogChange($zone_id);
         }
@@ -548,6 +553,22 @@ class EditController extends BaseController
             $this->setMessage('edit', 'success', _('Zone transfer from the primary has been requested.'));
         } else {
             $this->setMessage('edit', 'error', _('Failed to request a zone transfer from the primary. Check the PowerDNS logs for details.'));
+        }
+    }
+
+    private function handleNotifyZone(int $zone_id, DomainManagerInterface $domainManager): void
+    {
+        // The SQL backend cannot queue a NOTIFY, and only primary and producer zones send one
+        $notifies = ZoneType::notifies($this->domainRepository()->getDomainType($zone_id));
+        if (!$this->backendCapabilities()->supportsZoneNotify() || !$notifies) {
+            $this->setMessage('edit', 'error', _('Sending NOTIFY needs the PowerDNS API backend and a primary zone.'));
+            return;
+        }
+
+        if ($domainManager->notifyZone($zone_id)) {
+            $this->setMessage('edit', 'success', _('PowerDNS has been asked to send NOTIFY for this zone.'));
+        } else {
+            $this->setMessage('edit', 'error', _('Failed to queue NOTIFY for this zone. Check the PowerDNS logs for details.'));
         }
     }
 

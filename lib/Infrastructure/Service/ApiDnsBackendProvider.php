@@ -236,6 +236,19 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
         return $this->client->retrieveZone(self::ensureTrailingDot($zone['zone_name']));
     }
 
+    public function notifyZone(int $domainId): bool
+    {
+        $zone = $this->resolveCanonicalZoneRow($domainId);
+        // A row the zone sync has not filled in yet has no cached type; ask PowerDNS then
+        $kind = $zone === null ? null : $this->resolveKindAndMaster($domainId);
+
+        if ($zone === null || $kind === null || !ZoneType::notifies($kind['type'])) {
+            return false;
+        }
+
+        return $this->client->notifyZone(self::ensureTrailingDot($zone['zone_name']));
+    }
+
     public function updateZoneAccount(int $domainId, string $account): bool
     {
         $zoneName = $this->getZoneNameByLocalId($domainId);
@@ -1346,6 +1359,11 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
     }
 
     public function supportsZoneRetrieve(): bool
+    {
+        return true;
+    }
+
+    public function supportsZoneNotify(): bool
     {
         return true;
     }

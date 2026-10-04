@@ -148,6 +148,12 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return false;
     }
 
+    public function notifyZone(int $domainId): bool
+    {
+        // Only the PowerDNS API can queue a NOTIFY; the SQL backend has no way to trigger one.
+        return false;
+    }
+
     public function updateZoneAccount(int $domainId, string $account): bool
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
@@ -934,6 +940,11 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
     }
 
     public function supportsZoneRetrieve(): bool
+    {
+        return false;
+    }
+
+    public function supportsZoneNotify(): bool
     {
         return false;
     }
