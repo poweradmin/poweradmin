@@ -10,12 +10,16 @@ use OpenApi\Spec as OA;
 use OpenApi\Specification;
 use OpenApi\Utils\Config;
 use OpenApi\Utils\PipeInterface;
+use OpenApi\Utils\ServerVariableEnum;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
 /**
  * Expands PHP enums into schema enum values.
  *
  * For schemas attached to a PHP enum, determines schema name, type, and enum values.
- * Also resolves UnitEnum instances and enum class-strings in any schema's enum array.
+ * Also resolves UnitEnum instances and enum class-strings in any schema's or server
+ * variable's enum array.
  *
  * Rules for name vs. value:
  * - Unit enums (not backed): always use case names, type becomes "string"
@@ -26,8 +30,10 @@ use OpenApi\Utils\PipeInterface;
  *
  * @implements PipeInterface<Specification>
  */
-class Enums implements PipeInterface
+class Enums implements PipeInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     public function __construct(
         #[Config('If set, stores enum case names in a vendor extension with this key (e.g. <code>x-enum-varnames</code>).')]
         protected ?string $enumNames = null,
@@ -62,18 +68,20 @@ class Enums implements PipeInterface
                 continue;
             }
 
-            $reflector = new \ReflectionEnum($reflector->getName());
+            /** @var class-string<\UnitEnum> $enumName isEnum() above is the guarantee */
+            $enumName = $reflector->getName();
+            $reflector = new \ReflectionEnum($enumName);
 
             $schema->schema ??= $reflector->getShortName();
 
             $useName = $this->shouldUseName($schema, $reflector);
 
-            $schema->enum = array_map(
+            $schema->enum = array_values(array_map(
                 static fn (\ReflectionEnumUnitCase $case): int|string => ($useName || !$case instanceof \ReflectionEnumBackedCase)
                     ? $case->name
                     : $case->getBackingValue(),
                 $reflector->getCases(),
-            );
+            ));
 
             if ($useName) {
                 $schema->type = 'string';
@@ -112,24 +120,44 @@ class Enums implements PipeInterface
     protected function resolveEnumValues(Specification $specification): void
     {
         $specification->getWalker()->visit(OA\Schema::class, function (OA\Schema $schema): void {
-            if ($schema->enum === null) {
-                return;
+            if ($schema->enum !== null) {
+                $schema->enum = $this->resolveEnumArray($schema->enum);
             }
-
-            $resolved = [];
-            foreach ($schema->enum as $value) {
-                if ($value instanceof \UnitEnum) {
-                    $resolved[] = $value instanceof \BackedEnum ? $value->value : $value->name;
-                } elseif (is_string($value) && function_exists('enum_exists') && enum_exists($value)) {
-                    foreach ($value::cases() as $case) {
-                        $resolved[] = $case instanceof \BackedEnum ? $case->value : $case->name;
-                    }
-                } else {
-                    $resolved[] = $value;
-                }
-            }
-
-            $schema->enum = $resolved;
         });
+
+        $specification->getWalker()->visit(OA\ServerVariable::class, function (OA\ServerVariable $variable): void {
+            if ($variable->enum !== null) {
+                // resolveEnumArray() is shared with Schema, whose enum may hold any JSON value.
+                // Only a server variable's is narrowed, and only after the cases are resolved.
+                $variable->enum = ServerVariableEnum::asStrings(
+                    $this->resolveEnumArray($variable->enum),
+                    $this->logger,
+                    $variable->serverVariable
+                );
+            }
+        });
+    }
+
+    /**
+     * @param list<mixed> $enum
+     *
+     * @return list<mixed>
+     */
+    protected function resolveEnumArray(array $enum): array
+    {
+        $resolved = [];
+        foreach ($enum as $value) {
+            if ($value instanceof \UnitEnum) {
+                $resolved[] = $value instanceof \BackedEnum ? $value->value : $value->name;
+            } elseif (is_string($value) && function_exists('enum_exists') && enum_exists($value)) {
+                foreach ($value::cases() as $case) {
+                    $resolved[] = $case instanceof \BackedEnum ? $case->value : $case->name;
+                }
+            } else {
+                $resolved[] = $value;
+            }
+        }
+
+        return $resolved;
     }
 }
