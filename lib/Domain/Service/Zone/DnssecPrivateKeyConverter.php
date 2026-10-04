@@ -208,6 +208,10 @@ final class DnssecPrivateKeyConverter
         }
         $publicKey = self::derElement($body, $offset, 0x81);
         if ($publicKey !== null) {
+            // A BIT STRING: the unused-bits byte 00, then a key as long as the seed
+            if (strlen($publicKey[0]) !== $length + 1 || $publicKey[0][0] !== "\x00") {
+                return null;
+            }
             $offset = $publicKey[1];
         }
         // Nothing may follow, and only a v2 key carries the public key

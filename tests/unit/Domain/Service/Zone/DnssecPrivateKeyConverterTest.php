@@ -194,6 +194,9 @@ class DnssecPrivateKeyConverterTest extends TestCase
             'cut-off attributes' => '3030' . '020100' . $algorithm . '04220420' . $seed . 'a005',
             'public key in a v1 key' => '3051' . '020100' . $algorithm . '04220420' . $seed . '812100' . str_repeat('ab', 32),
             'v2 key without a public key' => '302e' . '020101' . $algorithm . '04220420' . $seed,
+            'empty public key' => '3030' . '020101' . $algorithm . '04220420' . $seed . '8100',
+            'public key too short' => '3050' . '020101' . $algorithm . '04220420' . $seed . '812000' . str_repeat('ab', 31),
+            'public key with unused bits' => '3051' . '020101' . $algorithm . '04220420' . $seed . '812101' . str_repeat('ab', 32),
             'long-form length below 128' => '30812e' . '020100' . $algorithm . '04220420' . $seed,
         ];
         foreach ($malformed as $case => $hex) {
@@ -207,6 +210,19 @@ class DnssecPrivateKeyConverterTest extends TestCase
         $hex = '30820083' . '020101' . '3005' . '06032b6571' . '043b0439' . self::ED448_SEED . '813a00' . str_repeat('ab', 57);
 
         $this->assertSame(DnssecKeyOutcome::INVALID_PRIVATE_KEY, DnssecPrivateKeyConverter::toIsc($this->derPem($hex), 'ed448'));
+    }
+
+    public function testThreeLengthBytesAreUnreadable(): void
+    {
+        // 300 bytes need two length bytes; the same key with a third is refused, the two-byte form converts
+        $body = '020101' . '3005' . '06032b6570' . '04220420' . self::ED25519_SEED
+            . 'a081d8' . str_repeat('00', 216) . '812100' . str_repeat('ab', 32);
+
+        $this->assertSame(DnssecKeyOutcome::INVALID_PRIVATE_KEY, DnssecPrivateKeyConverter::toIsc($this->derPem('308300012c' . $body), 'ed25519'));
+        $this->assertSame(
+            base64_encode((string)hex2bin(self::ED25519_SEED)),
+            $this->parse(DnssecPrivateKeyConverter::toIsc($this->derPem('3082012c' . $body), 'ed25519'))['PrivateKey']
+        );
     }
 
     public function testEd25519PemForAnotherAlgorithmIsRefused(): void
