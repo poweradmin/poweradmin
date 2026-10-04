@@ -375,13 +375,6 @@ final class ApiDomainRepository implements DomainRepositoryInterface
         // The map is keyed by canonical id because that is how the zone list is keyed;
         // reading the raw column collapsed every unresolved row onto key 0.
         $canonicalId = CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally());
-        $stmt = $this->db->prepare(
-            "SELECT z.id, $canonicalId AS canonical_id, z.owner, z.comment, u.username, u.fullname
-             FROM zones z
-             LEFT JOIN users u ON z.owner = u.id"
-        );
-        $stmt->execute();
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $resolvedRows = [];
         foreach (SharedZoneIds::all($this->db) as $sharedId) {
             $resolved = $this->db->prepare(CanonicalZoneSql::selectByZoneId('id'));
@@ -390,8 +383,16 @@ final class ApiDomainRepository implements DomainRepositoryInterface
             $resolvedRows[$sharedId] = (int)$resolved->fetchColumn();
         }
 
+        $stmt = $this->db->prepare(
+            "SELECT z.id, $canonicalId AS canonical_id, z.owner, z.comment, u.username, u.fullname
+             FROM zones z
+             LEFT JOIN users u ON z.owner = u.id"
+        );
+        $stmt->execute();
+
+        // Rows are read one at a time: the zones table can be large and only the map is kept
         $ownershipMap = [];
-        foreach ($rows as $row) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $domainId = (int)$row['canonical_id'];
             // For a shared id only the resolved zone's own row names an owner (see SharedZoneIds)
             if (isset($resolvedRows[$domainId]) && (int)$row['id'] !== $resolvedRows[$domainId]) {
