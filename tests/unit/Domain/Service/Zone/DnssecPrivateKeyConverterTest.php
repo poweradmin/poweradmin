@@ -201,6 +201,14 @@ class DnssecPrivateKeyConverterTest extends TestCase
         }
     }
 
+    public function testTwoByteLengthThatFitsOneByteIsUnreadable(): void
+    {
+        // The valid Ed448 v2 key, with its length of 0x83 written as 82 00 83 instead of 81 83
+        $hex = '30820083' . '020101' . '3005' . '06032b6571' . '043b0439' . self::ED448_SEED . '813a00' . str_repeat('ab', 57);
+
+        $this->assertSame(DnssecKeyOutcome::INVALID_PRIVATE_KEY, DnssecPrivateKeyConverter::toIsc($this->derPem($hex), 'ed448'));
+    }
+
     public function testEd25519PemForAnotherAlgorithmIsRefused(): void
     {
         $pem = $this->pkcs8(self::ED25519_PREFIX, self::ED25519_SEED);
