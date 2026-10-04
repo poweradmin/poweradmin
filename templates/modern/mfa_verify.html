@@ -93,8 +93,8 @@
           
           <div class="mb-3">
             <label for="recovery_code" class="form-label">{% trans %}Recovery Code{% endtrans %}</label>
-            <input type="text" class="form-control" id="recovery_code" name="mfa_code" 
-                   minlength="20" maxlength="20" autocomplete="off" required>
+            <input type="text" class="form-control" id="recovery_code" name="mfa_code"
+                   minlength="{{ recovery_code_length }}" maxlength="{{ recovery_code_length }}" autocomplete="off" required>
             <div class="valid-feedback">
               {% trans %}Looks good!{% endtrans %}
             </div>
