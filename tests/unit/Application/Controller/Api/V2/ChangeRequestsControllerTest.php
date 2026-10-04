@@ -160,6 +160,19 @@ class ChangeRequestsControllerTest extends TestCase
         $this->assertSame('Action 1 (add) failed: duplicate. Nothing was applied.', $this->body($response)['message']);
     }
 
+    public function testASelfApprovalRefusalFromTheServiceAnswers403(): void
+    {
+        $this->requests->method('find')->willReturn($this->request(12, self::OWNED_ZONE, requesterId: self::USER_ID));
+        $this->permissions->method('canReviewChangeRequests')->willReturn(true);
+        $this->service->method('approve')
+            ->willReturn(ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_SELF_APPROVAL, 'You cannot approve your own change request.', Refusal::FORBIDDEN, [], 12));
+
+        $response = $this->call('approveChangeRequest', id: 12);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame('You cannot approve your own change request.', $this->body($response)['message']);
+    }
+
     public function testOnlyTheRequesterMayCancel(): void
     {
         $this->requests->method('find')->willReturn($this->request(12, self::OWNED_ZONE, requesterId: 9));

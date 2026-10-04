@@ -174,6 +174,17 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
         ];
     }
 
+    public function testSelfApprovalVariableDefaultsToTrue(): void
+    {
+        $repoRoot = dirname(__DIR__, 2);
+        $entrypoint = file_get_contents($repoRoot . '/docker-entrypoint.sh');
+        $defaults = require $repoRoot . '/config/settings.defaults.php';
+
+        $this->assertTrue($defaults['approval']['allow_self_approval']);
+        $this->assertStringContainsString('approval_allow_self_approval=$(to_php_bool "${PA_APPROVAL_ALLOW_SELF_APPROVAL:-true}")', $entrypoint);
+        $this->assertStringContainsString("'allow_self_approval' => \${approval_allow_self_approval},", $this->settingsGroupBody($entrypoint, 'approval'));
+    }
+
     private function settingsGroupBody(string $entrypoint, string $group): string
     {
         $start = strpos($entrypoint, sprintf("    '%s' => [\n", $group));

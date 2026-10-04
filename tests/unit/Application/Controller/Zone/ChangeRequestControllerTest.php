@@ -33,9 +33,9 @@ use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 #[CoversClass(ChangeRequestController::class)]
 class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
 {
-    private function makeController(bool $approvalEnabled, array $request = ['id' => '5']): ChangeRequestController
+    private function makeController(bool $approvalEnabled, array $request = ['id' => '5'], bool $allowSelfApproval = true): ChangeRequestController
     {
-        $config = $this->configure($approvalEnabled);
+        $config = $this->configure($approvalEnabled, $allowSelfApproval);
 
         return new ChangeRequestController($request, true, $this->environment($config));
     }
@@ -127,6 +127,24 @@ class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
         }
 
         $this->fail('Expected the request to end early.');
+    }
+
+    public function testRequesterWhoReviewsDoesNotGetTheApproveButtonWhenSelfApprovalIsOff(): void
+    {
+        $this->storeRequest($this->pendingRequest(requesterId: self::USER_ID));
+        $this->reviewer(true);
+        $service = $this->createMock(ZoneChangeRequestService::class);
+        $service->method('staleActions')->willReturn([]);
+        $this->factory->method('zoneChangeRequestService')->willReturn($service);
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('zoneIdExists')->willReturn(true);
+        $this->factory->method('domainRepository')->willReturn($domains);
+
+        $this->makeController(true, allowSelfApproval: false)->run();
+
+        [, $params] = $this->output->rendered[0];
+        $this->assertTrue($params['can_review']);
+        $this->assertFalse($params['can_approve']);
     }
 
     public function testRequesterViewRendersActionsWithoutReviewButtons(): void

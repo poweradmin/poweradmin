@@ -26,6 +26,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Controller\Zone\ListChangeRequestsController;
 use Poweradmin\Application\Service\Web\PaginationService;
+use Poweradmin\Domain\Model\ZoneChangeRequest;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
@@ -35,10 +37,10 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
     /** @var array<string, mixed>|null The filters the repository was asked for */
     private ?array $listedWith = null;
 
-    private function makeController(bool $approvalEnabled, array $query = []): TestableListChangeRequestsController
+    private function makeController(bool $approvalEnabled, array $query = [], bool $allowSelfApproval = true, string $status = ZoneChangeRequest::STATUS_PENDING): TestableListChangeRequestsController
     {
         $this->query($query);
-        $config = $this->configure($approvalEnabled);
+        $config = $this->configure($approvalEnabled, $allowSelfApproval);
 
         $pagination = $this->createMock(PaginationService::class);
         $pagination->method('getUserRowsPerPage')->willReturn(10);
@@ -46,13 +48,81 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
 
         $repository = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
         $repository->method('count')->willReturn(1);
-        $repository->method('list')->willReturnCallback(function (array $filters): array {
+        $repository->method('list')->willReturnCallback(function (array $filters) use ($status): array {
             $this->listedWith = $filters;
-            return [$this->pendingRequest()];
+            return [$this->pendingRequest(status: $status)];
         });
         $this->factory->method('zoneChangeRequestRepository')->willReturn($repository);
 
         return new TestableListChangeRequestsController([], true, $this->environment($config));
+    }
+
+    /**
+     * Lists request 5 (zone 42, filed by user 3) and returns its no_other_reviewer flag.
+     * Every active user is a [approve, edit, owns zone 42] triple; the viewer is a global reviewer.
+     *
+     * @param array<int, array{0: string, 1: string, 2: bool}> $users
+     */
+    private function listWithUsers(array $users, bool $allowSelfApproval, string $status = ZoneChangeRequest::STATUS_PENDING): bool
+    {
+        $this->permissions->method('getChangeRequestPermissionLevel')->willReturn('none');
+        $levels = static fn(int $id): array => $users[$id] ?? ['all', 'all', false];
+        $this->permissions->method('getChangeApprovePermissionLevel')->willReturnCallback(static fn(int $id): string => $levels($id)[0]);
+        $this->permissions->method('getEditPermissionLevel')->willReturnCallback(static fn(int $id): string => $levels($id)[1]);
+        $this->permissions->method('userOwnsZone')->willReturnCallback(static fn(int $id, int $zone): bool => $zone === 42 && $levels($id)[2]);
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('listActiveUsers')->willReturn(array_map(static fn(int $id): array => ['id' => (string)$id], array_keys($users)));
+        $this->factory->method('userRepository')->willReturn($repository);
+
+        $this->makeController(true, [], $allowSelfApproval, $status)->run();
+
+        return $this->output->rendered[0][1]['requests'][0]['no_other_reviewer'];
+    }
+
+    public function testPendingRequestIsFlaggedWhenTheOnlyReviewerIsTheRequester(): void
+    {
+        $this->assertTrue($this->listWithUsers([3 => ['all', 'all', false], 8 => ['none', 'all', false]], false));
+    }
+
+    public function testPendingRequestIsNotFlaggedWhenAnotherReviewerExists(): void
+    {
+        $this->assertFalse($this->listWithUsers([3 => ['all', 'all', false], 8 => ['all', 'all', false]], false));
+    }
+
+    public function testPendingRequestIsNotFlaggedWhenSelfApprovalIsAllowed(): void
+    {
+        $this->assertFalse($this->listWithUsers([3 => ['all', 'all', false]], true));
+    }
+
+    public function testFailedRequestIsFlaggedBecauseTheRetryIsBlockedToo(): void
+    {
+        $this->assertTrue($this->listWithUsers([3 => ['all', 'all', false]], false, ZoneChangeRequest::STATUS_FAILED));
+    }
+
+    public function testDecidedRequestIsNeverFlagged(): void
+    {
+        $this->assertFalse($this->listWithUsers([3 => ['all', 'all', false]], false, ZoneChangeRequest::STATUS_APPROVED));
+    }
+
+    public function testAGlobalReviewerSettlesTheRowWithoutAnyPerZoneLookup(): void
+    {
+        $this->permissions->expects($this->never())->method('userOwnsZone');
+        $this->permissions->expects($this->never())->method('getChangeApprovePermissionLevelForZone');
+        $this->permissions->expects($this->never())->method('getEditPermissionLevelForZone');
+
+        $flag = $this->listWithUsers([3 => ['own', 'own', true], 8 => ['all', 'all', false], 9 => ['own', 'own', true]], false);
+
+        $this->assertFalse($flag);
+    }
+
+    public function testAnOwnerScopedReviewerOfTheZoneCountsAsAnotherReviewer(): void
+    {
+        $this->assertFalse($this->listWithUsers([3 => ['own', 'own', true], 9 => ['own', 'own', true]], false));
+    }
+
+    public function testOwnerScopedReviewersOfOtherZonesDoNotCount(): void
+    {
+        $this->assertTrue($this->listWithUsers([3 => ['own', 'own', true], 9 => ['own', 'own', false], 10 => ['all', 'none', false]], false));
     }
 
     public function testFeatureOffRendersTheNotFoundPage(): void

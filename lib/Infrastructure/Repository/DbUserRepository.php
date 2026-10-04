@@ -120,6 +120,19 @@ class DbUserRepository implements UserRepositoryInterface
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function listActiveUsers(): array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, username, fullname, email
+            FROM users
+            WHERE active = 1
+            ORDER BY id
+        ');
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function findSqlLoginUser(string $username): ?array
     {
         $stmt = $this->db->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");

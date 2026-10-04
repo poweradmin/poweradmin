@@ -161,9 +161,13 @@
                 <input type="text" class="form-control form-control-sm" name="review_comment" maxlength="200" placeholder="{% trans %}Review comment (optional){% endtrans %}" data-testid="review-comment-input">
             </div>
             <div class="col-auto">
+                {% if can_approve %}
                 <button type="submit" class="btn btn-success btn-sm" name="action" value="approve" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="approve-change-request">
                     <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Approve{% endtrans %}
                 </button>
+                {% else %}
+                <span class="small text-muted me-2">{% trans %}You filed this request, so another reviewer must approve it.{% endtrans %}</span>
+                {% endif %}
                 <button type="submit" class="btn btn-danger btn-sm" name="action" value="reject" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="reject-change-request">
                     <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Reject{% endtrans %}
                 </button>

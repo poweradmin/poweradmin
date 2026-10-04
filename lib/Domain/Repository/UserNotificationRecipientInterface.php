@@ -39,4 +39,11 @@ interface UserNotificationRecipientInterface
      * @return array<int, array<string, mixed>>
      */
     public function listNotifiableUsers(): array;
+
+    /**
+     * Every active account, with or without an email address, ordered by id.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function listActiveUsers(): array;
 }

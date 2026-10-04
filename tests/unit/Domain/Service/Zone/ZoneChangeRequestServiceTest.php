@@ -388,6 +388,64 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertTrue($this->makeService()->approve($deleteOnly, self::REVIEWER, 'bob')->success);
     }
 
+    private function fileDeleteOnly(): int
+    {
+        return $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', null, null, [
+            ['op' => 'delete', 'record_id' => '6', 'before' => ['name' => 'mail.example.com', 'type' => 'A', 'content' => '192.0.2.2']],
+        ], null);
+    }
+
+    public function testRequesterApproveIsRefusedWhenSelfApprovalIsOff(): void
+    {
+        $this->recordManager->expects($this->never())->method('deleteRecord');
+        $id = $this->fileDeleteOnly();
+
+        $result = $this->makeService(allowSelfApproval: false)->approve($id, self::REQUESTER, 'alice');
+
+        $this->assertFalse($result->success);
+        $this->assertSame(ZoneChangeRequestResult::CODE_SELF_APPROVAL, $result->code);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
+        $this->assertSame(ZoneChangeRequest::STATUS_PENDING, $this->repository->find($id)->status);
+    }
+
+    public function testRequesterApproveIsAllowedWhenSelfApprovalIsOn(): void
+    {
+        unset($this->stored['6']);
+        $id = $this->fileDeleteOnly();
+
+        $this->assertTrue($this->makeService(allowSelfApproval: true)->approve($id, self::REQUESTER, 'alice')->success);
+    }
+
+    public function testAnotherReviewerStillApprovesWhenSelfApprovalIsOff(): void
+    {
+        unset($this->stored['6']);
+        $id = $this->fileDeleteOnly();
+
+        $this->assertTrue($this->makeService(allowSelfApproval: false)->approve($id, self::REVIEWER, 'bob')->success);
+    }
+
+    public function testARequestFromADeletedRequesterIsApprovedWhenSelfApprovalIsOff(): void
+    {
+        unset($this->stored['6']);
+        $id = $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, null, 'gone', null, null, [[
+            'op' => 'delete',
+            'record_id' => '6',
+            'before' => ['name' => 'old.example.com', 'type' => 'A', 'content' => '192.0.2.6'],
+        ]], null);
+
+        $this->assertTrue($this->makeService(allowSelfApproval: false)->approve($id, self::REVIEWER, 'bob')->success);
+    }
+
+    public function testRequesterMayStillRejectWhenSelfApprovalIsOff(): void
+    {
+        $id = $this->fileDeleteOnly();
+
+        $result = $this->makeService(allowSelfApproval: false)->reject($id, self::REQUESTER, 'alice');
+
+        $this->assertTrue($result->success);
+        $this->assertSame(ZoneChangeRequest::STATUS_REJECTED, $this->repository->find($id)->status);
+    }
+
     public function testApprovingAZoneDeleteRequestDeletesTheZone(): void
     {
         $this->zoneManagement->expects($this->once())->method('deleteZone')->with(self::ZONE_ID)->willReturn(['success' => true, 'message' => 'Zone deleted successfully']);
@@ -786,11 +844,13 @@ class ZoneChangeRequestServiceTest extends TestCase
         ?\Closure $zoneSnapshot = null,
         ?RecordCommentRepositoryInterface $recordComments = null,
         bool $showComments = false,
-        bool $bumpOnUnchangedSave = true
+        bool $bumpOnUnchangedSave = true,
+        bool $allowSelfApproval = true
     ): ZoneChangeRequestService {
         $config = new FakeConfiguration([
             'interface' => ['show_record_comments' => $showComments, 'show_zone_comments' => true],
             'logging' => ['require_change_comment' => $requireComment],
+            'approval' => ['allow_self_approval' => $allowSelfApproval],
             'misc' => ['edit_conflict_resolution' => 'last_writer_wins', 'record_comments_sync' => false],
             'dns' => ['bump_serial_on_unchanged_save' => $bumpOnUnchangedSave, 'hostmaster' => 'hostmaster.example.com', 'ttl' => 86400, 'txt_auto_quote' => false],
         ]);

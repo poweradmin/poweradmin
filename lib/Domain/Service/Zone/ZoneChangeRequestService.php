@@ -237,6 +237,9 @@ class ZoneChangeRequestService
         if ($request instanceof ZoneChangeRequestResult) {
             return $request;
         }
+        if ($request->requesterId === $reviewerId && !$this->config->get('approval', 'allow_self_approval', true)) {
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_SELF_APPROVAL, 'You cannot approve your own change request.', Refusal::FORBIDDEN, [], $requestId);
+        }
 
         // A failed request may be tried again once the reviewer has fixed what refused it
         $from = [ZoneChangeRequest::STATUS_PENDING, ZoneChangeRequest::STATUS_FAILED];

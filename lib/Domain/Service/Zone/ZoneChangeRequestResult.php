@@ -34,6 +34,7 @@ final readonly class ZoneChangeRequestResult
     public const CODE_NOT_FOUND = 'not_found';
     public const CODE_NOT_PENDING = 'not_pending';
     public const CODE_NOT_REQUESTER = 'not_requester';
+    public const CODE_SELF_APPROVAL = 'self_approval';
     public const CODE_READ_ONLY_ZONE = 'read_only_zone';
     public const CODE_NO_CHANGES = 'no_changes';
     public const CODE_TRUNCATED = 'truncated';

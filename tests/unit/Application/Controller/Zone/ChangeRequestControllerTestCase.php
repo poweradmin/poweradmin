@@ -76,13 +76,13 @@ abstract class ChangeRequestControllerTestCase extends TestCase
         $this->output = new RecordingPageOutput();
     }
 
-    protected function configure(bool $approvalEnabled): ConfigurationInterface
+    protected function configure(bool $approvalEnabled, bool $allowSelfApproval = true): ConfigurationInterface
     {
         return new FakeConfiguration([
             'database' => ['type' => 'sqlite'],
             'security' => ['global_token_validation' => true],
             'interface' => ['rows_per_page' => 10],
-            'approval' => ['enabled' => $approvalEnabled, 'require_review_for_all' => false],
+            'approval' => ['enabled' => $approvalEnabled, 'require_review_for_all' => false, 'allow_self_approval' => $allowSelfApproval],
         ]);
     }
 

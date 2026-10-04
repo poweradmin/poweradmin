@@ -81,6 +81,12 @@
                     <td class="small" title="{{ macros.log_timestamp(request.created_at) }}">{{ request.age }}</td>
                     <td>
                         <span class="badge {% if request.status == 'pending' %}bg-warning text-dark{% elseif request.status == 'approved' %}bg-success{% elseif request.status == 'rejected' or request.status == 'failed' %}bg-danger{% else %}bg-secondary{% endif %}">{{ request.status }}</span>
+                        {% if request.no_other_reviewer %}
+                        <span class="badge bg-danger ms-1" data-testid="change-request-no-reviewer-{{ request.id }}"
+                              title="{% trans %}Nobody else can approve this request, and approving your own request is turned off.{% endtrans %}">
+                            <i class="bi bi-exclamation-triangle me-1"></i>{% trans %}No reviewer other than the requester{% endtrans %}
+                        </span>
+                        {% endif %}
                     </td>
                     <td class="small">{{ request.action_count }}</td>
                     <td class="text-end">

@@ -293,6 +293,7 @@ return [
     'approval' => [
         'enabled' => false,                  // Route changes of request-only users through review (added in 4.6.0)
         'require_review_for_all' => false,   // Every zone change becomes a request, even for editors and admins (added in 4.6.0)
+        'allow_self_approval' => true,       // False: a requester cannot approve their own change request (added in 4.6.0)
     ],
 
     /**

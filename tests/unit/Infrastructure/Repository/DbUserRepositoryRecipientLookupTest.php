@@ -61,6 +61,13 @@ class DbUserRepositoryRecipientLookupTest extends TestCase
         $this->assertSame(['id', 'username', 'fullname', 'email'], array_keys($rows[0]));
     }
 
+    public function testActiveUsersIncludeBlankAndMissingAddressesButNotInactiveAccounts(): void
+    {
+        $rows = $this->repository->listActiveUsers();
+
+        $this->assertSame(['1', '2', '4', '5'], array_map('strval', array_column($rows, 'id')));
+    }
+
     public function testRecipientLookupReturnsTheAddressableColumnsOnly(): void
     {
         $row = $this->repository->findNotificationRecipient(3);

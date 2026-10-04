@@ -1281,6 +1281,18 @@ class ConfigValidatorTest extends TestCase
         $this->assertEmpty($validator->getWarnings());
     }
 
+    public function testApprovalSelfApprovalOffWithoutEnabledWarns(): void
+    {
+        $validator = new ConfigValidator([
+            'interface' => ['rows_per_page' => 10, 'language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE'],
+            'logging' => ['syslog_enabled' => false, 'syslog_identity' => 'poweradmin', 'syslog_facility' => LOG_USER],
+            'approval' => ['enabled' => false, 'allow_self_approval' => false],
+        ]);
+
+        $this->assertTrue($validator->validate());
+        $this->assertArrayHasKey('approval.allow_self_approval', $validator->getWarnings());
+    }
+
     public function testApprovalDefaultsProduceNoWarning(): void
     {
         $validator = new ConfigValidator(require dirname(__DIR__, 2) . '/config/settings.defaults.php');

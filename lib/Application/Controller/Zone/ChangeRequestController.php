@@ -146,6 +146,15 @@ class ChangeRequestController extends BaseController
         $this->redirect('/zones/requests/' . $request->id);
     }
 
+    /**
+     * Whether the user may approve this request; the service refuses it again on submit.
+     */
+    private function mayApprove(ZoneChangeRequest $request): bool
+    {
+        return $request->requesterId !== (int)$this->getCurrentUserId()
+            || (bool)$this->config->get('approval', 'allow_self_approval', true);
+    }
+
     private function show(ZoneChangeRequest $request, bool $canReview, bool $isRequester, bool $canSeeSnapshot): void
     {
         $service = $this->services()->zoneChangeRequestService();
@@ -165,7 +174,8 @@ class ChangeRequestController extends BaseController
             'zone_display_name' => DnsIdnService::toDisplay($request->zoneName),
             'is_reverse_zone' => DnsHelper::isReverseZoneName($request->zoneName),
             'can_review' => $canReview && $request->isPending(),
-            'can_retry' => $canReview && $request->status === ZoneChangeRequest::STATUS_FAILED && $zoneExists,
+            'can_approve' => $canReview && $request->isPending() && $this->mayApprove($request),
+            'can_retry' => $canReview && $this->mayApprove($request) && $request->status === ZoneChangeRequest::STATUS_FAILED && $zoneExists,
             'can_cancel' => $isRequester && $request->isPending(),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', false),
         ]);

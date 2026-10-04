@@ -352,7 +352,7 @@ final class ConfigValidator
     }
 
     /**
-     * require_review_for_all only takes effect once the approval workflow is on.
+     * require_review_for_all and allow_self_approval only take effect once the approval workflow is on.
      */
     private function validateApproval(): void
     {
@@ -361,6 +361,9 @@ final class ConfigValidator
 
         if ($requireReviewForAll && !$enabled) {
             $this->warnings['approval.require_review_for_all'] = 'approval.require_review_for_all has no effect while approval.enabled is false';
+        }
+        if (!$this->getSetting('approval', 'allow_self_approval', true) && !$enabled) {
+            $this->warnings['approval.allow_self_approval'] = 'approval.allow_self_approval has no effect while approval.enabled is false';
         }
     }
 

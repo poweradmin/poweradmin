@@ -66,6 +66,9 @@ class ChangeApprovalContext
         return (bool)$this->config->get('approval', 'enabled', false);
     }
 
+    /** @var array<string, bool> Whether a reviewer of every zone other than the requester exists, by user list and requester */
+    private array $anyZoneReviewerOtherThan = [];
+
     private function requireReviewForAll(): bool
     {
         return (bool)$this->config->get('approval', 'require_review_for_all', false);
@@ -106,6 +109,63 @@ class ChangeApprovalContext
             $this->permissions()->getEditPermissionLevelForZone($userId, $zoneId),
             $this->permissions()->userOwnsZone($userId, $zoneId)
         );
+    }
+
+    /**
+     * Whether any of the given users other than the requester may review requests
+     * for the zone. Holders of both levels at "all" qualify without a per-zone
+     * lookup; ownership is read only for users with an "own" level, and only
+     * when no such user exists.
+     *
+     * @param list<int> $userIds active users
+     */
+    public function hasReviewerOtherThan(array $userIds, int $zoneId, ?int $requesterId): bool
+    {
+        if ($this->hasAnyZoneReviewerOtherThan($userIds, $requesterId)) {
+            return true;
+        }
+
+        foreach ($userIds as $userId) {
+            if ($userId === $requesterId) {
+                continue;
+            }
+            $approve = $this->permissions()->getChangeApprovePermissionLevel($userId);
+            $edit = $this->permissions()->getEditPermissionLevel($userId);
+            if ($approve === 'none' || $edit === 'none' || ($approve === 'all' && $edit === 'all')) {
+                continue;
+            }
+            if (ChangeApprovalPolicy::canReview($approve, $edit, $this->permissions()->userOwnsZone($userId, $zoneId))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether someone other than the requester reviews every zone (approve and edit levels both
+     * "all"). Stops at the first one, usually an administrator, instead of reading every user.
+     *
+     * @param list<int> $userIds
+     */
+    private function hasAnyZoneReviewerOtherThan(array $userIds, ?int $requesterId): bool
+    {
+        $key = implode(',', $userIds) . '|' . $requesterId;
+        if (!isset($this->anyZoneReviewerOtherThan[$key])) {
+            $this->anyZoneReviewerOtherThan[$key] = false;
+            foreach ($userIds as $userId) {
+                if (
+                    $userId !== $requesterId
+                    && $this->permissions()->getChangeApprovePermissionLevel($userId) === 'all'
+                    && $this->permissions()->getEditPermissionLevel($userId) === 'all'
+                ) {
+                    $this->anyZoneReviewerOtherThan[$key] = true;
+                    break;
+                }
+            }
+        }
+
+        return $this->anyZoneReviewerOtherThan[$key];
     }
 
     /**

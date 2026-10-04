@@ -307,7 +307,8 @@ class ChangeRequestsController extends PublicApiController
         summary: 'Approve and apply a change request',
         description: 'Applies the stored actions to the zone as the caller. Needs the change approve permission for the zone together with the edit permission. '
             . 'A refused or failed write leaves the request in the failed state and answers with the failure. '
-            . 'Approving a failed request applies it again; actions that already landed are skipped.',
+            . 'Approving a failed request applies it again; actions that already landed are skipped. '
+            . 'Answers 403 when the caller filed the request and approval.allow_self_approval is off.',
         tags: ['change-requests'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [

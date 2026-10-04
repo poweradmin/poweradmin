@@ -50,6 +50,7 @@ class ChangeRequestMessages
             ZoneChangeRequestResult::CODE_NOT_FOUND => _('There is no change request with this ID.'),
             ZoneChangeRequestResult::CODE_NOT_PENDING => _('This change request has already been decided.'),
             ZoneChangeRequestResult::CODE_NOT_REQUESTER => _('Only the requester can cancel this request.'),
+            ZoneChangeRequestResult::CODE_SELF_APPROVAL => _('You cannot approve your own change request.'),
             ZoneChangeRequestResult::CODE_READ_ONLY_ZONE => _('You cannot edit records in a read-only zone.'),
             ZoneChangeRequestResult::CODE_NO_CHANGES => _('Nothing differs from the zone, so no request was filed.'),
             ZoneChangeRequestResult::CODE_TRUNCATED => ZoneSaveMessages::truncated(),

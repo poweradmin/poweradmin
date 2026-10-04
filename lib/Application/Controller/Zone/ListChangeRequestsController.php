@@ -92,7 +92,7 @@ class ListChangeRequestsController extends BaseController
         }
 
         $this->render('list_change_requests.html', [
-            'requests' => ChangeRequestPresenter::summaries($requests),
+            'requests' => $this->flagUnreviewable(ChangeRequestPresenter::summaries($requests)),
             'total_requests' => $total,
             'status_filter' => $status,
             'statuses' => self::STATUSES,
@@ -105,6 +105,37 @@ class ListChangeRequestsController extends BaseController
                 'zone_id' => $zoneId,
             ]),
         ]);
+    }
+
+    /**
+     * Marks open requests (pending, or failed and awaiting a retry) that nobody but
+     * the requester could approve, so they do not sit unnoticed once
+     * approval.allow_self_approval is off.
+     *
+     * @param list<array<string, mixed>> $rows
+     * @return list<array<string, mixed>>
+     */
+    private function flagUnreviewable(array $rows): array
+    {
+        $allowSelf = (bool)$this->config->get('approval', 'allow_self_approval', true);
+        $userIds = null;
+        $checked = [];
+        foreach ($rows as &$row) {
+            $row['no_other_reviewer'] = false;
+            if ($allowSelf || !in_array($row['status'], [ZoneChangeRequest::STATUS_PENDING, ZoneChangeRequest::STATUS_FAILED], true)) {
+                continue;
+            }
+            $userIds ??= array_map(
+                static fn(array $user): int => (int)$user['id'],
+                $this->services()->userRepository()->listActiveUsers()
+            );
+            $zoneId = (int)$row['zone_id'];
+            $requesterId = $row['requester_id'] === null ? null : (int)$row['requester_id'];
+            $checked["$zoneId:$requesterId"] ??= $this->changeApproval()->hasReviewerOtherThan($userIds, $zoneId, $requesterId);
+            $row['no_other_reviewer'] = !$checked["$zoneId:$requesterId"];
+        }
+
+        return $rows;
     }
 
     /**

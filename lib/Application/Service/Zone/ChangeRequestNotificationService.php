@@ -334,8 +334,16 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
 
     private function findReviewers(int $zoneId, int $requesterId): array
     {
+        return $this->filterReviewers($this->recipients->listNotifiableUsers(), $zoneId, $requesterId);
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $users
+     */
+    private function filterReviewers(array $users, int $zoneId, int $requesterId): array
+    {
         $reviewers = [];
-        foreach ($this->recipients->listNotifiableUsers() as $user) {
+        foreach ($users as $user) {
             $userId = (int)$user['id'];
             if ($userId === $requesterId) {
                 continue;

@@ -152,6 +152,19 @@ class ChangeApprovalContextTest extends TestCase
         $this->assertSame([4, 9], $this->context($this->config(true), $permissions, $zones)->reviewScope(self::USER_ID));
     }
 
+    public function testADeletedRequesterExcludesNobody(): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('getChangeApprovePermissionLevel')->willReturn('all');
+        $permissions->method('getEditPermissionLevel')->willReturn('all');
+
+        $context = $this->context($this->config(true), $permissions);
+
+        $this->assertTrue($context->hasReviewerOtherThan([4], self::ZONE_ID, null));
+        $this->assertFalse($context->hasReviewerOtherThan([4], self::ZONE_ID, 4));
+        $this->assertFalse($context->hasReviewerOtherThan([], self::ZONE_ID, null));
+    }
+
     public function testAnEmptyZoneListIsAnsweredWithoutReadingRequests(): void
     {
         $context = $this->context($this->config(true), requests: $this->untouchedRequests());

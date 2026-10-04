@@ -26,6 +26,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
 use Poweradmin\Application\Service\Zone\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\Mail\EmailTemplateService;
 use Poweradmin\Application\Service\Mail\MailService;
@@ -33,6 +34,8 @@ use Poweradmin\Application\Service\Web\UrlService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Infrastructure\Utility\ProtocolDetector;
@@ -205,6 +208,26 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
         $this->assertStringContainsString('Please add the MX record', $first['text']);
         $this->assertSame(['Reply-To' => 'rita@example.com'], $first['headers']);
         $this->assertStringContainsString('Record changes', $first['text']);
+    }
+
+    /** The reviewer check behind the list badge follows the same rule as the mail's recipients. */
+    public function testReviewerExistenceMatchesWhoIsMailedIncludingAnApproverWithoutAnEmail(): void
+    {
+        $permissions = $this->defaultPermissions();
+        $context = new ChangeApprovalContext(
+            new FakeConfiguration(['approval' => ['enabled' => true]]),
+            fn(): PermissionService => $permissions,
+            fn() => $this->createMock(ZoneOwnershipRepositoryInterface::class),
+            fn() => $this->createMock(ZoneChangeRequestRepositoryInterface::class)
+        );
+        $active = array_map(static fn(array $user): int => (int)$user['id'], $this->recipients()->listActiveUsers());
+        $has = static fn(array $ids): bool => $context->hasReviewerOtherThan($ids, self::ZONE_ID, self::REQUESTER_ID);
+
+        $this->assertNotContains(self::INACTIVE_APPROVER_ID, $active);
+        $this->assertTrue($has($active));
+        $this->assertTrue($has([self::APPROVER_WITHOUT_EMAIL_ID]));
+        $this->assertFalse($has([self::REQUESTER_ID]));
+        $this->assertFalse($has([self::EDITOR_WITHOUT_APPROVE_ID, self::OTHER_ZONE_OWNER_APPROVER_ID]));
     }
 
     public function testTheSoaContactIsMailedOnlyWhenSwitchedOn(): void

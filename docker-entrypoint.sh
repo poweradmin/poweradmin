@@ -969,6 +969,8 @@ generate_config() {
     approval_enabled=$(to_php_bool "${PA_APPROVAL_ENABLED:-false}")
     local approval_require_review_for_all
     approval_require_review_for_all=$(to_php_bool "${PA_APPROVAL_REQUIRE_REVIEW_FOR_ALL:-false}")
+    local approval_allow_self_approval
+    approval_allow_self_approval=$(to_php_bool "${PA_APPROVAL_ALLOW_SELF_APPROVAL:-true}")
 
     # Convert user agreement boolean values to lowercase
     local user_agreement_enabled
@@ -1352,6 +1354,7 @@ return [
     'approval' => [
         'enabled' => ${approval_enabled},
         'require_review_for_all' => ${approval_require_review_for_all},
+        'allow_self_approval' => ${approval_allow_self_approval},
     ],
     'interface' => [
         'title' => $(php_sq "${PA_APP_TITLE:-Poweradmin}"),
