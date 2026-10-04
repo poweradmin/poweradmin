@@ -476,7 +476,7 @@
                 </table>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     {{ pagination | raw }}
                 </div>
@@ -1065,7 +1065,7 @@
     function updateDeleteButtonState(buttonId, checkboxes) {
         const button = document.getElementById(buttonId);
         if (!button) return;
-        
+
         let hasChecked = false;
         for (let i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
@@ -1073,10 +1073,10 @@
                 break;
             }
         }
-        
+
         button.disabled = !hasChecked;
     }
-    
+
     function updateEditButtonState(checkboxes) {
         const editButton = document.getElementById('edit-selected-record');
         if (!editButton) return;
