@@ -1484,6 +1484,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Console\\CommandInterface' => __DIR__ . '/../..' . '/lib/Application/Console/CommandInterface.php',
         'Poweradmin\\Application\\Console\\CommandLineActor' => __DIR__ . '/../..' . '/lib/Application/Console/CommandLineActor.php',
         'Poweradmin\\Application\\Console\\CommandRegistry' => __DIR__ . '/../..' . '/lib/Application/Console/CommandRegistry.php',
+        'Poweradmin\\Application\\Console\\Command\\ApiKeyCreateCommand' => __DIR__ . '/../..' . '/lib/Application/Console/Command/ApiKeyCreateCommand.php',
         'Poweradmin\\Application\\Console\\Command\\ZoneListCommand' => __DIR__ . '/../..' . '/lib/Application/Console/Command/ZoneListCommand.php',
         'Poweradmin\\Application\\Console\\Command\\ZoneShowCommand' => __DIR__ . '/../..' . '/lib/Application/Console/Command/ZoneShowCommand.php',
         'Poweradmin\\Application\\Console\\ConsoleApplication' => __DIR__ . '/../..' . '/lib/Application/Console/ConsoleApplication.php',

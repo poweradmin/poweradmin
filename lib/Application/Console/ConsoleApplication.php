@@ -44,6 +44,8 @@ final class ConsoleApplication
     /** How each command-level option is spelled in the usage text */
     private const OPTION_USAGE = [
         'user' => '--user=<id>',
+        'name' => '--name=<label>',
+        'expires' => '--expires=<date>',
         TableWriter::OPTION => '--' . TableWriter::OPTION . '=tsv|json',
     ];
 
@@ -89,8 +91,11 @@ final class ConsoleApplication
             if ($unknown !== []) {
                 throw new InvalidArgumentException(sprintf('Unknown option "--%s" for %s', $unknown[0], $command));
             }
-            // --user is the command-level spelling of the global --as-user
+            // --user is the command-level spelling of the global --as-user; two different ids are refused
             $userId = $arguments->positiveInt('as-user') ?? $arguments->positiveInt('user');
+            if ($arguments->has('as-user') && $arguments->has('user') && $arguments->positiveInt('user') !== $userId) {
+                throw new InvalidArgumentException('Options --as-user and --user name different users');
+            }
         } catch (InvalidArgumentException $e) {
             return $this->usageError($e->getMessage());
         }
@@ -104,6 +109,10 @@ final class ConsoleApplication
                 $user = $services->userRepository()->getUserById($userId);
                 if ($user === null) {
                     return $this->usageError(sprintf('User %d does not exist', $userId));
+                }
+                // The web login refuses deactivated accounts, so the command line does too
+                if (empty($user['active'])) {
+                    return $this->usageError(sprintf('User %d is inactive', $userId));
                 }
                 $services->bindActor(new CommandLineActor($userId, (string) $user['username']));
             }
@@ -140,6 +149,7 @@ final class ConsoleApplication
 
             Options:
               --as-user=<id>      Act as this Poweradmin user; without it nobody is acting and nothing is visible
+              --user=<id>         Same as --as-user; for api-keys:create the user who will own the key
               --format=tsv|json   Tabular output as tab-separated lines (default) or a JSON list
               --help, -h          Show this help
 

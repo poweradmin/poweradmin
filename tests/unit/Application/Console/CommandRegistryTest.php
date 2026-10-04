@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Console\Arguments;
+use Poweradmin\Application\Console\Command\ApiKeyCreateCommand;
 use Poweradmin\Application\Console\Command\ZoneListCommand;
 use Poweradmin\Application\Console\Command\ZoneShowCommand;
 use Poweradmin\Application\Console\CommandInterface;
@@ -59,7 +60,7 @@ class CommandRegistryTest extends TestCase
     {
         $registry = CommandRegistry::default();
 
-        $this->assertSame([ZoneListCommand::NAME, ZoneShowCommand::NAME], $registry->names());
+        $this->assertSame([ZoneListCommand::NAME, ZoneShowCommand::NAME, ApiKeyCreateCommand::NAME], $registry->names());
         $this->assertTrue($registry->has(ZoneShowCommand::NAME));
         $this->assertFalse($registry->has('zone:delete'));
         $this->assertSame(ZoneShowCommand::options(), $registry->options(ZoneShowCommand::NAME));

@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Console;
 
 use Closure;
 use InvalidArgumentException;
+use Poweradmin\Application\Console\Command\ApiKeyCreateCommand;
 use Poweradmin\Application\Console\Command\ZoneListCommand;
 use Poweradmin\Application\Console\Command\ZoneShowCommand;
 use Poweradmin\Application\Service\ControllerServiceFactory;
@@ -63,6 +64,10 @@ final class CommandRegistry
                 $services->permissionService(),
                 $services->repositoryFactory()->createDomainRepository(),
                 $services->repositoryFactory()->createRecordRepository()
+            ),
+            ApiKeyCreateCommand::class => static fn(ControllerServiceFactory $services): CommandInterface => new ApiKeyCreateCommand(
+                $services->apiKeyService(),
+                $services->auditService()
             ),
         ]);
     }

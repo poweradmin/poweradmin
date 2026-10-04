@@ -1074,6 +1074,7 @@ return array(
     'Poweradmin\\Application\\Console\\CommandInterface' => $baseDir . '/lib/Application/Console/CommandInterface.php',
     'Poweradmin\\Application\\Console\\CommandLineActor' => $baseDir . '/lib/Application/Console/CommandLineActor.php',
     'Poweradmin\\Application\\Console\\CommandRegistry' => $baseDir . '/lib/Application/Console/CommandRegistry.php',
+    'Poweradmin\\Application\\Console\\Command\\ApiKeyCreateCommand' => $baseDir . '/lib/Application/Console/Command/ApiKeyCreateCommand.php',
     'Poweradmin\\Application\\Console\\Command\\ZoneListCommand' => $baseDir . '/lib/Application/Console/Command/ZoneListCommand.php',
     'Poweradmin\\Application\\Console\\Command\\ZoneShowCommand' => $baseDir . '/lib/Application/Console/Command/ZoneShowCommand.php',
     'Poweradmin\\Application\\Console\\ConsoleApplication' => $baseDir . '/lib/Application/Console/ConsoleApplication.php',

@@ -26,6 +26,7 @@
  *
  *   bin/poweradmin --as-user=1 zone:list
  *   bin/poweradmin --as-user=1 zone:show example.com --format=json
+ *   bin/poweradmin api-keys:create --user=1 --name=deploy --expires=2027-01-31
  */
 
 declare(strict_types=1);
