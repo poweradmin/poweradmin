@@ -12,6 +12,7 @@ use OpenApi\GeneratorAwareInterface;
 use OpenApi\GeneratorAwareTrait;
 use OpenApi\OpenApiException;
 use OpenApi\Undefined;
+use OpenApi\Utils\ServerVariableEnum;
 
 /**
  * Expands PHP enums.
@@ -67,7 +68,9 @@ class ExpandEnums implements GeneratorAwareInterface
 
         foreach ($schemas as $schema) {
             if ($schema->_context->is('enum')) {
-                $re = new \ReflectionEnum($schema->_context->fullyQualifiedName($schema->_context->enum) ?? '');
+                /** @var class-string<\UnitEnum> $enumName the 'enum' context key is the guarantee */
+                $enumName = $schema->_context->fullyQualifiedName($schema->_context->enum) ?? '';
+                $re = new \ReflectionEnum($enumName);
                 $schema->schema = Undefined::isDefault($schema->schema) ? $re->getShortName() : $schema->schema;
 
                 $schemaType = $schema->type;
@@ -79,7 +82,7 @@ class ExpandEnums implements GeneratorAwareInterface
                 // no (or invalid) schema type means name
                 $useName = Undefined::isDefault($schemaType) || ($enumType && $this->generator->getTypeResolver()->native2spec($enumType) != $schemaType);
 
-                $schema->enum = array_map(static fn (\ReflectionEnumUnitCase $case): int|string => ($useName || !($case instanceof \ReflectionEnumBackedCase)) ? $case->name : $case->getBackingValue(), $re->getCases());
+                $schema->enum = array_values(array_map(static fn (\ReflectionEnumUnitCase $case): int|string => ($useName || !($case instanceof \ReflectionEnumBackedCase)) ? $case->name : $case->getBackingValue(), $re->getCases()));
 
                 if ($this->enumNames !== null && !$useName) {
                     $schemaX = Undefined::isDefault($schema->x) ? [] : $schema->x;
@@ -132,7 +135,22 @@ class ExpandEnums implements GeneratorAwareInterface
 
             $enums = [];
             foreach ($cases as $enum) {
-                $enums[] = is_a($enum, \UnitEnum::class) ? $enum->value ?? $enum->name : $enum;
+                $enums[] = $enum instanceof \UnitEnum ? ($enum instanceof \BackedEnum ? $enum->value : $enum->name) : $enum;
+            }
+
+            // A Schema enum may hold any JSON value; a ServerVariable enum may not. Only the
+            // latter narrows, which is why this sits here rather than in the loop above.
+            if ($schema instanceof OA\ServerVariable) {
+                $enums = ServerVariableEnum::asStrings($enums, $schema->_context->logger, Undefined::isDefault($schema->serverVariable) ? null : $schema->serverVariable);
+
+                if ([] === $enums) {
+                    // The spec says the array MUST NOT be empty, so an enum that normalised
+                    // away is dropped rather than emitted empty. The spec compilers filter `[]`
+                    // out on their own; this is classic catching up with them.
+                    $schema->enum = Undefined::UNDEFINED;
+
+                    continue;
+                }
             }
 
             $schema->enum = $enums;

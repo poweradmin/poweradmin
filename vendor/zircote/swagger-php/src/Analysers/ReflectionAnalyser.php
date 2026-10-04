@@ -12,6 +12,7 @@ use OpenApi\Context;
 use OpenApi\Generator;
 use OpenApi\GeneratorAwareTrait;
 use OpenApi\OpenApiException;
+use OpenApi\Utils\ClassReflector;
 use OpenApi\Utils\TokenScanner;
 
 /**
@@ -20,6 +21,11 @@ use OpenApi\Utils\TokenScanner;
  * Can read either PHP <code>DocBlock</code>s or <code>Attribute</code>s.
  *
  * Due to the nature of reflection, this requires all related classes to be auto-loadable.
+ *
+ * @phpstan-import-type ClassDefinition from Analysis
+ * @phpstan-import-type InterfaceDefinition from Analysis
+ * @phpstan-import-type TraitDefinition from Analysis
+ * @phpstan-import-type EnumDefinition from Analysis
  */
 class ReflectionAnalyser implements AnalyserInterface
 {
@@ -68,8 +74,12 @@ class ReflectionAnalyser implements AnalyserInterface
         return $analysis;
     }
 
+    /**
+     * @param class-string $fqdn
+     */
     public function fromFqdn(string $fqdn, Analysis $analysis): Analysis
     {
+        /** @var class-string $fqdn ltrim() does not change that */
         $fqdn = ltrim($fqdn, '\\');
 
         $rc = new \ReflectionClass($fqdn);
@@ -85,15 +95,35 @@ class ReflectionAnalyser implements AnalyserInterface
         return $analysis;
     }
 
+    /**
+     * @param array<string, mixed> $details
+     */
     protected function analyzeFqdn(string $fqdn, Analysis $analysis, array $details): Analysis
     {
-        if (!class_exists($fqdn) && !interface_exists($fqdn) && !trait_exists($fqdn) && (!function_exists('enum_exists') || !enum_exists($fqdn))) {
-            $analysis->context->logger->warning('Skipping unknown ' . $fqdn);
+        [$rc, $reason] = ClassReflector::tryReflect($fqdn);
+        if (!$rc instanceof \ReflectionClass) {
+            $analysis->context->logger->warning($reason === null
+                ? 'Skipping unknown ' . $fqdn
+                : "Skipping unloadable {$fqdn}: {$reason}");
 
             return $analysis;
         }
 
-        $rc = new \ReflectionClass($fqdn);
+        try {
+            return $this->buildDefinition($rc, $analysis, $details);
+        } catch (\Throwable $throwable) {
+            $analysis->context->logger->warning("Skipping unloadable {$fqdn}: {$throwable->getMessage()}");
+
+            return $analysis;
+        }
+    }
+
+    /**
+     * @param \ReflectionClass<object> $rc
+     * @param array<string, mixed>     $details
+     */
+    protected function buildDefinition(\ReflectionClass $rc, Analysis $analysis, array $details): Analysis
+    {
         $contextType = $rc->isInterface()
             ? 'interface'
             : ($rc->isTrait() ? 'trait' : ($rc->isEnum() ? 'enum' : 'class'));
@@ -179,8 +209,28 @@ class ReflectionAnalyser implements AnalyserInterface
             }
         }
 
-        $addDefinition = 'add' . ucfirst($contextType) . 'Definition';
-        $analysis->{$addDefinition}($definition);
+        switch ($contextType) {
+            case 'interface':
+                /** @var InterfaceDefinition $interfaceDefinition */
+                $interfaceDefinition = $definition;
+                $analysis->addInterfaceDefinition($interfaceDefinition);
+                break;
+            case 'trait':
+                /** @var TraitDefinition $traitDefinition */
+                $traitDefinition = $definition;
+                $analysis->addTraitDefinition($traitDefinition);
+                break;
+            case 'enum':
+                /** @var EnumDefinition $enumDefinition */
+                $enumDefinition = $definition;
+                $analysis->addEnumDefinition($enumDefinition);
+                break;
+            default:
+                /** @var ClassDefinition $classDefinition */
+                $classDefinition = $definition;
+                $analysis->addClassDefinition($classDefinition);
+                break;
+        }
 
         return $analysis;
     }

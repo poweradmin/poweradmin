@@ -186,6 +186,10 @@ final class IntlExtension extends AbstractExtension
     private $listFormatters = [];
     private $dateFormatterPrototype;
     private $numberFormatterPrototype;
+    /**
+     * @var array<string, string>
+     */
+    private array $prototypePatterns = [];
 
     public function __construct(?\IntlDateFormatter $dateFormatterPrototype = null, ?\NumberFormatter $numberFormatterPrototype = null)
     {
@@ -473,7 +477,7 @@ final class IntlExtension extends AbstractExtension
 
         if (null === $locale) {
             if ($this->dateFormatterPrototype) {
-                $locale = $this->dateFormatterPrototype->getLocale();
+                $locale = $this->prototypeLocale();
             }
             $locale = $locale ?: \Locale::getDefault();
         }
@@ -500,7 +504,7 @@ final class IntlExtension extends AbstractExtension
             // fall back to the prototype's pattern only when nothing else was given, else it would override the explicit date/time formats;
             // a pattern describes a full datetime rendering, so it cannot be honored by format_date/format_time, which pass 'none' for the other part
             if ('' === $pattern && null === $dateFormat && null === $timeFormat) {
-                $pattern = $this->dateFormatterPrototype->getPattern();
+                $pattern = $this->prototypePattern();
             }
         }
 
@@ -525,6 +529,57 @@ final class IntlExtension extends AbstractExtension
         }
 
         return $this->dateFormatters[$hash];
+    }
+
+    /**
+     * ICU reports "root" for a prototype with no date and no time style, whatever its pattern, and rejects
+     * it as an input locale, so the configured locale is recovered from the calendar ICU opened for it.
+     */
+    private function prototypeLocale(): ?string
+    {
+        $locale = $this->dateFormatterPrototype->getLocale();
+        if (\is_string($locale) && '' !== $locale && 'root' !== $locale) {
+            return $locale;
+        }
+
+        $calendar = $this->dateFormatterPrototype->getCalendarObject();
+        $locale = $calendar ? $calendar->getLocale(\Locale::VALID_LOCALE) : false;
+
+        return \is_string($locale) && '' !== $locale && 'root' !== $locale ? $locale : null;
+    }
+
+    /**
+     * ICU derives a pattern from the locale and the date/time types when none was configured;
+     * a pattern configured to the very value ICU derives is indistinguishable from a derived one.
+     */
+    private function prototypePattern(): string
+    {
+        $pattern = $this->dateFormatterPrototype->getPattern();
+        if (!\is_string($pattern) || '' === $pattern) {
+            return '';
+        }
+
+        return $this->prototypePatterns[$pattern] ??= $pattern === $this->derivedPrototypePattern() ? '' : $pattern;
+    }
+
+    private function derivedPrototypePattern(): ?string
+    {
+        $dateType = $this->dateFormatterPrototype->getDateType();
+        $timeType = $this->dateFormatterPrototype->getTimeType();
+        if (false === $dateType || false === $timeType) {
+            return null;
+        }
+
+        $locale = $this->prototypeLocale() ?: \Locale::getDefault();
+        $calendar = $this->dateFormatterPrototype->getCalendarObject();
+        // ICU derives the pattern from the calendar keyword it adds to the locale, which it does not do for a calendar object
+        if ($calendar && \is_int($this->dateFormatterPrototype->getCalendar())) {
+            $locale .= '@calendar='.$calendar->getType();
+        }
+
+        $pattern = (new \IntlDateFormatter($locale, $dateType, $timeType))->getPattern();
+
+        return \is_string($pattern) ? $pattern : null;
     }
 
     private function createNumberFormatter(?string $locale, string $style, array $attrs = []): \NumberFormatter
