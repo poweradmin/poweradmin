@@ -14622,9 +14622,9 @@ msgstr "Cache-missers"
 msgid "Toggle View"
 msgstr "Weergave Omschakelen"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Vernieuwen"
+msgstr "Verversing"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16275,3 +16275,7 @@ msgstr "Verlooptijd"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimale TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Vernieuwen"

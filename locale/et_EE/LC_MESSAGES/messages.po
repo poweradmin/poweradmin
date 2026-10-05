@@ -14148,9 +14148,9 @@ msgstr "Vahemälu vahelejätmised"
 msgid "Toggle View"
 msgstr "Vaheta vaadet"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Värskenda"
+msgstr "Värskendus"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -15770,3 +15770,7 @@ msgstr "Aegumine"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimaalne TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Värskenda"

@@ -14842,9 +14842,9 @@ msgstr "Caillteanais Taisce"
 msgid "Toggle View"
 msgstr "Scoránaigh an tAmharc"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Athnuaigh"
+msgstr "Athnuachan"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16511,3 +16511,7 @@ msgstr "Dul in éag"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "TTL íosta"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Athnuaigh"

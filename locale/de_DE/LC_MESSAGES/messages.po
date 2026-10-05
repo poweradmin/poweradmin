@@ -14772,9 +14772,9 @@ msgstr "Cache-Fehlversuche"
 msgid "Toggle View"
 msgstr "Ansicht umschalten"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Aktualisieren"
+msgstr "Aktualisierung"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16443,3 +16443,7 @@ msgstr "Ablauf"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimale TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Aktualisieren"

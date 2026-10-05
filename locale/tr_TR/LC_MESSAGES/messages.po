@@ -14477,9 +14477,9 @@ msgstr "Cache Kayıpları"
 msgid "Toggle View"
 msgstr "Görünümü Değiştir"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Yenile"
+msgstr "Yenileme"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16114,3 +16114,7 @@ msgstr "Sona erme"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "En düşük TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Yenile"

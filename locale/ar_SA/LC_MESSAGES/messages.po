@@ -14188,7 +14188,7 @@ msgstr "إخفاقات الذاكرة المؤقتة"
 msgid "Toggle View"
 msgstr "تبديل العرض"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "تحديث"
 
@@ -15795,3 +15795,7 @@ msgstr "الانتهاء"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "الحد الأدنى لـ TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "تحديث"

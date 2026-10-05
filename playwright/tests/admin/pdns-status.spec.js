@@ -47,9 +47,9 @@ test.describe('PowerDNS Status Page', () => {
       // PowerDNS version, or API warning
       expect(lower.includes('version') || lower.includes('api') || lower.includes('powerdns')).toBeTruthy();
 
-      // Refresh button (server running) or API-not-configured warning
-      const hasRefreshBtn = await page.locator('button:has-text("Refresh"), button[type="submit"]:has-text("Refresh")').count() > 0;
-      expect(hasRefreshBtn || (lower.includes('api') && lower.includes('not configured')) || onStatusPage).toBeTruthy();
+      // Reload button (server running) or API-not-configured warning
+      const hasReloadBtn = await page.locator('button:has-text("Reload"), button[type="submit"]:has-text("Reload")').count() > 0;
+      expect(hasReloadBtn || (lower.includes('api') && lower.includes('not configured')) || onStatusPage).toBeTruthy();
 
       // CSRF token in refresh form
       const hasToken = await page.locator('input[name="_token"]').count() > 0;

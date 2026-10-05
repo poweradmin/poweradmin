@@ -14094,9 +14094,9 @@ msgstr "Promašaji keša"
 msgid "Toggle View"
 msgstr "Prebaci prikaz"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Osvježi"
+msgstr "Osvježavanje"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -15723,3 +15723,7 @@ msgstr "Istek"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimalni TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Osvježi"

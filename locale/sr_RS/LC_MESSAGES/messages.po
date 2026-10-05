@@ -14242,9 +14242,9 @@ msgstr "Промашаји кеша"
 msgid "Toggle View"
 msgstr "Промени приказ"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Освежи"
+msgstr "Освежавање"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -15873,3 +15873,7 @@ msgstr "Истек"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Минимални TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Освежи"

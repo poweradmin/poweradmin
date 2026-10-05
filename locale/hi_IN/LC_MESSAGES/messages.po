@@ -14199,9 +14199,9 @@ msgstr "कैश मिस"
 msgid "Toggle View"
 msgstr "दृश्य बदलें"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "ताज़ा करें"
+msgstr "रीफ़्रेश"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -15806,3 +15806,7 @@ msgstr "समाप्ति"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "न्यूनतम TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "ताज़ा करें"

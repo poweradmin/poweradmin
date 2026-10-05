@@ -14470,9 +14470,9 @@ msgstr "Cache-forbiere"
 msgid "Toggle View"
 msgstr "Slå visning til og fra"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Genopfrisk"
+msgstr "Opdatering"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16100,3 +16100,7 @@ msgstr "Udløb"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimum TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Genopfrisk"

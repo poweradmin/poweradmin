@@ -14938,7 +14938,7 @@ msgstr "Αστοχίες λανθάνουσας μνήμης"
 msgid "Toggle View"
 msgstr "Εναλλαγή προβολής"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "Ανανέωση"
 
@@ -16620,3 +16620,7 @@ msgstr "Λήξη"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Ελάχιστο TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Ανανέωση"

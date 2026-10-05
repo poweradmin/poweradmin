@@ -12977,7 +12977,7 @@ msgstr ""
 msgid "Toggle View"
 msgstr ""
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr ""
 
@@ -14435,4 +14435,8 @@ msgstr ""
 
 #: templates/default/_macros.html
 msgid "Minimum TTL"
+msgstr ""
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
 msgstr ""

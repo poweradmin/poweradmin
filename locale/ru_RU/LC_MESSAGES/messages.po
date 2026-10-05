@@ -14608,9 +14608,9 @@ msgstr "Промахи кэша"
 msgid "Toggle View"
 msgstr "Переключить вид"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Обновить"
+msgstr "Обновление"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16239,3 +16239,7 @@ msgstr "Истечение"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Минимальный TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Обновить"

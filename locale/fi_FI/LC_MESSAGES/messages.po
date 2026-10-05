@@ -14252,9 +14252,9 @@ msgstr "Välimuistivirheet"
 msgid "Toggle View"
 msgstr "Vaihda näkymää"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Päivitä"
+msgstr "Päivitys"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -15881,3 +15881,7 @@ msgstr "Vanheneminen"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Vähimmäis-TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Päivitä"

@@ -14427,9 +14427,9 @@ msgstr "キャッシュミス"
 msgid "Toggle View"
 msgstr "表示切り替え"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "更新"
+msgstr "リフレッシュ"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16067,3 +16067,7 @@ msgstr "有効期限"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "最小TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "更新"

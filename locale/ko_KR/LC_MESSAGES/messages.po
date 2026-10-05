@@ -14241,7 +14241,7 @@ msgstr "캐시 미스"
 msgid "Toggle View"
 msgstr "보기 전환"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "새로 고침"
 
@@ -15857,3 +15857,7 @@ msgstr "만료"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "최소 TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "새로 고침"

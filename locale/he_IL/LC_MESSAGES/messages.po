@@ -14029,7 +14029,7 @@ msgstr "החטאות מטמון"
 msgid "Toggle View"
 msgstr "החלפת תצוגה"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "רענון"
 
@@ -15622,3 +15622,7 @@ msgstr "תפוגה"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "TTL מינימלי"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "רענון"

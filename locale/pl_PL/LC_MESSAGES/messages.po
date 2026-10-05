@@ -14596,9 +14596,9 @@ msgstr "Chybienia cache"
 msgid "Toggle View"
 msgstr "Przełącz widok"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Odśwież"
+msgstr "Odświeżanie"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16236,3 +16236,7 @@ msgstr "Wygaśnięcie"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimalny TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Odśwież"

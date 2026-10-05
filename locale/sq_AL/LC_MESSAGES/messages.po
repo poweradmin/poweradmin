@@ -14748,9 +14748,9 @@ msgstr "Humbje Cache"
 msgid "Toggle View"
 msgstr "Ndrysho pamjen"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Rifresko"
+msgstr "Rifreskim"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16407,3 +16407,7 @@ msgstr "Skadim"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "TTL minimal"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Rifresko"

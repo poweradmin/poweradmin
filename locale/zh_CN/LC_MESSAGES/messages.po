@@ -13464,7 +13464,7 @@ msgstr "缓存未命中"
 msgid "Toggle View"
 msgstr "切换视图"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "刷新"
 
@@ -15025,3 +15025,7 @@ msgstr "过期"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "最小 TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "刷新"

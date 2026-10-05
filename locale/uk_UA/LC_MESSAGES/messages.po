@@ -14545,9 +14545,9 @@ msgstr "Промахи кешу"
 msgid "Toggle View"
 msgstr "Перемкнути вигляд"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Оновити"
+msgstr "Оновлення"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16179,3 +16179,7 @@ msgstr "Закінчення терміну"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Мінімальний TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Оновити"

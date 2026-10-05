@@ -14322,7 +14322,7 @@ msgstr "عدم اصابت کش"
 msgid "Toggle View"
 msgstr "تغییر نما"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "به‌روزرسانی"
 
@@ -15953,3 +15953,7 @@ msgstr "انقضا"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "حداقل TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "به‌روزرسانی"

@@ -14494,9 +14494,9 @@ msgstr "Talpyklos praskojimai"
 msgid "Toggle View"
 msgstr "Perjungti vaizdą"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Atnaujinti"
+msgstr "Atnaujinimas"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16135,3 +16135,7 @@ msgstr "Galiojimo pabaiga"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimalus TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Atnaujinti"

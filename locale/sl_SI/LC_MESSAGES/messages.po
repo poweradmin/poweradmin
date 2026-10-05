@@ -14492,9 +14492,9 @@ msgstr "Zgrešitve predpomnilnika"
 msgid "Toggle View"
 msgstr "Preklopi prikaz"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Osveži"
+msgstr "Osvežitev"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16131,3 +16131,7 @@ msgstr "Potek"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Najmanjši TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Osveži"

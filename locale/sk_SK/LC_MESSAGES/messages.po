@@ -14366,9 +14366,9 @@ msgstr "Výpadky cache"
 msgid "Toggle View"
 msgstr "Prepnúť zobrazenie"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Obnoviť"
+msgstr "Obnovenie"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16001,3 +16001,7 @@ msgstr "Vypršanie"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimálne TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Obnoviť"

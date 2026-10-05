@@ -14370,7 +14370,7 @@ msgstr "Lượt trượt bộ nhớ đệm"
 msgid "Toggle View"
 msgstr "Chuyển đổi chế độ xem"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "Làm mới"
 
@@ -15999,3 +15999,7 @@ msgstr "Hết hạn"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "TTL tối thiểu"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Làm mới"

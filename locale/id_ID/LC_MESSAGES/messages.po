@@ -14585,9 +14585,9 @@ msgstr "Cache Miss"
 msgid "Toggle View"
 msgstr "Toggle Tampilan"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Perbarui"
+msgstr "Pembaruan"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16224,3 +16224,7 @@ msgstr "Kedaluwarsa"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "TTL minimum"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Perbarui"

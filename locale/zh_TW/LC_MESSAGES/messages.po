@@ -13480,7 +13480,7 @@ msgstr "快取未命中"
 msgid "Toggle View"
 msgstr "切換檢視"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "重新整理"
 
@@ -15042,3 +15042,7 @@ msgstr "過期"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "最小 TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "重新整理"

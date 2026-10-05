@@ -14601,7 +14601,7 @@ msgstr "Gyorsítótár hibák"
 msgid "Toggle View"
 msgstr "Nézet váltása"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "Frissítés"
 
@@ -16257,3 +16257,7 @@ msgstr "Lejárat"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimális TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Frissítés"

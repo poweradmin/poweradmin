@@ -14724,9 +14724,9 @@ msgstr "Miss Cache"
 msgid "Toggle View"
 msgstr "Cambia Vista"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "Aggiorna"
+msgstr "Aggiornamento"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -16384,3 +16384,7 @@ msgstr "Scadenza"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "TTL minimo"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Aggiorna"

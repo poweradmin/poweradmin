@@ -14651,7 +14651,7 @@ msgstr "Пропуски в кеша"
 msgid "Toggle View"
 msgstr "Превключване на изглед"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "Обновяване"
 
@@ -16311,3 +16311,7 @@ msgstr "Изтичане"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Минимален TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Обновяване"

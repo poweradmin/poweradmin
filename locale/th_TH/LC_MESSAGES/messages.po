@@ -13780,9 +13780,9 @@ msgstr "มิสแคช"
 msgid "Toggle View"
 msgstr "เปิด/ ปิดมุมมอง"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
-msgstr "ปรับปรุงใหม่"
+msgstr "การรีเฟรช"
 
 #: templates/modern/pdns_status.html:428
 msgid "Bytes"
@@ -15357,3 +15357,7 @@ msgstr "หมดอายุ"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "TTL ขั้นต่ำ"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "ปรับปรุงใหม่"

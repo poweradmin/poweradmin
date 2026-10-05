@@ -14368,7 +14368,7 @@ msgstr "Cache Misses"
 msgid "Toggle View"
 msgstr "Toggle View"
 
-#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+#: templates/default/_macros.html
 msgid "Refresh"
 msgstr "Refresh"
 
@@ -15996,3 +15996,7 @@ msgstr "Expire"
 #: templates/default/_macros.html
 msgid "Minimum TTL"
 msgstr "Minimum TTL"
+
+#: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
+msgid "Reload"
+msgstr "Reload"
