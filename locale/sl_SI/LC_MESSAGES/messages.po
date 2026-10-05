@@ -16135,3 +16135,51 @@ msgstr "Najmanjši TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Osveži"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Avtoriteta cone"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Časovniki"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Uporabi privzete vrednosti"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Uredite polja SOA spodaj"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "E-poštni naslov ali oblika DNS, npr. hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Upravljano samodejno"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Kako pogosto sekundarni strežniki preverjajo spremembe na primarnem"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Čakanje, preden sekundarni strežnik po neuspeli osvežitvi poskusi znova"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Kdaj sekundarni strežnik preneha odgovarjati, če ne doseže primarnega"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Kako dolgo razreševalniki hranijo negativni odgovor (NXDOMAIN) v predpomnilniku"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Uredi kot besedilo"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Uredi kot polja"

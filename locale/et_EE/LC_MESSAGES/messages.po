@@ -15774,3 +15774,51 @@ msgstr "Minimaalne TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Värskenda"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Tsooni autoriteet"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Taimerid"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Kasuta vaikeväärtusi"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Muutke allolevaid SOA välju"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "E-posti aadress või DNS-kuju, nt hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Hallatakse automaatselt"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Kui sageli teisesed serverid kontrollivad esmaselt serverilt muudatusi"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Ootamine enne teisese serveri uut katset pärast ebaõnnestunud värskendust"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Millal teisene server lõpetab vastamise, kui ta ei saa esmast serverit kätte"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Kui kaua lahendajad hoiavad negatiivset vastust (NXDOMAIN) vahemälus"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Muuda tekstina"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Muuda väljadena"

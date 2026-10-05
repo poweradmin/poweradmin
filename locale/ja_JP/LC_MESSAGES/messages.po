@@ -16071,3 +16071,51 @@ msgstr "最小TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "更新"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "ゾーンの権威"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "タイマー"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "デフォルトを使用"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "以下の SOA フィールドを編集してください"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "メールアドレスまたは DNS 形式、例：hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "自動的に管理されます"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "セカンダリがプライマリの変更を確認する間隔"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "リフレッシュに失敗した後、セカンダリが再試行するまでの待ち時間"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "プライマリに到達できない場合にセカンダリが応答を停止するまでの時間"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "リゾルバーが否定応答 (NXDOMAIN) をキャッシュする期間"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "テキストとして編集"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "フィールドとして編集"

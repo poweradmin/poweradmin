@@ -16118,3 +16118,51 @@ msgstr "En düşük TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Yenile"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Bölge yetkisi"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Zamanlayıcılar"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Varsayılanları kullan"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Aşağıdaki SOA alanlarını düzenleyin"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "E-posta adresi veya DNS biçimi, örneğin hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Otomatik olarak yönetilir"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "İkincil sunucuların birincil sunucuyu değişiklikler için ne sıklıkla denetlediği"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Başarısız bir yenilemeden sonra ikincil sunucunun yeniden denemeden önce bekleme süresi"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "İkincil sunucunun birincil sunucuya ulaşamadığında yanıt vermeyi ne zaman bırakacağı"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Çözümleyicilerin olumsuz bir yanıtı (NXDOMAIN) ne kadar süre önbelleğe aldığı"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Metin olarak düzenle"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Alan olarak düzenle"

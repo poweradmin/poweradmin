@@ -16044,3 +16044,51 @@ msgstr "Minimální TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Obnovit"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Autorita zóny"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Časovače"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Použít výchozí"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Upravte pole SOA níže"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "E-mailová adresa nebo DNS forma, např. hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Spravováno automaticky"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Jak často sekundární servery kontrolují změny na primárním serveru"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Čekání, než sekundární server po neúspěšném obnovení zkusí znovu"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Kdy sekundární server přestane odpovídat, pokud je primární server nedostupný"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Jak dlouho resolvery uchovávají negativní odpověď (NXDOMAIN) v mezipaměti"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Upravit jako text"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Upravit jako pole"

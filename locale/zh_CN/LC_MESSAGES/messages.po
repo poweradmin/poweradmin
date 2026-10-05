@@ -15029,3 +15029,51 @@ msgstr "最小 TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "刷新"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "区域权威"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "计时器"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "使用默认值"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "编辑下方的 SOA 字段"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "电子邮件地址或 DNS 形式，例如 hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "自动管理"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "辅助服务器检查主服务器更改的频率"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "刷新失败后辅助服务器重试前的等待时间"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "辅助服务器无法连接主服务器时停止应答的时间"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "解析器缓存否定应答 (NXDOMAIN) 的时长"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "以文本编辑"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "以字段编辑"

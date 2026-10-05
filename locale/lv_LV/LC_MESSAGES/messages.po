@@ -15830,3 +15830,51 @@ msgstr "Minimālais TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Atsvaidzināt"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Zonas autoritāte"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Taimeri"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Izmantot noklusējumus"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Rediģējiet SOA laukus zemāk"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "E-pasta adrese vai DNS forma, piem., hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Tiek pārvaldīts automātiski"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Cik bieži sekundārie serveri pārbauda izmaiņas primārajā serverī"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Gaidīšana, pirms sekundārais serveris mēģina vēlreiz pēc neveiksmīgas atsvaidzināšanas"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Kad sekundārais serveris pārstāj atbildēt, ja nevar sasniegt primāro"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Cik ilgi risinātāji kešo negatīvu atbildi (NXDOMAIN)"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Rediģēt kā tekstu"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Rediģēt kā laukus"

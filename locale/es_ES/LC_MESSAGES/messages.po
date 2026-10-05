@@ -16399,3 +16399,51 @@ msgstr "TTL mínimo"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Actualizar"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Autoridad de la zona"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Temporizadores"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Usar valores predeterminados"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Edite los campos SOA a continuación"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "Dirección de correo o forma DNS, p. ej. hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Gestionado automáticamente"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Con qué frecuencia los secundarios consultan cambios en el primario"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Espera antes de que un secundario reintente tras una actualización fallida"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Cuándo un secundario deja de responder si no puede contactar al primario"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Cuánto tiempo los resolutores almacenan en caché una respuesta negativa (NXDOMAIN)"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Editar como texto"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Editar como campos"

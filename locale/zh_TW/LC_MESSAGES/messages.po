@@ -15046,3 +15046,51 @@ msgstr "最小 TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "重新整理"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "區域權威"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "計時器"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "使用預設值"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "編輯下方的 SOA 欄位"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "電子郵件地址或 DNS 形式，例如 hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "自動管理"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "次要伺服器檢查主要伺服器變更的頻率"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "重新整理失敗後次要伺服器重試前的等待時間"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "次要伺服器無法連線主要伺服器時停止回應的時間"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "解析器快取否定回應 (NXDOMAIN) 的時長"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "以文字編輯"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "以欄位編輯"

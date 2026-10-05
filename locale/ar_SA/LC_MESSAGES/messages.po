@@ -15799,3 +15799,51 @@ msgstr "الحد الأدنى لـ TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "تحديث"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "سلطة المنطقة"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "المؤقتات"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "استخدام الافتراضيات"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "عدّل حقول SOA أدناه"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "عنوان بريد إلكتروني أو صيغة DNS، مثل hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "يُدار تلقائياً"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "كم مرة تتحقق الخوادم الثانوية من الخادم الأساسي بحثاً عن تغييرات"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "مدة الانتظار قبل أن يعيد الخادم الثانوي المحاولة بعد فشل التحديث"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "متى يتوقف الخادم الثانوي عن الرد إذا تعذر الوصول إلى الخادم الأساسي"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "مدة احتفاظ المحللات بالرد السلبي (NXDOMAIN) في ذاكرة التخزين المؤقت"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "تعديل كنص"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "تعديل كحقول"

@@ -16199,3 +16199,51 @@ msgstr "TTL minimum"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Segarkan"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Autoriti zon"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Pemasa"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Guna nilai lalai"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Edit medan SOA di bawah"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "Alamat e-mel atau bentuk DNS, contohnya hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Diurus secara automatik"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Berapa kerap pelayan sekunder menyemak perubahan pada pelayan primer"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Masa menunggu sebelum pelayan sekunder mencuba semula selepas penyegaran gagal"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Bila pelayan sekunder berhenti menjawab jika tidak dapat menghubungi pelayan primer"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Berapa lama penyelesai menyimpan jawapan negatif (NXDOMAIN) dalam cache"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Edit sebagai teks"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Edit sebagai medan"

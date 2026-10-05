@@ -15810,3 +15810,51 @@ msgstr "न्यूनतम TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "ताज़ा करें"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "ज़ोन प्राधिकरण"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "टाइमर"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "डिफ़ॉल्ट उपयोग करें"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "नीचे SOA फ़ील्ड संपादित करें"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "ईमेल पता या DNS रूप, जैसे hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "स्वचालित रूप से प्रबंधित"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "माध्यमिक सर्वर प्राथमिक सर्वर पर परिवर्तन कितनी बार जाँचते हैं"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "रीफ़्रेश विफल होने पर माध्यमिक सर्वर द्वारा पुनः प्रयास से पहले प्रतीक्षा"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "प्राथमिक सर्वर तक न पहुँच पाने पर माध्यमिक सर्वर कब उत्तर देना बंद करता है"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "रिज़ॉल्वर नकारात्मक उत्तर (NXDOMAIN) को कितने समय तक कैश करते हैं"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "टेक्स्ट के रूप में संपादित करें"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "फ़ील्ड के रूप में संपादित करें"

@@ -14440,3 +14440,51 @@ msgstr ""
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr ""
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr ""
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr ""

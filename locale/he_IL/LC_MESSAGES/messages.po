@@ -15626,3 +15626,51 @@ msgstr "TTL מינימלי"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "רענון"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "סמכות האזור"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "טיימרים"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "השתמש בברירות המחדל"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "ערוך את שדות ה-SOA למטה"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "כתובת דואר אלקטרוני או צורת DNS, לדוגמה hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "מנוהל אוטומטית"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "באיזו תדירות שרתים משניים בודקים שינויים בשרת הראשי"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "זמן המתנה לפני ששרת משני מנסה שוב לאחר רענון שנכשל"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "מתי שרת משני מפסיק לענות אם אינו מצליח להגיע לשרת הראשי"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "כמה זמן פותרים שומרים במטמון תשובה שלילית (NXDOMAIN)"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "ערוך כטקסט"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "ערוך כשדות"

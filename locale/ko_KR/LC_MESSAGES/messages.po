@@ -15861,3 +15861,51 @@ msgstr "최소 TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "새로 고침"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "존 권위"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "타이머"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "기본값 사용"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "아래 SOA 필드를 편집하세요"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "이메일 주소 또는 DNS 형식, 예: hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "자동으로 관리됩니다"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "보조 서버가 주 서버의 변경 사항을 확인하는 주기"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "새로 고침 실패 후 보조 서버가 재시도하기까지 대기하는 시간"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "주 서버에 연결할 수 없을 때 보조 서버가 응답을 중단하는 시점"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "리졸버가 부정 응답(NXDOMAIN)을 캐시하는 시간"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "텍스트로 편집"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "필드로 편집"

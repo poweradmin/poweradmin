@@ -15361,3 +15361,51 @@ msgstr "TTL ขั้นต่ำ"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "ปรับปรุงใหม่"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "อำนาจโซน"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "ตัวจับเวลา"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "ใช้ค่าปริยาย"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "แก้ไขฟิลด์ SOA ด้านล่าง"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "ที่อยู่อีเมลหรือรูปแบบ DNS เช่น hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "จัดการโดยอัตโนมัติ"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "ความถี่ที่เซิร์ฟเวอร์รองตรวจสอบการเปลี่ยนแปลงจากเซิร์ฟเวอร์หลัก"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "เวลารอก่อนที่เซิร์ฟเวอร์รองจะลองใหม่หลังรีเฟรชล้มเหลว"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "เวลาที่เซิร์ฟเวอร์รองจะหยุดตอบเมื่อไม่สามารถติดต่อเซิร์ฟเวอร์หลักได้"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "ระยะเวลาที่ตัวแก้ชื่อแคชคำตอบปฏิเสธ (NXDOMAIN)"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "แก้ไขเป็นข้อความ"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "แก้ไขเป็นฟิลด์"

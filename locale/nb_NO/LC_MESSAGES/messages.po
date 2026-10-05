@@ -16022,3 +16022,51 @@ msgstr "Minimum TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Oppdater"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Soneautoritet"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Timere"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Bruk standardverdier"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Rediger SOA-feltene nedenfor"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "E-postadresse eller DNS-form, f.eks. hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Administreres automatisk"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Hvor ofte sekundærservere sjekker primærserveren for endringer"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Ventetid før en sekundærserver prøver igjen etter en mislykket oppdatering"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Når en sekundærserver slutter å svare hvis den ikke når primærserveren"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Hvor lenge resolvere mellomlagrer et negativt svar (NXDOMAIN)"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Rediger som tekst"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Rediger som felt"

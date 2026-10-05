@@ -16003,3 +16003,51 @@ msgstr "TTL tối thiểu"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Làm mới"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Thẩm quyền vùng"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Bộ định thời"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Dùng giá trị mặc định"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Sửa các trường SOA bên dưới"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "Địa chỉ email hoặc dạng DNS, ví dụ: hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Được quản lý tự động"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Tần suất máy chủ phụ kiểm tra thay đổi từ máy chủ chính"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Thời gian chờ trước khi máy chủ phụ thử lại sau khi làm mới thất bại"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Thời điểm máy chủ phụ ngừng trả lời nếu không liên lạc được máy chủ chính"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Thời gian bộ phân giải lưu đệm câu trả lời phủ định (NXDOMAIN)"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Sửa dạng văn bản"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Sửa dạng trường"

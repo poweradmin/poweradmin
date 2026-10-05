@@ -16624,3 +16624,51 @@ msgstr "Ελάχιστο TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Ανανέωση"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Αρμοδιότητα ζώνης"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Χρονομετρητές"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Χρήση προκαθορισμένων"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Επεξεργαστείτε τα πεδία SOA παρακάτω"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "Διεύθυνση email ή μορφή DNS, π.χ. hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Αυτόματη διαχείριση"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Πόσο συχνά οι δευτερεύοντες διακομιστές ελέγχουν τον πρωτεύοντα για αλλαγές"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Αναμονή πριν ένας δευτερεύων ξαναπροσπαθήσει μετά από αποτυχημένη ανανέωση"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Πότε ένας δευτερεύων σταματά να απαντά αν δεν μπορεί να φτάσει τον πρωτεύοντα"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Πόσο καιρό οι επιλυτές διατηρούν στην προσωρινή μνήμη μια αρνητική απάντηση (NXDOMAIN)"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Επεξεργασία ως κείμενο"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Επεξεργασία ως πεδία"

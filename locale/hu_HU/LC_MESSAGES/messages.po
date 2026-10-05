@@ -16261,3 +16261,51 @@ msgstr "Minimális TTL"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Frissítés"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Zóna autoritása"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Időzítők"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Alapértelmezések használata"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Szerkessze az alábbi SOA mezőket"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "E-mail cím vagy DNS forma, például hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Automatikusan kezelve"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Milyen gyakran ellenőrzik a másodlagos kiszolgálók a változásokat az elsődlegesen"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Várakozás, mielőtt a másodlagos sikertelen frissítés után újrapróbálkozik"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Mikor hagyja abba a válaszolást a másodlagos, ha nem éri el az elsődlegest"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Meddig gyorsítótárazzák a feloldók a negatív választ (NXDOMAIN)"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Szerkesztés szövegként"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Szerkesztés mezőkként"

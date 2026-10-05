@@ -16515,3 +16515,51 @@ msgstr "TTL íosta"
 #: templates/default/pdns_status.html:323 templates/modern/pdns_status.html:323
 msgid "Reload"
 msgstr "Athnuaigh"
+
+#: templates/default/edit_record.html
+msgid "Zone authority"
+msgstr "Údarás an chreasa"
+
+#: templates/default/edit_record.html
+msgid "Timers"
+msgstr "Amadóirí"
+
+#: templates/default/edit_record.html
+msgid "Use defaults"
+msgstr "Úsáid réamhshocruithe"
+
+#: templates/default/edit_record.html
+msgid "Edit the SOA fields below"
+msgstr "Cuir na réimsí SOA thíos in eagar"
+
+#: templates/default/edit_record.html
+msgid "Email address or DNS form, e.g. hostmaster@example.com"
+msgstr "Seoladh ríomhphoist nó foirm DNS, m.sh. hostmaster@example.com"
+
+#: templates/default/edit_record.html
+msgid "Managed automatically"
+msgstr "Bainistithe go huathoibríoch"
+
+#: templates/default/edit_record.html
+msgid "How often secondaries check the primary for changes"
+msgstr "Cé chomh minic a sheiceálann na tánaisteacha an príomhfhreastalaí le haghaidh athruithe"
+
+#: templates/default/edit_record.html
+msgid "Wait before a secondary retries after a failed refresh"
+msgstr "Fanacht sula ndéanann tánaisteach iarracht eile tar éis athnuachan teipthe"
+
+#: templates/default/edit_record.html
+msgid "When a secondary stops answering if it cannot reach the primary"
+msgstr "Cathain a stopann tánaisteach ag freagairt mura féidir leis an príomhfhreastalaí a shroicheadh"
+
+#: templates/default/edit_record.html
+msgid "How long resolvers cache a negative answer (NXDOMAIN)"
+msgstr "Cé chomh fada a thaisceann réiteoirí freagra diúltach (NXDOMAIN)"
+
+#: templates/default/edit_record.html
+msgid "Edit as text"
+msgstr "Cuir in eagar mar théacs"
+
+#: templates/default/edit_record.html
+msgid "Edit as fields"
+msgstr "Cuir in eagar mar réimsí"
