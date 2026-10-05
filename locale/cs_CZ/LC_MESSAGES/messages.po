@@ -16028,3 +16028,15 @@ msgstr "Odesílání..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Tuto žádost jste podali vy, takže ji musí schválit jiný posuzovatel."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Opakování"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Vypršení"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimální TTL"

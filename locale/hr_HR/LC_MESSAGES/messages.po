@@ -15973,3 +15973,15 @@ msgstr "Slanje..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Vi ste podnijeli ovaj zahtjev, pa ga mora odobriti drugi recenzent."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Ponovni pokušaj"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Istek"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimalni TTL"

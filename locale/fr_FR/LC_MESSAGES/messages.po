@@ -16635,3 +16635,15 @@ msgstr "Envoi..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Vous avez déposé cette demande, un autre réviseur doit donc l'approuver."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Nouvelle tentative"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Expiration"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "TTL minimum"

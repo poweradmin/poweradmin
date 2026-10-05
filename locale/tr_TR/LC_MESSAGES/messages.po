@@ -16102,3 +16102,15 @@ msgstr "Gönderiliyor..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Bu isteği siz gönderdiniz, bu yüzden başka bir inceleyenin onaylaması gerekir."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Yeniden deneme"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Sona erme"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "En düşük TTL"

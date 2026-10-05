@@ -16559,3 +16559,15 @@ msgstr "Se trimite..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Ați depus această cerere, așadar trebuie să o aprobe un alt evaluator."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Reîncercare"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Expirare"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "TTL minim"

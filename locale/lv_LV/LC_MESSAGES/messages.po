@@ -15814,3 +15814,15 @@ msgstr "Sūta..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Šo pieprasījumu iesniedzāt jūs, tāpēc tas jāapstiprina citam izskatītājam."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Atkārtošana"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Derīguma beigas"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimālais TTL"

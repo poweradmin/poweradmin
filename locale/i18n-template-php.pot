@@ -14424,3 +14424,15 @@ msgstr ""
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr ""
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr ""
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr ""
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr ""

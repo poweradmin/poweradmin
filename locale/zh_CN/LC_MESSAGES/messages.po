@@ -15013,3 +15013,15 @@ msgstr "发送中..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "此请求由您提交，因此必须由其他审核者批准。"
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "重试"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "过期"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "最小 TTL"

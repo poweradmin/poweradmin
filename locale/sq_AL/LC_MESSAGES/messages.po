@@ -16395,3 +16395,15 @@ msgstr "Po dërgohet..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Këtë kërkesë e ke paraqitur ti, ndaj duhet ta miratojë një shqyrtues tjetër."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Riprovim"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Skadim"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "TTL minimal"

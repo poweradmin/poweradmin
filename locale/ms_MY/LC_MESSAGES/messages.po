@@ -16183,3 +16183,15 @@ msgstr "Menghantar..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Anda yang memfailkan permintaan ini, jadi penyemak lain mesti meluluskannya."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Percubaan semula"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Tamat tempoh"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "TTL minimum"

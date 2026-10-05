@@ -15758,3 +15758,15 @@ msgstr "Saatmine..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Esitasite selle taotluse ise, seega peab selle kinnitama teine läbivaataja."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Kordus"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Aegumine"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimaalne TTL"

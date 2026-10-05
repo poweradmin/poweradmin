@@ -16119,3 +16119,15 @@ msgstr "Pošiljanje..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "To zahtevo ste vložili vi, zato jo mora odobriti drug pregledovalec."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Ponovni poskus"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Potek"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Najmanjši TTL"

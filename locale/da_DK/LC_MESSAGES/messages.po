@@ -16088,3 +16088,15 @@ msgstr "Sender..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Du har indsendt denne anmodning, så en anden bedømmer skal godkende den."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Nyt forsøg"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Udløb"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimum TTL"

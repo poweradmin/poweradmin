@@ -16263,3 +16263,15 @@ msgstr "Verzenden..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "U heeft dit verzoek ingediend, dus een andere beoordelaar moet het goedkeuren."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Nieuwe poging"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Verlooptijd"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimale TTL"

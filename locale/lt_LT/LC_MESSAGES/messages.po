@@ -16123,3 +16123,15 @@ msgstr "Siunčiama..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Šią užklausą pateikėte jūs, todėl ją turi patvirtinti kitas peržiūrėtojas."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Pakartojimas"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Galiojimo pabaiga"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimalus TTL"

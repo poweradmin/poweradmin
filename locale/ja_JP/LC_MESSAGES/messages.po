@@ -16055,3 +16055,15 @@ msgstr "送信中..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "このリクエストはあなたが申請したため、別のレビュー担当者が承認する必要があります。"
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "リトライ"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "有効期限"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "最小TTL"

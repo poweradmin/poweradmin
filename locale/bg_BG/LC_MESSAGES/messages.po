@@ -16299,3 +16299,15 @@ msgstr "Изпращане..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Вие сте подали тази заявка, затова друг проверяващ трябва да я одобри."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Повторен опит"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Изтичане"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Минимален TTL"

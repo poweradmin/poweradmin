@@ -16499,3 +16499,15 @@ msgstr "Ag seoladh..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Chuir tú an t-iarratas seo isteach, mar sin caithfidh athbhreithnitheoir eile é a cheadú."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Atriail"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Dul in éag"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "TTL íosta"

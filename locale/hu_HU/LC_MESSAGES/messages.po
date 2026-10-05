@@ -16245,3 +16245,15 @@ msgstr "Küldés..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Ezt a kérelmet Ön nyújtotta be, ezért egy másik felülvizsgálónak kell jóváhagynia."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Újrapróbálkozás"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Lejárat"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimális TTL"

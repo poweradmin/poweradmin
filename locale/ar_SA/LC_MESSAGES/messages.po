@@ -15783,3 +15783,15 @@ msgstr "جارٍ الإرسال..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "لقد قدمت هذا الطلب، لذلك يجب أن يوافق عليه مراجع آخر."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "إعادة المحاولة"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "الانتهاء"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "الحد الأدنى لـ TTL"

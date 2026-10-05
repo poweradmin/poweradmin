@@ -16167,3 +16167,15 @@ msgstr "Надсилання..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Цей запит створили ви, тому його має затвердити інший рецензент."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Повтор"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Закінчення терміну"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Мінімальний TTL"

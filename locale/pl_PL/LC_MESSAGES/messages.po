@@ -16224,3 +16224,15 @@ msgstr "Wysyłanie..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Ten wniosek został złożony przez Ciebie, więc musi go zatwierdzić inny recenzent."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Ponowienie"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Wygaśnięcie"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimalny TTL"

@@ -15845,3 +15845,15 @@ msgstr "보내는 중..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "이 요청은 본인이 제출했으므로 다른 검토자가 승인해야 합니다."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "재시도"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "만료"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "최소 TTL"

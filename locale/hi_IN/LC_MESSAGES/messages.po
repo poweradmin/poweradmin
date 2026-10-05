@@ -15794,3 +15794,15 @@ msgstr "भेजा जा रहा है..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "यह अनुरोध आपने दर्ज किया था, इसलिए इसे कोई अन्य समीक्षक स्वीकृत करेगा।"
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "पुनः प्रयास"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "समाप्ति"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "न्यूनतम TTL"

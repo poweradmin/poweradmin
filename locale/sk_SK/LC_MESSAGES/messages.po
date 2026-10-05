@@ -15989,3 +15989,15 @@ msgstr "Odosiela sa..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Túto žiadosť ste podali vy, takže ju musí schváliť iný posudzovateľ."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Opakovanie"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Vypršanie"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Minimálne TTL"

@@ -15987,3 +15987,15 @@ msgstr "Đang gửi..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Bạn đã tạo yêu cầu này, nên một người xét duyệt khác phải phê duyệt."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Thử lại"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Hết hạn"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "TTL tối thiểu"

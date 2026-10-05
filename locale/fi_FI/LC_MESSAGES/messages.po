@@ -15869,3 +15869,15 @@ msgstr "Lähetetään..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Teit tämän pyynnön itse, joten toisen tarkistajan on hyväksyttävä se."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Uudelleenyritys"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Vanheneminen"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Vähimmäis-TTL"

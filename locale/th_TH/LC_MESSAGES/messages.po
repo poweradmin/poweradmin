@@ -15345,3 +15345,15 @@ msgstr "กำลังส่ง..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "คุณเป็นผู้ยื่นคำขอนี้ จึงต้องให้ผู้ตรวจสอบคนอื่นอนุมัติ"
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "การลองใหม่"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "หมดอายุ"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "TTL ขั้นต่ำ"

@@ -16608,3 +16608,15 @@ msgstr "Αποστολή..."
 #: templates/default/change_request.html
 msgid "You filed this request, so another reviewer must approve it."
 msgstr "Υποβάλατε εσείς αυτό το αίτημα, επομένως πρέπει να το εγκρίνει άλλος εξεταστής."
+
+#: templates/default/_macros.html
+msgid "Retry"
+msgstr "Επανάληψη"
+
+#: templates/default/_macros.html
+msgid "Expire"
+msgstr "Λήξη"
+
+#: templates/default/_macros.html
+msgid "Minimum TTL"
+msgstr "Ελάχιστο TTL"
