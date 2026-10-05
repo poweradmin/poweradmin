@@ -26,6 +26,7 @@ use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Settings;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
@@ -288,6 +289,14 @@ final class SamlService
 
         // Provision or update user (reuse OIDC provisioning service)
         $userId = $this->userProvisioningService->provisionUser($userInfo, $providerId);
+
+        if ($userId && !$this->userProvisioningService->isActiveUser($userId)) {
+            $this->logger->warning('SAML login refused, account {userId} is disabled', ['userId' => $userId]);
+            $this->setSessionValue('userlogin', $userInfo->getUsername());
+            $this->auditService->logLoginFailed(AuthMethod::SAML, LoginFailureReason::ACCOUNT_DISABLED);
+            $this->authenticationService->auth(new FlashMessage(_('The user account is disabled.'), 'danger'));
+            return null;
+        }
 
         if ($userId) {
             $this->logger->info('Successfully authenticated SAML user: {username}', ['username' => $userInfo->getUsername()]);

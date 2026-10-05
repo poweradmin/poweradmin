@@ -230,10 +230,12 @@ final class SessionAuthenticator
             case UserProvisioningService::AUTH_METHOD_OIDC:
                 $this->logger->info('User {username} uses OIDC for authentication - skipping password verification', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
                 // OIDC users are already authenticated, no need to verify password
+                $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
                 $this->logger->info('User {username} uses SAML for authentication - skipping password verification', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
                 // SAML users are already authenticated, no need to verify password
+                $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_LDAP:
                 if ($ldap_use) {
@@ -458,6 +460,17 @@ final class SessionAuthenticator
             }
         }
         return false;
+    }
+
+    private function endSessionOfDisabledAccount(): void
+    {
+        $guard = new ExternalSessionGuard($this->services->userRepository(), $this->session);
+        if ($guard->accountIsActive()) {
+            return;
+        }
+
+        $this->logger->warning('Ending session of disabled account {username}', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
+        $this->authService->logout(new FlashMessage(_('The user account is disabled.'), 'danger'));
     }
 
     private function getUserAuthMethod(): string

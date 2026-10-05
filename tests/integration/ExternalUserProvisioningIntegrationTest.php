@@ -184,14 +184,15 @@ class ExternalUserProvisioningIntegrationTest extends TestCase
         $this->assertSame('local.jane', $svc->getDatabaseUsername($userId));
     }
 
-    public function testEmailLinkingSkipsInactiveAndSuperuserAccounts(): void
+    public function testEmailLinkingRefusesInactiveAndSkipsSuperuserAccounts(): void
     {
-        $this->insertLocalUser('inactive.jane', 'jane@example.org', 'sql', self::GUEST_TEMPLATE_ID, 'admin', active: 0);
+        $inactiveId = $this->insertLocalUser('inactive.jane', 'jane@example.org', 'sql', self::GUEST_TEMPLATE_ID, 'admin', active: 0);
         $svc = $this->service();
         $userId = $svc->provisionUser($this->oidcUser(['dns-editors']), self::PROVIDER);
-        $this->assertSame(2, $this->rowCount('users'), 'an inactive account is not linked, a new one is created');
-        $this->assertSame('jane.doe', $this->userRow('jane.doe')['username']);
-        $this->assertNotSame('inactive.jane', $svc->getDatabaseUsername($userId));
+        $this->assertSame($inactiveId, $userId, 'the disabled match is handed back for the caller to refuse');
+        $this->assertFalse($svc->isActiveUser($userId));
+        $this->assertSame(1, $this->rowCount('users'), 'no replacement account is created');
+        $this->assertSame(0, $this->rowCount('oidc_user_links'), 'and the disabled account is not linked');
 
         $this->db->exec('DELETE FROM oidc_user_links');
         $this->db->exec('DELETE FROM users');
@@ -199,6 +200,31 @@ class ExternalUserProvisioningIntegrationTest extends TestCase
         $samlId = $svc->provisionUser($this->samlUser(['dns-editors'], email: 'root@example.org'), self::PROVIDER);
         $this->assertNotSame($adminId, $samlId, 'an email claim never links to a superuser');
         $this->assertSame(0, $this->countWhere('saml_user_links', 'user_id', $adminId));
+    }
+
+    public function testLinkedDisabledAccountIsReturnedUntouched(): void
+    {
+        $svc = $this->service();
+        $userId = $svc->provisionUser($this->oidcUser(['dns-editors']), self::PROVIDER);
+        $this->db->exec("UPDATE users SET active = 0, fullname = 'Before', perm_templ = " . self::GUEST_TEMPLATE_ID . " WHERE id = $userId");
+
+        $again = $svc->provisionUser($this->oidcUser(['dns-editors'], displayName: 'After'), self::PROVIDER);
+
+        $this->assertSame($userId, $again);
+        $row = $this->userRow('jane.doe');
+        $this->assertSame('Before', $row['fullname'], 'a refused login writes no provider data');
+        $this->assertSame(self::GUEST_TEMPLATE_ID, (int)$row['perm_templ']);
+    }
+
+    public function testDisabledEmailMatchIsRefusedEvenBehindASuperuserWithTheSameEmail(): void
+    {
+        $this->insertLocalUser('root', 'jane@example.org', 'sql', 1, 'admin');
+        $disabledId = $this->insertLocalUser('old.jane', 'jane@example.org', 'sql', self::GUEST_TEMPLATE_ID, 'admin', active: 0);
+
+        $userId = $this->service()->provisionUser($this->oidcUser(['dns-editors']), self::PROVIDER);
+
+        $this->assertSame($disabledId, $userId);
+        $this->assertSame(2, $this->rowCount('users'), 'no replacement account is created');
     }
 
     public function testUnverifiedOidcEmailIsNotLinked(): void

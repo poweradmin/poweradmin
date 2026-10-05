@@ -166,6 +166,15 @@ class DbUserRepository implements UserRepositoryInterface
         return (bool)$rowObj;
     }
 
+    public function isActiveUser(int $userId): bool
+    {
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE id = :id AND active = 1");
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (bool)$stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function findBasicAuthUser(string $username): ?array
     {
         $query = $this->db->prepare("SELECT id, password, use_ldap FROM users WHERE username = :username AND active = 1");
@@ -1091,6 +1100,16 @@ class DbUserRepository implements UserRepositoryInterface
     {
         $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email');
         $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND active = 1");
+        $stmt->execute([$email]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
+    }
+
+    public function findInactiveUserIdByEmail(string $email): ?int
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email');
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND active <> 1");
         $stmt->execute([$email]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

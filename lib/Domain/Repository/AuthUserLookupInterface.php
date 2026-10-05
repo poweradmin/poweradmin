@@ -48,6 +48,12 @@ interface AuthUserLookupInterface
     public function hasActiveLdapUser(string $username): bool;
 
     /**
+     * Whether the account still exists and is active, re-checked on every request
+     * for sessions an identity provider established.
+     */
+    public function isActiveUser(int $userId): bool;
+
+    /**
      * The HTTP Basic row: id, password, use_ldap, for active accounts only.
      */
     public function findBasicAuthUser(string $username): ?array;

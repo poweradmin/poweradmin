@@ -83,6 +83,19 @@ class DbUserRepositoryProvisioningTest extends TestCase
         $this->assertSame('oidc', $row['auth_method']);
     }
 
+    public function testFindInactiveUserIdByEmailSkipsActiveAccounts(): void
+    {
+        $this->assertSame(2, $this->repository->findInactiveUserIdByEmail('shared@example.org'));
+        $this->assertNull($this->repository->findInactiveUserIdByEmail('nobody@example.org'));
+    }
+
+    public function testIsActiveUserIsFalseForDisabledAndMissingAccounts(): void
+    {
+        $this->assertTrue($this->repository->isActiveUser(1));
+        $this->assertFalse($this->repository->isActiveUser(2));
+        $this->assertFalse($this->repository->isActiveUser(99));
+    }
+
     public function testUpdateProvisionedUserChangesOnlyTheGivenColumns(): void
     {
         $this->repository->updateProvisionedUser(1, ['fullname' => 'Renamed', 'perm_templ' => 1, 'perm_templ_source' => 'saml']);

@@ -26,6 +26,7 @@ use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
@@ -304,6 +305,14 @@ final class OidcService
 
             // Provision or update user
             $userId = $this->userProvisioningService->provisionUser($userInfo, $providerId);
+
+            if ($userId && !$this->userProvisioningService->isActiveUser($userId)) {
+                $this->logger->warning('OIDC login refused, account {userId} is disabled', ['userId' => $userId]);
+                $this->setSessionValue('userlogin', $userInfo->getUsername());
+                $this->auditService->logLoginFailed(AuthMethod::OIDC, LoginFailureReason::ACCOUNT_DISABLED);
+                $this->authenticationService->auth(new FlashMessage(_('The user account is disabled.'), 'danger'));
+                return null;
+            }
 
             // Log provisioning result
             if ($userId) {

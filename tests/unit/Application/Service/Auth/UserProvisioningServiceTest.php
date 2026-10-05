@@ -659,6 +659,27 @@ class UserProvisioningServiceTest extends TestCase
         $this->assertTrue($method->invoke($service, $userInfo, ['require_verified_email' => true]));
     }
 
+    /**
+     * A disabled account matched by email is handed back for the caller to refuse;
+     * auto-provisioning must not create a fresh active account for the same person.
+     */
+    public function testDisabledEmailMatchIsReturnedInsteadOfProvisioningANewAccount(): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['link_by_email' => true, 'auto_provision' => true]);
+
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('findActiveUserIdByEmail')->willReturn(null);
+        $repository->method('findInactiveUserIdByEmail')->with('john@example.com')->willReturn(42);
+        $repository->expects($this->never())->method('createProvisionedUser');
+        $repository->expects($this->never())->method('updateProvisionedUser');
+
+        $service = $this->createServiceWithMocks($config, $repository);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1');
+
+        $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
+    }
+
     public function testUserHoldsSuperuserPermissionFailsClosedOnDatabaseError(): void
     {
         $repository = $this->createMock(UserRepositoryInterface::class);

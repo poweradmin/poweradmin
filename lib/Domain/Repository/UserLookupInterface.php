@@ -83,6 +83,12 @@ interface UserLookupInterface
     public function findActiveUserIdByEmail(string $email): ?int;
 
     /**
+     * Id of a disabled user with exactly this email address, matched the same way
+     * as findActiveUserIdByEmail().
+     */
+    public function findInactiveUserIdByEmail(string $email): ?int;
+
+    /**
      * The columns external provisioning compares before writing.
      *
      * @return array{fullname: ?string, email: ?string, auth_method: ?string, perm_templ: int|string, perm_templ_source: ?string}|array{} Empty when the user does not exist

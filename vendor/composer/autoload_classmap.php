@@ -1240,6 +1240,7 @@ return array(
     'Poweradmin\\Application\\Service\\Auth\\AuthenticationService' => $baseDir . '/lib/Application/Service/Auth/AuthenticationService.php',
     'Poweradmin\\Application\\Service\\Auth\\BasicAuthenticationMiddleware' => $baseDir . '/lib/Application/Service/Auth/BasicAuthenticationMiddleware.php',
     'Poweradmin\\Application\\Service\\Auth\\CsrfTokenService' => $baseDir . '/lib/Application/Service/Auth/CsrfTokenService.php',
+    'Poweradmin\\Application\\Service\\Auth\\ExternalSessionGuard' => $baseDir . '/lib/Application/Service/Auth/ExternalSessionGuard.php',
     'Poweradmin\\Application\\Service\\Auth\\LdapAuthenticator' => $baseDir . '/lib/Application/Service/Auth/LdapAuthenticator.php',
     'Poweradmin\\Application\\Service\\Auth\\LoginAttemptService' => $baseDir . '/lib/Application/Service/Auth/LoginAttemptService.php',
     'Poweradmin\\Application\\Service\\Auth\\LoginCredentials' => $baseDir . '/lib/Application/Service/Auth/LoginCredentials.php',

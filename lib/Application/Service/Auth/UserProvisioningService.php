@@ -81,6 +81,10 @@ class UserProvisioningService
         $this->updateExistingUser($userId, $userInfo, $this->determineAuthMethodFromUserInfo($userInfo));
     }
 
+    /**
+     * The account id for an external identity, creating or linking it as configured.
+     * The id may belong to a disabled account; callers check isActiveUser() before signing in.
+     */
     public function provisionUser(UserInfoInterface $userInfo, string $providerId): ?int
     {
         // Determine auth method from the actual UserInfo type being used
@@ -115,7 +119,10 @@ class UserProvisioningService
                     'method' => strtoupper($authMethod),
                     'subject' => $userInfo->getSubject()
                 ]);
-                $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
+                // A refused login must not write provider data onto the disabled account
+                if ($this->userRepository->isActiveUser($existingUserId)) {
+                    $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
+                }
                 return $existingUserId;
             }
 
@@ -144,6 +151,17 @@ class UserProvisioningService
                     $this->linkIdentity($existingUserId, $userInfo, $providerId, $authMethod);
                     $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
                     return $existingUserId;
+                }
+
+                // Hand back a disabled match so the caller refuses it, rather than
+                // auto-provisioning a fresh active account for the same person.
+                $disabledUserId = $this->userRepository->findInactiveUserIdByEmail($userInfo->getEmail());
+                if ($disabledUserId !== null) {
+                    $this->logger->warning('{method} identity matches disabled account {id} by email', [
+                        'method' => strtoupper($authMethod),
+                        'id' => $disabledUserId
+                    ]);
+                    return $disabledUserId;
                 }
             }
 
@@ -575,6 +593,14 @@ class UserProvisioningService
             return null;
         }
         return $this->findPermissionTemplateByName($defaultTemplateName, $authMethod);
+    }
+
+    /**
+     * Whether a matched account may sign in; provisionUser() can return a disabled account.
+     */
+    public function isActiveUser(int $userId): bool
+    {
+        return $this->userRepository->isActiveUser($userId);
     }
 
     /**
