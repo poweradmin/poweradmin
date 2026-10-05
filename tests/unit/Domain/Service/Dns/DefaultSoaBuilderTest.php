@@ -42,4 +42,21 @@ class DefaultSoaBuilderTest extends TestCase
     {
         $this->assertSame(3600, (new DefaultSoaBuilder(new FakeConfiguration(['dns' => ['ttl' => '3600']])))->ttl());
     }
+
+    public function testTimersFallBackToTheDefaults(): void
+    {
+        $timers = (new DefaultSoaBuilder(new FakeConfiguration(['dns' => []])))->timers();
+
+        $this->assertSame(['refresh' => 28800, 'retry' => 7200, 'expire' => 604800, 'minimum' => 86400], $timers);
+    }
+
+    public function testTimersReadTheConfiguredSettings(): void
+    {
+        $config = new FakeConfiguration(['dns' => ['soa_refresh' => 10800, 'soa_retry' => 900, 'soa_expire' => 1209600, 'soa_minimum' => 300]]);
+
+        $this->assertSame(
+            ['refresh' => 10800, 'retry' => 900, 'expire' => 1209600, 'minimum' => 300],
+            (new DefaultSoaBuilder($config))->timers()
+        );
+    }
 }

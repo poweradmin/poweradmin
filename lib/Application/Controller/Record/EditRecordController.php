@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
 use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
@@ -177,10 +178,14 @@ class EditRecordController extends BaseController
         $zone_is_read_only = ZoneType::isReadOnly($zone_type);
         $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner);
 
+        $soaFields = SoaFieldsPresenter::forRecord($record);
+
         $this->render('edit_record.html', [
             'record_id' => $record_id,
             'record' => $record,
-            'soa_fields' => SoaFieldsPresenter::forRecord($record),
+            'soa_fields' => $soaFields,
+            'soa_durations' => SoaFieldsPresenter::durations($soaFields),
+            'soa_defaults' => (new DefaultSoaBuilder($this->config))->timers(),
             'recordTypes' => $recordTypes,
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'zone_name' => $zone_name,

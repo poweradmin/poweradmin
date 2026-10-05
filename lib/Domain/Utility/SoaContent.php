@@ -42,4 +42,32 @@ final class SoaContent
 
         return array_combine(self::FIELD_KEYS, $parts);
     }
+
+    /**
+     * Compact duration in the largest whole units, e.g. 10800 is "3h" and 90000 is "1d 1h".
+     * assets/textareaAutoResize.js (soaDuration) must produce the same output.
+     *
+     * @return string|null Null when the value is not a plain non-negative integer
+     */
+    public static function duration(string $seconds): ?string
+    {
+        if (!ctype_digit($seconds) || strlen($seconds) > 12) {
+            return null;
+        }
+
+        $remaining = (int)$seconds;
+        if ($remaining === 0) {
+            return '0s';
+        }
+
+        $parts = [];
+        foreach (['w' => 604800, 'd' => 86400, 'h' => 3600, 'm' => 60, 's' => 1] as $unit => $size) {
+            if ($remaining >= $size) {
+                $parts[] = intdiv($remaining, $size) . $unit;
+                $remaining %= $size;
+            }
+        }
+
+        return implode(' ', $parts);
+    }
 }

@@ -67,4 +67,32 @@ class SoaContentTest extends TestCase
         $this->assertNull(SoaContent::parse(''));
         $this->assertNull(SoaContent::parse("   \t "));
     }
+
+    /**
+     * @return array<string, array{string, string|null}>
+     */
+    public static function durations(): array
+    {
+        return [
+            'zero' => ['0', '0s'],
+            'seconds' => ['45', '45s'],
+            'minutes' => ['300', '5m'],
+            'hours' => ['10800', '3h'],
+            'default refresh' => ['28800', '8h'],
+            'day' => ['86400', '1d'],
+            'week' => ['604800', '1w'],
+            'mixed' => ['90061', '1d 1h 1m 1s'],
+            'weeks and days' => ['1296000', '2w 1d'],
+            'not a number' => ['abc', null],
+            'negative' => ['-5', null],
+            'empty' => ['', null],
+            'decimal' => ['1.5', null],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('durations')]
+    public function testDurationUsesTheLargestWholeUnits(string $seconds, ?string $expected): void
+    {
+        $this->assertSame($expected, SoaContent::duration($seconds));
+    }
 }

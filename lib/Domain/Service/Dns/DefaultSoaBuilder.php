@@ -37,13 +37,23 @@ final class DefaultSoaBuilder
     {
         $ns1 = $this->config->get('dns', 'ns1');
         $hm = $this->config->get('dns', 'hostmaster');
-        $soa_refresh = $this->config->get('dns', 'soa_refresh', 28800);
-        $soa_retry = $this->config->get('dns', 'soa_retry', 7200);
-        $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
-        $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
+        $timers = $this->timers();
         $serial = date("Ymd") . "00";
 
-        return "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
+        return "$ns1 $hm $serial {$timers['refresh']} {$timers['retry']} {$timers['expire']} {$timers['minimum']}";
+    }
+
+    /**
+     * @return array{refresh: mixed, retry: mixed, expire: mixed, minimum: mixed}
+     */
+    public function timers(): array
+    {
+        return [
+            'refresh' => $this->config->get('dns', 'soa_refresh', 28800),
+            'retry' => $this->config->get('dns', 'soa_retry', 7200),
+            'expire' => $this->config->get('dns', 'soa_expire', 604800),
+            'minimum' => $this->config->get('dns', 'soa_minimum', 86400),
+        ];
     }
 
     public function ttl(): int

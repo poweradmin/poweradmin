@@ -17,8 +17,9 @@
 {% endmacro %}
 
 {# Labelled SOA fields from the soa_fields map of SoaFieldsPresenter. With input_id set,
-   assets/textareaAutoResize.js refills the values while that content input is edited. #}
-{% macro soa_breakdown(fields, input_id = '') %}
+   assets/textareaAutoResize.js refills the values while that content input is edited.
+   durations is the soa_durations map: the human form shown after each timer. #}
+{% macro soa_breakdown(fields, input_id = '', durations = {}) %}
 {%- set labels = {
     'primary_ns': 'Primary nameserver'|trans,
     'hostmaster': 'Hostmaster'|trans,
@@ -30,7 +31,7 @@
 } -%}
 <div class="d-flex flex-wrap column-gap-3 row-gap-1 small" data-testid="soa-breakdown"{% if input_id %} data-soa-input="{{ input_id }}"{% endif %}>
     {%- for key, label in labels %}
-    <div><div class="text-muted" style="font-size: .8em;">{{ label }}</div><div class="font-monospace text-break" data-soa-field="{{ loop.index0 }}">{{ fields[key] ?? '-' }}</div></div>
+    <div><div class="text-muted" style="font-size: .8em;">{{ label }}</div><div class="font-monospace text-break" data-soa-field="{{ loop.index0 }}"{% if key in ['refresh', 'retry', 'expire', 'minimum'] %} data-soa-duration="1"{% endif %}>{{ fields[key] ?? '-' }}{% if durations[key] is defined %} ({{ durations[key] }}){% endif %}</div></div>
     {%- endfor %}
 </div>
 {% endmacro %}

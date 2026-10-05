@@ -31,12 +31,13 @@ class SoaFieldsPresenter
 {
     /**
      * @param array<int, array<string, mixed>> $records Rows with their stored content
-     * @return array<int, array<string, mixed>> The same rows, each with soa_fields (null unless a seven-field SOA)
+     * @return array<int, array<string, mixed>> The same rows, each with soa_fields (null unless a seven-field SOA) and soa_durations
      */
     public static function decorate(array $records): array
     {
         foreach ($records as &$record) {
             $record['soa_fields'] = self::forRecord($record);
+            $record['soa_durations'] = self::durations($record['soa_fields']);
         }
         unset($record);
 
@@ -54,5 +55,22 @@ class SoaFieldsPresenter
         }
 
         return SoaContent::parse((string)($record['content'] ?? ''));
+    }
+
+    /**
+     * @param array<string, string>|null $fields
+     * @return array<string, string> Human duration per timer field that holds a plain number
+     */
+    public static function durations(?array $fields): array
+    {
+        $durations = [];
+        foreach (['refresh', 'retry', 'expire', 'minimum'] as $key) {
+            $duration = SoaContent::duration($fields[$key] ?? '');
+            if ($duration !== null) {
+                $durations[$key] = $duration;
+            }
+        }
+
+        return $durations;
     }
 }

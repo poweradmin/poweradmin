@@ -43,12 +43,13 @@
                     </tr>
                     </thead>
                     <tbody>
+                    {% set soa_structured = zone_is_editable and record['type'] == 'SOA' and soa_fields %}
                     <tr>
                         {% if not zone_is_editable %}
                         <td>{{ record["name"] }}</td>
                         <td>IN</td>
                         <td>{{ record["type"] }}</td>
-                        <td>{% if soa_fields %}{{ macros.soa_breakdown(soa_fields) }}{% else %}{{ record['content'] }}{% endif %}</td>
+                        <td>{% if soa_fields %}{{ macros.soa_breakdown(soa_fields, '', soa_durations) }}{% else %}{{ record['content'] }}{% endif %}</td>
                         <td>{{ record["prio"] }}</td>
                         <td>{{ record["ttl"] }}</td>
                         {% if iface_record_comments %}
@@ -89,7 +90,13 @@
                             <div id="contentInputContainer">
                                 <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}" required>
                             </div>
-                            <div class="mt-1{% if record['type'] != 'SOA' %} d-none{% endif %}" data-soa-type="recordTypeSelect">{{ macros.soa_breakdown(soa_fields ?? {}, 'recordContent') }}</div>
+                            {% if soa_structured %}
+                            <div class="form-text d-none" data-soa-note="recordContent"><i class="bi bi-arrow-down me-1"></i>{% trans %}Edit the SOA fields below{% endtrans %}</div>
+                            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none d-none" data-soa-fields-button="recordContent"><i class="bi bi-ui-checks-grid me-1"></i>{% trans %}Edit as fields{% endtrans %}</button>
+                            {% endif %}
+                            {% if not soa_structured %}
+                            <div class="mt-1{% if record['type'] != 'SOA' %} d-none{% endif %}" data-soa-type="recordTypeSelect">{{ macros.soa_breakdown(soa_fields ?? {}, 'recordContent', soa_durations) }}</div>
+                            {% endif %}
                             <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
                             <div id="cnameRootWarning" class="alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
                                 <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
@@ -124,6 +131,61 @@
                         {% endif %}
                         {% endif %}
                     </tr>
+                    {% if soa_structured %}
+                    {# Rendered hidden and disabled; the script switches to it, so without JavaScript the content input above still works #}
+                    <tr id="soaEditor" class="d-none" data-soa-editor="recordContent" data-soa-select="recordTypeSelect" data-soa-active="0" data-soa-defaults="{{ soa_defaults|json_encode }}" data-testid="soa-editor">
+                        <td colspan="99" class="border-0 pt-0">
+                            <div class="border rounded p-3">
+                                <div class="row g-4">
+                                    <div class="col-lg-5">
+                                        <div class="d-flex justify-content-between align-items-baseline mb-3">
+                                            <h6 class="small text-uppercase text-muted fw-semibold mb-0">{% trans %}Zone authority{% endtrans %}</h6>
+                                            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-soa-text-button="1" disabled><i class="bi bi-input-cursor-text me-1"></i>{% trans %}Edit as text{% endtrans %}</button>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label small mb-1" for="soaPrimaryNs">{% trans %}Primary nameserver{% endtrans %}</label>
+                                            <input id="soaPrimaryNs" class="form-control form-control-sm" type="text" pattern="\S+" data-soa-part="0" value="{{ soa_fields['primary_ns'] }}" required disabled>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label small mb-1" for="soaHostmaster">{% trans %}Hostmaster{% endtrans %}</label>
+                                            <input id="soaHostmaster" class="form-control form-control-sm" type="text" pattern="\S+" data-soa-part="1" value="{{ soa_fields['hostmaster'] }}" required disabled aria-describedby="soaHostmasterHelp">
+                                            <div id="soaHostmasterHelp" class="form-text">{% trans %}Email address or DNS form, e.g. hostmaster@example.com{% endtrans %}</div>
+                                        </div>
+                                        <div>
+                                            <label class="form-label small mb-1" for="soaSerial">{% trans %}Serial{% endtrans %}</label>
+                                            <input id="soaSerial" class="form-control-plaintext form-control-sm font-monospace py-0" type="text" data-soa-part="2" value="{{ soa_fields['serial'] }}" readonly tabindex="-1" disabled aria-describedby="soaSerialHelp">
+                                            <div id="soaSerialHelp" class="form-text mt-0">{% trans %}Managed automatically{% endtrans %}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-7">
+                                        <div class="d-flex justify-content-between align-items-baseline mb-3">
+                                            <h6 class="small text-uppercase text-muted fw-semibold mb-0">{% trans %}Timers{% endtrans %}</h6>
+                                            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-soa-defaults-button="1" disabled><i class="bi bi-arrow-counterclockwise me-1"></i>{% trans %}Use defaults{% endtrans %}</button>
+                                        </div>
+                                        {% set soa_timers = {
+                                            'refresh': {label: 'Refresh'|trans, help: 'How often secondaries check the primary for changes'|trans, part: 3},
+                                            'retry': {label: 'Retry'|trans, help: 'Wait before a secondary retries after a failed refresh'|trans, part: 4},
+                                            'expire': {label: 'Expire'|trans, help: 'When a secondary stops answering if it cannot reach the primary'|trans, part: 5},
+                                            'minimum': {label: 'Minimum TTL'|trans, help: 'How long resolvers cache a negative answer (NXDOMAIN)'|trans, part: 6},
+                                        } %}
+                                        <div class="row g-3">
+                                            {% for key, timer in soa_timers %}
+                                            <div class="col-sm-6">
+                                                <label class="form-label small mb-1" for="soa_{{ key }}">{{ timer.label }}</label>
+                                                <div class="input-group input-group-sm">
+                                                    <input id="soa_{{ key }}" class="form-control font-monospace" type="number" min="0" max="4294967295" data-soa-part="{{ timer.part }}" value="{{ soa_fields[key] }}" required disabled aria-describedby="soa_{{ key }}_help">
+                                                    <span class="input-group-text justify-content-center" style="min-width: 4.5rem;" data-soa-duration-for="soa_{{ key }}">{{ soa_durations[key] ?? '-' }}</span>
+                                                </div>
+                                                <div id="soa_{{ key }}_help" class="form-text">{{ timer.help }}</div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
                     </tbody>
                 </table>
             </div>

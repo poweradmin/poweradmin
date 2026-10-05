@@ -270,6 +270,31 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->assertSame('edit_record.html', $this->output->rendered[0][0]);
     }
 
+    public function testASevenFieldSoaPassesItsPartsDurationsAndTheConfiguredDefaults(): void
+    {
+        $this->storedRecord['type'] = 'SOA';
+        $this->storedRecord['content'] = 'ns1.example.com. hostmaster.example.com. 2026100501 28800 7200 604800 86400';
+
+        $controller = $this->makeController(['dns' => ['soa_refresh' => 10800, 'soa_retry' => 900, 'soa_expire' => 1209600, 'soa_minimum' => 300]]);
+        $controller->run();
+        $params = $this->renderedParams();
+
+        $this->assertSame('2026100501', $params['soa_fields']['serial']);
+        $this->assertSame(['refresh' => '8h', 'retry' => '2h', 'expire' => '1w', 'minimum' => '1d'], $params['soa_durations']);
+        $this->assertSame(['refresh' => 10800, 'retry' => 900, 'expire' => 1209600, 'minimum' => 300], $params['soa_defaults']);
+    }
+
+    public function testANonSoaRecordHasNoSoaPartsButStillCarriesTheDefaults(): void
+    {
+        $controller = $this->makeController();
+        $controller->run();
+        $params = $this->renderedParams();
+
+        $this->assertNull($params['soa_fields']);
+        $this->assertSame([], $params['soa_durations']);
+        $this->assertSame(['refresh' => 28800, 'retry' => 7200, 'expire' => 604800, 'minimum' => 86400], $params['soa_defaults']);
+    }
+
     public function testAReadOnlyZoneIsRefusedBeforeTheEditPermissionIsResolved(): void
     {
         $this->zoneType = 'SLAVE';

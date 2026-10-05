@@ -58,4 +58,19 @@ class SoaFieldsPresenterTest extends TestCase
         $this->assertSame(7, $rows[0]['id']);
         $this->assertSame('192.0.2.1', $rows[0]['content']);
     }
+
+    public function testSoaRowGainsTheHumanTimerDurations(): void
+    {
+        $rows = SoaFieldsPresenter::decorate([['type' => 'SOA', 'content' => self::SOA]]);
+
+        $this->assertSame(['refresh' => '8h', 'retry' => '2h', 'expire' => '1w', 'minimum' => '1d'], $rows[0]['soa_durations']);
+    }
+
+    public function testNonNumericTimersGetNoDuration(): void
+    {
+        $this->assertSame(['retry' => '2h'], SoaFieldsPresenter::durations(
+            ['primary_ns' => 'a', 'hostmaster' => 'b', 'serial' => '1', 'refresh' => 'x', 'retry' => '7200', 'expire' => '', 'minimum' => '-1']
+        ));
+        $this->assertSame([], SoaFieldsPresenter::durations(null));
+    }
 }
