@@ -454,7 +454,7 @@
             {% if r['record_locked'] %}
             <td class="col-sm-2">{{ r['display_name'] }}</td>
             <td class="text-center"><span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span></td>
-            <td>{{ r['content'] }}</td>
+            <td>{{ r['content'] }}{% if r['soa_fields'] %}<details class="mt-1"><summary class="text-muted small">{% trans %}Details{% endtrans %}</summary>{{ macros.soa_breakdown(r['soa_fields']) }}</details>{% endif %}</td>
             <td>-</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
             {% if iface_record_comments %}
@@ -487,6 +487,7 @@
                 <div id="contentInputContainer{{ r['id'] }}">
                     <input id="recordContent{{ r['id'] }}" class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}">
                 </div>
+                {% if r['soa_fields'] %}<details class="mt-1"><summary class="text-muted small">{% trans %}Details{% endtrans %}</summary>{{ macros.soa_breakdown(r['soa_fields'], 'recordContent' ~ r['id']) }}</details>{% endif %}
             </td>
             <td><input class="form-control form-control-sm record-priority-field" type="number"
                                         id="priority_field_{{ r['id'] }}" name="record[{{ r['id'] }}][prio]"

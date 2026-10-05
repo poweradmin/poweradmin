@@ -64,3 +64,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Refill a labelled SOA breakdown from its content input; more than seven fields is shown in red
+function refillSoaBreakdowns(input) {
+    document.querySelectorAll(`[data-soa-input="${input.id}"]`).forEach(breakdown => {
+        const parts = input.value.trim().split(/\s+/).filter(part => part !== '');
+        breakdown.querySelectorAll('[data-soa-field]').forEach(field => {
+            field.textContent = parts[Number(field.dataset.soaField)] ?? '-';
+        });
+        breakdown.classList.toggle('text-danger', parts.length > 7);
+    });
+}
+
+function syncSoaBreakdowns() {
+    document.querySelectorAll('[data-soa-input]').forEach(breakdown => {
+        const input = document.getElementById(breakdown.dataset.soaInput);
+        if (input) refillSoaBreakdowns(input);
+    });
+    document.querySelectorAll('[data-soa-type]').forEach(wrapper => {
+        const select = document.getElementById(wrapper.dataset.soaType);
+        if (select) wrapper.classList.toggle('d-none', select.value !== 'SOA');
+    });
+}
+
+document.addEventListener('input', event => refillSoaBreakdowns(event.target));
+document.addEventListener('change', syncSoaBreakdowns);
+document.addEventListener('DOMContentLoaded', syncSoaBreakdowns);
+// A form reset restores the controls without input or change events, and only after this handler
+document.addEventListener('reset', () => setTimeout(syncSoaBreakdowns, 0));

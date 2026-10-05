@@ -16,6 +16,25 @@
 {%- if comment %}<div class="text-muted fst-italic mt-1" title="{% trans %}Reason for this change{% endtrans %}"><i class="bi bi-chat-left-text me-1"></i>{{ comment }}</div>{% endif -%}
 {% endmacro %}
 
+{# Labelled SOA fields from the soa_fields map of SoaFieldsPresenter. With input_id set,
+   assets/textareaAutoResize.js refills the values while that content input is edited. #}
+{% macro soa_breakdown(fields, input_id = '') %}
+{%- set labels = {
+    'primary_ns': 'Primary nameserver'|trans,
+    'hostmaster': 'Hostmaster'|trans,
+    'serial': 'Serial'|trans,
+    'refresh': 'Refresh'|trans,
+    'retry': 'Retry'|trans,
+    'expire': 'Expire'|trans,
+    'minimum': 'Minimum TTL'|trans,
+} -%}
+<div class="d-flex flex-wrap column-gap-3 row-gap-1 small" data-testid="soa-breakdown"{% if input_id %} data-soa-input="{{ input_id }}"{% endif %}>
+    {%- for key, label in labels %}
+    <div><div class="text-muted" style="font-size: .8em;">{{ label }}</div><div class="font-monospace text-break" data-soa-field="{{ loop.index0 }}">{{ fields[key] ?? '-' }}</div></div>
+    {%- endfor %}
+</div>
+{% endmacro %}
+
 {# Confirm/cancel pair for delete confirmation pages. The confirm button
    submits the enclosing POST form; the cancel link navigates away. #}
 {% macro delete_actions(confirm_label, cancel_url, cancel_label, confirm_testid = '', cancel_testid = '', confirm_name = '') %}

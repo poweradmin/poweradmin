@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Presenter\SoaFieldsPresenter;
 use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Application\Service\Record\RecordCommentService;
 use Poweradmin\Application\Service\Record\RecordEditRequest;
@@ -179,6 +180,7 @@ class EditRecordController extends BaseController
         $this->render('edit_record.html', [
             'record_id' => $record_id,
             'record' => $record,
+            'soa_fields' => SoaFieldsPresenter::forRecord($record),
             'recordTypes' => $recordTypes,
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'zone_name' => $zone_name,

@@ -165,6 +165,8 @@ final class EditZonePresenter
             $zoneIsReadOnly
         );
         ['records' => $records, 'dropped' => $staleFormDropped] = RejectedZoneEditPresenter::restore($records, $this->rejectedRecords);
+        // After restore() so the breakdown matches the type and content the row shows
+        $records = SoaFieldsPresenter::decorate($records);
 
         $zoneComment = $this->storedZoneComment;
         $zoneCommentConflict = false;

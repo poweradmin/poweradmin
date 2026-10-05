@@ -353,6 +353,19 @@ class EditZonePresenterTest extends TestCase
         $this->assertStringContainsString('gone.example.com', $vars['stale_form_dropped'][0]);
     }
 
+    public function testSoaBreakdownFollowsTheRestoredRow(): void
+    {
+        $vars = $this->present([
+            'rejectedRecords' => [
+                new ZoneEditRow(1, 'example.com', 'TXT', '"v=spf1 -all"', 60, 0, false, ''),
+                new ZoneEditRow(2, 'www.example.com', 'SOA', 'ns2.example.com hostmaster.example.com 2024010102 7200 3600 604800 3600', 60, 0, false, ''),
+            ],
+        ]);
+
+        $this->assertNull($vars['records'][0]['soa_fields']);
+        $this->assertSame('ns2.example.com', $vars['records'][1]['soa_fields']['primary_ns']);
+    }
+
     public function testRecordsAreDecoratedWithTheirLocks(): void
     {
         $vars = $this->present(['permEdit' => 'own']);
