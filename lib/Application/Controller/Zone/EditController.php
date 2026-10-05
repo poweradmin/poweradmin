@@ -542,7 +542,7 @@ class EditController extends BaseController
 
     private function handleRetrieveZone(int $zone_id, DomainManagerInterface $domainManager): void
     {
-        // The SQL backend cannot trigger a transfer, and only a secondary has a primary to pull from
+        // Needs a configured PowerDNS API, and only a secondary has a primary to pull from
         $isSecondary = $this->domainRepository()->getDomainType($zone_id) === ZoneType::SLAVE;
         if (!$this->backendCapabilities()->supportsZoneRetrieve() || !$isSecondary) {
             $this->setMessage('edit', 'error', _('Retrieving a zone from its primary needs the PowerDNS API backend and a secondary zone.'));
@@ -558,7 +558,7 @@ class EditController extends BaseController
 
     private function handleNotifyZone(int $zone_id, DomainManagerInterface $domainManager): void
     {
-        // The SQL backend cannot queue a NOTIFY, and only primary and producer zones send one
+        // Needs a configured PowerDNS API, and only primary and producer zones send one
         $notifies = ZoneType::notifies($this->domainRepository()->getDomainType($zone_id));
         if (!$this->backendCapabilities()->supportsZoneNotify() || !$notifies) {
             $this->setMessage('edit', 'error', _('Sending NOTIFY needs the PowerDNS API backend and a primary zone.'));

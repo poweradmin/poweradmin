@@ -80,7 +80,8 @@ final class DnsBackendProviderFactory
             return new ApiDnsBackendProvider($apiClient, $db, $config, $logger);
         }
 
-        return new SqlDnsBackendProvider($db, $config, $logger);
+        // The PowerDNS API, when configured, lets the SQL backend trigger NOTIFY and zone retrieval
+        return new SqlDnsBackendProvider($db, $config, $logger, null, self::createApiClient($config, $logger));
     }
 
     /**

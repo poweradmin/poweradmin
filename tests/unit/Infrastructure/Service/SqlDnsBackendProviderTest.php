@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 
@@ -58,6 +59,70 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertFalse($this->provider->supportsZoneRetrieve());
         $this->assertFalse($this->provider->supportsZoneNotify());
         $this->assertFalse($this->provider->syncsZoneListFromServer());
+    }
+
+    // ---------------------------------------------------------------
+    // Send NOTIFY and retrieve from primary through a configured PowerDNS API
+    // ---------------------------------------------------------------
+
+    private function providerWithApi(?PowerdnsApiClient $client): SqlDnsBackendProvider
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT)");
+        $db->exec("INSERT INTO domains (id, name, type) VALUES (1, 'example.com', 'MASTER'), (2, 'other.org', 'NATIVE'), (3, 'alpha.net', 'SLAVE'), (4, 'dotted.net.', 'PRODUCER')");
+
+        return new SqlDnsBackendProvider($db, $this->mockConfig, new NullLogger(), null, $client);
+    }
+
+    public function testZoneKickCapabilitiesFollowTheApiClient(): void
+    {
+        $with = $this->providerWithApi($this->createMock(PowerdnsApiClient::class));
+        $this->assertTrue($with->supportsZoneRetrieve());
+        $this->assertTrue($with->supportsZoneNotify());
+
+        $without = $this->providerWithApi(null);
+        $this->assertFalse($without->supportsZoneRetrieve());
+        $this->assertFalse($without->supportsZoneNotify());
+    }
+
+    public function testNotifyZoneAsksTheApiWithTheTrailingDotName(): void
+    {
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->expects($this->exactly(2))->method('notifyZone')
+            ->willReturnCallback(fn(string $name) => in_array($name, ['example.com.', 'dotted.net.'], true));
+        $provider = $this->providerWithApi($client);
+
+        $this->assertTrue($provider->notifyZone(1));
+        $this->assertTrue($provider->notifyZone(4));
+    }
+
+    public function testNotifyZoneDoesNothingForWrongKindUnknownZoneOrNoClient(): void
+    {
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->expects($this->never())->method('notifyZone');
+        $provider = $this->providerWithApi($client);
+
+        $this->assertFalse($provider->notifyZone(2));
+        $this->assertFalse($provider->notifyZone(3));
+        $this->assertFalse($provider->notifyZone(99));
+
+        $this->assertFalse($this->providerWithApi(null)->notifyZone(1));
+    }
+
+    public function testRetrieveZoneAsksTheApiForASecondaryOnly(): void
+    {
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->expects($this->once())->method('retrieveZone')->with('alpha.net.')->willReturn(true);
+        $provider = $this->providerWithApi($client);
+
+        $this->assertTrue($provider->retrieveZone(3));
+        $this->assertFalse($provider->retrieveZone(1));
+        $this->assertFalse($provider->retrieveZone(99));
+    }
+
+    public function testRetrieveZoneReturnsFalseWithoutAnApiClient(): void
+    {
+        $this->assertFalse($this->providerWithApi(null)->retrieveZone(3));
     }
 
     // ---------------------------------------------------------------

@@ -72,8 +72,8 @@ interface ZoneWriteBackendInterface
     /**
      * Request an immediate AXFR transfer of a secondary (slave) zone from its master.
      *
-     * Only the API backend can trigger this. The SQL backend returns false,
-     * since PowerDNS pulls secondaries on its own refresh schedule there.
+     * Needs a configured PowerDNS API. Without one the SQL backend returns false,
+     * since PowerDNS then pulls secondaries on its own refresh schedule.
      *
      * @param int $domainId Domain ID
      * @return bool
@@ -83,7 +83,7 @@ interface ZoneWriteBackendInterface
     /**
      * Queue a NOTIFY to the secondaries of a primary zone.
      *
-     * Only the API backend can trigger this. The SQL backend returns false.
+     * Needs a configured PowerDNS API; without one the SQL backend returns false.
      *
      * @param int $domainId Domain ID
      * @return bool

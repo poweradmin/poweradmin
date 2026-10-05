@@ -116,8 +116,8 @@ interface BackendCapabilitiesInterface
     /**
      * Whether a secondary zone can be pulled from its primary on request.
      *
-     * True for the API backend, which asks PowerDNS to transfer the zone. False
-     * for the SQL backend, which has no way to trigger a transfer.
+     * True for the API backend, and for the SQL backend when a PowerDNS API is
+     * configured. False otherwise, as there is no way to trigger a transfer.
      *
      * @return bool
      */
@@ -126,8 +126,8 @@ interface BackendCapabilitiesInterface
     /**
      * Whether a primary zone can be told to send NOTIFY on request.
      *
-     * True for the API backend, which asks PowerDNS to queue the NOTIFY. False
-     * for the SQL backend, which has no way to trigger one.
+     * True for the API backend, and for the SQL backend when a PowerDNS API is
+     * configured. False otherwise, as there is no way to trigger a NOTIFY.
      *
      * @return bool
      */

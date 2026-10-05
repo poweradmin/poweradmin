@@ -141,4 +141,29 @@ class DnsBackendProviderFactoryTest extends TestCase
 
         $this->assertInstanceOf(ApiDnsBackendProvider::class, $provider);
     }
+
+    public function testSqlBackendGetsTheApiClientOnlyWhenConfigured(): void
+    {
+        $this->mockConfig->method('get')->willReturnMap([
+            ['dns', 'backend', null, 'sql'],
+            ['pdns_api', 'url', null, 'http://127.0.0.1:8081'],
+            ['pdns_api', 'key', null, 'secret-api-key'],
+            ['database', 'pdns_db_name', null, ''],
+        ]);
+        $this->assertTrue(DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig)->supportsZoneNotify());
+    }
+
+    public function testSqlBackendWithoutApiConfigOffersNoZoneKicks(): void
+    {
+        $this->mockConfig->method('get')->willReturnMap([
+            ['dns', 'backend', null, 'sql'],
+            ['pdns_api', 'url', null, ''],
+            ['pdns_api', 'key', null, ''],
+            ['database', 'pdns_db_name', null, ''],
+        ]);
+        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+
+        $this->assertFalse($provider->supportsZoneNotify());
+        $this->assertFalse($provider->supportsZoneRetrieve());
+    }
 }

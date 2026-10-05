@@ -50,8 +50,13 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
     private TableNameService $tableNameService;
     private LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
-    {
+    public function __construct(
+        PDO $db,
+        ConfigurationInterface $config,
+        ?LoggerInterface $logger = null,
+        ?TransactionInterface $transaction = null,
+        private readonly ?PowerdnsApiClient $apiClient = null
+    ) {
         // Ownership is decided through the port: on SQLite a transaction can be
         // open without PDO knowing, and opening a second one then fails.
         $this->transaction = $transaction ?? new PdoTransaction($db);
@@ -143,15 +148,52 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 
     public function retrieveZone(int $domainId): bool
     {
-        // PowerDNS pulls secondaries on its own refresh schedule with the SQL
-        // backend; there is no way to trigger an immediate transfer from here.
-        return false;
+        // Without a PowerDNS API there is no way to trigger a transfer; PowerDNS pulls on its refresh schedule
+        if ($this->apiClient === null) {
+            return false;
+        }
+
+        $zone = $this->findZoneNameAndType($domainId);
+        if ($zone === null || strtoupper($zone['type']) !== ZoneType::SLAVE) {
+            return false;
+        }
+
+        return $this->apiClient->retrieveZone($zone['name']);
     }
 
     public function notifyZone(int $domainId): bool
     {
-        // Only the PowerDNS API can queue a NOTIFY; the SQL backend has no way to trigger one.
-        return false;
+        if ($this->apiClient === null) {
+            return false;
+        }
+
+        $zone = $this->findZoneNameAndType($domainId);
+        if ($zone === null || !ZoneType::notifies($zone['type'])) {
+            return false;
+        }
+
+        return $this->apiClient->notifyZone($zone['name']);
+    }
+
+    /**
+     * @return array{name: string, type: string}|null Name with the trailing dot the PowerDNS API expects
+     */
+    private function findZoneNameAndType(int $domainId): ?array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        $stmt = $this->db->prepare("SELECT name, type FROM $domainsTable WHERE id = :id");
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!is_array($row) || (string)$row['name'] === '') {
+            return null;
+        }
+
+        $name = (string)$row['name'];
+
+        return ['name' => str_ends_with($name, '.') ? $name : $name . '.', 'type' => (string)$row['type']];
     }
 
     public function updateZoneAccount(int $domainId, string $account): bool
@@ -941,12 +983,12 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 
     public function supportsZoneRetrieve(): bool
     {
-        return false;
+        return $this->apiClient !== null;
     }
 
     public function supportsZoneNotify(): bool
     {
-        return false;
+        return $this->apiClient !== null;
     }
 
     public function syncsZoneListFromServer(): bool

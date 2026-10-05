@@ -196,11 +196,31 @@ class EditControllerZoneMetadataPostTest extends TestCase
     {
         $_POST = ['retrieve_zone' => '1'];
 
-        // SqlDnsBackendProvider::retrieveZone() always returns false, so the request is refused up front
+        // Without a PowerDNS API client the SQL backend cannot retrieve, so the request is refused up front
         $domainManager = $this->createMock(DomainManagerInterface::class);
         $domainManager->expects($this->never())->method('retrieveZone');
 
         $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('SLAVE'), ['dns' => ['backend' => 'sql']]);
+    }
+
+    public function testRetrieveZonePostDispatchesOnSqlBackendWithApiClient(): void
+    {
+        $_POST = ['retrieve_zone' => '1'];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->once())->method('retrieveZone')->with(42)->willReturn(true);
+
+        $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('SLAVE'), ['dns' => ['backend' => 'sql']], sqlApiClient: true);
+    }
+
+    public function testNotifyZonePostDispatchesOnSqlBackendWithApiClient(): void
+    {
+        $_POST = ['notify_zone' => '1'];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->once())->method('notifyZone')->with(42)->willReturn(true);
+
+        $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('MASTER'), ['dns' => ['backend' => 'sql']], sqlApiClient: true);
     }
 
     public function testRetrieveZoneIsRefusedForNonSecondaryZone(): void
@@ -278,7 +298,8 @@ class EditControllerZoneMetadataPostTest extends TestCase
         ?DomainRepositoryInterface $domainRepository = null,
         array $configOverrides = [],
         bool $canCreateZone = true,
-        ?ZoneManagementService $zoneService = null
+        ?ZoneManagementService $zoneService = null,
+        bool $sqlApiClient = false
     ): array {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
 
@@ -296,7 +317,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $config = $this->primeConfig($configOverrides);
         $factory->method('dnsBackendProvider')->willReturn($config->get('dns', 'backend') === 'api'
             ? new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $this->createMock(PDO::class), $config, new NullLogger())
-            : new SqlDnsBackendProvider($this->createMock(PDO::class), $config, new NullLogger()));
+            : new SqlDnsBackendProvider($this->createMock(PDO::class), $config, new NullLogger(), null, $sqlApiClient ? $this->createMock(PowerdnsApiClient::class) : null));
         $this->setBaseProperty($controller, 'serviceFactory', $factory);
 
         $this->setBaseProperty($controller, 'config', $config);
