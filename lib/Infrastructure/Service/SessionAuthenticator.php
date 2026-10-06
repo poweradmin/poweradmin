@@ -207,10 +207,12 @@ class SessionAuthenticator extends LoggingService
             case UserProvisioningService::AUTH_METHOD_OIDC:
                 $this->logInfo('User {username} uses OIDC for authentication - skipping password verification', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
                 // OIDC users are already authenticated, no need to verify password
+                $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
                 $this->logInfo('User {username} uses SAML for authentication - skipping password verification', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
                 // SAML users are already authenticated, no need to verify password
+                $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_LDAP:
                 if ($ldap_use) {
@@ -360,6 +362,30 @@ class SessionAuthenticator extends LoggingService
             }
         }
         return false;
+    }
+
+    /**
+     * SQL and LDAP sessions re-check the account on every request; OIDC and SAML
+     * sessions would not, so a disabled or deleted account ends here. Both ids are
+     * checked, as a signed-in user may start another login that needs MFA.
+     */
+    private function endSessionOfDisabledAccount(): void
+    {
+        foreach (['userid', 'pending_userid'] as $key) {
+            $userId = $_SESSION[$key] ?? null;
+            if (!is_numeric($userId) || (int)$userId <= 0) {
+                continue;
+            }
+
+            $stmt = $this->db->prepare('SELECT id FROM users WHERE id = :id AND active = 1');
+            $stmt->bindValue(':id', (int)$userId, PDO::PARAM_INT);
+            $stmt->execute();
+            if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
+                $this->logWarning('Ending session of disabled account {userId}', ['userId' => (int)$userId]);
+                $this->authService->logout(new SessionEntity(_('The user account is disabled.'), 'danger'));
+                return;
+            }
+        }
     }
 
     private function getUserAuthMethod(): string

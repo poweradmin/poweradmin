@@ -301,7 +301,12 @@ class OidcService extends LoggingService
                 $this->logError('User provisioning failed - returned null');
             }
 
-            if ($userId) {
+            if ($userId && !$this->userProvisioningService->isActiveUser($userId)) {
+                $this->logWarning('OIDC login refused, account {userId} is disabled', ['userId' => $userId]);
+                $this->setSessionValue('userlogin', $userInfo->getUsername());
+                $this->userEventLogger->logFailedAuth(AuthMethod::OIDC);
+                $this->authenticationService->auth(new SessionEntity(_('The user account is disabled.'), 'danger'));
+            } elseif ($userId) {
                 $this->logInfo('Successfully authenticated OIDC user: {username}', ['username' => $userInfo->getUsername()]);
 
                 // Issue a fresh session ID on successful login, matching the local

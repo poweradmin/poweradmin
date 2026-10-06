@@ -297,7 +297,13 @@ class SamlService extends LoggingService
             // Provision or update user (reuse OIDC provisioning service)
             $userId = $this->userProvisioningService->provisionUser($userInfo, $providerId);
 
-            if ($userId) {
+            if ($userId && !$this->userProvisioningService->isActiveUser($userId)) {
+                $this->logWarning('SAML login refused, account {userId} is disabled', ['userId' => $userId]);
+                $this->setSessionValue('userlogin', $userInfo->getUsername());
+                $this->userEventLogger->logFailedAuth(AuthMethod::SAML);
+                $this->unsetSessionValue('saml_provider');
+                $this->authenticationService->auth(new SessionEntity(_('The user account is disabled.'), 'danger'));
+            } elseif ($userId) {
                 $this->logInfo('Successfully authenticated SAML user: {username}', ['username' => $userInfo->getUsername()]);
 
                 // Issue a fresh session ID on successful login, matching the local
