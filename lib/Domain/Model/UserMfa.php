@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -238,14 +238,13 @@ class UserMfa
     {
         $codes = $this->getRecoveryCodesAsArray();
 
-        if (in_array($code, $codes)) {
-            // Remove the used code
-            $key = array_search($code, $codes);
-            unset($codes[$key]);
-
-            // Update the recovery codes
-            $this->setRecoveryCodes(array_values($codes));
-            return true;
+        // Strict and constant time: a loose match lets "0e0" stand in for a stored "0e1234..."
+        foreach ($codes as $key => $stored) {
+            if (is_string($stored) && hash_equals($stored, $code)) {
+                unset($codes[$key]);
+                $this->setRecoveryCodes(array_values($codes));
+                return true;
+            }
         }
 
         return false;
