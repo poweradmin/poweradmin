@@ -41,6 +41,7 @@ class ConfigValidator
         $this->errors = [];
 
         $this->validateIfaceRowAmount();
+        $this->validatePasswordEncryption();
         $this->validateSessionTimeout();
         $this->validateIfaceLang();
         $this->validateTheme();
@@ -135,6 +136,22 @@ class ConfigValidator
         $sessionTimeout = $this->getSetting('interface', 'session_timeout', 1800);
         if (!is_int($sessionTimeout) || $sessionTimeout <= 0) {
             $this->errors['interface.session_timeout'] = 'session_timeout must be a positive integer (seconds); the timeout cannot be disabled';
+        }
+    }
+
+    /**
+     * md5 and md5salt were removed in 4.3.0; an old settings.php still naming them would
+     * make every password hash or rehash throw, so fail at boot with a readable message.
+     */
+    private function validatePasswordEncryption(): void
+    {
+        $method = $this->getSetting('security', 'password_encryption', 'bcrypt');
+        if (!in_array($method, ['bcrypt', 'argon2i', 'argon2id'], true)) {
+            $this->errors['security.password_encryption'] = sprintf(
+                "password_encryption '%s' is not supported (md5 and md5salt were removed in 4.3.0); use bcrypt, argon2i or argon2id. "
+                . 'Existing md5 password hashes still verify and are rehashed at the next login',
+                is_scalar($method) ? (string)$method : get_debug_type($method)
+            );
         }
     }
 
