@@ -33,6 +33,7 @@ use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\NullLogHandler;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,6 +51,7 @@ class BasicAuthenticationMiddleware
     private ConfigurationManager $config;
     private MessageService $messageService;
     private SqlAuthenticator $sqlAuthenticator;
+    private LoginAttemptService $loginAttemptService;
 
     /**
      * Constructor
@@ -77,7 +79,7 @@ class BasicAuthenticationMiddleware
         $logHandler = new NullLogHandler();
         $logger = new Logger($logHandler, 'info');
 
-        $loginAttemptService = new LoginAttemptService($db, $this->config);
+        $this->loginAttemptService = new LoginAttemptService($db, $this->config);
 
         // Initialize SQL authenticator with all required dependencies
         $this->sqlAuthenticator = new SqlAuthenticator(
@@ -87,7 +89,7 @@ class BasicAuthenticationMiddleware
             $authService,
             $csrfTokenService,
             $logger,
-            $loginAttemptService
+            $this->loginAttemptService
         );
     }
 
@@ -179,12 +181,20 @@ class BasicAuthenticationMiddleware
             return 0;
         }
 
+        // The browser login already enforces account_lockout; Basic Auth must not bypass it
+        $ipAddress = (new IpAddressRetriever($_SERVER))->getClientIp() ?: '0.0.0.0';
+        if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
+            return 0;
+        }
+
         // Get user ID and auth method
         $query = $this->db->prepare("SELECT id, password, use_ldap FROM users WHERE username = :username AND active = 1");
         $query->execute(['username' => $username]);
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
         if (!$user) {
+            // Disabled account: still record so probing inactive users contributes to lockout
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             return 0;
         }
 
@@ -200,6 +210,7 @@ class BasicAuthenticationMiddleware
                 return $userModel->getId();
             }
             // LDAP users should not fall back to SQL authentication
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             return 0;
         }
 
@@ -211,6 +222,9 @@ class BasicAuthenticationMiddleware
             return $userModel->getId();
         }
 
+        // No recordAttempt(true) on success: Basic Auth runs on every API call, so with
+        // clear_attempts_on_success it would wipe an attacker's accumulating failures
+        $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
         return 0;
     }
 
