@@ -117,4 +117,20 @@ interface UserPermissionReadInterface
      * @return array<int, int>
      */
     public function getUserOwnedZoneIds(int $userId): array;
+
+    /**
+     * Canonical ids of the zones the user owns directly, without group grants; each
+     * zone once however many owner rows it has
+     *
+     * @return array<int, int>
+     */
+    public function getDirectlyOwnedZoneIds(int $userId): array;
+
+    /**
+     * getDirectlyOwnedZoneIds() counted for many users in one query
+     *
+     * @param int[] $userIds
+     * @return array<int, int> Zone count keyed by user id; every requested id is present
+     */
+    public function countDirectlyOwnedZones(array $userIds): array;
 }

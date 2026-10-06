@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\Zone\ZoneCreateRequest;
+use Poweradmin\Application\Service\Zone\ZoneLimitMessages;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
@@ -276,6 +277,7 @@ class AddZoneMasterController extends BaseController
             || $this->httpRequest->getPostParam('type') === 'reverse';
 
         $this->render('add_zone_master.html', [
+            'zone_limit_note' => ZoneLimitMessages::remaining($this->services()->zoneOwnershipLimit()->userRemaining((int)$userId)),
             'is_reverse_zone' => $is_reverse_zone,
             'session_user_id' => $userId,
             'available_zone_types' => $valid_domain_types,

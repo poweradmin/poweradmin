@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\Zone\ZoneCreateRequest;
+use Poweradmin\Application\Service\Zone\ZoneLimitMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Utility\DomainHelper;
@@ -146,6 +147,7 @@ class BulkRegistrationController extends BaseController
         $assignableOwners = $this->assignableOwners($users);
         $groupsInput = $this->httpRequest->getPostParam('groups');
         $this->render('bulk_registration.html', [
+            'zone_limit_note' => ZoneLimitMessages::remaining($this->services()->zoneOwnershipLimit()->userRemaining((int)$this->getCurrentUserId())),
             'userid' => $this->getCurrentUserId(),
             'owner_value' => $this->preservedOwnerChoice($assignableOwners, $this->httpRequest->getPostParam('owner')),
             'perm_edit_others' => $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS),

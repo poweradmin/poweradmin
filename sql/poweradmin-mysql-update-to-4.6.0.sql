@@ -85,3 +85,26 @@ SET @repair = IF(@has_zones_owner_index = 0,
 PREPARE repair FROM @repair;
 EXECUTE repair;
 DEALLOCATE PREPARE repair;
+
+-- Zone count limit per user and group (#72): NULL uses the dns.default_max_zones_* setting
+SET @has_users_max_zones = (
+    SELECT COUNT(*) FROM information_schema.columns
+    WHERE table_schema = DATABASE() AND table_name = 'users' AND column_name = 'max_zones'
+);
+SET @repair = IF(@has_users_max_zones = 0,
+    'ALTER TABLE `users` ADD COLUMN `max_zones` int(11) DEFAULT NULL',
+    'SELECT ''users.max_zones already present'' AS notice');
+PREPARE repair FROM @repair;
+EXECUTE repair;
+DEALLOCATE PREPARE repair;
+
+SET @has_groups_max_zones = (
+    SELECT COUNT(*) FROM information_schema.columns
+    WHERE table_schema = DATABASE() AND table_name = 'user_groups' AND column_name = 'max_zones'
+);
+SET @repair = IF(@has_groups_max_zones = 0,
+    'ALTER TABLE `user_groups` ADD COLUMN `max_zones` INT DEFAULT NULL',
+    'SELECT ''user_groups.max_zones already present'' AS notice');
+PREPARE repair FROM @repair;
+EXECUTE repair;
+DEALLOCATE PREPARE repair;

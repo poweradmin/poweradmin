@@ -97,6 +97,19 @@ final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         return $groups;
     }
 
+    public function countGrantedZones(int $groupId): int
+    {
+        $stmt = $this->db->prepare('SELECT DISTINCT domain_id FROM zones_groups WHERE group_id = :group_id');
+        $stmt->bindValue(':group_id', $groupId, PDO::PARAM_INT);
+        $stmt->execute();
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+        // Group grants on a shared zone id are not honoured (see SharedZoneIds)
+        return $this->isApiBackend
+            ? count(array_diff($zoneIds, SharedZoneIds::sharedAmong($this->db, $zoneIds)))
+            : count($zoneIds);
+    }
+
     public function findByGroupId(int $groupId): array
     {
         if (!$this->isApiBackend && $this->tableNameService !== null) {

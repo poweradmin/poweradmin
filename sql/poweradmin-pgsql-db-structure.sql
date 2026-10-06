@@ -292,6 +292,7 @@ CREATE TABLE "public"."users" (
                                   "active" integer,
                                   "use_ldap" integer,
                                   "auth_method" character varying(20) DEFAULT 'sql' NOT NULL,
+                                  "max_zones" integer DEFAULT NULL,
                                   CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -534,6 +535,7 @@ CREATE TABLE user_groups (
     name VARCHAR(255) NOT NULL UNIQUE,
     description TEXT,
     perm_templ INTEGER NOT NULL REFERENCES perm_templ(id),
+    max_zones INTEGER DEFAULT NULL,
     created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -142,6 +142,7 @@ class RefusalStatusTest extends TestCase
             UserManagementService::ERR_USERNAME_REQUIRED => [400],
             UserManagementService::ERR_INVALID_LDAP => [400],
             UserManagementService::ERR_INVALID_AUTH_METHOD => [400],
+            UserManagementService::ERR_ZONE_LIMIT => [409],
             UserManagementService::ERR_PASSWORD_REQUIRED => [400],
             UserManagementService::ERR_PASSWORD_POLICY => [400],
             UserManagementService::ERR_FIELD_LENGTH => [400],
@@ -179,6 +180,7 @@ class RefusalStatusTest extends TestCase
             ZoneManagementService::ERR_ZONE_WRITE => [400, 403, 404, 500],
             ZoneManagementService::ERR_NOT_FOUND => [404],
             ZoneManagementService::ERR_READ_ONLY => [400],
+            ZoneManagementService::ERR_ZONE_LIMIT => [409],
         ];
     }
 

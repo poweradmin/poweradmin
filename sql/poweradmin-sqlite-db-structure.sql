@@ -186,7 +186,7 @@ CREATE INDEX idx_records_zone_templ_api_domain_id ON records_zone_templ_api(doma
 CREATE INDEX idx_records_zone_templ_api_zone_templ_id ON records_zone_templ_api(zone_templ_id);
 
 
-CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, description VARCHAR(1024) NOT NULL, perm_templ integer NOT NULL, perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'admin', active integer(1) NOT NULL, use_ldap integer(1) NOT NULL, auth_method VARCHAR(20) NOT NULL DEFAULT 'sql');
+CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, description VARCHAR(1024) NOT NULL, perm_templ integer NOT NULL, perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'admin', active integer(1) NOT NULL, use_ldap integer(1) NOT NULL, auth_method VARCHAR(20) NOT NULL DEFAULT 'sql', max_zones integer DEFAULT NULL);
 
 CREATE INDEX idx_users_perm_templ ON users(perm_templ);
 
@@ -388,6 +388,7 @@ CREATE TABLE user_groups (
     name VARCHAR(255) NOT NULL UNIQUE,
     description TEXT,
     perm_templ INTEGER NOT NULL,
+    max_zones INTEGER DEFAULT NULL,
     created_by INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

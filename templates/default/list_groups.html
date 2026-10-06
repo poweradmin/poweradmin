@@ -52,7 +52,7 @@
                         <span class="badge bg-success">{{ group.member_count }}</span>
                     </td>
                     <td class="text-center">
-                        <span class="badge bg-primary">{{ group.zone_count }}</span>
+                        <span class="badge bg-primary">{{ group.zone_count }}{% if show_zone_limit %} / {{ group.zone_limit ?? '∞' }}{% endif %}</span>
                     </td>
                     <td class="text-end">
                         <div class="btn-group btn-group-sm" role="group">

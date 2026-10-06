@@ -92,4 +92,9 @@ interface ZoneGroupRepositoryInterface
      * @return bool
      */
     public function exists(int $domainId, int $groupId): bool;
+
+    /**
+     * Zones the group is granted, counting only grants that give access
+     */
+    public function countGrantedZones(int $groupId): int;
 }

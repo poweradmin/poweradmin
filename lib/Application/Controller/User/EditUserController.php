@@ -30,6 +30,8 @@ use Poweradmin\Application\Service\User\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
 use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Application\Service\Zone\ZoneLimitMessages;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -94,6 +96,18 @@ class EditUserController extends BaseController
         $callerId = (int)$this->getCurrentUserId();
         $input = $this->prepareUserData($editId, $stored, $callerId);
 
+        // Only a superuser's form carries the field; anyone else's post of it is ignored
+        $zoneLimits = $this->services()->zoneOwnershipLimit();
+        $zoneLimit = null;
+        if ($zoneLimits->maySetLimits($callerId) && $this->httpRequest->getPostParam('max_zones') !== null) {
+            $zoneLimit = ZoneLimitInput::fromForm($this->httpRequest->getPostParam('max_zones'));
+            if (!$zoneLimit['valid']) {
+                $this->setMessage('edit_user', 'error', _('Enter a zone limit of 0 or more, or leave it empty.'));
+                $this->showUserEditForm($editId, $policyConfig);
+                return;
+            }
+        }
+
         // Same gate as the API: a chosen template must stay within the caller's own authority.
         if (array_key_exists('perm_templ', $input)) {
             $templateError = PermissionTemplateAssignmentGuard::apply($this->services()->permissionService(), null, $callerId, $input, $editId);
@@ -125,6 +139,12 @@ class EditUserController extends BaseController
                 $this->auditService()->logPermTemplateChange($username, $oldPermTempl, $newPermTempl);
             }
 
+            $limitWarning = null;
+            if ($zoneLimit !== null && $zoneLimit['limit'] !== $this->services()->userRepository()->findZoneLimit($editId)) {
+                $zoneLimits->setUserLimit($callerId, $editId, $zoneLimit['limit']);
+                $limitWarning = ZoneLimitMessages::belowUsage($username, $zoneLimits->userZoneCount($editId), $zoneLimits->userLimit($editId));
+            }
+
             $isOwnProfile = $editId === $this->getUserContextService()->getLoggedInUserId();
             $canViewAllUsers = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS);
             $canEditAllUsers = $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
@@ -136,6 +156,9 @@ class EditUserController extends BaseController
             } else {
                 // User with admin permissions - redirect to users list
                 $this->setMessage('users', 'success', _('The user has been updated successfully.'));
+                if ($limitWarning !== null) {
+                    $this->setMessage('users', 'warning', $limitWarning);
+                }
                 $this->redirect('/users');
             }
         } else {
@@ -488,6 +511,7 @@ class EditUserController extends BaseController
                 default => false,
             }),
             'restricted_self_edit' => $this->isRestrictedSelfEdit($editId),
+            'zone_limit' => $this->zoneLimitView($editId),
             'sign_in_method_locked' => $this->isRestrictedSelfEdit($editId) || !$this->mayChangeSignInMethod($editId),
             'password_policy' => $policyConfig,
             'user_groups' => $userGroups,
@@ -497,6 +521,28 @@ class EditUserController extends BaseController
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
+    }
+
+    /**
+     * The zone limit field, for superusers only; null hides it.
+     *
+     * @return array{value: ?int, owned: int, default: ?int, superuser: bool}|null
+     */
+    private function zoneLimitView(int $editId): ?array
+    {
+        $limits = $this->services()->zoneOwnershipLimit();
+        if (!$limits->maySetLimits((int)$this->getCurrentUserId())) {
+            return null;
+        }
+
+        $default = $this->config->get('dns', 'default_max_zones_per_user');
+
+        return [
+            'value' => $this->services()->userRepository()->findZoneLimit($editId),
+            'owned' => $limits->userZoneCount($editId),
+            'default' => is_numeric($default) ? (int)$default : null,
+            'superuser' => $this->services()->permissionService()->isAdmin($editId),
+        ];
     }
 
     private function getUserPermissions(int $editId): array

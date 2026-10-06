@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Application\Service\User\UserCommandFactory;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
@@ -33,6 +34,8 @@ use Poweradmin\Domain\Service\User\GroupReferenceResolver;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\Auth\SelfEditFieldGuard;
 use Poweradmin\Domain\Service\User\UserManagementService;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -140,6 +143,7 @@ class UsersController extends PublicApiController
                                 ),
                                 new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
                                 new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
+                                new OA\Property(property: 'max_zones', description: 'Own zone limit; null means the configured default applies', type: 'integer', example: 10, nullable: true),
                                 new OA\Property(
                                     property: 'groups',
                                     type: 'array',
@@ -292,6 +296,7 @@ class UsersController extends PublicApiController
                                     new OA\Property(property: 'is_admin', type: 'boolean', example: true),
                                     new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
                                     new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
+                                    new OA\Property(property: 'max_zones', description: 'Own zone limit; null means the configured default applies', type: 'integer', example: 10, nullable: true),
                                     new OA\Property(
                                         property: 'groups',
                                         type: 'array',
@@ -463,6 +468,13 @@ class UsersController extends PublicApiController
                     example: 1
                 ),
                 new OA\Property(
+                    property: 'max_zones',
+                    description: 'How many zones the user may own directly; null uses dns.default_max_zones_per_user. Superusers only.',
+                    type: 'integer',
+                    example: 10,
+                    nullable: true
+                ),
+                new OA\Property(
                     property: 'use_ldap',
                     description: 'Whether the user should use LDAP authentication. Requires LDAP to be enabled; no local password is stored.',
                     type: 'boolean',
@@ -528,7 +540,7 @@ class UsersController extends PublicApiController
     )]
     #[OA\Response(
         response: 403,
-        description: 'Forbidden - no permission to create users, or groups was supplied without user_is_ueberuser',
+        description: 'Forbidden - no permission to create users, or groups or max_zones was supplied without user_is_ueberuser',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
@@ -586,6 +598,11 @@ class UsersController extends PublicApiController
                 return $templateGate;
             }
 
+            $zoneLimit = $this->readZoneLimit($currentUserId, $input);
+            if ($zoneLimit instanceof JsonResponse) {
+                return $zoneLimit;
+            }
+
             // Use the domain service to create user
             $result = UserCommandFactory::create($input);
             if (!is_array($result)) {
@@ -600,6 +617,10 @@ class UsersController extends PublicApiController
                         'timestamp' => date('Y-m-d H:i:s')
                     ]
                 ]);
+            }
+
+            if (is_array($zoneLimit) && $zoneLimit['limit'] !== null) {
+                $this->services()->zoneOwnershipLimit()->setUserLimit($currentUserId, (int)$result['user_id'], $zoneLimit['limit']);
             }
 
             $assignedGroups = $this->assignGroups((int)$result['user_id'], $input['username'], $groups);
@@ -688,6 +709,13 @@ class UsersController extends PublicApiController
                     example: 2
                 ),
                 new OA\Property(
+                    property: 'max_zones',
+                    description: 'How many zones the user may own directly; null uses dns.default_max_zones_per_user. Superusers only.',
+                    type: 'integer',
+                    example: 10,
+                    nullable: true
+                ),
+                new OA\Property(
                     property: 'use_ldap',
                     description: 'Whether the user should use LDAP authentication. Must be explicitly included when setting to false - omitting leaves the current value unchanged.',
                     type: 'boolean',
@@ -727,6 +755,17 @@ class UsersController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid JSON in request body'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Forbidden - no permission to edit this user, or max_zones was supplied without user_is_ueberuser',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Only superusers may change zone limits'),
                 new OA\Property(property: 'data', type: 'null')
             ]
         )
@@ -802,6 +841,11 @@ class UsersController extends PublicApiController
                 }
             }
 
+            $zoneLimit = $this->readZoneLimit($currentUserId, $input);
+            if ($zoneLimit instanceof JsonResponse) {
+                return $zoneLimit;
+            }
+
             // Use the domain service to update user
             $result = UserCommandFactory::update($input);
             if (!is_array($result)) {
@@ -816,6 +860,10 @@ class UsersController extends PublicApiController
                         'timestamp' => date('Y-m-d H:i:s')
                     ]
                 ]);
+            }
+
+            if (is_array($zoneLimit)) {
+                $this->services()->zoneOwnershipLimit()->setUserLimit($currentUserId, $targetUserId, $zoneLimit['limit']);
             }
 
             return $this->returnApiResponse(
@@ -1160,6 +1208,28 @@ class UsersController extends PublicApiController
         return $assigned;
     }
 
+
+    /**
+     * Reads max_zones when the body has it: null when absent, the parsed limit, or the refusal.
+     * Only superusers may send it, so a delegated administrator cannot lift a limit.
+     *
+     * @return array{valid: bool, limit: ?int}|JsonResponse|null
+     */
+    private function readZoneLimit(int $currentUserId, array $input): array|JsonResponse|null
+    {
+        if (!array_key_exists('max_zones', $input)) {
+            return null;
+        }
+        if (!$this->services()->zoneOwnershipLimit()->maySetLimits($currentUserId)) {
+            return $this->returnApiError('Only superusers may change zone limits', RefusalStatus::of(Refusal::FORBIDDEN));
+        }
+        $zoneLimit = ZoneLimitInput::fromJson($input['max_zones']);
+        if (!$zoneLimit['valid']) {
+            return $this->returnApiError('max_zones must be null or a whole number from 0 to ' . ZoneOwnershipLimit::MAX_LIMIT, RefusalStatus::of(Refusal::INVALID_INPUT));
+        }
+
+        return $zoneLimit;
+    }
     private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId, ?int $targetUserId): ?JsonResponse
     {
         $error = PermissionTemplateAssignmentGuard::apply(

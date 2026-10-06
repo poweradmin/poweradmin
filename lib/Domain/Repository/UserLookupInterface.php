@@ -107,4 +107,18 @@ interface UserLookupInterface
      * Full name of the user with exactly this username (accent-exact match), or null when there is none
      */
     public function getFullNameByUsername(string $username): ?string;
+
+    /**
+     * The user's own zone limit: null when none is set (the configured default applies),
+     * 0 when the user may own no zones
+     */
+    public function findZoneLimit(int $userId): ?int;
+
+    /**
+     * findZoneLimit() for many users in one query
+     *
+     * @param int[] $userIds
+     * @return array<int, ?int> Own limit keyed by user id; every requested id is present
+     */
+    public function findZoneLimits(array $userIds): array;
 }

@@ -160,6 +160,9 @@ class ManageGroupZonesController extends BaseController
                     ),
                     $failedCount
                 );
+                if (isset($results['limit'])) {
+                    $message .= ' ' . $results['limit']->localizedMessage();
+                }
                 $this->setMessage('manage_group_zones', 'warning', $message);
             }
 

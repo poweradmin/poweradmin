@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\Mail\MailService;
 use Poweradmin\Application\Service\User\PasswordGenerationService;
 use Poweradmin\Application\Service\User\PasswordPolicyService;
 use Poweradmin\Application\Service\User\UserFormMessages;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
@@ -144,6 +145,18 @@ class AddUserController extends BaseController
             $input['password'] = $generatedPassword;
         }
 
+        // Only a superuser's form carries the field; anyone else's post of it is ignored
+        $zoneLimits = $this->services()->zoneOwnershipLimit();
+        $zoneLimit = null;
+        if ($zoneLimits->maySetLimits($callerId) && $this->httpRequest->getPostParam('max_zones') !== null) {
+            $zoneLimit = ZoneLimitInput::fromForm($this->httpRequest->getPostParam('max_zones'));
+            if (!$zoneLimit['valid']) {
+                $this->setMessage('add_user', 'error', _('Enter a zone limit of 0 or more, or leave it empty.'));
+                $this->renderAddUserForm($policyConfig);
+                return;
+            }
+        }
+
         $created = UserCommandFactory::create($input, $useRemoteUser);
         if (!is_array($created)) {
             $created = $this->services()->userManagementService()->createUser($created);
@@ -151,6 +164,10 @@ class AddUserController extends BaseController
         if ($created['success']) {
             $newUserId = (int)$created['user_id'];
             $successMessage = _('The user has been created successfully.');
+
+            if ($zoneLimit !== null && $zoneLimit['limit'] !== null) {
+                $zoneLimits->setUserLimit($callerId, $newUserId, $zoneLimit['limit']);
+            }
 
             // Handle group membership assignments
             $groupIds = $this->httpRequest->getPostParam('add_to_groups', []);
@@ -237,6 +254,9 @@ class AddUserController extends BaseController
         // Get previously selected groups (in case of form re-render after validation error)
         $selectedGroups = $this->httpRequest->getPostParam('add_to_groups', []);
 
+        $zoneLimitDefault = $this->config->get('dns', 'default_max_zones_per_user');
+        $zoneLimitDefault = is_numeric($zoneLimitDefault) ? (int)$zoneLimitDefault : null;
+
         $this->render('add_user.html', [
             'username' => $username,
             'fullname' => $fullname,
@@ -250,6 +270,9 @@ class AddUserController extends BaseController
             'ldap_use' => $this->config->get('ldap', 'enabled', false),
             'use_remote_user_checked' => $use_remote_user_checked,
             'remote_user_use' => $this->config->get('remote_user', 'enabled', false),
+            'zone_limit_editable' => $this->services()->zoneOwnershipLimit()->maySetLimits((int)$this->getCurrentUserId()),
+            'zone_limit_default' => $zoneLimitDefault,
+            'max_zones' => (string)$this->httpRequest->getPostParam('max_zones', ''),
             'password_policy' => $policyConfig,
             'mail_enabled' => $mail_enabled,
             'available_groups' => $availableGroups,

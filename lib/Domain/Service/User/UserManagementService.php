@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
@@ -44,6 +45,7 @@ class UserManagementService
     public const ERR_USERNAME_REQUIRED = 'username_required';
     public const ERR_INVALID_LDAP = 'invalid_ldap';
     public const ERR_INVALID_AUTH_METHOD = 'invalid_auth_method';
+    public const ERR_ZONE_LIMIT = 'zone_limit';
     public const ERR_PASSWORD_REQUIRED = 'password_required';
     public const ERR_PASSWORD_POLICY = 'password_policy';
     public const ERR_FIELD_LENGTH = 'field_length';
@@ -68,6 +70,7 @@ class UserManagementService
     private PasswordPolicyInterface $passwordPolicy;
     private bool $ldapEnabled;
     private bool $remoteUserEnabled;
+    private ?ZoneOwnershipLimit $ownershipLimit;
     private DomainManagerInterface $domainManager;
     private ZoneManagementService $zones;
 
@@ -80,8 +83,10 @@ class UserManagementService
         bool $ldapEnabled,
         DomainManagerInterface $domainManager,
         ZoneManagementService $zones,
-        bool $remoteUserEnabled = false
+        bool $remoteUserEnabled = false,
+        ?ZoneOwnershipLimit $ownershipLimit = null
     ) {
+        $this->ownershipLimit = $ownershipLimit;
         $this->userRepository = $userRepository;
         $this->permissions = $permissionService;
         $this->profileAssembler = $profileAssembler;
@@ -102,8 +107,14 @@ class UserManagementService
     public function getUserById(int $userId): ?array
     {
         $user = $this->userRepository->getUserById($userId);
+        if (!$user) {
+            return null;
+        }
 
-        return $user ? $this->profileAssembler->assembleDetail($user) : null;
+        // Read apart from getUserById(), which sign-in paths share
+        $user['max_zones'] = $this->userRepository->findZoneLimit($userId);
+
+        return $this->profileAssembler->assembleDetail($user);
     }
 
     /**
@@ -517,6 +528,17 @@ class UserManagementService
                     }
                 }
 
+                $breach = $this->ownershipLimit?->transferBreach($userId, $transferToUserId);
+                if ($breach !== null) {
+                    return [
+                        'success' => false,
+                        'message' => $breach->message(),
+                        'refusal' => Refusal::CONFLICT,
+                        'code' => self::ERR_ZONE_LIMIT,
+                        'zone_limit' => $breach,
+                    ];
+                }
+
                 // Transfer zones to the specified user
                 if (!$this->userRepository->transferUserZones($userId, $transferToUserId)) {
                     return [
@@ -586,6 +608,20 @@ class UserManagementService
             }
             if ($decision['target'] === 'new_owner' && !$this->permissions->canEditZoneMeta($actingUserId, $zoneId)) {
                 return ['success' => false, 'message' => 'You do not have permission to reassign zone ' . $zoneId, 'refusal' => Refusal::FORBIDDEN, 'code' => self::ERR_ZONE_META_FORBIDDEN];
+            }
+        }
+
+        // Checked for all new owners before any write, so a refusal never leaves the deletion half done
+        $zonesByNewOwner = [];
+        foreach ($zoneDecisions as $decision) {
+            if ($decision['target'] === 'new_owner') {
+                $zonesByNewOwner[(int)($decision['newowner'] ?? 0)][] = (int)$decision['zid'];
+            }
+        }
+        foreach ($zonesByNewOwner as $newOwnerId => $zoneIds) {
+            $breach = $newOwnerId > 0 ? $this->ownershipLimit?->zonesBreach($newOwnerId, $zoneIds) : null;
+            if ($breach !== null) {
+                return ['success' => false, 'message' => $breach->message(), 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_ZONE_LIMIT, 'zone_limit' => $breach];
             }
         }
 

@@ -1325,6 +1325,40 @@ class ConfigValidatorTest extends TestCase
         }
     }
 
+    public static function zoneLimitKeys(): array
+    {
+        return [
+            'user' => ['default_max_zones_per_user'],
+            'group' => ['default_max_zones_per_group'],
+        ];
+    }
+
+    #[DataProvider('zoneLimitKeys')]
+    public function testZoneLimitDefaultsAcceptNullZeroAndPositiveIntegers(string $key): void
+    {
+        foreach ([null, 0, 10] as $value) {
+            $config = $this->passwordEncryptionConfig('bcrypt');
+            $config['dns'] = [$key => $value];
+            $validator = new ConfigValidator($config);
+
+            $this->assertTrue($validator->validate(), var_export($value, true) . ' should be accepted');
+            $this->assertArrayNotHasKey('dns.' . $key, $validator->getErrors());
+        }
+    }
+
+    #[DataProvider('zoneLimitKeys')]
+    public function testZoneLimitDefaultsRefuseOtherValues(string $key): void
+    {
+        foreach ([-1, '5', 1.5, true] as $value) {
+            $config = $this->passwordEncryptionConfig('bcrypt');
+            $config['dns'] = [$key => $value];
+            $validator = new ConfigValidator($config);
+
+            $this->assertFalse($validator->validate(), var_export($value, true) . ' should be refused');
+            $this->assertArrayHasKey('dns.' . $key, $validator->getErrors());
+        }
+    }
+
     private function passwordEncryptionConfig(string $method): array
     {
         return [

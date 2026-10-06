@@ -58,3 +58,7 @@ ALTER TABLE records_zone_templ_new RENAME TO records_zone_templ;
 CREATE INDEX IF NOT EXISTS idx_records_zone_templ_domain_id ON records_zone_templ(domain_id);
 CREATE INDEX IF NOT EXISTS idx_records_zone_templ_zone_templ_id ON records_zone_templ(zone_templ_id);
 COMMIT;
+
+-- Zone count limit per user and group (#72): NULL uses the dns.default_max_zones_* setting
+ALTER TABLE users ADD COLUMN max_zones integer DEFAULT NULL;
+ALTER TABLE user_groups ADD COLUMN max_zones INTEGER DEFAULT NULL;

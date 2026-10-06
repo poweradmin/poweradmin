@@ -40,6 +40,7 @@ use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -73,6 +74,7 @@ final class DomainManager implements DomainManagerInterface
     private ZoneGroupRepositoryInterface $zoneGroups;
     private ZoneAccountSyncService $accountSync;
     private ?ZoneCacheFlusherInterface $zoneCacheFlusher;
+    private ?ZoneOwnershipLimit $ownershipLimit;
 
     /**
      * Constructor
@@ -94,6 +96,7 @@ final class DomainManager implements DomainManagerInterface
      * @param ZoneAccountSyncService $accountSync Mirrors the owner into the backend account field
      * @param ActorInterface $actor The user the ownership and permission checks are about
      * @param ZoneCacheFlusherInterface|null $zoneCacheFlusher Tells PowerDNS about a committed zone, null when it needs no telling
+     * @param ZoneOwnershipLimit|null $ownershipLimit Zone limit of an added owner; null enforces none
      */
     public function __construct(
         TransactionInterface $transaction,
@@ -113,9 +116,11 @@ final class DomainManager implements DomainManagerInterface
         ZoneAccountSyncService $accountSync,
         ActorInterface $actor,
         ?LoggerInterface $logger = null,
-        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
+        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null,
+        ?ZoneOwnershipLimit $ownershipLimit = null
     ) {
         $this->zoneCacheFlusher = $zoneCacheFlusher;
+        $this->ownershipLimit = $ownershipLimit;
         $this->templateLinks = $templateLinks;
         $this->zoneGroups = $zoneGroups;
         $this->accountSync = $accountSync;
@@ -643,7 +648,14 @@ final class DomainManager implements DomainManagerInterface
         if ($zoneRepository->isSharedZoneId($zone_id)) {
             return ZoneWriteResult::failure(_('Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them.'), Refusal::CONFLICT);
         }
-        if (!$zoneRepository->isUserZoneOwner($zone_id, $user_id) && !$zoneRepository->addOwnerToZone($zone_id, $user_id)) {
+        if ($zoneRepository->isUserZoneOwner($zone_id, $user_id)) {
+            return ZoneWriteResult::ok($zone_id);
+        }
+        $breach = $this->ownershipLimit?->userBreach($user_id);
+        if ($breach !== null) {
+            return ZoneWriteResult::failure($breach->localizedMessage(), Refusal::CONFLICT);
+        }
+        if (!$zoneRepository->addOwnerToZone($zone_id, $user_id)) {
             return ZoneWriteResult::backendFailure(_('Failed to add the owner to the zone.'));
         }
 

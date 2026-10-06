@@ -30,7 +30,9 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
@@ -77,7 +79,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             (13, 'dup', 0)");
     }
 
-    private function service(?PdnsCapabilities $capabilities = null, ?DomainRepositoryInterface $domains = null): ZoneManagementService
+    private function service(?PdnsCapabilities $capabilities = null, ?DomainRepositoryInterface $domains = null, ?ZoneOwnershipLimit $ownershipLimit = null): ZoneManagementService
     {
         $config = new FakeConfiguration([
             'dns' => ['third_level_check' => $this->thirdLevelCheck, 'parent_zone_ownership_check' => $this->parentZoneOwnershipCheck],
@@ -97,7 +99,9 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             null,
             $capabilities,
             null,
-            $domains
+            $domains,
+            null,
+            $ownershipLimit
         );
     }
 
@@ -321,5 +325,40 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO records (domain_id, name, type, content) VALUES ($parentId, 'www.sub2.parent.example', 'A', '192.0.2.5')");
         $visible = $this->service()->createZone('sub2.parent.example', 'MASTER', self::OTHER_USER, '', 'none', false, [], self::OTHER_USER);
         $this->assertSame('parent.example', $visible['shadowed']?->parentZoneName);
+    }
+
+    public function testAnOwnerPastTheZoneLimitLeavesNoZoneBehind(): void
+    {
+        $breach = new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'client', 3, 3);
+        $limit = $this->createMock(ZoneOwnershipLimit::class);
+        $limit->expects($this->once())->method('newZoneBreach')->with(self::OTHER_USER, [4, 5])->willReturn($breach);
+        $before = (int)$this->db->query('SELECT COUNT(*) FROM domains')->fetchColumn();
+
+        $result = $this->service(null, null, $limit)->createZone('limited.example', 'MASTER', self::OTHER_USER, '', 'none', false, ['4', 5]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertSame(ZoneManagementService::ERR_ZONE_LIMIT, $result['code']);
+        $this->assertSame($breach, $result['zone_limit']);
+        $this->assertSame('Zone limit reached: user client owns 3 of 3 zones.', $result['message']);
+        $this->assertSame($before, (int)$this->db->query('SELECT COUNT(*) FROM domains')->fetchColumn());
+    }
+
+    public function testAnOwnerWithinTheZoneLimitGetsTheZone(): void
+    {
+        $limit = $this->createMock(ZoneOwnershipLimit::class);
+        $limit->expects($this->once())->method('newZoneBreach')->willReturn(null);
+
+        $result = $this->service(null, null, $limit)->createZone('within.example', 'MASTER', self::ADMIN_USER_ID);
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function testTheLimitIsCheckedAfterTheCheaperRefusals(): void
+    {
+        $limit = $this->createMock(ZoneOwnershipLimit::class);
+        $limit->expects($this->never())->method('newZoneBreach');
+
+        $this->assertSame(ZoneManagementService::ERR_EXISTS, $this->service(null, null, $limit)->createZone('parent.example', 'MASTER', self::ADMIN_USER_ID)['code']);
     }
 }

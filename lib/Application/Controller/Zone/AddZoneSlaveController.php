@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\Zone\ZoneCreateRequest;
+use Poweradmin\Application\Service\Zone\ZoneLimitMessages;
 use Poweradmin\Domain\Model\Permission;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -131,6 +132,7 @@ class AddZoneSlaveController extends BaseController
             || $this->httpRequest->getPostParam('type') === 'reverse';
 
         $this->render('add_zone_slave.html', [
+            'zone_limit_note' => ZoneLimitMessages::remaining($this->services()->zoneOwnershipLimit()->userRemaining((int)$this->getCurrentUserId())),
             'is_reverse_zone' => $is_reverse_zone,
             'users' => $users,
             'selectable_owners' => $assignableOwners,

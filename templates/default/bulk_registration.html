@@ -8,6 +8,10 @@
 {% include 'message_alert.html' with {message: message} only %}
 {% endif %}
 
+{% if zone_limit_note %}
+<div class="alert alert-info py-2 small" data-testid="zone-limit-note">{{ zone_limit_note }}</div>
+{% endif %}
+
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/bulk-registration" novalidate>
     {{ macros.csrf_field() }}
 

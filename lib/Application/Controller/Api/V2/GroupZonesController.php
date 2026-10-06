@@ -26,10 +26,13 @@ use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -203,6 +206,7 @@ class GroupZonesController extends PublicApiController
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
+    #[OA\Response(response: 409, description: 'The group has reached its zone limit')]
     private function assignZone(): JsonResponse
     {
         if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
@@ -239,7 +243,10 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            $this->zoneGroupService->addGroupToZone($zoneId, $groupId);
+            $assigned = $this->zoneGroupService->addGroupToZone($zoneId, $groupId);
+            if ($assigned instanceof ZoneLimitBreach) {
+                return $this->returnApiError($assigned->message(), RefusalStatus::of(Refusal::CONFLICT));
+            }
 
             return $this->returnApiResponse(null, true, 'Zone assigned successfully', 201);
         } catch (GroupNotFoundException $e) {

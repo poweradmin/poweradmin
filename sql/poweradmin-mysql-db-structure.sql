@@ -88,6 +88,7 @@ CREATE TABLE `users` (
                          `active` int(1) NOT NULL,
                          `use_ldap` int(1) NOT NULL,
                          `auth_method` varchar(20) NOT NULL DEFAULT 'sql',
+                         `max_zones` int(11) DEFAULT NULL,
                          PRIMARY KEY (`id`),
                          KEY `idx_users_perm_templ` (`perm_templ`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -476,6 +477,7 @@ CREATE TABLE `user_groups` (
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT,
   `perm_templ` INT NOT NULL,
+  `max_zones` INT DEFAULT NULL,
   `created_by` INT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

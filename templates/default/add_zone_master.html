@@ -4,6 +4,10 @@
     {label: 'Add master zone'|trans},
 ]) }}
 
+{% if zone_limit_note %}
+<div class="alert alert-info py-2 small" data-testid="zone-limit-note">{{ zone_limit_note }}</div>
+{% endif %}
+
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/master{% if is_reverse_zone %}?type=reverse{% endif %}" novalidate>
     {{ macros.csrf_field() }}
     {% if is_reverse_zone %}<input type="hidden" name="type" value="reverse">{% endif %}

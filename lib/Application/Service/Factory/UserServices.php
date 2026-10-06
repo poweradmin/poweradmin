@@ -125,7 +125,8 @@ final class UserServices
             (bool)$this->config->get('ldap', 'enabled', false),
             $this->services->domainManager(),
             $this->services->zoneManagementService(),
-            (bool)$this->config->get('remote_user', 'enabled', false)
+            (bool)$this->config->get('remote_user', 'enabled', false),
+            $this->services->zoneOwnershipLimit()
         );
     }
 

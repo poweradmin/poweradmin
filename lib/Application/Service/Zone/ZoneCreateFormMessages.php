@@ -26,6 +26,7 @@ use Poweradmin\Domain\Service\Zone\ShadowedRecords;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 
 /**
  * Words a refused ZoneManagementService::createZone() for the add-zone forms,
@@ -93,7 +94,7 @@ final class ZoneCreateFormMessages
     }
 
     /**
-     * @param array{message?: string, code?: string} $result
+     * @param array{message?: string, code?: string, zone_limit?: ZoneLimitBreach} $result
      */
     public static function errorMessage(array $result): string
     {
@@ -109,6 +110,7 @@ final class ZoneCreateFormMessages
             ZoneManagementService::ERR_TEMPLATE_NOT_FOUND,
             ZoneManagementService::ERR_TEMPLATE_AMBIGUOUS,
             ZoneManagementService::ERR_TEMPLATE_FORBIDDEN => _('Invalid or unexpected input given.'),
+            ZoneManagementService::ERR_ZONE_LIMIT => ($result['zone_limit'] ?? null) instanceof ZoneLimitBreach ? $result['zone_limit']->localizedMessage() : (string)($result['message'] ?? ''),
             default => (string)($result['message'] ?? ''),
         };
     }

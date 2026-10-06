@@ -24,9 +24,11 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
@@ -233,6 +235,7 @@ class ZoneOwnersController extends PublicApiController
                         new OA\Property(property: 'added', type: 'array', items: new OA\Items(type: 'integer'), example: [5, 6]),
                         new OA\Property(property: 'skipped', type: 'array', items: new OA\Items(type: 'integer'), example: [7]),
                         new OA\Property(property: 'not_found', type: 'array', items: new OA\Items(type: 'integer'), example: []),
+                        new OA\Property(property: 'over_limit', type: 'array', items: new OA\Items(type: 'integer'), example: [], description: 'Users not added because they own as many zones as their zone limit allows'),
                     ],
                     type: 'object',
                     nullable: true
@@ -245,7 +248,7 @@ class ZoneOwnersController extends PublicApiController
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
-    #[OA\Response(response: 409, description: 'User is already an owner of this zone (single mode only), or the zone ID is shared with another zone')]
+    #[OA\Response(response: 409, description: 'User is already an owner of this zone or has reached their zone limit (single mode only), or the zone ID is shared with another zone')]
     #[OA\Response(response: 500, description: 'Failed to add owner due to a server error')]
     private function addOwner(): JsonResponse
     {
@@ -302,6 +305,11 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('User is already an owner of this zone', 409);
             }
 
+            $breach = $this->services()->zoneOwnershipLimit()->userBreach($userId);
+            if ($breach !== null) {
+                return $this->returnApiError($breach->message(), RefusalStatus::of(Refusal::CONFLICT));
+            }
+
             $this->zoneRepository->addOwnerToZone($zoneId, $userId);
             $this->services()->permissionService()->forgetZone($zoneId);
             $this->auditService->logZoneOwnerAdd($zoneId, $this->auditZoneName($zoneId), $userId);
@@ -325,7 +333,9 @@ class ZoneOwnersController extends PublicApiController
         $added = [];
         $skipped = [];
         $notFound = [];
+        $overLimit = [];
         $zoneName = $this->auditZoneName($zoneId);
+        $ownershipLimit = $this->services()->zoneOwnershipLimit();
 
         foreach ($userIds as $uid) {
             // Skip non-numeric ids; (int) would coerce an array/garbage value to 1.
@@ -341,6 +351,11 @@ class ZoneOwnersController extends PublicApiController
 
             if ($this->zoneRepository->isUserZoneOwner($zoneId, $userId)) {
                 $skipped[] = $userId;
+                continue;
+            }
+
+            if ($ownershipLimit->userBreach($userId) !== null) {
+                $overLimit[] = $userId;
                 continue;
             }
 
@@ -360,10 +375,13 @@ class ZoneOwnersController extends PublicApiController
         if (!empty($notFound)) {
             $message .= ', ' . count($notFound) . ' not found';
         }
+        if (!empty($overLimit)) {
+            $message .= ', ' . count($overLimit) . ' at their zone limit';
+        }
 
         // 201 only when something was actually created; a batch that added nothing is a plain 200.
         return $this->returnApiResponse(
-            ['added' => $added, 'skipped' => $skipped, 'not_found' => $notFound],
+            ['added' => $added, 'skipped' => $skipped, 'not_found' => $notFound, 'over_limit' => $overLimit],
             true,
             $message,
             empty($added) ? 200 : 201

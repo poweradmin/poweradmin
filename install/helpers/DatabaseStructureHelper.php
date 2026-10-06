@@ -277,6 +277,15 @@ class DatabaseStructureHelper
                         'name' => 'auth_method',
                         'table' => 'users',
                         'flags' => 'not_null'
+                    ),
+                    'max_zones' => array
+                    (
+                        'type' => 'integer',
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'name' => 'max_zones',
+                        'table' => 'users',
+                        'flags' => ''
                     )
                 ),
                 'indexes' => array(
@@ -2114,6 +2123,14 @@ class DatabaseStructureHelper
                         'name' => 'perm_templ',
                         'table' => 'user_groups',
                         'flags' => 'not_null'
+                    ),
+                    'max_zones' => array(
+                        'type' => 'integer',
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'name' => 'max_zones',
+                        'table' => 'user_groups',
+                        'flags' => ''
                     ),
                     'created_by' => array(
                         'type' => 'integer',

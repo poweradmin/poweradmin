@@ -62,7 +62,7 @@
         <form method="post" action="{{ base_url_prefix }}/users" id="user-form">
             {{ macros.csrf_field() }}
             <div class="table-responsive">
-                {% set user_column_count = 6 + (show_user_access_templates ? 1 : 0) + (show_group_access_templates ? 1 : 0) + (mfa_enabled ? 1 : 0) %}
+                {% set user_column_count = 6 + (show_user_access_templates ? 1 : 0) + (show_group_access_templates ? 1 : 0) + (mfa_enabled ? 1 : 0) + (show_zone_limit ? 1 : 0) %}
                 <table class="table table-striped table-hover table-sm mb-0">
                     <thead class="table-light">
                     <tr>
@@ -72,6 +72,7 @@
                         {% if show_user_access_templates %}<th>{% trans %}Template{% endtrans %}</th>{% endif %}
                         {% if show_group_access_templates %}<th>{% trans %}Groups{% endtrans %}</th>{% endif %}
                         <th class="text-center">{% trans %}Auth Type{% endtrans %}</th>
+                        {% if show_zone_limit %}<th class="text-center">{% trans %}Zones{% endtrans %}</th>{% endif %}
                         {% if mfa_enabled %}
                         <th class="text-center">{% trans %}MFA{% endtrans %}</th>
                         {% endif %}
@@ -145,6 +146,8 @@
                             {% endif %}
                         </td>
 
+                        {% if show_zone_limit %}<td class="text-center small" data-testid="user-zone-limit">{{ user['zones_owned'] }} / {{ user['zone_limit'] ?? '∞' }}</td>{% endif %}
+
                         {% if mfa_enabled %}
                         <td class="text-center">
                             {% if user['mfa_enabled'] %}
@@ -210,6 +213,8 @@
                                 <span class="badge bg-secondary">{{ user['auth_type']|upper }}</span>
                             {% endif %}
                         </td>
+
+                        {% if show_zone_limit %}<td class="text-center small" data-testid="user-zone-limit">{{ user['zones_owned'] }} / {{ user['zone_limit'] ?? '∞' }}</td>{% endif %}
 
                         {% if mfa_enabled %}
                         <td class="text-center">

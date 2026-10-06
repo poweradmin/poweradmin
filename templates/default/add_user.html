@@ -80,6 +80,17 @@
                     </div>
                     {% endif %}
 
+                    {% if zone_limit_editable %}
+                    <div class="mb-3">
+                        <label for="max_zones" class="form-label">{% trans %}Zone limit{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="number" min="0" step="1" id="max_zones" name="max_zones"
+                               value="{{ max_zones }}"
+                               placeholder="{{ zone_limit_default is null ? 'Unlimited'|trans : 'Default: %count%'|trans({'%count%': zone_limit_default}) }}"
+                               data-testid="max-zones-input">
+                        <small class="text-muted">{% trans %}How many zones this user may own directly. Leave empty to use the default.{% endtrans %}</small>
+                    </div>
+                    {% endif %}
+
                     <div class="mb-3">
                         <label for="description" class="form-label">{% trans %}Description{% endtrans %}</label>
                         <textarea class="form-control form-control-sm" id="description" rows="3" name="descr">{{ description }}</textarea>

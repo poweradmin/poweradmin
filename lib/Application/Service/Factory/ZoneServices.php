@@ -48,6 +48,7 @@ use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\DnssecKeyService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
@@ -81,6 +82,7 @@ final class ZoneServices
     private ControllerServiceFactory $services;
 
     private ?ZoneOwnershipModeService $zoneOwnershipModeService = null;
+    private ?ZoneOwnershipLimit $zoneOwnershipLimit = null;
     private ?ZoneSigningService $zoneSigningService = null;
     private ?CatalogZoneService $catalogZoneService = null;
     private ?DomainManagerInterface $domainManager = null;
@@ -115,7 +117,19 @@ final class ZoneServices
             capabilities: $capabilities,
             signing: $this->zoneSigningService(),
             domainRepository: $this->services->domainRepository(),
-            zoneCacheFlusher: $this->services->zoneCacheFlusher()
+            zoneCacheFlusher: $this->services->zoneCacheFlusher(),
+            ownershipLimit: $this->zoneOwnershipLimit()
+        );
+    }
+
+    public function zoneOwnershipLimit(): ZoneOwnershipLimit
+    {
+        return $this->zoneOwnershipLimit ??= new ZoneOwnershipLimit(
+            $this->services->userRepository(),
+            $this->services->userGroupRepository(),
+            $this->zoneGroupRepository(),
+            $this->services->permissionService(),
+            $this->config
         );
     }
 
@@ -172,7 +186,7 @@ final class ZoneServices
 
     public function zoneGroupService(): ZoneGroupService
     {
-        return new ZoneGroupService($this->zoneGroupRepository(), $this->services->userGroupRepository(), $this->zoneOwnershipGuard());
+        return new ZoneGroupService($this->zoneGroupRepository(), $this->services->userGroupRepository(), $this->zoneOwnershipGuard(), $this->zoneOwnershipLimit());
     }
 
     public function zoneListPermissionService(): ZoneListPermissionService
@@ -237,7 +251,8 @@ final class ZoneServices
             $this->zoneGroupRepository(),
             $this->zoneAccountSyncService(),
             $this->services->actor(),
-            zoneCacheFlusher: $this->services->zoneCacheFlusher()
+            zoneCacheFlusher: $this->services->zoneCacheFlusher(),
+            ownershipLimit: $this->zoneOwnershipLimit()
         );
     }
 

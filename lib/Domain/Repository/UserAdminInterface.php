@@ -102,6 +102,11 @@ interface UserAdminInterface
     public function transferUserZones(int $fromUserId, int $toUserId): bool;
 
     /**
+     * Set the user's own zone limit; null removes it so the configured default applies
+     */
+    public function setZoneLimit(int $userId, ?int $limit): bool;
+
+    /**
      * Create a new user
      *
      * @param CreateUserCommand $user The row to write, with the password already in its stored form

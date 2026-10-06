@@ -68,4 +68,9 @@ interface UserGroupWriterInterface
      * @return int
      */
     public function countZones(int $groupId): int;
+
+    /**
+     * Set the group's own zone limit; null removes it so the configured default applies
+     */
+    public function setZoneLimit(int $groupId, ?int $limit): bool;
 }

@@ -213,6 +213,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_DNS_ADOPT_ZONE_OWNER_FROM_ACCOUNT` | Give ownerless zones, such as autoprimary ones, to the user their PowerDNS account names, when the API-mode zone sync finds them or the consistency repair runs | `false` | No |
 | `PA_DNS_PARENT_ZONE_OWNERSHIP_CHECK` | Block creating a zone that overlaps a zone owned by another user | `true` | No |
 | `PA_DNS_BUMP_SERIAL_ON_UNCHANGED_SAVE` | Bump the SOA serial even when a save changes no record, so saving can force a NOTIFY; `false` leaves the serial alone | `true` | No |
+| `PA_DNS_DEFAULT_MAX_ZONES_PER_USER` | Zones a user may own directly when the user has no own limit; empty = unlimited, `0` = none. Superusers are never limited | Empty | No |
+| `PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP` | Zones a group may own when the group has no own limit; empty = unlimited, `0` = none | Empty | No |
 
 ### DNS Validation Settings
 
@@ -407,6 +409,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_POSITION_SAVE_BUTTON_TOP` | Position save button at the top | `false` | No |
 | `PA_SHOW_ZONE_COMMENTS` | Show zone comments | `true` | No |
 | `PA_SHOW_RECORD_COMMENTS` | Show record comments | `false` | No |
+| `PA_SHOW_ZONE_LIMIT_COLUMN` | Show owned zones and the zone limit in the users and groups lists | `false` | No |
 | `PA_DISPLAY_SERIAL_IN_ZONE_LIST` | Display serial in zone list | `false` | No |
 | `PA_DISPLAY_SIGNED_SERIAL_IN_ZONE_LIST` | Display serial served by PowerDNS (SOA-EDIT applied) in zone list; requires API backend | `false` | No |
 | `PA_DISPLAY_TEMPLATE_IN_ZONE_LIST` | Display template in zone list | `false` | No |

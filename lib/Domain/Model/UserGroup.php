@@ -36,7 +36,11 @@ readonly class UserGroup
     private ?int $createdBy;
     private ?string $createdAt;
     private ?string $updatedAt;
+    private ?int $maxZones;
 
+    /**
+     * @param int|null $maxZones The group's own zone limit; written through the repository's setZoneLimit(), not save()
+     */
     public function __construct(
         ?int $id,
         string $name,
@@ -44,7 +48,8 @@ readonly class UserGroup
         int $permTemplId,
         ?int $createdBy = null,
         ?string $createdAt = null,
-        ?string $updatedAt = null
+        ?string $updatedAt = null,
+        ?int $maxZones = null
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -53,6 +58,7 @@ readonly class UserGroup
         $this->createdBy = $createdBy;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->maxZones = $maxZones;
     }
 
     public function getId(): ?int
@@ -88,6 +94,14 @@ readonly class UserGroup
     public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * The group's own zone limit: null when none is set, 0 when it may own no zones
+     */
+    public function getMaxZones(): ?int
+    {
+        return $this->maxZones;
     }
 
     /**
@@ -136,7 +150,8 @@ readonly class UserGroup
             $permTemplId ?? $this->permTemplId,
             $this->createdBy,
             $this->createdAt,
-            null // updatedAt will be set by database trigger
+            null, // updatedAt will be set by database trigger
+            $this->maxZones
         );
     }
 }

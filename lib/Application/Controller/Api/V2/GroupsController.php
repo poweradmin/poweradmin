@@ -29,8 +29,10 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\User\GroupService;
 use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -40,6 +42,8 @@ use Exception;
  */
 class GroupsController extends PublicApiController
 {
+    private const MAX_ZONES_INVALID = 'max_zones must be null or a whole number from 0 to ' . ZoneOwnershipLimit::MAX_LIMIT;
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
@@ -113,6 +117,7 @@ class GroupsController extends PublicApiController
                                     new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                                     new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
                                     new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'max_zones', type: 'integer', example: 50, nullable: true),
                                     new OA\Property(property: 'member_count', type: 'integer', example: 5),
                                     new OA\Property(property: 'zone_count', type: 'integer', example: 10),
                                     new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
@@ -144,6 +149,7 @@ class GroupsController extends PublicApiController
                     'name' => $group->getName(),
                     'description' => $group->getDescription(),
                     'perm_templ_id' => $group->getPermTemplId(),
+                    'max_zones' => $group->getMaxZones(),
                     'member_count' => $details['memberCount'],
                     'zone_count' => $details['zoneCount'],
                     'created_at' => $group->getCreatedAt(),
@@ -198,6 +204,7 @@ class GroupsController extends PublicApiController
                                 new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                                 new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
                                 new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'max_zones', type: 'integer', example: 50, nullable: true),
                                 new OA\Property(property: 'member_count', type: 'integer', example: 5),
                                 new OA\Property(property: 'zone_count', type: 'integer', example: 10),
                                 new OA\Property(
@@ -266,6 +273,7 @@ class GroupsController extends PublicApiController
                 'name' => $group->getName(),
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
+                'max_zones' => $group->getMaxZones(),
                 'member_count' => $details['memberCount'],
                 'zone_count' => count($zones),
                 'members' => array_map(fn($m) => [
@@ -306,6 +314,7 @@ class GroupsController extends PublicApiController
                     new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                     new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
                     new OA\Property(property: 'perm_templ_id', description: 'ID of a group-type permission template (user-type templates are not accepted)', type: 'integer', example: 1),
+                    new OA\Property(property: 'max_zones', description: 'How many zones the group may own; null uses dns.default_max_zones_per_group', type: 'integer', example: 50, nullable: true),
                 ]
             )
         ),
@@ -327,6 +336,7 @@ class GroupsController extends PublicApiController
                             properties: [
                                 new OA\Property(property: 'id', type: 'integer', example: 1),
                                 new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
+                                new OA\Property(property: 'max_zones', type: 'integer', example: 50, nullable: true),
                             ],
                             type: 'object'
                         )
@@ -356,6 +366,11 @@ class GroupsController extends PublicApiController
                 return $this->returnApiError('Invalid perm_templ_id: the specified permission template must be of type "group", not "user"', 400);
             }
 
+            $zoneLimit = ZoneLimitInput::fromJson($data['max_zones'] ?? null);
+            if (!$zoneLimit['valid']) {
+                return $this->returnApiError(self::MAX_ZONES_INVALID, 400);
+            }
+
             $group = $this->groupService->createGroup(
                 $data['name'],
                 (int)$data['perm_templ_id'],
@@ -363,9 +378,15 @@ class GroupsController extends PublicApiController
                 $this->authenticatedUserId
             );
 
+            $maxZones = $zoneLimit['limit'];
+            if ($maxZones !== null) {
+                $this->services()->zoneOwnershipLimit()->setGroupLimit($this->authenticatedUserId, $group->getId(), $maxZones);
+            }
+
             return $this->returnApiResponse(['group' => [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
+                'max_zones' => $maxZones,
             ]], true, 'Group created successfully', 201);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
@@ -395,6 +416,7 @@ class GroupsController extends PublicApiController
                     new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                     new OA\Property(property: 'description', type: 'string', example: 'Updated description'),
                     new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'max_zones', description: 'How many zones the group may own; null uses dns.default_max_zones_per_group', type: 'integer', example: 50, nullable: true),
                 ]
             )
         ),
@@ -427,6 +449,7 @@ class GroupsController extends PublicApiController
                                 new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                                 new OA\Property(property: 'description', type: 'string', nullable: true, example: 'DNS Administration Group'),
                                 new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'max_zones', type: 'integer', example: 50, nullable: true),
                                 new OA\Property(property: 'created_at', type: 'string', nullable: true),
                                 new OA\Property(property: 'updated_at', type: 'string', nullable: true),
                             ],
@@ -457,6 +480,12 @@ class GroupsController extends PublicApiController
                 }
             }
 
+            $setsLimit = array_key_exists('max_zones', $data);
+            $zoneLimit = ZoneLimitInput::fromJson($data['max_zones'] ?? null);
+            if (!$zoneLimit['valid']) {
+                return $this->returnApiError(self::MAX_ZONES_INVALID, 400);
+            }
+
             $group = $this->groupService->updateGroup(
                 $groupId,
                 $data['name'] ?? null,
@@ -464,11 +493,16 @@ class GroupsController extends PublicApiController
                 isset($data['perm_templ_id']) ? (int)$data['perm_templ_id'] : null
             );
 
+            if ($setsLimit) {
+                $this->services()->zoneOwnershipLimit()->setGroupLimit($this->authenticatedUserId, $groupId, $zoneLimit['limit']);
+            }
+
             return $this->returnApiResponse(['group' => [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
+                'max_zones' => $setsLimit ? $zoneLimit['limit'] : $group->getMaxZones(),
                 'created_at' => $group->getCreatedAt(),
                 'updated_at' => $group->getUpdatedAt(),
             ]], true, 'Group updated successfully');

@@ -27,6 +27,8 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\User\GroupService;
 use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
+use Poweradmin\Application\Service\Zone\ZoneLimitMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -110,6 +112,13 @@ class EditGroupController extends BaseController
             return;
         }
 
+        $zoneLimit = ZoneLimitInput::fromForm($this->httpRequest->getPostParam('max_zones', ''));
+        if (!$zoneLimit['valid']) {
+            $this->setMessage('edit_group', 'error', _('Enter a zone limit of 0 or more, or leave it empty.'));
+            $this->renderEditGroupForm($groupId);
+            return;
+        }
+
         try {
             // Get current group details before update for change tracking
             $userContext = $this->getUserContextService();
@@ -152,11 +161,22 @@ class EditGroupController extends BaseController
             // Update the group
             $this->groupService()->updateGroup($groupId, $name, $description, $permTemplId);
 
+            $limitWarning = null;
+            if ($zoneLimit['limit'] !== $oldGroup->getMaxZones()) {
+                $zoneLimits = $this->services()->zoneOwnershipLimit();
+                $zoneLimits->setGroupLimit((int)$currentUserId, $groupId, $zoneLimit['limit']);
+                $changes[] = sprintf("zone limit: '%s' → '%s'", $oldGroup->getMaxZones() ?? 'default', $zoneLimit['limit'] ?? 'default');
+                $limitWarning = ZoneLimitMessages::belowUsage((string)$name, $zoneLimits->groupZoneCount($groupId), $zoneLimits->groupLimit($groupId));
+            }
+
             if (!empty($changes)) {
                 $this->services()->auditService()->logGroupEdit($groupId, (string)$name, $changes);
             }
 
             $this->setMessage('list_groups', 'success', _('Group has been updated successfully.'));
+            if ($limitWarning !== null) {
+                $this->setMessage('list_groups', 'warning', $limitWarning);
+            }
             $this->redirect('/groups');
         } catch (InvalidArgumentException $e) {
             $this->setMessage('edit_group', 'error', $e->getMessage());
@@ -220,11 +240,26 @@ class EditGroupController extends BaseController
                 'name' => $this->httpRequest->getPostParam('name', $group->getName()),
                 'description' => $this->httpRequest->getPostParam('description', $group->getDescription() ?? ''),
                 'perm_templ' => $this->httpRequest->getPostParam('perm_templ', (string)$group->getPermTemplId()),
+                'zone_limit' => $this->zoneLimitView($groupId, $group->getMaxZones()),
             ]);
         } catch (InvalidArgumentException $e) {
             $this->setMessage('list_groups', 'error', $e->getMessage());
             $this->redirect('/groups');
         }
+    }
+
+    /**
+     * @return array{value: ?int, owned: int, default: ?int}
+     */
+    private function zoneLimitView(int $groupId, ?int $value): array
+    {
+        $default = $this->config->get('dns', 'default_max_zones_per_group');
+
+        return [
+            'value' => $value,
+            'owned' => $this->services()->zoneOwnershipLimit()->groupZoneCount($groupId),
+            'default' => is_numeric($default) ? (int)$default : null,
+        ];
     }
 
     private function validateInput(): bool

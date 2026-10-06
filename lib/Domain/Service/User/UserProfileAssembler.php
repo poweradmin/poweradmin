@@ -126,6 +126,7 @@ final class UserProfileAssembler
             'active' => (bool)$user['active'],
             'perm_templ' => isset($user['perm_templ']) ? (int)$user['perm_templ'] : null,
             'perm_templ_name' => $user['perm_templ_name'] ?? null,
+            'max_zones' => isset($user['max_zones']) ? (int)$user['max_zones'] : null,
         ];
     }
 

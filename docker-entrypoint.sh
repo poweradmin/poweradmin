@@ -829,6 +829,8 @@ generate_config() {
     show_zone_comments=$(to_php_bool "${PA_SHOW_ZONE_COMMENTS:-true}")
     local show_record_comments
     show_record_comments=$(to_php_bool "${PA_SHOW_RECORD_COMMENTS:-false}")
+    local show_zone_limit_column
+    show_zone_limit_column=$(to_php_bool "${PA_SHOW_ZONE_LIMIT_COLUMN:-false}")
     local display_serial_in_zone_list
     display_serial_in_zone_list=$(to_php_bool "${PA_DISPLAY_SERIAL_IN_ZONE_LIST:-false}")
     local display_signed_serial_in_zone_list
@@ -1285,6 +1287,8 @@ return [
         'sync_zone_owner_to_account' => ${dns_sync_zone_owner_to_account},
         'adopt_zone_owner_from_account' => ${dns_adopt_zone_owner_from_account},
         'parent_zone_ownership_check' => ${dns_parent_zone_ownership_check},
+        'default_max_zones_per_user' => $(php_num PA_DNS_DEFAULT_MAX_ZONES_PER_USER "${PA_DNS_DEFAULT_MAX_ZONES_PER_USER:-null}" null),
+        'default_max_zones_per_group' => $(php_num PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP "${PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP:-null}" null),
         'strict_tld_check' => ${dns_strict_tld_check},
         'top_level_tld_check' => ${dns_top_level_tld_check},
         'third_level_check' => ${dns_third_level_check},
@@ -1407,6 +1411,7 @@ return [
         'position_save_button_top' => ${position_save_button_top},
         'show_zone_comments' => ${show_zone_comments},
         'show_record_comments' => ${show_record_comments},
+        'show_zone_limit_column' => ${show_zone_limit_column},
         'display_serial_in_zone_list' => ${display_serial_in_zone_list},
         'display_signed_serial_in_zone_list' => ${display_signed_serial_in_zone_list},
         'display_template_in_zone_list' => ${display_template_in_zone_list},

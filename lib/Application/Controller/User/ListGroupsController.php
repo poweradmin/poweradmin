@@ -61,6 +61,9 @@ class ListGroupsController extends BaseController
         // Get groups based on user role (admin sees all, normal users see only their groups)
         $groups = $this->groupService()->listGroups($userId, $isAdmin);
 
+        $showZoneLimit = (bool)$this->config->get('interface', 'show_zone_limit_column', false);
+        $zoneLimits = $this->services()->zoneOwnershipLimit();
+
         // Enrich groups with member and zone counts
         $enrichedGroups = [];
         foreach ($groups as $group) {
@@ -72,6 +75,7 @@ class ListGroupsController extends BaseController
                 'perm_templ_id' => $group->getPermTemplId(),
                 'member_count' => $details['memberCount'],
                 'zone_count' => $details['zoneCount'],
+                'zone_limit' => $showZoneLimit ? $zoneLimits->groupLimit($group->getId()) : null,
                 'created_at' => $group->getCreatedAt(),
             ];
         }
@@ -79,6 +83,7 @@ class ListGroupsController extends BaseController
         $this->render('list_groups.html', [
             'groups' => $enrichedGroups,
             'is_admin' => $isAdmin,
+            'show_zone_limit' => $showZoneLimit,
             'can_add_group' => $isAdmin, // Only admins can create groups
             'perm_is_godlike' => $isAdmin,
             'perm_group_logs_view' => $this->hasPermission(Permission::PERM_GROUP_LOGS_VIEW),

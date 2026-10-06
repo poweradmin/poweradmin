@@ -28,6 +28,8 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 use TestHelpers\PermissionServiceTestCase;
@@ -44,7 +46,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
 
     private const CALLER_ID = 7;
 
-    private function manager(array $callerPermissions, array $existingUsers, bool $sharedZoneId = false): DomainManager
+    private function manager(array $callerPermissions, array $existingUsers, bool $sharedZoneId = false, ?ZoneRepositoryInterface $zones = null, ?ZoneOwnershipLimit $ownershipLimit = null): DomainManager
     {
         $reflection = new ReflectionClass(DomainManager::class);
         $manager = $reflection->newInstanceWithoutConstructor();
@@ -58,7 +60,8 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
             'actor' => new StubActor(self::CALLER_ID),
             'userRepository' => $users,
             'permissionService' => $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => $callerPermissions]),
-            'repositoryFactory' => $this->repositoryFactory($sharedZoneId),
+            'repositoryFactory' => $this->repositoryFactory($sharedZoneId, $zones),
+            'ownershipLimit' => $ownershipLimit,
             ] as $name => $value
         ) {
             $reflection->getProperty($name)->setValue($manager, $value);
@@ -92,11 +95,54 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $this->assertSame(Refusal::CONFLICT, $result->refusal);
     }
 
-    private function repositoryFactory(bool $sharedZoneId): RepositoryFactoryInterface
+    public function testAnExistingOwnerIsNotCountedAgainstTheLimit(): void
     {
         $zones = $this->createMock(ZoneRepositoryInterface::class);
-        $zones->method('isSharedZoneId')->willReturn($sharedZoneId);
-        $zones->expects($sharedZoneId ? $this->never() : $this->any())->method('addOwnerToZone')->willReturn(true);
+        $zones->method('isUserZoneOwner')->with(5, 42)->willReturn(true);
+        $zones->expects($this->never())->method('addOwnerToZone');
+        $limit = $this->createMock(ZoneOwnershipLimit::class);
+        $limit->expects($this->never())->method('userBreach');
+
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
+
+        $this->assertTrue($result->success);
+    }
+
+    public function testRefusesAUserAtTheirZoneLimitWithoutWriting(): void
+    {
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('isUserZoneOwner')->willReturn(false);
+        $zones->expects($this->never())->method('addOwnerToZone');
+        $limit = $this->createMock(ZoneOwnershipLimit::class);
+        $limit->method('userBreach')->with(42)->willReturn(new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'alice', 4, 4));
+
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::CONFLICT, $result->refusal);
+        $this->assertSame('Zone limit reached: alice owns 4 of 4 zones.', $result->message);
+    }
+
+    public function testAddsAUserWithinTheirZoneLimit(): void
+    {
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('isUserZoneOwner')->willReturn(false);
+        $zones->expects($this->once())->method('addOwnerToZone')->with(5, 42)->willReturn(true);
+        $limit = $this->createMock(ZoneOwnershipLimit::class);
+        $limit->method('userBreach')->willReturn(null);
+
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
+
+        $this->assertTrue($result->success);
+    }
+
+    private function repositoryFactory(bool $sharedZoneId, ?ZoneRepositoryInterface $zones): RepositoryFactoryInterface
+    {
+        if ($zones === null) {
+            $zones = $this->createMock(ZoneRepositoryInterface::class);
+            $zones->method('isSharedZoneId')->willReturn($sharedZoneId);
+            $zones->expects($sharedZoneId ? $this->never() : $this->any())->method('addOwnerToZone')->willReturn(true);
+        }
 
         $factory = $this->createStub(RepositoryFactoryInterface::class);
         $factory->method('createZoneRepository')->willReturn($zones);

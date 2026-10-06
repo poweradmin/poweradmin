@@ -23,9 +23,11 @@
 
 namespace Poweradmin\Application\Controller\Zone;
 
+use InvalidArgumentException;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\Zone\ZoneAccessNotificationService;
 use Poweradmin\Application\Service\Zone\ZoneOwnershipMessages;
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -33,6 +35,7 @@ use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 
 /**
  * Handles the zone ownership page: adds and removes user and group owners of a zone.
@@ -233,8 +236,20 @@ class ZoneOwnershipController extends BaseController
                 }
             }
 
-            $zoneGroupRepo = $this->services()->zoneGroupRepository();
-            $zoneGroupRepo->add($zone_id, $groupId);
+            // Through the service, so the shared-id guard and the group's zone limit apply
+            try {
+                $assigned = $this->services()->zoneGroupService()->addGroupToZone($zone_id, $groupId);
+            } catch (GroupNotFoundException) {
+                $this->setMessage('zone-ownership', 'error', _('Group not found.'));
+                return;
+            } catch (InvalidArgumentException) {
+                $this->setMessage('zone-ownership', 'error', _('This group cannot be added to the zone.'));
+                return;
+            }
+            if ($assigned instanceof ZoneLimitBreach) {
+                $this->setMessage('zone-ownership', 'error', $assigned->localizedMessage());
+                return;
+            }
             $this->permissionService()->forgetZone($zone_id);
             $auditService->logZoneGroupAdd($zone_id, $zone_name, $groupId);
             $this->setMessage('zone-ownership', 'success', _('Group has been added successfully.'));

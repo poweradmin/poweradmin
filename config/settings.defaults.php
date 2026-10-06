@@ -168,6 +168,7 @@ return [
         'display_owner_in_zone_list' => true,      // Show owner column in zone lists (added in 4.5.0)
         'display_group_in_zone_list' => true,      // Show group column in zone lists (added in 4.5.0)
         'show_zone_record_count' => true,     // Show record count column in zone lists (added in 4.5.0)
+        'show_zone_limit_column' => false,    // Show owned zones and zone limit in the users and groups lists (added in 4.6.0)
         'display_fullname_in_zone_list' => false,  // Show user's full name instead of username in zone lists (added in 4.0.0)
         'search_group_records' => false,      // Group records by name and content in search results (added in 3.8.0)
         'reverse_zone_sort' => 'natural',     // Reverse zone sorting algorithm: 'natural' (default) or 'hierarchical' (experimental) (added in 4.0.0)
@@ -215,6 +216,8 @@ return [
         'zone_type_default' => 'MASTER',           // Options: 'MASTER', 'NATIVE' (added in 2.1.9)
         'default_zone_template' => null,           // Pre-selected template on the add-zone form. Template id (int) or name (string); null for "none" (added in 4.4.0)
         'zone_ownership_mode' => 'both',           // Options: 'both', 'users_only', 'groups_only' (added in 4.4.0)
+        'default_max_zones_per_user' => null,      // How many zones a user may own directly when the user has no own limit; null = unlimited, 0 = none. Superusers are never limited (added in 4.6.0)
+        'default_max_zones_per_group' => null,     // How many zones a group may own when the group has no own limit; null = unlimited, 0 = none (added in 4.6.0)
         'sync_zone_owner_to_account' => false,     // Mirror the oldest zone owner's username into the PowerDNS account field on ownership changes (added in 4.4.0)
         'adopt_zone_owner_from_account' => false,  // Ownerless zones (e.g. from an autoprimary) go to the user their PowerDNS account names: API-mode zone sync, or the consistency repair (added in 4.6.0)
 

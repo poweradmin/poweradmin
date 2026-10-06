@@ -337,6 +337,88 @@ class DbUserRepository implements UserRepositoryInterface
     }
 
     /**
+     * @return array<int, int>
+     */
+    public function getDirectlyOwnedZoneIds(int $userId): array
+    {
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', $this->isApiBackend);
+        $stmt = $this->db->prepare("SELECT DISTINCT $canonicalId FROM zones WHERE owner = :user_id");
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+        // A shared id belongs only to the direct owner of the row it resolves to
+        return $this->isApiBackend ? SharedZoneIds::filterOwned($this->db, $userId, $zoneIds) : $zoneIds;
+    }
+
+    public function countDirectlyOwnedZones(array $userIds): array
+    {
+        $userIds = array_values(array_unique(array_map('intval', $userIds)));
+        $owned = array_fill_keys($userIds, []);
+        if ($userIds === []) {
+            return [];
+        }
+
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', $this->isApiBackend);
+        $placeholders = implode(',', array_fill(0, count($userIds), '?'));
+        $stmt = $this->db->prepare("SELECT DISTINCT owner, $canonicalId AS zone_id FROM zones WHERE owner IN ($placeholders)");
+        foreach ($userIds as $i => $userId) {
+            $stmt->bindValue($i + 1, $userId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $owned[(int)$row['owner']][] = (int)$row['zone_id'];
+        }
+
+        $counts = [];
+        foreach ($owned as $userId => $zoneIds) {
+            $counts[$userId] = count($this->isApiBackend ? SharedZoneIds::filterOwned($this->db, $userId, $zoneIds) : $zoneIds);
+        }
+
+        return $counts;
+    }
+
+    public function findZoneLimits(array $userIds): array
+    {
+        $userIds = array_values(array_unique(array_map('intval', $userIds)));
+        $limits = array_fill_keys($userIds, null);
+        if ($userIds === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($userIds), '?'));
+        $stmt = $this->db->prepare("SELECT id, max_zones FROM users WHERE id IN ($placeholders)");
+        foreach ($userIds as $i => $userId) {
+            $stmt->bindValue($i + 1, $userId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $limits[(int)$row['id']] = $row['max_zones'] === null ? null : (int)$row['max_zones'];
+        }
+
+        return $limits;
+    }
+
+    public function findZoneLimit(int $userId): ?int
+    {
+        $stmt = $this->db->prepare('SELECT max_zones FROM users WHERE id = :id');
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $limit = $stmt->fetchColumn();
+
+        return $limit === false || $limit === null ? null : (int)$limit;
+    }
+
+    public function setZoneLimit(int $userId, ?int $limit): bool
+    {
+        $stmt = $this->db->prepare('UPDATE users SET max_zones = :max_zones WHERE id = :id');
+        $stmt->bindValue(':max_zones', $limit, $limit === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    /**
      * Get all permissions for a specific user
      *
      * @param int $userId User ID to get permissions for
@@ -438,6 +520,7 @@ class DbUserRepository implements UserRepositoryInterface
             users.description AS description,
             users.active AS active,
             users.perm_templ AS perm_templ,
+            users.max_zones AS max_zones,
             perm_templ.name AS perm_templ_name,
             COUNT(zones.owner) AS zone_count
             FROM users
@@ -451,6 +534,7 @@ class DbUserRepository implements UserRepositoryInterface
             users.email,
             users.description,
             users.perm_templ,
+            users.max_zones,
             perm_templ.name,
             users.active
             ORDER BY users.id
@@ -472,6 +556,7 @@ class DbUserRepository implements UserRepositoryInterface
                 'active' => $row['active'],
                 'perm_templ' => $row['perm_templ'],
                 'perm_templ_name' => $row['perm_templ_name'],
+                'max_zones' => $row['max_zones'],
                 'zone_count' => $row['zone_count']
             ];
         }

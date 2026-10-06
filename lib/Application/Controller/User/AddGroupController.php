@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\User;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -88,8 +89,18 @@ class AddGroupController extends BaseController
             return;
         }
 
+        $zoneLimit = ZoneLimitInput::fromForm($this->httpRequest->getPostParam('max_zones', ''));
+        if (!$zoneLimit['valid']) {
+            $this->setMessage('add_group', 'error', _('Enter a zone limit of 0 or more, or leave it empty.'));
+            $this->renderAddGroupForm();
+            return;
+        }
+
         try {
             $group = $this->groupService()->createGroup($name, $permTemplId, $description, $userId);
+            if ($zoneLimit['limit'] !== null) {
+                $this->services()->zoneOwnershipLimit()->setGroupLimit((int)$userId, $group->getId(), $zoneLimit['limit']);
+            }
 
             // Log group creation with template details
             $permTemplates = $this->permissionTemplateRepository()->listPermissionTemplates();
@@ -124,7 +135,15 @@ class AddGroupController extends BaseController
             'description' => $this->httpRequest->getPostParam('description', ''),
             'perm_templ' => $this->httpRequest->getPostParam('perm_templ', (string)$defaultTemplateId),
             'perm_templates' => $permTemplates,
+            'max_zones' => (string)$this->httpRequest->getPostParam('max_zones', ''),
+            'zone_limit_default' => $this->defaultGroupLimit(),
         ]);
+    }
+
+    private function defaultGroupLimit(): ?int
+    {
+        $default = $this->config->get('dns', 'default_max_zones_per_group');
+        return is_numeric($default) ? (int)$default : null;
     }
 
     private function validateInput(): bool

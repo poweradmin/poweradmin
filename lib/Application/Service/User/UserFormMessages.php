@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service\User;
 
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\User\UserManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 
 /**
  * Words a refused UserManagementService write for the user forms. The
@@ -57,7 +58,7 @@ final class UserFormMessages
     /**
      * Words a refused deletion; the same codes as errorMessage(), read for that page.
      *
-     * @param array{message?: string, code?: string} $result
+     * @param array{message?: string, code?: string, zone_limit?: ZoneLimitBreach} $result
      */
     public static function deleteErrorMessage(array $result): string
     {
@@ -66,6 +67,7 @@ final class UserFormMessages
             UserManagementService::ERR_ZONE_DELETE_FORBIDDEN => _('You do not have the permission to delete a zone.'),
             UserManagementService::ERR_ZONE_META_FORBIDDEN => _('You do not have the permission to edit zone metadata.'),
             UserManagementService::ERR_WRITE => _('The user could not be deleted.'),
+            UserManagementService::ERR_ZONE_LIMIT => ($result['zone_limit'] ?? null) instanceof ZoneLimitBreach ? $result['zone_limit']->localizedMessage() : (string)($result['message'] ?? ''),
             // ERR_ZONE_WRITE carries DomainManager's translated reason and falls through
             default => self::errorMessage($result),
         };

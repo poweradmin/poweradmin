@@ -63,6 +63,7 @@ final class ConfigValidator
         $this->validatePdnsDbName();
         $this->validatePermissions();
         $this->validateApproval();
+        $this->validateZoneLimitDefaults();
 
         return empty($this->errors);
     }
@@ -142,6 +143,16 @@ final class ConfigValidator
                 PaginationLimits::MIN_ROWS_PER_PAGE,
                 PaginationLimits::MAX_ROWS_PER_PAGE
             );
+        }
+    }
+
+    private function validateZoneLimitDefaults(): void
+    {
+        foreach (['default_max_zones_per_user', 'default_max_zones_per_group'] as $key) {
+            $value = $this->getSetting('dns', $key);
+            if ($value !== null && (!is_int($value) || $value < 0)) {
+                $this->errors['dns.' . $key] = $key . ' must be null (unlimited) or a whole number of 0 or more';
+            }
         }
     }
 

@@ -69,6 +69,7 @@ class ZoneManagementService
     public const ERR_ZONE_WRITE = 'zone_write';
     public const ERR_NOT_FOUND = 'not_found';
     public const ERR_READ_ONLY = 'read_only';
+    public const ERR_ZONE_LIMIT = 'zone_limit';
 
     private ZoneRepositoryInterface $zoneRepository;
     private ConfigurationInterface $config;
@@ -85,6 +86,7 @@ class ZoneManagementService
     private DomainManagerInterface|Closure $domainManager;
     private ?ZoneOverlapService $overlapService = null;
     private ?HostnameValidator $hostnameValidator = null;
+    private ?ZoneOwnershipLimit $ownershipLimit;
     /** @var array<string, array{id: string}|array{success: false, message: string, refusal: Refusal, code: string}> */
     private array $resolvedTemplates = [];
 
@@ -97,6 +99,7 @@ class ZoneManagementService
      * @param PdnsCapabilities|Closure|null $capabilities What the connected server supports, or a closure returning it; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
+     * @param ZoneOwnershipLimit|null $ownershipLimit Zone limits of the new owners; null enforces none
      */
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
@@ -110,9 +113,11 @@ class ZoneManagementService
         PdnsCapabilities|Closure|null $capabilities = null,
         ?ZoneSigningService $signing = null,
         ?DomainRepositoryInterface $domainRepository = null,
-        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
+        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null,
+        ?ZoneOwnershipLimit $ownershipLimit = null
     ) {
         $this->zoneCacheFlusher = $zoneCacheFlusher;
+        $this->ownershipLimit = $ownershipLimit;
         $this->zoneTemplates = $zoneTemplates;
         $this->repositoryFactory = $repositoryFactory;
         $this->zoneRepository = $zoneRepository;
@@ -184,7 +189,7 @@ class ZoneManagementService
      * @param array<int> $groupIds Optional list of group IDs to assign as owners
      * @param int|null $actingUserId User performing the creation, used for the overlap check
      * @param string|null $soaEditApi Per-zone SOA-EDIT-API choice; null applies the dns.soa_edit_api default
-     * @return array{success: true, zone_id: int, domain: string, type: string, dnssec: ?ZoneSigningResult, shadowed: ?ShadowedRecords}|array{success: false, message: string, refusal: Refusal, code: string}
+     * @return array{success: true, zone_id: int, domain: string, type: string, dnssec: ?ZoneSigningResult, shadowed: ?ShadowedRecords}|array{success: false, message: string, refusal: Refusal, code: string, zone_limit?: ZoneLimitBreach}
      */
     public function createZone(
         string $domain,
@@ -291,6 +296,12 @@ class ZoneManagementService
         }
         // @phan-suppress-next-line PhanTypeInvalidDimOffset - Phan narrows the union shape to the failure arm here
         $zoneTemplate = $resolvedTemplate['id'];
+
+        // Before the backend write, so a refusal leaves no zone behind
+        $breach = $this->ownershipLimit?->newZoneBreach($owner, array_map('intval', $groupIds));
+        if ($breach !== null) {
+            return ['success' => false, 'message' => $breach->message(), 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_ZONE_LIMIT, 'zone_limit' => $breach];
+        }
 
         $shadowed = $this->findShadowedRecords($domain, $actingUserId, $recordRepository);
 

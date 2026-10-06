@@ -205,7 +205,15 @@ class UsersController extends BaseController
         $callerId = (int)$this->getCurrentUserId();
         $apiPermissions = $this->services()->apiPermissionService();
         $this->services()->permissionService()->primeAdminFlags(array_map(static fn(array $user): int => (int)$user['uid'], $users));
+        $showZoneLimit = (bool)$this->config->get('interface', 'show_zone_limit_column', false);
+        $zoneUsage = $showZoneLimit
+            ? $this->services()->zoneOwnershipLimit()->userUsage(array_map(static fn(array $user): int => (int)$user['uid'], $users))
+            : [];
         foreach ($users as &$user) {
+            if ($showZoneLimit) {
+                $user['zones_owned'] = $zoneUsage[(int)$user['uid']]['owned'] ?? 0;
+                $user['zone_limit'] = $zoneUsage[(int)$user['uid']]['limit'] ?? null;
+            }
             $user['can_edit'] = $apiPermissions->canEditUser($callerId, (int)$user['uid']);
             $user['can_change_template'] = $user['can_edit'] && $permissions[Permission::PERM_USER_EDIT_TEMPL_PERM];
         }
@@ -225,6 +233,7 @@ class UsersController extends BaseController
             'search_term' => $searchTerm,
             'rows_per_page' => $rowsPerPage,
             'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
+            'show_zone_limit' => $showZoneLimit,
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);

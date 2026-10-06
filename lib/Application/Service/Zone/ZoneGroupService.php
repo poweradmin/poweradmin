@@ -29,6 +29,8 @@ use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 
 /**
  * Assigns zones to groups and removes them; the group-based half of zone ownership.
@@ -42,15 +44,21 @@ class ZoneGroupService
     private ZoneGroupRepositoryInterface $zoneGroupRepository;
     private UserGroupLookupInterface $groupRepository;
     private ZoneOwnershipGuard $ownershipGuard;
+    private ?ZoneOwnershipLimit $ownershipLimit;
 
+    /**
+     * @param ZoneOwnershipLimit|null $ownershipLimit Zone limit of the group being granted a zone; null enforces none
+     */
     public function __construct(
         ZoneGroupRepositoryInterface $zoneGroupRepository,
         UserGroupLookupInterface $groupRepository,
-        ZoneOwnershipGuard $ownershipGuard
+        ZoneOwnershipGuard $ownershipGuard,
+        ?ZoneOwnershipLimit $ownershipLimit = null
     ) {
         $this->zoneGroupRepository = $zoneGroupRepository;
         $this->groupRepository = $groupRepository;
         $this->ownershipGuard = $ownershipGuard;
+        $this->ownershipLimit = $ownershipLimit;
     }
 
     /**
@@ -58,10 +66,10 @@ class ZoneGroupService
      *
      * @param int $domainId Zone/Domain ID
      * @param int $groupId Group ID
-     * @return ZoneGroup
+     * @return ZoneGroup|ZoneLimitBreach The grant, or the group's zone limit it would exceed
      * @throws InvalidArgumentException If group not found or ownership already exists
      */
-    public function addGroupToZone(int $domainId, int $groupId): ZoneGroup
+    public function addGroupToZone(int $domainId, int $groupId): ZoneGroup|ZoneLimitBreach
     {
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
@@ -75,6 +83,10 @@ class ZoneGroupService
         }
         if ($this->ownershipGuard->refusesNewGrants($domainId)) {
             throw new InvalidArgumentException(self::SHARED_ZONE_ID);
+        }
+        $breach = $this->ownershipLimit?->groupBreach($groupId);
+        if ($breach !== null) {
+            return $breach;
         }
 
         return $this->zoneGroupRepository->add($domainId, $groupId);
@@ -140,7 +152,7 @@ class ZoneGroupService
      *
      * @param int $groupId Group ID
      * @param int[] $domainIds Array of domain IDs
-     * @return array{success: int[], failed: array<int, string>} Results of bulk operation
+     * @return array{success: int[], failed: array<int, string>, limit?: ZoneLimitBreach} Results of bulk operation; limit is set when the group's zone limit stopped it
      */
     public function bulkAddZones(int $groupId, array $domainIds): array
     {
@@ -160,6 +172,13 @@ class ZoneGroupService
                 if ($this->ownershipGuard->refusesNewGrants($domainId)) {
                     $results['failed'][$domainId] = self::SHARED_ZONE_ID;
                 } elseif (!$this->zoneGroupRepository->exists($domainId, $groupId)) {
+                    // Re-counted per zone, so the run stops at the limit and reports the rest
+                    $breach = $this->ownershipLimit?->groupBreach($groupId);
+                    if ($breach !== null) {
+                        $results['failed'][$domainId] = $breach->message();
+                        $results['limit'] = $breach;
+                        continue;
+                    }
                     $this->zoneGroupRepository->add($domainId, $groupId);
                     $results['success'][] = $domainId;
                 } else {

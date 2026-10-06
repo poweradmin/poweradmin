@@ -106,3 +106,7 @@ END $$;
 
 CREATE INDEX IF NOT EXISTS "idx_zones_domain_id" ON "public"."zones" USING btree ("domain_id");
 CREATE INDEX IF NOT EXISTS "idx_zones_owner" ON "public"."zones" USING btree ("owner");
+
+-- Zone count limit per user and group (#72): NULL uses the dns.default_max_zones_* setting
+ALTER TABLE "public"."users" ADD COLUMN IF NOT EXISTS "max_zones" integer DEFAULT NULL;
+ALTER TABLE "public"."user_groups" ADD COLUMN IF NOT EXISTS "max_zones" integer DEFAULT NULL;

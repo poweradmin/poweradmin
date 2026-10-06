@@ -214,6 +214,15 @@ final class DbUserGroupRepository implements UserGroupRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
+    public function setZoneLimit(int $groupId, ?int $limit): bool
+    {
+        $stmt = $this->db->prepare('UPDATE user_groups SET max_zones = :max_zones WHERE id = :id');
+        $stmt->bindValue(':max_zones', $limit, $limit === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindValue(':id', $groupId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
     private function insert(UserGroup $group): UserGroup
     {
         $query = "INSERT INTO user_groups (name, description, perm_templ, created_by, created_at, updated_at)
@@ -268,7 +277,8 @@ final class DbUserGroupRepository implements UserGroupRepositoryInterface
             (int)$row['perm_templ'],
             $row['created_by'] !== null ? (int)$row['created_by'] : null,
             $row['created_at'] ?? null,
-            $row['updated_at'] ?? null
+            $row['updated_at'] ?? null,
+            isset($row['max_zones']) ? (int)$row['max_zones'] : null
         );
     }
 }
