@@ -71,6 +71,11 @@ final class ApiZoneSearch extends ApiSearchBase implements ZoneSearchInterface
             return [];
         }
 
+        // Only 'all' and 'own' grant visibility, as in the SQL search; any other level sees nothing
+        if ($permissionView !== 'all' && $permissionView !== 'own') {
+            return [];
+        }
+
         $parameters = $this->preprocessSearchQuery($parameters);
         $query = $parameters['query'];
 

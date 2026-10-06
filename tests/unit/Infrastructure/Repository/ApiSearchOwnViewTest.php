@@ -100,4 +100,28 @@ class ApiSearchOwnViewTest extends TestCase
 
         $this->assertSame([1, 2], array_column($zoneSearch->searchZones($this->parameters(true), 'all', null, 'name', 'ASC', 10, false, 1), 'id'));
     }
+
+    /**
+     * A template with search but no zone view permission resolves to 'none', which
+     * must see nothing, as the SQL search does.
+     */
+    public function testViewLevelWithoutZoneViewFindsNothing(): void
+    {
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->expects($this->never())->method('searchDnsData');
+        $zoneSearch = new ApiZoneSearch($this->db, $backend, $this->zones);
+        $recordSearch = new ApiRecordSearch($this->db, $backend, $this->zones);
+
+        $this->assertSame([], $zoneSearch->searchZones($this->parameters(true), 'none', 7, 'name', 'ASC', 10, false, 1));
+        $this->assertSame(0, $zoneSearch->getTotalZones($this->parameters(true), 'none', 7));
+        $this->assertSame([], $recordSearch->searchRecords($this->parameters(false), 'none', 7, 'name', 'ASC', false, 10, false, 1));
+        $this->assertSame(0, $recordSearch->getTotalRecords($this->parameters(false), 'none', 7, false));
+    }
+
+    public function testAllViewStillFindsEveryZone(): void
+    {
+        $zoneSearch = new ApiZoneSearch($this->db, $this->backend, $this->zones);
+
+        $this->assertSame([1, 2], array_column($zoneSearch->searchZones($this->parameters(true), 'all', null, 'name', 'ASC', 10, false, 1), 'id'));
+    }
 }
