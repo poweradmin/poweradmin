@@ -506,6 +506,15 @@ validate_ldap_config() {
     fi
 }
 
+# Warn when header mode is configured without any trusted proxy: the header is ignored then
+validate_remote_user_config() {
+    if [ "$(to_php_bool "${PA_REMOTE_USER_ENABLED:-false}")" = "true" ] \
+       && [ -n "${PA_REMOTE_USER_HEADER:-}" ] \
+       && [ "$(php_str_array "${PA_REMOTE_USER_TRUSTED_PROXIES:-}")" = "[]" ]; then
+        log "WARNING: PA_REMOTE_USER_HEADER is set but PA_REMOTE_USER_TRUSTED_PROXIES is empty. The header will be ignored until the proxy address is listed in PA_REMOTE_USER_TRUSTED_PROXIES"
+    fi
+}
+
 # Validate SAML configuration if enabled
 validate_saml_config() {
     local saml_enabled
@@ -1055,6 +1064,14 @@ generate_config() {
     saml_sync_user_info=$(to_php_bool "${PA_SAML_SYNC_USER_INFO:-true}")
     local saml_allow_superuser_provisioning
     saml_allow_superuser_provisioning=$(to_php_bool "${PA_SAML_ALLOW_SUPERUSER_PROVISIONING:-false}")
+    local remote_user_enabled remote_user_strip_realm remote_user_hide_login_form
+    local remote_user_auto_provision remote_user_allow_superuser_provisioning remote_user_sync_user_info
+    remote_user_enabled=$(to_php_bool "${PA_REMOTE_USER_ENABLED:-false}")
+    remote_user_strip_realm=$(to_php_bool "${PA_REMOTE_USER_STRIP_REALM:-false}")
+    remote_user_hide_login_form=$(to_php_bool "${PA_REMOTE_USER_HIDE_LOGIN_FORM:-false}")
+    remote_user_auto_provision=$(to_php_bool "${PA_REMOTE_USER_AUTO_PROVISION:-true}")
+    remote_user_allow_superuser_provisioning=$(to_php_bool "${PA_REMOTE_USER_ALLOW_SUPERUSER_PROVISIONING:-false}")
+    remote_user_sync_user_info=$(to_php_bool "${PA_REMOTE_USER_SYNC_USER_INFO:-true}")
     local saml_azure_enabled
     saml_azure_enabled=$(to_php_bool "${PA_SAML_AZURE_ENABLED:-false}")
     local saml_okta_enabled
@@ -1185,6 +1202,17 @@ generate_config() {
     local saml_group_mapping="[]"
     if [ -n "${PA_SAML_GROUP_MAPPING}" ]; then
         saml_group_mapping="[$(parse_mapping "${PA_SAML_GROUP_MAPPING}")]"
+    fi
+
+    # Process remote user permission template and group mappings
+    local remote_user_permission_template_mapping="[]"
+    if [ -n "${PA_REMOTE_USER_PERMISSION_TEMPLATE_MAPPING:-}" ]; then
+        remote_user_permission_template_mapping="[$(parse_mapping "${PA_REMOTE_USER_PERMISSION_TEMPLATE_MAPPING}")]"
+    fi
+
+    local remote_user_group_mapping="[]"
+    if [ -n "${PA_REMOTE_USER_GROUP_MAPPING:-}" ]; then
+        remote_user_group_mapping="[$(parse_mapping "${PA_REMOTE_USER_GROUP_MAPPING}")]"
     fi
 
     # Process WHOIS custom servers mapping
@@ -1735,6 +1763,25 @@ EOF
     cat >> "${CONFIG_FILE}" << EOF
         ],
     ],
+    'remote_user' => [
+        'enabled' => ${remote_user_enabled},
+        'server_variable' => $(php_sq "${PA_REMOTE_USER_SERVER_VARIABLE:-REMOTE_USER}"),
+        'header' => $(php_sq "${PA_REMOTE_USER_HEADER:-}"),
+        'trusted_proxies' => $(php_str_array "${PA_REMOTE_USER_TRUSTED_PROXIES:-}"),
+        'strip_realm' => ${remote_user_strip_realm},
+        'email_attribute' => $(php_sq "${PA_REMOTE_USER_EMAIL_ATTRIBUTE:-}"),
+        'name_attribute' => $(php_sq "${PA_REMOTE_USER_NAME_ATTRIBUTE:-}"),
+        'groups_attribute' => $(php_sq "${PA_REMOTE_USER_GROUPS_ATTRIBUTE:-}"),
+        'groups_separator' => $(php_sq "${PA_REMOTE_USER_GROUPS_SEPARATOR:-,}"),
+        'logout_url' => $(php_sq "${PA_REMOTE_USER_LOGOUT_URL:-}"),
+        'hide_login_form' => ${remote_user_hide_login_form},
+        'auto_provision' => ${remote_user_auto_provision},
+        'allow_superuser_provisioning' => ${remote_user_allow_superuser_provisioning},
+        'sync_user_info' => ${remote_user_sync_user_info},
+        'default_permission_template' => $(php_sq "${PA_REMOTE_USER_DEFAULT_PERMISSION_TEMPLATE:-Guest}"),
+        'permission_template_mapping' => ${remote_user_permission_template_mapping},
+        'group_mapping' => ${remote_user_group_mapping},
+    ],
     'modules' => [
         'csv_export' => [
             'enabled' => ${mod_csv_export_enabled},
@@ -1943,6 +1990,8 @@ main() {
         debug_log "LDAP validation completed successfully"
         validate_saml_config
         debug_log "SAML validation completed successfully"
+        validate_remote_user_config
+        debug_log "Remote user validation completed successfully"
         validate_oidc_config
         debug_log "OIDC validation completed successfully"
         log "Configuration validation completed successfully"

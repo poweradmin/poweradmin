@@ -851,6 +851,60 @@ docker run -d \
 | `PA_SAML_GENERIC_DISPLAY_NAME_ATTR` | Display name attribute mapping | `displayName` | No |
 | `PA_SAML_GENERIC_GROUPS_ATTR` | Groups attribute mapping | `groups` | No |
 
+### Web server authentication (REMOTE_USER)
+
+Signs users in as the user name an authenticating web server or reverse proxy supplies.
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_REMOTE_USER_ENABLED` | Enable web server authentication | `false` | No |
+| `PA_REMOTE_USER_SERVER_VARIABLE` | Server variable that holds the user name | `REMOTE_USER` | No |
+| `PA_REMOTE_USER_HEADER` | Read the user name from this request header instead (header mode), e.g. `Remote-User` | Empty | No |
+| `PA_REMOTE_USER_TRUSTED_PROXIES` | Comma-separated proxy IPs or CIDRs allowed to send the header. Empty means the header is ignored | Empty | Yes in header mode |
+| `PA_REMOTE_USER_STRIP_REALM` | Turn `user@REALM` and `DOMAIN\user` into `user` | `false` | No |
+| `PA_REMOTE_USER_EMAIL_ATTRIBUTE` | Variable or header holding the email address, e.g. `Remote-Email` | Empty | No |
+| `PA_REMOTE_USER_NAME_ATTRIBUTE` | Variable or header holding the full name, e.g. `Remote-Name` | Empty | No |
+| `PA_REMOTE_USER_GROUPS_ATTRIBUTE` | Variable or header holding the groups, e.g. `Remote-Groups` | Empty | No |
+| `PA_REMOTE_USER_GROUPS_SEPARATOR` | Separator between groups in the groups attribute | `,` | No |
+| `PA_REMOTE_USER_LOGOUT_URL` | Where to send users after logout, to end the proxy's own session | Empty | No |
+| `PA_REMOTE_USER_HIDE_LOGIN_FORM` | Hide the password form while the web server signs users in | `false` | No |
+| `PA_REMOTE_USER_AUTO_PROVISION` | Create an account on first sign-in | `true` | No |
+| `PA_REMOTE_USER_ALLOW_SUPERUSER_PROVISIONING` | Let group mappings grant the superuser flag | `false` | No |
+| `PA_REMOTE_USER_SYNC_USER_INFO` | Update name and email from the attributes on each sign-in | `true` | No |
+| `PA_REMOTE_USER_DEFAULT_PERMISSION_TEMPLATE` | Permission template for new accounts when no mapping matches | `Guest` | No |
+| `PA_REMOTE_USER_PERMISSION_TEMPLATE_MAPPING` | Map groups to permission templates (format: `group1=Template1,group2=Template2`) | Empty | No |
+| `PA_REMOTE_USER_GROUP_MAPPING` | Map groups to Poweradmin groups (format: `group1=PaGroup1,group2=PaGroup2`) | Empty | No |
+
+**Notes:**
+
+- The image's Caddy server does not authenticate users itself. In Docker this is normally used in header mode, behind an authenticating proxy (Authelia, oauth2-proxy, Authentik outpost) that sets `Remote-User`.
+- `PA_REMOTE_USER_TRUSTED_PROXIES` must list the proxy's address as Poweradmin sees it. It is not taken from `TRUSTED_PROXIES`, and with a header set but no trusted proxies the header is ignored (the container logs a warning at startup).
+- The container must not be reachable except through that proxy, and the proxy must overwrite or strip any `Remote-User` header the client sends.
+
+```yaml
+services:
+  poweradmin:
+    image: poweradmin/poweradmin:latest
+    environment:
+      PA_REMOTE_USER_ENABLED: "true"
+      PA_REMOTE_USER_HEADER: Remote-User
+      PA_REMOTE_USER_TRUSTED_PROXIES: 172.20.0.5
+      PA_REMOTE_USER_EMAIL_ATTRIBUTE: Remote-Email
+      PA_REMOTE_USER_NAME_ATTRIBUTE: Remote-Name
+      PA_REMOTE_USER_GROUPS_ATTRIBUTE: Remote-Groups
+      PA_REMOTE_USER_GROUP_MAPPING: dns-admins=Administrators
+      PA_REMOTE_USER_PERMISSION_TEMPLATE_MAPPING: dns-admins=Administrator
+      PA_REMOTE_USER_LOGOUT_URL: https://auth.example.com/logout
+    networks:
+      app:
+        ipv4_address: 172.20.0.10   # reachable only from the proxy network, no published ports
+
+  authelia-proxy:   # your reverse proxy, forwarding to http://172.20.0.10 with Authelia's headers
+    networks:
+      app:
+        ipv4_address: 172.20.0.5
+```
+
 ### Admin User Creation
 
 | Variable | Description | Default | Required |
