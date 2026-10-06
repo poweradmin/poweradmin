@@ -1109,7 +1109,7 @@ class DbUserRepository implements UserRepositoryInterface
     public function findInactiveUserIdByEmail(string $email): ?int
     {
         $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email');
-        $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND active <> 1");
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND (active IS NULL OR active <> 1)");
         $stmt->execute([$email]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

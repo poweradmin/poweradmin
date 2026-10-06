@@ -46,7 +46,7 @@ class DbUserRepositoryProvisioningTest extends TestCase
             [
                 "CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT NOT NULL, password TEXT NOT NULL, fullname TEXT NOT NULL,
                     email TEXT NOT NULL, description TEXT NOT NULL, perm_templ INTEGER NOT NULL, perm_templ_source TEXT NOT NULL DEFAULT 'admin',
-                    active INTEGER NOT NULL, use_ldap INTEGER NOT NULL, auth_method TEXT NOT NULL DEFAULT 'sql')",
+                    active INTEGER, use_ldap INTEGER NOT NULL, auth_method TEXT NOT NULL DEFAULT 'sql')",
                 "CREATE TABLE perm_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT, template_type TEXT NOT NULL DEFAULT 'user')",
                 "INSERT INTO perm_templ (id, name) VALUES (1, 'Administrator'), (5, 'Guest')",
                 "INSERT INTO users (id, username, password, fullname, email, description, perm_templ, perm_templ_source, active, use_ldap, auth_method)
@@ -110,6 +110,11 @@ class DbUserRepositoryProvisioningTest extends TestCase
     {
         $this->assertSame(2, $this->repository->findInactiveUserIdByEmail('shared@example.org'));
         $this->assertNull($this->repository->findInactiveUserIdByEmail('nobody@example.org'));
+
+        // PostgreSQL allows users.active to be NULL, which every login check treats as disabled
+        $this->db->exec("INSERT INTO users (id, username, password, fullname, email, description, perm_templ, perm_templ_source, active, use_ldap, auth_method)
+            VALUES (3, 'nulled', 'h', 'Nulled', 'nulled@example.org', '', 5, 'admin', NULL, 0, 'sql')");
+        $this->assertSame(3, $this->repository->findInactiveUserIdByEmail('nulled@example.org'));
     }
 
     public function testIsActiveUserIsFalseForDisabledAndMissingAccounts(): void
