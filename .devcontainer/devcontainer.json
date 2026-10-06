@@ -12,6 +12,7 @@
     "web-sqlite-api:8085",
     "web-subfolder:8086",
     "web-mysql-de:8087",
+    "web-mysql-remote-user:8088",
     "mysql:3306",
     "pgsql:5432",
     "adminer:8090",
@@ -62,6 +63,10 @@
     },
     "web-mysql-de:8087": {
       "label": "Poweradmin (MySQL + SQL, German only)",
+      "onAutoForward": "notify"
+    },
+    "web-mysql-remote-user:8088": {
+      "label": "Poweradmin (MySQL + SQL, web server login)",
       "onAutoForward": "notify"
     },
     "mysql:3306": {

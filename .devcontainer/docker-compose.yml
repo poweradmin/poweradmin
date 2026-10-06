@@ -157,6 +157,20 @@ services:
       mysql:
         condition: service_healthy
 
+  # PHP-FPM for MySQL + SQL backend, signing users in from REMOTE_USER (used by nginx)
+  app-mysql-remote-user:
+    <<: *app
+    container_name: pwa-mysql-sql-remote-user
+    image: poweradmin-devcontainer-fpm:${PHP_VERSION_MYSQL}
+    volumes:
+      - *vol-app
+      - *vol-xdebug
+      - *vol-error-reporting
+      - ./conf/settings-mysql-sql-remote-user.php:/etc/poweradmin/settings.php:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+
   # =============================================================================
   # Web Servers
   # =============================================================================
@@ -281,6 +295,21 @@ services:
       - ../.:/app
     depends_on:
       - app-mysql-de
+
+  # Nginx webserver (MySQL + SQL) behind basic auth, web server authentication - Port 8088
+  web-mysql-remote-user:
+    <<: *web
+    container_name: pwa-web-mysql-sql-remote-user
+    ports:
+      - "8088:80"
+    environment:
+      - FPM_UPSTREAM=app-mysql-remote-user:9000
+    volumes:
+      - ./conf/nginx-remote-user.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./conf/htpasswd-remote-user:/etc/nginx/htpasswd-remote-user:ro
+      - ../.:/app
+    depends_on:
+      - app-mysql-remote-user
 
   # =============================================================================
   # Database Servers

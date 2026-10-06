@@ -20,7 +20,7 @@ SQL instances covers three versions at once:
 
 | Family | Instances | PHP |
 |--------|-----------|-----|
-| MySQL/MariaDB | 8080, 8083, 8086 | `PHP_VERSION_MYSQL` = 8.2 (the supported floor) |
+| MySQL/MariaDB | 8080, 8083, 8086, 8088 | `PHP_VERSION_MYSQL` = 8.2 (the supported floor) |
 | SQLite | 8082, 8085 | `PHP_VERSION_SQLITE` = 8.3 |
 | PostgreSQL | 8081 (Apache), 8084 | `PHP_VERSION_PGSQL` = 8.4 (same as the production image) |
 | German-only | 8087 | `PHP_VERSION_DE` = 8.5 (newest release) |
@@ -32,7 +32,7 @@ builds, the others reuse the tag. After editing `.devcontainer/Dockerfile` or a 
 Xdebug is off by default. Set `PHP_XDEBUG=1` in `.env`, rebuild the fpm images and recreate
 the app services; `conf/xdebug.ini` holds the client settings (`host.docker.internal`, port 9003).
 
-Only the web instances (8080-8087) listen on all interfaces. Databases, LDAP, the PowerDNS
+Only the web instances (8080-8088) listen on all interfaces. Databases, LDAP, the PowerDNS
 DNS/API ports, Adminer and phpLDAPadmin are bound to 127.0.0.1, so they are unreachable from
 other machines on your network.
 
@@ -62,6 +62,7 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 |------|---------|
 | 8086 | Subfolder deployment, served under http://localhost:8086/poweradmin/ |
 | 8087 | German-only interface (`enabled_languages` restricted to `de_DE`) |
+| 8088 | Web server authentication: nginx asks for a password and Poweradmin signs in `REMOTE_USER` (users `remote-alice`, `remote-bob` and `admin`, password `Poweradmin123`; `admin` is a local account, so it is refused) |
 
 ## Port Mappings
 
@@ -76,6 +77,7 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 - **SQLite + API** (Nginx): http://localhost:8085
 - **MySQL + Subfolder** (Nginx): http://localhost:8086/poweradmin/
 - **MySQL + German only** (Nginx): http://localhost:8087
+- **MySQL + web server login** (Nginx basic auth): http://localhost:8088
 
 ### Installer
 Every instance serves the installer at `/install/` (subfolder: http://localhost:8086/poweradmin/install/).

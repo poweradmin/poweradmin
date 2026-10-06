@@ -19,6 +19,12 @@ async function globalSetup(config) {
   console.log('\n[Global Setup] Starting test data preparation...');
   console.log(`[Global Setup] Base URL: ${baseURL}`);
 
+  // The web server sign-in instance sits behind basic auth, and its spec needs no zones
+  if (baseURL.includes(':8088')) {
+    console.log('[Global Setup] Web server sign-in instance, nothing to prepare');
+    return;
+  }
+
   const browser = await chromium.launch();
   const context = await browser.newContext({ baseURL });
   const page = await context.newPage();
