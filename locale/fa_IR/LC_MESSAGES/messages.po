@@ -16028,3 +16028,72 @@ msgstr "احراز هویت از طریق وب‌سرور"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "وب‌سرور یا یک پراکسی احراز هویت این کاربر را وارد می‌کند"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "این گروه را نمی‌توان به منطقه اضافه کرد."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "محدودیت مناطق را 0 یا بیشتر وارد کنید یا آن را خالی بگذارید."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s مالک %2$d منطقه است که از محدودیت مناطق (%3$d) بیشتر است. مناطق موجود حفظ می‌شوند؛ مناطق جدید رد می‌شوند."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "به محدودیت مناطق خود رسیده‌اید و نمی‌توانید مالک مناطق بیشتری باشید."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "می‌توانید مالک %d منطقه دیگر باشید."
+msgstr[1] "می‌توانید مالک %d منطقه دیگر باشید."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "محدودیت مناطق تکمیل شد: گروه %1$s مالک %2$d از %3$d منطقه است."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "محدودیت مناطق تکمیل شد: %1$s مالک %2$d از %3$d منطقه است."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "محدودیت مناطق"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "نامحدود"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "پیش فرض: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "مناطق متعلق به این گروه: %count%. برای استفاده از پیش فرض خالی بگذارید."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "مدیران کل محدودیتی ندارند."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "مناطق با مالکیت مستقیم: %count%. برای استفاده از پیش فرض خالی بگذارید."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "تعداد مناطقی که این کاربر می‌تواند مستقیماً مالک آن‌ها باشد. برای استفاده از پیش فرض خالی بگذارید."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "تعداد مناطقی که این گروه می‌تواند مالک آن‌ها باشد. برای استفاده از پیش فرض خالی بگذارید."

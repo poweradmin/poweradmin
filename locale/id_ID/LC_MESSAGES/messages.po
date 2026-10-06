@@ -16299,3 +16299,72 @@ msgstr "Autentikasi melalui server web"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "Server web atau proxy autentikasi memasukkan pengguna ini"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "Grup ini tidak dapat ditambahkan ke zona."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "Masukkan batas zona 0 atau lebih, atau biarkan kosong."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s memiliki %2$d zona, melebihi batas zona %3$d. Zona yang ada tetap dipertahankan; zona baru akan ditolak."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "Anda telah mencapai batas zona dan tidak dapat memiliki zona lagi."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "Anda dapat memiliki %d zona lagi."
+msgstr[1] "Anda dapat memiliki %d zona lagi."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "Batas zona tercapai: grup %1$s memiliki %2$d dari %3$d zona."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "Batas zona tercapai: %1$s memiliki %2$d dari %3$d zona."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "Batas zona"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "Tidak terbatas"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "Bawaan: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "Zona milik grup ini: %count%. Biarkan kosong untuk menggunakan nilai bawaan."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "Superuser tidak dibatasi."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "Zona yang dimiliki langsung: %count%. Biarkan kosong untuk menggunakan nilai bawaan."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "Jumlah zona yang boleh dimiliki langsung oleh pengguna ini. Biarkan kosong untuk menggunakan nilai bawaan."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "Jumlah zona yang boleh dimiliki grup ini. Biarkan kosong untuk menggunakan nilai bawaan."

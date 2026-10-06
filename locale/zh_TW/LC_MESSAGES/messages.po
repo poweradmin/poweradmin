@@ -15117,3 +15117,72 @@ msgstr "透過 Web 伺服器驗證"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "由 Web 伺服器或驗證代理為此使用者登入"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "無法將此組新增至該區域。"
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "請輸入大於或等於 0 的區域上限，或留空。"
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s 擁有 %2$d 個區域，超過區域上限 %3$d。現有區域會保留，新區域將被拒絕。"
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "您已達到區域上限，無法再擁有更多區域。"
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "您還可以擁有 %d 個區域。"
+msgstr[1] "您還可以擁有 %d 個區域。"
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "已達區域上限：組 %1$s 擁有 %2$d/%3$d 個區域。"
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "已達區域上限：%1$s 擁有 %2$d/%3$d 個區域。"
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "區域上限"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "無限制"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "預設值：%count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "此組擁有的區域：%count%。留空則使用預設值。"
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "超級使用者不受限制。"
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "直接擁有的區域：%count%。留空則使用預設值。"
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "此使用者可直接擁有的區域數量。留空則使用預設值。"
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "此組可擁有的區域數量。留空則使用預設值。"

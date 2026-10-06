@@ -16332,3 +16332,72 @@ msgstr "Hitelesítés a webkiszolgálón keresztül"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "A webkiszolgáló vagy egy hitelesítő proxy jelentkezteti be ezt a felhasználót"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "Ez a csoport nem adható hozzá a zónához."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "Adjon meg 0 vagy nagyobb zónakorlátot, vagy hagyja üresen."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s %2$d zónát birtokol, ami meghaladja a zónakorlátot (%3$d). A meglévő zónák megmaradnak, az újakat a rendszer elutasítja."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "Elérte a zónakorlátját, ezért nem birtokolhat több zónát."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "Még %d zónát birtokolhat."
+msgstr[1] "Még %d zónát birtokolhat."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "Zónakorlát elérve: a(z) %1$s csoport %2$d/%3$d zónát birtokol."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "Zónakorlát elérve: %1$s %2$d/%3$d zónát birtokol."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "Zónakorlát"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "Korlátlan"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "Alapértelmezett: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "A csoport által birtokolt zónák: %count%. Hagyja üresen az alapértelmezett érték használatához."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "A szuperuserekre nem vonatkozik korlát."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "Közvetlenül birtokolt zónák: %count%. Hagyja üresen az alapértelmezett érték használatához."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "Hány zónát birtokolhat közvetlenül ez a felhasználó. Hagyja üresen az alapértelmezett érték használatához."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "Hány zónát birtokolhat ez a csoport. Hagyja üresen az alapértelmezett érték használatához."

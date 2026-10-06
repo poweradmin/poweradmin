@@ -16115,3 +16115,73 @@ msgstr "Ověřování webovým serverem"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "Tohoto uživatele přihlašuje webový server nebo ověřovací proxy"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "Tuto skupinu nelze přidat do zóny."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "Zadejte limit zón 0 nebo vyšší, nebo pole ponechte prázdné."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s: počet vlastněných zón (%2$d) překračuje limit zón (%3$d). Stávající zóny zůstanou zachovány; nové budou odmítnuty."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "Dosáhli jste limitu zón a nemůžete vlastnit další zóny."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "Můžete vlastnit ještě %d zónu."
+msgstr[1] "Můžete vlastnit ještě %d zóny."
+msgstr[2] "Můžete vlastnit ještě %d zón."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "Dosažen limit zón (%2$d z %3$d): skupina %1$s."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "Dosažen limit zón (%2$d z %3$d): %1$s."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "Limit zón"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "Neomezeno"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "Výchozí: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "Zóny vlastněné touto skupinou: %count%. Ponechte prázdné pro výchozí hodnotu."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "Superuživatelé nejsou omezeni."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "Přímo vlastněné zóny: %count%. Ponechte prázdné pro výchozí hodnotu."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "Kolik zón může tento uživatel přímo vlastnit. Ponechte prázdné pro výchozí hodnotu."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "Kolik zón může tato skupina vlastnit. Ponechte prázdné pro výchozí hodnotu."

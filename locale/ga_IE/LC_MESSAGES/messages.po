@@ -16586,3 +16586,75 @@ msgstr "Fíordheimhniú tríd an bhfreastalaí gréasáin"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "Logálann an freastalaí gréasáin nó seachfhreastalaí fíordheimhnithe an t-úsáideoir seo isteach"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "Ní féidir an grúpa seo a chur leis an gcrios."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "Iontráil teorainn criosanna de 0 nó níos mó, nó fág folamh í."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s: tá líon na gcriosanna faoi úinéireacht (%2$d) os cionn na teorann criosanna (%3$d). Coinnítear na criosanna atá ann; diúltaítear do chinn nua."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "Tá do theorainn criosanna bainte amach agat agus ní féidir tuilleadh criosanna a bheith faoi d'úinéireacht."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "Is féidir %d chrios eile a bheith faoi d'úinéireacht."
+msgstr[1] "Is féidir %d chrios eile a bheith faoi d'úinéireacht."
+msgstr[2] "Is féidir %d chrios eile a bheith faoi d'úinéireacht."
+msgstr[3] "Is féidir %d gcrios eile a bheith faoi d'úinéireacht."
+msgstr[4] "Is féidir %d crios eile a bheith faoi d'úinéireacht."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "Teorainn criosanna bainte amach (%2$d as %3$d): grúpa %1$s."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "Teorainn criosanna bainte amach (%2$d as %3$d): %1$s."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "Teorainn criosanna"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "Gan teorainn"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "Réamhshocrú: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "Criosanna faoi úinéireacht an ghrúpa seo: %count%. Fág folamh chun an réamhshocrú a úsáid."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "Níl aon teorainn ar úsáideoirí superuser."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "Criosanna faoi úinéireacht dhíreach: %count%. Fág folamh chun an réamhshocrú a úsáid."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "Cé mhéad crios is féidir a bheith faoi úinéireacht dhíreach an úsáideora seo. Fág folamh chun an réamhshocrú a úsáid."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "Cé mhéad crios is féidir a bheith faoi úinéireacht an ghrúpa seo. Fág folamh chun an réamhshocrú a úsáid."

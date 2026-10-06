@@ -16482,3 +16482,72 @@ msgstr "Vërtetim përmes serverit web"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "Serveri web ose një proxy vërtetimi e identifikon këtë përdorues"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "Ky grup nuk mund të shtohet te zona."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "Vendosni një kufi zonash 0 ose më shumë, ose lëreni bosh."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s zotëron %2$d zona, më shumë se kufiri i zonave prej %3$d. Zonat ekzistuese ruhen; të rejat refuzohen."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "Keni arritur kufirin tuaj të zonave dhe nuk mund të zotëroni më shumë zona."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "Mund të zotëroni edhe %d zonë."
+msgstr[1] "Mund të zotëroni edhe %d zona."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "U arrit kufiri i zonave: grupi %1$s zotëron %2$d nga %3$d zona."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "U arrit kufiri i zonave: %1$s zotëron %2$d nga %3$d zona."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "Kufiri i zonave"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "Pa kufi"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "Prezgjedhja: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "Zona në pronësi të këtij grupi: %count%. Lëreni bosh për të përdorur prezgjedhjen."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "Superpërdoruesit nuk kanë kufi."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "Zona në pronësi të drejtpërdrejtë: %count%. Lëreni bosh për të përdorur prezgjedhjen."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "Sa zona mund të zotërojë drejtpërdrejt ky përdorues. Lëreni bosh për të përdorur prezgjedhjen."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "Sa zona mund të zotërojë ky grup. Lëreni bosh për të përdorur prezgjedhjen."

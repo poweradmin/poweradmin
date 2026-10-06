@@ -15956,3 +15956,72 @@ msgstr "Todennus verkkopalvelimen kautta"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "Verkkopalvelin tai todentava välityspalvelin kirjaa tämän käyttäjän sisään"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "Tätä ryhmää ei voi lisätä alueeseen."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "Anna aluerajaksi 0 tai enemmän tai jätä kenttä tyhjäksi."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s omistaa %2$d aluetta, mikä ylittää aluerajan %3$d. Nykyiset alueet säilytetään; uudet hylätään."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "Olet saavuttanut aluerajasi, joten et voi omistaa enempää alueita."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "Voit omistaa vielä %d alueen."
+msgstr[1] "Voit omistaa vielä %d aluetta."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "Alueraja saavutettu: ryhmä %1$s omistaa %2$d/%3$d aluetta."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "Alueraja saavutettu: %1$s omistaa %2$d/%3$d aluetta."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "Alueraja"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "Rajoittamaton"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "Oletus: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "Tämän ryhmän omistamat alueet: %count%. Jätä tyhjäksi, jos haluat käyttää oletusta."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "Pääkäyttäjiä ei rajoiteta."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "Suoraan omistetut alueet: %count%. Jätä tyhjäksi, jos haluat käyttää oletusta."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "Kuinka monta aluetta tämä käyttäjä saa omistaa suoraan. Jätä tyhjäksi, jos haluat käyttää oletusta."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "Kuinka monta aluetta tämä ryhmä saa omistaa. Jätä tyhjäksi, jos haluat käyttää oletusta."

@@ -15948,3 +15948,73 @@ msgstr "Аутентификација преко веб сервера"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "Веб сервер или проксиј за аутентификацију пријављује овог корисника"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "Ова група не може да се дода зони."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "Унесите ограничење зона од 0 или више или оставите поље празно."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s: број зона у власништву (%2$d) премашује ограничење зона (%3$d). Постојеће зоне се задржавају; нове се одбијају."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "Достигли сте ограничење зона и не можете да поседујете више зона."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "Можете да поседујете још %d зону."
+msgstr[1] "Можете да поседујете још %d зоне."
+msgstr[2] "Можете да поседујете још %d зона."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "Достигнуто ограничење зона (%2$d од %3$d): група %1$s."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "Достигнуто ограничење зона (%2$d од %3$d): %1$s."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "Ограничење зона"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "Неограничено"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "Подразумевано: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "Зоне у власништву ове групе: %count%. Оставите празно за подразумевану вредност."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "Суперкорисници нису ограничени."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "Зоне у директном власништву: %count%. Оставите празно за подразумевану вредност."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "Колико зона овај корисник сме директно да поседује. Оставите празно за подразумевану вредност."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "Колико зона ова група сме да поседује. Оставите празно за подразумевану вредност."

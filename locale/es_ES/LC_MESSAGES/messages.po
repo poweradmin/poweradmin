@@ -16470,3 +16470,72 @@ msgstr "Autenticación por el servidor web"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "El servidor web o un proxy de autenticación inicia la sesión de este usuario"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "Este grupo no se puede añadir a la zona."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "Introduzca un límite de zonas de 0 o más, o déjelo vacío."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s posee %2$d zonas, más que el límite de zonas de %3$d. Las zonas existentes se conservan; las nuevas se rechazan."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "Ha alcanzado su límite de zonas y no puede poseer más zonas."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "Puede poseer %d zona más."
+msgstr[1] "Puede poseer %d zonas más."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "Límite de zonas alcanzado: el grupo %1$s posee %2$d de %3$d zonas."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "Límite de zonas alcanzado: %1$s posee %2$d de %3$d zonas."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "Límite de zonas"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "Ilimitado"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "Predeterminado: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "Zonas propiedad de este grupo: %count%. Déjelo vacío para usar el valor predeterminado."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "Los superusuarios no tienen límite."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "Zonas en propiedad directa: %count%. Déjelo vacío para usar el valor predeterminado."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "Cuántas zonas puede poseer directamente este usuario. Déjelo vacío para usar el valor predeterminado."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "Cuántas zonas puede poseer este grupo. Déjelo vacío para usar el valor predeterminado."

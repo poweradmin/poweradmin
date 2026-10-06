@@ -15932,3 +15932,71 @@ msgstr "웹 서버 인증"
 #: templates/default/add_user.html
 msgid "The web server or an authenticating proxy signs this user in"
 msgstr "웹 서버 또는 인증 프록시가 이 사용자를 로그인시킵니다"
+
+#: lib/Application/Controller/Zone/ZoneOwnershipController.php:246
+msgid "This group cannot be added to the zone."
+msgstr "이 그룹은 존에 추가할 수 없습니다."
+
+#: lib/Application/Controller/User/EditGroupController.php:117
+msgid "Enter a zone limit of 0 or more, or leave it empty."
+msgstr "존 한도로 0 이상의 값을 입력하거나 비워 두십시오."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:40
+#, php-format
+msgid ""
+"%1$s owns %2$d zones, more than the zone limit of %3$d. The existing zones "
+"are kept; new ones are refused."
+msgstr "%1$s이(가) 소유한 존은 %2$d개로, 존 한도 %3$d개를 초과합니다. 기존 존은 유지되고 새 존은 거부됩니다."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:57
+msgid "You have reached your zone limit and cannot own more zones."
+msgstr "존 한도에 도달하여 더 이상 존을 소유할 수 없습니다."
+
+#: lib/Application/Service/Zone/ZoneLimitMessages.php:58
+#, php-format
+msgid "You can own %d more zone."
+msgid_plural "You can own %d more zones."
+msgstr[0] "존을 %d개 더 소유할 수 있습니다."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:53
+#, php-format
+msgid "Zone limit reached: group %1$s owns %2$d of %3$d zones."
+msgstr "존 한도 도달: 그룹 %1$s이(가) 존 %3$d개 중 %2$d개를 소유하고 있습니다."
+
+#: lib/Domain/Service/Zone/ZoneLimitBreach.php:54
+#, php-format
+msgid "Zone limit reached: %1$s owns %2$d of %3$d zones."
+msgstr "존 한도 도달: %1$s이(가) 존 %3$d개 중 %2$d개를 소유하고 있습니다."
+
+#: templates/default/add_user.html:85 templates/default/add_group.html:42
+msgid "Zone limit"
+msgstr "존 한도"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Unlimited"
+msgstr "무제한"
+
+#: templates/default/add_user.html:88 templates/default/add_group.html:45
+msgid "Default: %count%"
+msgstr "기본값: %count%"
+
+#: templates/default/edit_group.html:55
+msgid "Zones owned by this group: %count%. Leave empty to use the default."
+msgstr "이 그룹이 소유한 존: %count%. 기본값을 사용하려면 비워 두십시오."
+
+#: templates/default/edit_user.html:90
+msgid "Superusers are not limited."
+msgstr "슈퍼유저에게는 한도가 적용되지 않습니다."
+
+#: templates/default/edit_user.html:92
+msgid "Zones owned directly: %count%. Leave empty to use the default."
+msgstr "직접 소유한 존: %count%. 기본값을 사용하려면 비워 두십시오."
+
+#: templates/default/add_user.html:90
+msgid ""
+"How many zones this user may own directly. Leave empty to use the default."
+msgstr "이 사용자가 직접 소유할 수 있는 존 수입니다. 기본값을 사용하려면 비워 두십시오."
+
+#: templates/default/add_group.html:47
+msgid "How many zones this group may own. Leave empty to use the default."
+msgstr "이 그룹이 소유할 수 있는 존 수입니다. 기본값을 사용하려면 비워 두십시오."
