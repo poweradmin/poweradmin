@@ -349,6 +349,7 @@ docker run -d --name poweradmin -p 80:80 \
 |----------|-------------|---------|----------|
 | `PA_APPROVAL_ENABLED` | Route zone changes of request-only users through review | `false` | No |
 | `PA_APPROVAL_REQUIRE_REVIEW_FOR_ALL` | Every zone change becomes a change request, even for editors and admins | `false` | No |
+| `PA_APPROVAL_ALLOW_SELF_APPROVAL` | Set to `false` so a requester cannot approve their own change request | `true` | No |
 
 ### User Agreement
 
