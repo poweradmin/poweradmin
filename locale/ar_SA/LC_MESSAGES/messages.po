@@ -15334,5 +15334,6 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "مفتاح PEM الخاص"
 
-
-
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
+msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
+msgstr "يجب أن تكون بيانات السجل العامة بالصيغة \"\\# <length> <hex>\" مع طول يطابق البيانات الست عشرية."

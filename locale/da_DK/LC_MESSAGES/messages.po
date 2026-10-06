@@ -15647,5 +15647,6 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "PEM privat nøgle"
 
-
-
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
+msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
+msgstr "Generiske postdata skal være \"\\# <length> <hex>\", hvor længden svarer til hex-dataene."

@@ -15801,5 +15801,6 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "PEM privát kulcs"
 
-
-
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
+msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
+msgstr "Az általános rekordadatoknak \"\\# <length> <hex>\" formátumúnak kell lenniük, és a hossznak egyeznie kell a hexadecimális adatokkal."

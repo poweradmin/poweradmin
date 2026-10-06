@@ -15414,5 +15414,6 @@ msgstr ""
 # OBSOLETE: msgid "PEM private key"
 # OBSOLETE: msgstr "PEM 개인 키"
 
-
-
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
+msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
+msgstr "일반 레코드 데이터는 \"\\# <length> <hex>\" 형식이어야 하며 길이가 16진수 데이터와 일치해야 합니다."
