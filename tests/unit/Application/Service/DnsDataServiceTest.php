@@ -491,4 +491,23 @@ class DnsDataServiceTest extends TestCase
         $this->assertSame(1, $result['total']);
         $this->assertSame('mail.example.com', $result['records'][0]['name']);
     }
+
+    /**
+     * A template with search but no zone view permission resolves to 'none', which
+     * must see nothing in API mode, as it does in the SQL search.
+     */
+    public function testApiSearchFindsNothingWithoutZoneViewPermission(): void
+    {
+        $this->mockBackend->method('isApiBackend')->willReturn(true);
+        $this->mockBackend->expects($this->never())->method('searchDnsData');
+
+        $service = $this->createService();
+        $zones = ['query' => 'example', 'zones' => true, 'records' => false];
+        $records = ['query' => 'example', 'zones' => false, 'records' => true];
+
+        $this->assertSame([], $service->searchZones($zones, 'none', 'name', 'ASC', 10, false, 1));
+        $this->assertSame(0, $service->searchZonesTotalCount($zones, 'none'));
+        $this->assertSame([], $service->searchRecords($records, 'none', 'name', 'ASC', false, 10, false, 1));
+        $this->assertSame(0, $service->searchRecordsTotalCount($records, 'none', false));
+    }
 }
