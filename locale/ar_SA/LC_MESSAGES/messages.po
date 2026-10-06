@@ -15847,3 +15847,26 @@ msgstr "تعديل كنص"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "تعديل كحقول"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "المتابعة باسم %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "أو سجّل الدخول بكلمة مرور"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "خادم الويب"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "المصادقة عبر خادم الويب"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "يسجّل خادم الويب أو وكيل مصادقة دخول هذا المستخدم"

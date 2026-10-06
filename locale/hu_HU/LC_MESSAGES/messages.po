@@ -16309,3 +16309,26 @@ msgstr "Szerkesztés szövegként"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Szerkesztés mezőkként"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Folytatás mint %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Vagy jelentkezzen be jelszóval"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Webkiszolgáló"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Hitelesítés a webkiszolgálón keresztül"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "A webkiszolgáló vagy egy hitelesítő proxy jelentkezteti be ezt a felhasználót"

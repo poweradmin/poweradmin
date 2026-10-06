@@ -15925,3 +15925,26 @@ msgstr "Уреди као текст"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Уреди као поља"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Настави као %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Или се пријавите лозинком"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Веб сервер"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Аутентификација преко веб сервера"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Веб сервер или проксиј за аутентификацију пријављује овог корисника"

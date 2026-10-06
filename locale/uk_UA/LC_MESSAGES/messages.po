@@ -16231,3 +16231,26 @@ msgstr "Редагувати як текст"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Редагувати як поля"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Продовжити як %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Або увійдіть із паролем"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Вебсервер"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Автентифікація через вебсервер"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Вхід цього користувача виконує вебсервер або проксі-сервер автентифікації"

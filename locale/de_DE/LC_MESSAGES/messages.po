@@ -16495,3 +16495,26 @@ msgstr "Als Text bearbeiten"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Als Felder bearbeiten"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Weiter als %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Oder mit Passwort anmelden"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Webserver"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Anmeldung über den Webserver"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Der Webserver oder ein authentifizierender Proxy meldet diesen Benutzer an"

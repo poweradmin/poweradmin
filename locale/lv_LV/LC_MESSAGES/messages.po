@@ -15878,3 +15878,26 @@ msgstr "Rediģēt kā tekstu"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Rediģēt kā laukus"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Turpināt kā %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Vai piesakieties ar paroli"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Tīmekļa serveris"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Autentifikācija ar tīmekļa serveri"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Šo lietotāju piesaka tīmekļa serveris vai autentificējošs starpniekserveris"

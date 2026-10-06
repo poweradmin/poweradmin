@@ -15933,3 +15933,26 @@ msgstr "Muokkaa tekstinä"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Muokkaa kenttinä"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Jatka käyttäjänä %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Tai kirjaudu salasanalla"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Verkkopalvelin"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Todennus verkkopalvelimen kautta"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Verkkopalvelin tai todentava välityspalvelin kirjaa tämän käyttäjän sisään"

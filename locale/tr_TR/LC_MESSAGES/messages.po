@@ -16166,3 +16166,26 @@ msgstr "Metin olarak düzenle"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Alan olarak düzenle"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "%user% olarak devam et"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Veya parola ile oturum açın"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Web sunucusu"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Web sunucusu ile kimlik doğrulama"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Bu kullanıcının oturumunu web sunucusu veya kimlik doğrulayan bir proxy açar"

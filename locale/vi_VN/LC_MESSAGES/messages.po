@@ -16051,3 +16051,26 @@ msgstr "Sửa dạng văn bản"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Sửa dạng trường"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Tiếp tục với tư cách %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Hoặc đăng nhập bằng mật khẩu"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Máy chủ web"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Xác thực qua máy chủ web"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Máy chủ web hoặc proxy xác thực đăng nhập cho người dùng này"

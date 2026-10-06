@@ -16005,3 +16005,26 @@ msgstr "ویرایش به صورت متن"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "ویرایش به صورت فیلد"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "ادامه به‌عنوان %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "یا با گذرواژه وارد شوید"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "وب‌سرور"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "احراز هویت از طریق وب‌سرور"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "وب‌سرور یا یک پراکسی احراز هویت این کاربر را وارد می‌کند"

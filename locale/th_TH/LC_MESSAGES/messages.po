@@ -15409,3 +15409,26 @@ msgstr "แก้ไขเป็นข้อความ"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "แก้ไขเป็นฟิลด์"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "ดำเนินการต่อในชื่อ %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "หรือเข้าสู่ระบบด้วยรหัสผ่าน"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "เว็บเซิร์ฟเวอร์"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "การยืนยันตัวตนผ่านเว็บเซิร์ฟเวอร์"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "เว็บเซิร์ฟเวอร์หรือพร็อกซีสำหรับยืนยันตัวตนจะลงชื่อเข้าใช้ให้ผู้ใช้นี้"

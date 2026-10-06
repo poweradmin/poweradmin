@@ -16291,3 +16291,26 @@ msgstr "Редактировать как текст"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Редактировать как поля"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Продолжить как %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Или войдите с паролем"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Веб-сервер"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Аутентификация через веб-сервер"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Вход этого пользователя выполняет веб-сервер или прокси-сервер аутентификации"

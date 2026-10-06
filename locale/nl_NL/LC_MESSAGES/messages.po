@@ -16327,3 +16327,26 @@ msgstr "Als tekst bewerken"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Als velden bewerken"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Doorgaan als %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Of meld u aan met een wachtwoord"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Webserver"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Authenticatie via de webserver"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "De webserver of een authenticerende proxy meldt deze gebruiker aan"

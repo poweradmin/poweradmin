@@ -15858,3 +15858,26 @@ msgstr "टेक्स्ट के रूप में संपादित �
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "फ़ील्ड के रूप में संपादित करें"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "%user% के रूप में जारी रखें"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "या पासवर्ड से लॉग इन करें"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "वेब सर्वर"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "वेब सर्वर द्वारा प्रमाणीकरण"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "वेब सर्वर या प्रमाणीकरण प्रॉक्सी इस उपयोगकर्ता को साइन इन करता है"

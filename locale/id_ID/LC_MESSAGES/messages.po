@@ -16276,3 +16276,26 @@ msgstr "Edit sebagai teks"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Edit sebagai bidang"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Lanjutkan sebagai %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Atau masuk dengan kata sandi"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Server web"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Autentikasi melalui server web"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Server web atau proxy autentikasi memasukkan pengguna ini"

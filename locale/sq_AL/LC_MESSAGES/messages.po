@@ -16459,3 +16459,26 @@ msgstr "Ndrysho si tekst"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Ndrysho si fusha"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Vazhdo si %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Ose hyni me fjalëkalim"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Serveri web"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Vërtetim përmes serverit web"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Serveri web ose një proxy vërtetimi e identifikon këtë përdorues"

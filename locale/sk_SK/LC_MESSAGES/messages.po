@@ -16053,3 +16053,26 @@ msgstr "Upraviť ako text"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Upraviť ako polia"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Pokračovať ako %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Alebo sa prihláste heslom"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Webový server"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Overovanie webovým serverom"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Tohto používateľa prihlasuje webový server alebo overovací proxy server"

@@ -16183,3 +16183,26 @@ msgstr "Uredi kot besedilo"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Uredi kot polja"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Nadaljuj kot %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Ali se prijavite z geslom"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Spletni strežnik"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Preverjanje pristnosti prek spletnega strežnika"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Tega uporabnika prijavi spletni strežnik ali posredniški strežnik za preverjanje pristnosti"

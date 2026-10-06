@@ -16092,3 +16092,26 @@ msgstr "Upravit jako text"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Upravit jako pole"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Pokračovat jako %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Nebo se přihlaste heslem"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Webový server"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Ověřování webovým serverem"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Tohoto uživatele přihlašuje webový server nebo ověřovací proxy"

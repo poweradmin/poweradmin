@@ -16563,3 +16563,26 @@ msgstr "Cuir in eagar mar théacs"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Cuir in eagar mar réimsí"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Lean ar aghaidh mar %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Nó logáil isteach le pasfhocal"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Freastalaí gréasáin"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Fíordheimhniú tríd an bhfreastalaí gréasáin"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Logálann an freastalaí gréasáin nó seachfhreastalaí fíordheimhnithe an t-úsáideoir seo isteach"

@@ -15674,3 +15674,26 @@ msgstr "ערוך כטקסט"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "ערוך כשדות"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "המשך בתור %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "או התחבר עם סיסמה"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "שרת אינטרנט"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "אימות דרך שרת האינטרנט"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "שרת האינטרנט או פרוקסי מאמת מחבר את המשתמש הזה"

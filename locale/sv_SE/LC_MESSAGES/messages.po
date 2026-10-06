@@ -16124,3 +16124,26 @@ msgstr "Redigera som text"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Redigera som fält"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Fortsätt som %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "Eller logga in med ett lösenord"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Webbserver"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Autentisering via webbservern"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "Webbservern eller en autentiserande proxy loggar in den här användaren"

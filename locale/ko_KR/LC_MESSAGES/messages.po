@@ -15909,3 +15909,26 @@ msgstr "텍스트로 편집"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "필드로 편집"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "%user%(으)로 계속"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "또는 비밀번호로 로그인"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "웹 서버"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "웹 서버 인증"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "웹 서버 또는 인증 프록시가 이 사용자를 로그인시킵니다"

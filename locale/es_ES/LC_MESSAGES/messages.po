@@ -16447,3 +16447,26 @@ msgstr "Editar como texto"
 #: templates/default/edit_record.html
 msgid "Edit as fields"
 msgstr "Editar como campos"
+
+#: templates/default/login.html
+msgid "Continue as %user%"
+msgstr "Continuar como %user%"
+
+#: templates/default/login.html
+msgid "Or log in with a password"
+msgstr "O inicie sesión con una contraseña"
+
+#: templates/default/users.html
+#: templates/default/edit_user.html
+msgid "Web server"
+msgstr "Servidor web"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "Web server authentication"
+msgstr "Autenticación por el servidor web"
+
+#: templates/default/edit_user.html
+#: templates/default/add_user.html
+msgid "The web server or an authenticating proxy signs this user in"
+msgstr "El servidor web o un proxy de autenticación inicia la sesión de este usuario"
