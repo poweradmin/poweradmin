@@ -13583,4 +13583,6 @@ msgid ""
 "Please contact your administrator."
 msgstr "Kunde inte ställa in locale. Det valda locale-värdet stöds kanske inte på detta system. Kontakta din administratör."
 
-
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
+msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
+msgstr "Generiska postdata måste vara \"\\# <length> <hex>\" där längden matchar hexdata."

@@ -14393,4 +14393,6 @@ msgid ""
 "Please contact your administrator."
 msgstr "Не удалось установить локаль. Выбранная локаль может не поддерживаться в этой системе. Обратитесь к администратору."
 
-
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
+msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
+msgstr "Общие данные записи должны иметь вид \"\\# <length> <hex>\", где длина соответствует шестнадцатеричным данным."
