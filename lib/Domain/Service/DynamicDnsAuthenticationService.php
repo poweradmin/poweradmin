@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
@@ -31,29 +32,42 @@ class DynamicDnsAuthenticationService
 {
     private DynamicDnsRepositoryInterface $repository;
     private UserAuthenticationService $userAuthService;
+    private ?LoginAttemptService $loginAttemptService;
 
-    public function __construct(DynamicDnsRepositoryInterface $repository, UserAuthenticationService $userAuthService)
-    {
+    public function __construct(
+        DynamicDnsRepositoryInterface $repository,
+        UserAuthenticationService $userAuthService,
+        ?LoginAttemptService $loginAttemptService = null
+    ) {
         $this->repository = $repository;
         $this->userAuthService = $userAuthService;
+        $this->loginAttemptService = $loginAttemptService;
     }
 
-    public function authenticateUser(DynamicDnsRequest $request): ?User
+    /**
+     * @param string $clientIp Client address for account_lockout tracking
+     */
+    public function authenticateUser(DynamicDnsRequest $request, string $clientIp = ''): ?User
     {
         if (!$request->hasUsername()) {
             return null;
         }
 
-        $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($request->getUsername());
+        // The browser login already enforces account_lockout; dynamic updates must not bypass it
+        $username = $request->getUsername();
+        if ($this->loginAttemptService !== null && $this->loginAttemptService->isAccountLocked($username, $clientIp)) {
+            return null;
+        }
+
+        $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($username);
         if (!$user) {
             return null;
         }
 
-        if (!$this->userAuthService->verifyPassword($request->getPassword(), $user->getPassword())) {
-            return null;
-        }
+        $passwordValid = $this->userAuthService->verifyPassword($request->getPassword(), $user->getPassword());
+        $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
 
-        return $user;
+        return $passwordValid ? $user : null;
     }
 
 

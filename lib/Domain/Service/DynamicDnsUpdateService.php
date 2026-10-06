@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,14 +45,17 @@ class DynamicDnsUpdateService
         $this->repository = $repository;
     }
 
-    public function processUpdate(DynamicDnsRequest $request): string
+    /**
+     * @param string $clientIp Client address for account_lockout tracking
+     */
+    public function processUpdate(DynamicDnsRequest $request, string $clientIp = ''): string
     {
         $validationResult = $this->validationService->validateRequest($request);
         if (!$validationResult->isValid()) {
             return $this->determineErrorCode($validationResult->getErrors());
         }
 
-        $user = $this->authService->authenticateUser($request);
+        $user = $this->authService->authenticateUser($request, $clientIp);
         if (!$user) {
             return 'badauth2';
         }
