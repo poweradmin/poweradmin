@@ -4,6 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
@@ -18,6 +19,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
 use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
 
 // Main execution code
@@ -64,7 +66,7 @@ $userAuthService = new UserAuthenticationService(
     $config->get('security', 'password_encryption', 'bcrypt'),
     $config->get('security', 'password_cost', 12)
 );
-$authenticationService = new DynamicDnsAuthenticationService($repository, $userAuthService);
+$authenticationService = new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($db, $config));
 
 $updateService = new DynamicDnsUpdateService(
     $validationService,
@@ -74,7 +76,7 @@ $updateService = new DynamicDnsUpdateService(
 
 // Create request value object and process update
 $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
-$result = $updateService->processUpdate($dynamicDnsRequest);
+$result = $updateService->processUpdate($dynamicDnsRequest, (new IpAddressRetriever($_SERVER))->getClientIp());
 
 // Output result and exit
 DynamicDnsHelper::statusExit($result);

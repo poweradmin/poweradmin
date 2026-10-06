@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
@@ -31,20 +32,34 @@ class DynamicDnsAuthenticationService
 {
     private DynamicDnsRepositoryInterface $repository;
     private UserAuthenticationService $userAuthService;
+    private ?LoginAttemptService $loginAttemptService;
 
-    public function __construct(DynamicDnsRepositoryInterface $repository, UserAuthenticationService $userAuthService)
-    {
+    public function __construct(
+        DynamicDnsRepositoryInterface $repository,
+        UserAuthenticationService $userAuthService,
+        ?LoginAttemptService $loginAttemptService = null
+    ) {
         $this->repository = $repository;
         $this->userAuthService = $userAuthService;
+        $this->loginAttemptService = $loginAttemptService;
     }
 
-    public function authenticateUser(DynamicDnsRequest $request): ?User
+    /**
+     * @param string $clientIp Client address for account_lockout tracking
+     */
+    public function authenticateUser(DynamicDnsRequest $request, string $clientIp = ''): ?User
     {
         if (!$request->hasUsername()) {
             return null;
         }
 
-        $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($request->getUsername());
+        // The browser login already enforces account_lockout; dynamic updates must not bypass it
+        $username = $request->getUsername();
+        if ($this->loginAttemptService !== null && $this->loginAttemptService->isAccountLocked($username, $clientIp)) {
+            return null;
+        }
+
+        $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($username);
         if (!$user) {
             return null;
         }
@@ -52,11 +67,10 @@ class DynamicDnsAuthenticationService
         // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying against
         // an empty hash throws, and dynamic_update.php has no catch, so it would be a 500.
         $hash = $user->getPassword();
-        if ($hash === '' || !$this->userAuthService->verifyPassword($request->getPassword(), $hash)) {
-            return null;
-        }
+        $passwordValid = $hash !== '' && $this->userAuthService->verifyPassword($request->getPassword(), $hash);
+        $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
 
-        return $user;
+        return $passwordValid ? $user : null;
     }
 
 
