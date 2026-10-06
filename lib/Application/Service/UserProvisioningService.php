@@ -102,7 +102,10 @@ class UserProvisioningService extends LoggingService
                     'method' => strtoupper($authMethod),
                     'subject' => $userInfo->getSubject()
                 ]);
-                $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
+                // A refused login must not write provider data onto the disabled account
+                if ($this->isActiveUser($existingUserId)) {
+                    $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
+                }
                 return $existingUserId;
             }
 
@@ -134,6 +137,17 @@ class UserProvisioningService extends LoggingService
                     }
                     $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
                     return $existingUserId;
+                }
+
+                // Hand back a disabled match so the caller refuses it, rather than
+                // auto-provisioning a fresh active account for the same person.
+                $disabledUserId = $this->findInactiveUserIdByEmail($userInfo->getEmail());
+                if ($disabledUserId !== null) {
+                    $this->logWarning('{method} identity matches disabled account {id} by email', [
+                        'method' => strtoupper($authMethod),
+                        'id' => $disabledUserId
+                    ]);
+                    return $disabledUserId;
                 }
             }
 
@@ -231,6 +245,28 @@ class UserProvisioningService extends LoggingService
             $this->logError('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
             return true;
         }
+    }
+
+    /**
+     * Whether a matched account may sign in; provisionUser() can return a disabled account.
+     */
+    public function isActiveUser(int $userId): bool
+    {
+        $stmt = $this->db->prepare('SELECT id FROM users WHERE id = :id AND active = 1');
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (bool)$stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    private function findInactiveUserIdByEmail(string $email): ?int
+    {
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'email');
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND (active IS NULL OR active <> 1)");
+        $stmt->execute([$email]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
     }
 
     private function findUserByEmail(string $email): ?int
