@@ -15102,4 +15102,6 @@ msgstr ""
 "Gagal menyetel locale. Locale yang dipilih mungkin tidak didukung pada "
 "sistem ini. Silakan hubungi administrator Anda."
 
-
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
+msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
+msgstr "Data record generik harus berupa \"\\# <length> <hex>\" dengan panjang yang sesuai dengan data heksadesimal."

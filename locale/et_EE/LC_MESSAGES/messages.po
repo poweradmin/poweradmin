@@ -13807,4 +13807,6 @@ msgstr ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
 
-
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
+msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
+msgstr "Üldised kirje andmed peavad olema kujul \"\\# <length> <hex>\", kusjuures pikkus peab vastama kuueteistkümnendandmetele."
