@@ -36,9 +36,10 @@ class UserCommandFactory
 {
     /**
      * @param array<string, mixed> $input The request fields under their API names
+     * @param bool $useRemoteUser Web server sign-in, which only the web form offers so far
      * @return CreateUserCommand|array{success: false, message: string, refusal: Refusal, code: string}
      */
-    public static function create(array $input): CreateUserCommand|array
+    public static function create(array $input, bool $useRemoteUser = false): CreateUserCommand|array
     {
         $useLdap = self::useLdap($input);
         if (is_array($useLdap)) {
@@ -64,14 +65,16 @@ class UserCommandFactory
             $active,
             $permTemplId,
             $useLdap ?? false,
+            $useRemoteUser,
         );
     }
 
     /**
      * @param array<string, mixed> $input The request fields under their API names; absent ones stay unchanged
+     * @param bool|null $useRemoteUser Web server sign-in, which only the web form offers so far; null leaves it unchanged
      * @return UpdateUserCommand|array{success: false, message: string, refusal: Refusal, code: string}
      */
-    public static function update(array $input): UpdateUserCommand|array
+    public static function update(array $input, ?bool $useRemoteUser = null): UpdateUserCommand|array
     {
         $useLdap = self::useLdap($input);
         if (is_array($useLdap)) {
@@ -101,6 +104,7 @@ class UserCommandFactory
             array_key_exists('active', $input) ? self::flag($input['active']) : null,
             $permTemplId,
             $useLdap,
+            $useRemoteUser,
         );
     }
 

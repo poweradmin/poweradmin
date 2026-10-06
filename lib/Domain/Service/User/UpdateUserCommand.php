@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service\User;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+
 /**
  * What a partial user update asks for: every field is null when the request
  * left it alone. The controllers build it from their own field names; the
@@ -34,6 +36,7 @@ final readonly class UpdateUserCommand
      * @param string|null $password A new plain password; null (and an empty string) leaves it unchanged
      * @param int|null $permissionTemplateId A positive template id to assign
      * @param bool|null $useLdap Whether the account should authenticate against LDAP
+     * @param bool|null $useRemoteUser Whether the web server should sign the account in
      */
     public function __construct(
         public ?string $username = null,
@@ -44,7 +47,30 @@ final readonly class UpdateUserCommand
         public ?bool $active = null,
         public ?int $permissionTemplateId = null,
         public ?bool $useLdap = null,
+        public ?bool $useRemoteUser = null,
     ) {
+    }
+
+    /**
+     * The sign-in method the account carries after this update, or null when the
+     * request leaves it alone. Turning a flag off keeps an OIDC or SAML account as it is.
+     */
+    public function authMethodAfter(AuthMethod $current): ?AuthMethod
+    {
+        if ($this->useLdap === true) {
+            return AuthMethod::LDAP;
+        }
+        if ($this->useRemoteUser === true) {
+            return AuthMethod::REMOTE_USER;
+        }
+        if ($this->useRemoteUser === false && $current === AuthMethod::REMOTE_USER) {
+            return AuthMethod::SQL;
+        }
+        if ($this->useLdap === false) {
+            return AuthMethod::resolve(false, $current->value);
+        }
+
+        return null;
     }
 
     /** Whether the request sets a password; "0" is a password, an empty string is not. */
@@ -65,6 +91,7 @@ final readonly class UpdateUserCommand
             $this->active,
             $this->permissionTemplateId,
             $this->useLdap,
+            $this->useRemoteUser,
         );
     }
 }

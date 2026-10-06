@@ -141,6 +141,7 @@ class RefusalStatusTest extends TestCase
         return [
             UserManagementService::ERR_USERNAME_REQUIRED => [400],
             UserManagementService::ERR_INVALID_LDAP => [400],
+            UserManagementService::ERR_INVALID_AUTH_METHOD => [400],
             UserManagementService::ERR_PASSWORD_REQUIRED => [400],
             UserManagementService::ERR_PASSWORD_POLICY => [400],
             UserManagementService::ERR_FIELD_LENGTH => [400],

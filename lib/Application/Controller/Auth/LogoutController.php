@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Auth;
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\Auth\SamlService;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
@@ -56,6 +57,8 @@ class LogoutController extends BaseController
             $this->performOidcLogout($oidcProviderId);
         } elseif ($authMethod === 'saml' && $samlProviderId) {
             $this->performSamlLogout($samlProviderId);
+        } elseif ($authMethod === AuthMethod::REMOTE_USER->value || $this->session()->get(SessionKeys::PENDING_AUTH_METHOD_USED) === AuthMethod::REMOTE_USER->value) {
+            $this->performRemoteUserLogout();
         } else {
             $this->performStandardLogout();
         }
@@ -97,6 +100,30 @@ class LogoutController extends BaseController
     {
         $sessionEntity = new FlashMessage(_('You have logged out.'), 'success');
         $this->authService()->logout($sessionEntity);
+    }
+
+    /**
+     * The web server still signs the user in on the next request, so the fresh
+     * session is marked signed out until they choose "Continue as" on the login
+     * page, or the configured logout_url ends the web server's own session.
+     */
+    private function performRemoteUserLogout(): void
+    {
+        $this->services()->sessionService()->endSession();
+        $this->session()->set(AuthFlowSessionKeys::REMOTE_USER_SIGNED_OUT, true);
+
+        $logoutUrl = trim((string)$this->config->get('remote_user', 'logout_url', ''));
+        if ($logoutUrl !== '') {
+            $scheme = strtolower((string)parse_url($logoutUrl, PHP_URL_SCHEME));
+            if (filter_var($logoutUrl, FILTER_VALIDATE_URL) !== false && ($scheme === 'https' || $scheme === 'http')) {
+                $this->services()->redirectService()->redirectTo($logoutUrl);
+                return;
+            }
+            $this->logger->warning('Ignoring remote_user.logout_url, which is not an http(s) URL');
+        }
+
+        $this->services()->sessionService()->setSessionData(new FlashMessage(_('You have logged out.'), 'success'));
+        $this->redirect('/login');
     }
 
     private function performSamlLogout(string $providerId): void

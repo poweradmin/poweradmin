@@ -43,6 +43,7 @@ class UserProvisioningService
     public const AUTH_METHOD_LDAP = AuthMethod::LDAP->value;
     public const AUTH_METHOD_OIDC = AuthMethod::OIDC->value;
     public const AUTH_METHOD_SAML = AuthMethod::SAML->value;
+    public const AUTH_METHOD_REMOTE_USER = AuthMethod::REMOTE_USER->value;
 
     /** Methods with an identity link table; LDAP identity is the username itself. */
     private const LINKABLE_AUTH_METHODS = [self::AUTH_METHOD_OIDC, self::AUTH_METHOD_SAML];
@@ -111,6 +112,7 @@ class UserProvisioningService
             $existingUserId = match ($authMethod) {
                 self::AUTH_METHOD_SAML => $this->findUserBySamlSubject($userInfo->getSubject(), $providerId),
                 self::AUTH_METHOD_LDAP => $this->findLdapUserByUsername($userInfo->getUsername()),
+                self::AUTH_METHOD_REMOTE_USER => $this->findRemoteUserByUsername($userInfo->getUsername()),
                 default => $this->findUserByOidcSubject($userInfo->getSubject(), $providerId),
             };
 
@@ -222,6 +224,22 @@ class UserProvisioningService
     }
 
     /**
+     * Only an account already set to web server sign-in matches, so the web server
+     * can never take over a local, LDAP or SSO account that shares the name.
+     */
+    private function findRemoteUserByUsername(string $username): ?int
+    {
+        $user = $this->userRepository->findByUsername($username);
+        if ($user === null) {
+            return null;
+        }
+
+        $profile = $this->userRepository->getProvisioningProfile($user->getId());
+
+        return ($profile['auth_method'] ?? null) === self::AUTH_METHOD_REMOTE_USER ? $user->getId() : null;
+    }
+
+    /**
      * Record the external identity for methods that keep a link table.
      * LDAP is a no-op: its identity is the username itself.
      */
@@ -326,12 +344,15 @@ class UserProvisioningService
 
             $this->logger->info('Permission template ID determined: {templateId}', ['templateId' => $permissionTemplateId]);
 
-            // LDAP logins authenticate by exact username, so a suffixed variant
-            // would never be matched again - fail instead of uniquifying.
+            // LDAP and web server logins authenticate by exact username, so a suffixed
+            // variant would never be matched again - fail instead of uniquifying.
             $username = $userInfo->getUsername();
-            if ($authMethod === self::AUTH_METHOD_LDAP) {
+            if ($authMethod === self::AUTH_METHOD_LDAP || $authMethod === self::AUTH_METHOD_REMOTE_USER) {
                 if ($this->usernameExists($username)) {
-                    $this->logger->error('Cannot auto-provision LDAP user {username}: username is taken by a local account', ['username' => $username]);
+                    $this->logger->error('Cannot auto-provision {method} user {username}: username is taken by another account', [
+                        'method' => strtoupper($authMethod),
+                        'username' => $username
+                    ]);
                     return null;
                 }
             } else {
@@ -601,6 +622,23 @@ class UserProvisioningService
     public function isActiveUser(int $userId): bool
     {
         return $this->userRepository->isActiveUser($userId);
+    }
+
+    /**
+     * The stored username, full name and email of an account, which the session
+     * shows; provisioning has already synced them from the provider where it sent any.
+     *
+     * @return array{username: string, fullname: string, email: string}|null
+     */
+    public function accountProfile(int $userId): ?array
+    {
+        $user = $this->userRepository->getUserById($userId);
+
+        return $user === null ? null : [
+            'username' => (string)$user['username'],
+            'fullname' => (string)($user['fullname'] ?? ''),
+            'email' => (string)($user['email'] ?? ''),
+        ];
     }
 
     /**

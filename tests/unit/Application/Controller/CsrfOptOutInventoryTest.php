@@ -43,6 +43,7 @@ class CsrfOptOutInventoryTest extends TestCase
     private const ALLOWED_OPT_OUTS = [
         // Session-less or flow-token protected web controllers
         'Poweradmin\Application\Controller\Auth\LoginController',
+        'Poweradmin\Application\Controller\Auth\RemoteUserLoginController',
         'Poweradmin\Application\Controller\Auth\MfaVerifyController',
         'Poweradmin\Application\Controller\Auth\ForgotPasswordController',
         'Poweradmin\Application\Controller\Auth\ForgotUsernameController',

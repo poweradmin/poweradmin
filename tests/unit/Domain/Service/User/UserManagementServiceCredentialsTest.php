@@ -72,7 +72,7 @@ class UserManagementServiceCredentialsTest extends TestCase
         $this->hasher->method('hashPassword')->willReturn(self::HASHED);
     }
 
-    private function service(bool $ldapEnabled = false): UserManagementService
+    private function service(bool $ldapEnabled = false, bool $remoteUserEnabled = false): UserManagementService
     {
         return new UserManagementService(
             $this->userRepository,
@@ -82,8 +82,14 @@ class UserManagementServiceCredentialsTest extends TestCase
             $this->passwordPolicy,
             $ldapEnabled,
             $this->createMock(DomainManagerInterface::class),
-            $this->createMock(ZoneManagementService::class)
+            $this->createMock(ZoneManagementService::class),
+            $remoteUserEnabled
         );
+    }
+
+    private function remoteUserService(): UserManagementService
+    {
+        return $this->service(true, true);
     }
 
     /** Runs the request through the controllers' mapping so the wire outcomes stay pinned. */
@@ -347,5 +353,99 @@ class UserManagementServiceCredentialsTest extends TestCase
         $result = $this->updateUser(false, 7, ['fullname' => 'New Name']);
 
         $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testCreateWebServerUserStoresPlaceholderWithoutHashingOrPolicy(): void
+    {
+        $this->passwordPolicy->expects($this->never())->method('validatePassword');
+        $this->hasher->expects($this->never())->method('hashPassword');
+        $this->captureWrite('createUser');
+
+        $command = UserCommandFactory::create(['username' => 'alice', 'password' => 'ignored', 'perm_templ' => 3], true);
+        $result = $this->remoteUserService()->createUser($command);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER, $this->stored->password);
+        $this->assertSame(AuthMethod::REMOTE_USER, $this->stored->authMethod());
+    }
+
+    #[Test]
+    public function testWebServerAuthenticationIsRefusedWhileTheFeatureIsOff(): void
+    {
+        $this->userRepository->expects($this->never())->method('createUser');
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $created = $this->service(true)->createUser(UserCommandFactory::create(['username' => 'alice', 'perm_templ' => 3], true));
+        $updated = $this->service(true)->updateUser(7, UserCommandFactory::update([], true));
+
+        $this->assertSame(UserManagementService::ERR_INVALID_AUTH_METHOD, $created['code']);
+        $this->assertSame(UserManagementService::ERR_INVALID_AUTH_METHOD, $updated['code']);
+    }
+
+    #[Test]
+    public function testAnAccountCannotUseLdapAndTheWebServerAtOnce(): void
+    {
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->remoteUserService()->updateUser(7, UserCommandFactory::update(['use_ldap' => true], true));
+
+        $this->assertSame(UserManagementService::ERR_INVALID_AUTH_METHOD, $result['code']);
+    }
+
+    /**
+     * The old hash must stop working once the web server signs the account in.
+     */
+    #[Test]
+    public function testSwitchingToTheWebServerReplacesThePassword(): void
+    {
+        $this->captureWrite('updateUser');
+
+        $result = $this->remoteUserService()->updateUser(7, UserCommandFactory::update(['use_ldap' => false], true));
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER, $this->stored->password);
+        $this->assertSame(AuthMethod::REMOTE_USER, $this->stored->authMethodAfter(AuthMethod::SQL));
+    }
+
+    #[Test]
+    public function testPasswordIsRefusedWhenSwitchingToTheWebServer(): void
+    {
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->remoteUserService()->updateUser(7, UserCommandFactory::update(['password' => 'Secret123!'], true));
+
+        $this->assertSame(UserManagementService::ERR_PASSWORD_FORBIDDEN, $result['code']);
+    }
+
+    #[Test]
+    public function testLeavingTheWebServerRequiresAPassword(): void
+    {
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
+        $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'remote_user']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->remoteUserService()->updateUser(7, UserCommandFactory::update([], false));
+
+        $this->assertSame(UserManagementService::ERR_PASSWORD_REQUIRED, $result['code']);
+        $this->assertSame('Password is required when disabling web server authentication', $result['message']);
+    }
+
+    /**
+     * Switching LDAP off on a web server account, or the feature being off and its
+     * box missing, leaves the account with the web server.
+     */
+    #[Test]
+    public function testWebServerAccountKeepsItsMethodWhenOnlyLdapIsSwitchedOff(): void
+    {
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
+        $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'remote_user']);
+        $this->captureWrite('updateUser');
+
+        $result = $this->service(true)->updateUser(7, UserCommandFactory::update(['use_ldap' => false, 'fullname' => 'Alice']));
+
+        $this->assertTrue($result['success']);
+        $this->assertNull($this->stored->password);
+        $this->assertSame(AuthMethod::REMOTE_USER, $this->stored->authMethodAfter(AuthMethod::REMOTE_USER));
     }
 }

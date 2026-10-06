@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 
 class UserAuthenticationServiceTest extends TestCase
@@ -459,5 +460,15 @@ class UserAuthenticationServiceTest extends TestCase
         $hash = (new UserAuthenticationService('argon2id', 12))->dummyVerificationHash();
 
         $this->assertStringStartsWith('$2y$', $hash);
+    }
+
+    /**
+     * LDAP and web server accounts store a placeholder instead of a hash; a posted
+     * password must fail against it rather than throw.
+     */
+    public function testPlaceholdersOfExternalAccountsNeverVerify(): void
+    {
+        $this->assertFalse($this->userAuthService->verifyPassword('LDAP_USER', AuthMethod::LDAP_PASSWORD_PLACEHOLDER));
+        $this->assertFalse($this->userAuthService->verifyPassword('REMOTE_USER', AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER));
     }
 }

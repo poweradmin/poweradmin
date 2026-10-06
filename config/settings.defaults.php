@@ -856,6 +856,40 @@ return [
         ],
     ],
 
+    /**
+     * Web Server Authentication (REMOTE_USER) Settings (added in 4.6.0)
+     *
+     * Signs users in as the user the web server or an authenticating reverse proxy
+     * has already verified (Apache or nginx basic auth, Kerberos, mod_auth_mellon,
+     * Authelia, oauth2-proxy). Enable it only when Poweradmin cannot be reached
+     * except through that server: anyone who reaches PHP directly could claim any name.
+     * nginx fills $remote_user from any client's Authorization header, so pass it to PHP
+     * only where auth_basic checks it; behind auth_request use 'header' mode instead.
+     * Only accounts created here or set to web server sign-in by an administrator
+     * can sign in this way; a local, LDAP or SSO account with the same name is refused.
+     * The user form shows the web server box only while this is on, so move accounts
+     * back to a password before turning it off.
+     */
+    'remote_user' => [
+        'enabled' => false,                   // Sign users in from the web server's authenticated user (added in 4.6.0)
+        'server_variable' => 'REMOTE_USER',   // Server variable the web server sets to the user name (client-settable HTTP_* and PHP_AUTH_* names are refused) (added in 4.6.0)
+        'header' => '',                       // Read the user from this proxy header instead (e.g. 'Remote-User'), which the proxy must overwrite, not append to; empty = use server_variable (added in 4.6.0)
+        'trusted_proxies' => [],              // Proxy IPs/CIDRs allowed to send 'header', as PHP sees them (::ffff:10.0.0.5 is not 10.0.0.5); empty = header ignored (added in 4.6.0)
+        'strip_realm' => false,               // Turn user@REALM and DOMAIN\user into user (one realm only: alice@A and alice@B become the same account) (added in 4.6.0)
+        'email_attribute' => '',              // Variable (or header, in header mode) holding the email address, e.g. 'Remote-Email' (added in 4.6.0)
+        'name_attribute' => '',               // Variable (or header) holding the full name, e.g. 'Remote-Name' (added in 4.6.0)
+        'groups_attribute' => '',             // Variable (or header) holding the groups, e.g. 'Remote-Groups' (added in 4.6.0)
+        'groups_separator' => ',',            // Separator between groups in groups_attribute (added in 4.6.0)
+        'logout_url' => '',                   // Where to send users after logout to end the web server's own session; empty = Poweradmin login page (added in 4.6.0)
+        'hide_login_form' => false,           // Hide the password form while the web server signs someone in (posted passwords still work) (added in 4.6.0)
+        'auto_provision' => true,             // Create an account on first sign-in (added in 4.6.0)
+        'allow_superuser_provisioning' => false, // Let mappings grant user_is_ueberuser (added in 4.6.0)
+        'sync_user_info' => true,             // Update name and email from the attributes on each sign-in (added in 4.6.0)
+        'default_permission_template' => 'Guest', // Permission template for new accounts (no permissions until an admin assigns a role) (added in 4.6.0)
+        'permission_template_mapping' => [],  // Group => permission template name, as for 'saml' (added in 4.6.0)
+        'group_mapping' => [],                // Group => Poweradmin group name or list of names, as for 'saml' (added in 4.6.0)
+    ],
+
     // Module configuration
     // Each module can be enabled/disabled and may have additional settings.
     'modules' => [

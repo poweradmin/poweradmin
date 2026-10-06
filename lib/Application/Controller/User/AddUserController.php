@@ -135,14 +135,16 @@ class AddUserController extends BaseController
             return;
         }
 
+        $useRemoteUser = $this->config->get('remote_user', 'enabled', false) && ($userParams['use_remote_user'] ?? '') == 1;
+
         // Handle auto-generated password
         $generatedPassword = '';
-        if (!$input['use_ldap'] && $this->httpRequest->getPostParam('auto_generate_password')) {
+        if (!$input['use_ldap'] && !$useRemoteUser && $this->httpRequest->getPostParam('auto_generate_password')) {
             $generatedPassword = $this->passwordGenerationService()->generatePassword();
             $input['password'] = $generatedPassword;
         }
 
-        $created = UserCommandFactory::create($input);
+        $created = UserCommandFactory::create($input, $useRemoteUser);
         if (!is_array($created)) {
             $created = $this->services()->userManagementService()->createUser($created);
         }
@@ -217,6 +219,7 @@ class AddUserController extends BaseController
 
         $active_checked = $this->httpRequest->getPostParam('active', '1') === '1' ? 'checked' : '';
         $use_ldap_checked = $this->httpRequest->getPostParam('use_ldap') === '1' ? 'checked' : '';
+        $use_remote_user_checked = $this->httpRequest->getPostParam('use_remote_user') === '1' ? 'checked' : '';
 
         // Check if mail functionality is enabled
         $mail_enabled = $this->config->get('mail', 'enabled', false);
@@ -245,6 +248,8 @@ class AddUserController extends BaseController
             Permission::PERM_USER_EDIT_TEMPL_PERM => $user_edit_templ_perm,
             'user_templates' => $user_templates,
             'ldap_use' => $this->config->get('ldap', 'enabled', false),
+            'use_remote_user_checked' => $use_remote_user_checked,
+            'remote_user_use' => $this->config->get('remote_user', 'enabled', false),
             'password_policy' => $policyConfig,
             'mail_enabled' => $mail_enabled,
             'available_groups' => $availableGroups,

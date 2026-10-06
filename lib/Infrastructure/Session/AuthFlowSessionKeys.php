@@ -46,6 +46,9 @@ final class AuthFlowSessionKeys
     public const OIDC_STATE = 'oidc_state';
     public const SAML_SLO_PENDING = 'saml_slo_pending';
 
+    // Web server sign-in: set at logout so the still-signed-in web server user is not signed straight back in
+    public const REMOTE_USER_SIGNED_OUT = 'remote_user_signed_out';
+
     // Password and username recovery
     public const PASSWORD_RESET_TOKEN = 'password_reset_token';
     public const RESET_PASSWORD_TOKEN = 'reset_password_token';

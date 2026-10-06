@@ -104,7 +104,10 @@ class EditUserController extends BaseController
             }
         }
 
-        $updated = UserCommandFactory::update($input);
+        $updated = UserCommandFactory::update(
+            $input,
+            $this->remoteUserControlEditable($editId) ? $this->useRemoteUserAfterEdit($editId, $stored) : null
+        );
         if (!is_array($updated)) {
             $updated = $this->services()->userManagementService()->updateUser($editId, $updated);
         }
@@ -112,7 +115,11 @@ class EditUserController extends BaseController
             $username = (string)($input['username'] ?? $stored['username']);
             $oldPermTempl = (int)$stored['tpl_id'];
             $newPermTempl = (int)($input['perm_templ'] ?? $oldPermTempl);
-            $this->auditService()->logUserEdit($username, $newPermTempl, $this->useLdapAfterEdit($editId, $stored) ? 'ldap' : 'sql');
+            $this->auditService()->logUserEdit($username, $newPermTempl, match (true) {
+                $this->useLdapAfterEdit($editId, $stored) => 'ldap',
+                $this->useRemoteUserAfterEdit($editId, $stored) => 'remote_user',
+                default => 'sql',
+            });
 
             if ($oldPermTempl !== $newPermTempl) {
                 $this->auditService()->logPermTemplateChange($username, $oldPermTempl, $newPermTempl);
@@ -153,7 +160,7 @@ class EditUserController extends BaseController
         // anyway and requiring it would block all edits when the IdP supplied none.
         // A user being converted to a local account (LDAP unchecked) is no longer
         // managed, so the email requirement applies again.
-        if (!self::isIdpManaged($stored['auth_type'] ?? null, $this->useLdapAfterEdit($editId, $stored) && $this->isLdapSyncEnabled())) {
+        if (!self::isIdpManaged($stored['auth_type'] ?? null, $this->identitySyncedAfterEdit($editId, $stored))) {
             $constraints['email'] = [
                 new Assert\NotBlank(),
                 new Assert\Email()
@@ -212,7 +219,64 @@ class EditUserController extends BaseController
 
         return $this->config->get('ldap', 'enabled', false)
             && !($isOwnProfile && $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER))
-            && !$this->isRestrictedSelfEdit($editId);
+            && !$this->isRestrictedSelfEdit($editId)
+            && $this->mayChangeSignInMethod($editId);
+    }
+
+    /**
+     * Pointing an account at LDAP or the web server hands its sign-in to whoever
+     * holds that name there, so it needs the same right as setting its password.
+     */
+    private function mayChangeSignInMethod(int $editId): bool
+    {
+        $callerId = (int)$this->getUserContextService()->getLoggedInUserId();
+
+        return $this->services()->apiPermissionService()->canEditUserPassword($callerId, $editId);
+    }
+
+    /**
+     * Whether the form offered the web server checkbox, under the same rules as
+     * the LDAP one.
+     */
+    private function remoteUserControlEditable(int $editId): bool
+    {
+        $isOwnProfile = $editId === $this->getUserContextService()->getLoggedInUserId();
+
+        return $this->config->get('remote_user', 'enabled', false)
+            && !($isOwnProfile && $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER))
+            && !$this->isRestrictedSelfEdit($editId)
+            && $this->mayChangeSignInMethod($editId);
+    }
+
+    /**
+     * Whether the web server signs the account in after this edit: the stored
+     * method unless the form offered the choice.
+     *
+     * @param array<string, mixed> $stored
+     */
+    private function useRemoteUserAfterEdit(int $editId, array $stored): bool
+    {
+        if ($this->remoteUserControlEditable($editId)) {
+            return $this->httpRequest->getPostParam('use_remote_user') === '1';
+        }
+
+        return ($stored['auth_type'] ?? '') === AuthMethod::REMOTE_USER->value;
+    }
+
+    /**
+     * Whether the account's provider will still overwrite fullname and email after
+     * this edit; switching the method off in the same edit hands them back.
+     *
+     * @param array<string, mixed> $stored
+     */
+    private function identitySyncedAfterEdit(int $editId, array $stored): bool
+    {
+        // Judged by the method the account has after the edit, so a conversion follows the new owner
+        return match (true) {
+            $this->useRemoteUserAfterEdit($editId, $stored) => $this->isRemoteUserSyncEnabled(),
+            $this->useLdapAfterEdit($editId, $stored) => $this->isLdapSyncEnabled(),
+            default => false,
+        };
     }
 
     /**
@@ -244,6 +308,7 @@ class EditUserController extends BaseController
         $canEditOthers = $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
         $restrictedSelfEdit = $isOwnProfile && !$canEditOthers;
         $useLdap = $this->useLdapAfterEdit($editId, $stored);
+        $useRemoteUser = $this->useRemoteUserAfterEdit($editId, $stored);
 
         // OIDC/SAML users have their identity fields owned by the IdP
         // (overwritten on the next sync), so ignore any submitted changes to them.
@@ -251,7 +316,7 @@ class EditUserController extends BaseController
             $stored,
             (string)$this->httpRequest->getPostParam('fullname'),
             (string)$this->httpRequest->getPostParam('email'),
-            $useLdap && $this->isLdapSyncEnabled()
+            $this->identitySyncedAfterEdit($editId, $stored)
         );
 
         $input = [
@@ -275,9 +340,9 @@ class EditUserController extends BaseController
 
         // Changing another user's password needs user_passwd_edit_others; without it
         // the posted password is ignored and the other fields still save. An LDAP
-        // account has no local password to set.
+        // or web server account has no local password to set.
         $password = (string)$this->httpRequest->getPostParam('password', '');
-        if ($password !== '' && !$useLdap && $this->services()->apiPermissionService()->canEditUserPassword($callerId, $editId)) {
+        if ($password !== '' && !$useLdap && !$useRemoteUser && $this->services()->apiPermissionService()->canEditUserPassword($callerId, $editId)) {
             $input['password'] = $password;
         }
 
@@ -299,17 +364,29 @@ class EditUserController extends BaseController
      * identity provider, and so must stay read-only.
      *
      * OIDC/SAML sync fullname/email on login and would revert local edits.
-     * LDAP accounts are IdP-managed only while LDAP stays enabled for the user
-     * AND ldap.sync_user_info is on; callers pass that combined state.
+     * LDAP and web server accounts are IdP-managed only while the method stays
+     * on for the user AND its sync is configured; callers pass that combined state.
      */
-    public static function isIdpManaged(?string $currentAuthMethod, bool $ldapSynced = false): bool
+    public static function isIdpManaged(?string $currentAuthMethod, bool $synced = false): bool
     {
-        return AuthMethod::fromDb($currentAuthMethod)->isIdpManaged($ldapSynced);
+        return AuthMethod::fromDb($currentAuthMethod)->isIdpManaged($synced);
     }
 
     private function isLdapSyncEnabled(): bool
     {
         return (bool)$this->config->get('ldap', 'sync_user_info', false);
+    }
+
+    /**
+     * The form locks fullname and email together, so they are the web server's only
+     * when it sends both; with one attribute both stay editable and sign-in still
+     * refreshes the one it sends.
+     */
+    private function isRemoteUserSyncEnabled(): bool
+    {
+        return (bool)$this->config->get('remote_user', 'sync_user_info', true)
+            && $this->config->get('remote_user', 'email_attribute', '') !== ''
+            && $this->config->get('remote_user', 'name_attribute', '') !== '';
     }
 
     /**
@@ -324,9 +401,9 @@ class EditUserController extends BaseController
      * @param string $submittedEmail Email from the form
      * @return array{fullname: string, email: string}
      */
-    public static function resolveIdentityFields(array $userData, string $submittedFullname, string $submittedEmail, bool $ldapSynced = false): array
+    public static function resolveIdentityFields(array $userData, string $submittedFullname, string $submittedEmail, bool $synced = false): array
     {
-        if (self::isIdpManaged($userData['auth_type'] ?? null, $ldapSynced)) {
+        if (self::isIdpManaged($userData['auth_type'] ?? null, $synced)) {
             return [
                 'fullname' => (string)($userData['fullname'] ?? ''),
                 'email' => (string)($userData['email'] ?? ''),
@@ -403,8 +480,15 @@ class EditUserController extends BaseController
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'is_external_auth' => $isExternalAuth,
-            'is_identity_readonly' => self::isIdpManaged($user['auth_type'] ?? 'sql', $this->isLdapSyncEnabled()),
+            'remote_user_use' => $this->config->get('remote_user', 'enabled', false) && !$permissions['is_admin'],
+            'use_remote_user_checked' => ($user['auth_type'] ?? '') === AuthMethod::REMOTE_USER->value ? 'checked' : '',
+            'is_identity_readonly' => self::isIdpManaged($user['auth_type'] ?? 'sql', match (AuthMethod::fromDb($user['auth_type'] ?? null)) {
+                AuthMethod::LDAP => $this->isLdapSyncEnabled(),
+                AuthMethod::REMOTE_USER => $this->isRemoteUserSyncEnabled(),
+                default => false,
+            }),
             'restricted_self_edit' => $this->isRestrictedSelfEdit($editId),
+            'sign_in_method_locked' => $this->isRestrictedSelfEdit($editId) || !$this->mayChangeSignInMethod($editId),
             'password_policy' => $policyConfig,
             'user_groups' => $userGroups,
             'available_groups' => $availableGroupsArray,

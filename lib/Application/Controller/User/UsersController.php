@@ -104,12 +104,16 @@ class UsersController extends BaseController
             return false;
         }
 
-        // The same address rule as the single-user form
+        // The same address rule as the single-user form, for an address this save changes:
+        // accounts an identity provider created may have none, and every row is posted
         $email = (string)($posted['email'] ?? '');
-        $this->setValidationConstraints(['email' => [new Assert\NotBlank(), new Assert\Email()]]);
-        if (!$this->doValidateRequest(['email' => $email])) {
-            $this->setMessage('users', 'error', _('Enter a valid email address.'));
-            return false;
+        $storedEmail = (string)($this->services()->userRepository()->getUserById($targetId)['email'] ?? '');
+        if ($email !== $storedEmail) {
+            $this->setValidationConstraints(['email' => [new Assert\NotBlank(), new Assert\Email()]]);
+            if (!$this->doValidateRequest(['email' => $email])) {
+                $this->setMessage('users', 'error', _('Enter a valid email address.'));
+                return false;
+            }
         }
 
         $input = [

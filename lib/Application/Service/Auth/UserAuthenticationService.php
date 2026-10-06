@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service\Auth;
 
 use InvalidArgumentException;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\PasswordHasherInterface;
 
@@ -135,9 +136,9 @@ class UserAuthenticationService implements PasswordHasherInterface
      */
     public function verifyPassword(#[\SensitiveParameter] string $password, string $hash): bool
     {
-        // Users provisioned by LDAP/OIDC/SAML have no local hash. That is a failed
-        // verification, not an unknown algorithm, so it must not throw.
-        if ($hash === '') {
+        // Users provisioned by LDAP/OIDC/SAML/the web server have no local hash, or a
+        // placeholder. That is a failed verification, not an unknown algorithm, so it must not throw.
+        if ($hash === '' || $hash === AuthMethod::LDAP_PASSWORD_PLACEHOLDER || $hash === AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER) {
             return false;
         }
 

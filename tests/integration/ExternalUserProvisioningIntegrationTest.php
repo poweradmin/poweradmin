@@ -26,6 +26,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
+use Poweradmin\Domain\ValueObject\RemoteUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Repository\DbExternalIdentityRepository;
@@ -227,6 +228,55 @@ class ExternalUserProvisioningIntegrationTest extends TestCase
         $this->assertSame(2, $this->rowCount('users'), 'no replacement account is created');
     }
 
+    public function testWebServerUserIsProvisionedWithMappedGroups(): void
+    {
+        $svc = $this->service();
+        $userId = $svc->provisionUser(new RemoteUserInfo('alice', 'alice@example.org', 'Alice', ['dns-editors']), 'web server');
+
+        $this->assertNotNull($userId);
+        $row = $this->userRow('alice');
+        $this->assertSame('remote_user', $row['auth_method']);
+        $this->assertSame('remote_user', $row['perm_templ_source']);
+        $this->assertSame(0, (int)$row['use_ldap']);
+        $this->assertSame('', $row['password'], 'no password login for a web server account');
+        $this->assertSame(self::EDITOR_TEMPLATE_ID, (int)$row['perm_templ']);
+
+        $this->assertSame($userId, $svc->provisionUser(new RemoteUserInfo('alice'), 'web server'), 'found again by username');
+        $this->assertSame(1, $this->rowCount('users'));
+    }
+
+    /**
+     * The web server only vouches for a name, so it must never take over an
+     * account that signs in some other way.
+     */
+    public function testWebServerUserNeverTakesOverAnAccountOfAnotherMethod(): void
+    {
+        foreach (['sql', 'ldap', 'oidc', 'saml'] as $i => $method) {
+            $this->insertLocalUser("taken$i", "taken$i@example.org", $method, self::GUEST_TEMPLATE_ID, 'admin');
+            $this->assertNull(
+                $this->service()->provisionUser(new RemoteUserInfo("taken$i", "taken$i@example.org"), 'web server'),
+                "a $method account with the same name is refused"
+            );
+        }
+        $this->assertSame(4, $this->rowCount('users'), 'and no suffixed duplicate is created');
+    }
+
+    public function testWebServerUserIsNotLinkedByEmail(): void
+    {
+        $this->insertLocalUser('local.jane', 'jane@example.org', 'sql', self::GUEST_TEMPLATE_ID, 'admin');
+
+        $userId = $this->service()->provisionUser(new RemoteUserInfo('jane', 'jane@example.org'), 'web server');
+
+        $this->assertNotNull($userId);
+        $this->assertSame('jane', $this->service()->getDatabaseUsername($userId));
+    }
+
+    public function testWebServerUserIsRefusedWhenAutoProvisioningIsOff(): void
+    {
+        $this->assertNull($this->service(['auto_provision' => false])->provisionUser(new RemoteUserInfo('alice'), 'web server'));
+        $this->assertSame(0, $this->rowCount('users'));
+    }
+
     public function testUnverifiedOidcEmailIsNotLinked(): void
     {
         $this->insertLocalUser('local.jane', 'jane@example.org', 'sql', self::GUEST_TEMPLATE_ID, 'admin');
@@ -401,6 +451,7 @@ class ExternalUserProvisioningIntegrationTest extends TestCase
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
             'oidc' => $section,
             'saml' => $section,
+            'remote_user' => $section,
         ]);
     }
 

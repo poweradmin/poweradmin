@@ -38,6 +38,7 @@ class UserContextService
         AuthMethod::LDAP->value,
         AuthMethod::OIDC->value,
         AuthMethod::SAML->value,
+        AuthMethod::REMOTE_USER->value,
     ];
 
     public function __construct(private readonly SessionInterface $session)

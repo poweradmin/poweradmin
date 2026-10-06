@@ -124,7 +124,8 @@ final class UserServices
             $this->passwordPolicyService(),
             (bool)$this->config->get('ldap', 'enabled', false),
             $this->services->domainManager(),
-            $this->services->zoneManagementService()
+            $this->services->zoneManagementService(),
+            (bool)$this->config->get('remote_user', 'enabled', false)
         );
     }
 

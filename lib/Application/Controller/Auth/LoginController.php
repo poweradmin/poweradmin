@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Auth;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
+use Poweradmin\Application\Service\Auth\RemoteUserIdentitySource;
 use Poweradmin\Application\Service\Auth\SamlService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 
@@ -111,6 +112,9 @@ class LoginController extends BaseController
         $samlEnabled = $this->samlService()->isEnabled();
         $samlProviders = $samlEnabled ? $this->samlService()->getAvailableProviders() : [];
 
+        $remoteUser = (new RemoteUserIdentitySource($this->config, $_SERVER, $this->logger))->identity();
+        $hidePasswordForm = $remoteUser !== null && (bool)$this->config->get('remote_user', 'hide_login_form', false);
+
         $this->render('login.html', [
             'login_token' => $loginToken,
             // Kept for 4.4.0 theme forks whose login form still posts it
@@ -126,6 +130,9 @@ class LoginController extends BaseController
             'oidc_providers' => $oidcProviders,
             'saml_enabled' => $samlEnabled,
             'saml_providers' => $samlProviders,
+            'remote_user_name' => $remoteUser?->getUsername(),
+            // Only hidden while the web server signs someone in, so a broken proxy cannot lock everyone out
+            'hide_password_form' => $hidePasswordForm,
         ]);
     }
 

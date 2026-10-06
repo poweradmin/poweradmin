@@ -36,9 +36,13 @@ enum AuthMethod: string
     case LDAP = 'ldap';
     case OIDC = 'oidc';
     case SAML = 'saml';
+    case REMOTE_USER = 'remote_user';
 
     // Stored in users.password for LDAP accounts; never a valid hash.
     public const LDAP_PASSWORD_PLACEHOLDER = 'LDAP_USER';
+
+    // Stored in users.password when an account is switched to web server sign-in; never a valid hash.
+    public const REMOTE_USER_PASSWORD_PLACEHOLDER = 'REMOTE_USER';
 
     /**
      * Read a stored or session value, falling back to SQL for anything
@@ -78,14 +82,14 @@ enum AuthMethod: string
      * Whether the identity provider owns fullname and email, making them
      * read-only locally.
      *
-     * OIDC and SAML re-sync on every login. LDAP only does so while
-     * `ldap.sync_user_info` is on, which the caller passes in.
+     * OIDC and SAML re-sync on every login. LDAP and the web server only do so
+     * while their sync is configured, which the caller passes in.
      */
-    public function isIdpManaged(bool $ldapSynced = false): bool
+    public function isIdpManaged(bool $synced = false): bool
     {
         return match ($this) {
             self::OIDC, self::SAML => true,
-            self::LDAP => $ldapSynced,
+            self::LDAP, self::REMOTE_USER => $synced,
             self::SQL => false,
         };
     }
@@ -93,8 +97,8 @@ enum AuthMethod: string
     /**
      * The method to persist when the legacy `use_ldap` flag is written.
      *
-     * Turning LDAP off must not silently downgrade an SSO account to SQL, so an
-     * existing OIDC or SAML method is preserved.
+     * Turning LDAP off must not silently downgrade an external account to SQL, so
+     * an existing OIDC, SAML or web server method is preserved.
      */
     public static function resolve(bool $useLdap, ?string $currentAuthMethod): self
     {
@@ -104,6 +108,6 @@ enum AuthMethod: string
 
         $current = $currentAuthMethod === null ? null : self::tryFrom($currentAuthMethod);
 
-        return $current !== null && $current->isIdpManaged() ? $current : self::SQL;
+        return $current !== null && $current !== self::LDAP ? $current : self::SQL;
     }
 }

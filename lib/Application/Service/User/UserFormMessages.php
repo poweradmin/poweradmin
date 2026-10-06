@@ -45,7 +45,7 @@ final class UserFormMessages
             UserManagementService::ERR_PASSWORD_REQUIRED => _('Please fill in all required fields correctly.'),
             UserManagementService::ERR_NO_TEMPLATE => _('No non-superuser permission template is available to assign.'),
             UserManagementService::ERR_TEMPLATE_NOT_FOUND => _('Invalid permission template: must be a user template'),
-            UserManagementService::ERR_INVALID_LDAP => _('Invalid or unexpected input given.'),
+            UserManagementService::ERR_INVALID_LDAP, UserManagementService::ERR_INVALID_AUTH_METHOD => _('Invalid or unexpected input given.'),
             UserManagementService::ERR_NOT_FOUND => _('User does not exist.'),
             UserManagementService::ERR_LAST_ADMIN => _('Cannot disable the last remaining super admin user.'),
             // The write message carries the driver's text, which is for the log, not the page.

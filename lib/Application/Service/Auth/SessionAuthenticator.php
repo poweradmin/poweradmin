@@ -81,6 +81,28 @@ final class SessionAuthenticator
         $this->recaptchaService = new RecaptchaService($configManager);
     }
 
+    private function startedByWebServer(): bool
+    {
+        return $this->session->get(SessionKeys::AUTH_METHOD_USED) === UserProvisioningService::AUTH_METHOD_REMOTE_USER
+            || $this->session->get(SessionKeys::PENDING_AUTH_METHOD_USED) === UserProvisioningService::AUTH_METHOD_REMOTE_USER;
+    }
+
+    private function remoteUserSessionHandler(): RemoteUserSessionHandler
+    {
+        return new RemoteUserSessionHandler(
+            new RemoteUserIdentitySource($this->configManager, $_SERVER, $this->logger),
+            $this->services->userProvisioningService(),
+            $this->session,
+            $this->services->sessionService(),
+            $this->authService,
+            $this->auditService(),
+            $this->services->mfaService(),
+            $this->configManager,
+            $this->redirectService,
+            $this->logger
+        );
+    }
+
     private function auditService(): AuditService
     {
         return $this->services->auditService();
@@ -207,6 +229,11 @@ final class SessionAuthenticator
             }
         }
 
+        // Before the idle check: a web server session the server still vouches for is renewed, not expired
+        if (!$isLogin && ($this->configManager->get('remote_user', 'enabled', false) || $this->startedByWebServer())) {
+            $this->remoteUserSessionHandler()->apply((int)$iface_expire, $this->getCurrentRequestPath());
+        }
+
         // Check if the session hasn't expired yet.
         if ($this->session->has(SessionKeys::USERID) && $this->session->has(SessionKeys::LASTMOD) && $this->session->get(SessionKeys::LASTMOD) !== "" && ((time() - $this->session->get(SessionKeys::LASTMOD)) > $iface_expire)) {
             $this->logger->info('Session expired for user {userid}', ['userid' => $this->session->get(SessionKeys::USERID)]);
@@ -236,6 +263,16 @@ final class SessionAuthenticator
                 $this->logger->info('User {username} uses SAML for authentication - skipping password verification', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
                 // SAML users are already authenticated, no need to verify password
                 $this->endSessionOfDisabledAccount();
+                break;
+            case UserProvisioningService::AUTH_METHOD_REMOTE_USER:
+                if ($this->startedByWebServer()) {
+                    $this->endSessionOfAccountMovedOffWebServer();
+                    $this->endSessionOfDisabledAccount();
+                    break;
+                }
+                // A posted password, or a session that predates switching the account to web
+                // server sign-in, goes to the SQL check, which refuses the cleared password
+                $this->completeLogin($this->sqlAuthenticator()->authenticate($credentials));
                 break;
             case UserProvisioningService::AUTH_METHOD_LDAP:
                 if ($ldap_use) {
@@ -460,6 +497,21 @@ final class SessionAuthenticator
             }
         }
         return false;
+    }
+
+    /**
+     * An administrator switching the account to another sign-in method ends the
+     * web server session it is still in, as turning LDAP off does for LDAP sessions.
+     */
+    private function endSessionOfAccountMovedOffWebServer(): void
+    {
+        $row = $this->services->userRepository()->findAuthMethodRow((string)$this->session->get(SessionKeys::USERLOGIN, ''));
+        if (($row['auth_method'] ?? null) === UserProvisioningService::AUTH_METHOD_REMOTE_USER) {
+            return;
+        }
+
+        $this->logger->warning('Ending web server session of {username}: the account no longer signs in through the web server', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
+        $this->authService->logout(new FlashMessage(_('Session expired, please login again.'), 'danger'));
     }
 
     private function endSessionOfDisabledAccount(): void

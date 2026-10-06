@@ -1009,7 +1009,7 @@ class DbUserRepository implements UserRepositoryInterface
             ':active' => (int)$user->active,
             ':perm_templ' => $permTemplId,
             ':use_ldap' => $useLdap,
-            ':auth_method' => AuthMethod::resolve((bool)$useLdap, null)->value
+            ':auth_method' => $user->authMethod()->value
         ]);
 
         if ($result) {
@@ -1159,7 +1159,6 @@ class DbUserRepository implements UserRepositoryInterface
             'description' => $changes->description,
             'active' => $changes->active,
             'perm_templ' => $changes->permissionTemplateId,
-            'use_ldap' => $changes->useLdap,
         ];
 
         foreach ($columns as $field => $value) {
@@ -1174,22 +1173,24 @@ class DbUserRepository implements UserRepositoryInterface
             $setFields[] = "perm_templ_source = 'admin'";
         }
 
-        // Keep auth_method in sync with use_ldap; preserve external methods (oidc, saml)
-        // when LDAP is being disabled.
-        if ($changes->useLdap !== null) {
-            $setFields[] = 'auth_method = :auth_method';
-            $useLdap = $changes->useLdap;
-
-            // The current method is only needed to avoid downgrading an SSO
-            // account to sql when LDAP is switched off.
-            $currentAuthMethod = null;
-            if (!$useLdap) {
+        // auth_method and the legacy use_ldap flag change together; switching LDAP off
+        // keeps an OIDC, SAML or web server account as it is.
+        if ($changes->useLdap !== null || $changes->useRemoteUser !== null) {
+            // Only switching a method off depends on the method the account has now
+            $current = AuthMethod::SQL;
+            if ($changes->useLdap !== true && $changes->useRemoteUser !== true) {
                 $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
                 $currentStmt->execute([':id' => $userId]);
-                $currentAuthMethod = (string)($currentStmt->fetchColumn() ?: 'sql');
+                $current = AuthMethod::fromDb((string)($currentStmt->fetchColumn() ?: 'sql'));
             }
 
-            $params[':auth_method'] = AuthMethod::resolve($useLdap, $currentAuthMethod)->value;
+            $target = $changes->authMethodAfter($current);
+            if ($target !== null) {
+                $setFields[] = 'auth_method = :auth_method';
+                $setFields[] = 'use_ldap = :use_ldap';
+                $params[':auth_method'] = $target->value;
+                $params[':use_ldap'] = $target === AuthMethod::LDAP ? 1 : 0;
+            }
         }
 
         if (empty($setFields)) {

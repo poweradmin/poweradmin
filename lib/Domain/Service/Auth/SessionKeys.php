@@ -87,6 +87,9 @@ final class SessionKeys
     public const SAML_NAME_ID = 'saml_name_id';
     public const SAML_SESSION_INDEX = 'saml_session_index';
 
+    // Web server identity the session was started for, compared on every request
+    public const REMOTE_USER_IDENTITY = 'remote_user_identity';
+
     // LDAP rate-limit
     public const LDAP_AUTH_IP = 'ldap_auth_ip';
     public const LDAP_AUTH_TIMESTAMP = 'ldap_auth_timestamp';

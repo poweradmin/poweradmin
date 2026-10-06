@@ -14,6 +14,12 @@ logout:
   path: /logout
   controller: Poweradmin\Application\Controller\Auth\LogoutController::run
 
+# Web server authentication (REMOTE_USER)
+remote_user_login:
+  path: /login/remote
+  controller: Poweradmin\Application\Controller\Auth\RemoteUserLoginController::run
+  methods: [POST]
+
 # OIDC Authentication
 oidc_login:
   path: /oidc/login

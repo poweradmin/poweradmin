@@ -1,4 +1,5 @@
 {% import '_macros.html' as macros %}
+{% set auth_type_label = user['auth_type'] == 'remote_user' ? 'Web server'|trans : user['auth_type']|upper %}
 {% if not can_manage_users %}
 {{ macros.breadcrumb([{label: 'Edit profile'|trans}]) }}
 {% else %}
@@ -32,7 +33,7 @@
                         <label for="fullname" class="form-label">{% trans %}Fullname{% endtrans %} <span class="text-danger">*</span></label>
                         <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" value="{{ user['fullname'] }}"{% if is_identity_readonly %} readonly{% endif %}{% if not is_identity_readonly %} required{% endif %}>
                         {% if is_identity_readonly %}
-                        <small class="text-muted">{% trans with {'%auth_type%': user['auth_type']|upper} %}Managed externally via %auth_type% authentication{% endtrans %}</small>
+                        <small class="text-muted">{% trans with {'%auth_type%': auth_type_label} %}Managed externally via %auth_type% authentication{% endtrans %}</small>
                         {% else %}
                         <small class="text-muted">{% trans %}User's full name for identification{% endtrans %}</small>
                         {% endif %}
@@ -43,7 +44,7 @@
                         <label for="email" class="form-label">{% trans %}Email address{% endtrans %} <span class="text-danger">*</span></label>
                         <input class="form-control form-control-sm" type="email" id="email" name="email" value="{{ user['email'] }}"{% if is_identity_readonly %} readonly{% endif %}{% if not is_identity_readonly %} required{% endif %}>
                         {% if is_identity_readonly %}
-                        <small class="text-muted">{% trans with {'%auth_type%': user['auth_type']|upper} %}Managed externally via %auth_type% authentication{% endtrans %}</small>
+                        <small class="text-muted">{% trans with {'%auth_type%': auth_type_label} %}Managed externally via %auth_type% authentication{% endtrans %}</small>
                         {% endif %}
                         <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
                     </div>
@@ -56,7 +57,7 @@
                             <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill text-secondary" id="eye"></i></button>
                         </div>
                         {% if is_external_auth %}
-                        <small class="text-muted">{% trans with {'%auth_type%': user['auth_type']|upper} %}Password managed externally via %auth_type% authentication{% endtrans %}</small>
+                        <small class="text-muted">{% trans with {'%auth_type%': auth_type_label} %}Password managed externally via %auth_type% authentication{% endtrans %}</small>
                         {% else %}
                         <small class="text-muted">{% trans %}Leave empty to keep current password{% endtrans %}</small>
                         {% endif %}
@@ -100,13 +101,28 @@
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" id="ldap" type="checkbox" name="use_ldap" value="1"
-                                   onclick="disablePasswordField()" {{ use_ldap_checked }}{% if restricted_self_edit %} disabled{% endif %}>
+                                   onclick="chooseExternalAuth(this)" {{ use_ldap_checked }}{% if sign_in_method_locked %} disabled{% endif %}>
                             <label class="form-check-label" for="ldap">{% trans %}LDAP Authentication{% endtrans %}</label>
                         </div>
-                        {% if restricted_self_edit %}
+                        {% if sign_in_method_locked %}
                         <small class="text-muted">{% trans %}Authentication settings can only be changed by an administrator{% endtrans %}</small>
                         {% else %}
                         <small class="text-muted">{% trans %}Use external LDAP directory for authentication{% endtrans %}</small>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if remote_user_use %}
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" id="remote_user" type="checkbox" name="use_remote_user" value="1"
+                                   onclick="chooseExternalAuth(this)" {{ use_remote_user_checked }}{% if sign_in_method_locked %} disabled{% endif %}>
+                            <label class="form-check-label" for="remote_user">{% trans %}Web server authentication{% endtrans %}</label>
+                        </div>
+                        {% if sign_in_method_locked %}
+                        <small class="text-muted">{% trans %}Authentication settings can only be changed by an administrator{% endtrans %}</small>
+                        {% else %}
+                        <small class="text-muted">{% trans %}The web server or an authenticating proxy signs this user in{% endtrans %}</small>
                         {% endif %}
                     </div>
                     {% endif %}
@@ -335,15 +351,29 @@
 {% endif %}
 
 <script>
+// LDAP and web server authentication exclude each other
+function chooseExternalAuth(checkbox) {
+    ['ldap', 'remote_user'].forEach(function (id) {
+        const other = document.getElementById(id);
+        if (other && other !== checkbox && checkbox.checked) {
+            other.checked = false;
+        }
+    });
+    disablePasswordField();
+}
+
+function externalAuthChecked() {
+    return ['ldap', 'remote_user'].some(function (id) {
+        const checkbox = document.getElementById(id);
+        return checkbox && checkbox.checked;
+    });
+}
+
 function disablePasswordField() {
     const ldapCheckbox = document.getElementById('ldap');
     const passwordField = document.getElementById('password');
 
-    if (ldapCheckbox && ldapCheckbox.checked) {
-        passwordField.disabled = true;
-    } else {
-        passwordField.disabled = false;
-    }
+    passwordField.disabled = externalAuthChecked();
 {% if user['auth_type'] == 'ldap' %}
     // An LDAP account converts to a local account when LDAP is unchecked, so its
     // fullname/email are only IdP-managed (read-only) while LDAP stays enabled.
@@ -352,6 +382,16 @@ function disablePasswordField() {
         const field = document.getElementById(id);
         if (field) {
             field.readOnly = idpManaged;
+        }
+    });
+{% endif %}
+{% if user['auth_type'] == 'remote_user' and is_identity_readonly %}
+    // Unchecking web server authentication hands fullname/email back to local editing
+    const remoteManaged = document.getElementById('remote_user')?.checked ?? true;
+    ['fullname', 'email'].forEach(function (id) {
+        const field = document.getElementById(id);
+        if (field) {
+            field.readOnly = remoteManaged;
         }
     });
 {% endif %}
@@ -368,8 +408,7 @@ function showRemoveGroupModal(userId, groupId, groupName) {
 
 // Initialize fields on page load
 document.addEventListener('DOMContentLoaded', function() {
-    const ldapCheckbox = document.getElementById('ldap');
-    if (ldapCheckbox) {
+    if (document.getElementById('ldap') || document.getElementById('remote_user')) {
         disablePasswordField();
     }
 

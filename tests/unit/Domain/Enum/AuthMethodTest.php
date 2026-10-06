@@ -62,6 +62,7 @@ class AuthMethodTest extends TestCase
         $this->assertFalse(AuthMethod::LDAP->allowsLocalPassword());
         $this->assertFalse(AuthMethod::OIDC->allowsLocalPassword());
         $this->assertFalse(AuthMethod::SAML->allowsLocalPassword());
+        $this->assertFalse(AuthMethod::REMOTE_USER->allowsLocalPassword());
     }
 
     /**
@@ -76,6 +77,9 @@ class AuthMethodTest extends TestCase
 
         $this->assertFalse(AuthMethod::LDAP->isIdpManaged());
         $this->assertTrue(AuthMethod::LDAP->isIdpManaged(true));
+
+        $this->assertFalse(AuthMethod::REMOTE_USER->isIdpManaged());
+        $this->assertTrue(AuthMethod::REMOTE_USER->isIdpManaged(true));
     }
 
     public function testFromDbFallsBackToSql(): void
@@ -99,6 +103,7 @@ class AuthMethodTest extends TestCase
     {
         $this->assertSame(AuthMethod::OIDC, AuthMethod::resolve(false, 'oidc'));
         $this->assertSame(AuthMethod::SAML, AuthMethod::resolve(false, 'saml'));
+        $this->assertSame(AuthMethod::REMOTE_USER, AuthMethod::resolve(false, 'remote_user'));
     }
 
     public function testResolveFallsBackToSql(): void

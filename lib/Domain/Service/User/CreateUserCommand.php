@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service\User;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+
 /**
  * What a create-user request asks for, typed and independent of the wire
  * format. The controllers build it from their own field names; the service
@@ -34,6 +36,7 @@ final readonly class CreateUserCommand
      * @param string|null $password The plain password, or null when none was given
      * @param int|null $permissionTemplateId A positive template id, or null when none was resolved
      * @param bool $useLdap Whether the account authenticates against LDAP
+     * @param bool $useRemoteUser Whether the web server signs the account in
      */
     public function __construct(
         public string $username,
@@ -44,7 +47,18 @@ final readonly class CreateUserCommand
         public bool $active = true,
         public ?int $permissionTemplateId = null,
         public bool $useLdap = false,
+        public bool $useRemoteUser = false,
     ) {
+    }
+
+    /** The sign-in method the account is created with; the service refuses both flags at once. */
+    public function authMethod(): AuthMethod
+    {
+        return match (true) {
+            $this->useLdap => AuthMethod::LDAP,
+            $this->useRemoteUser => AuthMethod::REMOTE_USER,
+            default => AuthMethod::SQL,
+        };
     }
 
     /** Whether the request carries a password; "0" is a password, an empty string is not. */
@@ -65,6 +79,7 @@ final readonly class CreateUserCommand
             $this->active,
             $this->permissionTemplateId,
             $this->useLdap,
+            $this->useRemoteUser,
         );
     }
 }

@@ -138,6 +138,8 @@
                                 <span class="badge bg-success">{% trans %}OIDC{% endtrans %}</span>
                             {% elseif user['auth_type'] == 'saml' %}
                                 <span class="badge bg-warning">{% trans %}SAML{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'remote_user' %}
+                                <span class="badge bg-dark">{% trans %}Web server{% endtrans %}</span>
                             {% else %}
                                 <span class="badge bg-secondary">{{ user['auth_type']|upper }}</span>
                             {% endif %}
@@ -202,6 +204,8 @@
                                 <span class="badge bg-success">{% trans %}OIDC{% endtrans %}</span>
                             {% elseif user['auth_type'] == 'saml' %}
                                 <span class="badge bg-warning">{% trans %}SAML{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'remote_user' %}
+                                <span class="badge bg-dark">{% trans %}Web server{% endtrans %}</span>
                             {% else %}
                                 <span class="badge bg-secondary">{{ user['auth_type']|upper }}</span>
                             {% endif %}

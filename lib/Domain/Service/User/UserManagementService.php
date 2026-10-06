@@ -43,6 +43,7 @@ class UserManagementService
 {
     public const ERR_USERNAME_REQUIRED = 'username_required';
     public const ERR_INVALID_LDAP = 'invalid_ldap';
+    public const ERR_INVALID_AUTH_METHOD = 'invalid_auth_method';
     public const ERR_PASSWORD_REQUIRED = 'password_required';
     public const ERR_PASSWORD_POLICY = 'password_policy';
     public const ERR_FIELD_LENGTH = 'field_length';
@@ -66,6 +67,7 @@ class UserManagementService
     private PasswordHasherInterface $authService;
     private PasswordPolicyInterface $passwordPolicy;
     private bool $ldapEnabled;
+    private bool $remoteUserEnabled;
     private DomainManagerInterface $domainManager;
     private ZoneManagementService $zones;
 
@@ -77,7 +79,8 @@ class UserManagementService
         PasswordPolicyInterface $passwordPolicy,
         bool $ldapEnabled,
         DomainManagerInterface $domainManager,
-        ZoneManagementService $zones
+        ZoneManagementService $zones,
+        bool $remoteUserEnabled = false
     ) {
         $this->userRepository = $userRepository;
         $this->permissions = $permissionService;
@@ -85,6 +88,7 @@ class UserManagementService
         $this->authService = $authService;
         $this->passwordPolicy = $passwordPolicy;
         $this->ldapEnabled = $ldapEnabled;
+        $this->remoteUserEnabled = $remoteUserEnabled;
         $this->domainManager = $domainManager;
         $this->zones = $zones;
     }
@@ -185,9 +189,14 @@ class UserManagementService
         if (($ldapError = $this->useLdapError($command->useLdap)) !== null) {
             return $ldapError;
         }
-        $useLdap = $command->useLdap;
+        if (($remoteUserError = $this->useRemoteUserError($command->useLdap, $command->useRemoteUser)) !== null) {
+            return $remoteUserError;
+        }
+        $authMethod = $command->authMethod();
+        // An LDAP or web server account has no local password to require
+        $external = $authMethod->isExternal();
 
-        if (!$useLdap && !$command->passwordGiven()) {
+        if (!$external && !$command->passwordGiven()) {
             return [
                 'success' => false,
                 'message' => 'Password is required',
@@ -196,7 +205,7 @@ class UserManagementService
             ];
         }
 
-        if (!$useLdap && ($policyError = $this->passwordPolicyError((string)$command->password)) !== null) {
+        if (!$external && ($policyError = $this->passwordPolicyError((string)$command->password)) !== null) {
             return $policyError;
         }
 
@@ -245,9 +254,11 @@ class UserManagementService
         }
 
         try {
-            $stored = $command->withPassword($useLdap
-                ? AuthMethod::LDAP_PASSWORD_PLACEHOLDER
-                : $this->authService->hashPassword((string)$command->password));
+            $stored = $command->withPassword(match ($authMethod) {
+                AuthMethod::LDAP => AuthMethod::LDAP_PASSWORD_PLACEHOLDER,
+                AuthMethod::REMOTE_USER => AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER,
+                default => $this->authService->hashPassword((string)$command->password),
+            });
 
             $userId = $this->userRepository->createUser($stored);
 
@@ -305,13 +316,14 @@ class UserManagementService
         if (($ldapError = $this->useLdapError($command->useLdap)) !== null) {
             return $ldapError;
         }
+        if (($remoteUserError = $this->useRemoteUserError($command->useLdap, $command->useRemoteUser)) !== null) {
+            return $remoteUserError;
+        }
 
         // Judge by the method the repository will persist, so switching an LDAP
         // account back to SQL in the same request may (and must) set a password.
         $storedMethod = AuthMethod::fromDb($user['auth_method'] ?? null);
-        $targetMethod = $command->useLdap !== null
-            ? AuthMethod::resolve($command->useLdap, $user['auth_method'] ?? null)
-            : $storedMethod;
+        $targetMethod = $command->authMethodAfter($storedMethod) ?? $storedMethod;
         $passwordGiven = $command->passwordGiven();
 
         if ($passwordGiven && $targetMethod->isExternal()) {
@@ -331,10 +343,24 @@ class UserManagementService
             $command = $command->withPassword(AuthMethod::LDAP_PASSWORD_PLACEHOLDER);
         }
 
+        // The old local password must not keep working next to the web server
+        if ($targetMethod === AuthMethod::REMOTE_USER && $storedMethod !== AuthMethod::REMOTE_USER) {
+            $command = $command->withPassword(AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER);
+        }
+
         if ($storedMethod === AuthMethod::LDAP && $targetMethod === AuthMethod::SQL && !$passwordGiven) {
             return [
                 'success' => false,
                 'message' => 'Password is required when disabling LDAP authentication',
+                'refusal' => Refusal::INVALID_INPUT,
+                'code' => self::ERR_PASSWORD_REQUIRED,
+            ];
+        }
+
+        if ($storedMethod === AuthMethod::REMOTE_USER && $targetMethod === AuthMethod::SQL && !$passwordGiven) {
+            return [
+                'success' => false,
+                'message' => 'Password is required when disabling web server authentication',
                 'refusal' => Refusal::INVALID_INPUT,
                 'code' => self::ERR_PASSWORD_REQUIRED,
             ];
@@ -691,6 +717,29 @@ class UserManagementService
         }
 
         return null;
+    }
+
+    /**
+     * @return array{success: false, message: string, refusal: Refusal, code: string}|null
+     */
+    private function useRemoteUserError(?bool $useLdap, ?bool $useRemoteUser): ?array
+    {
+        if ($useRemoteUser !== true) {
+            return null;
+        }
+
+        $message = match (true) {
+            !$this->remoteUserEnabled => 'Web server authentication is not enabled',
+            $useLdap === true => 'An account cannot use LDAP and web server authentication at once',
+            default => null,
+        };
+
+        return $message === null ? null : [
+            'success' => false,
+            'message' => $message,
+            'refusal' => Refusal::INVALID_INPUT,
+            'code' => self::ERR_INVALID_AUTH_METHOD,
+        ];
     }
 
     private function templateNotFound(): array

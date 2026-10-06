@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\FakeConfiguration;
 
@@ -81,6 +82,28 @@ class DbUserRepositoryProvisioningTest extends TestCase
         $this->assertSame('oidc', $row['perm_templ_source']);
         $this->assertSame(0, (int)$row['use_ldap']);
         $this->assertSame('oidc', $row['auth_method']);
+    }
+
+    public function testUpdateUserSwitchesAccountsToAndFromTheWebServer(): void
+    {
+        $this->db->exec("UPDATE users SET use_ldap = 1, auth_method = 'ldap' WHERE id = 1");
+
+        $this->repository->updateUser(1, new UpdateUserCommand(useRemoteUser: true));
+        $this->assertSame(['remote_user', 0], $this->authColumns(1), 'the LDAP flag is cleared with it');
+
+        $this->repository->updateUser(1, new UpdateUserCommand(useLdap: false));
+        $this->assertSame(['remote_user', 0], $this->authColumns(1), 'switching LDAP off keeps the web server');
+
+        $this->repository->updateUser(1, new UpdateUserCommand(useRemoteUser: false));
+        $this->assertSame(['sql', 0], $this->authColumns(1));
+    }
+
+    /** @return array{0: string, 1: int} */
+    private function authColumns(int $id): array
+    {
+        $row = $this->db->query("SELECT auth_method, use_ldap FROM users WHERE id = $id")->fetch(PDO::FETCH_ASSOC);
+
+        return [$row['auth_method'], (int)$row['use_ldap']];
     }
 
     public function testFindInactiveUserIdByEmailSkipsActiveAccounts(): void

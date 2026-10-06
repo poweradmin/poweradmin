@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionPromotionService;
 use RuntimeException;
@@ -92,12 +93,17 @@ class MfaVerifyController extends BaseController
 
             // If this is a logout request, do a proper logout
             if ($logout !== null) {
-                $this->session()->regenerateId(true);
-                $this->session()->clear();
+                // The web server still sends the user, so its own logout marks the session
+                // signed out and honours remote_user.logout_url
+                $webServerLogin = $this->session()->get(SessionKeys::PENDING_AUTH_METHOD_USED) === AuthMethod::REMOTE_USER->value;
+                if (!$webServerLogin) {
+                    $this->session()->regenerateId(true);
+                    $this->session()->clear();
+                }
 
                 // Build redirect URL with base_url_prefix support for subfolder deployments
                 $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-                $redirectUrl = $baseUrlPrefix . '/login';
+                $redirectUrl = $baseUrlPrefix . ($webServerLogin ? '/logout' : '/login');
                 header("Location: $redirectUrl");
             } else {
                 // Otherwise just mark as authenticated
