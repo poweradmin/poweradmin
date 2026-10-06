@@ -13463,4 +13463,6 @@ msgid ""
 "Please contact your administrator."
 msgstr "Không thể thiết lập locale. Locale đã chọn có thể không được hỗ trợ trên hệ thống này. Vui lòng liên hệ quản trị viên của bạn."
 
-
+#: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
+msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
+msgstr "Dữ liệu bản ghi chung phải có dạng \"\\# <length> <hex>\" với độ dài khớp với dữ liệu hex."
