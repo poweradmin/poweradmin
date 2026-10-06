@@ -661,6 +661,11 @@ class DnsDataService
             return [];
         }
 
+        // Only 'all' and 'own' grant visibility, as in the SQL search; any other level sees nothing
+        if ($permissionView !== 'all' && $permissionView !== 'own') {
+            return [];
+        }
+
         // Preprocess: punycode + reverse IP expansion
         $parameters = $this->preprocessSearchQuery($parameters);
         $query = $parameters['query'];
@@ -771,6 +776,11 @@ class DnsDataService
     ): array {
         $query = $parameters['query'] ?? '';
         if (empty($query) || !$parameters['records']) {
+            return [];
+        }
+
+        // Only 'all' and 'own' grant visibility, as in the SQL search; any other level sees nothing
+        if ($permissionView !== 'all' && $permissionView !== 'own') {
             return [];
         }
 
