@@ -202,6 +202,54 @@ abstract class AbstractListLogController extends BaseController
     }
 
     /**
+     * Record content and change request comments are written unquoted, so their
+     * spaces and colons belong to the value. A comment is always the last field.
+     */
+    private const FREE_TEXT_FIELDS = ['content', 'old_content', 'comment'];
+
+    /** Fields the audit lines of any release write after a content value. */
+    private const FIELDS_AFTER_CONTENT = [
+        'ttl', 'priority', 'old_ttl', 'old_priority',
+        'name', 'type', 'old_name', 'old_type',
+        'record', 'record_type', 'old_record', 'old_record_type',
+    ];
+
+    /**
+     * Splits a structured event into its key:value fields. A content value runs
+     * on, spaces included, until the next field written after it; inside an open
+     * quote (TXT) a field-like token is still part of the value.
+     *
+     * @return array<string, string>
+     */
+    protected static function splitEventFields(string $event): array
+    {
+        $fields = [];
+        $freeText = null;
+        foreach (explode(' ', $event) as $part) {
+            $kv = explode(':', $part, 2);
+            $isField = count($kv) === 2;
+            if ($freeText !== null) {
+                $unescaped = (string)preg_replace('/\\\\./s', '', $fields[$freeText] ?? '');
+                $quoteOpen = substr_count($unescaped, '"') % 2 === 1;
+                $runsToEnd = $freeText === 'comment';
+                if ($runsToEnd || $quoteOpen || !$isField || !in_array($kv[0], self::FIELDS_AFTER_CONTENT, true)) {
+                    $fields[$freeText] .= ' ' . $part;
+                    continue;
+                }
+                $freeText = null;
+            }
+            if ($isField) {
+                $fields[$kv[0]] = $kv[1];
+                if (in_array($kv[0], self::FREE_TEXT_FIELDS, true)) {
+                    $freeText = $kv[0];
+                }
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
      * Flattens log rows for export: key:value pairs from structured events,
      * the raw event text otherwise.
      */
@@ -211,13 +259,7 @@ abstract class AbstractListLogController extends BaseController
         foreach ($logs as $log) {
             $row = ['timestamp' => $log['created_at']];
             if (str_contains($log['event'], 'operation:')) {
-                $parts = explode(' ', $log['event']);
-                foreach ($parts as $part) {
-                    $kv = explode(':', $part, 2);
-                    if (count($kv) === 2) {
-                        $row[$kv[0]] = $kv[1];
-                    }
-                }
+                $row += self::splitEventFields($log['event']);
             } else {
                 $row['event'] = $log['event'];
             }

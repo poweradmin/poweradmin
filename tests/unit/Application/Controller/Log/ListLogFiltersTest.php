@@ -237,4 +237,102 @@ class ListLogFiltersTest extends TestCase
             'event' => 'Free-form message without markers',
         ], $parsed[1]);
     }
+
+    public function testRecordContentWithSpacesAndColonsStaysInOneField(): void
+    {
+        $parsed = $this->makeController()->parseLogEventsForTest([
+            [
+                'created_at' => '2026-01-01 10:00:00',
+                'event' => 'client_ip:192.0.2.10 user:alice operation:edit_record'
+                    . ' old_record_type:TXT old_record:t.example.com old_content:"v=spf1 include:_spf.example.com -all" old_ttl:300 old_priority:0'
+                    . ' record_type:TXT record:t.example.com content:"foo key1:v  hello world" ttl:600 priority:0',
+            ],
+        ]);
+
+        $this->assertSame('"v=spf1 include:_spf.example.com -all"', $parsed[0]['old_content']);
+        $this->assertSame('"foo key1:v  hello world"', $parsed[0]['content']);
+        $this->assertSame('300', $parsed[0]['old_ttl']);
+        $this->assertSame('600', $parsed[0]['ttl']);
+        $this->assertSame('0', $parsed[0]['priority']);
+        $this->assertArrayNotHasKey('include', $parsed[0]);
+        $this->assertArrayNotHasKey('key1', $parsed[0]);
+    }
+
+    /**
+     * Lines written by 4.3 to 4.5 put old_name after the new content.
+     */
+    public function testStableApiEditLineKeepsBothContentValues(): void
+    {
+        $parsed = $this->makeController()->parseLogEventsForTest([
+            [
+                'created_at' => '2026-01-01 10:00:00',
+                'event' => 'client_ip:192.0.2.10 user:alice operation:api_edit_record name:t type:TXT content:"a b:c"'
+                    . ' old_name:t old_type:TXT old_content:"d e" ttl:60 priority:0 old_ttl:3600 old_priority:0',
+            ],
+        ]);
+
+        $this->assertSame('"a b:c"', $parsed[0]['content']);
+        $this->assertSame('t', $parsed[0]['old_name']);
+        $this->assertSame('"d e"', $parsed[0]['old_content']);
+        $this->assertSame('60', $parsed[0]['ttl']);
+        $this->assertArrayNotHasKey('b', $parsed[0]);
+    }
+
+    public function testFieldLikeTokensInsideQuotedContentStayInTheValue(): void
+    {
+        $parsed = $this->makeController()->parseLogEventsForTest([
+            [
+                'created_at' => '2026-01-01 10:00:00',
+                'event' => 'client_ip:192.0.2.10 user:alice operation:add_record record_type:TXT record:t.example.com'
+                    . ' content:"service ttl:600 \\"name:x\\" enabled" "part two" ttl:3600 priority:0',
+            ],
+        ]);
+
+        $this->assertSame('"service ttl:600 \\"name:x\\" enabled" "part two"', $parsed[0]['content']);
+        $this->assertSame('3600', $parsed[0]['ttl']);
+        $this->assertArrayNotHasKey('name', $parsed[0]);
+    }
+
+    public function testAChangeRequestCommentKeepsItsSpacesAndColons(): void
+    {
+        $parsed = $this->makeController()->parseLogEventsForTest([
+            [
+                'created_at' => '2026-01-01 10:00:00',
+                'event' => 'client_ip:192.0.2.10 user:alice operation:change_request_rejected zone:example.com request_id:7'
+                    . ' comment:wrong ttl: use 3600',
+            ],
+        ]);
+
+        $this->assertSame('wrong ttl: use 3600', $parsed[0]['comment']);
+        $this->assertArrayNotHasKey('ttl', $parsed[0]);
+    }
+
+    public function testAQuoteAfterAnEscapedBackslashClosesTheContent(): void
+    {
+        $parsed = $this->makeController()->parseLogEventsForTest([
+            [
+                'created_at' => '2026-01-01 10:00:00',
+                'event' => 'client_ip:192.0.2.10 user:alice operation:add_record record_type:TXT record:t.example.com'
+                    . ' content:"path\\\\" ttl:300 priority:0',
+            ],
+        ]);
+
+        $this->assertSame('"path\\\\"', $parsed[0]['content']);
+        $this->assertSame('300', $parsed[0]['ttl']);
+        $this->assertSame('0', $parsed[0]['priority']);
+    }
+
+    public function testAnEscapedQuoteInsideContentDoesNotCloseIt(): void
+    {
+        $parsed = $this->makeController()->parseLogEventsForTest([
+            [
+                'created_at' => '2026-01-01 10:00:00',
+                'event' => 'client_ip:192.0.2.10 user:alice operation:add_record record_type:TXT record:t.example.com'
+                    . ' content:"say \\"hi" ttl:60 priority:0',
+            ],
+        ]);
+
+        $this->assertSame('"say \\"hi"', $parsed[0]['content']);
+        $this->assertSame('60', $parsed[0]['ttl']);
+    }
 }

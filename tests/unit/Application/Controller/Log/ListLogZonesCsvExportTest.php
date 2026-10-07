@@ -41,9 +41,9 @@ use ReflectionMethod;
 #[CoversClass(ListLogZonesController::class)]
 class ListLogZonesCsvExportTest extends TestCase
 {
-    public function testRowsWithDifferentFieldsStayUnderTheirOwnColumns(): void
+    private function environment(): ControllerEnvironment
     {
-        $environment = new ControllerEnvironment(
+        return new ControllerEnvironment(
             ConfigurationManager::getInstance(),
             $this->createMock(PDO::class),
             new NullLogger(),
@@ -54,7 +54,11 @@ class ListLogZonesCsvExportTest extends TestCase
             null,
             $this->createMock(UserContextService::class)
         );
-        $controller = new ListLogZonesController([], true, $environment);
+    }
+
+    public function testRowsWithDifferentFieldsStayUnderTheirOwnColumns(): void
+    {
+        $controller = new ListLogZonesController([], true, $this->environment());
 
         $output = fopen('php://memory', 'w+');
         (new ReflectionMethod($controller, 'writeCsvRows'))->invoke($controller, $output, [
@@ -70,5 +74,20 @@ class ListLogZonesCsvExportTest extends TestCase
             ['t1', 'add_record', 'a.example.com', ''],
             ['t2', 'add_zone', '', 'example.com'],
         ], array_values($lines));
+    }
+
+    public function testRecordContentWithSpacesStaysInOneColumn(): void
+    {
+        $controller = new ListLogZonesController([], true, $this->environment());
+
+        $parsed = (new ReflectionMethod($controller, 'parseLogEvents'))->invoke($controller, [[
+            'created_at' => 't1',
+            'event' => 'client_ip:192.0.2.10 user:alice operation:add_record record_type:TXT record:t.example.com'
+                . ' content:"foo key1:v hello" ttl:3600 priority:0',
+        ]]);
+
+        $this->assertSame('"foo key1:v hello"', $parsed[0]['content']);
+        $this->assertSame('3600', $parsed[0]['ttl']);
+        $this->assertArrayNotHasKey('key1', $parsed[0]);
     }
 }

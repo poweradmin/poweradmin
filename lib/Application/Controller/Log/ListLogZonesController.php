@@ -174,17 +174,7 @@ class ListLogZonesController extends AbstractListLogController
     {
         $result = [];
         foreach ($logs as $log) {
-            $row = [
-                'timestamp' => $log['created_at'],
-            ];
-            $parts = explode(' ', $log['event']);
-            foreach ($parts as $part) {
-                $kv = explode(':', $part, 2);
-                if (count($kv) === 2) {
-                    $row[$kv[0]] = $kv[1];
-                }
-            }
-            $result[] = $row;
+            $result[] = ['timestamp' => $log['created_at']] + self::splitEventFields($log['event']);
         }
         return $result;
     }
