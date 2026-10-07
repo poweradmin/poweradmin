@@ -134,6 +134,19 @@ class RecordManagerService
     }
 
     /**
+     * Copy a new record's comment to the companion A or PTR record created right after it.
+     * createRecord() syncs before the companion exists, so the add flow calls this once it does.
+     */
+    public function syncCompanionComment(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin): void
+    {
+        if ($comment === '' || !$this->config->get('misc', 'record_comments_sync')) {
+            return;
+        }
+
+        $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $name);
+    }
+
+    /**
      * Sync comments to related records (A/AAAA <-> PTR).
      * This only syncs to the TARGET record, not the source record
      * (which already has a per-record comment from handleCommentsWithId).
