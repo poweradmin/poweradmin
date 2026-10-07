@@ -1006,6 +1006,10 @@ class EditController extends BaseController
             $this->userContextService->getLoggedInUsername()
         );
 
+        if (!empty($result['success'])) {
+            $this->recordManager->syncCompanionComment((int)$zone_id, $name, $type, $content, $comment, $this->userContextService->getLoggedInUsername());
+        }
+
         return $result;
     }
 
@@ -1031,6 +1035,7 @@ class EditController extends BaseController
         );
 
         if ($result['success']) {
+            $this->recordManager->syncCompanionComment((int)$zone_id, $name, $type, $content, $comment, $this->userContextService->getLoggedInUsername());
             return true;
         } else {
             $this->setMessage('edit', 'error', $result['message']);

@@ -382,6 +382,10 @@ class AddRecordController extends BaseController
             $this->userContextService->getLoggedInUsername()
         );
 
+        if (!empty($result['success'])) {
+            $this->recordManager->syncCompanionComment($zone_id, $name, $type, $content, $comment, $this->userContextService->getLoggedInUsername());
+        }
+
         return $result;
     }
 
@@ -397,6 +401,7 @@ class AddRecordController extends BaseController
         );
 
         if ($result['success']) {
+            $this->recordManager->syncCompanionComment($zone_id, $name, $type, $content, $comment, $this->userContextService->getLoggedInUsername());
             return true;
         } else {
             $this->setMessage('add_record', 'error', $result['message']);
