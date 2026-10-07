@@ -16146,3 +16146,11 @@ msgstr "Koľko zón môže tento používateľ priamo vlastniť. Ak chcete použ
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Koľko zón môže táto skupina vlastniť. Ak chcete použiť predvolenú hodnotu, nechajte prázdne."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d člen"
+msgstr[1] "%d členovia"
+msgstr[2] "%d členov"

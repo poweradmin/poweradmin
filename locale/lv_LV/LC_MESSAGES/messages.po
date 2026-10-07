@@ -15971,3 +15971,11 @@ msgstr "Cik zonu var tieši piederēt šim lietotājam. Atstājiet tukšu, lai i
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Cik zonu var piederēt šai grupai. Atstājiet tukšu, lai izmantotu noklusējumu."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d dalībnieks"
+msgstr[1] "%d dalībnieki"
+msgstr[2] "%d dalībnieku"

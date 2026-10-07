@@ -15766,3 +15766,10 @@ msgstr "כמה אזורים המשתמש הזה רשאי להחזיק ישירו
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "כמה אזורים הקבוצה הזאת רשאית להחזיק. השאירו ריק כדי להשתמש בברירת המחדל."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d חבר"
+msgstr[1] "%d חברים"

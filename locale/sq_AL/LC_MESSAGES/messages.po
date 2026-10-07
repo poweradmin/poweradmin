@@ -16551,3 +16551,10 @@ msgstr "Sa zona mund të zotërojë drejtpërdrejt ky përdorues. Lëreni bosh p
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Sa zona mund të zotërojë ky grup. Lëreni bosh për të përdorur prezgjedhjen."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d anëtar"
+msgstr[1] "%d anëtarë"

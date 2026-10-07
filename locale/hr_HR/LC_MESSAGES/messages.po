@@ -16130,3 +16130,11 @@ msgstr "Koliko zona ovaj korisnik smije izravno posjedovati. Ostavite prazno za 
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Koliko zona ova grupa smije posjedovati. Ostavite prazno za zadanu vrijednost."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d član"
+msgstr[1] "%d člana"
+msgstr[2] "%d članova"

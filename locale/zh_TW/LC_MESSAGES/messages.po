@@ -15186,3 +15186,10 @@ msgstr "此使用者可直接擁有的區域數量。留空則使用預設值。
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "此組可擁有的區域數量。留空則使用預設值。"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d 位成員"
+msgstr[1] "%d 位成員"

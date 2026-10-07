@@ -16381,3 +16381,11 @@ msgstr "Ile stref może bezpośrednio posiadać ten użytkownik. Pozostaw puste,
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Ile stref może posiadać ta grupa. Pozostaw puste, aby użyć wartości domyślnej."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d członek"
+msgstr[1] "%d członkowie"
+msgstr[2] "%d członków"

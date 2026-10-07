@@ -16142,3 +16142,9 @@ msgstr "Số vùng người dùng này được phép sở hữu trực tiếp. 
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Số vùng nhóm này được phép sở hữu. Để trống để dùng giá trị mặc định."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d thành viên"

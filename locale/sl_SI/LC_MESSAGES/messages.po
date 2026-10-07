@@ -16277,3 +16277,12 @@ msgstr "Koliko con ima lahko ta uporabnik neposredno v lasti. Pustite prazno za 
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Koliko con ima lahko ta skupina v lasti. Pustite prazno za privzeto vrednost."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d član"
+msgstr[1] "%d člana"
+msgstr[2] "%d člani"
+msgstr[3] "%d članov"

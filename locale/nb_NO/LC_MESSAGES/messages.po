@@ -16162,3 +16162,10 @@ msgstr "Hvor mange soner denne brukeren kan eie direkte. La stå tomt for å bru
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Hvor mange soner denne gruppen kan eie. La stå tomt for å bruke standardverdien."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d medlem"
+msgstr[1] "%d medlemmer"

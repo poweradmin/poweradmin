@@ -16764,3 +16764,10 @@ msgstr "Πόσες ζώνες μπορεί να κατέχει απευθεία�
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Πόσες ζώνες μπορεί να κατέχει αυτή η ομάδα. Αφήστε το κενό για χρήση της προεπιλογής."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d μέλος"
+msgstr[1] "%d μέλη"

@@ -15943,3 +15943,14 @@ msgstr "عدد المناطق التي يمكن لهذا المستخدم امت
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "عدد المناطق التي يمكن لهذه المجموعة امتلاكها. اتركه فارغًا لاستخدام القيمة الافتراضية."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d عضو"
+msgstr[1] "%d عضو"
+msgstr[2] "%d عضوان"
+msgstr[3] "%d أعضاء"
+msgstr[4] "%d عضوًا"
+msgstr[5] "%d عضو"

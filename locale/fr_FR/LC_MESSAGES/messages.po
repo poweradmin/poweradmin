@@ -16791,3 +16791,10 @@ msgstr "Nombre de zones que cet utilisateur peut posséder directement. Laissez 
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Nombre de zones que ce groupe peut posséder. Laissez vide pour utiliser la valeur par défaut."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d membre"
+msgstr[1] "%d membres"

@@ -16324,3 +16324,11 @@ msgstr "Скількома зонами цей користувач може в�
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Скільки зон може належати цій групі. Залиште порожнім, щоб використати типове значення."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d учасник"
+msgstr[1] "%d учасники"
+msgstr[2] "%d учасників"

@@ -16210,3 +16210,9 @@ msgstr "このユーザーが直接所有できるゾーンの数。空欄の場
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "このグループが所有できるゾーンの数。空欄の場合はデフォルトを使用します。"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "メンバー %d 人"

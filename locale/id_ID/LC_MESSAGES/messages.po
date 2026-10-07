@@ -16368,3 +16368,10 @@ msgstr "Jumlah zona yang boleh dimiliki langsung oleh pengguna ini. Biarkan koso
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Jumlah zona yang boleh dimiliki grup ini. Biarkan kosong untuk menggunakan nilai bawaan."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d anggota"
+msgstr[1] "%d anggota"

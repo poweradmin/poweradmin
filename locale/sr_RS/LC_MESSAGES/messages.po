@@ -16018,3 +16018,11 @@ msgstr "Колико зона овај корисник сме директно 
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Колико зона ова група сме да поседује. Оставите празно за подразумевану вредност."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d члан"
+msgstr[1] "%d члана"
+msgstr[2] "%d чланова"

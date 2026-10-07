@@ -16216,3 +16216,10 @@ msgstr "Hur många zoner denna användare får äga direkt. Lämna tomt för att
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Hur många zoner denna grupp får äga. Lämna tomt för att använda standardvärdet."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d medlem"
+msgstr[1] "%d medlemmar"

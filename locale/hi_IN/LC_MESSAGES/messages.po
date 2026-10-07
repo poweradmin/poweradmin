@@ -15950,3 +15950,10 @@ msgstr "यह उपयोगकर्ता सीधे कितने ज�
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "यह समूह कितने ज़ोन का मालिक हो सकता है। डिफ़ॉल्ट का उपयोग करने के लिए खाली छोड़ दें।"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d सदस्य"
+msgstr[1] "%d सदस्य"

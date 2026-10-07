@@ -16401,3 +16401,10 @@ msgstr "Hány zónát birtokolhat közvetlenül ez a felhasználó. Hagyja üres
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Hány zónát birtokolhat ez a csoport. Hagyja üresen az alapértelmezett érték használatához."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d tag"
+msgstr[1] "%d tag"

@@ -15500,3 +15500,9 @@ msgstr "จำนวนโซนที่ผู้ใช้นี้เป็น
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "จำนวนโซนที่กลุ่มนี้เป็นเจ้าของได้ ปล่อยว่างไว้เพื่อใช้ค่าปริยาย"
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "สมาชิก %d คน"

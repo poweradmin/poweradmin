@@ -16716,3 +16716,11 @@ msgstr "Câte zone poate deține direct acest utilizator. Lăsați gol pentru va
 #: templates/default/add_group.html:47
 msgid "How many zones this group may own. Leave empty to use the default."
 msgstr "Câte zone poate deține acest grup. Lăsați gol pentru valoarea implicită."
+
+#: lib/Application/Service/Zone/ZoneCreateFormMessages.php:130
+#, php-format
+msgid "%d member"
+msgid_plural "%d members"
+msgstr[0] "%d membru"
+msgstr[1] "%d membri"
+msgstr[2] "%d de membri"
