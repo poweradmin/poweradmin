@@ -249,9 +249,18 @@ class ListLogZonesController extends BaseController
             header('Content-Disposition: attachment; filename="zone-logs-' . date('Y-m-d') . '.csv"');
             $output = fopen('php://output', 'w');
             if (!empty($parsed)) {
-                fputcsv($output, CsvFormulaEscaper::escapeRow(array_keys($parsed[0])));
+                $keySet = [];
                 foreach ($parsed as $row) {
-                    fputcsv($output, CsvFormulaEscaper::escapeRow($row));
+                    $keySet += array_fill_keys(array_keys($row), true);
+                }
+                $allKeys = array_keys($keySet);
+                fputcsv($output, CsvFormulaEscaper::escapeRow($allKeys));
+                foreach ($parsed as $row) {
+                    $csvRow = [];
+                    foreach ($allKeys as $key) {
+                        $csvRow[] = $row[$key] ?? '';
+                    }
+                    fputcsv($output, CsvFormulaEscaper::escapeRow($csvRow));
                 }
             }
             fclose($output);
