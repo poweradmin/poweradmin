@@ -23,6 +23,7 @@
 namespace Poweradmin\Module\SecondaryZoneImport\Controller;
 
 use Poweradmin\Application\Service\Zone\ZoneCreateRequest;
+use Poweradmin\Application\Service\Zone\ZoneCreateFormMessages;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
@@ -202,7 +203,8 @@ class SecondaryZoneImportController extends BaseController
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $userGroupRepo = $this->moduleServices()->userGroupRepository();
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($sessionUserId);
-        $memberCounts = $userGroupRepo->getMemberCountsByGroupIds(array_map(fn($g) => $g->getId(), $allGroups));
+        $groupIds = array_map(fn($g) => $g->getId(), $allGroups);
+        $memberCounts = $userGroupRepo->getMemberCountsByGroupIds($groupIds);
 
         $ownerInput = $this->httpRequest->getPostParam('owner');
         $groupsInput = $this->httpRequest->getPostParam('groups');
@@ -219,6 +221,7 @@ class SecondaryZoneImportController extends BaseController
             'owner_value' => $this->preservedOwnerChoice($assignableOwners, $ownerInput),
             'all_groups' => $allGroups,
             'group_member_counts' => $memberCounts,
+            'group_member_labels' => ZoneCreateFormMessages::memberCountLabels($groupIds, $memberCounts),
             'selected_groups' => is_array($groupsInput) ? array_map('intval', $groupsInput) : [],
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
             'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),

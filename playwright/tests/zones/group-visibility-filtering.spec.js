@@ -55,9 +55,9 @@ test.describe('Group Visibility Filtering', () => {
     const groupItems = page.locator('.group-item');
     await expect(groupItems).not.toHaveCount(0);
 
-    // Each group label should contain a member count badge with "members" text
+    // Each group label should contain a member count badge ("1 member", "3 members")
     const badgeText = await groupItems.first().locator('label .badge').textContent();
-    expect(badgeText).toMatch(/\d+\s+members/i);
+    expect(badgeText).toMatch(/\d+\s+members?\b/i);
   });
 
   test('should display member count badges next to group names on add slave zone page', async ({ page }) => {
@@ -69,6 +69,6 @@ test.describe('Group Visibility Filtering', () => {
     await expect(groupItems).not.toHaveCount(0);
 
     const badgeText = await groupItems.first().locator('label .badge').textContent();
-    expect(badgeText).toMatch(/\d+\s+members/i);
+    expect(badgeText).toMatch(/\d+\s+members?\b/i);
   });
 });

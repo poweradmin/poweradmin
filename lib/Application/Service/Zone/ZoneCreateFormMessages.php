@@ -114,4 +114,22 @@ final class ZoneCreateFormMessages
             default => (string)($result['message'] ?? ''),
         };
     }
+
+    /**
+     * "1 member" / "3 members" per group, for the owner pickers of the add-zone forms.
+     *
+     * @param int[] $groupIds
+     * @param array<int, int> $memberCounts Keyed by group id; a missing group has none
+     * @return array<int, string> Keyed by group id
+     */
+    public static function memberCountLabels(array $groupIds, array $memberCounts): array
+    {
+        $labels = [];
+        foreach ($groupIds as $groupId) {
+            $count = (int)($memberCounts[$groupId] ?? 0);
+            $labels[$groupId] = sprintf(ngettext('%d member', '%d members', $count), $count);
+        }
+
+        return $labels;
+    }
 }

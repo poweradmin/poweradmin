@@ -69,4 +69,12 @@ class ZoneCreateFormMessagesTest extends TestCase
             ZoneCreateFormMessages::shadowedRecords($idn, 'sub.xn--bcher-kva.example')
         );
     }
+
+    public function testMemberCountLabelsUseTheSingularForOne(): void
+    {
+        $this->assertSame(
+            [3 => '1 member', 4 => '2 members', 5 => '0 members'],
+            ZoneCreateFormMessages::memberCountLabels([3, 4, 5], [3 => 1, 4 => 2])
+        );
+    }
 }

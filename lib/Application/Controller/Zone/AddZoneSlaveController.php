@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Zone;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\Zone\ZoneCreateRequest;
 use Poweradmin\Application\Service\Zone\ZoneLimitMessages;
+use Poweradmin\Application\Service\Zone\ZoneCreateFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -143,6 +144,7 @@ class AddZoneSlaveController extends BaseController
             'is_post' => $is_post_request,
             'all_groups' => $allGroups,
             'group_member_counts' => $memberCounts,
+            'group_member_labels' => ZoneCreateFormMessages::memberCountLabels($groupIds, $memberCounts),
             'selected_groups' => $selected_groups,
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
             'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),

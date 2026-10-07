@@ -140,7 +140,7 @@
                     <td class="col-sm-1 text-center">
                         {% if edit_mode == 'request' %}
                         {# Companion PTR/A records are not filed with a request, so the box would be ignored #}
-                        <input type="text" class="form-control form-control-sm" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="add-request-comment-input"{% if require_change_comment %} required{% endif %}>
+                        <input type="text" class="form-control form-control-sm" style="min-width: 12rem" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="add-request-comment-input"{% if require_change_comment %} required{% endif %}>
                         {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                         <span class="align-middle">
@@ -184,7 +184,7 @@
         <div>
             {% if zone_is_editable and iface_edit_save_changes_top %}
             {% if edit_mode == 'request' %}
-            <input type="text" class="form-control form-control-sm d-inline-block w-auto" form="edit-zone-form" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
+            <input type="text" class="form-control form-control-sm d-inline-block align-middle" style="width: 22rem; max-width: 100%" form="edit-zone-form" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
             {% endif %}
             <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="save-changes-button">
                 <i class="bi bi-check-circle me-1 text-white"></i>{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Save changes{% endtrans %}{% endif %}
@@ -597,7 +597,7 @@
     <div>
         {% if zone_is_editable and not iface_edit_save_changes_top %}
         {% if edit_mode == 'request' %}
-        <input type="text" class="form-control form-control-sm d-inline-block w-auto" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
+        <input type="text" class="form-control form-control-sm d-inline-block align-middle" style="width: 22rem; max-width: 100%" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
         {% endif %}
         <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="save-changes-button">
             <i class="bi bi-check-circle me-1 text-white"></i>{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Save changes{% endtrans %}{% endif %}
@@ -829,7 +829,7 @@
                     <td class="col-sm-1 text-center">
                         {% if edit_mode == 'request' %}
                         {# Companion PTR/A records are not filed with a request, so the box would be ignored #}
-                        <input type="text" class="form-control form-control-sm" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="add-request-comment-input"{% if require_change_comment %} required{% endif %}>
+                        <input type="text" class="form-control form-control-sm" style="min-width: 12rem" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="add-request-comment-input"{% if require_change_comment %} required{% endif %}>
                         {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                         <span class="align-middle">
@@ -872,7 +872,7 @@
                 <div class="row">
                     {% if metadata_view %}
                     <!-- Zone Type -->
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}Type{% endtrans %}</h6>
                         {% if meta_edit and zone_type_change_allowed %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
@@ -907,7 +907,7 @@
 
                     <!-- Primary IP, for zone kinds that replicate from one -->
                     {% if zone_replicates_from_primary %}
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}IP address of master NS{% endtrans %}</h6>
                         {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
@@ -934,7 +934,7 @@
                     {% endif %}
 
                     <!-- Template -->
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}Template{% endtrans %}</h6>
                         {# Applying a template writes records directly, so requesters only see the current one #}
                         {% if meta_edit and edit_mode != 'request' %}
@@ -970,7 +970,7 @@
 
                     <!-- Catalog, for zone kinds PowerDNS publishes from one -->
                     {% if catalog_selector_view %}
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}Catalog{% endtrans %}</h6>
                         {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
@@ -1005,7 +1005,7 @@
 
                     <!-- DNSSEC -->
                     {% if pdnssec_use %}
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}DNSSEC{% endtrans %}</h6>
                         {% if is_secured %}
                         {% if can_manage_dnssec %}
