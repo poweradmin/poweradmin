@@ -268,7 +268,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                                 FROM $domains_table
                                 LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
                                 LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id";
-                } elseif ($db_type === 'mysql' && $sortUsesAggregateOrJoin) {
+                } elseif (in_array($db_type, ['mysql', 'mysqli', 'pgsql'], true) && $sortUsesAggregateOrJoin) {
                     $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
                                 FROM $domains_table";
                 } else {
@@ -313,7 +313,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                 if ($sortByGroupInner) {
                     $id_query .= " GROUP BY $domains_table.id, $domains_table.name"
                         . " ORDER BY MIN(user_groups.name) " . $sortDirection . ", $domains_table.name";
-                } elseif ($db_type === 'mysql' && $sortUsesAggregateOrJoin) {
+                } elseif (in_array($db_type, ['mysql', 'mysqli', 'pgsql'], true) && $sortUsesAggregateOrJoin) {
                     $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 } elseif (!$sortUsesAggregateOrJoin) {
                     $id_query .= " ORDER BY " . $sql_sortby;
