@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -337,7 +337,7 @@ class DomainRepository implements DomainRepositoryInterface
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
             } else {
                 // For MySQL and non-complex sorts - fix DISTINCT + ORDER BY compatibility issue
-                if ($db_type === 'mysql' && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
+                if (in_array($db_type, ['mysql', 'mysqli', 'pgsql'], true) && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
                     // For MySQL with complex sorts that can't be used with DISTINCT, use simple name sorting
                     $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
                                 FROM $domains_table";
@@ -383,7 +383,7 @@ class DomainRepository implements DomainRepositoryInterface
                 }
 
                 // Apply sorting to the ID query with MySQL compatibility
-                if ($db_type === 'mysql' && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
+                if (in_array($db_type, ['mysql', 'mysqli', 'pgsql'], true) && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
                     // For complex sorts that can't work with DISTINCT in MySQL, use simple name sorting
                     $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 } elseif (strpos($sql_sortby, 'users.username') === false && strpos($sql_sortby, 'COUNT(') === false) {
