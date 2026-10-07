@@ -130,6 +130,44 @@ class RecordAddServiceTest extends TestCase
         $this->assertSame(['warning', 'Record successfully added, but A record creation failed: no zone'], RecordAddMessages::forAdded($result));
     }
 
+    public function testACompanionGetsTheCommentSyncedOnceItExists(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->method('createRecord')->willReturn(RecordWriteResult::ok(1));
+        $records->expects($this->once())->method('syncCompanionComment')
+            ->with(9, '1.2.0.192.in-addr.arpa', 'PTR', 'www.example.com', 'rack 4', 'alice');
+        $domain = $this->createMock(DomainRecordCreator::class);
+        $domain->method('addDomainRecord')->willReturn(['success' => true, 'type' => 'success', 'message' => 'ok']);
+
+        $this->makeService($records, null, $domain)
+            ->add(9, '2.0.192.in-addr.arpa', '1', 'PTR', 'www.example.com', 60, 0, 'rack 4', 7, 'alice', RecordAddResult::COMPANION_A);
+    }
+
+    public function testPtrCompanionGetsTheCommentSyncedOnceItExists(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->method('createRecord')->willReturn(RecordWriteResult::ok(1));
+        $records->expects($this->once())->method('syncCompanionComment')
+            ->with(5, 'www.example.com', 'A', '192.0.2.1', 'rack 4', 'alice');
+        $reverse = $this->createMock(ReverseRecordCreator::class);
+        $reverse->method('createReverseRecord')->willReturn(['success' => true, 'type' => 'success', 'message' => 'ok']);
+
+        $this->makeService($records, $reverse)
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, 'rack 4', 7, 'alice', RecordAddResult::COMPANION_PTR);
+    }
+
+    public function testFailedCompanionSkipsTheCommentSync(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->method('createRecord')->willReturn(RecordWriteResult::ok(1));
+        $records->expects($this->never())->method('syncCompanionComment');
+        $domain = $this->createMock(DomainRecordCreator::class);
+        $domain->method('addDomainRecord')->willReturn(['success' => false, 'type' => 'error', 'message' => 'no zone']);
+
+        $this->makeService($records, null, $domain)
+            ->add(9, '2.0.192.in-addr.arpa', '1', 'PTR', 'www.example.com', 60, 0, 'rack 4', 7, 'alice', RecordAddResult::COMPANION_A);
+    }
+
     public function testPassesTheDisabledFlagThroughToTheWrite(): void
     {
         $records = $this->createMock(RecordManagerService::class);

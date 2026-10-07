@@ -117,6 +117,9 @@ class RecordAddService
         if ($companion === RecordAddResult::COMPANION_PTR) {
             // A configured dns.ttl_reverse always wins for the PTR; otherwise it inherits the forward TTL
             $ptr = $this->reverseRecords->createReverseRecord($name, $type, $content, $zoneId, $this->ttlResolver->resolvePtrTtl($ttl), $prio, $comment, $username);
+            if (!empty($ptr['success'])) {
+                $this->records->syncCompanionComment($zoneId, $name, $type, $content, $comment, $username);
+            }
 
             return new RecordAddResult(
                 $written,
@@ -129,6 +132,9 @@ class RecordAddService
 
         if ($companion === RecordAddResult::COMPANION_A) {
             $a = $this->domainRecords->addDomainRecord($name, $type, $content, $zoneId, $comment, $username);
+            if (!empty($a['success'])) {
+                $this->records->syncCompanionComment($zoneId, $name, $type, $content, $comment, $username);
+            }
 
             return new RecordAddResult(
                 $written,

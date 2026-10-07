@@ -54,7 +54,7 @@ class RecordManagerServicePtrSyncTest extends TestCase
         $this->comments = $this->createMock(RecordCommentService::class);
     }
 
-    private function service(): RecordManagerService
+    private function service(bool $sync = true): RecordManagerService
     {
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->method('getDomainNameById')->willReturnMap([[1, 'example.com'], [5, '2.0.192.in-addr.arpa']]);
@@ -64,7 +64,7 @@ class RecordManagerServicePtrSyncTest extends TestCase
         $manager = $this->createMock(RecordManagerInterface::class);
         $manager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(99));
 
-        $config = new FakeConfiguration(['misc' => ['record_comments_sync' => true], 'database' => ['type' => 'sqlite', 'pdns_db_name' => '']]);
+        $config = new FakeConfiguration(['misc' => ['record_comments_sync' => $sync], 'database' => ['type' => 'sqlite', 'pdns_db_name' => '']]);
 
         return new RecordManagerService($domains, new SqlRecordRepository($this->db, $config), $manager, $this->comments, $this->createMock(AuditService::class), $config);
     }
@@ -114,5 +114,39 @@ class RecordManagerServicePtrSyncTest extends TestCase
         $service->createRecord(1, 'host.example.com', 'A', '192.0.2.1', 3600, 0, 'shared note', 'admin');
 
         $this->assertSame([99, 50, 51], $targets);
+    }
+
+    public function testCompanionSyncCopiesTheCommentToTheARecordCreatedAfterThePtr(): void
+    {
+        $calls = [];
+        $this->comments->method('createCommentForRecord')->willReturnCallback(function (...$args) use (&$calls) {
+            $calls[] = $args;
+            return null;
+        });
+
+        $this->service()->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 'rack 4', 'admin');
+
+        $this->assertSame([[1, 'host.example.com', 'A', 'rack 4', 60, 'admin']], $calls);
+    }
+
+    public function testCompanionSyncCopiesTheCommentToThePtrRecordCreatedAfterTheA(): void
+    {
+        $calls = [];
+        $this->comments->method('createCommentForRecord')->willReturnCallback(function (...$args) use (&$calls) {
+            $calls[] = $args;
+            return null;
+        });
+
+        $this->service()->syncCompanionComment(1, 'host.example.com', 'A', '192.0.2.1', 'rack 4', 'admin');
+
+        $this->assertSame([[5, '1.2.0.192.in-addr.arpa', 'PTR', 'rack 4', 50, 'admin']], $calls);
+    }
+
+    public function testCompanionSyncDoesNothingWhenSyncIsOffOrTheCommentIsEmpty(): void
+    {
+        $this->comments->expects($this->never())->method('createCommentForRecord');
+
+        $this->service(false)->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 'rack 4', 'admin');
+        $this->service()->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', '', 'admin');
     }
 }
