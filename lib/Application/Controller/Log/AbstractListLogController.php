@@ -234,11 +234,11 @@ abstract class AbstractListLogController extends BaseController
      */
     protected function writeCsvRows($output, array $parsed): void
     {
-        $allKeys = [];
+        $keySet = [];
         foreach ($parsed as $row) {
-            $allKeys = array_merge($allKeys, array_keys($row));
+            $keySet += array_fill_keys(array_keys($row), true);
         }
-        $allKeys = array_unique($allKeys);
+        $allKeys = array_keys($keySet);
         $escaper = $this->services()->csvFormulaEscaper();
         fputcsv($output, $escaper->escapeRow($allKeys));
         foreach ($parsed as $row) {

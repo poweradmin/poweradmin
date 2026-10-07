@@ -188,13 +188,4 @@ class ListLogZonesController extends AbstractListLogController
         }
         return $result;
     }
-
-    protected function writeCsvRows($output, array $parsed): void
-    {
-        $escaper = $this->services()->csvFormulaEscaper();
-        fputcsv($output, $escaper->escapeRow(array_keys($parsed[0])));
-        foreach ($parsed as $row) {
-            fputcsv($output, $escaper->escapeRow($row));
-        }
-    }
 }
