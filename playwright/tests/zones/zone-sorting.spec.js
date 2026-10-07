@@ -7,7 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { isApiModeInstance } from '../../helpers/zones.js';
+import { createZone, deleteZoneById, isApiModeInstance } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Zone List Sorting', () => {
@@ -223,7 +223,7 @@ test.describe('Record List Sorting', () => {
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
-      await page.goto(`/zones/${zoneId}/edit?sortby=id&sortdir=ASC`);
+      await page.goto(`/zones/${zoneId}/edit?record_sort_by=id&sort_direction=ASC`);
       await page.waitForLoadState('networkidle');
 
       const bodyText = await page.locator('body').textContent();
@@ -233,16 +233,71 @@ test.describe('Record List Sorting', () => {
       expect(bodyText.toLowerCase()).toMatch(/record|zone|edit/i);
     });
 
-    test('should allow sorting records by disabled status', async ({ page }) => {
+    test('should sort records by disabled status in both directions', async ({ page }) => {
+      test.setTimeout(90000);
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
 
-      await page.goto(`/zones/${zoneId}/edit?sortby=disabled&sortdir=ASC`);
-      await page.waitForLoadState('networkidle');
+      // The seeded zones hold no disabled record, so build a zone that has both kinds
+      const zoneName = `sort-disabled-${Date.now()}.example.com`;
+      const zoneId = await createZone(page, zoneName);
+      expect(zoneId, `zone ${zoneName} must be created`).toBeTruthy();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).not.toContain('invalid sort');
+      const recordRow = (content) => page
+        .locator(`#edit-zone-form input[name$="[content]"][value="${content}"]`)
+        .locator('xpath=ancestor::tr[1]');
+
+      // SOA, NS and apex records stay pinned above the sorted body, so only the records
+      // created here are compared. The checked attribute is the server-rendered state.
+      const created = ['192.0.2.10', '192.0.2.20', '192.0.2.30'];
+      const disabledStates = () => page
+        .locator('#edit-zone-form input[type="checkbox"][name^="record["][name$="[disabled]"]')
+        .evaluateAll((nodes, contents) => nodes
+          .map(n => ({
+            content: n.closest('tr')?.querySelector('input[name$="[content]"]')?.value,
+            disabled: n.hasAttribute('checked'),
+          }))
+          .filter(r => contents.includes(r.content))
+          .map(r => r.disabled), created);
+
+      try {
+        // Names put the disabled record in the middle, so neither direction can pass by name order
+        for (const [name, content] of [['a-on', created[0]], ['b-off', created[1]], ['c-on', created[2]]]) {
+          await page.goto(`/zones/${zoneId}/records/add`);
+          await page.locator('select[name*="type"]').first().selectOption('A');
+          await page.locator('input[name*="name"]').first().fill(name);
+          await page.locator('input[name*="content"]').first().fill(content);
+          await page.locator('button[type="submit"], input[type="submit"]').first().click();
+          await page.waitForURL(new RegExp(`/zones/${zoneId}/edit`));
+        }
+
+        await page.goto(`/zones/${zoneId}/edit?record_sort_by=name&sort_direction=ASC`);
+        await expect(recordRow(created[0])).toHaveCount(1);
+        await expect(recordRow(created[2])).toHaveCount(1);
+        await recordRow(created[1]).locator('input[type="checkbox"][name$="[disabled]"]').check();
+        await Promise.all([
+          page.waitForResponse(r => r.request().method() === 'POST' && r.url().includes(`/zones/${zoneId}/edit`)),
+          page.locator('[data-testid="save-changes-button"]').first().click(),
+        ]);
+
+        await page.goto(`/zones/${zoneId}/edit?record_sort_by=name&sort_direction=ASC`);
+        await expect(recordRow(created[1]).locator('input[name$="[disabled]"]')).toHaveAttribute('checked', /.*/);
+        await expect(recordRow(created[0]).locator('input[name$="[disabled]"]')).not.toHaveAttribute('checked', /.*/);
+        await expect(recordRow(created[2]).locator('input[name$="[disabled]"]')).not.toHaveAttribute('checked', /.*/);
+
+        await page.goto(`/zones/${zoneId}/edit?record_sort_by=disabled&sort_direction=ASC`);
+        const ascending = await disabledStates();
+        expect(ascending).toHaveLength(created.length);
+        expect(ascending, 'ASC lists enabled records before disabled ones').toEqual([false, false, true]);
+
+        await page.goto(`/zones/${zoneId}/edit?record_sort_by=disabled&sort_direction=DESC`);
+        const descending = await disabledStates();
+        expect(descending).toHaveLength(created.length);
+        expect(descending, 'DESC lists disabled records before enabled ones').toEqual([true, false, false]);
+      } finally {
+        // The record sort order is kept in the session, so put the default back for later tests
+        await page.goto(`/zones/${zoneId}/edit?record_sort_by=name&sort_direction=ASC`);
+        await deleteZoneById(page, zoneId);
+      }
     });
 
     test('should allow sorting records by name', async ({ page }) => {
@@ -250,7 +305,7 @@ test.describe('Record List Sorting', () => {
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
-      await page.goto(`/zones/${zoneId}/edit?sortby=name&sortdir=DESC`);
+      await page.goto(`/zones/${zoneId}/edit?record_sort_by=name&sort_direction=DESC`);
       await page.waitForLoadState('networkidle');
 
       const bodyText = await page.locator('body').textContent();
@@ -262,7 +317,7 @@ test.describe('Record List Sorting', () => {
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
-      await page.goto(`/zones/${zoneId}/edit?sortby=type&sortdir=ASC`);
+      await page.goto(`/zones/${zoneId}/edit?record_sort_by=type&sort_direction=ASC`);
       await page.waitForLoadState('networkidle');
 
       const bodyText = await page.locator('body').textContent();
