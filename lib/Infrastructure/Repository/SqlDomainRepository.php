@@ -138,6 +138,38 @@ final class SqlDomainRepository implements DomainRepositoryInterface
     }
 
     /**
+     * Joins and aggregate that rank a page of zones by owner, record count or group.
+     * Returns null for column sorts, which the DISTINCT id query can order directly.
+     *
+     * @return array{joins: string, key: string}|null
+     */
+    private function pageSortKey(string $sqlSortBy, string $sortDirection, string $domainsTable, string $recordsTable): ?array
+    {
+        if (str_contains($sqlSortBy, 'users.username')) {
+            return [
+                'joins' => "LEFT JOIN zones page_zones ON page_zones.domain_id = $domainsTable.id
+                            LEFT JOIN users page_users ON page_users.id = page_zones.owner",
+                // A zone with several owners is listed under its first owner in the requested direction
+                'key' => ($sortDirection === 'DESC' ? 'MAX' : 'MIN') . '(page_users.username)',
+            ];
+        }
+        if (str_contains($sqlSortBy, 'COUNT(')) {
+            return [
+                'joins' => "LEFT JOIN $recordsTable page_records ON page_records.domain_id = $domainsTable.id AND page_records.type IS NOT NULL",
+                'key' => 'COUNT(DISTINCT page_records.id)',
+            ];
+        }
+        if (str_contains($sqlSortBy, 'user_groups.name')) {
+            return [
+                'joins' => "LEFT JOIN zones_groups page_groups ON page_groups.domain_id = $domainsTable.id
+                            LEFT JOIN user_groups page_group_names ON page_group_names.id = page_groups.group_id",
+                'key' => 'MIN(page_group_names.name)',
+            ];
+        }
+        return null;
+    }
+
+    /**
      * SQL fragment restricting zones to a starting letter.
      *
      * Punycode zone names all begin with "x", so an IDN zone would only ever be
@@ -264,6 +296,7 @@ final class SqlDomainRepository implements DomainRepositoryInterface
 
         if ($letterstart != 'all' && $rowamount < Constants::DEFAULT_MAX_ROWS) {
             $originalSqlMode = DbCompat::handleSqlMode($this->db, $db_type);
+            $pageSort = null;
 
             // The natural sort is an expression over name, so a driver that cannot
             // ORDER BY it under DISTINCT pages by the plain column instead.
@@ -297,20 +330,12 @@ final class SqlDomainRepository implements DomainRepositoryInterface
                 $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
             } else {
-                $sortByGroupInner = strpos($sql_sortby, 'user_groups.name') !== false;
-                $sortUsesAggregateOrJoin = strpos($sql_sortby, 'users.username') !== false
-                    || strpos($sql_sortby, 'COUNT(') !== false
-                    || $sortByGroupInner;
+                $pageSort = $this->pageSortKey($sql_sortby, $sortDirection, $domains_table, $records_table);
 
-                if ($sortByGroupInner) {
-                    // Aggregate on user_groups.name so paginating a group-sorted page picks the right zones globally
-                    $id_query = "SELECT $domains_table.id, $domains_table.name
-                                FROM $domains_table
-                                LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
-                                LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id";
-                } elseif (DbCompat::distinctNeedsOrderColumnsSelected($db_type) && $sortUsesAggregateOrJoin) {
-                    $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
-                                FROM $domains_table";
+                if ($pageSort !== null) {
+                    // Rank zones by the owner, record count or group itself before LIMIT, so every page is in global order
+                    $id_query = "SELECT $domains_table.id, $domains_table.name, " . $pageSort['key'] . " AS page_rank
+                                FROM $domains_table " . $pageSort['joins'];
                 } else {
                     $select_columns = "$domains_table.id";
                     if (strpos($sql_sortby, "$domains_table.name") !== false) {
@@ -346,15 +371,11 @@ final class SqlDomainRepository implements DomainRepositoryInterface
                     $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
                 }
 
-                if ($sortByGroupInner) {
+                if ($pageSort !== null) {
                     $id_query .= " GROUP BY $domains_table.id, $domains_table.name"
-                        . " ORDER BY MIN(user_groups.name) " . $sortDirection . ", $domains_table.name";
-                } elseif (DbCompat::distinctNeedsOrderColumnsSelected($db_type) && $sortUsesAggregateOrJoin) {
-                    $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
-                } elseif (!$sortUsesAggregateOrJoin) {
-                    $id_query .= " ORDER BY " . $sql_sortby;
+                        . " ORDER BY " . $pageSort['key'] . " " . $sortDirection . ", $domains_table.name";
                 } else {
-                    $id_query .= " ORDER BY $domains_table.name";
+                    $id_query .= " ORDER BY " . $sql_sortby;
                 }
 
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
@@ -363,6 +384,11 @@ final class SqlDomainRepository implements DomainRepositoryInterface
             $sortByGroup = strpos($sql_sortby, 'user_groups.name') !== false;
 
             $needsRecordsJoin = $includeRecordCount || $includeHealth;
+
+            // The listing follows the rank that picked the page, so ownerless rows cannot reorder it
+            $pagedOrderBy = $pageSort !== null
+                ? "MIN(limited_domains.page_rank) $sortDirection, $domains_table.name, users.username $sortDirection"
+                : $sql_sortby;
 
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
@@ -391,7 +417,7 @@ final class SqlDomainRepository implements DomainRepositoryInterface
 
             $query .= " GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname
                         " . ($iface_zone_comments ? ", zones.comment" : "") . "
-                        ORDER BY " . $sql_sortby;
+                        ORDER BY " . $pagedOrderBy;
 
             if (!empty($params)) {
                 $stmt = $this->db->prepare($query);

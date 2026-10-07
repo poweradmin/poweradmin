@@ -292,14 +292,6 @@ class DbCompatTest extends TestCase
         $this->assertTrue(DbCompat::distinctAllowsOrderByExpression('sqlite'));
     }
 
-    public function testSqliteAloneOrdersDistinctRowsByUnselectedColumns(): void
-    {
-        $this->assertTrue(DbCompat::distinctNeedsOrderColumnsSelected('mysql'));
-        $this->assertTrue(DbCompat::distinctNeedsOrderColumnsSelected('mysqli'));
-        $this->assertTrue(DbCompat::distinctNeedsOrderColumnsSelected('pgsql'));
-        $this->assertFalse(DbCompat::distinctNeedsOrderColumnsSelected('sqlite'));
-    }
-
     public function testCastToStringUsesAsciiCharsetOnMySQL(): void
     {
         // ascii must match record_comment_links.record_id or MariaDB 11.6+ rejects the comparison

@@ -10,8 +10,9 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 
 /**
- * The letter-filtered zone list pages through an inner DISTINCT id query whose
- * shape depends on what the driver lets a DISTINCT query ORDER BY.
+ * The letter-filtered zone list pages through an inner id query. Column sorts use
+ * DISTINCT, shaped by what the driver lets it ORDER BY; owner, record count and
+ * group sorts rank the zones by that value before LIMIT (issue #1618).
  */
 class SqlDomainRepositoryPagedIdQueryTest extends TestCase
 {
@@ -82,27 +83,27 @@ class SqlDomainRepositoryPagedIdQueryTest extends TestCase
         return ['mysql' => ['mysql'], 'sqlite' => ['sqlite']];
     }
 
-    #[DataProvider('selectedColumnDrivers')]
-    public function testDriversThatNeedTheOrderColumnSelectedPageOwnerSortsByName(string $dbType): void
+    #[DataProvider('allDrivers')]
+    public function testOwnerSortRanksThePageByOwnerBeforeLimit(string $dbType): void
     {
         $inner = $this->innerIdQuery($dbType, 'owner', 'DESC');
 
-        $this->assertStringStartsWith('SELECT DISTINCT domains.id, domains.name FROM domains', $inner);
-        $this->assertStringEndsWith('ORDER BY domains.name DESC LIMIT 10 OFFSET 0', $inner);
+        $this->assertStringStartsWith('SELECT domains.id, domains.name, MAX(page_users.username) AS page_rank FROM domains LEFT JOIN zones page_zones', $inner);
+        $this->assertStringEndsWith('GROUP BY domains.id, domains.name ORDER BY MAX(page_users.username) DESC, domains.name LIMIT 10 OFFSET 0', $inner);
+    }
+
+    #[DataProvider('allDrivers')]
+    public function testRecordCountSortRanksThePageByCountBeforeLimit(string $dbType): void
+    {
+        $inner = $this->innerIdQuery($dbType, 'count_records', 'DESC');
+
+        $this->assertStringEndsWith('GROUP BY domains.id, domains.name ORDER BY COUNT(DISTINCT page_records.id) DESC, domains.name LIMIT 10 OFFSET 0', $inner);
     }
 
     /** @return array<string, array{string}> */
-    public static function selectedColumnDrivers(): array
+    public static function allDrivers(): array
     {
-        return ['mysql' => ['mysql'], 'pgsql' => ['pgsql']];
-    }
-
-    public function testSqlitePagesOwnerSortsByIdAlone(): void
-    {
-        $inner = $this->innerIdQuery('sqlite', 'owner', 'DESC');
-
-        $this->assertStringStartsWith('SELECT DISTINCT domains.id FROM domains', $inner);
-        $this->assertStringEndsWith('ORDER BY domains.name LIMIT 10 OFFSET 0', $inner);
+        return ['mysql' => ['mysql'], 'pgsql' => ['pgsql'], 'sqlite' => ['sqlite']];
     }
 
     public function testTypeSortSelectsAndOrdersByTypeEverywhere(): void

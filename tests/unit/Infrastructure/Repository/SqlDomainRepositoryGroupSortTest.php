@@ -31,7 +31,8 @@ use TestHelpers\SqliteIntegrationTestCase;
 /**
  * Sort-by-group support in SqlDomainRepository::getZones (Issue #1051): the
  * listing orders by the zone's lowest group name and the group join must not
- * inflate the record count.
+ * inflate the record count. Paged owner and record-count sorts pick each page
+ * in that order too (issue #1618).
  *
  * Fixture: z-alpha belongs to the "ops" group, z-beta to "dev" and "ops",
  * z-gamma to "zulu". Only z-beta carries records.
@@ -115,6 +116,61 @@ class SqlDomainRepositoryGroupSortTest extends SqliteIntegrationTestCase
 
         $this->assertSame(['z-beta.example.com', 'z-alpha.example.com'], array_keys($firstPage));
         $this->assertSame(['z-gamma.example.com'], array_keys($secondPage));
+    }
+
+    #[Test]
+    public function paginatedOwnerSortPagesByOwnerAcrossTheWholeListing(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (20, 'zed', 1), (21, 'amy', 1)");
+        $this->db->exec("UPDATE zones SET owner = 20 WHERE domain_id = " . self::ALPHA);
+        $this->db->exec("UPDATE zones SET owner = 21 WHERE domain_id = " . self::GAMMA);
+
+        // Issue #1618: the page must be picked by owner, not by name and then re-sorted
+        $firstPage = $this->repository->getZones('all', 0, 'z', 0, 2, 'owner', 'ASC');
+        $secondPage = $this->repository->getZones('all', 0, 'z', 2, 2, 'owner', 'ASC');
+
+        $this->assertSame(['z-beta.example.com', 'z-gamma.example.com'], array_keys($firstPage));
+        $this->assertSame(['z-alpha.example.com'], array_keys($secondPage));
+    }
+
+    #[Test]
+    public function paginatedDescendingOwnerSortPagesAZoneByItsLastOwner(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (20, 'zed', 1), (21, 'amy', 1), (22, 'bob', 1)");
+        $this->db->exec("UPDATE zones SET owner = 21 WHERE domain_id = " . self::ALPHA);
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::ALPHA . ", 20)");
+        $this->db->exec("UPDATE zones SET owner = 22 WHERE domain_id = " . self::GAMMA);
+
+        // z-alpha is owned by amy and zed, so descending it sorts under zed, ahead of bob and admin
+        $firstPage = $this->repository->getZones('all', 0, 'z', 0, 1, 'owner', 'DESC');
+
+        $this->assertSame(['z-alpha.example.com'], array_keys($firstPage));
+    }
+
+    #[Test]
+    public function paginatedOwnerSortIgnoresAnOwnerlessZonesRow(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (20, 'zed', 1), (21, 'amy', 1)");
+        $this->db->exec("UPDATE zones SET owner = 20 WHERE domain_id = " . self::ALPHA);
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::ALPHA . ", NULL)");
+        $this->db->exec("UPDATE zones SET owner = 21 WHERE domain_id = " . self::GAMMA);
+
+        $page = $this->repository->getZones('all', 0, 'z', 0, 3, 'owner', 'ASC');
+
+        $this->assertSame(['z-beta.example.com', 'z-gamma.example.com', 'z-alpha.example.com'], array_keys($page));
+    }
+
+    #[Test]
+    public function paginatedRecordCountSortPagesByCountAcrossTheWholeListing(): void
+    {
+        $this->db->exec("INSERT INTO records (domain_id, name, type, content) VALUES
+            (" . self::GAMMA . ", 'z-gamma.example.com', 'NS', 'ns1.example.com')");
+
+        $firstPage = $this->repository->getZones('all', 0, 'z', 0, 2, 'count_records', 'DESC');
+        $secondPage = $this->repository->getZones('all', 0, 'z', 2, 2, 'count_records', 'DESC');
+
+        $this->assertSame(['z-beta.example.com', 'z-gamma.example.com'], array_keys($firstPage));
+        $this->assertSame(['z-alpha.example.com'], array_keys($secondPage));
     }
 
     #[Test]

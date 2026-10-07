@@ -469,22 +469,6 @@ final class DbCompat
     }
 
     /**
-     * Whether SELECT DISTINCT must carry every ORDER BY column in its select
-     * list. MySQL rejects a column missing from the list (error 3065) and
-     * PostgreSQL rejects any ORDER BY entry outside it; SQLite sorts freely.
-     *
-     * @param string|null $db_type The type of database (e.g., "mysql", "sqlite", etc.)
-     * @return bool
-     */
-    public static function distinctNeedsOrderColumnsSelected(?string $db_type): bool
-    {
-        return match ($db_type) {
-            'mysql', 'mysqli', 'pgsql' => true,
-            default => false,
-        };
-    }
-
-    /**
      * Equality that ignores case but not accents on every backend, for values
      * like email addresses where User@x and user@x are one identity.
      *
