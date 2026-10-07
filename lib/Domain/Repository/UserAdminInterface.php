@@ -107,6 +107,12 @@ interface UserAdminInterface
     public function setZoneLimit(int $userId, ?int $limit): bool;
 
     /**
+     * Lock the user's row until the open transaction ends, so zone limit checks for
+     * this user run one at a time
+     */
+    public function lockForZoneLimit(int $userId): void;
+
+    /**
      * Create a new user
      *
      * @param CreateUserCommand $user The row to write, with the password already in its stored form

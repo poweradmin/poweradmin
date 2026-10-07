@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Integration;
 
 use PDO;
+use PDOException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
@@ -146,5 +147,77 @@ class ZoneOwnershipLimitIntegrationTest extends TestCase
             }
         }
         $this->assertSame([], $this->limits()->userUsage([]));
+    }
+
+    public function testSqliteTakesTheLockInsideATransaction(): void
+    {
+        $this->db->beginTransaction();
+        (new DbUserRepository($this->db, new FakeConfiguration([]), false))->lockForZoneLimit(self::ALICE);
+        (new DbUserGroupRepository($this->db))->lockForZoneLimit(self::GROUP);
+        $this->db->rollBack();
+
+        $this->assertNull((new DbUserRepository($this->db, new FakeConfiguration([]), false))->findZoneLimit(self::ALICE));
+    }
+
+    /**
+     * Two connections to the devcontainer database: while one holds a user's or group's
+     * lock, the other's lock attempt times out. Nothing is written; both roll back.
+     */
+    public function testASecondConnectionWaitsForTheRowLock(): void
+    {
+        $engines = array_filter(['mysql' => $this->connect('mysql'), 'pgsql' => $this->connect('pgsql')]);
+        if ($engines === []) {
+            $this->markTestSkipped('No MySQL or PostgreSQL devcontainer database reachable');
+        }
+
+        foreach (array_keys($engines) as $engine) {
+            $holder = $this->connect($engine);
+            $waiter = $this->connect($engine);
+            $this->assertNotNull($holder);
+            $this->assertNotNull($waiter);
+            $waiter->exec($engine === 'mysql' ? 'SET SESSION innodb_lock_wait_timeout = 1' : "SET lock_timeout = '1s'");
+
+            $userId = (int)$holder->query('SELECT MIN(id) FROM users')->fetchColumn();
+            if ($userId > 0) {
+                $this->assertWaits($engine, $holder, $waiter, fn(PDO $db) => (new DbUserRepository($db, new FakeConfiguration([]), false))->lockForZoneLimit($userId));
+            }
+            $groupId = (int)$holder->query('SELECT MIN(id) FROM user_groups')->fetchColumn();
+            if ($groupId > 0) {
+                $this->assertWaits($engine, $holder, $waiter, fn(PDO $db) => (new DbUserGroupRepository($db))->lockForZoneLimit($groupId));
+            }
+        }
+    }
+
+    /**
+     * @param callable(PDO): void $lock
+     */
+    private function assertWaits(string $engine, PDO $holder, PDO $waiter, callable $lock): void
+    {
+        $holder->beginTransaction();
+        $lock($holder);
+        $waiter->beginTransaction();
+        try {
+            $lock($waiter);
+            $this->fail("$engine: the second connection took a lock the first one holds");
+        } catch (PDOException $e) {
+            // MySQL 1205 lock wait timeout, PostgreSQL 55P03 lock_not_available
+            $this->assertTrue(
+                $engine === 'mysql' ? (int)($e->errorInfo[1] ?? 0) === 1205 : $e->getCode() === '55P03',
+                "$engine: unexpected error " . $e->getMessage()
+            );
+        } finally {
+            $waiter->rollBack();
+            $holder->rollBack();
+        }
+    }
+
+    private function connect(string $engine): ?PDO
+    {
+        $dsn = $engine === 'mysql' ? 'mysql:host=127.0.0.1;port=3306;dbname=poweradmin' : 'pgsql:host=127.0.0.1;port=5432;dbname=poweradmin';
+        try {
+            return new PDO($dsn, 'pdns', 'poweradmin', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        } catch (PDOException) {
+            return null;
+        }
     }
 }

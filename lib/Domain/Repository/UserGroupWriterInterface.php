@@ -73,4 +73,10 @@ interface UserGroupWriterInterface
      * Set the group's own zone limit; null removes it so the configured default applies
      */
     public function setZoneLimit(int $groupId, ?int $limit): bool;
+
+    /**
+     * Lock the group's row until the open transaction ends, so zone limit checks for
+     * this group run one at a time
+     */
+    public function lockForZoneLimit(int $groupId): void;
 }

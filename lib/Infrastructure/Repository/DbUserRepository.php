@@ -399,6 +399,15 @@ class DbUserRepository implements UserRepositoryInterface
         return $limits;
     }
 
+    public function lockForZoneLimit(int $userId): void
+    {
+        $lock = DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME));
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE id = :id$lock");
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll();
+    }
+
     public function findZoneLimit(int $userId): ?int
     {
         $stmt = $this->db->prepare('SELECT max_zones FROM users WHERE id = :id');

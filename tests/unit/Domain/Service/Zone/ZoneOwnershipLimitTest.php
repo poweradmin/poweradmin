@@ -3,8 +3,10 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\UserGroup;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
@@ -31,12 +33,24 @@ class ZoneOwnershipLimitTest extends TestCase
     private array $settings = [];
     /** @var list<array{string, int, ?int}> */
     private array $writes = [];
+    /** @var list<string> Transaction calls, row locks and count reads, in order */
+    private array $log = [];
+    /** Whether an outer transaction is already open */
+    private bool $outerTransaction = false;
+    /** @var list<string> "zoneId:groupId" grants that already exist */
+    private array $grants = [];
 
-    private function service(): ZoneOwnershipLimit
+    private function service(bool $withTransaction = false): ZoneOwnershipLimit
     {
         $users = $this->createMock(UserRepositoryInterface::class);
         $users->method('findZoneLimit')->willReturnCallback(fn(int $id) => $this->userLimits[$id] ?? null);
-        $users->method('getDirectlyOwnedZoneIds')->willReturnCallback(fn(int $id) => $this->owned[$id] ?? []);
+        $users->method('getDirectlyOwnedZoneIds')->willReturnCallback(function (int $id) {
+            $this->log[] = "count:user:$id";
+            return $this->owned[$id] ?? [];
+        });
+        $users->method('lockForZoneLimit')->willReturnCallback(function (int $id): void {
+            $this->log[] = "lock:user:$id";
+        });
         $users->method('countDirectlyOwnedZones')->willReturnCallback(
             fn(array $ids) => array_combine($ids, array_map(fn(int $id) => count($this->owned[$id] ?? []), $ids))
         );
@@ -53,13 +67,20 @@ class ZoneOwnershipLimitTest extends TestCase
 
         $groups = $this->createMock(UserGroupRepositoryInterface::class);
         $groups->method('findById')->willReturnCallback(fn(int $id) => $this->groups[$id] ?? null);
+        $groups->method('lockForZoneLimit')->willReturnCallback(function (int $id): void {
+            $this->log[] = "lock:group:$id";
+        });
         $groups->method('setZoneLimit')->willReturnCallback(function (int $id, ?int $limit) {
             $this->writes[] = ['group', $id, $limit];
             return true;
         });
 
         $zoneGroups = $this->createMock(ZoneGroupRepositoryInterface::class);
-        $zoneGroups->method('countGrantedZones')->willReturnCallback(fn(int $id) => $this->groupZones[$id] ?? 0);
+        $zoneGroups->method('countGrantedZones')->willReturnCallback(function (int $id) {
+            $this->log[] = "count:group:$id";
+            return $this->groupZones[$id] ?? 0;
+        });
+        $zoneGroups->method('exists')->willReturnCallback(fn(int $zoneId, int $groupId): bool => in_array("$zoneId:$groupId", $this->grants, true));
 
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('isAdmin')->willReturnCallback(fn(int $id) => $id === self::SUPERUSER);
@@ -67,7 +88,18 @@ class ZoneOwnershipLimitTest extends TestCase
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null) => $this->settings[$key] ?? $default);
 
-        return new ZoneOwnershipLimit($users, $groups, $zoneGroups, $permissions, $config);
+        $transaction = null;
+        if ($withTransaction) {
+            $transaction = $this->createMock(TransactionInterface::class);
+            $transaction->method('inTransaction')->willReturnCallback(fn(): bool => $this->outerTransaction || in_array('begin', $this->log, true) && !in_array('commit', $this->log, true) && !in_array('rollBack', $this->log, true));
+            foreach (['begin', 'commit', 'rollBack'] as $call) {
+                $transaction->method($call)->willReturnCallback(function () use ($call): void {
+                    $this->log[] = $call;
+                });
+            }
+        }
+
+        return new ZoneOwnershipLimit($users, $groups, $zoneGroups, $permissions, $config, $transaction);
     }
 
     public function testNoLimitAnywhereMeansUnlimited(): void
@@ -238,5 +270,209 @@ class ZoneOwnershipLimitTest extends TestCase
             self::ALICE => ['owned' => 3, 'limit' => 2],
             self::BOB => ['owned' => 0, 'limit' => 5],
         ], $this->service()->userUsage([self::SUPERUSER, self::ALICE, self::BOB]));
+    }
+
+    public function testAGrantToUnlimitedOwnersOpensNoTransactionAndTakesNoLock(): void
+    {
+        $result = $this->service(true)->addUserOwner(self::ALICE, fn(): string => 'written');
+
+        $this->assertSame('written', $result);
+        $this->assertSame([], array_values(array_filter($this->log, fn(string $e): bool => !str_starts_with($e, 'count:'))));
+    }
+
+    public function testALimitedOwnerIsLockedBeforeTheCountAndCommitted(): void
+    {
+        $this->userLimits[self::ALICE] = 3;
+        $this->owned[self::ALICE] = [1];
+
+        $result = $this->service(true)->addUserOwner(self::ALICE, function (): string {
+            $this->log[] = 'write';
+            return 'written';
+        });
+
+        $this->assertSame('written', $result);
+        $this->assertSame(['begin', 'lock:user:' . self::ALICE, 'count:user:' . self::ALICE, 'write', 'commit'], $this->log);
+    }
+
+    public function testABreachUnderTheLockRollsBackWithoutWriting(): void
+    {
+        $this->userLimits[self::ALICE] = 1;
+        $this->owned[self::ALICE] = [1];
+
+        $result = $this->service(true)->addUserOwner(self::ALICE, function (): string {
+            $this->log[] = 'write';
+            return 'written';
+        });
+
+        $this->assertInstanceOf(ZoneLimitBreach::class, $result);
+        $this->assertSame(['begin', 'lock:user:' . self::ALICE, 'count:user:' . self::ALICE, 'rollBack'], $this->log);
+    }
+
+    public function testAFailedWriteRollsBackAndRethrows(): void
+    {
+        $this->userLimits[self::ALICE] = 5;
+
+        try {
+            $this->service(true)->addUserOwner(self::ALICE, function (): never {
+                throw new RuntimeException('write failed');
+            });
+            $this->fail('The write exception must propagate');
+        } catch (RuntimeException $e) {
+            $this->assertSame('write failed', $e->getMessage());
+        }
+
+        $this->assertSame('rollBack', end($this->log));
+        $this->assertNotContains('commit', $this->log);
+    }
+
+    public function testAGrantInsideAnOuterTransactionJoinsIt(): void
+    {
+        $this->userLimits[self::ALICE] = 5;
+        $this->outerTransaction = true;
+
+        $this->service(true)->addUserOwner(self::ALICE, fn(): bool => true);
+        $this->service(true)->addUserOwner(self::ALICE, fn(): bool => true);
+        $this->userLimits[self::ALICE] = 0;
+        $this->service(true)->addUserOwner(self::ALICE, fn(): bool => true);
+
+        $this->assertSame([], array_values(array_intersect($this->log, ['begin', 'commit', 'rollBack'])));
+        $this->assertContains('lock:user:' . self::ALICE, $this->log);
+    }
+
+    public function testGroupGrantsAndTransfersLockTheirOwner(): void
+    {
+        $this->groups[7] = new UserGroup(7, 'ops', null, 1, null, null, null, 4);
+        $this->userLimits[self::BOB] = 9;
+        $this->owned[self::ALICE] = [1, 2];
+
+        $this->assertTrue($this->service(true)->addGroupOwner(7, fn(): bool => true));
+        $this->assertTrue($this->service(true)->transferZones(self::ALICE, self::BOB, fn(): bool => true));
+
+        $locks = array_values(array_filter($this->log, fn(string $e): bool => str_starts_with($e, 'lock:')));
+        $this->assertSame(['lock:group:7', 'lock:user:' . self::BOB], $locks);
+    }
+
+    public function testNewZoneLocksTheOwnerAndEveryGroupInOrderWithoutATransaction(): void
+    {
+        $this->groups[9] = new UserGroup(9, 'b', null, 1);
+        $this->groups[4] = new UserGroup(4, 'a', null, 1, null, null, null, 0);
+
+        $breach = $this->service(true)->lockedNewZoneBreach(self::BOB, [9, 4, 9]);
+
+        $this->assertSame('a', $breach?->name);
+        $locks = array_values(array_filter($this->log, fn(string $e): bool => str_starts_with($e, 'lock:')));
+        $this->assertSame(['lock:user:' . self::BOB, 'lock:group:4', 'lock:group:9'], $locks);
+        $this->assertSame([], array_values(array_intersect($this->log, ['begin', 'commit', 'rollBack'])));
+        $firstCount = array_search('count:group:4', $this->log, true);
+        $this->assertGreaterThan(array_search('lock:group:9', $this->log, true), $firstCount);
+    }
+
+    public function testWithoutATransactionPortTheGrantStillChecksTheLimit(): void
+    {
+        $this->userLimits[self::ALICE] = 0;
+
+        $this->assertInstanceOf(ZoneLimitBreach::class, $this->service()->addUserOwner(self::ALICE, fn(): bool => true));
+        $this->assertSame([], array_values(array_filter($this->log, fn(string $e): bool => str_starts_with($e, 'lock:'))));
+    }
+
+    public function testReassignmentsLockEveryLimitedOwnerAndCommitTogether(): void
+    {
+        $this->userLimits = [self::ALICE => 5, self::BOB => 5];
+
+        $result = $this->service(true)->reassignZones([self::BOB => [7], self::ALICE => [8, 9], 0 => [10]], function (): bool {
+            $this->log[] = 'write';
+            return true;
+        });
+
+        $this->assertTrue($result);
+        $this->assertSame('begin', $this->log[0]);
+        $this->assertSame(['lock:user:' . self::ALICE, 'lock:user:' . self::BOB], array_values(array_filter($this->log, fn(string $e): bool => str_starts_with($e, 'lock:'))));
+        $this->assertSame(['write', 'commit'], array_slice($this->log, -2));
+    }
+
+    public function testAReassignmentPastAnyLimitWritesNothing(): void
+    {
+        $this->userLimits = [self::ALICE => 5, self::BOB => 1];
+        $this->owned[self::BOB] = [1];
+
+        $result = $this->service(true)->reassignZones([self::ALICE => [8], self::BOB => [7]], function (): bool {
+            $this->log[] = 'write';
+            return true;
+        });
+
+        $this->assertInstanceOf(ZoneLimitBreach::class, $result);
+        $this->assertSame('bob', $result->name);
+        $this->assertNotContains('write', $this->log);
+        $this->assertSame('rollBack', end($this->log));
+    }
+
+    public function testAReassignmentWriteReportingFailureRollsBack(): void
+    {
+        $this->userLimits[self::ALICE] = 5;
+
+        $result = $this->service(true)->reassignZones([self::ALICE => [8]], fn(): bool => false);
+
+        $this->assertFalse($result);
+        $this->assertSame('rollBack', end($this->log));
+        $this->assertNotContains('commit', $this->log);
+    }
+
+    public function testAZoneTheUserAlreadyOwnsIsNeverRefused(): void
+    {
+        $this->userLimits[self::ALICE] = 1;
+        $this->owned[self::ALICE] = [8];
+
+        // A concurrent request added the owner first; this one gains nothing and is not refused
+        $this->assertSame('written', $this->service(true)->addUserOwner(self::ALICE, fn(): string => 'written', 8));
+        $this->assertInstanceOf(ZoneLimitBreach::class, $this->service(true)->addUserOwner(self::ALICE, fn(): string => 'written', 9));
+    }
+
+    public function testAZoneTheGroupAlreadyHoldsIsNeverRefused(): void
+    {
+        $this->groups[5] = new UserGroup(5, 'ops', null, 1, null, null, null, 1);
+        $this->groupZones[5] = 1;
+        $this->grants = ['8:5'];
+
+        $this->assertSame('written', $this->service(true)->addGroupOwner(5, fn(): string => 'written', 8));
+        $this->assertInstanceOf(ZoneLimitBreach::class, $this->service(true)->addGroupOwner(5, fn(): string => 'written', 9));
+    }
+
+    public function testATransferThatPicksUpAZoneGrantedMeanwhileRollsBack(): void
+    {
+        $this->userLimits[self::BOB] = 2;
+        $this->owned = [self::ALICE => [1], self::BOB => [2]];
+
+        // The move also carries zone 3, granted to the sender after the first count
+        $result = $this->service(true)->transferZones(self::ALICE, self::BOB, function (): bool {
+            $this->owned[self::BOB] = [1, 2, 3];
+            $this->log[] = 'write';
+            return true;
+        });
+
+        $this->assertInstanceOf(ZoneLimitBreach::class, $result);
+        $this->assertSame(3, $result->owned);
+        $this->assertSame(['write', 'count:user:' . self::BOB, 'rollBack'], array_slice($this->log, -3));
+    }
+
+    public function testATransferWithinTheLimitCommits(): void
+    {
+        $this->userLimits[self::BOB] = 2;
+        $this->owned = [self::ALICE => [1], self::BOB => [2]];
+
+        $result = $this->service(true)->transferZones(self::ALICE, self::BOB, function (): bool {
+            $this->owned[self::BOB] = [1, 2];
+            return true;
+        });
+
+        $this->assertTrue($result);
+        $this->assertSame('commit', end($this->log));
+    }
+
+    public function testAFailedTransferRollsBack(): void
+    {
+        $this->userLimits[self::BOB] = 5;
+
+        $this->assertFalse($this->service(true)->transferZones(self::ALICE, self::BOB, fn(): bool => false));
+        $this->assertSame('rollBack', end($this->log));
     }
 }

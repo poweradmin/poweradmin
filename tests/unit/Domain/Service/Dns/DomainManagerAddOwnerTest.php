@@ -101,7 +101,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $zones->method('isUserZoneOwner')->with(5, 42)->willReturn(true);
         $zones->expects($this->never())->method('addOwnerToZone');
         $limit = $this->createMock(ZoneOwnershipLimit::class);
-        $limit->expects($this->never())->method('userBreach');
+        $limit->expects($this->never())->method('addUserOwner');
 
         $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
 
@@ -114,7 +114,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $zones->method('isUserZoneOwner')->willReturn(false);
         $zones->expects($this->never())->method('addOwnerToZone');
         $limit = $this->createMock(ZoneOwnershipLimit::class);
-        $limit->method('userBreach')->with(42)->willReturn(new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'alice', 4, 4));
+        $limit->method('addUserOwner')->with(42)->willReturn(new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'alice', 4, 4));
 
         $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
 
@@ -129,7 +129,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $zones->method('isUserZoneOwner')->willReturn(false);
         $zones->expects($this->once())->method('addOwnerToZone')->with(5, 42)->willReturn(true);
         $limit = $this->createMock(ZoneOwnershipLimit::class);
-        $limit->method('userBreach')->willReturn(null);
+        $limit->method('addUserOwner')->with(42)->willReturnCallback(static fn(int $id, callable $write): mixed => $write());
 
         $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
 

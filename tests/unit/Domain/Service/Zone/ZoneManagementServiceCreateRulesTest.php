@@ -361,4 +361,27 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
 
         $this->assertSame(ZoneManagementService::ERR_EXISTS, $this->service(null, null, $limit)->createZone('parent.example', 'MASTER', self::ADMIN_USER_ID)['code']);
     }
+
+    public function testALimitReachedAfterThePreCheckIsStillAZoneLimitRefusal(): void
+    {
+        // No pre-check here, so only the wired DomainManager's locked re-check can refuse
+        $this->db->exec('UPDATE users SET max_zones = 0 WHERE id = ' . self::OTHER_USER);
+        // The backend cleanup deletes from these too
+        $this->db->exec('CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER, kind TEXT, content TEXT)');
+        $this->db->exec('CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER, flags INTEGER, active INTEGER, content TEXT)');
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (50, 'zone_master_add')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (2, 50)");
+        $before = (int)$this->db->query('SELECT COUNT(*) FROM zones')->fetchColumn();
+
+        $result = $this->service()->createZone('raced.example', 'MASTER', self::OTHER_USER, '', 'none', false, [], self::OTHER_USER);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(ZoneManagementService::ERR_ZONE_LIMIT, $result['code']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertInstanceOf(ZoneLimitBreach::class, $result['zone_limit']);
+        $this->assertSame(0, $result['zone_limit']->limit);
+        $this->assertStringStartsWith('Zone limit reached: user ', $result['message']);
+        $this->assertSame($before, (int)$this->db->query('SELECT COUNT(*) FROM zones')->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM domains WHERE name = 'raced.example'")->fetchColumn());
+    }
 }

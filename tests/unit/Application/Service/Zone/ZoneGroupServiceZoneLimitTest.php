@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\Zone;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
@@ -46,11 +47,38 @@ class ZoneGroupServiceZoneLimitTest extends TestCase
 
     /** @var ZoneGroupRepositoryInterface&MockObject */
     private ZoneGroupRepositoryInterface $zoneGroups;
+    /** @var list<?int> Zone ids passed to the limit, so it can treat an existing grant as no change */
+    private array $grantedZoneIds = [];
+    private bool $existsConfigured = false;
 
     protected function setUp(): void
     {
         $this->zoneGroups = $this->createMock(ZoneGroupRepositoryInterface::class);
-        $this->zoneGroups->method('exists')->willReturn(false);
+    }
+
+    public function testAGrantAddedConcurrentlyIsNotAddedTwice(): void
+    {
+        // Free at the first check, taken by the time the write runs under the lock
+        $this->grantsExist(false, true);
+        $this->zoneGroups->expects($this->never())->method('add');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Group already owns this zone');
+        $this->service(fn() => null)->addGroupToZone(7, self::GROUP_ID);
+    }
+
+    public function testTheZoneIdReachesTheLimit(): void
+    {
+        $this->zoneGroups->method('add')->willReturn(ZoneGroup::create(7, self::GROUP_ID));
+        $this->service(fn() => null)->addGroupToZone(7, self::GROUP_ID);
+
+        $this->assertSame([7], $this->grantedZoneIds);
+    }
+
+    private function grantsExist(bool ...$answers): void
+    {
+        $this->existsConfigured = true;
+        $this->zoneGroups->method('exists')->willReturnOnConsecutiveCalls(...$answers);
     }
 
     public function testAGroupAtItsLimitGetsTheBreachAndNoGrant(): void
@@ -123,7 +151,17 @@ class ZoneGroupServiceZoneLimitTest extends TestCase
         $limit = null;
         if ($groupBreach !== null) {
             $limit = $this->createMock(ZoneOwnershipLimit::class);
-            $limit->method('groupBreach')->with(self::GROUP_ID)->willReturnCallback($groupBreach);
+            $limit->method('addGroupOwner')->willReturnCallback(
+                function (int $groupId, callable $write, ?int $zoneId) use ($groupBreach): mixed {
+                    $this->assertSame(self::GROUP_ID, $groupId);
+                    $this->grantedZoneIds[] = $zoneId;
+                    return $groupBreach() ?? $write();
+                }
+            );
+        }
+
+        if (!$this->existsConfigured) {
+            $this->zoneGroups->method('exists')->willReturn(false);
         }
 
         return new ZoneGroupService($this->zoneGroups, $groups, $guard, $limit);

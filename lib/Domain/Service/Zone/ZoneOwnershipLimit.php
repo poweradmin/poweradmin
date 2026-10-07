@@ -23,18 +23,21 @@
 namespace Poweradmin\Domain\Service\Zone;
 
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Throwable;
 
 /**
  * How many zones a user or group may own, and whether a change would exceed it.
  *
  * A user counts the zones they own directly, a group the zones granted to it; group
  * grants never count toward the members. The limit binds the owner, whoever acts, and
- * a superuser owner is never limited. Lowering a limit keeps existing zones.
+ * a superuser owner is never limited. Lowering a limit keeps existing zones. Grants
+ * decide and write under a lock on the limited owners' rows.
  */
 class ZoneOwnershipLimit
 {
@@ -49,8 +52,191 @@ class ZoneOwnershipLimit
         private readonly UserGroupRepositoryInterface $groups,
         private readonly ZoneGroupRepositoryInterface $zoneGroups,
         private readonly PermissionService $permissions,
-        private readonly ConfigurationInterface $config
+        private readonly ConfigurationInterface $config,
+        private readonly ?TransactionInterface $transaction = null
     ) {
+    }
+
+    /**
+     * Makes the user an owner through $write unless that takes them past their limit.
+     * With $zoneId, a user who already owns that zone (say, through a concurrent request)
+     * gains nothing, so the grant is never refused for it; $write should skip the insert then.
+     *
+     * @template T
+     * @param callable(): T $write
+     * @return ZoneLimitBreach|T
+     */
+    public function addUserOwner(int $userId, callable $write, ?int $zoneId = null): mixed
+    {
+        $decide = fn(): ?ZoneLimitBreach => $zoneId !== null && in_array($zoneId, $this->users->getDirectlyOwnedZoneIds($userId), true)
+            ? null
+            : $this->userBreach($userId);
+
+        return $this->guarded([$userId], [], $decide, $write);
+    }
+
+    /**
+     * Grants the group a zone through $write unless that takes it past its limit. With
+     * $zoneId, a group that already holds the zone gains nothing and is never refused for it.
+     *
+     * @template T
+     * @param callable(): T $write
+     * @return ZoneLimitBreach|T
+     */
+    public function addGroupOwner(int $groupId, callable $write, ?int $zoneId = null): mixed
+    {
+        $decide = fn(): ?ZoneLimitBreach => $zoneId !== null && $this->zoneGroups->exists($zoneId, $groupId)
+            ? null
+            : $this->groupBreach($groupId);
+
+        return $this->guarded([], [$groupId], $decide, $write);
+    }
+
+    /**
+     * Moves every zone of one user to another through $write unless that takes the
+     * receiver past their limit. The receiver is counted again after the move and the move
+     * rolled back if it went over, since a zone granted to the sender meanwhile moves too.
+     *
+     * @param callable(): bool $write
+     */
+    public function transferZones(int $fromUserId, int $toUserId, callable $write): ZoneLimitBreach|bool
+    {
+        $moveAndRecount = function () use ($write, $toUserId): ZoneLimitBreach|bool {
+            $moved = $write();
+            return $moved ? ($this->userBreach($toUserId, 0) ?? true) : false;
+        };
+
+        return $this->guarded(
+            [$toUserId],
+            [],
+            fn(): ?ZoneLimitBreach => $this->transferBreach($fromUserId, $toUserId),
+            $moveAndRecount,
+            static fn(ZoneLimitBreach|bool $result): bool => $result === true
+        );
+    }
+
+    /**
+     * Gives each user the listed zones through $write, all or nothing: every limited user's
+     * row is locked, each one's total re-checked, and $write returning false rolls back.
+     *
+     * @param array<int, list<int>> $zonesByUser Canonical zone ids keyed by the new owner
+     * @param callable(): bool $write
+     */
+    public function reassignZones(array $zonesByUser, callable $write): ZoneLimitBreach|bool
+    {
+        $decide = function () use ($zonesByUser): ?ZoneLimitBreach {
+            foreach ($zonesByUser as $userId => $zoneIds) {
+                $breach = $userId > 0 ? $this->zonesBreach($userId, $zoneIds) : null;
+                if ($breach !== null) {
+                    return $breach;
+                }
+            }
+            return null;
+        };
+
+        $userIds = array_values(array_filter(array_keys($zonesByUser), static fn(int $userId): bool => $userId > 0));
+
+        return $this->guarded($userIds, [], $decide, $write, static fn(bool $written): bool => $written);
+    }
+
+    /**
+     * The breach a new zone would cause, decided under a lock on the owners' rows.
+     * For a caller that has just opened the transaction its write runs in: the lock
+     * comes first, so the count that follows sees every grant committed before it.
+     *
+     * @param list<int> $groupIds
+     */
+    public function lockedNewZoneBreach(?int $ownerUserId, array $groupIds): ?ZoneLimitBreach
+    {
+        $groupIds = array_map('intval', $groupIds);
+        $this->lockRows($ownerUserId !== null && $ownerUserId > 0 ? [$ownerUserId] : [], $groupIds);
+
+        return $this->newZoneBreach($ownerUserId, $groupIds);
+    }
+
+    /**
+     * Locks these users' rows in the open transaction, in the order every grant takes them.
+     * For a writer that decides itself, such as the zone sync adopting zones.
+     *
+     * @param list<int> $userIds
+     */
+    public function lockUsers(array $userIds): void
+    {
+        $this->lockRows($userIds, []);
+    }
+
+    /**
+     * Decides and writes in one transaction holding the limited owners' rows, so two
+     * concurrent grants cannot both pass. Owners without a limit take no lock.
+     *
+     * @template T
+     * @param list<int> $userIds
+     * @param list<int> $groupIds
+     * @param callable $decide Returns the breach, or null when the grant fits
+     * @param callable(): T $write
+     * @param callable|null $keep Given the write's result; false rolls the write back
+     * @return ZoneLimitBreach|T
+     */
+    private function guarded(array $userIds, array $groupIds, callable $decide, callable $write, ?callable $keep = null): mixed
+    {
+        // Read before the transaction: on MySQL a plain read inside it would fix the snapshot before the lock
+        $userIds = array_values(array_filter($userIds, fn(int $id): bool => $this->userLimit($id) !== null));
+        $groupIds = array_values(array_filter($groupIds, fn(int $id): bool => $this->groupLimit($id) !== null));
+        if ($this->transaction === null || ($userIds === [] && $groupIds === [])) {
+            return $decide() ?? $write();
+        }
+
+        // An outer transaction owns its own commit; this one only joins it.
+        $owned = !$this->transaction->inTransaction();
+        if ($owned) {
+            $this->transaction->begin();
+        }
+
+        try {
+            $this->lockRows($userIds, $groupIds);
+            $breach = $decide();
+            if ($breach !== null) {
+                if ($owned) {
+                    $this->transaction->rollBack();
+                }
+                return $breach;
+            }
+
+            $result = $write();
+            if ($owned) {
+                if ($keep === null || $keep($result)) {
+                    $this->transaction->commit();
+                } else {
+                    $this->transaction->rollBack();
+                }
+            }
+            return $result;
+        } catch (Throwable $e) {
+            if ($owned && $this->transaction->inTransaction()) {
+                $this->transaction->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Locks in id order, users before groups, so two writers never wait on each other in a cycle.
+     *
+     * @param list<int> $userIds
+     * @param list<int> $groupIds
+     */
+    private function lockRows(array $userIds, array $groupIds): void
+    {
+        $userIds = array_unique($userIds);
+        $groupIds = array_unique($groupIds);
+        sort($userIds);
+        sort($groupIds);
+        foreach ($userIds as $userId) {
+            $this->users->lockForZoneLimit($userId);
+        }
+        foreach ($groupIds as $groupId) {
+            $this->groups->lockForZoneLimit($groupId);
+        }
     }
 
     /**

@@ -32,6 +32,8 @@ use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
+use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
@@ -528,19 +530,19 @@ class UserManagementService
                     }
                 }
 
-                $breach = $this->ownershipLimit?->transferBreach($userId, $transferToUserId);
-                if ($breach !== null) {
+                // Transfer zones to the specified user
+                $write = fn(): bool => $this->userRepository->transferUserZones($userId, $transferToUserId);
+                $transferred = $this->ownershipLimit !== null ? $this->ownershipLimit->transferZones($userId, $transferToUserId, $write) : $write();
+                if ($transferred instanceof ZoneLimitBreach) {
                     return [
                         'success' => false,
-                        'message' => $breach->message(),
+                        'message' => $transferred->message(),
                         'refusal' => Refusal::CONFLICT,
                         'code' => self::ERR_ZONE_LIMIT,
-                        'zone_limit' => $breach,
+                        'zone_limit' => $transferred,
                     ];
                 }
-
-                // Transfer zones to the specified user
-                if (!$this->userRepository->transferUserZones($userId, $transferToUserId)) {
+                if (!$transferred) {
                     return [
                         'success' => false,
                         'message' => 'Failed to transfer zones to target user',
@@ -589,7 +591,7 @@ class UserManagementService
      * acting user may delete this user at all is the caller's check.
      *
      * @param list<mixed> $zoneDecisions Entries that are not a decision (no zid, unknown target) are ignored
-     * @return array{success: true, message: string, zones_affected: int}|array{success: false, message: string, refusal: Refusal, code: string}
+     * @return array{success: true, message: string, zones_affected: int}|array{success: false, message: string, refusal: Refusal, code: string, zone_limit?: ZoneLimitBreach}
      */
     public function deleteUserWithZoneDecisions(int $actingUserId, int $userId, array $zoneDecisions): array
     {
@@ -611,36 +613,56 @@ class UserManagementService
             }
         }
 
-        // Checked for all new owners before any write, so a refusal never leaves the deletion half done
         $zonesByNewOwner = [];
         foreach ($zoneDecisions as $decision) {
             if ($decision['target'] === 'new_owner') {
                 $zonesByNewOwner[(int)($decision['newowner'] ?? 0)][] = (int)$decision['zid'];
             }
         }
-        foreach ($zonesByNewOwner as $newOwnerId => $zoneIds) {
-            $breach = $newOwnerId > 0 ? $this->ownershipLimit?->zonesBreach($newOwnerId, $zoneIds) : null;
-            if ($breach !== null) {
+
+        // Reassignments go first and all at once, so a refusal comes before any zone is deleted
+        $failure = null;
+        $reassign = function () use ($zonesByNewOwner, &$failure): bool {
+            foreach ($zonesByNewOwner as $newOwnerId => $zoneIds) {
+                foreach ($zoneIds as $zoneId) {
+                    $result = $this->domainManager->addOwnerToZone($zoneId, $newOwnerId);
+                    if (!$result->success) {
+                        $failure = $result;
+                        return false;
+                    }
+                }
+            }
+            return true;
+        };
+        $reassigned = $this->ownershipLimit !== null
+            ? $this->ownershipLimit->reassignZones($zonesByNewOwner, $reassign)
+            : $reassign();
+        if ($reassigned instanceof ZoneLimitBreach) {
+            return ['success' => false, 'message' => $reassigned->message(), 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_ZONE_LIMIT, 'zone_limit' => $reassigned];
+        }
+        if ($failure instanceof ZoneWriteResult) {
+            if ($failure->limitBreach !== null) {
+                $breach = $failure->limitBreach;
                 return ['success' => false, 'message' => $breach->message(), 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_ZONE_LIMIT, 'zone_limit' => $breach];
+            }
+            return ['success' => false, 'message' => (string)$failure->message, 'refusal' => $failure->refusal ?? Refusal::BACKEND_FAILURE, 'code' => self::ERR_ZONE_WRITE];
+        }
+        foreach ($zonesByNewOwner as $zoneIds) {
+            foreach ($zoneIds as $zoneId) {
+                $this->permissions->forgetZone($zoneId);
             }
         }
 
         foreach ($zoneDecisions as $decision) {
-            $zoneId = (int)$decision['zid'];
-            if ($decision['target'] === 'delete') {
-                // Permission was checked above; the zone service deletes keys, comments,
-                // records and metadata with the zone, as the web and API deletes do
-                $deleted = $this->zones->deleteZone($zoneId);
-                if (!$deleted['success']) {
-                    return ['success' => false, 'message' => $deleted['message'], 'refusal' => $deleted['refusal'] ?? Refusal::BACKEND_FAILURE, 'code' => self::ERR_ZONE_WRITE];
-                }
+            if ($decision['target'] !== 'delete') {
                 continue;
             }
-            $result = $this->domainManager->addOwnerToZone($zoneId, (int)($decision['newowner'] ?? 0));
-            if (!$result->success) {
-                return ['success' => false, 'message' => (string)$result->message, 'refusal' => $result->refusal ?? Refusal::BACKEND_FAILURE, 'code' => self::ERR_ZONE_WRITE];
+            // Permission was checked above; the zone service deletes keys, comments,
+            // records and metadata with the zone, as the web and API deletes do
+            $deleted = $this->zones->deleteZone((int)$decision['zid']);
+            if (!$deleted['success']) {
+                return ['success' => false, 'message' => $deleted['message'], 'refusal' => $deleted['refusal'] ?? Refusal::BACKEND_FAILURE, 'code' => self::ERR_ZONE_WRITE];
             }
-            $this->permissions->forgetZone($zoneId);
         }
 
         // Row cleanup (auth links, preferences, MFA, memberships, templates) is shared with the API.

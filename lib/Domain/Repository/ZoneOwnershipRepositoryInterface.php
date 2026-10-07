@@ -83,6 +83,7 @@ interface ZoneOwnershipRepositoryInterface
      * @param int $zoneId The zone ID
      * @param int $userId The user ID
      * @return bool True if user is already an owner
+     * @phpstan-impure Read again under a lock, where a concurrent request may have changed it
      */
     public function isUserZoneOwner(int $zoneId, int $userId): bool;
 

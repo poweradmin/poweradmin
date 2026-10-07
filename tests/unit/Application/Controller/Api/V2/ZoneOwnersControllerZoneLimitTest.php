@@ -69,7 +69,7 @@ class ZoneOwnersControllerZoneLimitTest extends V2ControllerTestCase
 
     public function testASingleAddWithinTheLimitIsAdded(): void
     {
-        $this->zoneRepository->expects($this->once())->method('addOwnerToZone')->with(self::ZONE_ID, 6);
+        $this->zoneRepository->expects($this->once())->method('addOwnerToZone')->with(self::ZONE_ID, 6)->willReturn(true);
 
         $response = $this->addOwner(['user_id' => 6]);
 
@@ -78,7 +78,8 @@ class ZoneOwnersControllerZoneLimitTest extends V2ControllerTestCase
 
     public function testABatchListsUsersAtTheirLimitAndAddsTheRest(): void
     {
-        $this->zoneRepository->expects($this->once())->method('addOwnerToZone')->with(self::ZONE_ID, 6);
+        // A real write reports true; the batch must still collect the added ids
+        $this->zoneRepository->expects($this->once())->method('addOwnerToZone')->with(self::ZONE_ID, 6)->willReturn(true);
 
         $response = $this->addOwner(['user_ids' => [self::FULL_USER, 6]]);
 
@@ -110,8 +111,8 @@ class ZoneOwnersControllerZoneLimitTest extends V2ControllerTestCase
         $users->method('getUserById')->willReturnCallback(static fn(int $id): array => ['id' => $id, 'username' => 'user' . $id]);
 
         $limit = $this->createMock(ZoneOwnershipLimit::class);
-        $limit->method('userBreach')->willReturnCallback(
-            static fn(int $id): ?ZoneLimitBreach => $id === self::FULL_USER ? new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'alice', 2, 2) : null
+        $limit->method('addUserOwner')->willReturnCallback(
+            static fn(int $id, callable $write): mixed => $id === self::FULL_USER ? new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'alice', 2, 2) : $write()
         );
 
         $factory = $this->createMock(ControllerServiceFactory::class);

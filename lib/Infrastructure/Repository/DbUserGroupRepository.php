@@ -214,6 +214,15 @@ final class DbUserGroupRepository implements UserGroupRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
+    public function lockForZoneLimit(int $groupId): void
+    {
+        $lock = DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME));
+        $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE id = :id$lock");
+        $stmt->bindValue(':id', $groupId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll();
+    }
+
     public function setZoneLimit(int $groupId, ?int $limit): bool
     {
         $stmt = $this->db->prepare('UPDATE user_groups SET max_zones = :max_zones WHERE id = :id');

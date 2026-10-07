@@ -84,9 +84,20 @@ class ZoneGroupService
         if ($this->ownershipGuard->refusesNewGrants($domainId)) {
             throw new InvalidArgumentException(self::SHARED_ZONE_ID);
         }
-        $breach = $this->ownershipLimit?->groupBreach($groupId);
-        if ($breach !== null) {
-            return $breach;
+        $write = fn(): ZoneGroup => $this->addGrantOnce($domainId, $groupId);
+
+        return $this->ownershipLimit !== null ? $this->ownershipLimit->addGroupOwner($groupId, $write, $domainId) : $write();
+    }
+
+    /**
+     * Adds the grant unless a concurrent request already did; run under the zone limit's lock.
+     *
+     * @throws InvalidArgumentException When the group already owns the zone
+     */
+    private function addGrantOnce(int $domainId, int $groupId): ZoneGroup
+    {
+        if ($this->zoneGroupRepository->exists($domainId, $groupId)) {
+            throw new InvalidArgumentException('Group already owns this zone');
         }
 
         return $this->zoneGroupRepository->add($domainId, $groupId);
@@ -173,13 +184,13 @@ class ZoneGroupService
                     $results['failed'][$domainId] = self::SHARED_ZONE_ID;
                 } elseif (!$this->zoneGroupRepository->exists($domainId, $groupId)) {
                     // Re-counted per zone, so the run stops at the limit and reports the rest
-                    $breach = $this->ownershipLimit?->groupBreach($groupId);
-                    if ($breach !== null) {
-                        $results['failed'][$domainId] = $breach->message();
-                        $results['limit'] = $breach;
+                    $write = fn(): ZoneGroup => $this->addGrantOnce($domainId, $groupId);
+                    $added = $this->ownershipLimit !== null ? $this->ownershipLimit->addGroupOwner($groupId, $write, $domainId) : $write();
+                    if ($added instanceof ZoneLimitBreach) {
+                        $results['failed'][$domainId] = $added->message();
+                        $results['limit'] = $added;
                         continue;
                     }
-                    $this->zoneGroupRepository->add($domainId, $groupId);
                     $results['success'][] = $domainId;
                 } else {
                     $results['failed'][$domainId] = 'Group already owns this zone';

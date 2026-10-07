@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
@@ -305,12 +306,11 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('User is already an owner of this zone', 409);
             }
 
-            $breach = $this->services()->zoneOwnershipLimit()->userBreach($userId);
-            if ($breach !== null) {
-                return $this->returnApiError($breach->message(), RefusalStatus::of(Refusal::CONFLICT));
+            $added = $this->services()->zoneOwnershipLimit()->addUserOwner($userId, fn(): bool => $this->addOwnerOnce($zoneId, $userId), $zoneId);
+            if ($added instanceof ZoneLimitBreach) {
+                return $this->returnApiError($added->message(), RefusalStatus::of(Refusal::CONFLICT));
             }
 
-            $this->zoneRepository->addOwnerToZone($zoneId, $userId);
             $this->services()->permissionService()->forgetZone($zoneId);
             $this->auditService->logZoneOwnerAdd($zoneId, $this->auditZoneName($zoneId), $userId);
 
@@ -319,6 +319,14 @@ class ZoneOwnersController extends PublicApiController
             // A throw here is a repository/DB failure, not bad input - mirror removeOwner()'s 500.
             return $this->handleException($e, 'ZoneOwnersController::addOwner', 'Failed to add owner');
         }
+    }
+
+    /**
+     * Adds the owner unless a concurrent request already did; run under the zone limit's lock.
+     */
+    private function addOwnerOnce(int $zoneId, int $userId): bool
+    {
+        return $this->zoneRepository->isUserZoneOwner($zoneId, $userId) || $this->zoneRepository->addOwnerToZone($zoneId, $userId);
     }
 
     /**
@@ -354,12 +362,12 @@ class ZoneOwnersController extends PublicApiController
                 continue;
             }
 
-            if ($ownershipLimit->userBreach($userId) !== null) {
+            $granted = $ownershipLimit->addUserOwner($userId, fn(): bool => $this->addOwnerOnce($zoneId, $userId), $zoneId);
+            if ($granted instanceof ZoneLimitBreach) {
                 $overLimit[] = $userId;
                 continue;
             }
 
-            $this->zoneRepository->addOwnerToZone($zoneId, $userId);
             $this->auditService->logZoneOwnerAdd($zoneId, $zoneName, $userId);
             $added[] = $userId;
         }

@@ -24,6 +24,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
@@ -87,5 +89,28 @@ class ZoneSyncServiceAccountOwnerTest extends TestCase
         }
 
         return $owners;
+    }
+
+    public function testZonesPastTheAccountUsersLimitStayOwnerlessAndAreLogged(): void
+    {
+        $limits = $this->createMock(ZoneOwnershipLimit::class);
+        $limits->method('userRemaining')->with(4)->willReturn(1);
+        $backend = $this->createMock(ZoneReadBackendInterface::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 0, 'name' => 'first.example', 'type' => 'SLAVE', 'master' => '192.0.2.1', 'account' => 'alice'],
+            ['id' => 0, 'name' => 'second.example', 'type' => 'SLAVE', 'master' => '192.0.2.1', 'account' => 'alice'],
+            ['id' => 0, 'name' => 'third.example', 'type' => 'SLAVE', 'master' => '192.0.2.1', 'account' => 'alice'],
+        ]);
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('warning')
+            ->with($this->stringContains('zone limit'), ['count' => 2]);
+
+        (new ZoneSyncService($this->db, $backend, new ArraySession(), 300, $logger, accountOwners: new AccountOwnerLookup($this->db, $limits)))->sync();
+
+        $owners = [];
+        foreach ($this->db->query('SELECT zone_name, owner FROM zones ORDER BY id') as $row) {
+            $owners[$row['zone_name']] = (int)$row['owner'];
+        }
+        $this->assertSame(['first.example' => 4, 'second.example' => 0, 'third.example' => 0], $owners);
     }
 }

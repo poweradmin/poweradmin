@@ -129,7 +129,8 @@ final class ZoneServices
             $this->services->userGroupRepository(),
             $this->zoneGroupRepository(),
             $this->services->permissionService(),
-            $this->config
+            $this->config,
+            $this->services->transaction()
         );
     }
 

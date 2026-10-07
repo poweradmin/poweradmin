@@ -41,6 +41,7 @@ use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -263,6 +264,12 @@ final class DomainManager implements DomainManagerInterface
 
         try {
             $this->transaction->begin();
+            // Checked before the backend write too; this re-check under the owners' lock settles a race
+            $breach = $this->ownershipLimit?->lockedNewZoneBreach($owner, array_map('intval', $groupIds));
+            if ($breach !== null) {
+                $this->cleanupFailedCreation($domain_id, $domain);
+                return ZoneWriteResult::limitReached($breach);
+            }
             $zone_id = $this->createZoneShell($domain_id, $owner, $zone_template);
             $this->assignInitialOwnership($domain_id, $zone_id, $owner, $zone_template, $groupIds);
 
@@ -651,11 +658,13 @@ final class DomainManager implements DomainManagerInterface
         if ($zoneRepository->isUserZoneOwner($zone_id, $user_id)) {
             return ZoneWriteResult::ok($zone_id);
         }
-        $breach = $this->ownershipLimit?->userBreach($user_id);
-        if ($breach !== null) {
-            return ZoneWriteResult::failure($breach->localizedMessage(), Refusal::CONFLICT);
+        // Checked again under the limit's lock, where a concurrent request may have added the owner
+        $write = fn(): bool => $zoneRepository->isUserZoneOwner($zone_id, $user_id) || $zoneRepository->addOwnerToZone($zone_id, $user_id);
+        $added = $this->ownershipLimit !== null ? $this->ownershipLimit->addUserOwner($user_id, $write, $zone_id) : $write();
+        if ($added instanceof ZoneLimitBreach) {
+            return ZoneWriteResult::limitReached($added);
         }
-        if (!$zoneRepository->addOwnerToZone($zone_id, $user_id)) {
+        if (!$added) {
             return ZoneWriteResult::backendFailure(_('Failed to add the owner to the zone.'));
         }
 

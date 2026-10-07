@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 
 /**
  * Outcome of a zone write (create, delete, metadata, owner or template change).
@@ -35,7 +36,8 @@ final readonly class ZoneWriteResult
         public bool $success,
         public ?string $message,
         public ?Refusal $refusal,
-        public ?int $zoneId
+        public ?int $zoneId,
+        public ?ZoneLimitBreach $limitBreach = null
     ) {
     }
 
@@ -52,6 +54,14 @@ final readonly class ZoneWriteResult
     public static function forbidden(string $message): self
     {
         return new self(false, $message, Refusal::FORBIDDEN, null);
+    }
+
+    /**
+     * Refused because an owner would go past their zone limit.
+     */
+    public static function limitReached(ZoneLimitBreach $breach): self
+    {
+        return new self(false, $breach->localizedMessage(), Refusal::CONFLICT, null, $breach);
     }
 
     public static function backendFailure(string $message): self

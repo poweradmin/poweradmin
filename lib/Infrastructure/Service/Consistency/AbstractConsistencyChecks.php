@@ -47,8 +47,15 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
     public function fixZoneWithoutOwner(int $zoneId, int $currentUserId): bool
     {
         $accountOwner = $this->accountOwners?->userIdFor($this->zoneAccount($zoneId) ?? '');
+        if ($accountOwner !== null) {
+            // A user at the zone limit gets nothing; the zone goes to the acting admin instead
+            $assigned = $this->accountOwners->assignWithinLimit($accountOwner, fn(): bool => $this->ownerRepair->assign($zoneId, $accountOwner), $zoneId);
+            if ($assigned !== null) {
+                return $assigned;
+            }
+        }
 
-        return $this->ownerRepair->assign($zoneId, $accountOwner ?? $currentUserId);
+        return $this->ownerRepair->assign($zoneId, $currentUserId);
     }
 
     /**

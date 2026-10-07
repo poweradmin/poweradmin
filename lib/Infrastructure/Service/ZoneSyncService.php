@@ -223,7 +223,8 @@ class ZoneSyncService
      * Add zones that exist in the API but not in the local table.
      *
      * New zones get no owner - they're available for assignment by admins - unless
-     * account adoption is on and the zone's PowerDNS account is a Poweradmin username.
+     * account adoption is on and the zone's PowerDNS account is a Poweradmin username
+     * whose zone limit leaves room.
      */
     private function addMissingZones(array $apiZones, array $localZones): int
     {
@@ -242,6 +243,8 @@ class ZoneSyncService
              VALUES (NULL, :owner, 0, '', :zone_name, :zone_type, :zone_master)"
         );
 
+        $adopters = $this->accountOwners?->limitedAdopters(array_map(static fn(array $zone): string => (string)($zone['account'] ?? ''), array_values($missing))) ?? [];
+
         // Wrap in a single transaction so the initial sync on a large PowerDNS
         // (thousands of zones) completes in seconds instead of minutes. Without
         // this each insert and its canonical id would be auto-committed individually.
@@ -252,10 +255,12 @@ class ZoneSyncService
 
         $count = 0;
         try {
+            // User rows before the zones rows, the order every grant locks them in
+            $this->accountOwners?->lockAdopters($adopters);
             // Locks the zones rows before any insert, so a concurrent zone create waits
             $allocator = new CanonicalZoneIdAllocator($this->db);
             foreach ($missing as $name => $zone) {
-                $insertStmt->bindValue(':owner', $this->accountOwners?->userIdFor((string)($zone['account'] ?? '')) ?? 0, PDO::PARAM_INT);
+                $insertStmt->bindValue(':owner', $this->accountOwners?->adopterFor((string)($zone['account'] ?? '')) ?? 0, PDO::PARAM_INT);
                 $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
@@ -273,6 +278,11 @@ class ZoneSyncService
                 $this->transaction->rollBack();
             }
             throw $e;
+        }
+
+        $heldBack = $this->accountOwners?->heldBack() ?? 0;
+        if ($heldBack > 0) {
+            $this->logger->warning('Zone sync left {count} zone(s) without an owner: their account names a user at the zone limit', ['count' => $heldBack]);
         }
 
         return $count;

@@ -43,6 +43,8 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 
 /**
  * DomainManager write methods report refusals through the result (status and
@@ -159,7 +161,44 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         );
     }
 
-    private function makeDomainManager(DnsBackendProviderInterface $backend): DomainManager
+    #[RunInSeparateProcess]
+    public function testALimitReachedUnderTheLockDeletesTheBackendZoneAndWritesNothing(): void
+    {
+        $backend = $this->dnsBackendStub(false);
+        $backend->method('createZone')->willReturn(self::NEW_DOMAIN_ID);
+        $backend->expects($this->once())->method('deleteZone')->with(self::NEW_DOMAIN_ID, 'new.example')->willReturn(true);
+        $breach = new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'client', 3, 3);
+        $limit = $this->createMock(ZoneOwnershipLimit::class);
+        $limit->expects($this->once())->method('lockedNewZoneBreach')->with(self::CLIENT_USER_ID, [5])->willReturn($breach);
+        $transaction = new PdoTransaction($this->db);
+
+        $result = $this->makeDomainManager($backend, $limit, $transaction)->addDomain('new.example', self::CLIENT_USER_ID, 'SLAVE', '192.0.2.1', 'none', ['5']);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::CONFLICT, $result->refusal);
+        $this->assertSame($breach, $result->limitBreach);
+        $this->assertSame('Zone limit reached: client owns 3 of 3 zones.', $result->message);
+        $this->assertFalse($transaction->inTransaction());
+        $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM zones')->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM zones_groups')->fetchColumn());
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnAddedOwnerAtTheLimitIsReportedWithTheBreach(): void
+    {
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ")");
+        $breach = new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'client', 1, 1);
+        $limit = $this->createMock(ZoneOwnershipLimit::class);
+        $limit->method('addUserOwner')->willReturn($breach);
+
+        $result = $this->makeDomainManager($this->dnsBackendStub(false), $limit)->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID);
+
+        $this->assertSame($breach, $result->limitBreach);
+        $this->assertSame(Refusal::CONFLICT, $result->refusal);
+        $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM zones WHERE domain_id = ' . self::NEW_DOMAIN_ID)->fetchColumn());
+    }
+
+    private function makeDomainManager(DnsBackendProviderInterface $backend, ?ZoneOwnershipLimit $ownershipLimit = null, ?PdoTransaction $transaction = null): DomainManager
     {
         $config = $this->sqliteConfiguration([
             'dns' => ['ns1' => 'ns1.example', 'hostmaster' => 'hostmaster.example', 'ttl' => 3600],
@@ -169,7 +208,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $domainRepository->method('getDomainNameById')->willReturn('new.example');
 
         return new DomainManager(
-            new PdoTransaction($this->db),
+            $transaction ?? new PdoTransaction($this->db),
             $config,
             $domainRepository,
             new RepositoryFactory($this->db, $config, $backend),
@@ -184,7 +223,8 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
             new DbTemplateRecordLinkRepository($this->db, $config, $backend),
             new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),
             new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $backend->allocatesZoneIdsLocally()), $config, $backend),
-            new SessionActor($this->session)
+            new SessionActor($this->session),
+            ownershipLimit: $ownershipLimit
         );
     }
 }

@@ -311,6 +311,10 @@ class ZoneManagementService
         );
 
         $created = $this->domainManager()->addDomain($domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
+        if ($created->limitBreach !== null) {
+            $breach = $created->limitBreach;
+            return ['success' => false, 'message' => $breach->message(), 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_ZONE_LIMIT, 'zone_limit' => $breach];
+        }
         if (!$created->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             $createdRefusal = $created->refusal ?? Refusal::BACKEND_FAILURE;

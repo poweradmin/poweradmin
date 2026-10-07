@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Service\Consistency;
 
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -466,5 +467,23 @@ class SqlConsistencyChecksTest extends TestCase
 
         $owners = $this->db->query('SELECT domain_id, owner FROM zones ORDER BY domain_id')->fetchAll(PDO::FETCH_KEY_PAIR);
         $this->assertSame([1 => 4, 2 => 9], array_map('intval', $owners));
+    }
+
+    public function testTheOwnerRepairFallsBackToTheActingUserWhenTheAccountUserIsAtTheLimit(): void
+    {
+        $this->db->exec("ALTER TABLE domains ADD COLUMN account TEXT NULL");
+        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)");
+        $this->db->exec("INSERT INTO users (id, username) VALUES (4, 'alice')");
+        $this->db->exec("INSERT INTO domains (id, name, type, account) VALUES (1, 'auto.example', 'SLAVE', 'alice')");
+        $config = ConfigurationManager::getInstance();
+        $config->initialize();
+        $limits = $this->createMock(ZoneOwnershipLimit::class);
+        $limits->method('userRemaining')->with(4)->willReturn(0);
+        $checker = new SqlConsistencyChecks($this->db, new TableNameService($config), new ZoneOwnerRepair($this->db), $this->soaBuilder(), new AccountOwnerLookup($this->db, $limits));
+
+        $this->assertTrue($checker->fixZoneWithoutOwner(1, 9));
+
+        $owners = $this->db->query('SELECT domain_id, owner FROM zones ORDER BY domain_id')->fetchAll(PDO::FETCH_KEY_PAIR);
+        $this->assertSame([1 => 9], array_map('intval', $owners));
     }
 }
