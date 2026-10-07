@@ -231,11 +231,32 @@ class ReverseRecordCreatorDeleteTest extends TestCase
             ->willReturn(RecordWriteResult::ok());
 
         $backend = $this->createMock(RecordReadBackendInterface::class);
-        $backend->method('findRecordsByContent')
-            ->with('2001:0db8:0000:0000:0000:0000:0000:0001', 'AAAA')
+        $backend->method('findRecordsByName')
+            ->with('host6.example.com', 'AAAA')
             ->willReturn([
                 ['id' => 77, 'type' => 'AAAA', 'name' => 'host6.example.com', 'content' => '2001:0db8:0000:0000:0000:0000:0000:0001', 'domain_id' => 9],
             ]);
+
+        $service = $this->createService($domainRepository, $recordManager, $backend);
+
+        $ptrName = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $this->assertTrue($service->deleteForwardRecord($ptrName, 'host6.example.com'));
+    }
+
+    public function testDeleteForwardRecordMatchesTheAaaaAddressInAnySpelling(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->once())
+            ->method('deleteRecord')
+            ->with(78)
+            ->willReturn(RecordWriteResult::ok());
+
+        $backend = $this->createMock(RecordReadBackendInterface::class);
+        $backend->method('findRecordsByName')->with('host6.example.com', 'AAAA')->willReturn([
+            ['id' => 79, 'type' => 'AAAA', 'name' => 'host6.example.com', 'content' => '2001:db8::2', 'domain_id' => 9],
+            ['id' => 78, 'type' => 'AAAA', 'name' => 'host6.example.com', 'content' => '2001:0db8:0:0::1', 'domain_id' => 9],
+        ]);
 
         $service = $this->createService($domainRepository, $recordManager, $backend);
 

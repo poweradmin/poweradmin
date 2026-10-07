@@ -87,9 +87,10 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
         string $oldPtrName,
         string $newPtrName,
         string $comment,
-        string $account
+        string $account,
+        string $forwardType = RecordType::A
     ): void {
-        $this->commentService->updateComment($ptrZoneId, $oldPtrName, RecordType::A, $newPtrName, RecordType::A, $comment, $account);
+        $this->commentService->updateComment($ptrZoneId, $oldPtrName, $forwardType, $newPtrName, $forwardType, $comment, $account);
     }
 
     public function updateRelatedRecordComments(
@@ -108,10 +109,10 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
             }
         } elseif ($newRecordInfo['type'] === RecordType::PTR) {
             $hostname = rtrim($newRecordInfo['content'], '.');
-            $contentDomainId = null;
+            $contentDomainId = $domainRepository->getDomainIdByName($hostname);
             $parts = explode('.', $hostname);
 
-            while (count($parts) > 1) {
+            while ($contentDomainId === null && count($parts) > 1) {
                 array_shift($parts);
                 $zoneName = implode('.', $parts);
                 $contentDomainId = $domainRepository->getDomainIdByName($zoneName);
@@ -121,7 +122,8 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
             }
 
             if ($contentDomainId !== null) {
-                $this->updateRecordComments($contentDomainId, $hostname, RecordType::A, $comment, $userLogin);
+                $forwardType = str_ends_with(strtolower((string)($newRecordInfo['name'] ?? '')), '.ip6.arpa') ? RecordType::AAAA : RecordType::A;
+                $this->updateRecordComments($contentDomainId, $hostname, $forwardType, $comment, $userLogin);
             }
         }
     }
@@ -133,7 +135,7 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
             if ($type === RecordType::PTR) {
                 $this->updatePtrRecordComment($zoneId, $name, $name, $comment, $userLogin);
             } else {
-                $this->updateARecordComment($zoneId, $name, $name, $comment, $userLogin);
+                $this->updateARecordComment($zoneId, $name, $name, $comment, $userLogin, $type);
             }
             return;
         }
@@ -154,7 +156,7 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
             if ($type === RecordType::PTR) {
                 $this->updatePtrRecordComment($zoneId, $name, $name, $comment, $userLogin);
             } else {
-                $this->updateARecordComment($zoneId, $name, $name, $comment, $userLogin);
+                $this->updateARecordComment($zoneId, $name, $name, $comment, $userLogin, $type);
             }
         }
     }

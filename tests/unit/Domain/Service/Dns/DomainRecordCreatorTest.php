@@ -326,4 +326,102 @@ class DomainRecordCreatorTest extends TestCase
 
         $this->assertFalse($creator->addDomainRecord('55', 'PTR', 'host.example.com', 5)['success']);
     }
+
+    public function testCreatesAnAaaaRecordFromAnIp6ArpaPtr(): void
+    {
+        $written = null;
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturnCallback(fn($name) => $name === 'example.com' ? 1 : null);
+        $domainRepository->method('getDomainNameById')->willReturnCallback(fn($id) => $id === 6 ? '8.b.d.0.1.0.0.2.ip6.arpa' : 'example.com');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecordGetId')->willReturnCallback(function ($domainId, $name, $type, $content) use (&$written) {
+            $written = [$domainId, $name, $type, $content];
+            return RecordWriteResult::ok(1);
+        });
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
+
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
+        $result = $creator->addDomainRecord('1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0', 'PTR', 'host.example.com', 6);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame([1, 'host', 'AAAA', '2001:db8::1'], $written);
+    }
+
+    public function testAcceptsUpperCaseNibblesAndAFqdnName(): void
+    {
+        $written = null;
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturnCallback(fn($name) => $name === 'example.com' ? 1 : null);
+        $domainRepository->method('getDomainNameById')->willReturnCallback(fn($id) => $id === 6 ? '8.b.d.0.1.0.0.2.ip6.arpa' : 'example.com');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecordGetId')->willReturnCallback(function ($domainId, $name, $type, $content) use (&$written) {
+            $written = $content;
+            return RecordWriteResult::ok(1);
+        });
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
+
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
+        $result = $creator->addDomainRecord('1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.A.8.B.D.0.1.0.0.2.IP6.ARPA', 'PTR', 'host.example.com', 6);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('2001:db8:a000::1', $written);
+    }
+
+    public function testRefusesAnIp6ArpaPtrThatIsNotAFullAddress(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturnCallback(fn($name) => $name === 'example.com' ? 1 : null);
+        $domainRepository->method('getDomainNameById')->willReturnCallback(fn($id) => $id === 6 ? '8.b.d.0.1.0.0.2.ip6.arpa' : 'example.com');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('addRecordGetId');
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
+
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
+
+        $this->assertFalse($creator->addDomainRecord('1.0.0.0', 'PTR', 'host.example.com', 6)['success']);
+    }
+
+    public function testCreatesTheForwardRecordForAPtrAtTheApexOfASingleAddressZone(): void
+    {
+        $written = [];
+        $zone128 = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturnCallback(fn($name) => $name === 'example.com' ? 1 : null);
+        $domainRepository->method('getDomainNameById')->willReturnCallback(fn($id) => match ($id) {
+            6 => $zone128,
+            7 => '55.2.0.192.in-addr.arpa',
+            default => 'example.com',
+        });
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecordGetId')->willReturnCallback(function ($domainId, $name, $type, $content) use (&$written) {
+            $written[] = [$type, $content];
+            return RecordWriteResult::ok(1);
+        });
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
+
+        $this->assertTrue($creator->addDomainRecord($zone128, 'PTR', 'host.example.com', 6)['success']);
+        $this->assertTrue($creator->addDomainRecord('55.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 7)['success']);
+        $this->assertSame([['AAAA', '2001:db8::1'], ['A', '192.0.2.55']], $written);
+    }
+
+    public function testCreatesTheForwardRecordAtTheApexOfAManagedZone(): void
+    {
+        $written = null;
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturnCallback(fn($name) => $name === 'example.com' ? 1 : null);
+        $domainRepository->method('getDomainNameById')->willReturnCallback(fn($id) => $id === 6 ? '8.b.d.0.1.0.0.2.ip6.arpa' : 'example.com');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecordGetId')->willReturnCallback(function ($domainId, $name, $type, $content) use (&$written) {
+            $written = [$domainId, $name, $type, $content];
+            return RecordWriteResult::ok(1);
+        });
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
+
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
+        $result = $creator->addDomainRecord('1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0', 'PTR', 'example.com.', 6);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame([1, 'example.com', 'AAAA', '2001:db8::1'], $written);
+    }
 }

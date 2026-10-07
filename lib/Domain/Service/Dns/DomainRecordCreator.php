@@ -82,21 +82,26 @@ class DomainRecordCreator
         }
 
         if ($name && $iface_add_domain_record && $type === 'PTR') {
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+            $zone_name = strtolower((string)$this->domainRepository->getDomainNameById($zone_id));
+            $name = strtolower($name);
 
             // Strip reverse zone suffix if caller passed FQDN instead of relative name
             if (str_ends_with($name, self::IPV4_SUFFIX) || str_ends_with($name, self::IPV6_SUFFIX)) {
                 $name = DnsHelper::stripZoneSuffix($name, $zone_name);
             }
 
+            // A PTR at the apex of a /32 or /128 zone: its first label is the last address part
+            $addressZone = $zone_name;
+            if ($name === '@' && str_contains($zone_name, '.')) {
+                [$name, $addressZone] = explode('.', $zone_name, 2);
+            }
+
             if (str_ends_with($zone_name, self::IPV4_SUFFIX)) {
-                return $this->processIPv4($name, $zone_name, $content, $domainId, $comment, $account);
+                return $this->processIPv4($name, $addressZone, $content, $domainId, $comment, $account);
             }
 
             if (str_ends_with($zone_name, self::IPV6_SUFFIX)) {
-                // FIXME: not fully implemented and tested
-                // return $this->processIPv6($name, $zone_name, $content, $domainId);
-                return $this->errorResponse(_('Adding IPv6 domain records from reverse zones is not supported yet.'));
+                return $this->processIPv6($name, $addressZone, $content, $domainId, $comment, $account);
             }
         }
 
@@ -107,7 +112,7 @@ class DomainRecordCreator
     {
         $proposedIP = IpHelper::getProposedIPv4($name, $zone_name, self::IPV4_SUFFIX);
         if ($proposedIP && $this->ipValidator->isValidIPv4($proposedIP)) {
-            return $this->addRecord($domainId, $content, $proposedIP, $comment, $account);
+            return $this->addRecord($domainId, $content, RecordType::A, $proposedIP);
         }
         return $this->errorResponse(_('This domain record was not valid and could not be added.'));
     }
@@ -116,23 +121,26 @@ class DomainRecordCreator
     {
         $proposedIP = IpHelper::getProposedIPv6($name, $zone_name, self::IPV6_SUFFIX);
         if ($proposedIP && $this->ipValidator->isValidIPv6($proposedIP)) {
-            return $this->addRecord($domainId, $content, $proposedIP, $comment, $account);
+            return $this->addRecord($domainId, $content, RecordType::AAAA, $proposedIP);
         }
         return $this->errorResponse(_('This domain record was not valid and could not be added.'));
     }
 
-    private function addRecord(int $domainId, string $content, string $proposedIP, string $comment, string $account): array
+    private function addRecord(int $domainId, string $content, string $type, string $proposedIP): array
     {
         // Get the actual zone name so we can derive the correct hostname
         $zoneName = $this->domainRepository->getDomainNameById($domainId);
         $domainName = DnsHelper::stripZoneSuffix(rtrim($content, '.'), $zoneName);
+        if ($domainName === '@') {
+            $domainName = rtrim($content, '.');
+        }
         $ttl = $this->reverseTtlResolver !== null
-            ? $this->reverseTtlResolver->resolveTtlForType(RecordType::A, false)
+            ? $this->reverseTtlResolver->resolveTtlForType($type, false)
             : $this->config->get('dns', 'ttl');
-        $result = $this->recordManager->addRecordGetId($domainId, $domainName, RecordType::A, $proposedIP, $ttl, 0);
+        $result = $this->recordManager->addRecordGetId($domainId, $domainName, $type, $proposedIP, $ttl, 0);
 
         if ($result->success) {
-            $this->audit?->logRecordAdd($domainId, RecordType::A, rtrim($content, '.'), $proposedIP, $ttl, 0);
+            $this->audit?->logRecordAdd($domainId, $type, rtrim($content, '.'), $proposedIP, $ttl, 0);
 
             return [
                 'success' => true,
@@ -146,13 +154,12 @@ class DomainRecordCreator
 
     /**
      * Walk up the hostname hierarchy to find the best matching managed zone.
-     * For "test.sub.example.com", tries: sub.example.com, then example.com.
+     * For "test.sub.example.com", tries: test.sub.example.com (a zone apex), sub.example.com, then example.com.
      */
     private function findManagedZoneId(string $hostname): ?int
     {
         $parts = explode('.', rtrim($hostname, '.'));
-        // Start from the first parent domain (skip the hostname itself)
-        for ($i = 1; $i < count($parts); $i++) {
+        for ($i = 0; $i < count($parts); $i++) {
             $candidate = implode('.', array_slice($parts, $i));
             $domainId = $this->domainRepository->getDomainIdByName($candidate);
             if ($domainId !== null) {

@@ -145,8 +145,9 @@ class RecordManagerService
             // Sync comment to the corresponding PTR record
             $this->syncCommentToPtrRecord($type, $content, $comment, $userlogin);
         } elseif ($type === 'PTR') {
-            // Sync comment to the corresponding A record
-            $this->syncCommentToARecord($content, $comment, $userlogin);
+            // An ip6.arpa PTR pairs with AAAA records, an in-addr.arpa PTR with A records
+            $forwardType = str_ends_with(strtolower($full_name), '.ip6.arpa') ? RecordType::AAAA : RecordType::A;
+            $this->syncCommentToARecord($content, $comment, $userlogin, $forwardType);
         }
         // For other record types, no sync needed - per-record comment is already set
     }
@@ -178,15 +179,15 @@ class RecordManagerService
     }
 
     /**
-     * Sync comment from PTR record to corresponding A record.
+     * Sync comment from PTR record to the corresponding A or AAAA records.
      */
-    private function syncCommentToARecord(string $content, string $comment, string $userlogin): void
+    private function syncCommentToARecord(string $content, string $comment, string $userlogin, string $forwardType = RecordType::A): void
     {
         $content = rtrim($content, '.');
-        $contentDomainId = null;
+        $contentDomainId = $this->domainRepository->getDomainIdByName($content);
         $parts = explode('.', $content);
 
-        while (count($parts) > 1) {
+        while ($contentDomainId === null && count($parts) > 1) {
             array_shift($parts);
             $zoneName = implode('.', $parts);
             $contentDomainId = $this->domainRepository->getDomainIdByName($zoneName);
@@ -196,13 +197,13 @@ class RecordManagerService
         }
 
         if ($contentDomainId !== null) {
-            $rrsetRecords = $this->recordRepository->getRRSetRecords($contentDomainId, $content, RecordType::A);
+            $rrsetRecords = $this->recordRepository->getRRSetRecords($contentDomainId, $content, $forwardType);
 
             foreach ($rrsetRecords as $record) {
                 $this->recordCommentService->createCommentForRecord(
                     $contentDomainId,
                     $content,
-                    RecordType::A,
+                    $forwardType,
                     $comment,
                     $record['id'],
                     $userlogin

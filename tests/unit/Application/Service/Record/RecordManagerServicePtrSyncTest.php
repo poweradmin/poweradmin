@@ -51,6 +51,7 @@ class RecordManagerServicePtrSyncTest extends TestCase
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER, ordername TEXT, auth INTEGER)");
         $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio, disabled) VALUES (50, 5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 3600, 0, 0)");
         $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio, disabled) VALUES (60, 1, 'host.example.com', 'A', '192.0.2.1', 3600, 0, 0)");
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio, disabled) VALUES (61, 1, 'host.example.com', 'AAAA', '2001:db8::1', 3600, 0, 0)");
         $this->comments = $this->createMock(RecordCommentService::class);
     }
 
@@ -148,5 +149,33 @@ class RecordManagerServicePtrSyncTest extends TestCase
 
         $this->service(false)->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 'rack 4', 'admin');
         $this->service()->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', '', 'admin');
+    }
+
+    public function testAnIp6ArpaPtrCommentGoesToTheAaaaRecordsOnly(): void
+    {
+        $calls = [];
+        $this->comments->method('createCommentForRecord')->willReturnCallback(function (...$args) use (&$calls) {
+            $calls[] = $args;
+            return null;
+        });
+        $ptrName = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+
+        $this->service()->syncCompanionComment(7, $ptrName, 'PTR', 'host.example.com', 'rack 4', 'admin');
+
+        $this->assertSame([[1, 'host.example.com', 'AAAA', 'rack 4', 61, 'admin']], $calls);
+    }
+
+    public function testAPtrToAZoneApexCopiesTheCommentToTheApexRecord(): void
+    {
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio, disabled) VALUES (62, 1, 'example.com', 'A', '192.0.2.9', 3600, 0, 0)");
+        $calls = [];
+        $this->comments->method('createCommentForRecord')->willReturnCallback(function (...$args) use (&$calls) {
+            $calls[] = $args;
+            return null;
+        });
+
+        $this->service()->syncCompanionComment(5, '9.2.0.192.in-addr.arpa', 'PTR', 'example.com', 'apex', 'admin');
+
+        $this->assertSame([[1, 'example.com', 'A', 'apex', 62, 'admin']], $calls);
     }
 }

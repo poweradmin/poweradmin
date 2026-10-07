@@ -204,13 +204,24 @@ class ReverseRecordCreator
         // Remove trailing dot from PTR content if present
         $hostname = rtrim($ptrContent, '.');
 
-        $records = $this->recordBackend->findRecordsByContent($ipAddress, $recordType);
+        // The same IPv6 address has many spellings, so AAAA records are matched by value
+        if ($recordType === RecordType::AAAA) {
+            $packed = inet_pton($ipAddress);
+            $records = array_filter(
+                $this->recordBackend->findRecordsByName($hostname, RecordType::AAAA),
+                fn(array $r): bool => $packed !== false && @inet_pton((string)($r['content'] ?? '')) === $packed
+            );
+        } else {
+            $records = array_filter(
+                $this->recordBackend->findRecordsByContent($ipAddress, $recordType),
+                fn(array $r): bool => $r['name'] === $hostname || str_starts_with($r['name'], "$hostname.")
+            );
+        }
+
         foreach ($records as $r) {
-            if ($r['name'] === $hostname || str_starts_with($r['name'], "$hostname.")) {
-                $recordId = $r['id'] ?? 0;
-                if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
-                    return true;
-                }
+            $recordId = $r['id'] ?? 0;
+            if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
+                return true;
             }
         }
 

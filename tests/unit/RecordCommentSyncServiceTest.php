@@ -132,7 +132,7 @@ class RecordCommentSyncServiceTest extends TestCase
     {
         $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
         $domainRepositoryMock->method('getDomainIdByName')
-            ->with('')
+            ->with('localhost')
             ->willReturn(null);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
@@ -141,5 +141,39 @@ class RecordCommentSyncServiceTest extends TestCase
 
         $service = new RecordCommentSyncService($commentServiceMock);
         $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
+    }
+
+    public function testUpdateRelatedRecordCommentsUpdatesTheApexRecordWhenThePtrTargetIsAZone()
+    {
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getDomainIdByName')
+            ->willReturnCallback(fn(string $name) => $name === 'example.com' ? 1 : null);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->once())
+            ->method('updateComment')
+            ->with(1, 'example.com', 'A', 'example.com', 'A', 'Updated comment', 'user');
+
+        $service = new RecordCommentSyncService($commentServiceMock);
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'example.com'], 'Updated comment', 'user');
+    }
+
+    public function testUpdateRelatedRecordCommentsUpdatesAaaaRecordCommentForIp6ArpaPtr()
+    {
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getDomainIdByName')->willReturn(1);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->once())
+            ->method('updateComment')
+            ->with(1, 'host.example.com', 'AAAA', 'host.example.com', 'AAAA', 'Updated comment', 'user');
+
+        $service = new RecordCommentSyncService($commentServiceMock);
+        $service->updateRelatedRecordComments(
+            $domainRepositoryMock,
+            ['type' => 'PTR', 'name' => '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', 'content' => 'host.example.com'],
+            'Updated comment',
+            'user'
+        );
     }
 }

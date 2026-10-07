@@ -33,11 +33,6 @@ parameters:
     # looks dead. The state genuinely changed in between and removing any of
     # these would drop a verification or, worse, a rollback. Each is scoped to
     # its file for want of a narrower hook.
-    # processIPv6() is kept alongside its commented-out call site until IPv6
-    # reverse-record creation is finished; see the FIXME above that call.
-    -
-      identifier: method.unused
-      path: lib/Domain/Service/Dns/DomainRecordCreator.php
     # Defensive checks PHPStan can prove redundant today, kept on purpose.
     #   DbZoneRepository - is_int() picks PDO::PARAM_INT vs PARAM_STR in the
     #   bindValue loops. $params happens to be all-int now; hardcoding PARAM_INT

@@ -25,8 +25,10 @@ namespace Poweradmin\Domain\Service\Dns;
 use Closure;
 use Exception;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Port\ActorInterface;
@@ -173,6 +175,25 @@ class RecordManager implements RecordManagerInterface
      * @return array{0: string, 1: string} Zone name and normalized record name
      * @throws Exception When the record type is restricted for the user
      */
+    /**
+     * The same IPv6 address can be written in several forms ("2001:db8::1", "2001:0db8:0:0::1"), so compare AAAA content by value.
+     */
+    private function equivalentAaaaExists(RecordRepositoryInterface $recordRepository, int $zoneId, string $name, string $type, string $content): bool
+    {
+        $packed = $type === RecordType::AAAA ? @inet_pton($content) : false;
+        if ($packed === false) {
+            return false;
+        }
+
+        foreach ($recordRepository->getRRSetRecords($zoneId, $name, RecordType::AAAA) as $record) {
+            if (@inet_pton((string)($record['content'] ?? '')) === $packed) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function normalizeNameAndAssertAddAllowed(int $zone_id, string $name, string $type, string $perm_edit): array
     {
         $zone = $this->domainRepository->getDomainNameById($zone_id);
@@ -273,7 +294,7 @@ class RecordManager implements RecordManagerInterface
 
         // Create RecordRepository to check if record exists
         $recordRepository = $this->repositoryFactory->createRecordRepository();
-        if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
+        if ($recordRepository->recordExists($zone_id, $name, $type, $content) || $this->equivalentAaaaExists($recordRepository, $zone_id, $name, $type, $content)) {
             return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), Refusal::CONFLICT, RecordField::DUPLICATE);
         }
 
