@@ -28,6 +28,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 
 /**
  * Adds the matching A record in the managed forward zone when a PTR record is created in a reverse zone.
@@ -39,6 +40,7 @@ class DomainRecordCreator
     private RecordManagerInterface $recordManager;
     private IPAddressValidator $ipValidator;
     private ?ReverseTtlResolver $reverseTtlResolver;
+    private ?AuditLoggerInterface $audit;
 
     private const IPV4_SUFFIX = '.in-addr.arpa';
     private const IPV6_SUFFIX = '.ip6.arpa';
@@ -49,12 +51,14 @@ class DomainRecordCreator
         RecordManagerInterface $recordManager,
         ?IPAddressValidator $ipValidator = null,
         ?ReverseTtlResolver $reverseTtlResolver = null,
+        ?AuditLoggerInterface $audit = null,
     ) {
         $this->config = $config;
         $this->domainRepository = $domainRepository;
         $this->recordManager = $recordManager;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
         $this->reverseTtlResolver = $reverseTtlResolver;
+        $this->audit = $audit;
     }
 
     /**
@@ -128,6 +132,8 @@ class DomainRecordCreator
         $result = $this->recordManager->addRecordGetId($domainId, $domainName, RecordType::A, $proposedIP, $ttl, 0);
 
         if ($result->success) {
+            $this->audit?->logRecordAdd($domainId, RecordType::A, rtrim($content, '.'), $proposedIP, $ttl, 0);
+
             return [
                 'success' => true,
                 'type' => 'success',

@@ -289,7 +289,7 @@ final class RecordServices
         return new RecordAddService(
             $this->recordManagerService(),
             $this->reverseRecordCreator(),
-            new DomainRecordCreator($this->config, $this->services->domainRepository(), $this->recordManager(), null, $ttlResolver),
+            new DomainRecordCreator($this->config, $this->services->domainRepository(), $this->recordManager(), null, $ttlResolver, $this->services->auditService()),
             $ttlResolver,
             $this->services->permissionService(),
             $this->services->domainRepository(),

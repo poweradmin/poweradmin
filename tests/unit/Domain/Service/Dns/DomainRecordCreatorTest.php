@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -291,5 +292,38 @@ class DomainRecordCreatorTest extends TestCase
         $creator->addDomainRecord('55', 'PTR', 'host.example.com.', 5);
 
         $this->assertSame('host', $addedName);
+    }
+
+    public function testLogsTheCreatedARecordToTheZoneLog(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturnCallback(fn($name) => $name === 'example.com' ? 1 : null);
+        $domainRepository->method('getDomainNameById')->willReturnCallback(fn($id) => $id === 5 ? '2.0.192.in-addr.arpa' : 'example.com');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $audit = $this->createMock(AuditLoggerInterface::class);
+        $audit->expects($this->once())->method('logRecordAdd')->with(1, 'A', 'host.example.com', '192.0.2.55', 3600, 0);
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
+
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager, null, null, $audit);
+        $result = $creator->addDomainRecord('55', 'PTR', 'host.example.com.', 5);
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function testDoesNotLogARefusedWrite(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturnCallback(fn($name) => $name === 'example.com' ? 1 : null);
+        $domainRepository->method('getDomainNameById')->willReturnCallback(fn($id) => $id === 5 ? '2.0.192.in-addr.arpa' : 'example.com');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::forbidden('no'));
+        $audit = $this->createMock(AuditLoggerInterface::class);
+        $audit->expects($this->never())->method('logRecordAdd');
+        $config = new FakeConfiguration(['interface' => ['add_domain_record' => true], 'dns' => ['ttl' => 3600]]);
+
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager, null, null, $audit);
+
+        $this->assertFalse($creator->addDomainRecord('55', 'PTR', 'host.example.com', 5)['success']);
     }
 }
