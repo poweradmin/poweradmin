@@ -46,3 +46,12 @@ master::fix(docker): escape every string and validate every number written to se
 master::fix(docker): keep the generated settings.php readable by www-data only
 master::fix(docker): deny dotfiles, shell scripts and translation sources in the Caddy configs
 master::fix(docker): run PHP on php.ini-production with tuned limits and opcache
+
+# develop runs php.ini-production with its own 00-poweradmin.ini, which covers both.
+develop::fix(docker): log PHP warnings instead of printing them into pages
+develop::fix(docker): write the PHP ini in the entrypoint RUN so hadolint passes
+
+# master already loads 00-poweradmin.ini first, and SQLite WAL sidecar files only
+# appear with the WAL mode 4.6.0 introduced.
+master::fix(docker): load the image's php overrides first so mounted ini files win
+master::fix(docker): keep SQLite WAL sidecar files out of the web root
