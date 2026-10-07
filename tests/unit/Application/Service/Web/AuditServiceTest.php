@@ -102,6 +102,23 @@ class AuditServiceTest extends TestCase
         $this->assertSame(4, $this->lines[0][2]);
     }
 
+    public function testApiRecordEditListsOldAndNewValuesLikeTheWebEdit(): void
+    {
+        $this->makeService()->logApiRecordEdit(
+            4,
+            ['type' => 'A', 'name' => 'a.example.com', 'content' => '192.0.2.1', 'ttl' => 300, 'prio' => 0],
+            ['type' => 'A', 'name' => 'a.example.com', 'content' => '192.0.2.2', 'ttl' => 600, 'prio' => 0]
+        );
+
+        $this->assertSame(
+            'client_ip:192.0.2.10 user:alice operation:api_edit_record'
+            . ' old_record_type:A old_record:a.example.com old_content:192.0.2.1 old_ttl:300 old_priority:0'
+            . ' record_type:A record:a.example.com content:192.0.2.2 ttl:600 priority:0',
+            $this->lines[0][1]
+        );
+        $this->assertSame(4, $this->lines[0][2]);
+    }
+
     public function testTemplateNamesAreLoggedAsSingleTokens(): void
     {
         $service = $this->makeService();

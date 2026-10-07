@@ -118,7 +118,7 @@ class RecordEditService
         [$ptrUpdated, $ptrMessage] = $this->syncReverseRecord($request, $stored);
 
         if ($request->origin === AuditLoggerInterface::ORIGIN_API) {
-            $this->audit->logApiRecordEdit($request->zoneId, (string)$stored['name'], (string)$stored['type'], (string)$stored['content']);
+            $this->audit->logApiRecordEdit($request->zoneId, $request->current, $stored);
         } else {
             $this->audit->logRecordEdit($request->zoneId, $request->current, $stored);
         }

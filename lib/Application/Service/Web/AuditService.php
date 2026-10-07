@@ -430,7 +430,17 @@ class AuditService implements AuditLoggerInterface
      */
     public function logRecordEdit(?int $zoneId, array $before, array $after): void
     {
-        $this->logger->logInfo($this->line('edit_record', [
+        $this->logger->logInfo($this->line('edit_record', $this->recordEditFields($before, $after)), $zoneId);
+    }
+
+    /**
+     * @param array<string, mixed> $before
+     * @param array<string, mixed> $after
+     * @return array<string, mixed>
+     */
+    private function recordEditFields(array $before, array $after): array
+    {
+        return [
             'old_record_type' => $before['type'] ?? '',
             'old_record' => $before['name'] ?? '',
             'old_content' => $before['content'] ?? '',
@@ -441,7 +451,7 @@ class AuditService implements AuditLoggerInterface
             'content' => $after['content'] ?? '',
             'ttl' => $after['ttl'] ?? '',
             'priority' => $after['prio'] ?? '',
-        ]), $zoneId);
+        ];
     }
 
     public function logRecordDelete(int $zoneId, string $type, string $name, string $content, int|string $ttl, int|string|null $prio): void
@@ -481,9 +491,15 @@ class AuditService implements AuditLoggerInterface
         $this->logger->logInfo($this->line('api_add_record', ['name' => $name, 'type' => $type, 'content' => $content]), $zoneId);
     }
 
-    public function logApiRecordEdit(int $zoneId, string $name, string $type, string $content): void
+    /**
+     * Same fields as edit_record, so an API edit also shows what it replaced.
+     *
+     * @param array<string, mixed> $before Record row before the edit (type, name, content, ttl, prio)
+     * @param array<string, mixed> $after Record row after the edit
+     */
+    public function logApiRecordEdit(int $zoneId, array $before, array $after): void
     {
-        $this->logger->logInfo($this->line('api_edit_record', ['name' => $name, 'type' => $type, 'content' => $content]), $zoneId);
+        $this->logger->logInfo($this->line('api_edit_record', $this->recordEditFields($before, $after)), $zoneId);
     }
 
     public function logApiRecordDelete(int $zoneId, string $name, string $type, string $content): void

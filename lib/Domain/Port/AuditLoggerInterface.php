@@ -43,7 +43,11 @@ interface AuditLoggerInterface
 
     public function logApiRecordAdd(int $zoneId, string $name, string $type, string $content): void;
 
-    public function logApiRecordEdit(int $zoneId, string $name, string $type, string $content): void;
+    /**
+     * @param array<string, mixed> $before Record row before the edit (type, name, content, ttl, prio)
+     * @param array<string, mixed> $after Record row after the edit
+     */
+    public function logApiRecordEdit(int $zoneId, array $before, array $after): void;
 
     public function logBatchPtrRecordAdd(int $zoneId, string $name, string $content, int|string $ttl, int|string $prio): void;
 

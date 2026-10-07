@@ -402,7 +402,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
 
     /**
      * The edit flow writes the one api_edit_record line for an API caller, with
-     * the stored FQDN; the controller no longer writes a second one on top.
+     * the row before the edit and the stored row after it (#1655).
      */
     public function testASuccessfulUpdateIsAuditedOnceAsAnApiEdit(): void
     {
@@ -410,7 +410,11 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9']));
         $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
         $this->audit->expects($this->never())->method('logRecordEdit');
-        $this->audit->expects($this->once())->method('logApiRecordEdit')->with(self::ZONE_ID, 'www.example.com', 'A', '192.0.2.9');
+        $this->audit->expects($this->once())->method('logApiRecordEdit')->with(
+            self::ZONE_ID,
+            $this->callback(fn(array $before): bool => $before['content'] === '192.0.2.1'),
+            $this->callback(fn(array $after): bool => $after['name'] === 'www.example.com' && $after['content'] === '192.0.2.9')
+        );
 
         $this->assertSame(200, $this->update(['content' => '192.0.2.9'])->getStatusCode());
     }
