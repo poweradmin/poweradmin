@@ -835,12 +835,20 @@ class ZonesRecordsController extends PublicApiController
             }
 
             $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_edit_record name:%s type:%s content:%s',
+                'client_ip:%s user:%s operation:api_edit_record name:%s type:%s content:%s old_name:%s old_type:%s old_content:%s'
+                . ' ttl:%s priority:%s old_ttl:%s old_priority:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->getAuthenticatedUsername(),
                 $formattedRecord['name'],
                 $formattedRecord['type'],
-                $formattedRecord['content']
+                $formattedRecord['content'],
+                DnsHelper::stripZoneSuffix((string)$existingRecord['name'], $zoneName),
+                $existingRecord['type'],
+                $this->stripTxtQuotes((string)$existingRecord['content'], (string)$existingRecord['type']),
+                $formattedRecord['ttl'],
+                $formattedRecord['priority'],
+                $existingRecord['ttl'],
+                $existingRecord['prio'] ?? 0
             ), $zoneId);
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully', 200);
