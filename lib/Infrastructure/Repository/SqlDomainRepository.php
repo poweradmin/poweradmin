@@ -253,7 +253,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                 $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
             } else {
-                if ($db_type === 'mysql' && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
+                if (in_array($db_type, ['mysql', 'mysqli', 'pgsql'], true) && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
                     $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
                                 FROM $domains_table";
                 } else {
@@ -295,7 +295,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                     $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
                 }
 
-                if ($db_type === 'mysql' && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
+                if (in_array($db_type, ['mysql', 'mysqli', 'pgsql'], true) && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
                     $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 } elseif (strpos($sql_sortby, 'users.username') === false && strpos($sql_sortby, 'COUNT(') === false) {
                     $id_query .= " ORDER BY " . $sql_sortby;
