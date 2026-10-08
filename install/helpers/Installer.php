@@ -48,7 +48,6 @@ class Installer
     private CsrfTokenService $csrfTokenService;
     private InstallSecurityService $securityService;
     private string $defaultConfigFile;
-    private string $newConfigFile;
     private string $installConfigFile;
     private const DEFAULT_CONFIG_FILE_PATH = '/config/settings.defaults.php'; // Default settings
     private const NEW_CONFIG_FILE_PATH = '/config/settings.php'; // New format
@@ -62,7 +61,6 @@ class Installer
     public function __construct(Request $input, ConfigurationInterface $settings)
     {
         $this->settings = $settings;
-        $this->newConfigFile = dirname(__DIR__, 2) . self::NEW_CONFIG_FILE_PATH;
         $this->defaultConfigFile = dirname(__DIR__, 2) . self::DEFAULT_CONFIG_FILE_PATH;
         $this->installConfigFile = dirname(__DIR__) . self::INSTALL_CONFIG_PATH;
 
@@ -87,12 +85,9 @@ class Installer
             SessionUtils::clearMessages();
         }
 
-        if (file_exists($this->newConfigFile)) {
-            // Only allow viewing the final step if installation is complete
-            if ($currentStep !== InstallationSteps::STEP_INSTALLATION_COMPLETE) {
-                echo 'There is already a configuration file in place, so the installation will be skipped.';
-                exit;
-            }
+        if (self::refusesStep($currentStep, self::configurationFiles())) {
+            echo 'There is already a configuration file in place, so the installation will be skipped.';
+            exit;
         }
 
         $securityErrors = $this->securityService->validateRequest($this->input);
@@ -130,6 +125,42 @@ class Installer
         );
 
         $this->handleStep($currentStep, $errors);
+    }
+
+    /**
+     * The settings files that mark Poweradmin as installed: config/settings.php and,
+     * when set, the file named by PA_CONFIG_PATH.
+     *
+     * @return list<string>
+     */
+    public static function configurationFiles(): array
+    {
+        $files = [dirname(__DIR__, 2) . self::NEW_CONFIG_FILE_PATH];
+        $customConfigPath = getenv('PA_CONFIG_PATH');
+        if ($customConfigPath !== false && $customConfigPath !== '') {
+            $files[] = $customConfigPath;
+        }
+
+        return $files;
+    }
+
+    /**
+     * Once any settings file exists, only the completion page may be shown.
+     *
+     * @param list<string> $configFiles
+     */
+    public static function refusesStep(int $step, array $configFiles): bool
+    {
+        if ($step === InstallationSteps::STEP_INSTALLATION_COMPLETE) {
+            return false;
+        }
+        foreach ($configFiles as $file) {
+            if (file_exists($file)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function handleSecurityErrors(array $errors): void
