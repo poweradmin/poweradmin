@@ -678,6 +678,11 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         $stmt->bindValue(1, $zoneId, PDO::PARAM_INT);
         $stmt->execute();
 
+        // Left behind, the sync rows keep counting the zone as out of date against the template (#1660)
+        $stmt = $this->db->prepare("DELETE FROM zone_template_sync WHERE zone_id IN (SELECT id FROM zones WHERE domain_id = ?)");
+        $stmt->bindValue(1, $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
         return true;
     }
 

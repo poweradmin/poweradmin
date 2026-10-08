@@ -49,6 +49,7 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER)");
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT, zone_templ_id INTEGER DEFAULT 0)");
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)");
+        $this->db->exec("CREATE TABLE zone_template_sync (id INTEGER PRIMARY KEY, zone_id INTEGER, zone_templ_id INTEGER, needs_sync INTEGER DEFAULT 0)");
         $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
 
@@ -381,6 +382,21 @@ class DbZoneTemplateRepositoryTest extends TestCase
 
         $this->assertSame(0, (int)$this->db->query("SELECT zone_templ_id FROM zones WHERE id = 1")->fetchColumn());
         $this->assertSame($templateId, (int)$this->db->query("SELECT zone_templ_id FROM zones WHERE id = 2")->fetchColumn());
+    }
+
+    public function testUnlinkingAZoneDropsItsTemplateSyncRows(): void
+    {
+        $templateId = $this->repository->createZoneTemplate('synced', '', 0, 1);
+        // Zone 11 has two owners, so two zones rows; zone 12 stays linked
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id) VALUES
+            (1, 11, 3, $templateId), (2, 11, 4, $templateId), (3, 12, 3, $templateId)");
+        $this->db->exec("INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync) VALUES
+            (1, $templateId, 1), (2, $templateId, 1), (3, $templateId, 1)");
+
+        $this->repository->unlinkZoneFromTemplate(11);
+
+        $remaining = $this->db->query("SELECT zone_id FROM zone_template_sync ORDER BY zone_id")->fetchAll(PDO::FETCH_COLUMN);
+        $this->assertSame([3], array_map('intval', $remaining));
     }
 
     public function testGetTemplateNameForZone(): void
