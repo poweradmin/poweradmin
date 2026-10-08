@@ -47,4 +47,10 @@ interface PasswordHasherInterface
      * @throws InvalidArgumentException If the hash algorithm cannot be determined.
      */
     public function verifyPassword(#[\SensitiveParameter] string $password, string $hash): bool;
+
+    /**
+     * A well-formed hash no password matches, for spending the same time on a refusal
+     * for a missing account as on a wrong password.
+     */
+    public function dummyVerificationHash(): string;
 }

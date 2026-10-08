@@ -61,16 +61,26 @@ readonly class DynamicDnsAuthenticationService
 
         $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($username);
         if (!$user) {
+            // Answering without a hash check would tell the caller which usernames hold the permission.
+            $this->verifyAgainstDummyHash($request->getPassword());
             return null;
         }
 
         // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying against an
         // empty hash would throw, surfacing a 500 and skipping the attempt recording below.
         $hash = $user->getPassword();
+        if (password_get_info($hash)['algo'] === null) {
+            $this->verifyAgainstDummyHash($request->getPassword());
+        }
         $passwordValid = $hash !== '' && $this->userAuthService->verifyPassword($request->getPassword(), $hash);
         $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
 
         return $passwordValid ? $user : null;
+    }
+
+    private function verifyAgainstDummyHash(#[\SensitiveParameter] string $password): void
+    {
+        $this->userAuthService->verifyPassword($password, $this->userAuthService->dummyVerificationHash());
     }
 
     public function getUserZones(User $user): array

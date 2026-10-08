@@ -12,6 +12,8 @@ use Poweradmin\Domain\Model\User;
 
 class DynamicDnsAuthenticationServiceTest extends TestCase
 {
+    private const STORED_HASH = '$2y$04$gzVOqDvBgbPqIyF02/KbfuUYGmH5/7sktUtYWb4ghpHpQEcoHf.sW';
+
     private DynamicDnsAuthenticationService $authService;
     /** @var DynamicDnsRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject */
     private $mockRepository;
@@ -37,7 +39,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
             'TestAgent/1.0'
         );
 
-        $user = new User(123, 'hashedpassword', false);
+        $user = new User(123, self::STORED_HASH, false);
 
         $this->mockRepository->expects($this->once())
             ->method('findUserByUsernameWithDynamicDnsPermissions')
@@ -46,14 +48,14 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
 
         $this->mockUserAuthService->expects($this->once())
             ->method('verifyPassword')
-            ->with('testpass', 'hashedpassword')
+            ->with('testpass', self::STORED_HASH)
             ->willReturn(true);
 
         $result = $this->authService->authenticateUser($request);
 
         $this->assertInstanceOf(User::class, $result);
         $this->assertEquals(123, $result->getId());
-        $this->assertEquals('hashedpassword', $result->getPassword());
+        $this->assertEquals(self::STORED_HASH, $result->getPassword());
         $this->assertFalse($result->isLdapUser());
     }
 
@@ -106,7 +108,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
             'TestAgent/1.0'
         );
 
-        $user = new User(123, 'hashedpassword', false);
+        $user = new User(123, self::STORED_HASH, false);
 
         $this->mockRepository->expects($this->once())
             ->method('findUserByUsernameWithDynamicDnsPermissions')
@@ -115,7 +117,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
 
         $this->mockUserAuthService->expects($this->once())
             ->method('verifyPassword')
-            ->with('wrongpass', 'hashedpassword')
+            ->with('wrongpass', self::STORED_HASH)
             ->willReturn(false);
 
         $result = $this->authService->authenticateUser($request);
@@ -124,7 +126,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
 
     public function testGetUserZones(): void
     {
-        $user = new User(123, 'hashedpassword', false);
+        $user = new User(123, self::STORED_HASH, false);
 
         $this->mockRepository->expects($this->once())
             ->method('getUserZones')
@@ -137,7 +139,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
 
     public function testGetUserZonesEmpty(): void
     {
-        $user = new User(123, 'hashedpassword', false);
+        $user = new User(123, self::STORED_HASH, false);
 
         $this->mockRepository->expects($this->once())
             ->method('getUserZones')
@@ -150,7 +152,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
 
     public function testUserCanUpdateZone(): void
     {
-        $user = new User(123, 'hashedpassword', false);
+        $user = new User(123, self::STORED_HASH, false);
 
         $this->mockRepository->expects($this->exactly(3))
             ->method('getUserZones')
@@ -192,7 +194,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
             ->method('recordAttempt')
             ->with('testuser', '198.51.100.2', true);
 
-        $user = new User(123, 'hashedpassword', false);
+        $user = new User(123, self::STORED_HASH, false);
         $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')->willReturn($user);
         $this->mockUserAuthService->method('verifyPassword')->willReturn(true);
 
@@ -214,7 +216,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
             ->method('recordAttempt')
             ->with('testuser', '198.51.100.3', false);
 
-        $user = new User(123, 'hashedpassword', false);
+        $user = new User(123, self::STORED_HASH, false);
         $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')->willReturn($user);
         $this->mockUserAuthService->method('verifyPassword')->willReturn(false);
 
@@ -274,6 +276,33 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
         $this->assertNull($service->authenticateUser($request, '198.51.100.5'));
     }
 
+    public function testUnknownUsernameStillRunsOneHashCheck(): void
+    {
+        $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')->willReturn(null);
+        $this->mockUserAuthService->method('dummyVerificationHash')->willReturn('$2y$04$dummy');
+        $this->mockUserAuthService->expects($this->once())
+            ->method('verifyPassword')
+            ->with('testpass', '$2y$04$dummy')
+            ->willReturn(false);
+
+        $request = new DynamicDnsRequest('nonexistent', 'testpass', 'example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $this->assertNull($this->authService->authenticateUser($request));
+    }
+
+    public function testEmptyPasswordHashStillRunsOneHashCheck(): void
+    {
+        $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')
+            ->willReturn(new User(789, '', false));
+        $this->mockUserAuthService->method('dummyVerificationHash')->willReturn('$2y$04$dummy');
+        $this->mockUserAuthService->expects($this->once())
+            ->method('verifyPassword')
+            ->with('anypass', '$2y$04$dummy')
+            ->willReturn(false);
+
+        $request = new DynamicDnsRequest('ssouser', 'anypass', 'example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $this->assertNull($this->authService->authenticateUser($request));
+    }
+
     public function testAuthenticateUserWithLdap(): void
     {
         $request = new DynamicDnsRequest(
@@ -286,7 +315,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
             'TestAgent/1.0'
         );
 
-        $user = new User(456, 'hashedpassword', true);
+        $user = new User(456, self::STORED_HASH, true);
 
         $this->mockRepository->expects($this->once())
             ->method('findUserByUsernameWithDynamicDnsPermissions')
@@ -295,7 +324,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
 
         $this->mockUserAuthService->expects($this->once())
             ->method('verifyPassword')
-            ->with('testpass', 'hashedpassword')
+            ->with('testpass', self::STORED_HASH)
             ->willReturn(true);
 
         $result = $this->authService->authenticateUser($request);

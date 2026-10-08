@@ -46,6 +46,7 @@ class BasicAuthenticationMiddleware
     private SessionInterface $session;
     private LoginAttemptService $loginAttemptService;
     private ?UserRepositoryInterface $userRepository = null;
+    private ?UserAuthenticationService $authService = null;
 
     /**
      * Constructor
@@ -134,6 +135,8 @@ class BasicAuthenticationMiddleware
     private function authenticateAndGetUserId(string $username, #[\SensitiveParameter] string $password): int
     {
         if ($this->userRepository()->findByUsername($username) === null) {
+            // Answering without a hash check would tell the caller which usernames exist.
+            $this->verifyAgainstDummyHash($password);
             return 0;
         }
 
@@ -149,6 +152,7 @@ class BasicAuthenticationMiddleware
         $user = $this->userRepository()->findBasicAuthUser($username);
 
         if (!$user) {
+            $this->verifyAgainstDummyHash($password);
             // Disabled account: still record so probing inactive users contributes to lockout.
             $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             return 0;
@@ -201,6 +205,11 @@ class BasicAuthenticationMiddleware
     {
         $hashedPassword = $userModel->getHashedPassword();
 
+        // Rows with no modern hash (provisioned, or legacy md5) would otherwise answer instantly.
+        if (password_get_info($hashedPassword)['algo'] === null) {
+            $this->verifyAgainstDummyHash($password);
+        }
+
         // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying
         // against an empty hash would throw (unknown algorithm), surfacing a 500 and
         // skipping the caller's failed-attempt recording; treat it as a clean failure.
@@ -208,10 +217,22 @@ class BasicAuthenticationMiddleware
             return false;
         }
 
-        $authService = UserAuthenticationService::fromConfig($this->config);
-
         // Verify the password directly without going through the full authentication flow
-        return $authService->verifyPassword($password, $hashedPassword);
+        return $this->authService()->verifyPassword($password, $hashedPassword);
+    }
+
+    private function authService(): UserAuthenticationService
+    {
+        return $this->authService ??= UserAuthenticationService::fromConfig($this->config);
+    }
+
+    /**
+     * Spends one full hash check so a missing, disabled or hashless account takes
+     * as long to refuse as a wrong password for a real one.
+     */
+    private function verifyAgainstDummyHash(#[\SensitiveParameter] string $password): void
+    {
+        $this->authService()->verifyPassword($password, $this->authService()->dummyVerificationHash());
     }
 
     /**
