@@ -88,9 +88,13 @@ class ApiKeysTemplateRenderTest extends TestCase
     private function onclickHandlers(string $html): array
     {
         $dom = new DOMDocument();
-        libxml_use_internal_errors(true);
-        $dom->loadHTML('<?xml encoding="UTF-8">' . $html);
-        libxml_clear_errors();
+        $previous = libxml_use_internal_errors(true);
+        try {
+            $dom->loadHTML('<?xml encoding="UTF-8">' . $html);
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+        }
 
         $handlers = [];
         foreach ((new DOMXPath($dom))->query('//button[@onclick]') ?: [] as $button) {
