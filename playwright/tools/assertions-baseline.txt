@@ -1,3 +1,0 @@
-playwright/tests/errors/error-pages.spec.js::decline should link to logout
-playwright/tests/errors/error-pages.spec.js::should require checkbox to be checked
-playwright/tests/errors/error-pages.spec.js::should show validation error when checkbox not checked
