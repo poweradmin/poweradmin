@@ -54,17 +54,17 @@ async function openPaginatedList(page) {
 }
 
 /** Enough zones under one letter to fill more than one page of PAGE_SIZE. */
-async function createFillerZones(page, prefix) {
-  const zones = [];
+async function createFillerZones(page, prefix, zones) {
   for (let i = 1; i <= FILLER_COUNT; i++) {
     const zoneName = `${prefix}-${i}.example.com`;
+    // Tracked before the create so a partial failure is still cleaned up
     zones.push(zoneName);
     await page.goto('/zones/add/master');
     await page.locator('[data-testid="zone-name-input"]').fill(zoneName);
     await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('domcontentloaded');
+    await expect(page.locator('.alert-danger')).toHaveCount(0);
   }
-  return zones;
 }
 
 async function removeZones(page, zones) {
@@ -93,7 +93,7 @@ test.describe('Pagination Functionality', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, pgUser.username, pgUser.password);
     await setZoneListPageSize(page, PAGE_SIZE);
-    fillerZones = await createFillerZones(page, `${LETTER}${uniqueName('pg').slice(4)}`);
+    await createFillerZones(page, `${LETTER}${uniqueName('pg').slice(4)}`, fillerZones);
     await page.close();
   });
 
@@ -101,9 +101,12 @@ test.describe('Pagination Functionality', () => {
     test.setTimeout(180000);
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    await removeZones(page, fillerZones);
-    await deletePagingUser(page);
-    await page.close();
+    try {
+      await removeZones(page, fillerZones);
+    } finally {
+      await deletePagingUser(page);
+      await page.close();
+    }
   });
 
   test('should display pagination controls when zone list exceeds page size', async ({ page }) => {
@@ -199,34 +202,30 @@ test.describe('Pagination Functionality', () => {
 
     await page.waitForLoadState('networkidle');
 
-    const errorAlert = page.locator('.alert-danger, .alert.alert-danger');
-    if (await errorAlert.count() > 0) {
-      return;
-    }
+    await expect(page.locator('.alert-danger')).toHaveCount(0);
 
     // The list is paginated, so resolve the zone by name rather than by row
     const zoneId = await findZoneIdByName(page, zoneName);
     expect(zoneId).not.toBeNull();
 
-    await page.goto(`/zones/${zoneId}/edit`);
-    await page.waitForLoadState('networkidle');
-
-    for (let i = 1; i <= 15; i++) {
-      await page.locator('select.record-type-select, select[name*="type"]').first().selectOption('A');
-      await page.locator('[data-testid="record-name-input"]').fill(`host${i}`);
-      await page.locator('[data-testid="record-content-input"]').fill(`192.168.1.${i}`);
-      await page.locator('[data-testid="add-record-button"]').click();
-      // Each add reloads the edit page; the next iteration must not race the reload.
+    try {
+      await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
+
+      for (let i = 1; i <= 15; i++) {
+        await page.locator('select.record-type-select, select[name*="type"]').first().selectOption('A');
+        await page.locator('[data-testid="record-name-input"]').fill(`host${i}`);
+        await page.locator('[data-testid="record-content-input"]').fill(`192.168.1.${i}`);
+        await page.locator('[data-testid="add-record-button"]').click();
+        // Each add reloads the edit page; the next iteration must not race the reload.
+        await page.waitForLoadState('networkidle');
+      }
+
+      // 15 A records + SOA + NS exceed the page size of 5
+      await expect(page.locator('.pagination, [data-testid*="pagination"]').first()).toBeVisible();
+    } finally {
+      await deleteZoneById(page, zoneId);
     }
-
-    const recordsPagination = page.locator('.pagination, [data-testid*="pagination"]');
-    const hasPagination = await recordsPagination.count() > 0;
-
-    expect(hasPagination !== undefined).toBeTruthy();
-
-    // Cleanup
-    await deleteZoneById(page, zoneId);
   });
 
   test('should preserve sort order across pages', async ({ page }) => {

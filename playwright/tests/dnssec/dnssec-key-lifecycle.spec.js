@@ -4,21 +4,22 @@
  * Tests for DNSSEC key generation, activation, and deletion lifecycle.
  */
 
-import { test, expect } from '../../fixtures/test-fixtures.js';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { ensureDnssecKey, listDnssecKeyIds, submitKeyToggle } from '../../helpers/dnssec.js';
+import { addDnssecKey, ensureDnssecKey, listDnssecKeyIds, submitKeyToggle } from '../../helpers/dnssec.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('DNSSEC Key Lifecycle', () => {
-  // The worker zone is this spec's own, so every key on it is under its control
-  // and the fixture deletes the zone (and its keys) afterwards.
+  // The zone is this spec's own, so every key on it is under its control
+  // and it is deleted (with its keys) after the last test.
+  const zone = useFileZone('dnskeylife');
   let zoneId = null;
 
-  test.beforeAll(async ({ browser, workerZone }) => {
-    zoneId = workerZone.id;
+  test.beforeAll(async ({ browser }) => {
+    zoneId = zone.id;
     const page = await browser.newPage();
     try {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -28,16 +29,19 @@ test.describe('DNSSEC Key Lifecycle', () => {
     }
   });
 
-  // Id of a key whose toggle link carries the given title, from the key list
-  async function keyIdWithToggle(page, title) {
+  // Id of a key whose toggle link shows the given icon (untranslated), or null when none does
+  async function keyIdWithToggle(page, iconClass) {
     await page.goto(`/zones/${zoneId}/dnssec`);
-    const href = await page.locator(`table a[href*="/dnssec/keys/"][title*="${title}"]`).first().getAttribute('href');
-    return href?.match(/\/dnssec\/keys\/(\d+)\//)?.[1] ?? null;
+    const hrefs = await page.locator(`table a[href*="/dnssec/keys/"][href$="/edit"] i.${iconClass}`).evaluateAll(
+      icons => icons.map(i => i.closest('a').getAttribute('href'))
+    );
+    return hrefs[0]?.match(/\/dnssec\/keys\/(\d+)\//)?.[1] ?? null;
   }
 
   // The add-key form creates inactive keys, so flip one when the wanted state is missing.
   async function keyIdInState(page, wantActive) {
-    const wanted = wantActive ? 'Deactivate this key' : 'Activate this key';
+    // pause-circle = active key (offers Deactivate), play-circle = inactive key (offers Activate)
+    const wanted = wantActive ? 'bi-pause-circle' : 'bi-play-circle';
     await ensureDnssecKey(page, zoneId);
     let keyId = await keyIdWithToggle(page, wanted);
     if (!keyId) {
@@ -45,7 +49,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       await submitKeyToggle(page, zoneId, anyKey);
       keyId = await keyIdWithToggle(page, wanted);
     }
-    expect(keyId, `a key offering "${wanted}" must exist`).toBeTruthy();
+    expect(keyId, `a key showing ${wanted} must exist`).toBeTruthy();
     return keyId;
   }
 
@@ -103,29 +107,16 @@ test.describe('DNSSEC Key Lifecycle', () => {
 
     test('should generate KSK key', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
-
-      // Key type is a <select name="key_type">, so input[value="ksk"] never matched
-      const keyType = page.locator('select[name="key_type"]');
-      await expect(keyType).toBeVisible();
-      await keyType.selectOption('ksk');
-
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      // addDnssecKey waits for the redirect and asserts the key count grew by one
+      const keyId = await addDnssecKey(page, zoneId, { keyType: 'ksk' });
+      expect(await listDnssecKeyIds(page, zoneId)).toContain(keyId);
     });
 
     test('should generate ZSK key', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
-
-      const keyType = page.locator('select[name="key_type"]');
-      await expect(keyType).toBeVisible();
-      await keyType.selectOption('zsk');
-
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      // addDnssecKey waits for the redirect and asserts the key count grew by one
+      const keyId = await addDnssecKey(page, zoneId, { keyType: 'zsk' });
+      expect(await listDnssecKeyIds(page, zoneId)).toContain(keyId);
     });
   });
 
@@ -216,8 +207,11 @@ test.describe('DNSSEC Key Lifecycle', () => {
     test('should delete key without CSRF error', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto(`/zones/${zoneId}/dnssec`);
+      const keysBefore = await listDnssecKeyIds(page, zoneId);
+      await page.goto(`/zones/${zoneId}/dnssec`);
       const deleteLink = page.locator('table a[href*="/dnssec/keys/"][href*="/delete"]').last();
       await expect(deleteLink.first()).toBeVisible();
+      const deletedId = (await deleteLink.getAttribute('href')).match(/\/dnssec\/keys\/(\d+)\/delete/)[1];
       await deleteLink.click();
       await expect(page).toHaveURL(/.*dnssec.*delete/);
 
@@ -228,11 +222,15 @@ test.describe('DNSSEC Key Lifecycle', () => {
       // Submit the delete form
       const deleteBtn = page.locator('form[action*="/delete"] button[type="submit"]');
       await expect(deleteBtn).toBeVisible();
-      await deleteBtn.click();
-      await page.waitForLoadState('networkidle');
+      await Promise.all([
+        page.waitForURL(url => url.pathname.endsWith(`/zones/${zoneId}/dnssec`), { timeout: 30000 }),
+        deleteBtn.click(),
+      ]);
 
-      // Auto-retrying so a slow render cannot read the page mid-flight
       await expect(page.locator('body')).not.toContainText(/Invalid CSRF token/i);
+      const keysAfter = await listDnssecKeyIds(page, zoneId);
+      expect(keysAfter, 'the deleted key must be gone').not.toContain(deletedId);
+      expect(keysAfter).toHaveLength(keysBefore.length - 1);
     });
   });
 

@@ -1,7 +1,7 @@
 /**
  * DNSSEC key helpers.
  *
- * API: listDnssecKeyIds, ensureDnssecKey, pruneDnssecKeys,
+ * API: listDnssecKeyIds, ensureDnssecKey, addDnssecKey, pruneDnssecKeys,
  *   ensureZoneSigned(page, zoneId)           -> zone has >= 1 ACTIVE key (needs an apex NS)
  *   submitKeyToggle(page, zoneId, keyId)     -> flips active/inactive and asserts it flipped
  * Run these against a throwaway zone (tempZone fixture), never a seeded one.
@@ -10,6 +10,9 @@
  * seed ships no cryptokeys at all, so without a prune every run leaves more keys
  * behind than the last. Capture the ids up front, remove whatever the run added.
  */
+
+import { expect } from '@playwright/test';
+import { errorMessages } from './zones.js';
 
 /**
  * List the DNSSEC key ids currently shown for a zone.
@@ -45,13 +48,40 @@ export async function ensureDnssecKey(page, zoneId) {
     return;
   }
 
-  await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
-  await page.locator('button[type="submit"], input[type="submit"]').first().click();
-  await page.waitForLoadState('networkidle');
+  await addDnssecKey(page, zoneId);
+}
 
-  if ((await listDnssecKeyIds(page, zoneId)).length === 0) {
-    throw new Error(`Adding a DNSSEC key to zone ${zoneId} did not create one`);
+/**
+ * Submit the add-key form and wait for the redirect to the key list.
+ * Throws when the submit does not redirect or the key count did not grow by one.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string|number} zoneId
+ * @param {{keyType?: string}} [opts] - key_type option value, e.g. 'ksk' or 'zsk'
+ * @returns {Promise<string>} Id of the new key
+ */
+export async function addDnssecKey(page, zoneId, { keyType } = {}) {
+  const before = await listDnssecKeyIds(page, zoneId);
+
+  await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
+  if (keyType) {
+    await page.locator('select[name="key_type"]').selectOption(keyType);
   }
+  const submit = page.locator('button[type="submit"], input[type="submit"]').first();
+  try {
+    await Promise.all([
+      page.waitForURL(url => url.pathname.endsWith(`/zones/${zoneId}/dnssec`), { timeout: 30000 }),
+      submit.click(),
+    ]);
+  } catch {
+    throw new Error(`adding a DNSSEC key to zone ${zoneId} was refused: ${await errorMessages(page) || 'no redirect to the key list'}`);
+  }
+
+  const added = (await listDnssecKeyIds(page, zoneId)).filter(id => !before.includes(id));
+  if (added.length !== 1) {
+    throw new Error(`adding a DNSSEC key to zone ${zoneId} created ${added.length} keys, expected 1: ${await errorMessages(page)}`);
+  }
+  return added[0];
 }
 
 /**
@@ -152,26 +182,30 @@ export async function ensureZoneSigned(page, zoneId) {
   await page.goto(`/zones/${zoneId}/edit`);
 
   if (await signButton.count() > 0) {
-    // The button sits in the Zone Configuration card, which may start collapsed
-    if (!(await signButton.isVisible())) {
-      await page.locator('[data-bs-target="#zone-config-body"]').click();
+    // EditController renders the edit page in the POST response (no redirect)
+    const [response] = await Promise.all([
+      page.waitForResponse(r => r.request().method() === 'POST' && r.url().includes(`/zones/${zoneId}/edit`), { timeout: 30000 }),
+      signButton.click(),
+    ]);
+    if (!response.ok()) {
+      throw new Error(`signing zone ${zoneId} returned HTTP ${response.status()}: ${await errorMessages(page)}`);
     }
-    await signButton.click();
-    await page.waitForLoadState('domcontentloaded');
-    await page.goto(`/zones/${zoneId}/edit`);
+    try {
+      await expect(manageLink).toBeVisible({ timeout: 15000 });
+    } catch {
+      throw new Error(`zone ${zoneId} is not signed after signing: ${await errorMessages(page) || 'DNSSEC disabled, no apex NS, or signing refused'}`);
+    }
   }
 
   if (await manageLink.count() === 0) {
-    throw new Error(`zone ${zoneId} is not signed after signing: DNSSEC disabled, no apex NS, or signing refused`);
+    throw new Error(`zone ${zoneId} is not signed: ${await errorMessages(page) || 'DNSSEC disabled, no apex NS, or signing refused'}`);
   }
 
   await page.goto(`/zones/${zoneId}/dnssec`);
   if ((await countToggleLinks(page)).deactivate === 0) {
     // Keys exist but none is active; activate the first
     if ((await listDnssecKeyIds(page, zoneId)).length === 0) {
-      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.waitForLoadState('domcontentloaded');
+      await addDnssecKey(page, zoneId);
     }
     const [keyId] = await listDnssecKeyIds(page, zoneId);
     if (!keyId) {

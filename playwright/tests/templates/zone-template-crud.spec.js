@@ -18,13 +18,28 @@ async function createAndRemove(page, name, description = '') {
     await page.locator('input[name*="descr"], textarea[name*="descr"]').first().fill(description);
   }
   await page.locator('button[type="submit"], input[type="submit"]').first().click();
-  await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-  await page.goto('/zones/templates');
-  const row = page.locator('.template-row').filter({ hasText: name });
-  await expect(row, `template ${name} must be listed`).toHaveCount(1);
-  const href = await row.locator('a[href$="/edit"]').getAttribute('href');
-  await deleteTemplate(page, href.match(/templates\/(\d+)\/edit/)[1]);
+  // The template id is resolved from the list so the delete runs even if an assertion fails
+  let templateId = null;
+  try {
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+    await page.goto('/zones/templates');
+    const row = page.locator('.template-row').filter({ hasText: name });
+    await expect(row, `template ${name} must be listed`).toHaveCount(1);
+    const href = await row.locator('a[href$="/edit"]').getAttribute('href');
+    templateId = href.match(/templates\/(\d+)\/edit/)[1];
+  } finally {
+    if (!templateId) {
+      await page.goto('/zones/templates');
+      const href = await page.locator('.template-row').filter({ hasText: name })
+        .locator('a[href$="/edit"]').first().getAttribute('href', { timeout: 2000 }).catch(() => null);
+      templateId = href?.match(/templates\/(\d+)\/edit/)?.[1] ?? null;
+    }
+    if (templateId) {
+      await deleteTemplate(page, templateId);
+    }
+  }
 }
 
 // Write tests run serially to avoid database race conditions

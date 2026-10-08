@@ -113,18 +113,23 @@ test.describe('User CRUD Operations', () => {
         await passwordFields.nth(i).fill(testPassword);
       }
 
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      try {
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      await expect(page).toHaveURL(/\/users$/);
-      await expect(page.locator('[data-testid="system-message"]'))
-        .toContainText(/user has been created successfully/i);
-      await page.goto(`/users?search=${uniqueUsername}`);
-      const row = page.locator(`tr:has(input[value="${uniqueUsername}"])`);
-      await expect(row).toHaveCount(1);
-
-      // Remove the throwaway user again
-      await row.locator('a[href*="/delete"]').first().click();
-      await page.locator('button[type="submit"][name="commit"]').click();
+        await expect(page).toHaveURL(/\/users$/);
+        await expect(page.locator('[data-testid="system-message"]'))
+          .toContainText(/user has been created successfully/i);
+        await page.goto(`/users?search=${uniqueUsername}`);
+        await expect(page.locator(`tr:has(input[value="${uniqueUsername}"])`)).toHaveCount(1);
+      } finally {
+        // Remove the throwaway user again, also when an assertion above failed
+        await page.goto(`/users?search=${uniqueUsername}`);
+        const row = page.locator(`tr:has(input[value="${uniqueUsername}"])`);
+        if (await row.count() > 0) {
+          await row.locator('a[href*="/delete"]').first().click();
+          await page.locator('button[type="submit"][name="commit"]').click();
+        }
+      }
       await page.goto(`/users?search=${uniqueUsername}`);
       await expect(page.locator(`tr:has(input[value="${uniqueUsername}"])`)).toHaveCount(0);
     });

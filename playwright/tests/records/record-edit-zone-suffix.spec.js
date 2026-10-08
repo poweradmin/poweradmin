@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/test-fixtures.js';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
@@ -18,14 +18,16 @@ import users from '../../fixtures/users.json' with { type: 'json' };
  *
  * In both cases, the record name should NOT contain double dots (..) which was the bug symptom.
  */
+const zone = useFileZone('recsuffix');
+
 test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
-  test('should preserve zone name in record name when editing (issue #958)', async ({ page, workerZone }) => {
-    const zoneId = workerZone.id;
-    const zoneName = workerZone.name;
+  test('should preserve zone name in record name when editing (issue #958)', async ({ page }) => {
+    const zoneId = zone.id;
+    const zoneName = zone.name;
 
     // Create a record with zone name embedded in hostname
     const uniquePrefix = uniqueName('bug958');
@@ -81,9 +83,9 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     expect(isHostnameOnly || isFullFqdn, `Name should be either "${recordHostname}" (hostname-only) or "${expectedFullName}" (full FQDN), got "${nameValue}"`).toBe(true);
   });
 
-  test('should handle simple record names correctly', async ({ page, workerZone }) => {
-    const zoneId = workerZone.id;
-    const zoneName = workerZone.name;
+  test('should handle simple record names correctly', async ({ page }) => {
+    const zoneId = zone.id;
+    const zoneName = zone.name;
 
     const uniqueHostname = uniqueName('simple');
 

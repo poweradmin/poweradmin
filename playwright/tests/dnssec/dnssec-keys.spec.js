@@ -5,21 +5,22 @@
  * adding, and managing keys.
  */
 
-import { test, expect } from '../../fixtures/test-fixtures.js';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { ensureDnssecKey, ensureZoneSigned, listDnssecKeyIds, submitKeyToggle } from '../../helpers/dnssec.js';
+import { addDnssecKey, ensureDnssecKey, ensureZoneSigned, listDnssecKeyIds, submitKeyToggle } from '../../helpers/dnssec.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('DNSSEC Key Management', () => {
-  // The spec owns this worker zone, so adding, toggling and deleting keys cannot
-  // touch seeded zones or other specs; the fixture deletes the zone afterwards.
+  // The spec owns this zone, so adding, toggling and deleting keys cannot
+  // touch seeded zones or other specs; it is deleted after the last test.
+  const zone = useFileZone('dnskeys');
   let zoneId = null;
 
-  test.beforeAll(async ({ browser, workerZone }) => {
-    zoneId = workerZone.id;
+  test.beforeAll(async ({ browser }) => {
+    zoneId = zone.id;
     const page = await browser.newPage();
     try {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -134,44 +135,24 @@ test.describe('DNSSEC Key Management', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
+      const options = await page.locator('select[name="key_type"] option').allTextContents();
+      expect(options.some(o => o.toUpperCase().includes('KSK')), 'the key type list offers KSK').toBe(true);
 
-      const form = page.locator('form');
-      await expect(form.first()).toBeVisible();
-      const typeSelector = page.locator('select[name*="type"], select[name*="key_type"]').first();
-      if (await typeSelector.count() > 0) {
-        const options = await typeSelector.locator('option').allTextContents();
-        const kskOption = options.find(o => o.toUpperCase().includes('KSK'));
-        if (kskOption) {
-          await typeSelector.selectOption({ label: kskOption });
-        }
-      }
-
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      // addDnssecKey waits for the redirect and asserts the key count grew by one
+      const keyId = await addDnssecKey(page, zoneId, { keyType: 'ksk' });
+      expect(await listDnssecKeyIds(page, zoneId)).toContain(keyId);
     });
 
     test('should add ZSK key', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
+      const options = await page.locator('select[name="key_type"] option').allTextContents();
+      expect(options.some(o => o.toUpperCase().includes('ZSK')), 'the key type list offers ZSK').toBe(true);
 
-      const form = page.locator('form');
-      await expect(form.first()).toBeVisible();
-      const typeSelector = page.locator('select[name*="type"], select[name*="key_type"]').first();
-      if (await typeSelector.count() > 0) {
-        const options = await typeSelector.locator('option').allTextContents();
-        const zskOption = options.find(o => o.toUpperCase().includes('ZSK'));
-        if (zskOption) {
-          await typeSelector.selectOption({ label: zskOption });
-        }
-      }
-
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      // addDnssecKey waits for the redirect and asserts the key count grew by one
+      const keyId = await addDnssecKey(page, zoneId, { keyType: 'zsk' });
+      expect(await listDnssecKeyIds(page, zoneId)).toContain(keyId);
     });
 
     test('should select different algorithms', async ({ page }) => {
@@ -236,10 +217,7 @@ test.describe('DNSSEC Key Management', () => {
    * so the ones that ran afterwards found no delete link at all.
    */
   async function createDnssecKey(page, zoneId) {
-    await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
-    await expect(page.locator('form').first()).toBeVisible();
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await addDnssecKey(page, zoneId);
   }
 
   test.describe('Delete DNSSEC Key', () => {
@@ -309,8 +287,11 @@ test.describe('DNSSEC Key Management', () => {
       await createDnssecKey(page, zoneId);
       await page.goto(`/zones/${zoneId}/dnssec`);
 
-      const deleteLink = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]').last();
+      const keysBefore = await listDnssecKeyIds(page, zoneId);
+      await page.goto(`/zones/${zoneId}/dnssec`);
+      const deleteLink = page.locator('table a[href*="/dnssec/keys/"][href*="/delete"]').last();
       await expect(deleteLink.first()).toBeVisible();
+      const deletedId = (await deleteLink.getAttribute('href')).match(/\/dnssec\/keys\/(\d+)\/delete/)[1];
       await deleteLink.click();
       await expect(page).toHaveURL(/.*dnssec.*delete/);
 
@@ -321,10 +302,15 @@ test.describe('DNSSEC Key Management', () => {
       // Submit the delete form
       const deleteBtn = page.locator('form[action*="/delete"] button[type="submit"]');
       await expect(deleteBtn).toBeVisible();
-      await deleteBtn.click();
+      await Promise.all([
+        page.waitForURL(url => url.pathname.endsWith(`/zones/${zoneId}/dnssec`), { timeout: 30000 }),
+        deleteBtn.click(),
+      ]);
 
-      // Auto-retrying so a slow render cannot read the page mid-flight
       await expect(page.locator('body')).not.toContainText(/Invalid CSRF token/i);
+      const keysAfter = await listDnssecKeyIds(page, zoneId);
+      expect(keysAfter, 'the deleted key must be gone').not.toContain(deletedId);
+      expect(keysAfter).toHaveLength(keysBefore.length - 1);
     });
   });
 

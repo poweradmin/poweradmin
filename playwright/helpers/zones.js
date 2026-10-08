@@ -10,10 +10,12 @@
  *   createZone(page, name, type)             -> zone id; throws on any failure
  *   createTempZone(page, opts)               -> { id, name }; zone + apex NS + optional records
  *   addRecord(page, zoneId, record)          -> adds one record, throws on refusal
+ *   assignZoneOwner(page, zoneId, username)  -> adds a user owner to a zone (admin page)
  *   deleteZoneById / deleteZoneByName        -> true when deleted, false when no zone to delete
- * Most specs should use the tempZone / workerZone fixtures from fixtures/test-fixtures.js.
+ * Most specs should use the tempZone fixture and useFileZone() from fixtures/test-fixtures.js.
  */
 
+import { expect } from '@playwright/test';
 import zones from '../fixtures/zones.json' with { type: 'json' };
 
 /**
@@ -364,10 +366,37 @@ export async function addRecord(page, zoneId, record) {
     throw new Error(`addRecord(${record.type} ${record.name ?? ''} ${record.content}) on zone ${zoneId} was refused: ${reason || 'still on the add form'}`);
   }
 
-  const reason = await errorMessages(page);
+  // A successful add can carry a warning (e.g. PTR side effects); only danger alerts are failures here
+  const reason = (await page.locator('[data-testid="system-message"].alert-danger').allTextContents())
+    .map(t => t.trim()).join(' | ');
   if (reason) {
     throw new Error(`addRecord(${record.type} ${record.name ?? ''} ${record.content}) on zone ${zoneId} failed: ${reason}`);
   }
+}
+
+/**
+ * Make a user an owner of a zone through /zones/{id}/ownership. Admin page required.
+ *
+ * @param {import('@playwright/test').Page} page - Admin page
+ * @param {string|number} zoneId
+ * @param {string} username
+ * @returns {Promise<void>}
+ */
+export async function assignZoneOwner(page, zoneId, username) {
+  await page.goto(`/zones/${zoneId}/ownership`);
+
+  const radio = page.locator(`xpath=//input[@name="newowner"][following-sibling::label[contains(., "(${username})")]]`);
+  if (await radio.count() === 0) {
+    throw new Error(`user ${username} is not selectable as an owner of zone ${zoneId}`);
+  }
+  await radio.check();
+  await Promise.all([
+    page.waitForResponse(r => r.request().method() === 'POST' && r.url().includes(`/zones/${zoneId}/ownership`)),
+    page.locator('#add-owner-btn').click(),
+  ]);
+
+  const listed = page.locator('.list-group-item', { hasText: `(${username})` });
+  await expect(listed, `assigning ${username} to zone ${zoneId} failed: ${await errorMessages(page) || 'owner not listed afterwards'}`).toHaveCount(1);
 }
 
 /**

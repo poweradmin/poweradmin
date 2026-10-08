@@ -4,15 +4,17 @@
  * Tests for checkbox handling in multi-record add form.
  */
 
-import { test, expect } from '../../fixtures/test-fixtures.js';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
+const zone = useFileZone('multichk');
+
 test.describe('Multi-Record Add Form Checkbox Handling', () => {
   test.describe('Add Record Form Structure', () => {
-    test('should have add more records button', async ({ page, workerZone }) => {
+    test('should have add more records button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       // The multi-record form lives on /records/add, not on the zone edit page
       await page.goto(`/zones/${zoneId}/records/add`);
@@ -21,9 +23,9 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
       await expect(page.locator('button:has-text("Add another record")')).toBeVisible();
     });
 
-    test('should have checkbox for disabled records', async ({ page, workerZone }) => {
+    test('should have checkbox for disabled records', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
@@ -33,9 +35,9 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
   });
 
   test.describe('Checkbox State Reset', () => {
-    test('new record row should have unchecked disabled checkbox', async ({ page, workerZone }) => {
+    test('new record row should have unchecked disabled checkbox', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
@@ -46,9 +48,9 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
       await expect(page.locator('input[type="checkbox"][name$="[disabled]"]:checked')).toHaveCount(0);
     });
 
-    test('should handle checkbox toggle correctly', async ({ page, workerZone }) => {
+    test('should handle checkbox toggle correctly', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
@@ -67,9 +69,9 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
   });
 
   test.describe('Form Input Types', () => {
-    test('record form should have name input', async ({ page, workerZone }) => {
+    test('record form should have name input', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
@@ -77,9 +79,9 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
       expect(await page.locator('input[name*="name"]').count()).toBeGreaterThan(0);
     });
 
-    test('record form should have type selector', async ({ page, workerZone }) => {
+    test('record form should have type selector', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
@@ -87,9 +89,9 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
       expect(await page.locator('select[name*="type"]').count()).toBeGreaterThan(0);
     });
 
-    test('record form should have content input', async ({ page, workerZone }) => {
+    test('record form should have content input', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
@@ -98,9 +100,9 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
       expect(await contentInput.count()).toBeGreaterThan(0);
     });
 
-    test('record form should have TTL input', async ({ page, workerZone }) => {
+    test('record form should have TTL input', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
@@ -110,9 +112,9 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
   });
 
   test.describe('Multiple Record Rows', () => {
-    test('should be able to add multiple record rows', async ({ page, workerZone }) => {
+    test('should be able to add multiple record rows', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       // templates/default/add_record.html: "Add another record" clones a tr.record-row
       await page.goto(`/zones/${zoneId}/records/add`);

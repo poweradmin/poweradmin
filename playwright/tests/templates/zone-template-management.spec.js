@@ -115,18 +115,28 @@ test.describe('Zone Template Management', () => {
     // Own template so the test does not depend on another test having run first
     const ownName = `${templateName}-delete`;
     const templateId = await createTemplate(page, ownName);
-    expect(templateId, `template ${ownName} must be created`).toBeTruthy();
-
-    await page.goto('/zones/templates');
     const templateRow = page.locator('table tbody tr').filter({ hasText: ownName });
-    await expect(templateRow).toHaveCount(1);
-    await templateRow.locator('a[href$="/delete"]').click();
+    try {
+      expect(templateId, `template ${ownName} must be created`).toBeTruthy();
 
-    await page.locator('button[name="confirm"]').click();
-    await page.waitForLoadState('networkidle');
+      await page.goto('/zones/templates');
+      await expect(templateRow).toHaveCount(1);
+      await templateRow.locator('a[href$="/delete"]').click();
 
-    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-    await page.goto('/zones/templates');
-    await expect(page.locator('table tbody tr').filter({ hasText: ownName })).toHaveCount(0);
+      await page.locator('button[name="confirm"]').click();
+      await page.waitForLoadState('networkidle');
+
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await page.goto('/zones/templates');
+      await expect(templateRow).toHaveCount(0);
+    } finally {
+      // Only a template the UI delete did not remove is still listed
+      if (templateId) {
+        await page.goto('/zones/templates');
+        if (await templateRow.count() > 0) {
+          await deleteTemplate(page, templateId);
+        }
+      }
+    }
   });
 });

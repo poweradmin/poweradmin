@@ -238,8 +238,9 @@ test.describe('Input Validation Edge Cases', () => {
       await expect(page.locator('[data-testid="system-message"].alert-danger')).toBeVisible();
 
       // The refused user must not exist
-      await page.goto('/users');
-      await expect(page.locator('table')).not.toContainText(username);
+      // Usernames render as input values, so match the input rather than the text
+      await page.goto(`/users?search=${username}`);
+      await expect(page.locator(`tr:has(input[value="${username}"])`)).toHaveCount(0);
     });
   });
 });

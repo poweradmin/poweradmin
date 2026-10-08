@@ -84,9 +84,10 @@ test.describe('Group Members Management', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
       await navigateToGroupMembers(page, 'Zone Managers');
-      // Zone Managers has 'manager' as a member from test data
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).toContainText(/manager|member/i);
+      // Zone Managers has 'manager' as a member from test data; match its username cell
+      await expect(page.locator('#remove-form tbody tr').filter({
+        has: page.getByRole('cell', { name: users.manager.username, exact: true }),
+      })).toHaveCount(1);
     });
 
     test('should display add members panel', async ({ page }) => {
@@ -95,9 +96,9 @@ test.describe('Group Members Management', () => {
       await navigateToGroupMembers(page, 'Viewers');
       await expect(page.locator('#add-form')).toHaveCount(1);
 
-      // Should have available users checkboxes or list
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).toContainText(/add|available|member/i);
+      // At least one user is available to add, listed with a checkbox and username
+      await expect(page.locator('#add-form #available-users-body .user-row').first()).toBeVisible();
+      await expect(page.locator('#add-form .available-checkbox').first()).toBeVisible();
     });
   });
 

@@ -29,6 +29,10 @@ test.describe('Group CRUD Operations', () => {
     await page.waitForLoadState('domcontentloaded');
   }
 
+  // Exact name cell: "x edit" must not also match "x edit updated"
+  const groupRow = (page, name) => page.locator('.group-row')
+    .filter({ has: page.getByRole('cell', { name, exact: true }) });
+
   // Several tests here create groups they cannot delete inline (the delete-page
   // test stops at the confirmation on purpose), so sweep them by tag.
   test.afterAll(async ({ browser }) => {
@@ -264,7 +268,7 @@ test.describe('Group CRUD Operations', () => {
 
       // Find and edit the created group
       await page.goto('/groups');
-      const row = page.locator(`tr:has-text("${groupName}")`);
+      const row = groupRow(page, groupName);
       await expect(row.first()).toBeVisible();
       const editLink = row.locator('a[href*="/edit"]').first();
       await editLink.click();
@@ -278,7 +282,7 @@ test.describe('Group CRUD Operations', () => {
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
       await page.goto('/groups');
-      await expect(page.locator(`tr:has-text("${updatedName}")`)).toHaveCount(1);
+      await expect(groupRow(page, updatedName)).toHaveCount(1);
     });
   });
 
@@ -290,7 +294,7 @@ test.describe('Group CRUD Operations', () => {
       await createGroup(page, groupName);
 
       await page.goto('/groups');
-      const row = page.locator(`tr:has-text("${groupName}")`);
+      const row = groupRow(page, groupName);
       await expect(row.first()).toBeVisible();
       const deleteLink = row.locator('a[href*="/delete"]').first();
       await deleteLink.click();
@@ -334,7 +338,7 @@ test.describe('Group CRUD Operations', () => {
       await createGroup(page, groupName);
 
       await page.goto('/groups');
-      const row = page.locator(`tr:has-text("${groupName}")`);
+      const row = groupRow(page, groupName);
       await expect(row.first()).toBeVisible();
       const deleteLink = row.locator('a[href*="/delete"]').first();
       await deleteLink.click();
@@ -347,7 +351,7 @@ test.describe('Group CRUD Operations', () => {
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
       await page.goto('/groups');
-      await expect(page.locator(`tr:has-text("${groupName}")`)).toHaveCount(0);
+      await expect(groupRow(page, groupName)).toHaveCount(0);
     });
   });
 

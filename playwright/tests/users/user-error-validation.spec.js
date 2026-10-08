@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('User Management Error Validation', () => {
@@ -62,21 +63,38 @@ test.describe('User Management Error Validation', () => {
     expect(currentUrl).toMatch(/password.*change/i);
   });
 
-  test('should update user description successfully', async ({ page }) => {
-    await page.goto('/users');
-
-    const editLink = page.locator('table a[href*="/users/"][href$="/edit"]').first();
-    await expect(editLink).toBeVisible();
-    await editLink.click();
-
-    // Update description field
-    const descriptionField = page.locator('input[name*="description"], textarea[name*="description"], input[name*="descr"]').first();
-    await descriptionField.fill('Updated test description');
-
-    // Submit form
+  test('should update user description successfully', async ({ page }, testInfo) => {
+    // Edits a throwaway user so the seeded accounts keep their data
+    const username = uniqueName('uev', testInfo);
+    await page.goto('/users/add');
+    await page.locator('input[name="username"]').fill(username);
+    await page.locator('input[name="fullname"]').fill(username);
+    await page.locator('input[name="email"]').fill(`${username}@example.com`);
+    await page.locator('input[name="password"]').fill('TestP@ssw0rd123');
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await expect(page.locator('[data-testid="system-message"]'))
+      .toContainText(/user has been created successfully/i);
 
-    await expect(page.locator('[data-testid="system-message"]')).toContainText(/updated successfully/i);
+    const rowFor = () => page.locator(`tr:has(input[value="${username}"])`);
+    try {
+      await page.goto(`/users?search=${username}`);
+      await expect(rowFor()).toHaveCount(1);
+      await rowFor().locator('a[href$="/edit"]').first().click();
+
+      const descriptionField = page.locator('input[name*="description"], textarea[name*="description"], input[name*="descr"]').first();
+      await descriptionField.fill('Updated test description');
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      await expect(page.locator('[data-testid="system-message"]')).toContainText(/updated successfully/i);
+    } finally {
+      await page.goto(`/users?search=${username}`);
+      if (await rowFor().count() > 0) {
+        await rowFor().locator('a[href*="/delete"]').first().click();
+        await page.locator('button[type="submit"][name="commit"]').click();
+        await page.waitForLoadState('domcontentloaded');
+      }
+    }
   });
 
   test('should validate required fields when editing user', async ({ page }) => {

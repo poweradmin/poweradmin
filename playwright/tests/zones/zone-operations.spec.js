@@ -7,7 +7,7 @@
 
 import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { deleteZoneByName, getTestZoneId, uniqueZoneName, zoneExists } from '../../helpers/zones.js';
+import { deleteZoneByName, getTestZoneId, openZoneListPageFor, uniqueZoneName, zoneExists } from '../../helpers/zones.js';
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
@@ -59,7 +59,8 @@ test.describe('Zone Operations', () => {
     test('should open the edit page of a new zone with its SOA', async ({ page, tempZone }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      await page.goto('/zones/forward?letter=all');
+      // The list is paginated, so walk to the page that shows the new zone
+      expect(await openZoneListPageFor(page, tempZone.name)).toBe(true);
       const row = page.locator(`tr:has-text("${tempZone.name}")`);
       await expect(row).toHaveCount(1);
 

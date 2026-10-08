@@ -1,32 +1,35 @@
-import { test, expect } from '../../fixtures/test-fixtures.js';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectRecordAdded } from './record-assert.js';
 import { uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
+const zone = useFileZone('reccrud');
+
 test.describe('Record CRUD Operations', () => {
   test.describe('Add Record - A Record', () => {
-    test('should add A record with valid IPv4', async ({ page, workerZone }) => {
+    test('should add A record with valid IPv4', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('a');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('A');
-      await page.locator('input[name*="name"]').first().fill(`www-${Date.now()}`);
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('192.168.1.100');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: '192.168.1.100' });
     });
 
-    test('should reject A record with invalid IPv4', async ({ page, workerZone }) => {
+    test('should reject A record with invalid IPv4', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -42,41 +45,41 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Add Record - AAAA Record', () => {
-    test('should add AAAA record with valid IPv6', async ({ page, workerZone }) => {
+    test('should add AAAA record with valid IPv6', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('aaaa');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
-      await page.locator('input[name*="name"]').first().fill('ipv6');
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('2001:0db8:85a3:0000:0000:8a2e:0370:7334');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label });
     });
 
-    test('should add AAAA record with compressed IPv6', async ({ page, workerZone }) => {
+    test('should add AAAA record with compressed IPv6', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('aaaa-short');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
-      await page.locator('input[name*="name"]').first().fill('ipv6-short');
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('2001:db8::1');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label });
     });
 
-    test('should reject AAAA record with IPv4 address', async ({ page, workerZone }) => {
+    test('should reject AAAA record with IPv4 address', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -92,14 +95,15 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Add Record - MX Record', () => {
-    test('should add MX record with priority', async ({ page, workerZone }) => {
+    test('should add MX record with priority', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('mx');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('MX');
-      await page.locator('input[name*="content"]').first().fill('mail.example.com');
+      await page.locator('input[name*="content"]').first().fill(`mail-${label}.example.com`);
 
       const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
       if (await prioField.count() > 0) {
@@ -108,18 +112,18 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { content: `mail-${label}.example.com`, search: `mail-${label}.example.com` });
     });
 
-    test('should add MX record with high priority value', async ({ page, workerZone }) => {
+    test('should add MX record with high priority value', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('mx-high');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('MX');
-      await page.locator('input[name*="content"]').first().fill('backup-mail.example.com');
+      await page.locator('input[name*="content"]').first().fill(`backup-${label}.example.com`);
 
       const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
       if (await prioField.count() > 0) {
@@ -128,150 +132,149 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { content: `backup-${label}.example.com`, search: `backup-${label}.example.com` });
     });
   });
 
   test.describe('Add Record - TXT Record', () => {
-    test('should add TXT record with SPF', async ({ page, workerZone }) => {
+    test('should add TXT record with SPF', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('spf');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill('@');
-      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('v=spf1 include:_spf.google.com ~all');
+      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill(`"v=spf1 include:${label}.example.com ~all"`);
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { content: `include:${label}.example.com`, search: `include:${label}.example.com` });
     });
 
-    test('should add TXT record with DMARC', async ({ page, workerZone }) => {
+    test('should add TXT record with DMARC', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('dmarc');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('TXT');
-      await page.locator('input[name*="name"]').first().fill('_dmarc');
-      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('v=DMARC1; p=reject; rua=mailto:dmarc@example.com');
+      await page.locator('input[name*="name"]').first().fill(`_dmarc.${label}`);
+      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('"v=DMARC1; p=reject; rua=mailto:dmarc@example.com"');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: `_dmarc.${label}`, content: 'v=DMARC1' });
     });
 
-    test('should add TXT record with special characters', async ({ page, workerZone }) => {
+    test('should add TXT record with special characters', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('special');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('TXT');
-      await page.locator('input[name*="name"]').first().fill('special');
-      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('test="value"; key=123');
+      await page.locator('input[name*="name"]').first().fill(label);
+      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('"test=\\"value\\"; key=123"');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: 'key=123' });
     });
   });
 
   test.describe('Add Record - CNAME Record', () => {
-    test('should add CNAME record', async ({ page, workerZone }) => {
+    test('should add CNAME record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('cname');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
-      await page.locator('input[name*="name"]').first().fill('blog');
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('www.example.com');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: 'www.example.com' });
     });
 
-    test('should add CNAME pointing to external domain', async ({ page, workerZone }) => {
+    test('should add CNAME pointing to external domain', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('cname-ext');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
-      await page.locator('input[name*="name"]').first().fill('external');
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('target.external.com');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: 'target.external.com' });
     });
   });
 
   test.describe('Add Record - SRV Record', () => {
-    test('should add SRV record', async ({ page, workerZone }) => {
+    test('should add SRV record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('srv');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('SRV');
-      await page.locator('input[name*="name"]').first().fill('_sip._tcp');
-      await page.locator('input[name*="content"]').first().fill('10 5 5060 sip.example.com');
+      await page.locator('input[name*="name"]').first().fill(`_sip._tcp.${label}`);
+      await page.locator('input[name*="content"]').first().fill('5 5060 sip.example.com');
 
       const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
       if (await prioField.count() > 0) {
-        await prioField.fill('0');
+        await prioField.fill('10');
       }
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: `_sip._tcp.${label}`, content: 'sip.example.com' });
     });
   });
 
   test.describe('Add Record - CAA Record', () => {
-    test('should add CAA record', async ({ page, workerZone }) => {
+    test('should add CAA record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('caa');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('CAA');
-      await page.locator('input[name*="content"]').first().fill('0 issue "letsencrypt.org"');
+      await page.locator('input[name*="content"]').first().fill(`0 issue "${label}.letsencrypt.org"`);
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { content: `${label}.letsencrypt.org`, search: `${label}.letsencrypt.org` });
     });
   });
 
   test.describe('Add Record - NS Record', () => {
-    test('should add NS record for subdomain delegation', async ({ page, workerZone }) => {
+    test('should add NS record for subdomain delegation', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('ns');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('NS');
-      await page.locator('input[name*="name"]').first().fill('sub');
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('ns1.delegated.com');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: 'ns1.delegated.com' });
     });
   });
 
@@ -296,9 +299,9 @@ test.describe('Record CRUD Operations', () => {
   }
 
   test.describe('Edit Record', () => {
-    test('should access edit record page', async ({ page, workerZone }) => {
+    test('should access edit record page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
       const { recordId } = await addARecord(page, zoneId);
 
       await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
@@ -306,9 +309,9 @@ test.describe('Record CRUD Operations', () => {
       await expect(page.locator('input[name="content"]')).toBeVisible();
     });
 
-    test('should display record form with existing values', async ({ page, workerZone }) => {
+    test('should display record form with existing values', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
       const { recordId } = await addARecord(page, zoneId);
 
       await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
@@ -318,9 +321,9 @@ test.describe('Record CRUD Operations', () => {
       await expect(contentField).toHaveValue('192.0.2.77');
     });
 
-    test('should update record content', async ({ page, workerZone }) => {
+    test('should update record content', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
       const { recordId, label } = await addARecord(page, zoneId);
       const newContent = `198.51.100.${1 + Math.floor(Math.random() * 250)}`;
 
@@ -334,9 +337,9 @@ test.describe('Record CRUD Operations', () => {
       await expect(page.locator(`tr:has(input[name$="][name]"][value*="${label}"]) input[name$="][content]"]`)).toHaveValue(newContent);
     });
 
-    test('should update record TTL', async ({ page, workerZone }) => {
+    test('should update record TTL', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
       const { recordId, label } = await addARecord(page, zoneId);
       const newTtl = String(7000 + Math.floor(Math.random() * 900));
 
@@ -354,9 +357,9 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Delete Record', () => {
-    test('should access delete record confirmation', async ({ page, workerZone }) => {
+    test('should access delete record confirmation', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
       const { recordId } = await addARecord(page, zoneId);
 
       await page.goto(`/zones/${zoneId}/records/${recordId}/delete`);
@@ -364,9 +367,9 @@ test.describe('Record CRUD Operations', () => {
       await expect(page.locator('[data-testid="confirm-delete-record"]')).toBeVisible();
     });
 
-    test('should display confirmation message', async ({ page, workerZone }) => {
+    test('should display confirmation message', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
       const { recordId } = await addARecord(page, zoneId);
 
       await page.goto(`/zones/${zoneId}/records/${recordId}/delete`);
@@ -374,9 +377,9 @@ test.describe('Record CRUD Operations', () => {
       await expect(page.locator('[data-testid="confirm-delete-record"]')).toContainText(/delete/i);
     });
 
-    test('should cancel delete and return to zone', async ({ page, workerZone }) => {
+    test('should cancel delete and return to zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
       const { recordId, label } = await addARecord(page, zoneId);
 
       await page.goto(`/zones/${zoneId}/records/${recordId}/delete`);
@@ -390,9 +393,9 @@ test.describe('Record CRUD Operations', () => {
       await expect(page.locator(`input[name^="record["][name$="][name]"][value*="${label}"]`)).toHaveCount(1);
     });
 
-    test('should delete the record after confirmation', async ({ page, workerZone }) => {
+    test('should delete the record after confirmation', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
       const { recordId, label } = await addARecord(page, zoneId);
 
       await page.goto(`/zones/${zoneId}/records/${recordId}/delete`);
@@ -406,14 +409,15 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('TTL Validation', () => {
-    test('should accept valid TTL value', async ({ page, workerZone }) => {
+    test('should accept valid TTL value', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('ttl-test');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('A');
-      await page.locator('input[name*="name"]').first().fill(uniqueName('ttl-test'));
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('10.0.0.1');
 
       const ttlField = page.locator('input[name*="ttl"]').first();
@@ -422,13 +426,12 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: '10.0.0.1' });
     });
 
-    test('should reject negative TTL value', async ({ page, workerZone }) => {
+    test('should reject negative TTL value', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -450,9 +453,9 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Permission Tests', () => {
-    test('admin should have full record access', async ({ page, workerZone }) => {
+    test('admin should have full record access', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/edit`);
 

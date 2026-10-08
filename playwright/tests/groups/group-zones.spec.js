@@ -81,16 +81,18 @@ test.describe('Group Zones Management', () => {
 
       await navigateToGroupZones(page, 'Zone Managers');
       // Zone Managers has manager-zone, shared-zone, group-only-zone from test data
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).toContainText(/zone|domain/i);
+      await expect(page.locator('#remove-form tbody tr').filter({
+        has: page.getByRole('cell', { name: 'group-only-zone.example.com', exact: true }),
+      })).toHaveCount(1);
     });
 
     test('should display available zones panel', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
       await navigateToGroupZones(page, 'Viewers');
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).toContainText(/add|available|zone/i);
+      // Zones that Viewers does not hold are listed with a checkbox and name
+      await expect(page.locator('#add-form #available-zones-body tr').first()).toBeVisible();
+      await expect(page.locator('#add-form .available-checkbox').first()).toBeVisible();
     });
   });
 

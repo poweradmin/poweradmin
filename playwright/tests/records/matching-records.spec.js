@@ -45,16 +45,35 @@ function randomReverseZone() {
   return { name: `${c}.${b}.10.in-addr.arpa`, ip: (host) => `10.${b}.${c}.${host}` };
 }
 
-// Create a throwaway reverse zone, run fn(zoneId, zone), and delete it afterwards
+// Reverse zones created by the running test; afterEach deletes them even when the
+// test timed out, which a try/finally inside the test body would not survive
+const createdReverseZones = [];
+
+// Create a throwaway reverse zone, run fn(zoneId, zone); cleanup happens in afterEach
 async function withReverseZone(page, fn) {
   const zone = randomReverseZone();
   const zoneId = await createZone(page, zone.name);
-  try {
-    return await fn(zoneId, zone);
-  } finally {
-    await deleteZoneById(page, zoneId);
-  }
+  createdReverseZones.push(zoneId);
+  return await fn(zoneId, zone);
 }
+
+test.afterEach(async ({ browser, baseURL }, testInfo) => {
+  const ids = createdReverseZones.splice(0);
+  if (ids.length === 0) {
+    return;
+  }
+  testInfo.setTimeout(testInfo.timeout + 60_000);
+  const context = await browser.newContext({ baseURL });
+  try {
+    const page = await context.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password, 3, { fresh: true });
+    for (const id of ids) {
+      await deleteZoneById(page, id);
+    }
+  } finally {
+    await context.close();
+  }
+});
 
 test.describe('Matching Record Creation (Issue #1104)', () => {
   const timestamp = Date.now();

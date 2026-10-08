@@ -8,19 +8,22 @@
  * - Comment display when enabled
  */
 
-import { test, expect } from '../../fixtures/test-fixtures.js';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { firstRecordIdOnZone } from '../../helpers/zones.js';
+import { expectRecordAdded } from './record-assert.js';
+import { firstRecordIdOnZone, uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
+const zone = useFileZone('reccomm');
+
 test.describe('Record Comments', () => {
   test.describe('Comment Field Display', () => {
-    test('should display comment column in add record form when enabled', async ({ page, workerZone }) => {
+    test('should display comment column in add record form when enabled', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -32,9 +35,9 @@ test.describe('Record Comments', () => {
       expect(hasCommentField).toBe(true);
     });
 
-    test('should display comment column in edit record form when enabled', async ({ page, workerZone }) => {
+    test('should display comment column in edit record form when enabled', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
@@ -48,9 +51,9 @@ test.describe('Record Comments', () => {
       }
     });
 
-    test('should display comment header in zone edit table when enabled', async ({ page, workerZone }) => {
+    test('should display comment header in zone edit table when enabled', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       await page.goto(`/zones/${zoneId}/edit`);
 
@@ -61,14 +64,15 @@ test.describe('Record Comments', () => {
   });
 
   test.describe('Add Record with Comment', () => {
-    test('should add A record with comment', async ({ page, workerZone }) => {
+    test('should add A record with comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('cmt-a');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('A');
-      await page.locator('input[name*="name"]').first().fill(`comment-test-${Date.now()}`);
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('192.168.1.50');
 
       const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
@@ -78,19 +82,19 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: '192.168.1.50' });
     });
 
-    test('should add TXT record with comment', async ({ page, workerZone }) => {
+    test('should add TXT record with comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('cmt-txt');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('TXT');
-      await page.locator('input[name*="name"]').first().fill(`txt-comment-${Date.now()}`);
-      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('v=spf1 -all');
+      await page.locator('input[name*="name"]').first().fill(label);
+      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('"v=spf1 -all"');
 
       const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
       expect(await commentField.count()).toBeGreaterThan(0);
@@ -99,18 +103,18 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: 'v=spf1 -all' });
     });
 
-    test('should add MX record with comment', async ({ page, workerZone }) => {
+    test('should add MX record with comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('cmt-mx');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('MX');
-      await page.locator('input[name*="content"]').first().fill('mail.example.com');
+      await page.locator('input[name*="content"]').first().fill(`mail-${label}.example.com`);
 
       const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
       if (await prioField.count() > 0) {
@@ -124,15 +128,14 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { content: `mail-${label}.example.com`, search: `mail-${label}.example.com` });
     });
   });
 
   test.describe('Edit Record Comment', () => {
-    test('should edit existing record comment', async ({ page, workerZone }) => {
+    test('should edit existing record comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
@@ -145,14 +148,15 @@ test.describe('Record Comments', () => {
         await commentField.fill(`Updated comment ${Date.now()}`);
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+        // A refused save would stay on the record edit page
+        await expect(page).not.toHaveURL(/\/records\/.+\/edit/);
+        await expect(page.locator('.alert-danger')).toHaveCount(0);
       }
     });
 
-    test('should clear record comment', async ({ page, workerZone }) => {
+    test('should clear record comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
@@ -165,14 +169,15 @@ test.describe('Record Comments', () => {
         await commentField.clear();
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+        // A refused save would stay on the record edit page
+        await expect(page).not.toHaveURL(/\/records\/.+\/edit/);
+        await expect(page.locator('.alert-danger')).toHaveCount(0);
       }
     });
 
-    test('should preserve comment on record update', async ({ page, workerZone }) => {
+    test('should preserve comment on record update', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
@@ -193,8 +198,9 @@ test.describe('Record Comments', () => {
         const editUrl = page.url();
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+        // A refused save would stay on the record edit page
+        await expect(page).not.toHaveURL(/\/records\/.+\/edit/);
+        await expect(page.locator('.alert-danger')).toHaveCount(0);
 
         // The point of the test: editing another field leaves the comment alone
         await page.goto(editUrl);
@@ -205,14 +211,15 @@ test.describe('Record Comments', () => {
   });
 
   test.describe('Comment with Special Characters', () => {
-    test('should handle comment with quotes', async ({ page, workerZone }) => {
+    test('should handle comment with quotes', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('quote');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('A');
-      await page.locator('input[name*="name"]').first().fill(`quote-test-${Date.now()}`);
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('192.168.1.51');
 
       const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
@@ -222,18 +229,18 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: '192.168.1.51' });
     });
 
-    test('should handle comment with HTML entities', async ({ page, workerZone }) => {
+    test('should handle comment with HTML entities', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('html');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('A');
-      await page.locator('input[name*="name"]').first().fill(`html-test-${Date.now()}`);
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('192.168.1.52');
 
       const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
@@ -243,18 +250,18 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: '192.168.1.52' });
     });
 
-    test('should handle multiline comment', async ({ page, workerZone }) => {
+    test('should handle multiline comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('multiline');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('A');
-      await page.locator('input[name*="name"]').first().fill(`multiline-${Date.now()}`);
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('192.168.1.53');
 
       const commentField = page.locator('[name$="[comment]"], textarea[name="comment"]').first();
@@ -264,20 +271,20 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: '192.168.1.53' });
     });
   });
 
   test.describe('Comment Length Limits', () => {
-    test('should handle long comment', async ({ page, workerZone }) => {
+    test('should handle long comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = workerZone.id;
+      const zoneId = zone.id;
+      const label = uniqueName('long-cmt');
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('A');
-      await page.locator('input[name*="name"]').first().fill(`long-comment-${Date.now()}`);
+      await page.locator('input[name*="name"]').first().fill(label);
       await page.locator('input[name*="content"]').first().fill('192.168.1.54');
 
       const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]').first();
@@ -288,16 +295,15 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expectRecordAdded(page, zoneId, { name: label, content: '192.168.1.54' });
     });
   });
 });
 
 test.describe('CNAME Root Warning', () => {
-  test('should show warning when adding CNAME at root', async ({ page, workerZone }) => {
+  test('should show warning when adding CNAME at root', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = workerZone.id;
+    const zoneId = zone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -315,9 +321,9 @@ test.describe('CNAME Root Warning', () => {
     expect(hasWarning).toBe(true);
   });
 
-  test('should show warning when editing CNAME to root', async ({ page, workerZone }) => {
+  test('should show warning when editing CNAME to root', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = workerZone.id;
+    const zoneId = zone.id;
 
     // The warning lives on the record edit page, which is opened directly because
     // the zone page edits inline and carries no per-record edit link
@@ -331,9 +337,9 @@ test.describe('CNAME Root Warning', () => {
     await expect(page.locator('#cnameRootWarning')).toBeVisible();
   });
 
-  test('should not show warning for non-root CNAME', async ({ page, workerZone }) => {
+  test('should not show warning for non-root CNAME', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = workerZone.id;
+    const zoneId = zone.id;
 
     // Same page as the root case: the add-record form carries no such warning
     const recordId = await firstRecordIdOnZone(page, zoneId);

@@ -67,15 +67,22 @@ test.describe('Error Handling and Edge Cases', () => {
       // Attempt to click submit button quickly
       const submitBtn = page.locator('[data-testid="add-zone-button"], button[type="submit"], input[type="submit"]').first();
       await submitBtn.click();
-      await page.waitForLoadState('networkidle');
+      let zoneId;
+      try {
+        await page.waitForLoadState('networkidle');
 
-      // Check we end up on a valid page - no crashes
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+        // Check we end up on a valid page - no crashes
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-      // The zone was just created, so clean it up by id
-      const zoneId = await findZoneIdByName(page, testZone);
-      expect(zoneId, `zone ${testZone} must be created`).toBeTruthy();
-      await deleteZoneById(page, zoneId);
+        zoneId = await findZoneIdByName(page, testZone);
+        expect(zoneId, `zone ${testZone} must be created`).toBeTruthy();
+      } finally {
+        // Also clean up when an assertion above failed
+        zoneId ??= await findZoneIdByName(page, testZone).catch(() => null);
+        if (zoneId) {
+          await deleteZoneById(page, zoneId);
+        }
+      }
     });
   });
 
@@ -108,26 +115,33 @@ test.describe('Error Handling and Edge Cases', () => {
 
       const submitBtn = page.locator('[data-testid="add-zone-button"], button[type="submit"], input[type="submit"]').first();
       await submitBtn.click();
-      await page.waitForLoadState('networkidle');
-
-      // Try back button with error handling
+      let zoneId;
       try {
-        await page.goBack({ timeout: 5000 });
         await page.waitForLoadState('networkidle');
-      } catch {
-        // Back navigation may fail due to form POST
-        await page.goto('/zones/add/master');
-        await page.waitForLoadState('networkidle');
+
+        // Try back button with error handling
+        try {
+          await page.goBack({ timeout: 5000 });
+          await page.waitForLoadState('networkidle');
+        } catch {
+          // Back navigation may fail due to form POST
+          await page.goto('/zones/add/master');
+          await page.waitForLoadState('networkidle');
+        }
+
+        // Check page state
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+
+        zoneId = await findZoneIdByName(page, testZone);
+        expect(zoneId, `zone ${testZone} must be created`).toBeTruthy();
+      } finally {
+        // Also clean up when an assertion above failed
+        zoneId ??= await findZoneIdByName(page, testZone).catch(() => null);
+        if (zoneId) {
+          await deleteZoneById(page, zoneId);
+        }
       }
-
-      // Check page state
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-
-      // The zone was just created, so clean it up by id
-      const zoneId = await findZoneIdByName(page, testZone);
-      expect(zoneId, `zone ${testZone} must be created`).toBeTruthy();
-      await deleteZoneById(page, zoneId);
     });
   });
 

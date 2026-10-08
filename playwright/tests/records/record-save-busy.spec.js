@@ -1,20 +1,25 @@
-import { test, expect } from '../../fixtures/test-fixtures.js';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { uniqueName } from '../../helpers/zones.js';
+import { expectRecordAdded } from './record-assert.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
+const zone = useFileZone('recbusy');
+
 test.describe('Record save busy state - Issue #1409', () => {
   // The busy state only exists while the POST is in flight, so the response is
   // held open deliberately rather than racing a real save.
-  test('shows a spinner and blocks repeat submits while the add POST is pending', async ({ page, workerZone }) => {
+  test('shows a spinner and blocks repeat submits while the add POST is pending', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = workerZone.id;
+    const zoneId = zone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
 
     await page.locator('select[name*="type"]').first().selectOption('A');
-    await page.locator('input[name*="name"]').first().fill(`busy-${Date.now()}`);
+    const label = uniqueName('busy');
+    await page.locator('input[name*="name"]').first().fill(label);
     await page.locator('input[name*="content"]').first().fill('192.0.2.44');
 
     let postCount = 0;
@@ -49,11 +54,12 @@ test.describe('Record save busy state - Issue #1409', () => {
     expect(postCount).toBe(1);
 
     await page.unroute('**/records/add');
+    await expectRecordAdded(page, zoneId, { name: label, content: '192.0.2.44' });
   });
 
-  test('leaves the button usable when validation rejects the submit', async ({ page, workerZone }) => {
+  test('leaves the button usable when validation rejects the submit', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = workerZone.id;
+    const zoneId = zone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
 

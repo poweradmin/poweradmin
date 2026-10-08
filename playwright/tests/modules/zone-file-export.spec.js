@@ -54,7 +54,7 @@ test.describe('Zone File Export Module', () => {
     expect(response.status()).toBe(200);
     const body = await response.text();
 
-    // The export prints absolute names (no $ORIGIN), one tab-separated line per record
+    // The export opens with $ORIGIN/$TTL but prints every record with its absolute name, tab-separated
     expect(body).toMatch(new RegExp(`^${tempZone.name.replace(/\./g, '\\.')}\\.\\s+\\d+\\s+IN\\s+SOA\\s`, 'm'));
     expect(body).toMatch(new RegExp(`^www\\.${tempZone.name.replace(/\./g, '\\.')}\\.\\s+3600\\s+IN\\s+A\\s+192\\.0\\.2\\.77$`, 'm'));
   });

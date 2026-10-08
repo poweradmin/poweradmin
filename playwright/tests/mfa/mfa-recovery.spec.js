@@ -110,20 +110,6 @@ test.describe('MFA Recovery Codes Page', () => {
       const csrfToken = page.locator('input[name="_token"]');
       expect(await csrfToken.count()).toBeGreaterThan(0);
     });
-
-    test('should warn about one-time use of codes', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-      const hasOneTimeWarning = bodyText.toLowerCase().includes('once') ||
-                                 bodyText.toLowerCase().includes('one-time') ||
-                                 bodyText.toLowerCase().includes('recovery');
-      const hasSetupOption = bodyText.toLowerCase().includes('set up') ||
-                              bodyText.toLowerCase().includes('authenticator') ||
-                              bodyText.toLowerCase().includes('mfa');
-      expect(hasOneTimeWarning || hasSetupOption).toBeTruthy();
-    });
   });
 
   test.describe('MFA enabled account', () => {
@@ -234,6 +220,11 @@ test.describe('MFA Recovery Codes Page', () => {
       const regenerated = await codes.allTextContents();
       expect(regenerated.length).toBe(firstCodes.length);
       expect(regenerated).not.toEqual(firstCodes);
+    });
+
+    test('should warn about one-time use of codes', async () => {
+      // Still on the recovery codes page that the regeneration rendered
+      await expect(userPage.locator('body')).toContainText(/Each code can only be used once/i);
     });
 
     test('should have print button', async () => {

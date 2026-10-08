@@ -47,13 +47,6 @@ test.describe('DNSSEC for RFC 2317 Classless Reverse Zones', () => {
 
     await page.goto(`/zones/${zoneId}/edit`);
 
-    // Expand the Zone Configuration section (collapsed by default)
-    const configHeader = page.locator('[data-bs-target="#zone-config-body"]');
-    if (await configHeader.count() > 0) {
-      await configHeader.click();
-      await page.locator('#zone-config-body').waitFor({ state: 'visible', timeout: 5000 });
-    }
-
     // The button renders only when DNSSEC is enabled in the configuration
     const signButton = page.locator('button[name="sign_zone"]');
     test.skip(await signButton.count() === 0, 'Sign zone button not available - DNSSEC is not enabled on this instance');
