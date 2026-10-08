@@ -92,6 +92,7 @@
     "tests:integration": "phpunit --testsuite integration",
     "tests:functional": "phpunit --testsuite functional",
     "tests:all": "phpunit",
+    "tests:matrix": ".devcontainer/scripts/test-php-matrix.sh",
 
     "check:all": "phpcs --standard=phpcs.xml addons bin bin/poweradmin config index.php install lib tests dynamic_update.php",
     "format:all": "phpcbf --standard=phpcs.xml addons bin bin/poweradmin config index.php install lib tests dynamic_update.php",
