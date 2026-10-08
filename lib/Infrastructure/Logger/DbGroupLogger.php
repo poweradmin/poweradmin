@@ -42,7 +42,7 @@ class DbGroupLogger
         try {
             $stmt = $this->db->prepare('INSERT INTO log_groups (group_id, event, priority) VALUES (:group_id, :msg, :priority)');
             $stmt->execute([
-                ':msg' => $msg,
+                ':msg' => LogEventColumn::fit($msg),
                 ':group_id' => $group_id,
                 ':priority' => $priority,
             ]);

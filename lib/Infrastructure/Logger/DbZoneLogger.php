@@ -50,7 +50,7 @@ class DbZoneLogger
     {
         $stmt = $this->db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
         $stmt->execute([
-            ':msg' => $msg,
+            ':msg' => LogEventColumn::fit($msg),
             ':zone_id' => $zone_id,
             ':priority' => $priority,
         ]);

@@ -42,7 +42,7 @@ class DbApiLogger
         try {
             $stmt = $this->db->prepare('INSERT INTO log_api (event, priority) VALUES (:msg, :priority)');
             $stmt->execute([
-                ':msg' => $msg,
+                ':msg' => LogEventColumn::fit($msg),
                 ':priority' => $priority,
             ]);
         } catch (\PDOException $e) {
