@@ -282,13 +282,13 @@ abstract class AbstractListLogController extends BaseController
         }
         $allKeys = array_keys($keySet);
         $escaper = $this->services()->csvFormulaEscaper();
-        fputcsv($output, $escaper->escapeRow($allKeys));
+        fputcsv($output, $escaper->escapeRow($allKeys), ',', '"', '');
         foreach ($parsed as $row) {
             $csvRow = [];
             foreach ($allKeys as $key) {
                 $csvRow[] = $row[$key] ?? '';
             }
-            fputcsv($output, $escaper->escapeRow($csvRow));
+            fputcsv($output, $escaper->escapeRow($csvRow), ',', '"', '');
         }
     }
 }
