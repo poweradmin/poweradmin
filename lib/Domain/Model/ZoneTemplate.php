@@ -1028,6 +1028,9 @@ class ZoneTemplate
         try {
             $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE domain_id = ?");
             $stmt->execute([$zone_id]);
+            // Left behind, the sync rows keep counting the zone as out of date against the template (#1660)
+            $stmt = $this->db->prepare("DELETE FROM zone_template_sync WHERE zone_id IN (SELECT id FROM zones WHERE domain_id = ?)");
+            $stmt->execute([$zone_id]);
             return true;
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error unlinking zone from template: ') . $e->getMessage());
