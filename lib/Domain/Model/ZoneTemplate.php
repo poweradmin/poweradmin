@@ -1114,6 +1114,10 @@ class ZoneTemplate
             $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?");
             $stmt->bindValue(1, $zone_id, PDO::PARAM_INT);
             $stmt->execute();
+            // Left behind, the sync rows keep counting the zone as out of date against the template (#1660)
+            $stmt = $this->db->prepare("DELETE FROM zone_template_sync WHERE zone_id IN (SELECT id FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?)");
+            $stmt->bindValue(1, $zone_id, PDO::PARAM_INT);
+            $stmt->execute();
             return true;
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error unlinking zone from template: ') . $e->getMessage());
