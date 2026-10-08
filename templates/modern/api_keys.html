@@ -72,12 +72,12 @@
                                 </a>
                                 {% if key.isDisabled %}
                                     <button type="button" class="btn btn-sm btn-outline-secondary" title="{% trans %}Enable{% endtrans %}"
-                                            onclick="showEnableModal('{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle', '{{ key.name }}')">
+                                            onclick="showEnableModal('{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle', '{{ key.name|e('js') }}')">
                                         <i class="bi bi-play-circle text-secondary"></i>
                                     </button>
                                 {% else %}
                                     <button type="button" class="btn btn-sm btn-outline-secondary" title="{% trans %}Disable{% endtrans %}"
-                                            onclick="showDisableModal('{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle', '{{ key.name }}')">
+                                            onclick="showDisableModal('{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle', '{{ key.name|e('js') }}')">
                                         <i class="bi bi-pause-circle text-secondary"></i>
                                     </button>
                                 {% endif %}
