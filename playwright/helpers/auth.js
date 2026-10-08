@@ -93,15 +93,3 @@ export async function logout(page) {
   await page.goto('/logout');
   await page.waitForURL(/login/);
 }
-
-/**
- * Check if user is logged in
- *
- * @param {import('@playwright/test').Page} page - Playwright page object
- * @returns {Promise<boolean>}
- */
-export async function isLoggedIn(page) {
-  // Check if we're not on the login page
-  const currentUrl = page.url();
-  return !currentUrl.includes('/login');
-}

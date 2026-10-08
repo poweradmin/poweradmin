@@ -24,22 +24,3 @@ export async function isPasswordRecoveryEnabled(page) {
 
   return isEnabled;
 }
-
-/**
- * Navigate to the forgot password page
- * @param {Page} page - Playwright page object
- */
-export async function goToForgotPasswordPage(page) {
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
-
-  const forgotLink = page.locator('a[href*="forgot"], a:has-text("Forgot password"), a:has-text("forgot")').first();
-  if (await forgotLink.count() > 0) {
-    await forgotLink.click();
-    await page.waitForLoadState('networkidle');
-  } else {
-    // Try direct navigation
-    await page.goto('/password/forgot');
-    await page.waitForLoadState('networkidle');
-  }
-}
