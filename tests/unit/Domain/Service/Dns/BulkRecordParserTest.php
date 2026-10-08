@@ -129,19 +129,19 @@ class BulkRecordParserTest extends TestCase
     {
         $result = $this->parser->parseLine('_sip._tcp,SRV,sip.example.com.,0', $this->defaultTtl);
 
-        $this->assertIsString($result);
+        $this->assertSame('Invalid SRV format. Use: name,SRV,"weight port target",priority,ttl or name,SRV,target,weight,port,ttl', $result);
     }
 
     public function testEmptyLineReturnsError(): void
     {
         $result = $this->parser->parseLine('', $this->defaultTtl);
-        $this->assertIsString($result);
+        $this->assertSame('Empty line.', $result);
     }
 
     public function testTooFewFieldsReturnsError(): void
     {
         $result = $this->parser->parseLine('www,A', $this->defaultTtl);
-        $this->assertIsString($result);
+        $this->assertSame('Invalid format. Expected at least: name,type,content', $result);
     }
 
     public function testTypeCaseInsensitive(): void

@@ -204,11 +204,13 @@ class FormStateServiceTest extends TestCase
     #[Test]
     public function testClearNonExistentFormData(): void
     {
-        // Try to clear a form that doesn't exist (should not cause errors)
+        $this->service->saveFormData('kept_form', ['a' => 1]);
+
+        // Clearing a form that does not exist leaves the stored ones alone
         $this->service->clearFormData('non_existent_form');
 
-        // This is essentially testing that no exception is thrown
-        $this->assertTrue(true);
+        $this->assertNull($this->service->getFormData('non_existent_form'));
+        $this->assertSame(['a' => 1], $this->service->getFormData('kept_form'));
     }
 
     #[Test]

@@ -41,8 +41,7 @@ class CryptoKeyTest extends TestCase
         );
 
         $ds = $key->getDs();
-        $this->assertIsArray($ds);
-        $this->assertEmpty($ds);
+        $this->assertSame([], $ds);
     }
 
     public function testConstructorWithMinimalParameters(): void
@@ -55,20 +54,19 @@ class CryptoKeyTest extends TestCase
         $this->assertNull($key->getAlgorithm());
         $this->assertFalse($key->isActive());
         $this->assertNull($key->getDnskey());
-        $this->assertIsArray($key->getDs());
-        $this->assertEmpty($key->getDs());
+        $this->assertSame([], $key->getDs());
     }
 
     public function testGetDsAlwaysReturnsArray(): void
     {
         $key1 = new CryptoKey(id: 1, ds: null);
-        $this->assertIsArray($key1->getDs());
+        $this->assertSame([], $key1->getDs());
 
         $key2 = new CryptoKey(id: 2, ds: []);
-        $this->assertIsArray($key2->getDs());
+        $this->assertSame([], $key2->getDs());
 
         $key3 = new CryptoKey(id: 3, ds: ['test']);
-        $this->assertIsArray($key3->getDs());
+        $this->assertSame(['test'], $key3->getDs());
     }
 
     public function testActivateAndDeactivate(): void
@@ -96,8 +94,7 @@ class CryptoKeyTest extends TestCase
         );
 
         $this->assertEquals('zsk', $key->getType());
-        $this->assertIsArray($key->getDs());
-        $this->assertEmpty($key->getDs());
+        $this->assertSame([], $key->getDs());
     }
 
     public function testKskKeyWithDsRecords(): void
@@ -114,9 +111,7 @@ class CryptoKeyTest extends TestCase
         );
 
         $this->assertEquals('ksk', $key->getType());
-        $this->assertIsArray($key->getDs());
-        $this->assertCount(2, $key->getDs());
-        $this->assertEquals($dsRecords, $key->getDs());
+        $this->assertSame($dsRecords, $key->getDs());
     }
 
     // The DNSKEY from RFC 4034 section 5.4, whose key tag is 60485

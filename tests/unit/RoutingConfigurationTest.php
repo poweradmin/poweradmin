@@ -325,10 +325,12 @@ class RoutingConfigurationTest extends TestCase
 
     public function testAllControllersExist(): void
     {
+        $checked = 0;
         foreach ($this->routes->all() as $name => $route) {
             $controller = $route->getDefault('_controller');
 
             if ($controller && str_contains($controller, '::')) {
+                $checked++;
                 [$className, $method] = explode('::', $controller);
 
                 $this->assertTrue(
@@ -337,6 +339,8 @@ class RoutingConfigurationTest extends TestCase
                 );
             }
         }
+
+        $this->assertGreaterThan(0, $checked, 'no route declares a Class::method controller, so nothing was checked');
     }
 
     /**

@@ -63,6 +63,7 @@ class ModuleServicesTest extends TestCase
     {
         $offenders = [];
 
+        $this->assertNotEmpty($this->moduleFiles(), 'no module files were found to scan');
         foreach ($this->moduleFiles() as $file) {
             if (preg_match('/\$this->services\(\)/', file_get_contents($file)) === 1) {
                 $offenders[] = $file;
@@ -74,7 +75,10 @@ class ModuleServicesTest extends TestCase
 
     public function testInterfaceMethodsHaveExplicitReturnTypes(): void
     {
-        foreach ((new ReflectionClass(ModuleServices::class))->getMethods() as $method) {
+        $methods = (new ReflectionClass(ModuleServices::class))->getMethods();
+        $this->assertNotEmpty($methods, 'ModuleServices declares no methods');
+
+        foreach ($methods as $method) {
             $type = $method->getReturnType();
             $this->assertInstanceOf(ReflectionNamedType::class, $type, $method->getName());
             $this->assertFalse($type->isBuiltin(), $method->getName() . ' must return a service type');

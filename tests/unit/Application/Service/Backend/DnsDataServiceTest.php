@@ -142,11 +142,21 @@ class DnsDataServiceTest extends TestCase
     {
         $this->mockBackend->method('isApiBackend')->willReturn(true);
 
+        // The repository drops non-alphanumerics, de-duplicates and sorts the letters.
+        $this->mockDb = $this->createMock(PDO::class);
+        $this->mockDb->method('prepare')->willReturnCallback(function (string $sql) {
+            $stmt = $this->createMock(\PDOStatement::class);
+            $stmt->method('execute')->willReturn(true);
+            $stmt->method('fetchAll')->willReturn(str_contains($sql, 'AS letter') ? ['b', 'a', '3', '_', 'a'] : []);
+
+            return $stmt;
+        });
+
         $service = $this->createService();
         $letters = $service->getDistinctStartingLetters(1, true);
 
         // API mode now delegates to ApiZoneRepository which queries local zones table
-        $this->assertIsArray($letters);
+        $this->assertSame(['3', 'a', 'b'], $letters);
     }
 
     // ---------------------------------------------------------------

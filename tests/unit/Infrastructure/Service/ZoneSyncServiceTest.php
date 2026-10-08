@@ -206,7 +206,7 @@ class ZoneSyncServiceTest extends TestCase
         $this->session->clear();
         $this->session->set('zone_sync_last', time() - 600);
 
-        $this->mockBackend->method('getZones')->willReturn([]);
+        $this->mockBackend->expects($this->once())->method('getZones')->willReturn([]);
 
         $localStmt = $this->createMock(PDOStatement::class);
         $localStmt->method('fetch')->willReturn(false);
@@ -215,7 +215,7 @@ class ZoneSyncServiceTest extends TestCase
         $service = new ZoneSyncService($this->mockDb, $this->mockBackend, $this->session, 300, $this->mockLogger);
         $result = $service->syncIfStale();
 
-        $this->assertIsArray($result);
+        $this->assertSame(['added' => 0, 'removed' => 0, 'updated' => 0], $result);
     }
 
     public function testSyncIfStaleReturnsNullAndLogsOnException(): void

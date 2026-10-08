@@ -121,10 +121,9 @@ class DomainManagerSerialPolicyTest extends TestCase
 
     public function testBackendExceptionDoesNotPropagate(): void
     {
-        $this->expectNotToPerformAssertions();
-
         $this->configureDefaults('', '');
-        $this->backendProvider->method('setZoneSerialPolicy')
+        $this->backendProvider->expects($this->once())
+            ->method('setZoneSerialPolicy')
             ->willThrowException(new \RuntimeException('API down'));
 
         $this->applySerialPolicy('EPOCH');
