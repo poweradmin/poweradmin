@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Functional;
 
+use Exception;
+use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Boot\BootOptions;
 use Poweradmin\Application\Boot\Kernel;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 
@@ -15,8 +20,8 @@ class EditZoneMetadataEndpointTest extends TestCase
 {
     public function testMetadataReadEndpointRendersAllKindsWhenApiIsDisabled(): void
     {
-        if (!is_file($this->getProjectRoot() . '/config/settings.php') || trim((string) shell_exec('which pdnsutil')) === '') {
-            $this->markTestSkipped('Local PowerDNS test environment is not available.');
+        if (!is_file($this->getProjectRoot() . '/config/settings.php')) {
+            $this->markTestSkipped('config/settings.php is missing, so there is no test database to use.');
         }
 
         $zoneName = 'metadata-endpoint-test-' . bin2hex(random_bytes(4)) . '.example';
@@ -32,6 +37,7 @@ class EditZoneMetadataEndpointTest extends TestCase
                 [],
                 null,
                 [
+                    'dns' => ['backend' => 'sql'],
                     'pdns_api' => [
                         'url' => '',
                         'key' => '',
@@ -56,8 +62,8 @@ class EditZoneMetadataEndpointTest extends TestCase
 
     public function testMetadataWriteEndpointStoresAllKindsViaSql(): void
     {
-        if (!is_file($this->getProjectRoot() . '/config/settings.php') || trim((string) shell_exec('which pdnsutil')) === '') {
-            $this->markTestSkipped('Local PowerDNS test environment is not available.');
+        if (!is_file($this->getProjectRoot() . '/config/settings.php')) {
+            $this->markTestSkipped('config/settings.php is missing, so there is no test database to use.');
         }
 
         $zoneName = 'metadata-endpoint-test-' . bin2hex(random_bytes(4)) . '.example';
@@ -76,6 +82,7 @@ class EditZoneMetadataEndpointTest extends TestCase
                 ],
                 $token,
                 [
+                    'dns' => ['backend' => 'sql'],
                     'pdns_api' => [
                         'url' => '',
                         'key' => '',
@@ -170,7 +177,8 @@ class EditZoneMetadataEndpointTest extends TestCase
             'AXFR-SOURCE' => ['192.0.2.30'],
             'GSS-ACCEPTOR-PRINCIPAL' => ['DNS/ns1.example.com@REALM'],
             'GSS-ALLOW-AXFR-PRINCIPAL' => ['host/ns1.example.com@REALM'],
-            'SOA-EDIT-DNSUPDATE', 'SOA-EDIT' => ['INCEPTION-INCREMENT'],
+            'SOA-EDIT-DNSUPDATE' => ['DEFAULT'],
+            'SOA-EDIT' => ['INCEPTION-INCREMENT'],
             'TSIG-ALLOW-DNSUPDATE' => ['update-key-name'],
             'AXFR-MASTER-TSIG' => ['axfr-tsig-key'],
             'LUA-AXFR-SCRIPT' => ['/opt/pdns/axfr.lua'],
@@ -185,8 +193,7 @@ class EditZoneMetadataEndpointTest extends TestCase
     {
         $this->createTestZone($zoneName);
 
-        $context = Kernel::boot(BootOptions::Script);
-        $db = $context->database();
+        [$context, $db] = $this->bootDatabase();
         $config = $context->config;
         $metadataStore = new DbZoneMetadataStore($db, $config);
 
@@ -196,17 +203,85 @@ class EditZoneMetadataEndpointTest extends TestCase
         return [$metadataStore, (int) $zoneId];
     }
 
+    /**
+     * Boot the kernel and connect, skipping the test when the database is unreachable or when
+     * the SQL backend (which the endpoint subprocess is forced into) may not use it because the
+     * database was last used in API mode. DatabaseService::connect() reports an unreachable
+     * database as a RuntimeException with a "Database connection failed" message; any other
+     * boot failure propagates instead of being reported as skipped.
+     *
+     * @return array{0: \Poweradmin\Application\Boot\BootContext, 1: PDO}
+     */
+    private function bootDatabase(): array
+    {
+        try {
+            $context = Kernel::boot(BootOptions::Script);
+            $db = $context->database();
+        } catch (Exception $e) {
+            if (!str_starts_with($e->getMessage(), 'Database connection failed')) {
+                throw $e;
+            }
+            $this->markTestSkipped('test database unreachable: ' . $e->getMessage());
+        }
+
+        $domainsTable = (new TableNameService($context->config))->getTable(PdnsTable::DOMAINS);
+        $refusal = BackendModeMarker::sqlModeRefusal($db, $domainsTable);
+        if ($refusal !== null) {
+            $this->markTestSkipped('test database cannot be used in SQL mode: ' . $refusal);
+        }
+
+        return [$context, $db];
+    }
+
     private function createTestZone(string $zoneName): void
     {
-        $escapedZone = escapeshellarg($zoneName);
-        shell_exec("pdnsutil delete-zone $escapedZone >/dev/null 2>&1 || true");
-        shell_exec("pdnsutil create-zone $escapedZone " . escapeshellarg("ns1.$zoneName") . " >/dev/null 2>&1");
+        $this->deleteTestZone($zoneName);
+
+        [$context, $db] = $this->bootDatabase();
+        $tables = new TableNameService($context->config);
+        $domains = $tables->getTable(PdnsTable::DOMAINS);
+        $records = $tables->getTable(PdnsTable::RECORDS);
+
+        $stmt = $db->prepare("INSERT INTO $domains (name, type) VALUES (:name, 'NATIVE')");
+        $stmt->bindValue(':name', $zoneName);
+        $stmt->execute();
+
+        $zoneId = (new SqlDomainRepository($db, $context->config))->getDomainIdByName($zoneName);
+        $this->assertNotNull($zoneId);
+
+        $stmt = $db->prepare(
+            "INSERT INTO $records (domain_id, name, type, content, ttl) VALUES (:domain_id, :name, 'SOA', :content, 3600)"
+        );
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $zoneName);
+        $stmt->bindValue(':content', "ns1.$zoneName hostmaster.$zoneName 1 10800 3600 604800 3600");
+        $stmt->execute();
     }
 
     private function deleteTestZone(string $zoneName): void
     {
-        $escapedZone = escapeshellarg($zoneName);
-        shell_exec("pdnsutil delete-zone $escapedZone >/dev/null 2>&1 || true");
+        try {
+            [$context, $db] = $this->bootDatabase();
+            $tables = new TableNameService($context->config);
+
+            $zoneId = (new SqlDomainRepository($db, $context->config))->getDomainIdByName($zoneName);
+            if ($zoneId === null) {
+                return;
+            }
+
+            foreach ([PdnsTable::RECORDS, PdnsTable::DOMAINMETADATA] as $table) {
+                $stmt = $db->prepare('DELETE FROM ' . $tables->getTable($table) . ' WHERE domain_id = :domain_id');
+                $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+
+            $stmt = $db->prepare('DELETE FROM ' . $tables->getTable(PdnsTable::DOMAINS) . ' WHERE id = :id');
+            $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (\Throwable) {
+            // Cleanup must not replace the failure or skip that got the test here
+            return;
+        }
     }
 
     private function runEndpointRequest(
