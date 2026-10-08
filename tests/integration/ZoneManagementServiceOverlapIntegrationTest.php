@@ -59,6 +59,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
 
     // Seeded by import-test-data.sh: group 2 contains manager (user 2) only.
     private const MANAGER_ONLY_GROUP = 2;
+    private const MANAGER = 2;
     private const CLIENT = 3;
 
     private ?PDO $db = null;
@@ -74,13 +75,20 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             $this->markTestSkipped('Devcontainer MariaDB not available.');
         }
 
-        // Confirm the ownership fixtures are present; skip otherwise.
-        $hasGroup = (int)$this->db->query(
-            'SELECT COUNT(*) FROM user_group_members WHERE group_id = ' . self::MANAGER_ONLY_GROUP
-            . ' AND user_id = ' . self::CLIENT
-        )->fetchColumn();
-        if ($hasGroup !== 0) {
-            $this->markTestSkipped('Expected test-data group membership not present.');
+        // The overlap guard needs group 2 to exist with manager in it and client outside it.
+        $count = fn(string $sql): int => (int)$this->db->query($sql)->fetchColumn();
+        $group = self::MANAGER_ONLY_GROUP;
+        if ($count("SELECT COUNT(*) FROM user_groups WHERE id = $group") === 0) {
+            $this->markTestSkipped("Test data has no user group $group.");
+        }
+        if ($count("SELECT COUNT(*) FROM user_group_members WHERE group_id = $group AND user_id = " . self::MANAGER) === 0) {
+            $this->markTestSkipped("Test data group $group does not contain the manager user.");
+        }
+        if ($count('SELECT COUNT(*) FROM users WHERE id = ' . self::CLIENT) === 0) {
+            $this->markTestSkipped('Test data has no client user ' . self::CLIENT . '.');
+        }
+        if ($count("SELECT COUNT(*) FROM user_group_members WHERE group_id = $group AND user_id = " . self::CLIENT) !== 0) {
+            $this->markTestSkipped("Test data group $group already contains the client user, so nothing overlaps.");
         }
     }
 

@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PDOException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
@@ -163,29 +164,26 @@ class ZoneOwnershipLimitIntegrationTest extends TestCase
      * Two connections to the devcontainer database: while one holds a user's or group's
      * lock, the other's lock attempt times out. Nothing is written; both roll back.
      */
-    public function testASecondConnectionWaitsForTheRowLock(): void
+    #[DataProvider('lockEngines')]
+    public function testASecondConnectionWaitsForTheRowLock(string $engine): void
     {
-        $engines = array_filter(['mysql' => $this->connect('mysql'), 'pgsql' => $this->connect('pgsql')]);
-        if ($engines === []) {
-            $this->markTestSkipped('No MySQL or PostgreSQL devcontainer database reachable');
-        }
+        $holder = $this->connect($engine);
+        $waiter = $this->connect($engine);
+        $waiter->exec($engine === 'mysql' ? 'SET SESSION innodb_lock_wait_timeout = 1' : "SET lock_timeout = '1s'");
 
-        foreach (array_keys($engines) as $engine) {
-            $holder = $this->connect($engine);
-            $waiter = $this->connect($engine);
-            $this->assertNotNull($holder);
-            $this->assertNotNull($waiter);
-            $waiter->exec($engine === 'mysql' ? 'SET SESSION innodb_lock_wait_timeout = 1' : "SET lock_timeout = '1s'");
+        $userId = (int)$holder->query('SELECT MIN(id) FROM users')->fetchColumn();
+        $this->assertGreaterThan(0, $userId, "$engine: the devcontainer database has no user to lock");
+        $this->assertWaits($engine, $holder, $waiter, fn(PDO $db) => (new DbUserRepository($db, new FakeConfiguration([]), false))->lockForZoneLimit($userId));
 
-            $userId = (int)$holder->query('SELECT MIN(id) FROM users')->fetchColumn();
-            if ($userId > 0) {
-                $this->assertWaits($engine, $holder, $waiter, fn(PDO $db) => (new DbUserRepository($db, new FakeConfiguration([]), false))->lockForZoneLimit($userId));
-            }
-            $groupId = (int)$holder->query('SELECT MIN(id) FROM user_groups')->fetchColumn();
-            if ($groupId > 0) {
-                $this->assertWaits($engine, $holder, $waiter, fn(PDO $db) => (new DbUserGroupRepository($db))->lockForZoneLimit($groupId));
-            }
-        }
+        $groupId = (int)$holder->query('SELECT MIN(id) FROM user_groups')->fetchColumn();
+        $this->assertGreaterThan(0, $groupId, "$engine: the devcontainer database has no user group to lock");
+        $this->assertWaits($engine, $holder, $waiter, fn(PDO $db) => (new DbUserGroupRepository($db))->lockForZoneLimit($groupId));
+    }
+
+    /** @return array<string, array{string}> */
+    public static function lockEngines(): array
+    {
+        return ['mysql' => ['mysql'], 'pgsql' => ['pgsql']];
     }
 
     /**
@@ -211,13 +209,14 @@ class ZoneOwnershipLimitIntegrationTest extends TestCase
         }
     }
 
-    private function connect(string $engine): ?PDO
+    private function connect(string $engine): PDO
     {
-        $dsn = $engine === 'mysql' ? 'mysql:host=127.0.0.1;port=3306;dbname=poweradmin' : 'pgsql:host=127.0.0.1;port=5432;dbname=poweradmin';
+        // The devcontainer keeps the Poweradmin tables in `poweradmin` on MySQL and in `pdns` on PostgreSQL
+        $dsn = $engine === 'mysql' ? 'mysql:host=127.0.0.1;port=3306;dbname=poweradmin' : 'pgsql:host=127.0.0.1;port=5432;dbname=pdns';
         try {
             return new PDO($dsn, 'pdns', 'poweradmin', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        } catch (PDOException) {
-            return null;
+        } catch (PDOException $e) {
+            $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
         }
     }
 }
