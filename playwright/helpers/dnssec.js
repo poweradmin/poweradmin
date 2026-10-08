@@ -48,6 +48,10 @@ export async function ensureDnssecKey(page, zoneId) {
   await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
   await page.locator('button[type="submit"], input[type="submit"]').first().click();
   await page.waitForLoadState('networkidle');
+
+  if ((await listDnssecKeyIds(page, zoneId)).length === 0) {
+    throw new Error(`Adding a DNSSEC key to zone ${zoneId} did not create one`);
+  }
 }
 
 /**

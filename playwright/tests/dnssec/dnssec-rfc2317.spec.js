@@ -8,34 +8,42 @@
  */
 
 import { test, expect } from '../../fixtures/test-fixtures.js';
-import { findZoneIdByName, createZone } from '../../helpers/zones.js';
+import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { createTempZone, deleteZoneById } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('DNSSEC for RFC 2317 Classless Reverse Zones', () => {
-  const rfc2317Zone = '0/26.1.168.192.in-addr.arpa';
+  // A random /26 under 10.x.y keeps reruns and parallel runs from colliding
+  const start = [0, 64, 128, 192][Math.floor(Math.random() * 4)];
+  const rfc2317Zone = `${start}/26.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.10.in-addr.arpa`;
   let zoneId = null;
+  let signed = false;
+
+  test.afterAll(async ({ browser, baseURL }) => {
+    if (!zoneId) {
+      return;
+    }
+    const context = await browser.newContext({ baseURL });
+    try {
+      const page = await context.newPage();
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await deleteZoneById(page, zoneId);
+    } finally {
+      await context.close();
+    }
+  });
 
   test('should create an RFC 2317 classless reverse zone', async ({ adminPage: page }) => {
-    zoneId = await findZoneIdByName(page, rfc2317Zone);
-
-    if (!zoneId) {
-      zoneId = await createZone(page, rfc2317Zone, 'master');
-    }
-
-    expect(zoneId).toBeTruthy();
+    // createTempZone also adds the apex NS record, without which signing is refused
+    ({ id: zoneId } = await createTempZone(page, { name: rfc2317Zone }));
+    expect(zoneId, 'the RFC 2317 zone must be created').toBeTruthy();
   });
 
   test('should sign RFC 2317 zone without API error', async ({ adminPage: page }) => {
-    if (!zoneId) {
-      zoneId = await findZoneIdByName(page, rfc2317Zone);
-    }
-
-    if (!zoneId) {
-      test.skip('RFC 2317 zone not available');
-      return;
-    }
+    expect(zoneId, 'the creation test must have produced the zone').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/edit`);
 
@@ -46,17 +54,9 @@ test.describe('DNSSEC for RFC 2317 Classless Reverse Zones', () => {
       await page.locator('#zone-config-body').waitFor({ state: 'visible', timeout: 5000 });
     }
 
+    // The button renders only when DNSSEC is enabled in the configuration
     const signButton = page.locator('button[name="sign_zone"]');
-    if (await signButton.count() === 0) {
-      // Zone may already be signed or DNSSEC not enabled on server
-      const bodyText = await page.locator('body').textContent();
-      if (bodyText.includes('DNSSEC')) {
-        test.info().annotations.push({ type: 'note', description: 'Zone already signed or DNSSEC link present' });
-        return;
-      }
-      test.skip('Sign zone button not available - DNSSEC may not be enabled on server');
-      return;
-    }
+    test.skip(await signButton.count() === 0, 'Sign zone button not available - DNSSEC is not enabled on this instance');
 
     await signButton.click();
     await page.waitForLoadState('networkidle');
@@ -66,17 +66,15 @@ test.describe('DNSSEC for RFC 2317 Classless Reverse Zones', () => {
     // Should NOT show the API error from issue #994
     expect(bodyText).not.toContain('PowerDNS API returned an error');
     expect(bodyText).not.toContain('Failed to sign zone');
+
+    // A signed zone swaps the Sign zone button for the Manage DNSSEC link
+    await page.goto(`/zones/${zoneId}/edit`);
+    await expect(page.locator(`a[href$="/zones/${zoneId}/dnssec"]`).first()).toBeVisible();
+    signed = true;
   });
 
   test('should access DNSSEC management page for signed RFC 2317 zone', async ({ adminPage: page }) => {
-    if (!zoneId) {
-      zoneId = await findZoneIdByName(page, rfc2317Zone);
-    }
-
-    if (!zoneId) {
-      test.skip('RFC 2317 zone not available');
-      return;
-    }
+    expect(zoneId, 'the creation test must have produced the zone').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/dnssec`);
 
@@ -86,36 +84,19 @@ test.describe('DNSSEC for RFC 2317 Classless Reverse Zones', () => {
   });
 
   test('should unsign and delete RFC 2317 zone', async ({ adminPage: page }) => {
-    if (!zoneId) {
-      zoneId = await findZoneIdByName(page, rfc2317Zone);
-    }
+    expect(zoneId, 'the creation test must have produced the zone').toBeTruthy();
 
-    if (!zoneId) {
-      test.skip('RFC 2317 zone not available for cleanup');
-      return;
-    }
+    if (signed) {
+      await page.goto(`/zones/${zoneId}/dnssec`);
 
-    // Navigate to DNSSEC page to unsign
-    await page.goto(`/zones/${zoneId}/dnssec`);
-
-    // The "Unsign zone" toolbar button opens a Bootstrap modal
-    const unsignTrigger = page.locator('button[data-bs-target="#unsignZoneModal"]');
-    if (await unsignTrigger.count() > 0) {
-      await unsignTrigger.click();
-
-      // Wait for modal to appear and click the submit button inside it
+      // The "Unsign zone" toolbar button opens a Bootstrap modal
+      await page.locator('button[data-bs-target="#unsignZoneModal"]').click();
       const modalSubmit = page.locator('#unsignZoneModal button[name="unsign_zone"]');
       await modalSubmit.waitFor({ state: 'visible', timeout: 5000 });
       await modalSubmit.click();
       await page.waitForLoadState('networkidle');
     }
 
-    // Delete the zone
-    await page.goto(`/zones/${zoneId}/delete`);
-    const deleteButton = page.locator('button[type="submit"], input[type="submit"]');
-    if (await deleteButton.count() > 0) {
-      await deleteButton.first().click();
-      await page.waitForLoadState('networkidle');
-    }
+    expect(await deleteZoneById(page, zoneId), 'the RFC 2317 zone must be deletable').toBe(true);
   });
 });

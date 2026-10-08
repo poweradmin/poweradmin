@@ -1,9 +1,31 @@
-import { test, expect } from '../../fixtures/test-fixtures.js';
-import { ensureAnyZoneExists, getZoneIdForTest } from '../../helpers/zones.js';
-import { listDnssecKeyIds } from '../../helpers/dnssec.js';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
+import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { ensureAnyZoneExists } from '../../helpers/zones.js';
+import { ensureZoneSigned, listDnssecKeyIds } from '../../helpers/dnssec.js';
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
+
+// The key tests run on this worker's throwaway zone, signed in beforeAll; the
+// workerZone fixture deletes the zone and its keys afterwards.
+let zoneId = null;
+
+test.beforeAll(async ({ browser, workerZone }) => {
+  zoneId = workerZone.id;
+  const page = await browser.newPage();
+  try {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await ensureZoneSigned(page, zoneId);
+  } finally {
+    await page.close();
+  }
+});
+
+async function firstKeyId(page) {
+  const keyIds = await listDnssecKeyIds(page, zoneId);
+  expect(keyIds, 'beforeAll must have left the zone with a DNSSEC key').not.toHaveLength(0);
+  return keyIds[0];
+}
 
 test.describe('DNSSEC Management', () => {
   test('should handle DNSSEC page access with zone ID', async ({ adminPage: page }) => {
@@ -116,9 +138,6 @@ test.describe('DNSSEC Management', () => {
 test.describe('Add DNSSEC Key', () => {
   test.describe('Admin User', () => {
     test('should display add key page', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const bodyText = await page.locator('body').textContent();
       if (!bodyText.includes('not found') && !bodyText.includes('error')) {
@@ -127,56 +146,38 @@ test.describe('Add DNSSEC Key', () => {
     });
 
     test('should display add key form', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const form = page.locator('form').first();
       await expect(form.first()).toBeVisible();
     });
 
     test('should display key type select', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
-      const keyTypeSelect = page.locator('select[name*="type"], select[name*="key"]').first();
+      const keyTypeSelect = page.locator('select[name="key_type"]');
       await expect(keyTypeSelect.first()).toBeVisible();
     });
 
     test('should display bits select', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const bitsSelect = page.locator('select[name*="bits"], select[name*="size"]').first();
       await expect(bitsSelect.first()).toBeVisible();
     });
 
     test('should display algorithm select', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const algoSelect = page.locator('select[name*="algo"], select[name*="algorithm"]').first();
       await expect(algoSelect.first()).toBeVisible();
     });
 
     test('should display submit button', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const submitBtn = page.locator('input[type="submit"], button[type="submit"]').first();
       await expect(submitBtn.first()).toBeVisible();
     });
 
     test('should allow selecting key type', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
-      const keyTypeSelect = page.locator('select[name*="type"], select[name*="key"]').first();
+      const keyTypeSelect = page.locator('select[name="key_type"]');
       await expect(keyTypeSelect.first()).toBeVisible();
       const options = await keyTypeSelect.locator('option').count();
       expect(options).toBeGreaterThan(0);
@@ -185,9 +186,6 @@ test.describe('Add DNSSEC Key', () => {
 
   test.describe('Manager User', () => {
     test('should have access to add DNSSEC key for own zone', async ({ managerPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       // Manager may or may not have access depending on zone ownership
       const bodyText = await page.locator('body').textContent();
@@ -199,20 +197,18 @@ test.describe('Add DNSSEC Key', () => {
 test.describe('Edit DNSSEC Key', () => {
   test.describe('Page Structure', () => {
     test('should display edit key page if key exists', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const keyId = await firstKeyId(page);
 
-      await page.goto(`/zones/${zoneId}/dnssec/keys/1/edit`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/${keyId}/edit`);
       const bodyText = await page.locator('body').textContent();
       // Page should load without crashing
       expect(bodyText.length).toBeGreaterThan(0);
     });
 
     test('should display key information if page loads', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const keyId = await firstKeyId(page);
 
-      await page.goto(`/zones/${zoneId}/dnssec/keys/1/edit`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/${keyId}/edit`);
       const bodyText = await page.locator('body').textContent();
       // Page should load without crashing - key may not exist
       expect(bodyText).not.toMatch(/fatal|exception/i);
@@ -221,12 +217,8 @@ test.describe('Edit DNSSEC Key', () => {
     });
 
     test('should display confirmation buttons if page loads', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
-      // Key id 1 need not belong to this zone; resolve one the zone actually has
       const keyIds = await listDnssecKeyIds(page, zoneId);
-      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys to edit');
+      expect(keyIds, 'beforeAll must have left the zone with a DNSSEC key').not.toHaveLength(0);
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/${keyIds[0]}/edit`);
       await expect(page.locator('button[type="submit"], input[type="submit"]').first()).toBeVisible();
@@ -236,12 +228,8 @@ test.describe('Edit DNSSEC Key', () => {
 
   test.describe('Navigation from DNSSEC Page', () => {
     test('should have edit key link if keys exist', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
-      // getZoneIdForTest may return a zone with no keys, and the link only exists per key
       const keyIds = await listDnssecKeyIds(page, zoneId);
-      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys, so no edit link is rendered');
+      expect(keyIds, 'beforeAll must have left the zone with a DNSSEC key').not.toHaveLength(0);
 
       await expect(page.locator('a[href*="/keys/"][href*="/edit"]').first()).toBeVisible();
     });
@@ -251,20 +239,18 @@ test.describe('Edit DNSSEC Key', () => {
 test.describe('Delete DNSSEC Key', () => {
   test.describe('Page Structure', () => {
     test('should display delete key page if key exists', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const keyId = await firstKeyId(page);
 
-      await page.goto(`/zones/${zoneId}/dnssec/keys/1/delete`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/${keyId}/delete`);
       const bodyText = await page.locator('body').textContent();
       // Page should load without crashing
       expect(bodyText.length).toBeGreaterThan(0);
     });
 
     test('should display key information on delete page', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const keyId = await firstKeyId(page);
 
-      await page.goto(`/zones/${zoneId}/dnssec/keys/1/delete`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/${keyId}/delete`);
       const bodyText = await page.locator('body').textContent();
       // Page should load without crashing - key may not exist
       expect(bodyText).not.toMatch(/fatal|exception/i);
@@ -273,10 +259,9 @@ test.describe('Delete DNSSEC Key', () => {
     });
 
     test('should display confirmation message', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const keyId = await firstKeyId(page);
 
-      await page.goto(`/zones/${zoneId}/dnssec/keys/1/delete`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/${keyId}/delete`);
       const bodyText = await page.locator('body').textContent();
       if (!bodyText.includes('not found') && !bodyText.toLowerCase().includes('error')) {
         // Page should show some confirmation-related content
@@ -285,12 +270,8 @@ test.describe('Delete DNSSEC Key', () => {
     });
 
     test('should display delete form', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
-      // Key id 1 need not belong to this zone; resolve one the zone actually has
       const keyIds = await listDnssecKeyIds(page, zoneId);
-      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys to delete');
+      expect(keyIds, 'beforeAll must have left the zone with a DNSSEC key').not.toHaveLength(0);
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/${keyIds[0]}/delete`);
       await expect(page.locator('form').first()).toBeVisible();
@@ -299,15 +280,8 @@ test.describe('Delete DNSSEC Key', () => {
     test('should display confirm and cancel buttons', async ({ adminPage: page }) => {
       test.setTimeout(60000);
 
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) {
-        test.skip('No zones available for testing');
-        return;
-      }
-
-      // Key id 1 need not belong to this zone; resolve one the zone actually has
       const keyIds = await listDnssecKeyIds(page, zoneId);
-      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys to delete');
+      expect(keyIds, 'beforeAll must have left the zone with a DNSSEC key').not.toHaveLength(0);
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/${keyIds[0]}/delete`, { timeout: 30000 });
 
@@ -316,12 +290,8 @@ test.describe('Delete DNSSEC Key', () => {
     });
 
     test('should use correct CSRF token field name', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
-      // Key id 1 need not belong to this zone; resolve one the zone actually has
       const keyIds = await listDnssecKeyIds(page, zoneId);
-      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys to delete');
+      expect(keyIds, 'beforeAll must have left the zone with a DNSSEC key').not.toHaveLength(0);
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/${keyIds[0]}/delete`);
       await expect(page.locator('form').first()).toBeVisible();
@@ -337,12 +307,8 @@ test.describe('Delete DNSSEC Key', () => {
 
   test.describe('Navigation from DNSSEC Page', () => {
     test('should have delete key link if keys exist', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
-      // getZoneIdForTest may return a zone with no keys, and the link only exists per key
       const keyIds = await listDnssecKeyIds(page, zoneId);
-      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys, so no delete link is rendered');
+      expect(keyIds, 'beforeAll must have left the zone with a DNSSEC key').not.toHaveLength(0);
 
       await expect(page.locator('a[href*="/keys/"][href*="/delete"]').first()).toBeVisible();
     });
@@ -352,9 +318,6 @@ test.describe('Delete DNSSEC Key', () => {
 test.describe('DNSSEC DS and DNSKEY Records', () => {
   test.describe('Admin User', () => {
     test('should display DS/DNSKEY page', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/ds-dnskey`);
       const bodyText = await page.locator('body').textContent();
       if (!bodyText.includes('not found') && !bodyText.includes('error')) {
@@ -363,9 +326,6 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
     });
 
     test('should display DNSSEC public records heading', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/ds-dnskey`);
       const bodyText = await page.locator('body').textContent();
       if (!bodyText.includes('not found')) {
@@ -374,9 +334,6 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
     });
 
     test('should display DNSKEY section', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/ds-dnskey`);
       const bodyText = await page.locator('body').textContent();
       if (!bodyText.includes('not found') && !bodyText.toLowerCase().includes('error')) {
@@ -386,9 +343,6 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
     });
 
     test('should display DS section', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/ds-dnskey`);
       const bodyText = await page.locator('body').textContent();
       if (!bodyText.includes('not found') && !bodyText.toLowerCase().includes('error')) {
@@ -398,13 +352,8 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
     });
 
     test('should display records containers', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
-      // The containers are in the DOM even for an unsigned zone, just empty and
-      // hidden, so ask the keys page whether the zone is signed at all.
       const keyIds = await listDnssecKeyIds(page, zoneId);
-      test.skip(keyIds.length === 0, 'zone is unsigned, so no DS/DNSKEY records are rendered');
+      expect(keyIds, 'beforeAll must have left the zone with a DNSSEC key').not.toHaveLength(0);
 
       await page.goto(`/zones/${zoneId}/dnssec/ds-dnskey`);
       const bodyText = await page.locator('body').textContent();
@@ -415,9 +364,6 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
 
   test.describe('Navigation from DNSSEC Page', () => {
     test('should have DS/DNSKEY link', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec`);
       const dsLink = page.locator('a[href*="ds-dnskey"]');
       await expect(dsLink.first()).toBeVisible();
@@ -426,9 +372,6 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
 
   test.describe('Manager User', () => {
     test('should have access to DS/DNSKEY page for own zone', async ({ managerPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
-
       await page.goto(`/zones/${zoneId}/dnssec/ds-dnskey`);
       const bodyText = await page.locator('body').textContent();
       // Manager may or may not have access depending on zone ownership
