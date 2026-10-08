@@ -4,11 +4,15 @@ import users from '../fixtures/users.json' with { type: 'json' };
 
 /**
  * Cleanup script to remove any leftover test zones
- * Run this manually if tests fail and leave orphaned test data
+ * Run this manually if tests fail and leave orphaned test data.
+ * It deletes zones, so it is skipped unless PA_CLEANUP is exactly 1 (0 and false do not run it) and must not
+ * run next to other workers.
  *
- * Usage: npx playwright test playwright/tests/cleanup-test-zones.spec.js
+ * Usage: PA_CLEANUP=1 npx playwright test playwright/tests/cleanup-test-zones.spec.js --workers=1
  */
 test.describe('Cleanup Test Zones', () => {
+  test.skip(process.env.PA_CLEANUP !== '1', 'Set PA_CLEANUP=1 to run the zone cleanup');
+
   test('should remove all test zones created by automated tests', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 

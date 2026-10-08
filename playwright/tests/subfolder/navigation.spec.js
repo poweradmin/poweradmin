@@ -34,6 +34,8 @@ async function subfolderLogin(page, username, password, maxRetries = 3) {
 }
 
 test.describe('Subfolder Navigation', () => {
+  test.skip(({ baseURL }) => !baseURL || !baseURL.includes(':8086'), 'Runs only against the subfolder instance (BASE_URL=http://localhost:8086)');
+
   test.beforeEach(async ({ page }) => {
     await subfolderLogin(page, users.admin.username, users.admin.password);
   });
