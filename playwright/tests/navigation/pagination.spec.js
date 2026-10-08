@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { deleteZoneById, findZoneIdByName } from '../../helpers/zones.js';
+import { deleteZoneById, findZoneIdByName, uniqueName, uniqueZoneName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
@@ -10,16 +10,38 @@ import users from '../../fixtures/users.json' with { type: 'json' };
  * follow in this worker. And the list has to be filtered to one letter: the SQL
  * backend returns every zone for letter=all, so that view never paginates.
  *
- * Both of those are shared state, so the file has to stay on one worker: in
- * parallel mode one worker's afterAll restores the size of 100 while another is
- * still paginating, and the pager disappears mid-test.
+ * The page size and sort order are stored per user, so everything runs as a
+ * throwaway administrator-template user created for this file. The seeded admin
+ * account (shared with every other spec) is never touched.
  */
 test.describe.configure({ mode: 'serial' });
 
 const PAGE_SIZE = 5;
-const SEEDED_PAGE_SIZE = 100;
 const LETTER = 'p';
 const FILLER_COUNT = 7;
+
+const pgUser = { username: uniqueName('pgn'), password: 'PagePass123!@#' };
+
+async function createPagingUser(page) {
+  await page.goto('/users/add');
+  await page.locator('input[name="username"]').fill(pgUser.username);
+  await page.locator('input[name="fullname"]').fill('Pagination Test User');
+  await page.locator('input[name="email"]').fill(`${pgUser.username}@example.com`);
+  await page.locator('input[name="password"]').fill(pgUser.password);
+  await page.locator('select[name="perm_templ"]').selectOption({ label: 'Administrator' });
+  await page.locator('button[name="commit"]').click();
+  await expect(page.locator('[data-testid="system-message"]')).toContainText(/success/i);
+}
+
+async function deletePagingUser(page) {
+  await page.goto(`/users?search=${pgUser.username}`);
+  const row = page.locator(`tr:has(input[value="${pgUser.username}"])`);
+  if (await row.count() > 0) {
+    await row.locator('a[href*="/delete"]').first().click();
+    await page.locator('button[type="submit"][name="commit"]').click();
+    await page.waitForLoadState('domcontentloaded');
+  }
+}
 
 async function setZoneListPageSize(page, size) {
   await page.goto(`/zones/forward?rows_per_page=${size}`);
@@ -56,25 +78,31 @@ async function removeZones(page, zones) {
 
 test.describe('Pagination Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await loginAndWaitForDashboard(page, pgUser.username, pgUser.password);
   });
 
   let fillerZones = [];
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(180000);
+    const admin = await browser.newPage();
+    await loginAndWaitForDashboard(admin, users.admin.username, users.admin.password);
+    await createPagingUser(admin);
+    await admin.close();
+
     const page = await browser.newPage();
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await loginAndWaitForDashboard(page, pgUser.username, pgUser.password);
     await setZoneListPageSize(page, PAGE_SIZE);
-    fillerZones = await createFillerZones(page, `${LETTER}aginated`);
+    fillerZones = await createFillerZones(page, `${LETTER}${uniqueName('pg').slice(4)}`);
     await page.close();
   });
 
   test.afterAll(async ({ browser }) => {
+    test.setTimeout(180000);
     const page = await browser.newPage();
-    test.setTimeout(120000);
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     await removeZones(page, fillerZones);
-    await setZoneListPageSize(page, SEEDED_PAGE_SIZE);
+    await deletePagingUser(page);
     await page.close();
   });
 
@@ -157,12 +185,12 @@ test.describe('Pagination Functionality', () => {
     expect(hasTotalInfo).not.toBeNull();
   });
 
-  test('should handle pagination with records list', async ({ page }) => {
+  test('should handle pagination with records list', async ({ page }, testInfo) => {
     // Creating a zone and 15 records one full page load at a time needs more
     // than the default per-test budget.
     test.slow();
 
-    const zoneName = `records-page-test-${Date.now()}.com`;
+    const zoneName = uniqueZoneName('recpage', testInfo);
 
     // Create a zone and add many records
     await page.goto('/zones/add/master');

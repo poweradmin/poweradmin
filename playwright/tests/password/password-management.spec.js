@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard, login } from '../../helpers/auth.js';
+import { uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
@@ -65,8 +66,10 @@ test.describe('Password Management', () => {
     }
   });
 
-  test('should change password successfully', async ({ page }) => {
-    const username = `pwchange-${Date.now()}`;
+  test('should change password successfully', async ({ page }, testInfo) => {
+    // Creating and removing the user plus three logins is many page loads
+    test.slow();
+    const username = uniqueName('pwchange', testInfo);
     const firstPassword = 'SecurePass123!@#';
     const secondPassword = 'AnotherPass456!@#';
 

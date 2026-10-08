@@ -119,7 +119,14 @@ test.describe('User CRUD Operations', () => {
       await expect(page.locator('[data-testid="system-message"]'))
         .toContainText(/user has been created successfully/i);
       await page.goto(`/users?search=${uniqueUsername}`);
-      await expect(page.locator(`tr:has(input[value="${uniqueUsername}"])`)).toHaveCount(1);
+      const row = page.locator(`tr:has(input[value="${uniqueUsername}"])`);
+      await expect(row).toHaveCount(1);
+
+      // Remove the throwaway user again
+      await row.locator('a[href*="/delete"]').first().click();
+      await page.locator('button[type="submit"][name="commit"]').click();
+      await page.goto(`/users?search=${uniqueUsername}`);
+      await expect(page.locator(`tr:has(input[value="${uniqueUsername}"])`)).toHaveCount(0);
     });
 
     test('should reject empty username', async ({ page }) => {

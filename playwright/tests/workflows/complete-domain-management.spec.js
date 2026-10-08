@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { deleteZoneById, findZoneIdByName } from '../../helpers/zones.js';
+import { deleteZoneById, findZoneIdByName, uniqueZoneName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Use serial mode since tests depend on each other
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Complete Domain Management Workflow', () => {
-  const testDomain = `test-domain-${Date.now()}.com`;
+  const testDomain = uniqueZoneName('domflow');
   let zoneId = null;
 
   test.beforeEach(async ({ page }) => {
