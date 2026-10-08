@@ -31,7 +31,6 @@ class TestableDocsController extends DocsController
     {
         $reflection = new ReflectionClass(parent::class);
         $method = $reflection->getMethod('getDocsBaseUrl');
-        $method->setAccessible(true);
         return $method->invoke($this);
     }
 }

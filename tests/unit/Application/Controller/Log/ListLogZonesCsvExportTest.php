@@ -66,7 +66,7 @@ class ListLogZonesCsvExportTest extends TestCase
             ['timestamp' => 't2', 'operation' => 'add_zone', 'zone' => 'example.com'],
         ]);
         rewind($output);
-        $lines = array_map('str_getcsv', array_filter(explode("\n", (string)stream_get_contents($output))));
+        $lines = array_map(fn(string $line) => str_getcsv($line, ',', '"', ''), array_filter(explode("\n", (string)stream_get_contents($output))));
         fclose($output);
 
         $this->assertSame([

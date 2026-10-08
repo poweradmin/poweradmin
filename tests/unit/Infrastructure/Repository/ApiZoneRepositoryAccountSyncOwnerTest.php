@@ -68,7 +68,6 @@ class ApiZoneRepositoryAccountSyncOwnerTest extends TestCase
         );
 
         $method = new ReflectionMethod($repository, 'getOldestOwnerUsername');
-        $method->setAccessible(true);
 
         return $method->invoke($repository, $canonicalRowId, $canonicalId);
     }

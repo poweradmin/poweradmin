@@ -278,7 +278,6 @@ class UserProvisioningServiceTest extends TestCase
         $service = $this->createServiceWithMocks($configManager, $userRepository);
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
-        $method->setAccessible(true);
 
         return $method->invoke($service, ['admins'], 'oidc', false);
     }
@@ -317,7 +316,6 @@ class UserProvisioningServiceTest extends TestCase
         $service = $this->createServiceWithMocks($configManager);
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
-        $method->setAccessible(true);
 
         $result = $method->invoke($service, [], 'oidc', false);
         $this->assertNull($result, 'Should return null when useDefaultFallback is false and no groups match');
@@ -338,7 +336,6 @@ class UserProvisioningServiceTest extends TestCase
         $service = $this->createServiceWithMocks($configManager, $this->templateRepository(['Guest' => 5]));
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
-        $method->setAccessible(true);
 
         $result = $method->invoke($service, [], 'oidc', true);
         $this->assertEquals(5, $result, 'Should return default template ID when useDefaultFallback is true');
@@ -358,7 +355,6 @@ class UserProvisioningServiceTest extends TestCase
         $service = $this->createServiceWithMocks($configManager, $this->templateRepository(['Administrator' => 1]));
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
-        $method->setAccessible(true);
 
         $result = $method->invoke($service, ['admins', 'users'], 'oidc', false);
         $this->assertEquals(1, $result, 'Should return mapped template ID when user group matches mapping');
@@ -562,7 +558,6 @@ class UserProvisioningServiceTest extends TestCase
         $service = $this->createServiceWithMocks($configManager, $this->templateRepository([]));
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
-        $method->setAccessible(true);
 
         $this->assertNull(
             $method->invoke($service, [], 'oidc', true),
@@ -596,7 +591,6 @@ class UserProvisioningServiceTest extends TestCase
         $userInfo->method('getRawData')->willReturn(['email_verified' => $claim]);
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
-        $method->setAccessible(true);
 
         $this->assertSame($expected, $method->invoke($service, $userInfo, []));
     }
@@ -614,7 +608,6 @@ class UserProvisioningServiceTest extends TestCase
         $userInfo->method('getRawData')->willReturn(['sub' => 'abc']);
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
-        $method->setAccessible(true);
 
         $this->assertTrue($method->invoke($service, $userInfo, []));
     }
@@ -632,7 +625,6 @@ class UserProvisioningServiceTest extends TestCase
         $userInfo->method('getRawData')->willReturn(['sub' => 'abc']);
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
-        $method->setAccessible(true);
 
         $this->assertFalse($method->invoke($service, $userInfo, ['require_verified_email' => true]));
         $this->assertTrue(
@@ -654,7 +646,6 @@ class UserProvisioningServiceTest extends TestCase
         $userInfo->method('getRawData')->willReturn(['email_verified' => true]);
 
         $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
-        $method->setAccessible(true);
 
         $this->assertTrue($method->invoke($service, $userInfo, ['require_verified_email' => true]));
     }
@@ -688,7 +679,6 @@ class UserProvisioningServiceTest extends TestCase
 
         $reflection = new ReflectionClass(UserProvisioningService::class);
         $method = $reflection->getMethod('userHoldsSuperuserPermission');
-        $method->setAccessible(true);
 
         $this->assertTrue(
             $method->invoke($service, 1),
@@ -706,7 +696,6 @@ class UserProvisioningServiceTest extends TestCase
 
         $reflection = new ReflectionClass(UserProvisioningService::class);
         $method = $reflection->getMethod('userHoldsSuperuserPermission');
-        $method->setAccessible(true);
 
         $this->assertTrue($method->invoke($service, 1));
         $this->assertFalse($method->invoke($service, 2));

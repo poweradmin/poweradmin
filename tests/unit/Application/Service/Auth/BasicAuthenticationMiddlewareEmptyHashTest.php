@@ -38,7 +38,6 @@ class BasicAuthenticationMiddlewareEmptyHashTest extends TestCase
 
         $middleware = (new ReflectionClass(BasicAuthenticationMiddleware::class))->newInstanceWithoutConstructor();
         $configProp = new ReflectionProperty(BasicAuthenticationMiddleware::class, 'config');
-        $configProp->setAccessible(true);
         $configProp->setValue($middleware, $config);
         return $middleware;
     }
@@ -46,7 +45,6 @@ class BasicAuthenticationMiddlewareEmptyHashTest extends TestCase
     private function sqlAuth(User $user, string $password): bool
     {
         $method = new ReflectionMethod(BasicAuthenticationMiddleware::class, 'sqlAuthenticatorApiAuth');
-        $method->setAccessible(true);
         return $method->invoke($this->middleware(), $user, $password);
     }
 

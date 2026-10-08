@@ -112,7 +112,7 @@ class CsvFormulaEscaperTest extends TestCase
     {
         $row = (new CsvFormulaEscaper())->escapeRow(['=abc', 'plain']);
         $stream = fopen('php://memory', 'r+');
-        fputcsv($stream, $row);
+        fputcsv($stream, $row, ',', '"', '');
         rewind($stream);
         $written = stream_get_contents($stream);
         fclose($stream);

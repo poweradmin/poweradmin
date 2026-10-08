@@ -64,11 +64,9 @@ class NSECRecordValidatorTest extends TestCase
         $reflection = new ReflectionClass($this->validator);
 
         $ttlProperty = $reflection->getProperty('ttlValidator');
-        $ttlProperty->setAccessible(true);
         $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
 
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
     }
 
@@ -100,7 +98,6 @@ class NSECRecordValidatorTest extends TestCase
         // Set hostname validator in the validator instance
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(
@@ -147,7 +144,6 @@ class NSECRecordValidatorTest extends TestCase
         // Set hostname validator in the validator instance
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(
@@ -180,7 +176,6 @@ class NSECRecordValidatorTest extends TestCase
         // Set hostname validator in the validator instance
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(
@@ -218,7 +213,6 @@ class NSECRecordValidatorTest extends TestCase
         // Set hostname validator in the validator instance
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(
@@ -252,7 +246,6 @@ class NSECRecordValidatorTest extends TestCase
         // Set hostname validator in the validator instance
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(
@@ -287,7 +280,6 @@ class NSECRecordValidatorTest extends TestCase
         // Set hostname validator in the validator instance
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(
@@ -324,7 +316,6 @@ class NSECRecordValidatorTest extends TestCase
         // Set hostname validator in the validator instance
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(
@@ -369,11 +360,9 @@ class NSECRecordValidatorTest extends TestCase
         $reflection = new ReflectionClass($this->validator);
 
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $ttlProperty = $reflection->getProperty('ttlValidator');
-        $ttlProperty->setAccessible(true);
         $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
 
         $result = $this->validator->validate(
@@ -415,11 +404,9 @@ class NSECRecordValidatorTest extends TestCase
         $reflection = new ReflectionClass($this->validator);
 
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $ttlProperty = $reflection->getProperty('ttlValidator');
-        $ttlProperty->setAccessible(true);
         $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
 
         $result = $this->validator->validate(
@@ -452,7 +439,6 @@ class NSECRecordValidatorTest extends TestCase
         // Set hostname validator in the validator instance
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(
@@ -493,7 +479,6 @@ class NSECRecordValidatorTest extends TestCase
         // Set hostname validator in the validator instance
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(

@@ -143,7 +143,6 @@ abstract class V2ControllerTestCase extends TestCase
     protected function callHandler(object $controller, string $handler): JsonResponse
     {
         $method = new ReflectionMethod($controller, $handler);
-        $method->setAccessible(true);
 
         $response = $method->invoke($controller);
         self::assertInstanceOf(JsonResponse::class, $response);

@@ -202,11 +202,9 @@ class AAAARecordValidatorTest extends TestCase
         $reflectionClass = new ReflectionClass($validator);
 
         $ipProperty = $reflectionClass->getProperty('ipAddressValidator');
-        $ipProperty->setAccessible(true);
         $ipProperty->setValue($validator, $mockIpValidator);
 
         $hostProperty = $reflectionClass->getProperty('hostnameValidator');
-        $hostProperty->setAccessible(true);
         $hostProperty->setValue($validator, $mockHostValidator);
 
         // Test the validator

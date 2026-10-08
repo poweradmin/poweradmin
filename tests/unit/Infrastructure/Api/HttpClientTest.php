@@ -217,7 +217,6 @@ class HttpClientTest extends TestCase
     {
         $reflection = new ReflectionClass(HttpClient::class);
         $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
         return $method;
     }
 }

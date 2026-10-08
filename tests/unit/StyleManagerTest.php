@@ -120,7 +120,6 @@ class StyleManagerTest extends TestCase
             $styleManager = new StyleManager('light', $tempDir, 'custom');
             $reflection = new \ReflectionObject($styleManager);
             $styleDir = $reflection->getProperty('styleDir');
-            $styleDir->setAccessible(true);
 
             // Verify that the styleDir property contains the correct path
             $this->assertEquals($tempDir . '/custom/style', $styleDir->getValue($styleManager));

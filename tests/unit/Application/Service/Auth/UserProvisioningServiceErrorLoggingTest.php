@@ -93,7 +93,6 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
         $userInfo->method('getGroups')->willReturn([]);
 
         $method = $reflection->getMethod('createNewUser');
-        $method->setAccessible(true);
         $result = $method->invoke($service, $userInfo, 'corporate-ldap', $authMethod);
 
         $this->assertNull($result, 'a failed insert must not report a user id');

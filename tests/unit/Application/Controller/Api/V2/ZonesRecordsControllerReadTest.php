@@ -280,7 +280,6 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
         $this->injectBaseCollaborators($controller, 'POST');
 
         $method = new ReflectionMethod($controller, 'requiredApiKeyOperations');
-        $method->setAccessible(true);
 
         $this->assertSame([], $method->invoke($controller));
     }
@@ -295,7 +294,6 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
         $this->inject($controller, 'request', Request::create('/api/v2/zones/1/rrsets', $httpMethod));
 
         $method = new ReflectionMethod($controller, 'requiredApiKeyOperations');
-        $method->setAccessible(true);
 
         /** @var array<int, string> $operations */
         $operations = $method->invoke($controller);

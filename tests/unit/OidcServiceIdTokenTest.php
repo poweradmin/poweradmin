@@ -63,7 +63,6 @@ class OidcServiceIdTokenTest extends TestCase
         );
 
         $this->decodeMethod = new ReflectionMethod(OidcService::class, 'decodeIdTokenPayload');
-        $this->decodeMethod->setAccessible(true);
     }
 
     private function buildJwt(array $payload): string
@@ -131,7 +130,6 @@ class OidcServiceIdTokenTest extends TestCase
         $token = new AccessToken($options);
 
         $method = new ReflectionMethod(OidcService::class, 'getUserInfo');
-        $method->setAccessible(true);
 
         return $method->invoke($this->service, $provider, $token, 'test-provider');
     }

@@ -51,12 +51,10 @@ class LdapAuthenticatorCacheTest extends TestCase
         // Mock logger to avoid initialization errors
         $mockLogger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
         $loggerProperty = $this->reflection->getProperty('logger');
-        $loggerProperty->setAccessible(true);
         $loggerProperty->setValue($this->authenticator, $mockLogger);
 
         // The authenticator is built by reflection, so plant the session it reads
         $sessionProperty = $this->reflection->getProperty('session');
-        $sessionProperty->setAccessible(true);
         $sessionProperty->setValue($this->authenticator, $this->session);
     }
 
@@ -83,12 +81,10 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject config manager via reflection
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         // Inject UserContextService
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Call private method via reflection
@@ -110,12 +106,10 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject config manager
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         // Inject UserContextService
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Don't set userid or authenticated - user is not authenticated
@@ -137,11 +131,9 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject dependencies
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Set user as authenticated but no timestamp
@@ -165,11 +157,9 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject dependencies
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Set expired timestamp (10 minutes ago)
@@ -195,16 +185,13 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject dependencies
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params with matching IP
         $clientProperty = $this->reflection->getProperty('client');
-        $clientProperty->setAccessible(true);
         $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // Set valid cache (2 minutes ago)
@@ -232,16 +219,13 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject dependencies
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params with different IP
         $clientProperty = $this->reflection->getProperty('client');
-        $clientProperty->setAccessible(true);
         $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.2', 'phpunit', 'Unknown', false));
 
         // Set cache with different IP
@@ -269,16 +253,13 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject dependencies
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params
         $clientProperty = $this->reflection->getProperty('client');
-        $clientProperty->setAccessible(true);
         $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // Set cache with user A, but current session has user B (account switching scenario)
@@ -306,16 +287,13 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject dependencies
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params
         $clientProperty = $this->reflection->getProperty('client');
-        $clientProperty->setAccessible(true);
         $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // Simulate MFA pending state: userid set but authenticated=false
@@ -344,16 +322,13 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject dependencies
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Mock server params
         $clientProperty = $this->reflection->getProperty('client');
-        $clientProperty->setAccessible(true);
         $clientProperty->setValue($this->authenticator, new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false));
 
         // authenticated not set at all (edge case)
@@ -381,11 +356,9 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject dependencies
         $configProperty = $this->reflection->getProperty('configManager');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($this->authenticator, $configManager);
 
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         $method = $this->getPrivateMethod('updateAuthenticationCache');
@@ -422,7 +395,6 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Inject UserContextService
         $userContextProperty = $this->reflection->getProperty('userContextService');
-        $userContextProperty->setAccessible(true);
         $userContextProperty->setValue($this->authenticator, $this->userContextService);
 
         // Call public method
@@ -487,7 +459,6 @@ class LdapAuthenticatorCacheTest extends TestCase
             ->willReturn($active);
 
         $property = $this->reflection->getProperty('userLookup');
-        $property->setAccessible(true);
         $property->setValue($this->authenticator, $userLookup);
     }
 
@@ -497,7 +468,6 @@ class LdapAuthenticatorCacheTest extends TestCase
     private function getPrivateMethod(string $methodName): ReflectionMethod
     {
         $method = $this->reflection->getMethod($methodName);
-        $method->setAccessible(true);
         return $method;
     }
 }

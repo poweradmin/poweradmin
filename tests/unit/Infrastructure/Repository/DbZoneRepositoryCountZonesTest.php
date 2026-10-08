@@ -16,9 +16,18 @@ class DbZoneRepositoryCountZonesTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+        $connect = [PDO::class, 'connect'];
+        $this->db = is_callable($connect)
+            ? $connect('sqlite::memory:', null, null, $options)
+            : new PDO('sqlite::memory:', null, null, $options);
         // DbCompat maps the numeric filter to REGEXP, which sqlite only has when registered
-        $this->db->sqliteCreateFunction('regexp', fn($pattern, $value) => preg_match('/' . $pattern . '/', (string)$value) === 1);
+        $regexp = fn($pattern, $value) => preg_match('/' . $pattern . '/', (string)$value) === 1;
+        if (method_exists($this->db, 'createFunction')) {
+            $this->db->createFunction('regexp', $regexp);
+        } else {
+            $this->db->sqliteCreateFunction('regexp', $regexp);
+        }
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT)");
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");

@@ -49,11 +49,9 @@ class HandleExceptionResponseTest extends TestCase
         $controller = (new ReflectionClass(TestableHandleExceptionController::class))
             ->newInstanceWithoutConstructor();
         $loggerProperty = (new ReflectionClass(BaseController::class))->getProperty('logger');
-        $loggerProperty->setAccessible(true);
         $loggerProperty->setValue($controller, $logger);
 
         $method = (new ReflectionClass(PublicApiController::class))->getMethod('handleException');
-        $method->setAccessible(true);
         /** @var JsonResponse $response */
         $response = $method->invoke(
             $controller,

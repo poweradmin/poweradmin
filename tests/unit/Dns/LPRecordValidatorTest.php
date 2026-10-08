@@ -51,7 +51,6 @@ class LPRecordValidatorTest extends TestCase
         // Use reflection to inject the mocked hostname validator
         $reflector = new ReflectionClass(LPRecordValidator::class);
         $property = $reflector->getProperty('hostnameValidator');
-        $property->setAccessible(true);
         $property->setValue($this->validator, $this->hostnameValidatorMock);
     }
 
@@ -327,7 +326,6 @@ class LPRecordValidatorTest extends TestCase
         // Use reflection to replace TTLValidator with mock
         $reflector = new ReflectionClass(LPRecordValidator::class);
         $property = $reflector->getProperty('ttlValidator');
-        $property->setAccessible(true);
         $property->setValue($this->validator, $ttlValidatorMock);
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
@@ -364,7 +362,6 @@ class LPRecordValidatorTest extends TestCase
         // Use reflection to replace TTLValidator with mock
         $reflector = new ReflectionClass(LPRecordValidator::class);
         $property = $reflector->getProperty('ttlValidator');
-        $property->setAccessible(true);
         $property->setValue($this->validator, $ttlValidatorMock);
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
@@ -405,7 +402,6 @@ class LPRecordValidatorTest extends TestCase
         // Use reflection to replace TTLValidator with mock
         $reflector = new ReflectionClass(LPRecordValidator::class);
         $property = $reflector->getProperty('ttlValidator');
-        $property->setAccessible(true);
         $property->setValue($this->validator, $ttlValidatorMock);
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);

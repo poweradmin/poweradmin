@@ -87,7 +87,6 @@ class ThemePathIntegrationTest extends TestCase
         // Get the styleDir property to verify the path
         $reflection = new \ReflectionObject($styleManager);
         $styleDir = $reflection->getProperty('styleDir');
-        $styleDir->setAccessible(true);
 
         // This should be pointing to {tempDir}/templates/default/style
         $this->assertEquals(
@@ -120,7 +119,6 @@ class ThemePathIntegrationTest extends TestCase
         // Get the styleDir property to verify the path
         $reflection = new \ReflectionObject($styleManager);
         $styleDir = $reflection->getProperty('styleDir');
-        $styleDir->setAccessible(true);
 
         // This should be pointing to {tempDir}/templates/custom/style
         $this->assertEquals(

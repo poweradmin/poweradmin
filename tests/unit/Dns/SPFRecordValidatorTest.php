@@ -171,7 +171,6 @@ class SPFRecordValidatorTest extends TestCase
     {
         $reflection = new ReflectionClass(SPFRecordValidator::class);
         $method = $reflection->getMethod('validatePriority');
-        $method->setAccessible(true);
 
         // Test with empty priority (should return 0)
         $result = $method->invoke($this->validator, '');
@@ -206,7 +205,6 @@ class SPFRecordValidatorTest extends TestCase
 
         $reflection = new ReflectionClass(SPFRecordValidator::class);
         $method = $reflection->getMethod('validateSPFContent');
-        $method->setAccessible(true);
 
         // Valid SPF version should pass
         $result1 = $method->invoke($this->validator, $content1);

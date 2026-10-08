@@ -30,7 +30,6 @@ class ApiKeysControllerRouteDispatchTest extends TestCase
         $reflection = new ReflectionClass(ApiKeysController::class);
         $controller = $reflection->newInstanceWithoutConstructor();
         $method = $reflection->getMethod('getActionFromRoute');
-        $method->setAccessible(true);
 
         return $method->invoke($controller, $routeName);
     }

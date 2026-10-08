@@ -208,7 +208,6 @@ class EditZoneMetadataControllerTest extends TestCase
     private function invokePrivateMethod(object $object, string $methodName, array $arguments = []): mixed
     {
         $method = $this->controllerReflection->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invokeArgs($object, $arguments);
     }
@@ -216,7 +215,6 @@ class EditZoneMetadataControllerTest extends TestCase
     private function setProperty(object $object, string $propertyName, mixed $value): void
     {
         $property = $this->controllerReflection->getProperty($propertyName);
-        $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 
@@ -224,7 +222,6 @@ class EditZoneMetadataControllerTest extends TestCase
     {
         $baseReflection = new ReflectionClass($this->controllerReflection->getParentClass()->getName());
         $property = $baseReflection->getProperty($propertyName);
-        $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 }

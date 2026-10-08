@@ -40,7 +40,6 @@ class ListRecordChangesExportTest extends TestCase
     {
         $controller = (new ReflectionClass(ListRecordChangesController::class))->newInstanceWithoutConstructor();
         $method = new ReflectionMethod(ListRecordChangesController::class, 'buildExportRow');
-        $method->setAccessible(true);
         return $method->invoke($controller, $log);
     }
 

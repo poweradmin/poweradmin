@@ -44,7 +44,6 @@ class AbstractApiControllerHelpersTest extends TestCase
 
         $property = new ReflectionClass(AbstractApiController::class);
         $requestProperty = $property->getProperty('request');
-        $requestProperty->setAccessible(true);
         $requestProperty->setValue($controller, $request);
 
         return $controller;

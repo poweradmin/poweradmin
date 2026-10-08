@@ -37,10 +37,8 @@ class MailServiceTest extends TestCase
         $reflection = new \ReflectionClass($mailService);
 
         $getBaseHeadersMethod = $reflection->getMethod('getBaseHeaders');
-        $getBaseHeadersMethod->setAccessible(true);
 
         $getMessageBodyMethod = $reflection->getMethod('getMessageBody');
-        $getMessageBodyMethod->setAccessible(true);
 
         // Test with boundary
         $boundary = 'test_boundary_123';
@@ -72,7 +70,6 @@ class MailServiceTest extends TestCase
             'auth' => false,
         ]);
         $method = new \ReflectionMethod($service, 'buildSmtpDsn');
-        $method->setAccessible(true);
         return $method->invoke($service);
     }
 
@@ -150,10 +147,8 @@ class MailServiceTest extends TestCase
         $reflection = new \ReflectionClass($this->mailService);
 
         $getBaseHeadersMethod = $reflection->getMethod('getBaseHeaders');
-        $getBaseHeadersMethod->setAccessible(true);
 
         $getMessageBodyMethod = $reflection->getMethod('getMessageBody');
-        $getMessageBodyMethod->setAccessible(true);
 
         $fromEmail = 'test@example.com';
         $fromName = 'Test Name';
@@ -177,7 +172,6 @@ class MailServiceTest extends TestCase
         // Use reflection to access private method
         $reflection = new \ReflectionClass($this->mailService);
         $getMessageBodyMethod = $reflection->getMethod('getMessageBody');
-        $getMessageBodyMethod->setAccessible(true);
 
         $boundary = 'test_boundary_456';
         $htmlBody = '<html><body>HTML content</body></html>';

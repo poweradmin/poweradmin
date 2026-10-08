@@ -39,7 +39,6 @@ class AuthenticationServiceApiRequestTest extends TestCase
         );
         $_SERVER['REQUEST_URI'] = $requestUri;
         $method = new ReflectionMethod(AuthenticationService::class, 'isApiRequest');
-        $method->setAccessible(true);
         return $method->invoke($service);
     }
 

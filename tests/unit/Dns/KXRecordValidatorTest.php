@@ -186,7 +186,6 @@ class KXRecordValidatorTest extends BaseDnsTest
     {
         // Test validatePriority with reflection to access private method
         $reflectionMethod = new ReflectionMethod(KXRecordValidator::class, 'validatePriority');
-        $reflectionMethod->setAccessible(true);
 
         // Valid priority
         $result = $reflectionMethod->invoke($this->validator, 10);

@@ -52,14 +52,12 @@ class DomainManagerSerialPolicyTest extends TestCase
     private function setProperty(string $name, mixed $value): void
     {
         $property = $this->reflection->getProperty($name);
-        $property->setAccessible(true);
         $property->setValue($this->manager, $value);
     }
 
     private function applySerialPolicy(?string $soaEditApi): void
     {
         $method = $this->reflection->getMethod('applySerialPolicy');
-        $method->setAccessible(true);
         $method->invoke($this->manager, 7, 'example.com', $soaEditApi);
     }
 

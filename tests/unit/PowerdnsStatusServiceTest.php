@@ -39,7 +39,6 @@ class PowerdnsStatusServiceTest extends TestCase
     public function testSanitizeDisplayName($input, string $expected): void
     {
         $method = $this->reflection->getMethod('sanitizeDisplayName');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->service, $input);
         $this->assertSame($expected, $result);
@@ -79,14 +78,12 @@ class PowerdnsStatusServiceTest extends TestCase
     private function setApiUrl(object $service, string $url): void
     {
         $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiUrl');
-        $property->setAccessible(true);
         $property->setValue($service, $url);
     }
 
     private function invokePrivate(object $service, string $method, array $args = []): mixed
     {
         $reflectionMethod = (new ReflectionClass(PowerdnsStatusService::class))->getMethod($method);
-        $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invokeArgs($service, $args);
     }
 
@@ -137,7 +134,6 @@ class PowerdnsStatusServiceTest extends TestCase
     private function enableApi(object $service): void
     {
         $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiEnabled');
-        $property->setAccessible(true);
         $property->setValue($service, true);
     }
 
@@ -202,7 +198,6 @@ class PowerdnsStatusServiceTest extends TestCase
         $client->method('getServerInfo')->willReturn(['id' => 'localhost', 'daemon_type' => 'authoritative', 'version' => '4.9.4']);
         $client->method('getMetrics')->willReturn([['name' => 'udp-queries', 'value' => '42']]);
         $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiClient');
-        $property->setAccessible(true);
         $property->setValue($service, $client);
     }
 

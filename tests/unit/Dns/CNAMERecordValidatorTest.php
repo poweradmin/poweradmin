@@ -198,7 +198,6 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
     {
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validatePriority');
-        $method->setAccessible(true);
 
         // With empty priority
         $result = $method->invoke($this->validator, '');
@@ -220,7 +219,6 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
     {
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameUnique');
-        $method->setAccessible(true);
 
         // Only a CNAME of the same name exists: unique as far as other types go
         $this->validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider([
@@ -241,7 +239,6 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
     {
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameName');
-        $method->setAccessible(true);
 
         // A TXT pointing at the name is harmless; an MX target cannot become a CNAME
         $this->validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider([
@@ -262,7 +259,6 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
     {
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateNotEmptyCnameRR');
-        $method->setAccessible(true);
 
         // Valid case (name different from zone)
         $result = $method->invoke($this->validator, 'alias.example.com', 'example.com');
@@ -448,7 +444,6 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameExistence');
-        $method->setAccessible(true);
 
         $result = $method->invoke($validator, 'alias.example.com', '123');
         $this->assertTrue($result->isValid());
@@ -465,7 +460,6 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameUnique');
-        $method->setAccessible(true);
 
         $result = $method->invoke($validator, 'alias.example.com', '123');
         $this->assertTrue($result->isValid());
@@ -482,7 +476,6 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameExistence');
-        $method->setAccessible(true);
 
         // No row is excluded for a new record, so any existing CNAME conflicts
         $result = $method->invoke($validator, 'alias.example.com', -1);

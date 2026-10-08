@@ -21,7 +21,6 @@ class IpListMatchingTest extends TestCase
         // Use reflection to access the private isIpInList method
         $reflection = new ReflectionClass(LoginAttemptService::class);
         $this->isIpInListMethod = $reflection->getMethod('isIpInList');
-        $this->isIpInListMethod->setAccessible(true);
     }
 
     public function testExactIpMatch()

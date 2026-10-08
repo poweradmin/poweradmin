@@ -113,7 +113,6 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
 
         $config = $this->buildConfig($overrides);
         $configProperty = (new ReflectionClass(BaseController::class))->getProperty('config');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($controller, $config);
 
         // The backend question goes through the service factory's provider
@@ -124,20 +123,16 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('dnsBackendProvider')->willReturn($provider);
         $factoryProperty = (new ReflectionClass(BaseController::class))->getProperty('serviceFactory');
-        $factoryProperty->setAccessible(true);
         $factoryProperty->setValue($controller, $factory);
 
         // An expired or missing cache now triggers a refresh, which logs failures.
         $loggerProperty = (new ReflectionClass(BaseController::class))->getProperty('logger');
-        $loggerProperty->setAccessible(true);
         $loggerProperty->setValue($controller, new NullLogger());
 
         $sessionProperty = (new ReflectionClass(BaseController::class))->getProperty('session');
-        $sessionProperty->setAccessible(true);
         $sessionProperty->setValue($controller, $this->session);
 
         $method = (new ReflectionClass(BaseController::class))->getMethod('getRecordTypeCapabilities');
-        $method->setAccessible(true);
 
         return $method->invoke($controller);
     }

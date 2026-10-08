@@ -325,7 +325,6 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $this->setBaseProperty($controller, 'messageService', $messages);
 
         $method = $this->controllerReflection->getMethod('handleZoneMetadataPost');
-        $method->setAccessible(true);
         $method->invoke($controller, $zone_id);
 
         return $messages->getMessages('edit') ?? [];
@@ -343,7 +342,6 @@ class EditControllerZoneMetadataPostTest extends TestCase
     private function setProperty(object $object, string $propertyName, mixed $value): void
     {
         $property = $this->controllerReflection->getProperty($propertyName);
-        $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 
@@ -351,7 +349,6 @@ class EditControllerZoneMetadataPostTest extends TestCase
     {
         $baseReflection = new ReflectionClass($this->controllerReflection->getParentClass()->getName());
         $property = $baseReflection->getProperty($propertyName);
-        $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 }

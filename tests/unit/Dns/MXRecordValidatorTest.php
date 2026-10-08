@@ -151,7 +151,6 @@ class MXRecordValidatorTest extends BaseDnsTest
     {
         // Test validatePriority with reflection to access private method
         $reflectionMethod = new \ReflectionMethod(MXRecordValidator::class, 'validatePriority');
-        $reflectionMethod->setAccessible(true);
 
         // Valid priority
         $result = $reflectionMethod->invoke($this->validator, 10);

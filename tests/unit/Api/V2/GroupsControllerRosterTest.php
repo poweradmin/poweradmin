@@ -98,7 +98,6 @@ class GroupsControllerRosterTest extends TestCase
         $this->setProperty($controller, 'pathParameters', ['id' => (string)self::GROUP_ID]);
 
         $method = new ReflectionMethod(GroupsController::class, 'getGroup');
-        $method->setAccessible(true);
         $response = $method->invoke($controller);
 
         return json_decode($response->getContent(), true);
@@ -116,7 +115,6 @@ class GroupsControllerRosterTest extends TestCase
     private function setProperty(object $controller, string $name, mixed $value): void
     {
         $property = new ReflectionProperty(GroupsController::class, $name);
-        $property->setAccessible(true);
         $property->setValue($controller, $value);
     }
 }

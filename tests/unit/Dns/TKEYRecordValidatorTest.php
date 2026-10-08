@@ -51,12 +51,10 @@ class TKEYRecordValidatorTest extends TestCase
 
         // Inject the mock hostname validator
         $reflectionProperty = new ReflectionProperty(TKEYRecordValidator::class, 'hostnameValidator');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         // Inject the mock TTL validator
         $reflectionProperty = new ReflectionProperty(TKEYRecordValidator::class, 'ttlValidator');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->validator, $this->ttlValidatorMock);
     }
 
