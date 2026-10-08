@@ -24,616 +24,239 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PDOException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Model\RecordRow;
+use Poweradmin\Infrastructure\Repository\RecordSearch;
+use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
+use TestHelpers\RecordCommentFixture;
 
 /**
- * Integration tests for record comment subquery patterns across all databases.
+ * Comment resolution in the real record repository and record search, on each engine.
  *
- * Tests the COALESCE-based comment resolution used in:
- * - RecordRepository::getRecordsFromDomainId()
- * - RecordRepository::getFilteredRecords()
- * - RecordSearch::searchRecords()
- *
- * The comment subquery must:
- * 1. Prefer per-record linked comments (via record_comment_links table)
- * 2. Fall back to RRset-based comments (matched by domain_id + name + type)
- * 3. Work identically on MySQL, PostgreSQL, and SQLite
- *
- * The old pattern used ORDER BY with outer table references in a correlated
- * subquery, which causes "no such column: records.id" on SQLite.
+ * A record shows its per-record linked comment first (record_comment_links) and falls
+ * back to the RRset comment matched by domain, name and type. The same fixture runs
+ * through getRecordsFromDomainId(), getFilteredRecords() and RecordSearch, and the
+ * MySQL and PostgreSQL results must equal the SQLite ones.
  */
 class RecordCommentSubqueryTest extends TestCase
 {
-    private ?PDO $mysqlConnection = null;
-    private ?PDO $pgsqlConnection = null;
-    private ?PDO $sqliteConnection = null;
-
-    private const TEST_DOMAIN_ID = 1;
-
-    protected function setUp(): void
-    {
-        try {
-            $this->mysqlConnection = new PDO(
-                'mysql:host=127.0.0.1;port=3306;dbname=pdns',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-            $this->setupTables($this->mysqlConnection, 'mysql');
-        } catch (PDOException $e) {
-            $this->mysqlConnection = null;
-        }
-
-        try {
-            $this->pgsqlConnection = new PDO(
-                'pgsql:host=127.0.0.1;port=5432;dbname=pdns',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-            $this->setupTables($this->pgsqlConnection, 'pgsql');
-        } catch (PDOException $e) {
-            $this->pgsqlConnection = null;
-        }
-
-        $this->sqliteConnection = new PDO(
-            'sqlite::memory:',
-            null,
-            null,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-        );
-        $this->setupTables($this->sqliteConnection, 'sqlite');
-    }
+    private ?PDO $db = null;
+    private string $engine = '';
 
     protected function tearDown(): void
     {
-        foreach (['mysql' => $this->mysqlConnection, 'pgsql' => $this->pgsqlConnection] as $conn) {
-            if ($conn) {
-                $conn->exec("DROP TABLE IF EXISTS test_rcl_links");
-                $conn->exec("DROP TABLE IF EXISTS test_rcl_comments");
-                $conn->exec("DROP TABLE IF EXISTS test_rcl_records");
-                $conn->exec("DROP TABLE IF EXISTS test_rcl_domains");
-            }
+        $this->close();
+    }
+
+    private function close(): void
+    {
+        if ($this->db !== null) {
+            RecordCommentFixture::drop($this->db, $this->engine);
+            $this->db = null;
         }
     }
 
-    private function setupTables(PDO $db, string $type): void
+    private function open(string $engine): PDO
     {
-        $db->exec("DROP TABLE IF EXISTS test_rcl_links");
-        $db->exec("DROP TABLE IF EXISTS test_rcl_comments");
-        $db->exec("DROP TABLE IF EXISTS test_rcl_records");
-        $db->exec("DROP TABLE IF EXISTS test_rcl_domains");
-
-        if ($type === 'mysql') {
-            $db->exec("CREATE TABLE test_rcl_domains (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(255) NOT NULL
-            )");
-            $db->exec("CREATE TABLE test_rcl_records (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                domain_id INT NOT NULL,
-                name VARCHAR(255),
-                type VARCHAR(10),
-                content TEXT,
-                ttl INT DEFAULT 3600,
-                prio INT DEFAULT 0,
-                disabled TINYINT DEFAULT 0,
-                auth TINYINT DEFAULT 1
-            )");
-            $db->exec("CREATE TABLE test_rcl_comments (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                domain_id INT NOT NULL,
-                name VARCHAR(255),
-                type VARCHAR(10),
-                comment TEXT
-            )");
-            $db->exec("CREATE TABLE test_rcl_links (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                record_id VARCHAR(2048) CHARACTER SET ascii NOT NULL,
-                comment_id INT NOT NULL
-            )");
-        } elseif ($type === 'pgsql') {
-            $db->exec("CREATE TABLE test_rcl_domains (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(255) NOT NULL
-            )");
-            $db->exec("CREATE TABLE test_rcl_records (
-                id SERIAL PRIMARY KEY,
-                domain_id INT NOT NULL,
-                name VARCHAR(255),
-                type VARCHAR(10),
-                content TEXT,
-                ttl INT DEFAULT 3600,
-                prio INT DEFAULT 0,
-                disabled SMALLINT DEFAULT 0,
-                auth SMALLINT DEFAULT 1
-            )");
-            $db->exec("CREATE TABLE test_rcl_comments (
-                id SERIAL PRIMARY KEY,
-                domain_id INT NOT NULL,
-                name VARCHAR(255),
-                type VARCHAR(10),
-                comment TEXT
-            )");
-            $db->exec("CREATE TABLE test_rcl_links (
-                id SERIAL PRIMARY KEY,
-                record_id VARCHAR(2048) NOT NULL,
-                comment_id INT NOT NULL
-            )");
-        } else {
-            $db->exec("CREATE TABLE test_rcl_domains (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL
-            )");
-            $db->exec("CREATE TABLE test_rcl_records (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                domain_id INTEGER NOT NULL,
-                name TEXT,
-                type TEXT,
-                content TEXT,
-                ttl INTEGER DEFAULT 3600,
-                prio INTEGER DEFAULT 0,
-                disabled INTEGER DEFAULT 0,
-                auth INTEGER DEFAULT 1
-            )");
-            $db->exec("CREATE TABLE test_rcl_comments (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                domain_id INTEGER NOT NULL,
-                name TEXT,
-                type TEXT,
-                comment TEXT
-            )");
-            $db->exec("CREATE TABLE test_rcl_links (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                record_id VARCHAR(2048) NOT NULL,
-                comment_id INTEGER NOT NULL
-            )");
+        $this->close();
+        try {
+            $db = RecordCommentFixture::connect($engine);
+        } catch (PDOException $e) {
+            $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
         }
+        $this->db = $db;
+        $this->engine = $engine;
+        RecordCommentFixture::createSchema($db, $engine);
+        $this->seed($db);
 
-        $this->insertTestData($db);
+        return $db;
     }
 
-    private function insertTestData(PDO $db): void
+    private function seed(PDO $db): void
     {
-        // Domain
-        $db->exec("INSERT INTO test_rcl_domains (id, name) VALUES (1, 'example.com')");
+        RecordCommentFixture::addRecord($db, 1, 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2024010101 3600 900 604800 86400');
+        RecordCommentFixture::addRecord($db, 2, 'example.com', 'A', '192.0.2.1');
+        RecordCommentFixture::addRecord($db, 3, 'www.example.com', 'A', '192.0.2.2');
+        RecordCommentFixture::addRecord($db, 4, 'mail.example.com', 'A', '192.0.2.3');
+        RecordCommentFixture::addRecord($db, 5, 'example.com', 'MX', 'mail.example.com');
+        // Same RRset as record 4 (its only comment is linked to 4), a different name with the
+        // same type, and the same name with a different type: none of them may borrow a comment
+        RecordCommentFixture::addRecord($db, 6, 'mail.example.com', 'A', '192.0.2.6');
+        RecordCommentFixture::addRecord($db, 7, 'ftp.example.com', 'A', '192.0.2.7');
+        RecordCommentFixture::addRecord($db, 8, 'www.example.com', 'TXT', 'v=none');
 
-        // Records (IDs 1-5)
-        $stmt = $db->prepare("INSERT INTO test_rcl_records (domain_id, name, type, content) VALUES (?, ?, ?, ?)");
-        $stmt->execute([1, 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2024010101 3600 900 604800 86400']);
-        $stmt->execute([1, 'example.com', 'A', '192.0.2.1']);
-        $stmt->execute([1, 'www.example.com', 'A', '192.0.2.2']);
-        $stmt->execute([1, 'mail.example.com', 'A', '192.0.2.3']);
-        $stmt->execute([1, 'example.com', 'MX', 'mail.example.com']);
+        // RRset comment with no link: matched by domain, name and type
+        RecordCommentFixture::addComment($db, 1, 'www.example.com', 'A', 'Legacy RRset comment');
 
-        // RRset-based comment (legacy style - no link)
-        // Comment for www.example.com A - matched by domain_id + name + type
-        $db->exec("INSERT INTO test_rcl_comments (domain_id, name, type, comment)
-                    VALUES (1, 'www.example.com', 'A', 'Legacy RRset comment')");
+        // Per-record linked comment for record 4
+        RecordCommentFixture::addComment($db, 2, 'mail.example.com', 'A', 'Linked per-record comment');
+        RecordCommentFixture::link($db, 4, 2);
 
-        // Per-record linked comment for mail.example.com A (record id=4)
-        $db->exec("INSERT INTO test_rcl_comments (domain_id, name, type, comment)
-                    VALUES (1, 'mail.example.com', 'A', 'Linked per-record comment')");
-        // Link comment_id=2 to record_id=4
-        $db->exec("INSERT INTO test_rcl_links (record_id, comment_id) VALUES (4, 2)");
-
-        // Both linked AND RRset comment for example.com A (record id=2)
-        // The linked one should win
-        $db->exec("INSERT INTO test_rcl_comments (domain_id, name, type, comment)
-                    VALUES (1, 'example.com', 'A', 'Unlinked RRset fallback')");
-        $db->exec("INSERT INTO test_rcl_comments (domain_id, name, type, comment)
-                    VALUES (1, 'example.com', 'A', 'Preferred linked comment')");
-        // Link comment_id=4 to record_id=2
-        $db->exec("INSERT INTO test_rcl_links (record_id, comment_id) VALUES (2, 4)");
+        // Record 2 has an unlinked RRset comment and a linked one: the linked one wins
+        RecordCommentFixture::addComment($db, 3, 'example.com', 'A', 'Unlinked RRset fallback');
+        RecordCommentFixture::addComment($db, 4, 'example.com', 'A', 'Preferred linked comment');
+        RecordCommentFixture::link($db, 2, 4);
     }
 
-    // =========================================================================
-    // Old pattern: correlated subquery with ORDER BY referencing outer table
-    // This is the pattern that breaks on SQLite
-    // =========================================================================
-
-    private function executeOldPattern(PDO $db): array
+    private function repository(PDO $db): SqlRecordRepository
     {
-        $dbType = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $castId = DbCompat::castToString($dbType, 'test_rcl_records.id');
-        $query = "SELECT test_rcl_records.*,
-            (
-                SELECT c.comment
-                FROM test_rcl_comments c
-                LEFT JOIN test_rcl_links rcl ON rcl.comment_id = c.id
-                WHERE (rcl.record_id = $castId)
-                   OR (rcl.record_id IS NULL
-                       AND c.domain_id = test_rcl_records.domain_id
-                       AND c.name = test_rcl_records.name
-                       AND c.type = test_rcl_records.type)
-                ORDER BY CASE WHEN rcl.record_id = $castId THEN 0 ELSE 1 END
-                LIMIT 1
-            ) AS comment
-            FROM test_rcl_records
-            WHERE test_rcl_records.domain_id = :domain_id
-            AND test_rcl_records.type IS NOT NULL AND test_rcl_records.type != ''
-            ORDER BY test_rcl_records.name ASC";
-
-        $stmt = $db->prepare($query);
-        $stmt->execute([':domain_id' => self::TEST_DOMAIN_ID]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return new SqlRecordRepository($db, RecordCommentFixture::config($this->engine));
     }
 
-    // =========================================================================
-    // New pattern: COALESCE with two separate subqueries
-    // This works on all databases including SQLite
-    // =========================================================================
-
-    private function executeNewPattern(PDO $db): array
+    /** @return array<string, ?string> */
+    private function zoneListingComments(PDO $db): array
     {
-        $dbType = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $castId = DbCompat::castToString($dbType, 'test_rcl_records.id');
-        $query = "SELECT test_rcl_records.*,
-            COALESCE(
-                (
-                    SELECT c.comment
-                    FROM test_rcl_links rcl
-                    JOIN test_rcl_comments c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = $castId
-                    LIMIT 1
-                ),
-                (
-                    SELECT c.comment
-                    FROM test_rcl_comments c
-                    WHERE c.domain_id = test_rcl_records.domain_id
-                      AND c.name = test_rcl_records.name
-                      AND c.type = test_rcl_records.type
-                      AND NOT EXISTS (
-                          SELECT 1 FROM test_rcl_links rcl2
-                          WHERE rcl2.comment_id = c.id
-                      )
-                    LIMIT 1
-                )
-            ) AS comment
-            FROM test_rcl_records
-            WHERE test_rcl_records.domain_id = :domain_id
-            AND test_rcl_records.type IS NOT NULL AND test_rcl_records.type != ''
-            ORDER BY test_rcl_records.name ASC";
+        return $this->commentMap($this->repository($db)->getRecordsFromDomainId(1, 0, 100, 'name', 'ASC', true));
+    }
 
-        $stmt = $db->prepare($query);
-        $stmt->execute([':domain_id' => self::TEST_DOMAIN_ID]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    /** @return array<string, ?string> */
+    private function filteredComments(PDO $db): array
+    {
+        return $this->commentMap($this->repository($db)->getFilteredRecords(1, 0, 100, 'name', 'ASC', true));
+    }
+
+    /** @return array<string, ?string> */
+    private function searchComments(PDO $db, string $query, bool $inComments = false): array
+    {
+        $search = new RecordSearch($db, RecordCommentFixture::config($this->engine), $this->engine);
+        $parameters = [
+            'query' => $query,
+            'zones' => false,
+            'records' => true,
+            'comments' => $inComments,
+            'wildcard' => true,
+            'reverse' => false,
+            'type_filter' => '',
+            'content_filter' => '',
+        ];
+
+        return $this->commentMap($search->searchRecords($parameters, 'all', null, 'name', 'ASC', false, 100, true, 1));
     }
 
     /**
-     * Helper to build a map of record name+type -> comment for easier assertions.
+     * @param array<array-key, RecordRow|array<string, mixed>> $rows
+     * @return array<string, ?string>
      */
-    private function buildCommentMap(array $results): array
+    private function commentMap(array $rows): array
     {
         $map = [];
-        foreach ($results as $row) {
-            $key = $row['name'] . '/' . $row['type'];
-            $map[$key] = $row['comment'];
+        foreach ($rows as $row) {
+            $map[$row['name'] . '/' . $row['type'] . '/' . $row['content']] = $row['comment'];
         }
+        ksort($map);
+
         return $map;
     }
 
-    // =========================================================================
-    // SQLite tests
-    // =========================================================================
-
-    public function testSQLiteOldPatternIsNotRelaidUpon(): void
+    /** @return array<string, ?string> */
+    private static function expectedComments(): array
     {
-        // The old pattern references records.id in the ORDER BY of a correlated
-        // subquery. SQLite raised "no such column" for that up to roughly 3.39;
-        // newer builds (3.53 at the time of writing) resolve it. The shipped
-        // query is the new pattern either way, so accept both outcomes and only
-        // assert that the old one never returns *more* rows than the new one.
-        try {
-            $old = $this->executeOldPattern($this->sqliteConnection);
-        } catch (\PDOException $e) {
-            $this->assertMatchesRegularExpression('/no such column/i', $e->getMessage());
-            return;
-        }
-
-        $this->assertSameSize($this->executeNewPattern($this->sqliteConnection), $old);
+        return [
+            'example.com/A/192.0.2.1' => 'Preferred linked comment',
+            'example.com/MX/mail.example.com' => null,
+            'example.com/SOA/ns1.example.com hostmaster.example.com 2024010101 3600 900 604800 86400' => null,
+            'ftp.example.com/A/192.0.2.7' => null,
+            'mail.example.com/A/192.0.2.3' => 'Linked per-record comment',
+            'mail.example.com/A/192.0.2.6' => null,
+            'www.example.com/A/192.0.2.2' => 'Legacy RRset comment',
+            'www.example.com/TXT/v=none' => null,
+        ];
     }
 
-    public function testSQLiteNewPatternWorks(): void
+    /** @return array<string, array{string}> */
+    public static function engines(): array
     {
-        $results = $this->executeNewPattern($this->sqliteConnection);
-        $this->assertCount(5, $results);
+        return RecordCommentFixture::engines();
     }
 
-    public function testSQLiteNewPatternReturnsLinkedComment(): void
+    /** @return array<string, array{string}> */
+    public static function otherEngines(): array
     {
-        $results = $this->executeNewPattern($this->sqliteConnection);
-        $map = $this->buildCommentMap($results);
-
-        $this->assertEquals('Linked per-record comment', $map['mail.example.com/A']);
+        return ['mysql' => ['mysql'], 'pgsql' => ['pgsql']];
     }
 
-    public function testSQLiteNewPatternReturnsLegacyRRsetComment(): void
+    #[DataProvider('engines')]
+    public function testZoneListingAttachesTheRightCommentToEachRecord(string $engine): void
     {
-        $results = $this->executeNewPattern($this->sqliteConnection);
-        $map = $this->buildCommentMap($results);
+        $db = $this->open($engine);
 
-        $this->assertEquals('Legacy RRset comment', $map['www.example.com/A']);
+        $this->assertSame(self::expectedComments(), $this->zoneListingComments($db));
     }
 
-    public function testSQLiteNewPatternPrefersLinkedOverRRset(): void
+    #[DataProvider('engines')]
+    public function testFilteredRecordsAttachTheRightCommentToEachRecord(string $engine): void
     {
-        // Record example.com/A has both a linked and an unlinked comment.
-        // The COALESCE should return the linked one.
-        $results = $this->executeNewPattern($this->sqliteConnection);
-        $map = $this->buildCommentMap($results);
+        $db = $this->open($engine);
 
-        $this->assertEquals('Preferred linked comment', $map['example.com/A']);
+        $this->assertSame(self::expectedComments(), $this->filteredComments($db));
     }
 
-    public function testSQLiteNewPatternNullForRecordsWithoutComments(): void
+    #[DataProvider('engines')]
+    public function testSearchAttachesTheRightCommentToEachRecord(string $engine): void
     {
-        $results = $this->executeNewPattern($this->sqliteConnection);
-        $map = $this->buildCommentMap($results);
+        $db = $this->open($engine);
 
-        $this->assertNull($map['example.com/SOA']);
-        $this->assertNull($map['example.com/MX']);
+        $this->assertSame(self::expectedComments(), $this->searchComments($db, 'example'));
     }
 
-    // =========================================================================
-    // MySQL tests
-    // =========================================================================
-
-    public function testMySQLOldPatternWorks(): void
+    #[DataProvider('engines')]
+    public function testSearchOnAPartialNameKeepsTheLinkedComment(string $engine): void
     {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
+        $db = $this->open($engine);
 
-        $results = $this->executeOldPattern($this->mysqlConnection);
-        $this->assertCount(5, $results);
+        // "mail" matches both mail.example.com A records by name and the MX record by content
+        $found = $this->searchComments($db, 'mail');
+
+        $this->assertCount(3, $found);
+        $this->assertSame('Linked per-record comment', $found['mail.example.com/A/192.0.2.3']);
+        $this->assertNull($found['mail.example.com/A/192.0.2.6']);
     }
 
-    public function testMySQLNewPatternWorks(): void
+    #[DataProvider('engines')]
+    public function testSearchFindsARecordByItsRRsetCommentText(string $engine): void
     {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
+        $db = $this->open($engine);
 
-        $results = $this->executeNewPattern($this->mysqlConnection);
-        $this->assertCount(5, $results);
+        $this->assertSame(
+            ['www.example.com/A/192.0.2.2' => 'Legacy RRset comment'],
+            $this->searchComments($db, 'Legacy RRset', true)
+        );
     }
 
-    public function testMySQLNewPatternReturnsLinkedComment(): void
+    #[DataProvider('engines')]
+    public function testSearchByLinkedCommentTextReturnsTheLinkedRecordAndItsRRsetSibling(string $engine): void
     {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
+        $db = $this->open($engine);
 
-        $results = $this->executeNewPattern($this->mysqlConnection);
-        $map = $this->buildCommentMap($results);
-
-        $this->assertEquals('Linked per-record comment', $map['mail.example.com/A']);
+        // Search matches rcl.record_id OR the RRset triple, so sibling 192.0.2.6 comes back too,
+        // while the display join excludes linked comments from the fallback and shows it as null.
+        $this->assertSame(
+            [
+                'mail.example.com/A/192.0.2.3' => 'Linked per-record comment',
+                'mail.example.com/A/192.0.2.6' => null,
+            ],
+            $this->searchComments($db, 'Linked per-record', true)
+        );
     }
 
-    public function testMySQLNewPatternReturnsLegacyRRsetComment(): void
+    #[DataProvider('otherEngines')]
+    public function testEveryEngineMatchesSQLite(string $engine): void
     {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
+        $sqlite = $this->open('sqlite');
+        $expected = [
+            'listing' => $this->zoneListingComments($sqlite),
+            'filtered' => $this->filteredComments($sqlite),
+            'search' => $this->searchComments($sqlite, 'example'),
+        ];
 
-        $results = $this->executeNewPattern($this->mysqlConnection);
-        $map = $this->buildCommentMap($results);
+        $other = $this->open($engine);
+        $actual = [
+            'listing' => $this->zoneListingComments($other),
+            'filtered' => $this->filteredComments($other),
+            'search' => $this->searchComments($other, 'example'),
+        ];
 
-        $this->assertEquals('Legacy RRset comment', $map['www.example.com/A']);
-    }
-
-    public function testMySQLNewPatternPrefersLinkedOverRRset(): void
-    {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
-
-        $results = $this->executeNewPattern($this->mysqlConnection);
-        $map = $this->buildCommentMap($results);
-
-        $this->assertEquals('Preferred linked comment', $map['example.com/A']);
-    }
-
-    public function testMySQLOldAndNewPatternsReturnSameComments(): void
-    {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
-
-        $oldMap = $this->buildCommentMap($this->executeOldPattern($this->mysqlConnection));
-        $newMap = $this->buildCommentMap($this->executeNewPattern($this->mysqlConnection));
-
-        $this->assertEquals($oldMap, $newMap, 'New COALESCE pattern should return identical comments as old pattern');
-    }
-
-    // =========================================================================
-    // PostgreSQL tests
-    // =========================================================================
-
-    public function testPgSQLOldPatternWorks(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $results = $this->executeOldPattern($this->pgsqlConnection);
-        $this->assertCount(5, $results);
-    }
-
-    public function testPgSQLNewPatternWorks(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $results = $this->executeNewPattern($this->pgsqlConnection);
-        $this->assertCount(5, $results);
-    }
-
-    public function testPgSQLNewPatternReturnsLinkedComment(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $results = $this->executeNewPattern($this->pgsqlConnection);
-        $map = $this->buildCommentMap($results);
-
-        $this->assertEquals('Linked per-record comment', $map['mail.example.com/A']);
-    }
-
-    public function testPgSQLNewPatternReturnsLegacyRRsetComment(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $results = $this->executeNewPattern($this->pgsqlConnection);
-        $map = $this->buildCommentMap($results);
-
-        $this->assertEquals('Legacy RRset comment', $map['www.example.com/A']);
-    }
-
-    public function testPgSQLNewPatternPrefersLinkedOverRRset(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $results = $this->executeNewPattern($this->pgsqlConnection);
-        $map = $this->buildCommentMap($results);
-
-        $this->assertEquals('Preferred linked comment', $map['example.com/A']);
-    }
-
-    public function testPgSQLOldAndNewPatternsReturnSameComments(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $oldMap = $this->buildCommentMap($this->executeOldPattern($this->pgsqlConnection));
-        $newMap = $this->buildCommentMap($this->executeNewPattern($this->pgsqlConnection));
-
-        $this->assertEquals($oldMap, $newMap, 'New COALESCE pattern should return identical comments as old pattern');
-    }
-
-    // =========================================================================
-    // Cross-database consistency
-    // =========================================================================
-
-    public function testAllDatabasesReturnSameCommentsWithNewPattern(): void
-    {
-        $sqliteMap = $this->buildCommentMap($this->executeNewPattern($this->sqliteConnection));
-
-        if ($this->mysqlConnection) {
-            $mysqlMap = $this->buildCommentMap($this->executeNewPattern($this->mysqlConnection));
-            $this->assertEquals($sqliteMap, $mysqlMap, 'MySQL and SQLite should return identical comments');
-        }
-
-        if ($this->pgsqlConnection) {
-            $pgsqlMap = $this->buildCommentMap($this->executeNewPattern($this->pgsqlConnection));
-            $this->assertEquals($sqliteMap, $pgsqlMap, 'PostgreSQL and SQLite should return identical comments');
-        }
-    }
-
-    // =========================================================================
-    // Search query pattern (RecordSearch)
-    // =========================================================================
-
-    private function executeSearchPattern(PDO $db, string $searchTerm): array
-    {
-        $dbType = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $castId = DbCompat::castToString($dbType, 'test_rcl_records.id');
-        $query = "SELECT test_rcl_records.id, test_rcl_records.domain_id,
-                 test_rcl_records.name, test_rcl_records.type,
-                 test_rcl_records.content, test_rcl_records.ttl,
-                 test_rcl_records.prio, test_rcl_records.disabled,
-                 COALESCE(
-                    (
-                        SELECT c.comment
-                        FROM test_rcl_links rcl
-                        JOIN test_rcl_comments c ON c.id = rcl.comment_id
-                        WHERE rcl.record_id = $castId
-                        LIMIT 1
-                    ),
-                    (
-                        SELECT c.comment
-                        FROM test_rcl_comments c
-                        WHERE c.domain_id = test_rcl_records.domain_id
-                          AND c.name = test_rcl_records.name
-                          AND c.type = test_rcl_records.type
-                          AND NOT EXISTS (
-                              SELECT 1 FROM test_rcl_links rcl2
-                              WHERE rcl2.comment_id = c.id
-                          )
-                        LIMIT 1
-                    )
-                ) AS comment
-            FROM test_rcl_records
-            WHERE test_rcl_records.domain_id = :domain_id
-              AND test_rcl_records.type IS NOT NULL AND test_rcl_records.type != ''
-              AND (test_rcl_records.name LIKE :search OR test_rcl_records.content LIKE :search2)
-            ORDER BY test_rcl_records.name ASC
-            LIMIT 100 OFFSET 0";
-
-        $stmt = $db->prepare($query);
-        $stmt->execute([
-            ':domain_id' => self::TEST_DOMAIN_ID,
-            ':search' => '%' . $searchTerm . '%',
-            ':search2' => '%' . $searchTerm . '%',
-        ]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function testSQLiteSearchPatternWithComments(): void
-    {
-        // "mail" matches mail.example.com A (name) and MX record (content contains "mail")
-        $results = $this->executeSearchPattern($this->sqliteConnection, 'mail');
-        $this->assertCount(2, $results);
-        $map = $this->buildCommentMap($results);
-        $this->assertEquals('Linked per-record comment', $map['mail.example.com/A']);
-    }
-
-    public function testMySQLSearchPatternWithComments(): void
-    {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
-
-        $results = $this->executeSearchPattern($this->mysqlConnection, 'mail');
-        $this->assertCount(2, $results);
-        $map = $this->buildCommentMap($results);
-        $this->assertEquals('Linked per-record comment', $map['mail.example.com/A']);
-    }
-
-    public function testPgSQLSearchPatternWithComments(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $results = $this->executeSearchPattern($this->pgsqlConnection, 'mail');
-        $this->assertCount(2, $results);
-        $map = $this->buildCommentMap($results);
-        $this->assertEquals('Linked per-record comment', $map['mail.example.com/A']);
-    }
-
-    public function testSearchPatternReturnsConsistentResultsAcrossDatabases(): void
-    {
-        $sqliteResults = $this->executeSearchPattern($this->sqliteConnection, 'example');
-        $sqliteMap = $this->buildCommentMap($sqliteResults);
-
-        if ($this->mysqlConnection) {
-            $mysqlMap = $this->buildCommentMap($this->executeSearchPattern($this->mysqlConnection, 'example'));
-            $this->assertEquals($sqliteMap, $mysqlMap, 'Search results should match between MySQL and SQLite');
-        }
-
-        if ($this->pgsqlConnection) {
-            $pgsqlMap = $this->buildCommentMap($this->executeSearchPattern($this->pgsqlConnection, 'example'));
-            $this->assertEquals($sqliteMap, $pgsqlMap, 'Search results should match between PostgreSQL and SQLite');
-        }
+        $this->assertSame($expected, $actual, "$engine and SQLite should return identical comments");
     }
 }
