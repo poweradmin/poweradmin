@@ -177,7 +177,8 @@ class ServerStatusController extends PublicApiController
             'daemon_type' => (string)($status['daemon_type'] ?? 'unknown'),
             'version' => (string)($status['version'] ?? 'unknown'),
             'uptime_seconds' => isset($status['uptime_seconds']) ? (int)$status['uptime_seconds'] : null,
-            'metrics' => $this->filterMetrics($status['metrics'] ?? []),
+            // An empty PHP array encodes as [], but clients expect the metrics map as a JSON object
+            'metrics' => (object)$this->filterMetrics($status['metrics'] ?? []),
         ];
 
         if ($includeSlaves) {
