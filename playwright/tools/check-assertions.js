@@ -24,12 +24,15 @@
  * Reports Playwright tests that can never fail.
  *
  * A test is flagged when every expect() it contains sits inside an existence
- * guard such as `if (await locator.count() > 0)`, or behind a bare
- * `if (!id) return;`. When the element or fixture is missing the body is
+ * guard such as `if (await locator.count() > 0)`, or after a bare early
+ * return at the top level of the test body (`if (!id) return;` or
+ * `if (!id) { return; }`). When the element or fixture is missing the body is
  * skipped, no assertion runs, and the test reports green - so the very
- * regression it guards against is what makes it pass.
+ * regression it guards against is what makes it pass. Returns inside nested
+ * callbacks or helpers do not count, and hooks (beforeAll, afterAll) are not tests.
  *
- * Advisory only: prints a report and always exits 0.
+ * Exits 1 on a flagged test missing from assertions-baseline.txt or a baseline
+ * entry that no longer flags; otherwise prints the baselined backlog and exits 0.
  */
 
 const fs = require('fs');
@@ -40,7 +43,10 @@ const TESTS_DIR = path.join(__dirname, '..', 'tests');
 // test.describe must not match - a describe block spans the whole file and would swallow its tests
 const TEST_START = /^\s*test(?!\.describe)(?:\.\w+)*\s*\(\s*['"`](.+?)['"`]/;
 const EXISTENCE_GUARD = /if\s*\(\s*await\s+.*\.(?:count\s*\(\s*\)\s*[>!=]|isVisible\s*\(\s*\))/;
-const SILENT_RETURN = /if\s*\(\s*![A-Za-z_$][\w$]*\s*\)\s*return\s*;/;
+const SILENT_RETURN = /^\s*if\s*\(\s*![A-Za-z_$][\w$]*\s*\)\s*(?:return\s*;?\s*$|\{\s*return\s*;?\s*\})/;
+const SILENT_RETURN_BLOCK_OPEN = /^\s*if\s*\(\s*![A-Za-z_$][\w$]*\s*\)\s*\{\s*$/;
+const BARE_RETURN = /^\s*return\s*;?\s*$/;
+const BLOCK_ENDERS = /expect\(|test\.skip\(|\bthrow\b/;
 
 /** Blank out comments, strings and regex literals so brace counting is not fooled by braces inside them. */
 function stripNoise(line) {
@@ -85,6 +91,8 @@ function analyseFile(file) {
     let base = null;
     let j = i;
     let skipsSilently = false;
+    let pendingBlockReturn = null;
+    let returnDepth = null;
 
     for (; j < lines.length; j++) {
       const raw = lines[j];
@@ -94,11 +102,27 @@ function analyseFile(file) {
       if (EXISTENCE_GUARD.test(code)) {
         guardDepths.add(depthBefore);
       }
-      if (SILENT_RETURN.test(code)) {
-        skipsSilently = true;
+      // Only a return directly in the test body counts; deeper ones belong to callbacks or loops.
+      const bodyDepth = base === null ? null : base + 1;
+      if (opened && depthBefore === bodyDepth && returnDepth === null) {
+        if (SILENT_RETURN.test(code)) {
+          returnDepth = depthBefore;
+          skipsSilently = true;
+        } else if (SILENT_RETURN_BLOCK_OPEN.test(code)) {
+          pendingBlockReturn = depthBefore;
+        }
+      } else if (pendingBlockReturn !== null && code.trim() !== '') {
+        // Other statements (an annotation push, a log) may sit between the guard and its return
+        if (BARE_RETURN.test(code) && depthBefore === pendingBlockReturn + 1) {
+          returnDepth = pendingBlockReturn;
+          skipsSilently = true;
+          pendingBlockReturn = null;
+        } else if (BLOCK_ENDERS.test(code) || depthBefore <= pendingBlockReturn || code.trim().startsWith('}')) {
+          pendingBlockReturn = null;
+        }
       }
       if (code.includes('expect(')) {
-        assertions.push({ depth: depthBefore, line: j + 1 });
+        assertions.push({ depth: depthBefore, line: j + 1, afterReturn: returnDepth !== null });
       }
 
       depth += (code.match(/{/g) || []).length - (code.match(/}/g) || []).length;
@@ -111,12 +135,9 @@ function analyseFile(file) {
       }
     }
 
-    const unguarded = assertions.filter((a) => ![...guardDepths].some((g) => a.depth > g));
+    const unguarded = assertions.filter((a) => !a.afterReturn && ![...guardDepths].some((g) => a.depth > g));
     if (assertions.length > 0 && unguarded.length === 0) {
-      const reasons = ['every assertion is behind an existence guard'];
-      if (skipsSilently) {
-        reasons.push('silent early return');
-      }
+      const reasons = [skipsSilently ? 'assertions sit behind a silent early return' : 'every assertion is behind an existence guard'];
       flagged.push({ name, line: i + 1, assertions: assertions.length, reason: reasons.join('; ') });
     }
 
