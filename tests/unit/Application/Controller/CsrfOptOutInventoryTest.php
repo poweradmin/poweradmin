@@ -80,28 +80,40 @@ class CsrfOptOutInventoryTest extends TestCase
         );
     }
 
-    /** @return string[] fully-qualified names of all concrete controller classes */
+    /** @return string[] fully-qualified names of all concrete controller classes, modules included */
     private function controllerClasses(): array
     {
-        $root = dirname(__DIR__, 4) . '/lib/Application/Controller';
-        $classes = [];
+        $lib = dirname(__DIR__, 4) . '/lib';
+        $roots = ['Poweradmin\\Application\\Controller\\' => $lib . '/Application/Controller'];
+        foreach (glob($lib . '/Module/*/Controller', GLOB_ONLYDIR) ?: [] as $dir) {
+            $roots['Poweradmin\\Module\\' . basename(dirname($dir)) . '\\Controller\\'] = $dir;
+        }
 
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root));
-        foreach ($files as $file) {
-            if (!$file->isFile() || $file->getExtension() !== 'php') {
-                continue;
-            }
-            $relative = substr($file->getPathname(), strlen($root) + 1, -4);
-            $class = 'Poweradmin\\Application\\Controller\\' . str_replace('/', '\\', $relative);
-            if (!class_exists($class)) {
-                continue;
-            }
-            if ((new ReflectionClass($class))->isSubclassOf(BaseController::class)) {
-                $classes[] = $class;
+        $classes = [];
+        $moduleClasses = 0;
+
+        foreach ($roots as $namespace => $root) {
+            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root));
+            foreach ($files as $file) {
+                if (!$file->isFile() || $file->getExtension() !== 'php') {
+                    continue;
+                }
+                $relative = substr($file->getPathname(), strlen($root) + 1, -4);
+                $class = $namespace . str_replace('/', '\\', $relative);
+                if (!class_exists($class)) {
+                    continue;
+                }
+                if ((new ReflectionClass($class))->isSubclassOf(BaseController::class)) {
+                    $classes[] = $class;
+                    if (str_starts_with($class, 'Poweradmin\\Module\\')) {
+                        $moduleClasses++;
+                    }
+                }
             }
         }
 
         $this->assertGreaterThan(80, count($classes), 'Controller discovery looks broken');
+        $this->assertGreaterThan(0, $moduleClasses, 'Module controller discovery looks broken');
         return $classes;
     }
 }
