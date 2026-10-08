@@ -14,8 +14,6 @@ use Poweradmin\Module\Whois\Service\WhoisService;
  * This test verifies that the WhoisService correctly handles
  * internationalized domain names in various scripts.
  */
-// Queries public WHOIS servers over port 43; excluded from CI.
-#[Group('network')]
 #[RequiresPhpExtension('intl')]
 class WhoisServiceIdnIntegrationTest extends TestCase
 {
@@ -76,21 +74,15 @@ class WhoisServiceIdnIntegrationTest extends TestCase
         string $tldUnicode,
         string $tldPunycode
     ): void {
-        // Skip test if intl extension is not available
-        if (!extension_loaded('intl')) {
-            $this->markTestSkipped('The intl extension is not available.');
-        }
-
         // Get WHOIS server for Unicode TLD
         $serverFromUnicode = $this->whoisService->getWhoisServer($tldUnicode);
 
         // Get WHOIS server for Punycode TLD
         $serverFromPunycode = $this->whoisService->getWhoisServer($tldPunycode);
 
-        // If both are null, the TLD might not be in our database, but they should be consistent
-        if ($serverFromUnicode === null && $serverFromPunycode === null) {
-            $this->markTestIncomplete("No WHOIS server found for TLD {$tldUnicode} / {$tldPunycode}");
-        }
+        // Every TLD in the provider is in the bundled list, so a null here is a regression
+        $this->assertNotNull($serverFromUnicode, "No WHOIS server found for TLD {$tldUnicode}");
+        $this->assertNotNull($serverFromPunycode, "No WHOIS server found for TLD {$tldPunycode}");
 
         // Verify that the same server is returned regardless of TLD format
         $this->assertSame(
@@ -106,6 +98,7 @@ class WhoisServiceIdnIntegrationTest extends TestCase
      * This test verifies the internal convertToIdnaPunycode method works by
      * checking that the same WHOIS responses are returned for both forms
      */
+    #[Group('network')]
     #[DataProvider('idnDomainsProvider')]
     public function testIdnDomainConversionForQueries(
         string $domainUnicode,
@@ -113,18 +106,11 @@ class WhoisServiceIdnIntegrationTest extends TestCase
         string $tldUnicode,
         string $tldPunycode
     ): void {
-        // Skip test if intl extension is not available
-        if (!extension_loaded('intl')) {
-            $this->markTestSkipped('The intl extension is not available.');
-        }
-
         // Get WHOIS server
         $whoisServer = $this->whoisService->getWhoisServer($tldUnicode)
             ?? $this->whoisService->getWhoisServer($tldPunycode);
 
-        if ($whoisServer === null) {
-            $this->markTestSkipped("No WHOIS server found for TLD {$tldUnicode}");
-        }
+        $this->assertNotNull($whoisServer, "No WHOIS server found for TLD {$tldUnicode}");
 
         // Test that we can make WHOIS queries with both unicode and punycode forms
         // First check if the WHOIS server is responding
@@ -146,6 +132,7 @@ class WhoisServiceIdnIntegrationTest extends TestCase
     /**
      * Test full WHOIS info retrieval for IDN domains
      */
+    #[Group('network')]
     #[DataProvider('idnDomainsProvider')]
     public function testGetWhoisInfoForIdnDomains(
         string $domainUnicode,
@@ -153,11 +140,6 @@ class WhoisServiceIdnIntegrationTest extends TestCase
         string $tldUnicode,
         string $tldPunycode
     ): void {
-        // Skip test if intl extension is not available
-        if (!extension_loaded('intl')) {
-            $this->markTestSkipped('The intl extension is not available.');
-        }
-
         // Try getting WHOIS info for the Unicode domain
         $resultUnicode = $this->whoisService->getWhoisInfo($domainUnicode);
 
@@ -198,21 +180,15 @@ class WhoisServiceIdnIntegrationTest extends TestCase
         string $tldUnicode,
         string $tldPunycode
     ): void {
-        // Skip test if intl extension is not available
-        if (!extension_loaded('intl')) {
-            $this->markTestSkipped('The intl extension is not available.');
-        }
-
         // Get WHOIS server for Unicode domain
         $serverFromUnicode = $this->whoisService->getWhoisServerForDomain($domainUnicode);
 
         // Get WHOIS server for Punycode domain
         $serverFromPunycode = $this->whoisService->getWhoisServerForDomain($domainPunycode);
 
-        // If both are null, the TLD might not be in our database, but they should be consistent
-        if ($serverFromUnicode === null && $serverFromPunycode === null) {
-            $this->markTestIncomplete("No WHOIS server found for domain {$domainUnicode} / {$domainPunycode}");
-        }
+        // Every TLD in the provider is in the bundled list, so a null here is a regression
+        $this->assertNotNull($serverFromUnicode, "No WHOIS server found for domain {$domainUnicode}");
+        $this->assertNotNull($serverFromPunycode, "No WHOIS server found for domain {$domainPunycode}");
 
         // Verify that the same server is returned regardless of domain format
         $this->assertSame(

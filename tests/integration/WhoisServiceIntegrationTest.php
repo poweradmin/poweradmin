@@ -6,8 +6,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Module\Whois\Service\WhoisService;
 
-// Queries public WHOIS servers over port 43; excluded from CI.
-#[Group('network')]
 class WhoisServiceIntegrationTest extends TestCase
 {
     /**
@@ -53,6 +51,7 @@ class WhoisServiceIntegrationTest extends TestCase
      * This test will perform an actual WHOIS query against a reliable server.
      * It might fail if there are network issues or rate limiting.
      */
+    #[Group('network')]
     public function testWhoisServicePerformsBasicQuery(): void
     {
         // Use IANA's whois server which is generally reliable
@@ -102,16 +101,12 @@ class WhoisServiceIntegrationTest extends TestCase
     /**
      * Test the full getWhoisInfo workflow
      *
-     * This test performs a complete whois lookup for a domain,
+     * This test performs a complete whois lookup for a domain over the network,
      * similar to what would happen in the application.
      */
+    #[Group('network')]
     public function testGetWhoisInfoWorkflow(): void
     {
-        // This test makes a real network request, mark as skipped if in CI environment
-        if (getenv('CI') === 'true') {
-            $this->markTestSkipped('Skipping network test in CI environment');
-        }
-
         // Use IANA's example.com which is stable and well-known
         $result = $this->whoisService->getWhoisInfo('example.com');
 
@@ -147,6 +142,7 @@ class WhoisServiceIntegrationTest extends TestCase
     /**
      * Test error handling for non-existent whois server
      */
+    #[Group('network')]
     public function testNonExistentServerHandling(): void
     {
         // Try to query a non-existent server directly
