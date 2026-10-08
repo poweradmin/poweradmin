@@ -267,8 +267,8 @@ class RecordChangeLoggerChangesetTest extends TestCase
                 throw new \RuntimeException('boom');
             });
             $this->fail('Expected the exception to propagate.');
-        } catch (\RuntimeException) {
-            // expected
+        } catch (\RuntimeException $e) {
+            $this->assertSame('boom', $e->getMessage());
         }
 
         // The scope must not stay open, or the next unrelated change joins it.
@@ -281,16 +281,19 @@ class RecordChangeLoggerChangesetTest extends TestCase
 
     public function testAThrowInANestedScopeLeavesTheOuterOneUsableAndThenClosed(): void
     {
-        $this->logger->withChangeset(10, 'outer', function () {
+        $caught = null;
+        $this->logger->withChangeset(10, 'outer', function () use (&$caught) {
             try {
                 $this->logger->withChangeset(99, 'inner', function () {
                     throw new \RuntimeException('boom');
                 });
-            } catch (\RuntimeException) {
-                // expected
+            } catch (\RuntimeException $e) {
+                $caught = $e;
             }
             $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
         });
+        $this->assertNotNull($caught, 'the inner scope must rethrow');
+        $this->assertSame('boom', $caught->getMessage());
         $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
 
         $ids = $this->changesetIds();

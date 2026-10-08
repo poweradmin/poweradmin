@@ -152,8 +152,8 @@ class SamlResponseValidationTest extends TestCase
                 throw new \RuntimeException('boom');
             });
             $this->fail('Expected the exception to propagate.');
-        } catch (\RuntimeException) {
-            // expected
+        } catch (\RuntimeException $e) {
+            $this->assertSame('boom', $e->getMessage());
         }
 
         // Absent before the call, so they must be absent again rather than left forced.

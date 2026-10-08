@@ -222,7 +222,8 @@ class RemoteUserSessionHandlerTest extends TestCase
         try {
             $this->handler(['REMOTE_USER' => 'alice'])->apply(1800, '/');
             $this->fail('the refusal halts the request');
-        } catch (RuntimeException) {
+        } catch (RuntimeException $e) {
+            $this->assertSame('halted', $e->getMessage());
         }
 
         $this->assertFalse($this->session->has(SessionKeys::USERID));
@@ -238,7 +239,8 @@ class RemoteUserSessionHandlerTest extends TestCase
         try {
             $this->handler(['REMOTE_USER' => 'alice'])->apply(1800, '/');
             $this->fail('the refusal halts the request');
-        } catch (RuntimeException) {
+        } catch (RuntimeException $e) {
+            $this->assertSame('halted', $e->getMessage());
         }
 
         $this->assertFalse($this->session->has(SessionKeys::USERID));
@@ -253,7 +255,8 @@ class RemoteUserSessionHandlerTest extends TestCase
         try {
             $this->handler(['REMOTE_USER' => 'alice'], [], mfaEnabled: true)->apply(1800, '/');
             $this->fail('the MFA redirect halts the request');
-        } catch (RuntimeException) {
+        } catch (RuntimeException $e) {
+            $this->assertSame('halted', $e->getMessage());
         }
 
         $this->assertFalse($this->session->has(SessionKeys::USERID));

@@ -27,6 +27,8 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
+use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
+use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 use TestHelpers\PermissionServiceTestCase;
@@ -45,7 +47,7 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
     private const CALLER_ID = 7;
     private const ZONE_ID = 5;
 
-    private function manager(array $callerPermissions, bool $ownsZone): DomainManager
+    private function manager(array $callerPermissions, bool $ownsZone, ?ZoneTemplateApplier $applier = null): DomainManager
     {
         $reflection = new ReflectionClass(DomainManager::class);
         $manager = $reflection->newInstanceWithoutConstructor();
@@ -61,6 +63,8 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
             'actor' => new StubActor(self::CALLER_ID),
             'userRepository' => $users,
             'domainRepository' => $domains,
+            'templateApplier' => $applier ?? $this->applierThatMustNotRun(),
+            'zoneCacheFlusher' => null,
             'permissionService' => $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => $callerPermissions]),
             ] as $name => $value
         ) {
@@ -68,6 +72,14 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
         }
 
         return $manager;
+    }
+
+    private function applierThatMustNotRun(): ZoneTemplateApplier
+    {
+        $applier = $this->createMock(ZoneTemplateApplier::class);
+        $applier->expects($this->never())->method('applyTemplate');
+
+        return $applier;
     }
 
     public function testMetaEditAndCreateGrantsAloneAreRefused(): void
@@ -81,16 +93,17 @@ class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
 
     public function testUnlinkingTheTemplateWritesNoRecordsSoMetaEditIsEnough(): void
     {
-        $manager = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], false);
+        $applier = $this->createMock(ZoneTemplateApplier::class);
+        $applier->expects($this->once())
+            ->method('applyTemplate')
+            ->with(self::ZONE_ID, 0, 86400, false)
+            ->willReturn(ZoneWriteResult::ok(self::ZONE_ID));
 
-        // Past the gate the call reaches the database the fixture does not have;
-        // anything other than the 403 proves the gate let it through.
-        try {
-            $result = $manager->updateZoneRecords(86400, self::ZONE_ID, 0);
-            $this->assertNotSame(Refusal::FORBIDDEN, $result->refusal);
-        } catch (\Throwable) {
-            $this->addToAssertionCount(1);
-        }
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], false, $applier)
+            ->updateZoneRecords(86400, self::ZONE_ID, 0);
+
+        $this->assertTrue($result->success);
+        $this->assertNotSame(Refusal::FORBIDDEN, $result->refusal);
     }
 
     public function testEditOwnWithoutOwnershipIsRefused(): void
