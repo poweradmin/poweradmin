@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Service\Web\AuditService;
@@ -17,6 +18,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use Poweradmin\Infrastructure\Session\ArraySession;
 
+#[BackupGlobals(true)]
 class SamlResponseValidationTest extends TestCase
 {
     private ArraySession $session;

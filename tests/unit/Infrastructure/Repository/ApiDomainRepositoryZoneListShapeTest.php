@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneSummary;
@@ -35,6 +36,7 @@ use TestHelpers\FakeConfiguration;
  * order and values typed as the repository assembles them; ZoneSummary::toArray()
  * must reproduce them.
  */
+#[BackupGlobals(true)]
 #[CoversClass(ApiDomainRepository::class)]
 class ApiDomainRepositoryZoneListShapeTest extends TestCase
 {

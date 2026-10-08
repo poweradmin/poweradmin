@@ -2,9 +2,11 @@
 
 namespace Poweradmin\Tests\Unit\Api;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
+#[BackupGlobals(true)]
 class DocsControllerTest extends TestCase
 {
     private TestableDocsController $controller;

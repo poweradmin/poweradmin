@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -40,6 +41,7 @@ use TestHelpers\FakeConfiguration;
  * zone - see CanonicalZoneSql. A tolerant `IN (id, domain_id)` match would pass the
  * visibility test below while leaking the colliding zone in the test after it.
  */
+#[BackupGlobals(true)]
 #[CoversClass(ApiZoneRepository::class)]
 class ApiZoneRepositoryGroupOwnershipTest extends TestCase
 {

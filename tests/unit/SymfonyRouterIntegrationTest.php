@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Routing\SymfonyRouter;
 use TestHelpers\BootContexts;
@@ -11,6 +12,7 @@ use TestHelpers\FakeConfiguration;
  * Comprehensive integration test for SymfonyRouter to ensure it handles
  * all routing scenarios correctly and provides complete functionality.
  */
+#[BackupGlobals(true)]
 class SymfonyRouterIntegrationTest extends TestCase
 {
     protected function setUp(): void

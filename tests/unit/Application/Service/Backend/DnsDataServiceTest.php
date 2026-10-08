@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\Backend;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Backend\DnsDataService;
@@ -12,6 +13,7 @@ use PDO;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Infrastructure\Session\ArraySession;
 
+#[BackupGlobals(true)]
 #[CoversClass(DnsDataService::class)]
 class DnsDataServiceTest extends TestCase
 {

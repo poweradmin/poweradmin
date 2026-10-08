@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -36,6 +37,7 @@ use TestHelpers\FakeConfiguration;
  * repository must actually order by it rather than silently falling through
  * to the zone name.
  */
+#[BackupGlobals(true)]
 #[CoversClass(ApiZoneRepository::class)]
 class ApiZoneRepositoryReverseSortTest extends TestCase
 {

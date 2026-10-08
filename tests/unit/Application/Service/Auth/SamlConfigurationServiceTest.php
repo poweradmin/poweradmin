@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Service\Auth\SamlConfigurationService;
@@ -9,6 +10,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use RuntimeException;
 use TestHelpers\FakeConfiguration;
 
+#[BackupGlobals(true)]
 class SamlConfigurationServiceTest extends TestCase
 {
     private SamlConfigurationService $service;

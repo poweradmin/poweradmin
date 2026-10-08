@@ -28,11 +28,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Pins every check and fix of the SQL backend strategy against an in-memory
@@ -58,10 +58,12 @@ class SqlConsistencyChecksTest extends TestCase
 
     private function checker(): SqlConsistencyChecks
     {
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
+        return new SqlConsistencyChecks($this->db, $this->tableNames(), new ZoneOwnerRepair($this->db), $this->soaBuilder());
+    }
 
-        return new SqlConsistencyChecks($this->db, new TableNameService($config), new ZoneOwnerRepair($this->db), $this->soaBuilder());
+    private function tableNames(): TableNameService
+    {
+        return new TableNameService(new FakeConfiguration(['database' => ['pdns_db_name' => '']]));
     }
 
     private function soaBuilder(): DefaultSoaBuilder
@@ -458,9 +460,7 @@ class SqlConsistencyChecksTest extends TestCase
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)");
         $this->db->exec("INSERT INTO users (id, username) VALUES (4, 'alice')");
         $this->db->exec("INSERT INTO domains (id, name, type, account) VALUES (1, 'auto.example', 'SLAVE', 'alice'), (2, 'other.example', 'SLAVE', 'bob')");
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
-        $checker = new SqlConsistencyChecks($this->db, new TableNameService($config), new ZoneOwnerRepair($this->db), $this->soaBuilder(), new AccountOwnerLookup($this->db));
+        $checker = new SqlConsistencyChecks($this->db, $this->tableNames(), new ZoneOwnerRepair($this->db), $this->soaBuilder(), new AccountOwnerLookup($this->db));
 
         $this->assertTrue($checker->fixZoneWithoutOwner(1, 9));
         $this->assertTrue($checker->fixZoneWithoutOwner(2, 9));
@@ -475,11 +475,9 @@ class SqlConsistencyChecksTest extends TestCase
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)");
         $this->db->exec("INSERT INTO users (id, username) VALUES (4, 'alice')");
         $this->db->exec("INSERT INTO domains (id, name, type, account) VALUES (1, 'auto.example', 'SLAVE', 'alice')");
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
         $limits = $this->createMock(ZoneOwnershipLimit::class);
         $limits->method('userRemaining')->with(4)->willReturn(0);
-        $checker = new SqlConsistencyChecks($this->db, new TableNameService($config), new ZoneOwnerRepair($this->db), $this->soaBuilder(), new AccountOwnerLookup($this->db, $limits));
+        $checker = new SqlConsistencyChecks($this->db, $this->tableNames(), new ZoneOwnerRepair($this->db), $this->soaBuilder(), new AccountOwnerLookup($this->db, $limits));
 
         $this->assertTrue($checker->fixZoneWithoutOwner(1, 9));
 

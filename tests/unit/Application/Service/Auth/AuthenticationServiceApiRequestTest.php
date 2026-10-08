@@ -14,6 +14,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -28,6 +29,7 @@ use Symfony\Component\HttpFoundation\Response;
  * instead of a 302 redirect to the HTML login page (audit M17). The branch is
  * chosen by isApiRequest(), driven by the request URI.
  */
+#[BackupGlobals(true)]
 class AuthenticationServiceApiRequestTest extends TestCase
 {
     private function isApiRequest(string $requestUri): bool

@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -11,6 +12,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use TestHelpers\FakeConfiguration;
 
+#[BackupGlobals(true)]
 #[CoversClass(ApiDomainRepository::class)]
 class ApiDomainRepositoryGetZonesTest extends TestCase
 {
@@ -47,6 +49,9 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
 
         $this->config = ConfigurationManager::getInstance();
         $this->config->initialize();
+
+        // A fresh sync would call the backend a second time; these tests count backend calls.
+        $_SESSION['zone_sync_last'] = time();
     }
 
     /**

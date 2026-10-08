@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
@@ -34,6 +35,7 @@ use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
  * the raw domain_id collapsed every unresolved row onto 0, which both hid the owner and
  * let one zone's owners surface on another.
  */
+#[BackupGlobals(true)]
 class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
 {
     private PDO $db;

@@ -2,12 +2,14 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\Record;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Record\DynamicDnsRequestFactory;
 use Symfony\Component\HttpFoundation\Request;
 use TestHelpers\FakeConfiguration;
 
+#[BackupGlobals(true)]
 #[CoversClass(DynamicDnsRequestFactory::class)]
 class DynamicDnsRequestFactoryTest extends TestCase
 {

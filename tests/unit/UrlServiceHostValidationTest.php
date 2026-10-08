@@ -22,11 +22,13 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Web\UrlService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 
+#[BackupGlobals(true)]
 class UrlServiceHostValidationTest extends TestCase
 {
     private function createMockConfig(array $values = []): ConfigurationInterface

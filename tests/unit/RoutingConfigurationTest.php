@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -16,6 +17,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Integration test to verify routing configuration is valid and complete.
  */
+#[BackupGlobals(true)]
 class RoutingConfigurationTest extends TestCase
 {
     private RouteCollection $routes;
