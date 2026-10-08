@@ -163,11 +163,8 @@ final class SamlService
                 'session_id' => $this->session->id()
             ]);
 
-            // Use RelayState to maintain provider ID across SAML flow
-            $relayState = base64_encode(json_encode(['provider' => $providerId]));
-
             // Initiate SSO and get the redirect URL (stay=true prevents immediate redirect and returns URL)
-            $redirectUrl = $auth->login($relayState, [], false, false, true);
+            $redirectUrl = $auth->login(self::relayStateFor($providerId), [], false, false, true);
 
             $this->logger->info('Generated SAML SSO URL: {url}', ['url' => $redirectUrl]);
 
@@ -179,6 +176,15 @@ final class SamlService
             ]);
             throw $e;
         }
+    }
+
+    /**
+     * The RelayState sent with login and logout requests: the provider id, which
+     * handleAssertion() reads back when the session no longer holds it.
+     */
+    public static function relayStateFor(string $providerId): string
+    {
+        return base64_encode(json_encode(['provider' => $providerId]));
     }
 
     /**
@@ -433,8 +439,7 @@ final class SamlService
 
             if ($nameId) {
                 // A null returnTo makes php-saml build RelayState from the request Host header.
-                $relayState = base64_encode(json_encode(['provider' => $providerId]));
-                return $auth->logout($relayState, [], $nameId, $sessionIndex, true);
+                return $auth->logout(self::relayStateFor($providerId), [], $nameId, $sessionIndex, true);
             }
 
             return null;
