@@ -193,13 +193,6 @@ class DbCompatIntegrationTest extends TestCase
     {
         foreach ($this->connections() as $name => $conn) {
             $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            if ($type === 'sqlite') {
-                // KNOWN BUG: DbCompat::groupConcat() emits the MySQL "SEPARATOR"
-                // keyword for SQLite, which SQLite doesn't recognize. SQLite needs
-                // `GROUP_CONCAT(col, 'sep')` instead. Currently unused in production
-                // code; fix DbCompat::groupConcat() before adding any SQLite caller.
-                $this->markTestSkipped('DbCompat::groupConcat sqlite path emits invalid SQL (see comment)');
-            }
             $expr = DbCompat::groupConcat($type, 'label', '-');
             $value = $conn->query("SELECT $expr AS r FROM test_dbcompat")->fetch(PDO::FETCH_ASSOC)['r'];
             $parts = explode('-', (string) $value);

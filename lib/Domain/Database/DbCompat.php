@@ -314,11 +314,11 @@ final class DbCompat
     {
         $func = self::GROUP_CONCAT_FUNCTIONS[$db_type] ?? self::GROUP_CONCAT_FUNCTIONS['default'];
 
-        if ($db_type === 'pgsql') {
-            // PostgreSQL uses STRING_AGG(column, separator)
+        if ($db_type === 'pgsql' || $db_type === 'sqlite') {
+            // PostgreSQL STRING_AGG and SQLite GROUP_CONCAT take the separator as a second argument
             return $func . '(' . $column . ", '" . $separator . "')";
         } else {
-            // MySQL and SQLite use GROUP_CONCAT(column SEPARATOR 'sep')
+            // MySQL uses GROUP_CONCAT(column SEPARATOR 'sep')
             return $func . '(' . $column . " SEPARATOR '" . $separator . "')";
         }
     }

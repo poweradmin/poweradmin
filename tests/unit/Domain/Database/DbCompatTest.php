@@ -304,4 +304,12 @@ class DbCompatTest extends TestCase
         $this->assertSame('CAST(records.id AS TEXT)', DbCompat::castToString('sqlite', 'records.id'));
         $this->assertSame('CAST(records.id AS VARCHAR)', DbCompat::castToString('pgsql', 'records.id'));
     }
+
+    public function testGroupConcatSeparatorSyntaxPerEngine(): void
+    {
+        $this->assertSame("GROUP_CONCAT(label SEPARATOR '-')", DbCompat::groupConcat('mysql', 'label', '-'));
+        $this->assertSame("GROUP_CONCAT(label SEPARATOR '-')", DbCompat::groupConcat('mysqli', 'label', '-'));
+        $this->assertSame("GROUP_CONCAT(label, '-')", DbCompat::groupConcat('sqlite', 'label', '-'));
+        $this->assertSame("STRING_AGG(label, '-')", DbCompat::groupConcat('pgsql', 'label', '-'));
+    }
 }
