@@ -2046,6 +2046,9 @@ test_server_status() {
     api_request_v2 "GET" "/server/status?metrics=uptime" "" 200 "Get server status filtered to one metric"
     assert_json "Metric filter returns only the requested metric" "$LAST_RESPONSE_BODY" '.data.metrics | keys | join(",")' "uptime"
 
+    api_request_v2 "GET" "/server/status?metrics=no-such-metric" "" 200 "Get server status with a metric filter that matches nothing"
+    assert_json "Metrics stay an object when none match" "$LAST_RESPONSE_BODY" '.data.metrics | type' "object"
+
     api_request_v2 "GET" "/server/status?include=slaves" "" 200 "Get server status including slaves"
     assert_json "Slaves are an array when requested" "$LAST_RESPONSE_BODY" '.data.slaves | type' "array"
 }

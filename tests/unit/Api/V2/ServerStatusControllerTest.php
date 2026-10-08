@@ -153,6 +153,16 @@ class ServerStatusControllerTest extends TestCase
         $this->assertSame(['uptime' => '86400'], self::decode($response)['data']['metrics']);
     }
 
+    public function testNoMatchingMetricsEncodeAsAnEmptyObject(): void
+    {
+        $this->allowAndReturn(self::runningStatus());
+
+        $response = $this->createController(['metrics' => 'missing'])->callGetStatus();
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString('"metrics":{}', (string)$response->getContent());
+    }
+
     public function testIncludeSlavesWithoutSupermasterViewIsRefused(): void
     {
         $this->allowAndReturn(self::runningStatus(), false);
