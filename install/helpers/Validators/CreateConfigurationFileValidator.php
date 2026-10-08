@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace PoweradminInstall\Validators;
 
 use PoweradminInstall\InstallationSteps;
+use PoweradminInstall\Installer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateConfigurationFileValidator extends BaseValidator
@@ -48,7 +49,7 @@ class CreateConfigurationFileValidator extends BaseValidator
         $errors = ValidationErrorHelper::formatErrors($violations);
 
         // Check if configuration file exists
-        $configExists = file_exists(dirname(__DIR__, 3) . '/config/settings.php');
+        $configExists = array_filter(Installer::configurationFiles(), 'file_exists') !== [];
 
         if (!$configExists) {
             $errors['configuration'] = _('No configuration file found. Please create the config/settings.php file before proceeding.');
