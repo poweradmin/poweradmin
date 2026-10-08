@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PDOException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 
@@ -38,63 +39,41 @@ use Poweradmin\Domain\Database\CanonicalZoneSql;
  */
 class CanonicalZoneIdIntegrationTest extends TestCase
 {
-    private ?PDO $mysql = null;
-    private ?PDO $pgsql = null;
-    private PDO $sqlite;
+    /** @var array<string, PDO> */
+    private array $opened = [];
 
-    protected function setUp(): void
+    /** @return array<string, array{string}> */
+    public static function engines(): array
     {
-        try {
-            $this->mysql = new PDO(
-                'mysql:host=127.0.0.1;port=3306;dbname=poweradmin',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-        } catch (PDOException) {
-            $this->mysql = null;
-        }
-
-        try {
-            $this->pgsql = new PDO(
-                'pgsql:host=127.0.0.1;port=5432;dbname=poweradmin',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-        } catch (PDOException) {
-            $this->pgsql = null;
-        }
-
-        $this->sqlite = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-
-        foreach ($this->engines() as $db) {
-            $this->createFixture($db);
-        }
+        return ['sqlite' => ['sqlite'], 'mysql' => ['mysql'], 'pgsql' => ['pgsql']];
     }
 
     protected function tearDown(): void
     {
-        foreach ($this->engines() as $db) {
+        foreach ($this->opened as $db) {
             $db->exec('DROP TABLE IF EXISTS test_canonical_zones');
             $db->exec('DROP TABLE IF EXISTS test_canonical_groups');
         }
+        $this->opened = [];
     }
 
-    /**
-     * @return array<string, PDO>
-     */
-    private function engines(): array
+    private function useEngine(string $engine): PDO
     {
-        $engines = ['sqlite' => $this->sqlite];
-        if ($this->mysql !== null) {
-            $engines['mysql'] = $this->mysql;
-        }
-        if ($this->pgsql !== null) {
-            $engines['pgsql'] = $this->pgsql;
+        $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+        try {
+            $db = match ($engine) {
+                'sqlite' => new PDO('sqlite::memory:', null, null, $options),
+                'mysql' => new PDO('mysql:host=127.0.0.1;port=3306;dbname=pdns', 'pdns', 'poweradmin', $options),
+                default => new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options),
+            };
+        } catch (PDOException $e) {
+            $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
         }
 
-        return $engines;
+        $this->opened[$engine] = $db;
+        $this->createFixture($db);
+
+        return $db;
     }
 
     private function createFixture(PDO $db): void
@@ -114,59 +93,59 @@ class CanonicalZoneIdIntegrationTest extends TestCase
         $db->exec('INSERT INTO test_canonical_groups (domain_id, group_id) VALUES (2, 7)');
     }
 
-    public function testEveryEngineResolvesTheSameCanonicalIds(): void
+    #[DataProvider('engines')]
+    public function testEveryEngineResolvesTheSameCanonicalIds(string $engine): void
     {
         $expression = CanonicalZoneSql::canonicalIdColumn('', true);
         $expected = [1 => 1, 2 => 2, 3 => 99, 4 => 4];
 
-        foreach ($this->engines() as $name => $db) {
-            $rows = $db->query("SELECT id, $expression AS canonical_id FROM test_canonical_zones ORDER BY id")
-                ->fetchAll(PDO::FETCH_ASSOC);
-            $actual = [];
-            foreach ($rows as $row) {
-                $actual[(int)$row['id']] = (int)$row['canonical_id'];
-            }
-
-            $this->assertSame($expected, $actual, "canonical ids differ on $name");
+        $db = $this->useEngine($engine);
+        $rows = $db->query("SELECT id, $expression AS canonical_id FROM test_canonical_zones ORDER BY id")
+            ->fetchAll(PDO::FETCH_ASSOC);
+        $actual = [];
+        foreach ($rows as $row) {
+            $actual[(int)$row['id']] = (int)$row['canonical_id'];
         }
+
+        $this->assertSame($expected, $actual, "canonical ids differ on $engine");
     }
 
-    public function testBareCoalesceDisagreesWithTheHelperOnEveryEngine(): void
+    #[DataProvider('engines')]
+    public function testBareCoalesceDisagreesWithTheHelperOnEveryEngine(string $engine): void
     {
-        foreach ($this->engines() as $name => $db) {
-            $bare = (int)$db->query('SELECT COALESCE(domain_id, id) FROM test_canonical_zones WHERE id = 2')->fetchColumn();
-            $helper = (int)$db->query(
-                'SELECT ' . CanonicalZoneSql::canonicalIdColumn('', true) . ' FROM test_canonical_zones WHERE id = 2'
-            )->fetchColumn();
+        $db = $this->useEngine($engine);
+        $bare = (int)$db->query('SELECT COALESCE(domain_id, id) FROM test_canonical_zones WHERE id = 2')->fetchColumn();
+        $helper = (int)$db->query(
+            'SELECT ' . CanonicalZoneSql::canonicalIdColumn('', true) . ' FROM test_canonical_zones WHERE id = 2'
+        )->fetchColumn();
 
-            $this->assertSame(0, $bare, "bare COALESCE unexpectedly resolved on $name");
-            $this->assertSame(2, $helper, "helper failed to resolve on $name");
-        }
+        $this->assertSame(0, $bare, "bare COALESCE unexpectedly resolved on $engine");
+        $this->assertSame(2, $helper, "helper failed to resolve on $engine");
     }
 
-    public function testTheFragmentParsesInEveryClauseOnEveryEngine(): void
+    #[DataProvider('engines')]
+    public function testTheFragmentParsesInEveryClauseOnEveryEngine(string $engine): void
     {
         $aliased = CanonicalZoneSql::canonicalIdColumn('z', true);
         $qualified = CanonicalZoneSql::canonicalIdColumn('test_canonical_zones', true);
 
-        foreach ($this->engines() as $name => $db) {
-            $where = $db->query("SELECT zone_name FROM test_canonical_zones z WHERE $aliased = 2")->fetchColumn();
-            $this->assertSame('zero.example.com', $where, "WHERE clause failed on $name");
+        $db = $this->useEngine($engine);
+        $where = $db->query("SELECT zone_name FROM test_canonical_zones z WHERE $aliased = 2")->fetchColumn();
+        $this->assertSame('zero.example.com', $where, "WHERE clause failed on $engine");
 
-            $distinct = $db->query("SELECT DISTINCT $aliased AS cid FROM test_canonical_zones z ORDER BY cid")
-                ->fetchAll(PDO::FETCH_COLUMN);
-            $this->assertSame([1, 2, 4, 99], array_map('intval', $distinct), "SELECT DISTINCT failed on $name");
+        $distinct = $db->query("SELECT DISTINCT $aliased AS cid FROM test_canonical_zones z ORDER BY cid")
+            ->fetchAll(PDO::FETCH_COLUMN);
+        $this->assertSame([1, 2, 4, 99], array_map('intval', $distinct), "SELECT DISTINCT failed on $engine");
 
-            $join = $db->query(
-                "SELECT z.zone_name FROM test_canonical_zones z
-                 INNER JOIN test_canonical_groups g ON g.domain_id = $aliased"
-            )->fetchColumn();
-            $this->assertSame('zero.example.com', $join, "JOIN failed on $name");
+        $join = $db->query(
+            "SELECT z.zone_name FROM test_canonical_zones z
+             INNER JOIN test_canonical_groups g ON g.domain_id = $aliased"
+        )->fetchColumn();
+        $this->assertSame('zero.example.com', $join, "JOIN failed on $engine");
 
-            $tableQualified = $db->query(
-                "SELECT zone_name FROM test_canonical_zones WHERE $qualified = 99"
-            )->fetchColumn();
-            $this->assertSame('migrated.example.com', $tableQualified, "table-qualified form failed on $name");
-        }
+        $tableQualified = $db->query(
+            "SELECT zone_name FROM test_canonical_zones WHERE $qualified = 99"
+        )->fetchColumn();
+        $this->assertSame('migrated.example.com', $tableQualified, "table-qualified form failed on $engine");
     }
 }

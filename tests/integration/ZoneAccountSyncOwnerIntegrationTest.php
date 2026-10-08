@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PDOException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,8 +39,8 @@ use PHPUnit\Framework\TestCase;
  * Feeds `dns.sync_zone_owner_to_account` (issue #1358); same id-space class as #1418.
  *
  * Run locally via `composer tests:integration` against the devcontainer (MariaDB on
- * 3306, PostgreSQL on 5432). SQLite is in-memory and always exercised. Any engine that
- * isn't reachable is skipped, not failed. Not run in CI.
+ * 3306, PostgreSQL on 5432). SQLite is in-memory and always exercised. Each engine is its
+ * own test case; one that isn't reachable is reported as skipped. Not run in CI.
  */
 class ZoneAccountSyncOwnerIntegrationTest extends TestCase
 {
@@ -60,62 +61,41 @@ class ZoneAccountSyncOwnerIntegrationTest extends TestCase
              ORDER BY z.id
              LIMIT 1";
 
-    private ?PDO $mysql = null;
-    private ?PDO $pgsql = null;
-    private PDO $sqlite;
+    /** @var array<string, PDO> */
+    private array $opened = [];
 
-    protected function setUp(): void
+    /** @return array<string, array{string}> */
+    public static function engines(): array
     {
-        try {
-            $this->mysql = new PDO(
-                'mysql:host=127.0.0.1;port=3306;dbname=pdns',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-        } catch (PDOException) {
-            $this->mysql = null;
-        }
-
-        try {
-            $this->pgsql = new PDO(
-                'pgsql:host=127.0.0.1;port=5432;dbname=pdns',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-        } catch (PDOException) {
-            $this->pgsql = null;
-        }
-
-        $this->sqlite = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-
-        foreach ($this->connections() as $db) {
-            $this->setupFixture($db);
-        }
+        return ['sqlite' => ['sqlite'], 'mysql' => ['mysql'], 'pgsql' => ['pgsql']];
     }
 
     protected function tearDown(): void
     {
-        foreach ($this->connections() as $db) {
+        foreach ($this->opened as $db) {
             $db->exec("DROP TABLE IF EXISTS zones_acct_test");
             $db->exec("DROP TABLE IF EXISTS users_acct_test");
         }
+        $this->opened = [];
     }
 
-    /**
-     * @return array<string, PDO>
-     */
-    private function connections(): array
+    private function useEngine(string $engine): PDO
     {
-        $conns = ['sqlite' => $this->sqlite];
-        if ($this->mysql) {
-            $conns['mysql'] = $this->mysql;
+        $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+        try {
+            $db = match ($engine) {
+                'sqlite' => new PDO('sqlite::memory:', null, null, $options),
+                'mysql' => new PDO('mysql:host=127.0.0.1;port=3306;dbname=pdns', 'pdns', 'poweradmin', $options),
+                default => new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options),
+            };
+        } catch (PDOException $e) {
+            $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
         }
-        if ($this->pgsql) {
-            $conns['pgsql'] = $this->pgsql;
-        }
-        return $conns;
+
+        $this->opened[$engine] = $db;
+        $this->setupFixture($db);
+
+        return $db;
     }
 
     private function setupFixture(PDO $db): void
@@ -156,53 +136,53 @@ class ZoneAccountSyncOwnerIntegrationTest extends TestCase
         return $username === false ? null : (string)$username;
     }
 
-    public function testTheMigratedZoneReportsItsOwnOwnerOnEveryEngine(): void
+    #[DataProvider('engines')]
+    public function testTheMigratedZoneReportsItsOwnOwnerOnEveryEngine(string $engine): void
     {
-        foreach ($this->connections() as $engine => $db) {
-            $this->assertSame(
-                'migrated_owner',
-                $this->lookup($db, self::ANCHORED, 50, 42),
-                "$engine returned the wrong account for the migrated zone"
-            );
-        }
+        $db = $this->useEngine($engine);
+        $this->assertSame(
+            'migrated_owner',
+            $this->lookup($db, self::ANCHORED, 50, 42),
+            "$engine returned the wrong account for the migrated zone"
+        );
     }
 
-    public function testTheNativeZoneReportsItsOwnOwnerOnEveryEngine(): void
+    #[DataProvider('engines')]
+    public function testTheNativeZoneReportsItsOwnOwnerOnEveryEngine(string $engine): void
     {
-        foreach ($this->connections() as $engine => $db) {
-            $this->assertSame(
-                'native_owner',
-                $this->lookup($db, self::ANCHORED, 42, 42),
-                "$engine returned the wrong account for the native zone"
-            );
-        }
+        $db = $this->useEngine($engine);
+        $this->assertSame(
+            'native_owner',
+            $this->lookup($db, self::ANCHORED, 42, 42),
+            "$engine returned the wrong account for the native zone"
+        );
     }
 
-    public function testAnExtraOwnerOlderThanTheCanonicalRowStillWinsOnEveryEngine(): void
+    #[DataProvider('engines')]
+    public function testAnExtraOwnerOlderThanTheCanonicalRowStillWinsOnEveryEngine(string $engine): void
     {
-        foreach ($this->connections() as $engine => $db) {
-            // Extra owners are stored with a NULL zone_name keyed by the canonical id.
-            $db->exec("INSERT INTO zones_acct_test (id, domain_id, zone_name, owner)
-                VALUES (7, 42, NULL, 3)");
+        $db = $this->useEngine($engine);
+        // Extra owners are stored with a NULL zone_name keyed by the canonical id.
+        $db->exec("INSERT INTO zones_acct_test (id, domain_id, zone_name, owner)
+            VALUES (7, 42, NULL, 3)");
 
-            $this->assertSame(
-                'co_owner',
-                $this->lookup($db, self::ANCHORED, 50, 42),
-                "$engine did not pick the oldest owner of the group"
-            );
-        }
+        $this->assertSame(
+            'co_owner',
+            $this->lookup($db, self::ANCHORED, 50, 42),
+            "$engine did not pick the oldest owner of the group"
+        );
     }
 
-    public function testTheCanonicalIdOnlyShapeMisreportsTheOwnerOnEveryEngine(): void
+    #[DataProvider('engines')]
+    public function testTheCanonicalIdOnlyShapeMisreportsTheOwnerOnEveryEngine(string $engine): void
     {
         // Pins the regression itself: every engine agrees the old shape is wrong, so
         // this is a query-semantics bug and not an engine quirk.
-        foreach ($this->connections() as $engine => $db) {
-            $this->assertSame(
-                'native_owner',
-                $this->lookup($db, self::CANONICAL_ONLY, 50, 42),
-                "$engine did not reproduce the collision the anchor fixes"
-            );
-        }
+        $db = $this->useEngine($engine);
+        $this->assertSame(
+            'native_owner',
+            $this->lookup($db, self::CANONICAL_ONLY, 50, 42),
+            "$engine did not reproduce the collision the anchor fixes"
+        );
     }
 }

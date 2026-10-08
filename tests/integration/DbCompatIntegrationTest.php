@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PDOException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Database\DbCompat;
 
@@ -32,8 +33,8 @@ use Poweradmin\Domain\Database\DbCompat;
  *
  * Run locally via `composer tests:integration` against the devcontainer
  * (MariaDB on 3306, PostgreSQL on 5432). SQLite uses an in-memory DB and is
- * always exercised. Any engine that isn't reachable is skipped, not failed,
- * so the suite stays green when run outside the devcontainer.
+ * always exercised. Each engine is its own test case; one that isn't reachable
+ * is reported as skipped, so the suite stays green outside the devcontainer.
  *
  * Not run in CI (`.github/workflows/php.yml` only runs `composer tests`).
  *
@@ -43,68 +44,42 @@ use Poweradmin\Domain\Database\DbCompat;
  */
 class DbCompatIntegrationTest extends TestCase
 {
-    private ?PDO $mysql = null;
-    private ?PDO $pgsql = null;
-    private PDO $sqlite;
+    /** @var array<string, PDO> */
+    private array $opened = [];
 
-    protected function setUp(): void
+    /** @return array<string, array{string}> */
+    public static function engines(): array
     {
-        try {
-            $this->mysql = new PDO(
-                'mysql:host=127.0.0.1;port=3306;dbname=pdns',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-        } catch (PDOException) {
-            $this->mysql = null;
-        }
-
-        try {
-            $this->pgsql = new PDO(
-                'pgsql:host=127.0.0.1;port=5432;dbname=pdns',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-        } catch (PDOException) {
-            $this->pgsql = null;
-        }
-
-        $this->sqlite = new PDO(
-            'sqlite::memory:',
-            null,
-            null,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-        );
-
-        foreach ($this->connections() as $conn) {
-            $this->setupFixture($conn);
-        }
+        return ['sqlite' => ['sqlite'], 'mysql' => ['mysql'], 'pgsql' => ['pgsql']];
     }
 
     protected function tearDown(): void
     {
-        foreach ([$this->mysql, $this->pgsql] as $conn) {
-            if ($conn) {
+        foreach ($this->opened as $engine => $conn) {
+            if ($engine !== 'sqlite') {
                 $conn->exec("DROP TABLE IF EXISTS test_dbcompat");
             }
         }
+        $this->opened = [];
     }
 
-    /**
-     * @return array<string, PDO>
-     */
-    private function connections(): array
+    private function useEngine(string $engine): PDO
     {
-        $conns = ['sqlite' => $this->sqlite];
-        if ($this->mysql) {
-            $conns['mysql'] = $this->mysql;
+        $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+        try {
+            $conn = match ($engine) {
+                'sqlite' => new PDO('sqlite::memory:', null, null, $options),
+                'mysql' => new PDO('mysql:host=127.0.0.1;port=3306;dbname=pdns', 'pdns', 'poweradmin', $options),
+                default => new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options),
+            };
+        } catch (PDOException $e) {
+            $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
         }
-        if ($this->pgsql) {
-            $conns['pgsql'] = $this->pgsql;
-        }
-        return $conns;
+
+        $this->opened[$engine] = $conn;
+        $this->setupFixture($conn);
+
+        return $conn;
     }
 
     private function setupFixture(PDO $db): void
@@ -122,104 +97,104 @@ class DbCompatIntegrationTest extends TestCase
         $stmt->execute([3, 'cherry', '7']);
     }
 
-    public function testSubstr(): void
+    #[DataProvider('engines')]
+    public function testSubstr(string $engine): void
     {
-        foreach ($this->connections() as $name => $conn) {
-            $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            $func = DbCompat::substr($type);
-            $row = $conn->query("SELECT $func('FOOBAR', 2, 3) AS r")->fetch(PDO::FETCH_ASSOC);
-            $this->assertSame('OOB', $row['r'], "substr failed on $name");
-        }
+        $conn = $this->useEngine($engine);
+        $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $func = DbCompat::substr($type);
+        $row = $conn->query("SELECT $func('FOOBAR', 2, 3) AS r")->fetch(PDO::FETCH_ASSOC);
+        $this->assertSame('OOB', $row['r'], "substr failed on $engine");
     }
 
-    public function testRegexp(): void
+    #[DataProvider('engines')]
+    public function testRegexp(string $engine): void
     {
         // A literal pattern matches itself under REGEXP, ~, and GLOB.
-        foreach ($this->connections() as $name => $conn) {
-            $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            $op = DbCompat::regexp($type);
-            $rows = $conn->query("SELECT id FROM test_dbcompat WHERE label $op 'apple'")->fetchAll();
-            $this->assertCount(1, $rows, "regexp failed on $name");
-        }
+        $conn = $this->useEngine($engine);
+        $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $op = DbCompat::regexp($type);
+        $rows = $conn->query("SELECT id FROM test_dbcompat WHERE label $op 'apple'")->fetchAll();
+        $this->assertCount(1, $rows, "regexp failed on $engine");
     }
 
-    public function testNow(): void
+    #[DataProvider('engines')]
+    public function testNow(string $engine): void
     {
-        foreach ($this->connections() as $name => $conn) {
-            $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            $expr = DbCompat::now($type);
-            $value = $conn->query("SELECT $expr AS r")->fetch(PDO::FETCH_ASSOC)['r'];
-            $this->assertNotEmpty($value, "now() returned empty on $name");
-            $this->assertNotFalse(strtotime((string) $value), "now() returned unparseable on $name: $value");
-        }
+        $conn = $this->useEngine($engine);
+        $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $expr = DbCompat::now($type);
+        $value = $conn->query("SELECT $expr AS r")->fetch(PDO::FETCH_ASSOC)['r'];
+        $this->assertNotEmpty($value, "now() returned empty on $engine");
+        $this->assertNotFalse(strtotime((string) $value), "now() returned unparseable on $engine: $value");
     }
 
-    public function testBoolTrueFalse(): void
+    #[DataProvider('engines')]
+    public function testBoolTrueFalse(string $engine): void
     {
-        foreach ($this->connections() as $name => $conn) {
-            $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            $tValue = $conn->query("SELECT " . DbCompat::boolTrue($type) . " AS r")->fetch(PDO::FETCH_ASSOC)['r'];
-            $fValue = $conn->query("SELECT " . DbCompat::boolFalse($type) . " AS r")->fetch(PDO::FETCH_ASSOC)['r'];
-            $this->assertSame(1, DbCompat::boolFromDb($tValue), "boolTrue normalize failed on $name");
-            $this->assertSame(0, DbCompat::boolFromDb($fValue), "boolFalse normalize failed on $name");
-        }
+        $conn = $this->useEngine($engine);
+        $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $tValue = $conn->query("SELECT " . DbCompat::boolTrue($type) . " AS r")->fetch(PDO::FETCH_ASSOC)['r'];
+        $fValue = $conn->query("SELECT " . DbCompat::boolFalse($type) . " AS r")->fetch(PDO::FETCH_ASSOC)['r'];
+        $this->assertSame(1, DbCompat::boolFromDb($tValue), "boolTrue normalize failed on $engine");
+        $this->assertSame(0, DbCompat::boolFromDb($fValue), "boolFalse normalize failed on $engine");
     }
 
-    public function testDateSubtract(): void
+    #[DataProvider('engines')]
+    public function testDateSubtract(string $engine): void
     {
         // Verify the fragment parses and yields a valid timestamp on each engine.
         // Skip arithmetic comparison: timezone semantics differ across drivers
         // and aren't what DbCompat is responsible for.
-        foreach ($this->connections() as $name => $conn) {
-            $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            $expr = DbCompat::dateSubtract($type, 3600);
-            $value = $conn->query("SELECT $expr AS r")->fetch(PDO::FETCH_ASSOC)['r'];
-            $this->assertNotEmpty($value, "dateSubtract returned empty on $name");
-            $this->assertNotFalse(strtotime((string) $value), "dateSubtract returned unparseable on $name: $value");
-        }
+        $conn = $this->useEngine($engine);
+        $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $expr = DbCompat::dateSubtract($type, 3600);
+        $value = $conn->query("SELECT $expr AS r")->fetch(PDO::FETCH_ASSOC)['r'];
+        $this->assertNotEmpty($value, "dateSubtract returned empty on $engine");
+        $this->assertNotFalse(strtotime((string) $value), "dateSubtract returned unparseable on $engine: $value");
     }
 
-    public function testConcat(): void
+    #[DataProvider('engines')]
+    public function testConcat(string $engine): void
     {
-        foreach ($this->connections() as $name => $conn) {
-            $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            $expr = DbCompat::concat($type, ["'foo'", "'bar'"]);
-            $value = $conn->query("SELECT $expr AS r")->fetch(PDO::FETCH_ASSOC)['r'];
-            $this->assertSame('foobar', $value, "concat failed on $name");
-        }
+        $conn = $this->useEngine($engine);
+        $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $expr = DbCompat::concat($type, ["'foo'", "'bar'"]);
+        $value = $conn->query("SELECT $expr AS r")->fetch(PDO::FETCH_ASSOC)['r'];
+        $this->assertSame('foobar', $value, "concat failed on $engine");
     }
 
-    public function testGroupConcat(): void
+    #[DataProvider('engines')]
+    public function testGroupConcat(string $engine): void
     {
-        foreach ($this->connections() as $name => $conn) {
-            $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            $expr = DbCompat::groupConcat($type, 'label', '-');
-            $value = $conn->query("SELECT $expr AS r FROM test_dbcompat")->fetch(PDO::FETCH_ASSOC)['r'];
-            $parts = explode('-', (string) $value);
-            sort($parts);
-            $this->assertSame(['apple', 'banana', 'cherry'], $parts, "groupConcat failed on $name");
-        }
+        $conn = $this->useEngine($engine);
+        $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $expr = DbCompat::groupConcat($type, 'label', '-');
+        $value = $conn->query("SELECT $expr AS r FROM test_dbcompat")->fetch(PDO::FETCH_ASSOC)['r'];
+        $parts = explode('-', (string) $value);
+        sort($parts);
+        $this->assertSame(['apple', 'banana', 'cherry'], $parts, "groupConcat failed on $engine");
     }
 
-    public function testCastToString(): void
+    #[DataProvider('engines')]
+    public function testCastToString(string $engine): void
     {
-        foreach ($this->connections() as $name => $conn) {
-            $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            $expr = DbCompat::castToString($type, 'id');
-            $value = $conn->query("SELECT $expr AS r FROM test_dbcompat WHERE id = 1")->fetch(PDO::FETCH_ASSOC)['r'];
-            $this->assertSame('1', (string) $value, "castToString failed on $name");
-        }
+        $conn = $this->useEngine($engine);
+        $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $expr = DbCompat::castToString($type, 'id');
+        $value = $conn->query("SELECT $expr AS r FROM test_dbcompat WHERE id = 1")->fetch(PDO::FETCH_ASSOC)['r'];
+        $this->assertSame('1', (string) $value, "castToString failed on $engine");
     }
 
-    public function testIsNumericString(): void
+    #[DataProvider('engines')]
+    public function testIsNumericString(string $engine): void
     {
-        foreach ($this->connections() as $name => $conn) {
-            $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
-            $expr = DbCompat::isNumericString($type, 'val');
-            $rows = $conn->query("SELECT id FROM test_dbcompat WHERE $expr ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
-            $ids = array_map(fn($r) => (int) $r['id'], $rows);
-            $this->assertSame([1, 3], $ids, "isNumericString failed on $name");
-        }
+        $conn = $this->useEngine($engine);
+        $type = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $expr = DbCompat::isNumericString($type, 'val');
+        $rows = $conn->query("SELECT id FROM test_dbcompat WHERE $expr ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
+        $ids = array_map(fn($r) => (int) $r['id'], $rows);
+        $this->assertSame([1, 3], $ids, "isNumericString failed on $engine");
     }
 
     /**
@@ -229,9 +204,7 @@ class DbCompatIntegrationTest extends TestCase
      */
     public function testHandleSqlModeClearsOnlyFullGroupByFromTheSession(): void
     {
-        if (!$this->mysql) {
-            $this->markTestSkipped('MySQL/MariaDB not reachable');
-        }
+        $mysql = $this->useEngine('mysql');
 
         // Position matters: a substring replace only caught the comma-terminated form.
         $cases = [
@@ -241,41 +214,39 @@ class DbCompatIntegrationTest extends TestCase
         ];
 
         foreach ($cases as $label => $mode) {
-            $this->mysql->exec("SET SESSION sql_mode = '$mode'");
+            $mysql->exec("SET SESSION sql_mode = '$mode'");
 
-            $original = DbCompat::handleSqlMode($this->mysql, 'mysql');
+            $original = DbCompat::handleSqlMode($mysql, 'mysql');
             $this->assertStringContainsString('ONLY_FULL_GROUP_BY', $original, "original not returned for: $label");
 
-            $active = (string) $this->mysql->query("SELECT @@SESSION.sql_mode")->fetchColumn();
+            $active = (string) $mysql->query("SELECT @@SESSION.sql_mode")->fetchColumn();
             $this->assertStringNotContainsString('ONLY_FULL_GROUP_BY', $active, "not cleared for: $label");
 
-            DbCompat::restoreSqlMode($this->mysql, 'mysql', $original);
-            $restored = (string) $this->mysql->query("SELECT @@SESSION.sql_mode")->fetchColumn();
+            DbCompat::restoreSqlMode($mysql, 'mysql', $original);
+            $restored = (string) $mysql->query("SELECT @@SESSION.sql_mode")->fetchColumn();
             $this->assertStringContainsString('ONLY_FULL_GROUP_BY', $restored, "not restored for: $label");
         }
     }
 
     public function testHandleSqlModeReadsTheSessionNotTheGlobalMode(): void
     {
-        if (!$this->mysql) {
-            $this->markTestSkipped('MySQL/MariaDB not reachable');
-        }
+        $mysql = $this->useEngine('mysql');
 
-        $global = (string) $this->mysql->query("SELECT @@GLOBAL.sql_mode")->fetchColumn();
+        $global = (string) $mysql->query("SELECT @@GLOBAL.sql_mode")->fetchColumn();
         if (str_contains($global, 'ONLY_FULL_GROUP_BY')) {
             $this->markTestSkipped('Global sql_mode already sets ONLY_FULL_GROUP_BY; cannot isolate the session');
         }
 
         // Global lacks the mode, the session has it: reading GLOBAL saw nothing to do.
-        $this->mysql->exec("SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES'");
-        $original = DbCompat::handleSqlMode($this->mysql, 'mysql');
+        $mysql->exec("SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES'");
+        $original = DbCompat::handleSqlMode($mysql, 'mysql');
         $this->assertNotSame('', $original, 'session-only ONLY_FULL_GROUP_BY went undetected');
 
-        $rows = $this->mysql
+        $rows = $mysql
             ->query("SELECT label, val FROM test_dbcompat GROUP BY label")
             ->fetchAll(PDO::FETCH_ASSOC);
         $this->assertCount(3, $rows, 'ungrouped column still rejected after handleSqlMode');
 
-        DbCompat::restoreSqlMode($this->mysql, 'mysql', $original);
+        DbCompat::restoreSqlMode($mysql, 'mysql', $original);
     }
 }

@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PDOException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
@@ -41,8 +42,8 @@ use TestHelpers\FakeConfiguration;
  * first, so the second removal re-reads the list the first one left behind.
  *
  * SQLite runs in memory and is always exercised. PostgreSQL runs in a throwaway
- * schema when the devcontainer is reachable, which is where the FOR UPDATE clause
- * is actually taken; MySQL is skipped because the devcontainer's `pdns` user may
+ * schema when the devcontainer is reachable (reported as skipped otherwise), which is
+ * where the FOR UPDATE clause is actually taken; MySQL is skipped because the devcontainer's `pdns` user may
  * not create a database and this test will not write into the shared one.
  */
 class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
@@ -50,60 +51,69 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
     private const ZONE_ID = 42;
     private const SCHEMA = 'pa_ownership_guard_test';
 
-    private PDO $sqlite;
     private ?PDO $pgsql = null;
 
-    protected function setUp(): void
+    /** @return array<string, array{string}> */
+    public static function engines(): array
     {
-        $this->sqlite = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-
-        try {
-            $this->pgsql = $this->connectPgsql();
-        } catch (PDOException) {
-            $this->pgsql = null;
-        }
-
-        foreach ($this->connections() as $db) {
-            $this->createFixture($db);
-        }
+        return ['sqlite' => ['sqlite'], 'pgsql' => ['pgsql']];
     }
 
     protected function tearDown(): void
     {
         if ($this->pgsql !== null) {
             $this->pgsql->exec('DROP SCHEMA IF EXISTS ' . self::SCHEMA . ' CASCADE');
+            $this->pgsql = null;
         }
     }
 
-    public function testTheSecondUserOwnerRemovalIsRefused(): void
+    private function useEngine(string $engine): PDO
     {
-        foreach ($this->connections() as $engine => $db) {
-            $this->seedOwners($db, [5, 6]);
-            $guard = $this->guard($db, $engine, 'both');
-
-            $this->assertTrue($guard->removeUserOwner(self::ZONE_ID, 5), $engine);
-            $second = $guard->removeUserOwner(self::ZONE_ID, 6);
-
-            $this->assertInstanceOf(ZoneOwnershipRefusal::class, $second, $engine);
-            $this->assertSame(ZoneOwnershipRefusal::LAST_OWNER, $second->code, $engine);
-            $this->assertSame([6], $this->ownerIds($db), $engine);
-            $this->assertFalse($db->inTransaction(), $engine);
+        if ($engine === 'sqlite') {
+            $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        } else {
+            try {
+                $db = $this->connectPgsql();
+            } catch (PDOException $e) {
+                $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
+            }
+            $this->pgsql = $db;
         }
+
+        $this->createFixture($db);
+
+        return $db;
     }
 
-    public function testTheSecondGroupRemovalIsRefused(): void
+    #[DataProvider('engines')]
+    public function testTheSecondUserOwnerRemovalIsRefused(string $engine): void
     {
-        foreach ($this->connections() as $engine => $db) {
-            $this->seedGroups($db, [3, 4]);
-            $guard = $this->guard($db, $engine, 'both');
+        $db = $this->useEngine($engine);
+        $this->seedOwners($db, [5, 6]);
+        $guard = $this->guard($db, $engine, 'both');
 
-            $this->assertTrue($guard->removeGroup(self::ZONE_ID, 3), $engine);
-            $second = $guard->removeGroup(self::ZONE_ID, 4);
+        $this->assertTrue($guard->removeUserOwner(self::ZONE_ID, 5), $engine);
+        $second = $guard->removeUserOwner(self::ZONE_ID, 6);
 
-            $this->assertInstanceOf(ZoneOwnershipRefusal::class, $second, $engine);
-            $this->assertSame([4], $this->groupIds($db), $engine);
-            $this->assertFalse($db->inTransaction(), $engine);
-        }
+        $this->assertInstanceOf(ZoneOwnershipRefusal::class, $second, $engine);
+        $this->assertSame(ZoneOwnershipRefusal::LAST_OWNER, $second->code, $engine);
+        $this->assertSame([6], $this->ownerIds($db), $engine);
+        $this->assertFalse($db->inTransaction(), $engine);
+    }
+
+    #[DataProvider('engines')]
+    public function testTheSecondGroupRemovalIsRefused(string $engine): void
+    {
+        $db = $this->useEngine($engine);
+        $this->seedGroups($db, [3, 4]);
+        $guard = $this->guard($db, $engine, 'both');
+
+        $this->assertTrue($guard->removeGroup(self::ZONE_ID, 3), $engine);
+        $second = $guard->removeGroup(self::ZONE_ID, 4);
+
+        $this->assertInstanceOf(ZoneOwnershipRefusal::class, $second, $engine);
+        $this->assertSame([4], $this->groupIds($db), $engine);
+        $this->assertFalse($db->inTransaction(), $engine);
     }
 
     /**
@@ -112,19 +122,16 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
      */
     public function testASecondConnectionCannotReadTheOwnerRowsWhileARemovalHoldsThem(): void
     {
-        if ($this->pgsql === null) {
-            $this->markTestSkipped('PostgreSQL is not reachable');
-        }
-
-        $this->seedOwners($this->pgsql, [5, 6]);
+        $pgsql = $this->useEngine('pgsql');
+        $this->seedOwners($pgsql, [5, 6]);
 
         $other = $this->connectPgsql();
         $other->exec("SET search_path TO " . self::SCHEMA);
         $other->exec("SET lock_timeout = '300ms'");
 
         $config = new FakeConfiguration(['database' => ['type' => 'pgsql']]);
-        $this->pgsql->beginTransaction();
-        (new DbZoneRepository($this->pgsql, $config))->lockZoneOwners(self::ZONE_ID);
+        $pgsql->beginTransaction();
+        (new DbZoneRepository($pgsql, $config))->lockZoneOwners(self::ZONE_ID);
 
         $other->beginTransaction();
         try {
@@ -134,7 +141,7 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
             $this->assertStringContainsStringIgnoringCase('lock timeout', $e->getMessage());
         } finally {
             $other->rollBack();
-            $this->pgsql->rollBack();
+            $pgsql->rollBack();
         }
     }
 
@@ -151,19 +158,6 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
             new ZoneOwnershipModeService($config),
             new PdoTransaction($db)
         );
-    }
-
-    /**
-     * @return array<string, PDO>
-     */
-    private function connections(): array
-    {
-        $conns = ['sqlite' => $this->sqlite];
-        if ($this->pgsql !== null) {
-            $conns['pgsql'] = $this->pgsql;
-        }
-
-        return $conns;
     }
 
     private function connectPgsql(): PDO
