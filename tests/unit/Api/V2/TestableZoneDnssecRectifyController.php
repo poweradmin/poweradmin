@@ -27,9 +27,9 @@ use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use TestHelpers\FakeConfiguration;
 
 class TestableZoneDnssecRectifyController extends ZoneDnssecRectifyController
 {
@@ -43,7 +43,7 @@ class TestableZoneDnssecRectifyController extends ZoneDnssecRectifyController
         $this->request = new Request();
         $this->pathParameters = $pathParameters;
         $this->authenticatedUserId = 1;
-        $this->config = ConfigurationManager::getInstance();
+        $this->config = new FakeConfiguration();
         $this->domainRepository = $domainRepository;
         $this->apiPermissionService = $apiPermissionService;
         $this->dnssecProvider = $dnssecProvider;

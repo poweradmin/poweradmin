@@ -30,9 +30,9 @@ use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use ReflectionMethod;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Zone log events carry different fields per operation, so the CSV header must
@@ -44,10 +44,10 @@ class ListLogZonesCsvExportTest extends TestCase
     private function environment(): ControllerEnvironment
     {
         return new ControllerEnvironment(
-            ConfigurationManager::getInstance(),
+            new FakeConfiguration(),
             $this->createMock(PDO::class),
             new NullLogger(),
-            new ModuleRegistry(ConfigurationManager::getInstance()),
+            new ModuleRegistry(new FakeConfiguration()),
             null,
             new HttpRequest(),
             null,

@@ -31,8 +31,8 @@ use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The log listing pages (API, user, group and zone logs) share the filter
@@ -43,12 +43,15 @@ use Psr\Log\NullLogger;
 #[CoversClass(AbstractListLogController::class)]
 class ListLogFiltersTest extends TestCase
 {
+    private FakeConfiguration $config;
+
     private ?string $previousRequestMethod = null;
 
     private array $previousGet = [];
 
     protected function setUp(): void
     {
+        $this->config = new FakeConfiguration();
         $this->previousRequestMethod = $_SERVER['REQUEST_METHOD'] ?? null;
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $this->previousGet = $_GET;
@@ -69,10 +72,10 @@ class ListLogFiltersTest extends TestCase
         $_GET = $queryParams;
 
         $environment = new ControllerEnvironment(
-            ConfigurationManager::getInstance(),
+            $this->config,
             $this->createMock(PDO::class),
             new NullLogger(),
-            new ModuleRegistry(ConfigurationManager::getInstance()),
+            new ModuleRegistry($this->config),
             null,
             new HttpRequest(),
             null,

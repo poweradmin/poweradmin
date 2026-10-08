@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use TestHelpers\FakeConfiguration;
 
@@ -17,7 +16,7 @@ use TestHelpers\FakeConfiguration;
 class ApiDomainRepositoryGetZonesTest extends TestCase
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private FakeConfiguration $config;
 
     protected function setUp(): void
     {
@@ -47,8 +46,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             (1, 100, 1, '', 0, 'signed.example.com', 'NATIVE'),
             (2, 101, 1, '', 0, 'unsigned.example.com', 'NATIVE')");
 
-        $this->config = ConfigurationManager::getInstance();
-        $this->config->initialize();
+        $this->config = new FakeConfiguration();
 
         // A fresh sync would call the backend a second time; these tests count backend calls.
         $_SESSION['zone_sync_last'] = time();

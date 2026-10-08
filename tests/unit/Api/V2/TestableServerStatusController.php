@@ -27,9 +27,9 @@ use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Test double that injects mocks and skips the parent constructor (which performs
@@ -45,7 +45,7 @@ class TestableServerStatusController extends ServerStatusController
         $this->request = new Request();
         $this->pathParameters = $pathParameters;
         $this->authenticatedUserId = 7;
-        $this->config = ConfigurationManager::getInstance();
+        $this->config = new FakeConfiguration();
     }
 
     public function setApiPermissionService(ApiPermissionService $service): void

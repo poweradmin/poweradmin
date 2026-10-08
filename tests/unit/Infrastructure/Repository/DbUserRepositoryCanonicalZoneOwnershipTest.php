@@ -24,8 +24,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * userOwnsZone() is the ownership check behind BaseController::isZoneOwner(), so every zone
@@ -52,7 +52,7 @@ class DbUserRepositoryCanonicalZoneOwnershipTest extends TestCase
 
     private function repository(bool $isApiBackend): DbUserRepository
     {
-        return new DbUserRepository($this->db, ConfigurationManager::getInstance(), $isApiBackend);
+        return new DbUserRepository($this->db, new FakeConfiguration(), $isApiBackend);
     }
 
     private function seedZone(int $id, ?int $domainId, int $owner, ?string $name = 'example.com'): void

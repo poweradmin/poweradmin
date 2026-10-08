@@ -8,9 +8,9 @@ use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Test double that injects mocks and skips the parent constructor (which performs
@@ -32,7 +32,7 @@ class TestableZoneDnssecController extends ZoneDnssecController
         $this->request = new Request();
         $this->pathParameters = $pathParameters;
         $this->authenticatedUserId = 1;
-        $this->config = ConfigurationManager::getInstance();
+        $this->config = new FakeConfiguration();
     }
 
     public function setDomainRepository(DomainRepositoryInterface $repository): void

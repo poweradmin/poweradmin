@@ -28,12 +28,12 @@ use PDOStatement;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionMethod;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Builds an /api/v2 controller without its constructor, so the api.enabled gate,
@@ -90,7 +90,7 @@ abstract class V2ControllerTestCase extends TestCase
 
         $this->inject($controller, 'request', $request);
         $this->inject($controller, 'logger', new NullLogger());
-        $this->inject($controller, 'config', ConfigurationManager::getInstance());
+        $this->inject($controller, 'config', new FakeConfiguration());
         $this->inject($controller, 'db', $this->stubDb());
         $this->inject($controller, 'serviceFactory', $this->stubServiceFactory());
     }

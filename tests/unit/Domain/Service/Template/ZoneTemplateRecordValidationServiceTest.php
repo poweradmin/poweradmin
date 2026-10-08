@@ -27,8 +27,8 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\Template\ZoneTemplateRecordValidationService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\SqliteDnsBackendTestCase;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Test for zone template record validation
@@ -44,8 +44,7 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
 
     protected function setUp(): void
     {
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
+        $config = new FakeConfiguration();
 
         // Template records are checked by syntax only, so the backend stays empty
         $this->service = new ZoneTemplateRecordValidationService(
@@ -174,7 +173,7 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
 
     public function testRejectsTypeTheConnectedServerCannotLoad(): void
     {
-        $config = ConfigurationManager::getInstance();
+        $config = new FakeConfiguration();
         $service = new ZoneTemplateRecordValidationService(
             new DnsValidatorRegistry($config, $this->sqliteBackendProvider(), fn() => PdnsCapabilities::fromVersion('4.9.0'))
         );

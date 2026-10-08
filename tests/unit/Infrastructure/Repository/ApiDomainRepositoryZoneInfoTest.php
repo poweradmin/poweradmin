@@ -10,15 +10,15 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(ApiDomainRepository::class)]
 class ApiDomainRepositoryZoneInfoTest extends TestCase
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private FakeConfiguration $config;
     private UserContextService $userContext;
 
     protected function setUp(): void
@@ -46,8 +46,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, '" . Permission::PERM_ZONE_CONTENT_VIEW_OTHERS . "')");
         $this->db->exec("INSERT INTO perm_templ_items (id, templ_id, perm_id) VALUES (1, 1, 1)");
 
-        $this->config = ConfigurationManager::getInstance();
-        $this->config->initialize();
+        $this->config = new FakeConfiguration();
 
         $this->userContext = new UserContextService(new ArraySession());
         $this->userContext->setSessionData(SessionKeys::USERID, 1);

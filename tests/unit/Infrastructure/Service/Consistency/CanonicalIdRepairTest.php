@@ -29,12 +29,12 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The repair points a stranded zones row's domain_id at its own id. That is only valid in
@@ -61,8 +61,7 @@ class CanonicalIdRepairTest extends TestCase
             return new ApiConsistencyChecks($this->db, $this->createMock(DnsBackendProviderInterface::class), new ApiStatusService($this->session), $ownerRepair, new DefaultSoaBuilder($this->createStub(ConfigurationInterface::class)));
         }
 
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
+        $config = new FakeConfiguration();
 
         return new SqlConsistencyChecks($this->db, new TableNameService($config), $ownerRepair, new DefaultSoaBuilder($config));
     }

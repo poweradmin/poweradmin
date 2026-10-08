@@ -27,8 +27,8 @@ use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The zone list is keyed by canonical id, so the ownership map has to be too. Keying it on
@@ -39,7 +39,7 @@ use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private FakeConfiguration $config;
 
     protected function setUp(): void
     {
@@ -62,8 +62,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)");
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES (1, 'alice', 'Alice'), (2, 'bob', 'Bob')");
 
-        $this->config = ConfigurationManager::getInstance();
-        $this->config->initialize();
+        $this->config = new FakeConfiguration();
     }
 
     private function backendReturning(array $zones): DnsBackendProviderInterface

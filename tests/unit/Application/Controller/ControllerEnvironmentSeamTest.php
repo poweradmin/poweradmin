@@ -33,9 +33,9 @@ use Poweradmin\Application\Service\Web\PaginationService;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The ControllerEnvironment seam lets a test construct any controller without a
@@ -45,10 +45,13 @@ use Poweradmin\Infrastructure\Session\ArraySession;
  */
 class ControllerEnvironmentSeamTest extends TestCase
 {
+    private FakeConfiguration $config;
+
     private ?string $previousRequestMethod = null;
 
     protected function setUp(): void
     {
+        $this->config = new FakeConfiguration();
         $this->previousRequestMethod = $_SERVER['REQUEST_METHOD'] ?? null;
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
@@ -65,10 +68,10 @@ class ControllerEnvironmentSeamTest extends TestCase
     private function makeController(?ControllerServiceFactory $factory = null, array $request = []): TestableSeamController
     {
         $environment = new ControllerEnvironment(
-            ConfigurationManager::getInstance(),
+            $this->config,
             $this->createMock(PDO::class),
             new NullLogger(),
-            new ModuleRegistry(ConfigurationManager::getInstance()),
+            new ModuleRegistry($this->config),
             $factory,
             null,
             null,
@@ -84,7 +87,7 @@ class ControllerEnvironmentSeamTest extends TestCase
         $controller = $this->makeController();
 
         $this->assertInstanceOf(BaseController::class, $controller);
-        $this->assertSame(ConfigurationManager::getInstance(), $controller->getConfig());
+        $this->assertSame($this->config, $controller->getConfig());
     }
 
     public function testCreateAccessorsRouteThroughTheSuppliedFactory(): void
@@ -108,10 +111,10 @@ class ControllerEnvironmentSeamTest extends TestCase
     private function makeCsrfEnvironment(CsrfTokenService $csrf): ControllerEnvironment
     {
         return new ControllerEnvironment(
-            ConfigurationManager::getInstance(),
+            $this->config,
             $this->createMock(PDO::class),
             new NullLogger(),
-            new ModuleRegistry(ConfigurationManager::getInstance()),
+            new ModuleRegistry($this->config),
             null,
             null,
             $csrf,
@@ -146,10 +149,10 @@ class ControllerEnvironmentSeamTest extends TestCase
         $csrf = $this->createMock(CsrfTokenService::class);
         $csrf->expects($this->once())->method('validateToken')->with('tok')->willReturn(true);
         $environment = new ControllerEnvironment(
-            ConfigurationManager::getInstance(),
+            $this->config,
             $this->createMock(PDO::class),
             new NullLogger(),
-            new ModuleRegistry(ConfigurationManager::getInstance()),
+            new ModuleRegistry($this->config),
             null,
             new HttpRequest([], ['_token' => 'tok'], ['REQUEST_METHOD' => 'POST']),
             $csrf,
@@ -171,10 +174,10 @@ class ControllerEnvironmentSeamTest extends TestCase
     {
         $output = new RecordingPageOutput();
         $environment = new ControllerEnvironment(
-            ConfigurationManager::getInstance(),
+            $this->config,
             $this->createMock(PDO::class),
             new NullLogger(),
-            new ModuleRegistry(ConfigurationManager::getInstance()),
+            new ModuleRegistry($this->config),
             null,
             new HttpRequest([], [], ['REQUEST_METHOD' => 'GET']),
             null,
