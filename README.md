@@ -69,7 +69,7 @@ For detailed installation instructions, please visit [the official documentation
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * **Warning**: The master branch is used for pre-release integration testing and may be unstable. For production use, stick with the stable release/4.0.x branch or use the `stable` Docker tag.
+    * **Warning**: The master branch carries the next release and may be unstable. For production use, stick with the `release/4.4.x` LTS branch or a specific version tag (e.g. `v4.4.1`), or pin the matching Docker tag (e.g. `4.4.1`).
 
 ### Docker Deployment
 
@@ -119,10 +119,13 @@ Poweradmin maintains multiple release branches:
 
 | Branch | Status | Support |
 |--------|--------|---------|
-| `develop` | Development | Experimental features, unstable |
-| `master` | Pre-release | Integration testing, may be unstable |
-| `release/4.1.x` | Current | Latest release, stabilizing |
-| `release/4.0.x` | Stable | 4.0.x bug fixes and security updates |
+| `develop` | Development | 4.6.0 development, may be unstable |
+| `master` | Next release | 4.5.0, awaiting its release - critical fixes only |
+| `release/4.4.x` | LTS | Recommended for production - bug and security fixes until December 2027 (security fixes only later in the period) |
+| `release/4.3.x` | Maintenance | Last fixes only - end of life three months after the 4.5.0 release |
+| `release/4.2.x` | Maintenance | Last fixes only - end of life three months after the 4.5.0 release |
+| `release/4.1.x` | End of support | No further updates - upgrade to 4.4.x |
+| `release/4.0.x` | End of support | No further updates - upgrade to 4.4.x |
 | `release/3.x` | LTS | Bug fixes and security updates until December 2027 |
 
 ### PHP Version Support
@@ -131,7 +134,12 @@ Poweradmin maintains multiple release branches:
 
 ### Long-Term Support (LTS)
 
-The **3.9.x branch** is designated as Long-Term Support (LTS), starting with version 3.9.8. This branch will receive bug fixes and security updates for at least two years, providing a stable option for organizations that prefer stability over immediate upgrades.
+Poweradmin keeps one 4.x line and the 3.9.x line on Long-Term Support (LTS):
+
+- **4.4.x** - LTS until December 2027. It is the last line with API v1, which is removed in 4.5.0, so it suits setups that still need v1. Bug and security fixes at first, security fixes only later in the period.
+- **3.9.x** - LTS until December 2027, starting with version 3.9.8. Bug fixes and security updates for organizations that prefer stability over immediate upgrades.
+
+The 4.2.x and 4.3.x lines reach end of life three months after 4.5.0 is released. Plan the upgrade to 4.4.x or newer before then.
 
 For more details, see the [Poweradmin in 2025: Year in Review](https://www.poweradmin.org/p/poweradmin-in-2025-year-in-review) blog post.
 
