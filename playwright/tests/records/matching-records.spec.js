@@ -14,27 +14,11 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Tests run serially to avoid database conflicts
 test.describe.configure({ mode: 'serial' });
-
-// Helper to find a zone ID by name
-async function getZoneIdByName(page, zoneName, zoneType) {
-  const listUrl = zoneType === 'reverse' ? '/zones/reverse?letter=all' : '/zones/forward?letter=all';
-  await page.goto(listUrl);
-
-  // Zone name is in a table cell, not inside the edit link itself.
-  // Find the row containing the zone name, then extract the zone ID from its checkbox.
-  const row = page.locator(`tr:has-text("${zoneName}")`).first();
-  if (await row.count() > 0) {
-    const checkbox = row.locator('input[name="zone_id[]"]');
-    if (await checkbox.count() > 0) {
-      return await checkbox.getAttribute('value');
-    }
-  }
-  return null;
-}
 
 // Check if a record with the given content exists in a zone.
 // Uses the search filter to find records across all pages.
@@ -64,18 +48,12 @@ test.describe('Matching Record Creation (Issue #1104)', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
       // Find forward zone
-      const forwardZoneId = await getZoneIdByName(page, 'manager-zone.example.com', 'forward');
-      if (!forwardZoneId) {
-        test.skip('Forward zone manager-zone.example.com not found - load test data first');
-        return;
-      }
+      const forwardZoneId = await getTestZoneId(page, 'manager');
+      expect(forwardZoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       // Find reverse zone (to verify later)
-      const reverseZoneId = await getZoneIdByName(page, '2.0.192.in-addr.arpa', 'reverse');
-      if (!reverseZoneId) {
-        test.skip('Reverse zone 2.0.192.in-addr.arpa not found - load test data first');
-        return;
-      }
+      const reverseZoneId = await getTestZoneId(page, 'reverseIPv4');
+      expect(reverseZoneId, '2.0.192.in-addr.arpa must exist in the standard test data').toBeTruthy();
 
       // Add A record with PTR checkbox
       await page.goto(`/zones/${forwardZoneId}/records/add`);
@@ -123,18 +101,12 @@ test.describe('Matching Record Creation (Issue #1104)', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
       // Find reverse zone
-      const reverseZoneId = await getZoneIdByName(page, '2.0.192.in-addr.arpa', 'reverse');
-      if (!reverseZoneId) {
-        test.skip('Reverse zone 2.0.192.in-addr.arpa not found - load test data first');
-        return;
-      }
+      const reverseZoneId = await getTestZoneId(page, 'reverseIPv4');
+      expect(reverseZoneId, '2.0.192.in-addr.arpa must exist in the standard test data').toBeTruthy();
 
       // Find forward zone (to verify later)
-      const forwardZoneId = await getZoneIdByName(page, 'manager-zone.example.com', 'forward');
-      if (!forwardZoneId) {
-        test.skip('Forward zone manager-zone.example.com not found - load test data first');
-        return;
-      }
+      const forwardZoneId = await getTestZoneId(page, 'manager');
+      expect(forwardZoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       // Add PTR record with A/AAAA checkbox
       await page.goto(`/zones/${reverseZoneId}/records/add`);
@@ -174,11 +146,8 @@ test.describe('Matching Record Creation (Issue #1104)', () => {
     test('should show Add PTR checkbox only for A/AAAA records in forward zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const forwardZoneId = await getZoneIdByName(page, 'manager-zone.example.com', 'forward');
-      if (!forwardZoneId) {
-        test.skip('Forward zone not found');
-        return;
-      }
+      const forwardZoneId = await getTestZoneId(page, 'manager');
+      expect(forwardZoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${forwardZoneId}/records/add`);
 
@@ -201,11 +170,8 @@ test.describe('Matching Record Creation (Issue #1104)', () => {
     test('should show Add A/AAAA checkbox in reverse zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const reverseZoneId = await getZoneIdByName(page, '2.0.192.in-addr.arpa', 'reverse');
-      if (!reverseZoneId) {
-        test.skip('Reverse zone not found');
-        return;
-      }
+      const reverseZoneId = await getTestZoneId(page, 'reverseIPv4');
+      expect(reverseZoneId, '2.0.192.in-addr.arpa must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${reverseZoneId}/records/add`);
 

@@ -9,7 +9,6 @@ test.describe.configure({ mode: 'serial' });
 test.describe('DNS Record Types Management', () => {
   const timestamp = Date.now();
   const testDomain = `records-test-${timestamp}.com`;
-  let zoneCreated = false;
   let zoneId = null;
 
   test.beforeEach(async ({ page }) => {
@@ -31,11 +30,10 @@ test.describe('DNS Record Types Management', () => {
     const match = editLink.match(/\/zones\/(\d+)/);
     zoneId = match ? match[1] : null;
     expect(zoneId).not.toBeNull();
-    zoneCreated = true;
   });
 
   test('should add A record successfully', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -50,7 +48,7 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should add AAAA record successfully', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -65,7 +63,7 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should add MX record successfully', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -86,7 +84,7 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should add CNAME record successfully', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -101,7 +99,7 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should add TXT record successfully', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -116,7 +114,7 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should show deprecated label for SPF record type in dropdown', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -136,7 +134,7 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should show deprecation warning when selecting SPF type', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -152,7 +150,7 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should hide deprecation warning when switching to non-deprecated type', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -169,7 +167,7 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should cleanup test zone', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     // Going straight to the zone id avoids hunting the row in the paginated list
     expect(await deleteZoneById(page, zoneId)).toBe(true);

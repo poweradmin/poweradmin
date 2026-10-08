@@ -10,33 +10,18 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { firstRecordIdOnZone } from '../../helpers/zones.js';
+import { firstRecordIdOnZone, getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
-// Helper to get a zone ID for testing
-async function getTestZoneId(page) {
-  await page.goto('/zones/forward?letter=all');
-  const editLink = page.locator('a[href*="/zones/"][href*="/edit"]').first();
-  if (await editLink.count() > 0) {
-    const href = await editLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
-  }
-  return null;
-}
-
 test.describe('Record Comments', () => {
   test.describe('Comment Field Display', () => {
     test('should display comment column in add record form when enabled', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -50,11 +35,8 @@ test.describe('Record Comments', () => {
 
     test('should display comment column in edit record form when enabled', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
@@ -62,23 +44,16 @@ test.describe('Record Comments', () => {
       {
 
         const commentField = page.locator('[name$="[comment]"], textarea[name="comment"], input[name="comment"]');
-        const bodyText = await page.locator('body').textContent();
 
-        // Comment field should be present if feature is enabled
-        const hasCommentField = await commentField.count() > 0;
-        const hasCommentHeader = bodyText.toLowerCase().includes('comment');
-
-        expect(hasCommentField || hasCommentHeader || !bodyText.toLowerCase().includes('comment')).toBeTruthy();
+        // The add-form tests in this file already require record comments to be enabled
+        expect(await commentField.count()).toBeGreaterThan(0);
       }
     });
 
     test('should display comment header in zone edit table when enabled', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
 
@@ -91,11 +66,8 @@ test.describe('Record Comments', () => {
   test.describe('Add Record with Comment', () => {
     test('should add A record with comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -116,11 +88,8 @@ test.describe('Record Comments', () => {
 
     test('should add TXT record with comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -141,11 +110,8 @@ test.describe('Record Comments', () => {
 
     test('should add MX record with comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -172,11 +138,8 @@ test.describe('Record Comments', () => {
   test.describe('Edit Record Comment', () => {
     test('should edit existing record comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
@@ -196,11 +159,8 @@ test.describe('Record Comments', () => {
 
     test('should clear record comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
@@ -220,11 +180,8 @@ test.describe('Record Comments', () => {
 
     test('should preserve comment on record update', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       const recordId = await firstRecordIdOnZone(page, zoneId);
       expect(recordId).not.toBeNull();
@@ -259,11 +216,8 @@ test.describe('Record Comments', () => {
   test.describe('Comment with Special Characters', () => {
     test('should handle comment with quotes', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -284,11 +238,8 @@ test.describe('Record Comments', () => {
 
     test('should handle comment with HTML entities', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -309,11 +260,8 @@ test.describe('Record Comments', () => {
 
     test('should handle multiline comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -336,11 +284,8 @@ test.describe('Record Comments', () => {
   test.describe('Comment Length Limits', () => {
     test('should handle long comment', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -365,11 +310,8 @@ test.describe('Record Comments', () => {
 test.describe('CNAME Root Warning', () => {
   test('should show warning when adding CNAME at root', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) {
-      test.skip('No zones available');
-      return;
-    }
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -389,11 +331,8 @@ test.describe('CNAME Root Warning', () => {
 
   test('should show warning when editing CNAME to root', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) {
-      test.skip('No zones available');
-      return;
-    }
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
     // The warning lives on the record edit page, which is opened directly because
     // the zone page edits inline and carries no per-record edit link
@@ -409,11 +348,8 @@ test.describe('CNAME Root Warning', () => {
 
   test('should not show warning for non-root CNAME', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) {
-      test.skip('No zones available');
-      return;
-    }
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
     // Same page as the root case: the add-record form carries no such warning
     const recordId = await firstRecordIdOnZone(page, zoneId);

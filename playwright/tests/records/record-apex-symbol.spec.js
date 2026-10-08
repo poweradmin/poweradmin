@@ -37,14 +37,13 @@ test.describe('Zone Apex (@) Symbol Handling', () => {
     await expect(zoneRow).toBeVisible();
     const editLink = await zoneRow.locator('a[href*="/edit"]').first().getAttribute('href');
     const match = editLink.match(/\/zones\/(\d+)/);
-    if (match) {
-      zoneId = match[1];
-    }
+    expect(match, 'zone edit link must carry the new zone id').toBeTruthy();
+    zoneId = match[1];
     zoneCreated = true;
   });
 
   test('should convert @ to zone name when adding a record', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -68,7 +67,7 @@ test.describe('Zone Apex (@) Symbol Handling', () => {
   });
 
   test('should convert empty name to zone name when adding a record', async ({ page }) => {
-    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -89,7 +88,7 @@ test.describe('Zone Apex (@) Symbol Handling', () => {
   });
 
   test('should cleanup test zone', async ({ page }) => {
-    test.skip(!zoneCreated, 'Zone not created');
+    expect(zoneCreated, 'zone created by the first test in this file').toBe(true);
 
     await page.goto('/zones/forward?letter=all');
     await page.locator(`tr:has-text("${testDomain}")`).locator('a[href*="/delete"]').first().click();

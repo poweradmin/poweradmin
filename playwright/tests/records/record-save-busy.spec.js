@@ -1,29 +1,17 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Record save busy state - Issue #1409', () => {
-  async function getTestZoneId(page) {
-    await page.goto('/zones/forward?letter=all');
-    // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-    // which carries no zone id, so this helper used to return null for every test.
-      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)\/edit/);
-      return match ? match[1] : null;
-    }
-    return null;
-  }
-
   // The busy state only exists while the POST is in flight, so the response is
   // held open deliberately rather than racing a real save.
   test('shows a spinner and blocks repeat submits while the add POST is pending', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -67,8 +55,8 @@ test.describe('Record save busy state - Issue #1409', () => {
 
   test('leaves the button usable when validation rejects the submit', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
 

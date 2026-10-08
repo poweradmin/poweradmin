@@ -6,69 +6,42 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
-test.describe('Multi-Record Add Form Checkbox Handling', () => {
-  // Helper to get a zone ID for testing
-  async function getTestZoneId(page) {
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
-    // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-    // which carries no zone id, so this helper used to return null for every test.
-      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)\/edit/);
-      return match ? match[1] : null;
-    }
-    return null;
-  }
+const ZONE_REASON = 'admin-zone.example.com must exist in the standard test data';
 
+test.describe('Multi-Record Add Form Checkbox Handling', () => {
   test.describe('Add Record Form Structure', () => {
     test('should have add more records button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, ZONE_REASON).toBeTruthy();
 
-      if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
-        await page.waitForLoadState('networkidle');
+      // The multi-record form lives on /records/add, not on the zone edit page
+      await page.goto(`/zones/${zoneId}/records/add`);
+      await page.waitForLoadState('networkidle');
 
-        const addMoreBtn = page.locator('button:has-text("Add"), button[onclick*="addRecord"], .bi-plus');
-        const bodyText = await page.locator('body').textContent();
-
-        const hasAddMore = await addMoreBtn.count() > 0 || bodyText.toLowerCase().includes('add');
-        expect(hasAddMore).toBeTruthy();
-      } else {
-        expect(true).toBeTruthy();
-      }
+      await expect(page.locator('button:has-text("Add another record")')).toBeVisible();
     });
 
     test('should have checkbox for disabled records', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, ZONE_REASON).toBeTruthy();
 
-      if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
-        await page.waitForLoadState('networkidle');
+      await page.goto(`/zones/${zoneId}/edit`);
+      await page.waitForLoadState('networkidle');
 
-        const disabledCheckbox = page.locator('input[type="checkbox"][name*="disabled"]');
-        const bodyText = await page.locator('body').textContent();
-
-        const hasCheckbox = await disabledCheckbox.count() >= 0;
-        const hasDisabledOption = bodyText.toLowerCase().includes('disabled');
-
-        expect(hasCheckbox || hasDisabledOption).toBeTruthy();
-      } else {
-        expect(true).toBeTruthy();
-      }
+      await expect(page.locator('input[type="checkbox"][name$="[disabled]"]').first()).toBeVisible();
     });
   });
 
   test.describe('Checkbox State Reset', () => {
     test('new record row should have unchecked disabled checkbox', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      expect(zoneId, 'a test zone must exist').toBeTruthy();
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, ZONE_REASON).toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
@@ -81,8 +54,8 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
 
     test('should handle checkbox toggle correctly', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      expect(zoneId, 'a test zone must exist').toBeTruthy();
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, ZONE_REASON).toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
@@ -103,81 +76,69 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
   test.describe('Form Input Types', () => {
     test('record form should have name input', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, ZONE_REASON).toBeTruthy();
 
-      if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
-        await page.waitForLoadState('networkidle');
+      await page.goto(`/zones/${zoneId}/edit`);
+      await page.waitForLoadState('networkidle');
 
-        const nameInput = page.locator('input[name*="name"]');
-        const hasNameInput = await nameInput.count() > 0;
-
-        expect(hasNameInput).toBeTruthy();
-      }
+      expect(await page.locator('input[name*="name"]').count()).toBeGreaterThan(0);
     });
 
     test('record form should have type selector', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, ZONE_REASON).toBeTruthy();
 
-      if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
-        await page.waitForLoadState('networkidle');
+      await page.goto(`/zones/${zoneId}/edit`);
+      await page.waitForLoadState('networkidle');
 
-        const typeSelect = page.locator('select[name*="type"]');
-        const hasTypeSelect = await typeSelect.count() > 0;
-
-        expect(hasTypeSelect).toBeTruthy();
-      }
+      expect(await page.locator('select[name*="type"]').count()).toBeGreaterThan(0);
     });
 
     test('record form should have content input', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, ZONE_REASON).toBeTruthy();
 
-      if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
-        await page.waitForLoadState('networkidle');
+      await page.goto(`/zones/${zoneId}/edit`);
+      await page.waitForLoadState('networkidle');
 
-        const contentInput = page.locator('input[name*="content"], textarea[name*="content"]');
-        const hasContentInput = await contentInput.count() > 0;
-
-        expect(hasContentInput).toBeTruthy();
-      }
+      const contentInput = page.locator('input[name*="content"], textarea[name*="content"]');
+      expect(await contentInput.count()).toBeGreaterThan(0);
     });
 
     test('record form should have TTL input', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, ZONE_REASON).toBeTruthy();
 
-      if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
-        await page.waitForLoadState('networkidle');
+      await page.goto(`/zones/${zoneId}/edit`);
+      await page.waitForLoadState('networkidle');
 
-        const ttlInput = page.locator('input[name*="ttl"]');
-        const hasTtlInput = await ttlInput.count() > 0;
-
-        expect(hasTtlInput).toBeTruthy();
-      }
+      expect(await page.locator('input[name*="ttl"]').count()).toBeGreaterThan(0);
     });
   });
 
   test.describe('Multiple Record Rows', () => {
     test('should be able to add multiple record rows', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, ZONE_REASON).toBeTruthy();
 
-      if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
-        await page.waitForLoadState('networkidle');
+      // templates/default/add_record.html: "Add another record" clones a tr.record-row
+      await page.goto(`/zones/${zoneId}/records/add`);
+      await page.waitForLoadState('networkidle');
 
-        // Target the button, not the .bi-plus-circle icon inside it
-        const addBtn = page.locator('button:has-text("Add row"), button[onclick*="addRecord"], button:has(.bi-plus-circle)').first();
-        test.skip(await addBtn.count() === 0, 'multi-record add form is not available on this page');
-        const initialRows = await page.locator('input[name*="name"]').count();
-        await addBtn.click();
-        await expect(page.locator('input[name*="name"]')).not.toHaveCount(initialRows - 1);
-      }
+      const rows = page.locator('#recordsTableBody tr.record-row');
+      const initialRows = await rows.count();
+      expect(initialRows).toBeGreaterThan(0);
+
+      await page.locator('button:has-text("Add another record")').click();
+      await expect(rows).toHaveCount(initialRows + 1);
+
+      await page.locator('button:has-text("Add another record")').click();
+      await expect(rows).toHaveCount(initialRows + 2);
     });
   });
 });

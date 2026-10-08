@@ -7,40 +7,18 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Bulk Record Operations', () => {
-  // Helper to get a zone ID for testing
-  async function getTestZoneId(page) {
-    await page.goto('/zones/forward?letter=all');
-    // Edit links might be in dropdown menus, check for any link with zone ID
-    const editLink = page.locator('a[href*="/zones/"][href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)\/edit/);
-      return match ? match[1] : null;
-    }
-    // Fallback: try to find any link with zone ID in the table
-    const zoneLink = page.locator('table a[href*="/zones/"]').first();
-    if (await zoneLink.count() > 0) {
-      const href = await zoneLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)/);
-      return match ? match[1] : null;
-    }
-    return null;
-  }
-
   test.describe('Bulk Record Add Form', () => {
     test('should access zone edit page with record form', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       const bodyText = await page.locator('body').textContent();
@@ -49,29 +27,18 @@ test.describe('Bulk Record Operations', () => {
 
     test('should have add record row button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
-      const addBtn = page.locator('button:has-text("Add row"), button[onclick*="addRecord"], .bi-plus-circle');
-      const bodyText = await page.locator('body').textContent();
-
-      const hasAddBtn = await addBtn.count() > 0;
-      const hasAddText = bodyText.toLowerCase().includes('add');
-
-      expect(hasAddBtn || hasAddText).toBeTruthy();
+      // edit.html offers either "Multi-record mode" or "Add record", both linking to /records/add
+      await expect(page.locator('a[href$="/records/add"]:not(.dropdown-item)').first()).toBeVisible();
     });
 
     test('should display record type selector', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       const typeSelector = page.locator('select[name*="type"]');
@@ -80,11 +47,8 @@ test.describe('Bulk Record Operations', () => {
 
     test('should display record name input', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       const nameInput = page.locator('input[name*="name"]');
@@ -93,11 +57,8 @@ test.describe('Bulk Record Operations', () => {
 
     test('should display record content input', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       const contentInput = page.locator('input[name*="content"], textarea[name*="content"]');
@@ -106,11 +67,8 @@ test.describe('Bulk Record Operations', () => {
 
     test('should display TTL input', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       const ttlInput = page.locator('input[name*="ttl"]');
@@ -121,11 +79,8 @@ test.describe('Bulk Record Operations', () => {
   test.describe('Adding Multiple Records', () => {
     test('should have add record functionality on edit page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       // Check that the page has record editing functionality
@@ -138,11 +93,8 @@ test.describe('Bulk Record Operations', () => {
 
     test('should submit multiple records at once', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -166,11 +118,8 @@ test.describe('Bulk Record Operations', () => {
   test.describe('Bulk Record Deletion', () => {
     test('should display record checkboxes for selection', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       const checkboxes = page.locator('input[type="checkbox"][name*="record"]');
@@ -181,11 +130,8 @@ test.describe('Bulk Record Operations', () => {
 
     test('should have select all checkbox', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       // The control is #select_edit_records; the old id*="all" selector matched nothing
@@ -197,11 +143,8 @@ test.describe('Bulk Record Operations', () => {
 
     test('should have delete selected button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       // The control is #delete-selected-records, and it is disabled until a row
@@ -216,11 +159,8 @@ test.describe('Bulk Record Operations', () => {
   test.describe('Record Form Validation', () => {
     test('should reject empty record content', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -239,11 +179,8 @@ test.describe('Bulk Record Operations', () => {
 
     test('should validate IP address for A records', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -261,11 +198,8 @@ test.describe('Bulk Record Operations', () => {
   test.describe('User Permissions', () => {
     test('admin should add records', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) {
-        test.skip('No zones available for bulk record test');
-        return;
-      }
+      const zoneId = await getTestZoneId(page, 'manager');
+      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       const bodyText = await page.locator('body').textContent();

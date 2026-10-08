@@ -7,31 +7,18 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
-// Helper to get a zone ID for testing
-async function getTestZoneId(page) {
-  await page.goto('/zones/forward?letter=all');
-  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-  // which carries no zone id, so this helper used to return null for every test.
-  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-  if (await editLink.count() > 0) {
-    const href = await editLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
-  }
-  return null;
-}
-
 test.describe('Record Validation - All Types', () => {
   test.describe('A Record Validation', () => {
     test('should accept valid private IP', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('A');
@@ -44,8 +31,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should accept valid public IP', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('A');
@@ -58,8 +45,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should reject hostname instead of IP', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('A');
@@ -72,8 +59,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should accept localhost IP', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('A');
@@ -88,8 +75,8 @@ test.describe('Record Validation - All Types', () => {
   test.describe('AAAA Record Validation', () => {
     test('should accept full IPv6 address', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
@@ -102,8 +89,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should accept compressed IPv6', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
@@ -116,8 +103,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should accept IPv6 loopback', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
@@ -130,8 +117,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should reject invalid IPv6', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
@@ -146,8 +133,8 @@ test.describe('Record Validation - All Types', () => {
   test.describe('MX Record Validation', () => {
     test('should accept MX with priority 0', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('MX');
@@ -161,8 +148,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should accept MX with high priority', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('MX');
@@ -176,8 +163,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should reject negative priority', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('MX');
@@ -196,8 +183,8 @@ test.describe('Record Validation - All Types', () => {
   test.describe('TXT Record Validation', () => {
     test('should accept SPF record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
@@ -210,8 +197,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should accept DKIM record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
@@ -224,8 +211,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should accept DMARC record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
@@ -238,8 +225,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should accept long TXT record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
@@ -253,8 +240,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should show error for unquoted TXT content on add page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       const recordName = `unquoted-${Date.now()}`;
       await page.goto(`/zones/${zoneId}/records/add`);
@@ -276,8 +263,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should restore all rows on multi-row batch failure', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -310,8 +297,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should preserve PTR checkbox after validation error', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -341,8 +328,8 @@ test.describe('Record Validation - All Types', () => {
   test.describe('CNAME Record Validation', () => {
     test('should accept internal CNAME', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
@@ -355,8 +342,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should accept external CNAME', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
@@ -369,8 +356,8 @@ test.describe('Record Validation - All Types', () => {
 
     test('should reject IP address for CNAME', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
@@ -387,8 +374,8 @@ test.describe('Record Validation - All Types', () => {
   test.describe('NS Record Validation', () => {
     test('should accept valid NS record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('NS');
@@ -402,8 +389,8 @@ test.describe('Record Validation - All Types', () => {
   test.describe('SRV Record Validation', () => {
     test('should accept valid SRV record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('SRV');
@@ -418,8 +405,8 @@ test.describe('Record Validation - All Types', () => {
   test.describe('CAA Record Validation', () => {
     test('should accept valid CAA record', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('CAA');

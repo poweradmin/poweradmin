@@ -40,10 +40,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   });
 
   test('should add PTR record with user-specified nibbles (issue #959)', async ({ page }) => {
-    if (!zoneId) {
-      test.skip(true, 'IPv6 reverse zone not found');
-      return;
-    }
+    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -69,10 +66,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   });
 
   test('should verify PTR record name contains user input (issue #959 bug check)', async ({ page }) => {
-    if (!zoneId) {
-      test.skip(true, 'IPv6 reverse zone not found');
-      return;
-    }
+    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
@@ -111,10 +105,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
       break;
     }
 
-    if (!foundPtrRecord) {
-      test.skip(true, 'PTR record with test content not found');
-      return;
-    }
+    expect(foundPtrRecord, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
 
     expect(recordName, 'Record name should not be empty').not.toBe('');
 
@@ -129,10 +120,8 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   });
 
   test('should edit PTR record and preserve name correctly', async ({ page }) => {
-    if (!zoneId || !recordId) {
-      test.skip(true, 'Zone or record ID not available');
-      return;
-    }
+    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
+    expect(recordId, 'record id captured by the previous test').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
     await page.waitForLoadState('networkidle');
@@ -152,10 +141,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   });
 
   test('should add PTR record with short nibble sequence', async ({ page }) => {
-    if (!zoneId) {
-      test.skip(true, 'IPv6 reverse zone not found');
-      return;
-    }
+    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -175,9 +161,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   });
 
   test('should clean up test PTR records', async ({ page }) => {
-    if (!zoneId) {
-      return;
-    }
+    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
@@ -196,7 +180,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
       const contentValue = await contentInput.inputValue();
       if (testContents.some(tc => contentValue.includes(tc))) {
         const inputName = await contentInput.getAttribute('name');
-        const idMatch = inputName?.match(/record\[(\d+)\]/);
+        const idMatch = inputName?.match(/record\[([^\]]+)\]/);
         if (idMatch) {
           recordIdsToDelete.push(idMatch[1]);
         }
