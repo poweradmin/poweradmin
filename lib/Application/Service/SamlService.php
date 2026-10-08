@@ -417,7 +417,9 @@ class SamlService extends LoggingService
             $sessionIndex = $this->getSessionValue('saml_session_index');
 
             if ($nameId) {
-                return $auth->logout(null, [], $nameId, $sessionIndex, true);
+                // A null returnTo makes php-saml build RelayState from the request Host header.
+                $relayState = base64_encode(json_encode(['provider' => $providerId]));
+                return $auth->logout($relayState, [], $nameId, $sessionIndex, true);
             }
 
             return null;
