@@ -5,40 +5,15 @@
  * adding/editing/removing metadata, and permission checks.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
-/**
- * Drop every metadata row of one kind from the open editor, newest row first.
- *
- * @param {import('@playwright/test').Page} page
- * @param {string} kind - Metadata kind, e.g. SOA-EDIT-API
- * @returns {Promise<void>}
- */
-async function removeMetadataRowsOfKind(page, kind) {
-  const rows = page.locator('#metadata-rows tr');
-
-  for (let i = await rows.count() - 1; i >= 0; i--) {
-    const row = rows.nth(i);
-    const kindSelect = row.locator('.metadata-kind-select');
-    if (await kindSelect.count() === 0) {
-      continue;
-    }
-    if (await kindSelect.inputValue() === kind) {
-      await row.locator('.metadata-remove-row').click();
-    }
-  }
-}
-
 test.describe('Zone Metadata Editor', () => {
-  test('should show metadata button on zone edit page', async ({ page }) => {
+  test('should show metadata button on zone edit page', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/edit`);
     // Auto-retrying: a one-shot count() here races the edit page render
@@ -47,10 +22,9 @@ test.describe('Zone Metadata Editor', () => {
     await expect(metadataLink.first()).toContainText('Metadata');
   });
 
-  test('should load metadata editor page', async ({ page }) => {
+  test('should load metadata editor page', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
     await page.waitForLoadState('networkidle');
@@ -60,10 +34,9 @@ test.describe('Zone Metadata Editor', () => {
     expect(bodyText).toContain('Edit Zone Metadata');
   });
 
-  test('should display metadata kind dropdown', async ({ page }) => {
+  test('should display metadata kind dropdown', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
     const kindSelect = page.locator('.metadata-kind-select').first();
@@ -76,10 +49,9 @@ test.describe('Zone Metadata Editor', () => {
     expect(optionTexts).toContain('Custom');
   });
 
-  test('should add metadata row and save', async ({ page }) => {
+  test('should add metadata row and save', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
 
@@ -100,14 +72,10 @@ test.describe('Zone Metadata Editor', () => {
     await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
   });
 
-  test('should persist saved metadata on reload', async ({ page }) => {
+  test('should persist saved metadata on reload', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
-    // Write the value here instead of inheriting it from the previous test:
-    // getTestZoneId resolves whichever zone sorts first, and that shifts while
-    // other suites create and delete zones concurrently.
     await page.goto(`/zones/${zoneId}/metadata`);
     await page.locator('.metadata-kind-select').first().selectOption('ALLOW-AXFR-FROM');
     await page.locator('.metadata-content').first().fill('192.0.2.10');
@@ -119,10 +87,9 @@ test.describe('Zone Metadata Editor', () => {
     await expect(page.locator('.metadata-kind-select').first()).toHaveValue('ALLOW-AXFR-FROM');
   });
 
-  test('should add new row with add button', async ({ page }) => {
+  test('should add new row with add button', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
     const initialRows = await page.locator('#metadata-rows tr').count();
@@ -132,10 +99,9 @@ test.describe('Zone Metadata Editor', () => {
     expect(newRows).toBe(initialRows + 1);
   });
 
-  test('should remove metadata row', async ({ page }) => {
+  test('should remove metadata row', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
 
@@ -148,10 +114,9 @@ test.describe('Zone Metadata Editor', () => {
     await expect(page.locator('#metadata-rows tr')).toHaveCount(initialRows - 1);
   });
 
-  test('should show custom kind input when Custom is selected', async ({ page }) => {
+  test('should show custom kind input when Custom is selected', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
 
@@ -162,16 +127,11 @@ test.describe('Zone Metadata Editor', () => {
     await expect(customInput).not.toHaveClass(/d-none/);
   });
 
-  test('should save and load SOA-EDIT-API metadata', async ({ page }) => {
+  test('should save and load SOA-EDIT-API metadata', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
-
-    // A SOA-EDIT-API row left by an earlier run would make this a second one,
-    // and the kind takes a single value only.
-    await removeMetadataRowsOfKind(page, 'SOA-EDIT-API');
 
     // Add new row
     await page.locator('#add-metadata-row').click();
@@ -194,15 +154,11 @@ test.describe('Zone Metadata Editor', () => {
     await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
   });
 
-  test('should accept two values for a multi-value kind', async ({ page }) => {
+  test('should accept two values for a multi-value kind', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
-
-    // Start from a clean slate so reruns do not pile rows onto the shared zone
-    await removeMetadataRowsOfKind(page, 'TSIG-ALLOW-DNSUPDATE');
 
     // PowerDNS reads every TSIG-ALLOW-DNSUPDATE row, so a zone may carry more
     // than one update key.
@@ -226,14 +182,14 @@ test.describe('Zone Metadata Editor', () => {
     expect(values).toContain('update-key-two');
   });
 
-  test('should clean up test metadata', async ({ page }) => {
+  test('should save an empty metadata set', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
 
-    // Remove all rows
+    // Fill one row, then remove every row so the save carries no metadata
+    await page.locator('#add-metadata-row').click();
     const removeButtons = page.locator('.metadata-remove-row');
     const count = await removeButtons.count();
     for (let i = count - 1; i >= 0; i--) {
@@ -247,19 +203,17 @@ test.describe('Zone Metadata Editor', () => {
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
-  test('should have CSRF token in form', async ({ page }) => {
+  test('should have CSRF token in form', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
     await expect(page.locator('input[name="_token"]')).toHaveCount(1);
   });
 
-  test('should have breadcrumb navigation', async ({ page }) => {
+  test('should have breadcrumb navigation', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/metadata`);
     await expect(page.locator('nav[aria-label="breadcrumb"]')).toHaveCount(1);

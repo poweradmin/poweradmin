@@ -5,10 +5,9 @@
  * zone types, comments, and ownership.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' with { type: 'json' };
+import { deleteZoneByName, getTestZoneId, uniqueZoneName, zoneExists } from '../../helpers/zones.js';
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
@@ -57,28 +56,17 @@ test.describe('Zone Operations', () => {
       await expect(soaContent).toHaveValue(/\d{8,10}/);
     });
 
-    test('should update SOA serial on record change', async ({ page }) => {
+    test('should open the edit page of a new zone with its SOA', async ({ page, tempZone }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const testDomain = `soa-test-${Date.now()}.example.com`;
 
-      // Create zone
-      await page.goto('/zones/add/master');
-      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(testDomain);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // The zone was just created above, so its row and edit link must be there
       await page.goto('/zones/forward?letter=all');
-      const row = page.locator(`tr:has-text("${testDomain}")`);
+      const row = page.locator(`tr:has-text("${tempZone.name}")`);
       await expect(row).toHaveCount(1);
 
       await row.locator('a[href*="/edit"]').first().click();
+      await expect(page).toHaveURL(new RegExp(`/zones/${tempZone.id}/edit`));
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-
-      // Cleanup
-      await page.goto('/zones/forward?letter=all');
-      await page.locator(`tr:has-text("${testDomain}") a[href*="/delete"]`).first().click();
-      await page.locator('[data-testid="confirm-delete-zone"]').click();
-      await expect(page.locator('table')).not.toContainText(testDomain);
+      await expect(page.locator('tr:has(input[value="SOA"])')).toHaveCount(1);
     });
   });
 
@@ -92,25 +80,20 @@ test.describe('Zone Operations', () => {
 
     test('should create native zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const testDomain = `native-${Date.now()}.example.com`;
+      const testDomain = uniqueZoneName('native');
 
-      await page.goto('/zones/add/master');
-      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(testDomain);
+      try {
+        await page.goto('/zones/add/master');
+        await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(testDomain);
 
-      const typeSelect = page.locator('select[name*="type"]');
-      if (await typeSelect.count() > 0) {
-        await typeSelect.selectOption('NATIVE');
-      }
+        await page.locator('[data-testid="zone-type-select"]').selectOption('NATIVE');
 
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+        await page.waitForLoadState('networkidle');
 
-      // Cleanup
-      await page.goto('/zones/forward?letter=all');
-      const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="/delete"]`).first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) await yesBtn.click();
+        expect(await zoneExists(page, testDomain), `zone ${testDomain} must be created`).toBe(true);
+      } finally {
+        await deleteZoneByName(page, testDomain);
       }
     });
 
@@ -142,24 +125,21 @@ test.describe('Zone Operations', () => {
       }
     });
 
-    test('should update zone comment', async ({ page }) => {
+    test('should update zone comment', async ({ page, tempZone }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-      const editLink = page.locator('table a[href*="/edit"]').first();
-      expect(await editLink.count()).toBeGreaterThan(0);
+      await page.goto(`/zones/${tempZone.id}/edit`);
 
-      await editLink.click();
-      const commentLink = page.locator('a[href*="comment"]').first();
-      if (await commentLink.count() > 0) {
-        await commentLink.click();
-        const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]').first();
-        if (await commentField.count() > 0) {
-          await commentField.fill(`Updated comment ${Date.now()}`);
-          await page.locator('button[type="submit"], input[type="submit"]').first().click();
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
-      }
+      const commentLink = page.locator('a[href*="/comment/edit"]').first();
+      test.skip(await commentLink.count() === 0, 'zone comments are disabled on this instance (show_zone_comments)');
+      await commentLink.click();
+
+      const comment = `Updated comment ${tempZone.name}`;
+      await page.locator('textarea').first().fill(comment);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+      await page.goto(`/zones/${tempZone.id}/comment/edit`);
+      await expect(page.locator('textarea').first()).toHaveValue(comment);
     });
   });
 

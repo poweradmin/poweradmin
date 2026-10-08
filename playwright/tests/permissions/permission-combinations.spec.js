@@ -7,12 +7,36 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensurePermTemplateExists } from '../../helpers/templates.js';
+import { uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Run sequentially within file
-test.describe.configure({ mode: 'serial', retries: 1 });
+test.describe.configure({ mode: 'serial' });
 
 test.describe('Permission Combinations', () => {
+  const tag = uniqueName('pcomb');
+
+  // Removes every template whose name starts with the tag, whatever state a failed test left
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/permissions/templates');
+      const hrefs = await page.locator('tbody tr').evaluateAll((trs, prefix) => trs
+        .filter(tr => tr.querySelector('td')?.textContent.trim().toLowerCase().startsWith(prefix))
+        .map(tr => tr.querySelector('a[href$="/edit"]')?.getAttribute('href')), tag);
+      for (const href of hrefs) {
+        const id = href?.match(/templates\/(\d+)\/edit/)?.[1];
+        if (id) {
+          await page.goto(`/permissions/templates/${id}/delete`);
+          await page.locator('button[name="confirm"]').click();
+          await page.waitForLoadState('networkidle');
+        }
+      }
+    } finally {
+      await page.close();
+    }
+  });
 
   test.describe('Permission Template Management', () => {
     test('should display permission templates list', async ({ page }) => {
@@ -97,7 +121,7 @@ test.describe('Permission Combinations', () => {
   test.describe('Template Creation', () => {
     test('should create template with zone view only', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const templateName = `view-only-${Date.now()}`;
+      const templateName = `${tag}-view-only`;
       await page.goto('/permissions/templates/add');
       await page.locator('input[name*="name"]').first().fill(templateName);
 
@@ -107,22 +131,13 @@ test.describe('Permission Combinations', () => {
       }
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      // Auto-retrying assertion: the click navigation may still be in flight
+      await page.waitForLoadState('networkidle');
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-
-      // Cleanup
-      await page.goto('/permissions/templates');
-      const deleteLink = page.locator(`tr:has-text("${templateName}") a[href*="/delete"]`).first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) await yesBtn.click();
-      }
     });
 
     test('should create template with full zone management', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const templateName = `full-zone-${Date.now()}`;
+      const templateName = `${tag}-full-zone`;
       await page.goto('/permissions/templates/add');
       await page.locator('input[name*="name"]').first().fill(templateName);
 
@@ -133,17 +148,8 @@ test.describe('Permission Combinations', () => {
       }
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      // Auto-retrying assertion: the click navigation may still be in flight
+      await page.waitForLoadState('networkidle');
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-
-      // Cleanup
-      await page.goto('/permissions/templates');
-      const deleteLink = page.locator(`tr:has-text("${templateName}") a[href*="/delete"]`).first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) await yesBtn.click();
-      }
     });
 
     test('should reject template without name', async ({ page }) => {
@@ -157,7 +163,7 @@ test.describe('Permission Combinations', () => {
 
   test.describe('Template Editing', () => {
     // Edit a template of our own so the run cannot mutate a built-in one
-    const editableName = `perm-combo-${Date.now()}-editable`;
+    const editableName = `${tag}-editable`;
 
     async function openEditableTemplate(page) {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -194,7 +200,7 @@ test.describe('Permission Combinations', () => {
 
   test.describe('Template Deletion', () => {
     // Confirm against a template of our own so a stray confirmation cannot delete a built-in one
-    const deletableName = `perm-combo-${Date.now()}-deletable`;
+    const deletableName = `${tag}-deletable`;
 
     async function openDeleteConfirmation(page) {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);

@@ -7,7 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard, logout } from '../../helpers/auth.js';
-import { isApiModeInstance } from '../../helpers/zones.js';
+import { deleteZoneByName, isApiModeInstance, uniqueZoneName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -19,6 +19,18 @@ test.describe('Group-Only Zone Visibility (Issue #1042)', () => {
   // group-orphan-zone.example.com is group-owned with no zones row at all,
   // the state left after the last direct owner is removed (issue #1329).
   const groupOrphanZone = 'group-orphan-zone.example.com';
+
+  const createdZone = uniqueZoneName('grouponly');
+
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await deleteZoneByName(page, createdZone);
+    } finally {
+      await page.close();
+    }
+  });
 
   test('group member should see group-only zone in forward zones list', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
@@ -65,7 +77,7 @@ test.describe('Group-Only Zone Visibility (Issue #1042)', () => {
   });
 
   test('admin should create zone with group-only ownership', async ({ page }) => {
-    const uniqueZone = `group-test-${Date.now()}.example.com`;
+    const uniqueZone = createdZone;
 
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     await page.goto('/zones/add/master');

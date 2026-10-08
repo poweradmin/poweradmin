@@ -1,7 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Run serially: a single zone is mutated and the same change-log rows are
 // asserted across tests. Parallelism would let one test see another's writes.
@@ -35,10 +33,9 @@ test.describe('Record Change Log', () => {
     }
   });
 
-  test('record create + edit + delete each appear in the change log', async ({ page }) => {
-    // admin-zone is seeded; the change log is admin-wide so any editable zone works.
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+  test('record create + edit + delete each appear in the change log', async ({ page, tempZone }) => {
+    // The change log is admin-wide, so the record is written to a throwaway zone.
+    const zoneId = tempZone.id;
     await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
 

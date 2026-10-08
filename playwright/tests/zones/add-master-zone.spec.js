@@ -1,15 +1,26 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { deleteZoneById, findZoneIdByName, zoneExists } from '../../helpers/zones.js';
+import { deleteZoneById, deleteZoneByName, findZoneIdByName, uniqueZoneName, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Run tests serially as they depend on each other
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Master Zone Management', () => {
-  const timestamp = Date.now();
-  const masterZone = `test-master-${timestamp}.example.com`;
-  const reverseZone = `${timestamp % 256}.168.192.in-addr.arpa`;
+  const masterZone = uniqueZoneName('addmaster');
+  // Random octets keep the reverse zone clear of the seeded and other specs' networks
+  const reverseZone = `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.10.in-addr.arpa`;
+
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await deleteZoneByName(page, masterZone);
+      await deleteZoneByName(page, reverseZone);
+    } finally {
+      await page.close();
+    }
+  });
 
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);

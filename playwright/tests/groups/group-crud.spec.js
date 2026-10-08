@@ -7,11 +7,15 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Group CRUD Operations', () => {
+  // Every group this file creates contains the tag, so teardown touches nothing else
+  const tag = uniqueName('gcrud');
+
   // Helper to create a group (selects first available template)
   async function createGroup(page, groupName) {
     await page.goto('/groups/add');
@@ -26,17 +30,16 @@ test.describe('Group CRUD Operations', () => {
   }
 
   // Several tests here create groups they cannot delete inline (the delete-page
-  // test stops at the confirmation on purpose). Sweep them so the seeded fixtures
-  // other specs assert against stay as the importer left them.
+  // test stops at the confirmation on purpose), so sweep them by tag.
   test.afterAll(async ({ browser }) => {
     const page = await browser.newPage();
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    for (const prefix of ['Test Group ', 'Edit Test ', 'Updated Edit Test ', 'Delete Test ', 'ToDelete ']) {
       let guard = 0;
       while (guard++ < 20) {
         await page.goto('/groups');
-        const row = page.locator(`tr:has-text("${prefix}")`).first();
+        const row = page.locator(`tr:has-text("${tag}")`).first();
         if (await row.count() === 0) {
           break;
         }
@@ -44,9 +47,9 @@ test.describe('Group CRUD Operations', () => {
         await page.locator('button[type="submit"]').first().click();
         await page.waitForLoadState('domcontentloaded');
       }
+    } finally {
+      await page.close();
     }
-
-    await page.close();
   });
 
   test.describe('List Groups', () => {
@@ -177,7 +180,7 @@ test.describe('Group CRUD Operations', () => {
 
     test('should create new group with name and description', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const groupName = `Test Group ${Date.now()}`;
+      const groupName = `${tag} create`;
       await page.goto('/groups/add');
 
       await page.locator('input#name').fill(groupName);
@@ -256,7 +259,7 @@ test.describe('Group CRUD Operations', () => {
     test('should update group name and description', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       // First create a group to edit
-      const groupName = `Edit Test ${Date.now()}`;
+      const groupName = `${tag} edit`;
       await createGroup(page, groupName);
 
       // Find and edit the created group
@@ -266,13 +269,16 @@ test.describe('Group CRUD Operations', () => {
       const editLink = row.locator('a[href*="/edit"]').first();
       await editLink.click();
 
-      const updatedName = `Updated ${groupName}`;
+      const updatedName = `${groupName} updated`;
       await page.locator('input#name').fill(updatedName);
       await page.locator('textarea#description, input#description').first().fill('Updated description');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       await page.waitForLoadState('domcontentloaded');
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+      await page.goto('/groups');
+      await expect(page.locator(`tr:has-text("${updatedName}")`)).toHaveCount(1);
     });
   });
 
@@ -280,7 +286,7 @@ test.describe('Group CRUD Operations', () => {
     test('should access delete confirmation page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       // Create a group to delete
-      const groupName = `Delete Test ${Date.now()}`;
+      const groupName = `${tag} delete-page`;
       await createGroup(page, groupName);
 
       await page.goto('/groups');
@@ -324,7 +330,7 @@ test.describe('Group CRUD Operations', () => {
     test('should delete group with confirmation', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       // Create a group to delete
-      const groupName = `ToDelete ${Date.now()}`;
+      const groupName = `${tag} to-delete`;
       await createGroup(page, groupName);
 
       await page.goto('/groups');
@@ -334,12 +340,14 @@ test.describe('Group CRUD Operations', () => {
       await deleteLink.click();
 
       const yesBtn = page.locator('button:has-text("Yes"), button:has-text("delete this group")').first();
-      if (await yesBtn.count() > 0) {
-        await yesBtn.click();
+      await expect(yesBtn).toBeVisible();
+      await yesBtn.click();
 
-        await page.waitForLoadState('domcontentloaded');
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      await page.waitForLoadState('domcontentloaded');
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+      await page.goto('/groups');
+      await expect(page.locator(`tr:has-text("${groupName}")`)).toHaveCount(0);
     });
   });
 

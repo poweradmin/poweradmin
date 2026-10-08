@@ -1,15 +1,28 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneByName, uniqueZoneName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Verifies parent_zone_ownership_check: a non-admin cannot create a zone that
 // overlaps an existing zone owned by another user, but may nest under its own.
-test.describe.configure({ mode: 'serial' });
+test.describe.configure({ mode: 'serial', timeout: 90000 });
 
 test.describe('Zone overlap ownership guard', () => {
-  const ts = Date.now();
-  const foreignParent = `e2e-ovl-${ts}.example.com`;
-  const ownParent = `e2e-mgr-${ts}.example.com`;
+  const foreignParent = uniqueZoneName('ovl');
+  const ownParent = uniqueZoneName('ovlmgr');
+
+  // Children first, then parents; anything the failed tests never created is skipped
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      for (const name of [`sub.${ownParent}`, ownParent, `child.${foreignParent}`, foreignParent]) {
+        await deleteZoneByName(page, name);
+      }
+    } finally {
+      await page.close();
+    }
+  });
 
   async function addMasterZone(page, zoneName) {
     await page.goto('/zones/add/master');

@@ -7,19 +7,20 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { deleteZoneById, findZoneIdByName, zoneExists } from '../../helpers/zones.js';
+import { deleteZoneById, findZoneIdByName, uniqueName, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Bulk Zone Registration', () => {
-  const timestamp = Date.now();
+  const timestamp = uniqueName('bulkreg');
   const testDomains = [
     `bulk-zone-a-${timestamp}.example.com`,
     `bulk-zone-b-${timestamp}.example.com`,
     `bulk-zone-c-${timestamp}.example.com`
   ];
+  const singleDomain = `bulk-single-${timestamp}.example.com`;
 
   test.describe('Bulk Registration Page Access', () => {
     test('should access bulk registration page', async ({ page }) => {
@@ -70,32 +71,25 @@ test.describe('Bulk Zone Registration', () => {
 
     test('should register single zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const singleDomain = `bulk-single-${timestamp}.example.com`;
       await page.goto('/zones/bulk-registration');
 
       await page.locator('textarea[name="domains"]').fill(singleDomain);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Verify success or check zone list
-      // Auto-retrying assertion: the click navigation may still be in flight
+      await page.waitForLoadState('networkidle');
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-
-      // Clean up
-      const singleZoneId = await findZoneIdByName(page, singleDomain);
-      if (singleZoneId) {
-        await deleteZoneById(page, singleZoneId);
-      }
+      expect(await zoneExists(page, singleDomain), `zone ${singleDomain} must be created`).toBe(true);
     });
 
     test('should register multiple zones', async ({ page }) => {
+      test.slow();
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/bulk-registration');
 
       await page.locator('textarea[name="domains"]').fill(testDomains.join('\n'));
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Verify success
-      // Auto-retrying assertion: the click navigation may still be in flight
+      await page.waitForLoadState('networkidle');
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
@@ -147,7 +141,7 @@ test.describe('Bulk Zone Registration', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    for (const domain of testDomains) {
+    for (const domain of [singleDomain, ...testDomains]) {
       const zoneId = await findZoneIdByName(page, domain);
       if (zoneId) {
         await deleteZoneById(page, zoneId);
