@@ -5,7 +5,7 @@
  * adding multiple records and bulk record deletion.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
@@ -91,10 +91,10 @@ test.describe('Bulk Record Operations', () => {
       expect(hasRecordFeature).toBeTruthy();
     });
 
-    test('should submit multiple records at once', async ({ page }) => {
+    test('should submit multiple records at once', async ({ page, tempZone }) => {
+      test.slow(); // creates throwaway zones on top of the test itself
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page, 'manager');
-      expect(zoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
+      const zoneId = tempZone.id;
 
       await page.goto(`/zones/${zoneId}/records/add`);
 

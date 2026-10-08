@@ -1,39 +1,17 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { deleteZoneById, openZoneListPageFor, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
-// Run tests serially as they depend on shared zone
+// Run tests serially; they share the worker's throwaway zone
 test.describe.configure({ mode: 'serial' });
 
 test.describe('DNS Record Types Management', () => {
-  const timestamp = Date.now();
-  const testDomain = `records-test-${timestamp}.com`;
-  let zoneId = null;
-
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
-  test('should create test zone for record testing', async ({ page }) => {
-    await page.goto('/zones/add/master');
-    await page.locator('[data-testid="zone-name-input"]').fill(testDomain);
-    await page.locator('[data-testid="add-zone-button"]').click();
-    await page.waitForLoadState('networkidle');
-
-    // After zone creation the page redirects to the paginated zone list
-    const found = await openZoneListPageFor(page, testDomain);
-    expect(found).toBeTruthy();
-
-    const editLink = await page.locator(`tr:has-text("${testDomain}")`)
-      .locator('a[href*="/edit"]').first().getAttribute('href');
-    const match = editLink.match(/\/zones\/(\d+)/);
-    zoneId = match ? match[1] : null;
-    expect(zoneId).not.toBeNull();
-  });
-
-  test('should add A record successfully', async ({ page }) => {
-    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
+  test('should add A record successfully', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -47,8 +25,8 @@ test.describe('DNS Record Types Management', () => {
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
-  test('should add AAAA record successfully', async ({ page }) => {
-    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
+  test('should add AAAA record successfully', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -62,8 +40,8 @@ test.describe('DNS Record Types Management', () => {
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
-  test('should add MX record successfully', async ({ page }) => {
-    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
+  test('should add MX record successfully', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -83,8 +61,8 @@ test.describe('DNS Record Types Management', () => {
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
-  test('should add CNAME record successfully', async ({ page }) => {
-    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
+  test('should add CNAME record successfully', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -98,8 +76,8 @@ test.describe('DNS Record Types Management', () => {
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
-  test('should add TXT record successfully', async ({ page }) => {
-    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
+  test('should add TXT record successfully', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -113,8 +91,8 @@ test.describe('DNS Record Types Management', () => {
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
-  test('should show deprecated label for SPF record type in dropdown', async ({ page }) => {
-    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
+  test('should show deprecated label for SPF record type in dropdown', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -133,8 +111,8 @@ test.describe('DNS Record Types Management', () => {
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
-  test('should show deprecation warning when selecting SPF type', async ({ page }) => {
-    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
+  test('should show deprecation warning when selecting SPF type', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -149,8 +127,8 @@ test.describe('DNS Record Types Management', () => {
     await expect(warning).toContainText('deprecated');
   });
 
-  test('should hide deprecation warning when switching to non-deprecated type', async ({ page }) => {
-    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
+  test('should hide deprecation warning when switching to non-deprecated type', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -164,16 +142,5 @@ test.describe('DNS Record Types Management', () => {
 
     await typeSelect.selectOption('A');
     await expect(warning).not.toBeVisible();
-  });
-
-  test('should cleanup test zone', async ({ page }) => {
-    expect(zoneId, 'zone created by the first test in this file').toBeTruthy();
-
-    // Going straight to the zone id avoids hunting the row in the paginated list
-    expect(await deleteZoneById(page, zoneId)).toBe(true);
-
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    expect(await zoneExists(page, testDomain)).toBe(false);
   });
 });

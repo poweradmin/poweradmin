@@ -1,6 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -8,10 +7,9 @@ test.describe.configure({ mode: 'serial' });
 test.describe('Record save busy state - Issue #1409', () => {
   // The busy state only exists while the POST is in flight, so the response is
   // held open deliberately rather than racing a real save.
-  test('shows a spinner and blocks repeat submits while the add POST is pending', async ({ page }) => {
+  test('shows a spinner and blocks repeat submits while the add POST is pending', async ({ page, workerZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -53,10 +51,9 @@ test.describe('Record save busy state - Issue #1409', () => {
     await page.unroute('**/records/add');
   });
 
-  test('leaves the button usable when validation rejects the submit', async ({ page }) => {
+  test('leaves the button usable when validation rejects the submit', async ({ page, workerZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
+    const zoneId = workerZone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -71,20 +68,10 @@ test.describe('Record save busy state - Issue #1409', () => {
 
   // The confirm button comes from the shared delete_actions macro, so this
   // covers every delete-confirmation page at once.
-  test('shows a spinner on the shared delete confirmation button', async ({ page }) => {
+  test('shows a spinner on the shared delete confirmation button', async ({ page, tempZone }) => {
+    test.slow(); // creates throwaway zones on top of the test itself
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-
-    const zoneName = `busy-delete-${Date.now()}.example.com`;
-    await page.goto('/zones/add/master');
-    await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(zoneName);
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
-
-    await page.goto('/zones/forward?letter=all');
-    const row = page.locator('tr', { hasText: zoneName }).first();
-    const href = await row.locator('a[href*="/edit"]').first().getAttribute('href');
-    const zoneId = href && href.match(/\/zones\/(\d+)\/edit/)?.[1];
-    expect(zoneId).toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/delete`);
 
@@ -108,5 +95,8 @@ test.describe('Record save busy state - Issue #1409', () => {
     expect(probe.ariaBusy).toBe('true');
     expect(probe.spinner).toBe(true);
     expect(probe.label).toBe('Saving...');
+
+    // The delete was submitted; wait for it to finish before the fixture cleans up
+    await expect(page).not.toHaveURL(/\/delete$/);
   });
 });

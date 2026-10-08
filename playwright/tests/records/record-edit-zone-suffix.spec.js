@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId, getZoneInfo } from '../../helpers/zones.js';
+import { uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
@@ -23,14 +23,12 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
-  test('should preserve zone name in record name when editing (issue #958)', async ({ page }) => {
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
-    const zoneName = getZoneInfo('admin').name;
+  test('should preserve zone name in record name when editing (issue #958)', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
+    const zoneName = workerZone.name;
 
     // Create a record with zone name embedded in hostname
-    const timestamp = Date.now();
-    const uniquePrefix = `bug958t${String(timestamp).slice(-5)}`;
+    const uniquePrefix = uniqueName('bug958');
     const recordHostname = `${uniquePrefix}.${zoneName}.sub`;
 
     // Add the record
@@ -83,13 +81,11 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     expect(isHostnameOnly || isFullFqdn, `Name should be either "${recordHostname}" (hostname-only) or "${expectedFullName}" (full FQDN), got "${nameValue}"`).toBe(true);
   });
 
-  test('should handle simple record names correctly', async ({ page }) => {
-    const zoneId = await getTestZoneId(page, 'admin');
-    expect(zoneId, 'admin-zone.example.com must exist in the standard test data').toBeTruthy();
-    const zoneName = getZoneInfo('admin').name;
+  test('should handle simple record names correctly', async ({ page, workerZone }) => {
+    const zoneId = workerZone.id;
+    const zoneName = workerZone.name;
 
-    const timestamp = Date.now();
-    const uniqueHostname = `simple${String(timestamp).slice(-6)}`;
+    const uniqueHostname = uniqueName('simple');
 
     // Create simple record
     await page.goto(`/zones/${zoneId}/records/add`);
@@ -103,7 +99,8 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     await page.waitForLoadState('networkidle');
 
     // Find and edit the record
-    await page.goto(`/zones/${zoneId}/edit`);
+    // Filter by the unique name so the row is found whatever page it lands on
+    await page.goto(`/zones/${zoneId}/edit?search=${uniqueHostname}`);
     await page.waitForLoadState('networkidle');
 
     const recordNameInput = page.locator(`input[name^="record["][name$="][name]"][value*="${uniqueHostname}"]`).first();

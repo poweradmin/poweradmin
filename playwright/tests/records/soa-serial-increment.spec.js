@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { findZoneIdByName } from '../../helpers/zones.js';
+import { deleteZoneById, findZoneIdByName, uniqueZoneName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -16,8 +16,17 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
 
   // Exact-serial assertion needs a zone no parallel worker writes to, so the
   // test creates its own instead of borrowing a shared fixture zone.
+  const createdZoneIds = [];
+
+  // Zones made by createIsolatedZone are removed even when the test failed
+  test.afterEach(async ({ page }) => {
+    while (createdZoneIds.length > 0) {
+      await deleteZoneById(page, createdZoneIds.pop());
+    }
+  });
+
   async function createIsolatedZone(page, soaEditApi = null) {
-    const zoneName = `soa-serial-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.example.com`;
+    const zoneName = uniqueZoneName('soa-serial');
     await page.goto('/zones/add/master');
     await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(zoneName);
     if (soaEditApi !== null) {
@@ -28,7 +37,11 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
 
     // The zone list is paginated, so resolve the id by name (with the search
     // fallback) instead of expecting the new zone on the first page.
-    return await findZoneIdByName(page, zoneName);
+    const zoneId = await findZoneIdByName(page, zoneName);
+    if (zoneId) {
+      createdZoneIds.push(zoneId);
+    }
+    return zoneId;
   }
 
   test('inline add record should increment SOA serial by exactly 1', async ({ page }) => {

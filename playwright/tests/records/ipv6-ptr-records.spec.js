@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId } from '../../helpers/zones.js';
+import { createZone, deleteZoneById } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
@@ -18,11 +18,13 @@ import users from '../../fixtures/users.json' with { type: 'json' };
  * - Expected record name: 1.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa
  * - Bug behavior: 8.b.d.0.1.0.0.2.ip6.arpa (zone name only, user input ignored)
  *
- * Uses the pre-existing reverseIPv6 fixture zone (8.b.d.0.1.0.0.2.ip6.arpa)
- * created by global setup.
+ * Runs against a throwaway ULA reverse zone (<random nibbles>.d.f.ip6.arpa)
+ * created by the first test and deleted by the last one, so the seeded
+ * 8.b.d.0.1.0.0.2.ip6.arpa zone is never written.
  */
 
-const ipv6Zone = '8.b.d.0.1.0.0.2.ip6.arpa';
+const hexNibble = () => Math.floor(Math.random() * 16).toString(16);
+const ipv6Zone = `${Array.from({ length: 6 }, hexNibble).join('.')}.d.f.ip6.arpa`;
 const ptrNibbles = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0';
 const ptrContent = 'test-ipv6-host.example.com';
 
@@ -34,13 +36,26 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
-  test('should find existing IPv6 reverse zone', async ({ page }) => {
-    zoneId = await getTestZoneId(page, 'reverseIPv6');
-    expect(zoneId, 'IPv6 reverse zone should exist (created by global setup)').toBeTruthy();
+  // Safety net: a failed test must not leave the throwaway zone behind
+  test.afterAll(async ({ browser }, testInfo) => {
+    if (!zoneId) return;
+    const context = await browser.newContext({ baseURL: testInfo.project.use.baseURL });
+    try {
+      const page = await context.newPage();
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await deleteZoneById(page, zoneId);
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('should create the throwaway IPv6 reverse zone', async ({ page }) => {
+    zoneId = await createZone(page, ipv6Zone);
+    expect(zoneId, 'the throwaway IPv6 reverse zone must be created').toBeTruthy();
   });
 
   test('should add PTR record with user-specified nibbles (issue #959)', async ({ page }) => {
-    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
+    expect(zoneId, 'IPv6 reverse zone must be created by the first test').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -66,7 +81,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   });
 
   test('should verify PTR record name contains user input (issue #959 bug check)', async ({ page }) => {
-    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
+    expect(zoneId, 'IPv6 reverse zone must be created by the first test').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
@@ -105,7 +120,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
       break;
     }
 
-    expect(foundPtrRecord, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
+    expect(foundPtrRecord, 'IPv6 reverse zone must be created by the first test').toBeTruthy();
 
     expect(recordName, 'Record name should not be empty').not.toBe('');
 
@@ -120,7 +135,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   });
 
   test('should edit PTR record and preserve name correctly', async ({ page }) => {
-    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
+    expect(zoneId, 'IPv6 reverse zone must be created by the first test').toBeTruthy();
     expect(recordId, 'record id captured by the previous test').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
@@ -141,7 +156,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   });
 
   test('should add PTR record with short nibble sequence', async ({ page }) => {
-    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
+    expect(zoneId, 'IPv6 reverse zone must be created by the first test').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -160,45 +175,11 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
-  test('should clean up test PTR records', async ({ page }) => {
-    expect(zoneId, 'IPv6 reverse zone must be resolved by the first test').toBeTruthy();
+  test('should clean up the throwaway zone', async ({ page }) => {
+    expect(zoneId, 'IPv6 reverse zone must be created by the first test').toBeTruthy();
 
-    await page.goto(`/zones/${zoneId}/edit`);
-    await page.waitForLoadState('networkidle');
-
-    // Find and delete test PTR records by their content
-    const testContents = ['test-ipv6-host', 'short-nibble-test'];
-    const allRows = page.locator('table tbody tr');
-    const rowCount = await allRows.count();
-    const recordIdsToDelete = [];
-
-    for (let i = 0; i < rowCount; i++) {
-      const row = allRows.nth(i);
-      const contentInput = row.locator('input[name*="[content]"]').first();
-      if (await contentInput.count() === 0) continue;
-
-      const contentValue = await contentInput.inputValue();
-      if (testContents.some(tc => contentValue.includes(tc))) {
-        const inputName = await contentInput.getAttribute('name');
-        const idMatch = inputName?.match(/record\[([^\]]+)\]/);
-        if (idMatch) {
-          recordIdsToDelete.push(idMatch[1]);
-        }
-      }
-    }
-
-    // Delete each test record
-    for (const rid of recordIdsToDelete) {
-      await page.goto(`/zones/${zoneId}/records/${rid}/delete`);
-      await page.waitForLoadState('networkidle');
-
-      const confirmButton = page.locator('input[value="Yes"], button:has-text("Yes"), [data-testid="confirm-delete-record"]').first();
-      if (await confirmButton.count() > 0) {
-        await confirmButton.click();
-        await page.waitForLoadState('networkidle');
-      }
-    }
-
-    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    // Deleting the zone removes the test PTR records with it
+    expect(await deleteZoneById(page, zoneId)).toBe(true);
+    zoneId = null;
   });
 });
