@@ -622,6 +622,9 @@ create_admin_user() {
 
             debug_log "MySQL SSL options: ${mysql_ssl_opts[*]:-none}"
 
+            local -a port_opt=()
+            [ -n "${DB_PORT:-}" ] && port_opt=("-P${DB_PORT}")
+
             local mycnf
             mycnf=$(make_mysql_defaults_file)
             # shellcheck disable=SC2064
@@ -630,7 +633,7 @@ create_admin_user() {
             # Check if user already exists
             local user_exists
             user_exists=$(mysql --defaults-file="${mycnf}" "${mysql_ssl_opts[@]}" \
-                -h"${DB_HOST}" -u"${DB_USER}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
+                -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
@@ -639,7 +642,7 @@ create_admin_user() {
 
             # Insert admin user
             if ! mysql --defaults-file="${mycnf}" "${mysql_ssl_opts[@]}" \
-                    -h"${DB_HOST}" -u"${DB_USER}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+                    -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
@@ -647,9 +650,12 @@ create_admin_user() {
         "pgsql")
             debug_log "Creating admin user in PostgreSQL database"
 
+            local -a port_opt=()
+            [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
+
             # Check if user already exists
             local user_exists
-            user_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -tAc "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
+            user_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -tAc "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
@@ -657,7 +663,7 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            if ! PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+            if ! PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
