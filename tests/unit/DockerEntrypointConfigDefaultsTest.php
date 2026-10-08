@@ -133,6 +133,25 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
         $this->assertStringContainsString('PA_SAML_SP_SLS_URL', $body);
     }
 
+    /**
+     * Without the port, a database on a non-default DB_PORT got its schema loaded
+     * but the admin user step connected to the default port and failed (#1653).
+     */
+    public function testAdminUserStepPassesTheDatabasePort(): void
+    {
+        $body = $this->validatorBody('create_admin_user');
+
+        $this->assertStringContainsString('port_opt=("-P${DB_PORT}")', $body);
+        $this->assertStringContainsString('port_opt=(-p "${DB_PORT}")', $body);
+
+        $calls = preg_match_all('/\b(?:mysql --defaults-file|psql -h)\b.*?"\$\{DB_NAME\}"/s', $body, $matches);
+        $this->assertSame(4, $calls, 'Expected the existence check and the insert for both MySQL and PostgreSQL');
+
+        foreach ($matches[0] as $call) {
+            $this->assertStringContainsString('"${port_opt[@]}"', $call, 'Database client call without the port: ' . $call);
+        }
+    }
+
     private function validatorBody(string $function): string
     {
         $entrypoint = file_get_contents(dirname(__DIR__, 2) . '/docker-entrypoint.sh');
