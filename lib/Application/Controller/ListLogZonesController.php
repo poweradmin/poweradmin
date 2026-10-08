@@ -254,13 +254,13 @@ class ListLogZonesController extends BaseController
                     $keySet += array_fill_keys(array_keys($row), true);
                 }
                 $allKeys = array_keys($keySet);
-                fputcsv($output, CsvFormulaEscaper::escapeRow($allKeys));
+                fputcsv($output, CsvFormulaEscaper::escapeRow($allKeys), ',', '"', '');
                 foreach ($parsed as $row) {
                     $csvRow = [];
                     foreach ($allKeys as $key) {
                         $csvRow[] = $row[$key] ?? '';
                     }
-                    fputcsv($output, CsvFormulaEscaper::escapeRow($csvRow));
+                    fputcsv($output, CsvFormulaEscaper::escapeRow($csvRow), ',', '"', '');
                 }
             }
             fclose($output);

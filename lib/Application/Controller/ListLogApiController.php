@@ -174,13 +174,13 @@ class ListLogApiController extends BaseController
                     $allKeys = array_merge($allKeys, array_keys($row));
                 }
                 $allKeys = array_unique($allKeys);
-                fputcsv($output, CsvFormulaEscaper::escapeRow($allKeys));
+                fputcsv($output, CsvFormulaEscaper::escapeRow($allKeys), ',', '"', '');
                 foreach ($parsed as $row) {
                     $csvRow = [];
                     foreach ($allKeys as $key) {
                         $csvRow[] = $row[$key] ?? '';
                     }
-                    fputcsv($output, CsvFormulaEscaper::escapeRow($csvRow));
+                    fputcsv($output, CsvFormulaEscaper::escapeRow($csvRow), ',', '"', '');
                 }
             }
             fclose($output);

@@ -252,7 +252,7 @@ class ListRecordChangesController extends BaseController
             $output = fopen('php://output', 'w');
             // Derived from the row builder so adding a field cannot silently shift
             // every later column under the wrong heading.
-            fputcsv($output, array_keys($this->buildExportRow([])));
+            fputcsv($output, array_keys($this->buildExportRow([])), ',', '"', '');
 
             $offset = 0;
             while (true) {
@@ -261,7 +261,7 @@ class ListRecordChangesController extends BaseController
                     break;
                 }
                 foreach ($logs as $log) {
-                    fputcsv($output, CsvFormulaEscaper::escapeRow($this->buildExportRow($log)));
+                    fputcsv($output, CsvFormulaEscaper::escapeRow($this->buildExportRow($log)), ',', '"', '');
                 }
                 if (count($logs) < $pageSize) {
                     break;
