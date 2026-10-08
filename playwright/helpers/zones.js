@@ -3,6 +3,15 @@
  *
  * These functions provide reusable zone utilities for Poweradmin E2E tests.
  * Adapted for master branch modern URLs.
+ *
+ * Isolation API (writes go to throwaway objects, never to seeded fixtures):
+ *   uniqueName(prefix, testInfo?)            -> 'e2e-<prefix>-w<worker>-<rand>' (DNS label)
+ *   uniqueZoneName(prefix, testInfo?, suffix)-> '<uniqueName>.example.com'
+ *   createZone(page, name, type)             -> zone id; throws on any failure
+ *   createTempZone(page, opts)               -> { id, name }; zone + apex NS + optional records
+ *   addRecord(page, zoneId, record)          -> adds one record, throws on refusal
+ *   deleteZoneById / deleteZoneByName        -> true when deleted, false when no zone to delete
+ * Most specs should use the tempZone / workerZone fixtures from fixtures/test-fixtures.js.
  */
 
 import zones from '../fixtures/zones.json' with { type: 'json' };
@@ -250,40 +259,149 @@ export async function findAnyZoneId(page, excludeReverse = true) {
 }
 
 /**
- * Create a test zone and return its ID
+ * Build a DNS-safe, lowercase name that is unique across workers and reruns.
+ *
+ * @param {string} prefix - Short purpose tag, e.g. 'crud'
+ * @param {import('@playwright/test').TestInfo} [testInfo] - Supplies the worker index
+ * @returns {string} e.g. 'e2e-crud-w1-k3f9a2x' (at most 63 characters)
+ */
+export function uniqueName(prefix, testInfo) {
+  const worker = testInfo?.workerIndex ?? process.env.TEST_WORKER_INDEX ?? 0;
+  const stamp = Date.now().toString(36).slice(-5);
+  const rand = Math.random().toString(36).slice(2, 6);
+  const tag = String(prefix).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return `e2e-${tag}-w${worker}-${stamp}${rand}`.slice(0, 63);
+}
+
+/**
+ * Unique zone name under a suffix the zone form accepts even with strict_tld_check on.
+ *
+ * @param {string} prefix
+ * @param {import('@playwright/test').TestInfo} [testInfo]
+ * @param {string} [suffix='example.com']
+ * @returns {string} e.g. 'e2e-crud-w1-k3f9a2x.example.com'
+ */
+export function uniqueZoneName(prefix, testInfo, suffix = 'example.com') {
+  return `${uniqueName(prefix, testInfo)}.${suffix}`;
+}
+
+/**
+ * Text of the visible error/warning flash messages on the current page.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<string>}
+ */
+export async function errorMessages(page) {
+  const texts = await page
+    .locator('[data-testid="system-message"].alert-danger, [data-testid="system-message"].alert-warning')
+    .allTextContents();
+  return texts.map(t => t.trim()).join(' | ');
+}
+
+/**
+ * Create a zone and return its ID. Throws (never returns null) when the form
+ * is refused, the redirect does not happen or the new zone cannot be found.
  *
  * @param {import('@playwright/test').Page} page - Playwright page object
  * @param {string} domainName - Domain name for the zone
  * @param {string} type - Zone type ('master' or 'slave')
- * @returns {Promise<string|null>} - Zone ID or null if creation failed
+ * @returns {Promise<string>} - Zone ID
  */
 export async function createZone(page, domainName, type = 'master') {
-  const pageUrl = type === 'slave'
-    ? '/zones/add/slave'
-    : '/zones/add/master';
+  const isSlave = type === 'slave';
+  await page.goto(isSlave ? '/zones/add/slave' : '/zones/add/master');
 
-  await page.goto(pageUrl);
-
-  // Fill in zone name
-  await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]')
-    .first()
-    .fill(domainName);
-
-  // For slave zones, add a master IP
-  if (type === 'slave') {
-    await page.locator('input[name*="master"], input[name*="ip"]')
-      .first()
-      .fill('192.168.1.1');
+  await page.locator('#domain').fill(domainName);
+  if (isSlave) {
+    await page.locator('#slave_master').fill('192.168.1.1');
   }
 
-  // Submit the form
-  await page.locator('button[type="submit"], input[type="submit"]').first().click();
+  await page.locator('button[name="submit"]').click();
 
-  // Wait for page to process
-  await page.waitForLoadState('networkidle');
+  // Success redirects to the zone list; a refusal re-renders the add form
+  try {
+    await page.waitForURL(url => /\/zones\/(forward|reverse)/.test(url.pathname), { timeout: 15000 });
+  } catch {
+    const reason = await errorMessages(page);
+    throw new Error(`createZone(${domainName}) was refused: ${reason || 'no redirect to the zone list'}`);
+  }
 
-  // Try to find the zone ID
-  return await findZoneIdByName(page, domainName);
+  const id = await findZoneIdByName(page, domainName);
+  if (!id) {
+    throw new Error(`createZone(${domainName}) was accepted but the zone was not found afterwards`);
+  }
+  return id;
+}
+
+/**
+ * Add one record through /zones/{id}/records/add. Throws when the app refuses it.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string|number} zoneId
+ * @param {{name?: string, type: string, content: string, ttl?: string|number, prio?: string|number}} record
+ *        name '' or '@' is the zone apex
+ * @returns {Promise<void>}
+ */
+export async function addRecord(page, zoneId, record) {
+  await page.goto(`/zones/${zoneId}/records/add`);
+
+  await page.locator('input[name="records[0][name]"]').fill(record.name ?? '');
+  await page.locator('select[name="records[0][type]"]').selectOption(record.type);
+  await page.locator('input[name="records[0][content]"]').fill(record.content);
+  if (record.ttl !== undefined) {
+    await page.locator('input[name="records[0][ttl]"]').fill(String(record.ttl));
+  }
+  if (record.prio !== undefined) {
+    await page.locator('input[name="records[0][prio]"]').fill(String(record.prio));
+  }
+
+  await page.locator('button[name="commit"]').click();
+
+  try {
+    await page.waitForURL(url => !url.pathname.endsWith('/records/add'), { timeout: 15000 });
+  } catch {
+    const reason = await errorMessages(page);
+    throw new Error(`addRecord(${record.type} ${record.name ?? ''} ${record.content}) on zone ${zoneId} was refused: ${reason || 'still on the add form'}`);
+  }
+
+  const reason = await errorMessages(page);
+  if (reason) {
+    throw new Error(`addRecord(${record.type} ${record.name ?? ''} ${record.content}) on zone ${zoneId} failed: ${reason}`);
+  }
+}
+
+/**
+ * Create a throwaway zone that is ready for DNSSEC signing and record tests.
+ *
+ * @param {import('@playwright/test').Page} page - Admin page
+ * @param {object} [opts]
+ * @param {string} [opts.name] - Zone name; defaults to uniqueZoneName('tmp')
+ * @param {string} [opts.type='master']
+ * @param {boolean} [opts.withApexNs=true] - Add apex NS ns1.example.com (signing is refused without one)
+ * @param {Array<object>} [opts.records=[]] - Extra records, see addRecord()
+ * @param {import('@playwright/test').TestInfo} [opts.testInfo] - Used for the default name
+ * @returns {Promise<{id: string, name: string}>}
+ */
+export async function createTempZone(page, opts = {}) {
+  const { type = 'master', withApexNs = true, records = [], testInfo } = opts;
+  const name = opts.name ?? uniqueZoneName('tmp', testInfo);
+
+  const id = await createZone(page, name, type);
+
+  try {
+    if (withApexNs && type !== 'slave') {
+      await addRecord(page, id, { name: '', type: 'NS', content: 'ns1.example.com' });
+    }
+    for (const record of records) {
+      await addRecord(page, id, record);
+    }
+  } catch (error) {
+    // Do not leave a half-built zone behind; the original error is what matters
+    await deleteZoneById(page, id).catch(() => {});
+    throw error;
+  }
+
+  return { id, name };
 }
 
 /**
@@ -523,7 +641,7 @@ export async function openZoneListPageFor(page, zoneName, maxPages = 40) {
  *
  * @param {import('@playwright/test').Page} page - Playwright page object
  * @param {string|number} zoneId - Zone ID to delete
- * @returns {Promise<boolean>} - True when the confirmation was submitted
+ * @returns {Promise<boolean>} - True when deleted, false when the zone has no delete page; throws when the delete is refused
  */
 export async function deleteZoneById(page, zoneId) {
   await page.goto(`/zones/${zoneId}/delete`);
@@ -533,12 +651,34 @@ export async function deleteZoneById(page, zoneId) {
     return false;
   }
 
-  // domcontentloaded, not networkidle: the API-backed instances keep a
-  // connection busy long enough for networkidle to hit the test budget.
   await confirm.click();
-  await page.waitForLoadState('domcontentloaded');
+
+  // Success leaves the confirmation page for the zone list; a refusal stays on it
+  try {
+    await page.waitForURL(url => !url.pathname.endsWith(`/zones/${zoneId}/delete`), { timeout: 15000 });
+  } catch {
+    throw new Error(`deleting zone ${zoneId} was refused: ${await errorMessages(page) || 'still on the confirmation page'}`);
+  }
+
+  const reason = await errorMessages(page);
+  if (reason) {
+    throw new Error(`deleting zone ${zoneId} failed: ${reason}`);
+  }
 
   return true;
+}
+
+/**
+ * Delete a zone by name; a signed zone is deleted directly (verified in the
+ * smoke run). Returns false when no such zone exists.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} zoneName
+ * @returns {Promise<boolean>}
+ */
+export async function deleteZoneByName(page, zoneName) {
+  const id = await findZoneIdByName(page, zoneName);
+  return id ? deleteZoneById(page, id) : false;
 }
 
 /**

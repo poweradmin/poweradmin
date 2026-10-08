@@ -35,10 +35,13 @@ const sessionCache = new Map();
  * @param {string} username - Username for login
  * @param {string} password - Password for login
  * @param {number} maxRetries - Maximum number of retry attempts
+ * @param {{fresh?: boolean}} [options] - fresh: ignore the cache and log in with a new
+ *        server session (not stored in the cache), for auxiliary browser contexts
  * @returns {Promise<void>}
  */
-export async function loginAndWaitForDashboard(page, username, password, maxRetries = 3) {
-  const cached = sessionCache.get(username);
+export async function loginAndWaitForDashboard(page, username, password, maxRetries = 3, options = {}) {
+  const fresh = options.fresh === true;
+  const cached = fresh ? undefined : sessionCache.get(username);
   if (cached) {
     await page.context().addCookies(cached);
     let reusable = false;
@@ -66,7 +69,9 @@ export async function loginAndWaitForDashboard(page, username, password, maxRetr
         page.waitForURL(url => !url.toString().includes('/login'), { timeout: 10000 }),
         page.click('[data-testid="login-button"]'),
       ]);
-      sessionCache.set(username, await page.context().cookies());
+      if (!fresh) {
+        sessionCache.set(username, await page.context().cookies());
+      }
       return; // Success
     } catch {
       if (attempt === maxRetries) {
