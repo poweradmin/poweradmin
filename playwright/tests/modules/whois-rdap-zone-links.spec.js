@@ -7,23 +7,16 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 const TEST_ZONE = 'admin-zone.example.com';
 
-// admin-zone.example.com is fixture data on every instance, so a missing row is a
-// real failure rather than a reason to skip the test.
-async function getTestZoneId(page) {
-  await page.goto('/zones/forward?letter=all');
-  const checkbox = page.locator(`tr:has-text("${TEST_ZONE}") input[name="zone_id[]"]`).first();
-  await expect(checkbox).toBeVisible();
-  return await checkbox.getAttribute('value');
-}
-
 test.describe('WHOIS/RDAP Zone Links', () => {
   test('should navigate to WHOIS page from zone list link', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
     // Navigate directly to the zone-specific WHOIS URL
     await page.goto(`/zones/${zoneId}/whois`);
@@ -44,7 +37,8 @@ test.describe('WHOIS/RDAP Zone Links', () => {
 
   test('should pre-fill domain on WHOIS page from zone ID', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/whois`);
 
@@ -53,7 +47,8 @@ test.describe('WHOIS/RDAP Zone Links', () => {
 
   test('should navigate to RDAP page from zone list link', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
     // Navigate directly to the zone-specific RDAP URL
     await page.goto(`/zones/${zoneId}/rdap`);
@@ -74,7 +69,8 @@ test.describe('WHOIS/RDAP Zone Links', () => {
 
   test('should pre-fill domain on RDAP page from zone ID', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/rdap`);
 
@@ -83,7 +79,8 @@ test.describe('WHOIS/RDAP Zone Links', () => {
 
   test('should show WHOIS button on zone edit page for admin', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/edit`);
 
@@ -103,7 +100,8 @@ test.describe('WHOIS/RDAP Zone Links', () => {
 
   test('should show RDAP button on zone edit page for admin', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/edit`);
 

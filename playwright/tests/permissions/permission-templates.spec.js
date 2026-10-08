@@ -25,14 +25,7 @@ test.describe('Permission Templates Management', () => {
   test('should display permission templates list or empty state', async ({ page }) => {
     await page.goto('/permissions/templates');
 
-    // Should show either templates table or empty state
-    const hasTable = await page.locator('table, .table').count() > 0;
-    if (hasTable) {
-      await expect(page.locator('table, .table')).toBeVisible();
-    } else {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/No templates|templates|empty/i);
-    }
+    await expect(page.locator('table, .table').first()).toBeVisible();
   });
 
   test('should access add permission template page', async ({ page }) => {
@@ -80,13 +73,10 @@ test.describe('Permission Templates Management', () => {
     await page.goto('/permissions/templates/add');
 
     // Should show various permission options
-    const hasCheckboxes = await page.locator('input[type="checkbox"]').count() > 0;
-    if (hasCheckboxes) {
-      expect(hasCheckboxes).toBeTruthy();
+    expect(await page.locator('input[type="checkbox"]').count()).toBeGreaterThan(0);
 
-      // Look for common permissions
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/zone|user|permission/i);
-    }
+    // Look for common permissions
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText).toMatch(/zone|user|permission/i);
   });
 });

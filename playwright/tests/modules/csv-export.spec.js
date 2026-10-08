@@ -4,29 +4,13 @@
  * Tests for the CSV export functionality accessible from zone edit pages.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' with { type: 'json' };
-
-// Helper to get a zone ID for testing
-async function getTestZoneId(page) {
-  await page.goto('/zones/forward?letter=all');
-  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-  // which carries no zone id, so this helper used to return null for every test.
-  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-  if (await editLink.count() > 0) {
-    const href = await editLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
-  }
-  return null;
-}
 
 test.describe('CSV Export Module', () => {
-  test('should show Export dropdown on zone edit page', async ({ page }) => {
+  test('should show Export dropdown on zone edit page', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
@@ -36,10 +20,9 @@ test.describe('CSV Export Module', () => {
     await expect(exportBtn).toBeVisible();
   });
 
-  test('should show CSV option in Export dropdown', async ({ page }) => {
+  test('should show CSV option in Export dropdown', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
@@ -57,10 +40,9 @@ test.describe('CSV Export Module', () => {
     expect(href).toContain(`/zones/${zoneId}/export/csv`);
   });
 
-  test('should download CSV file', async ({ page }) => {
+  test('should download CSV file', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
+    const zoneId = tempZone.id;
 
     // Listen for download event
     const downloadPromise = page.waitForEvent('download');
@@ -75,18 +57,16 @@ test.describe('CSV Export Module', () => {
     expect(download.suggestedFilename()).toMatch(/\.csv$/);
   });
 
-  test('should contain valid CSV content', async ({ page, request }) => {
+  test('should contain valid CSV content', async ({ page, request, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
+    const zoneId = tempZone.id;
 
     // Get cookies from authenticated session
     const cookies = await page.context().cookies();
     const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join('; ');
 
     // Fetch CSV content directly
-    const baseURL = page.url().split('/zones')[0];
-    const response = await request.get(`${baseURL}/zones/${zoneId}/export/csv`, {
+    const response = await request.get(`/zones/${zoneId}/export/csv`, {
       headers: { Cookie: cookieHeader }
     });
 

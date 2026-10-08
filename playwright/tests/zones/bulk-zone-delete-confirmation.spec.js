@@ -56,10 +56,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
 
       // Click delete selected button
       const deleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
-      if (await deleteBtn.count() === 0) {
-        test.skip('Delete button not found');
-        return;
-      }
+      await expect(deleteBtn).toBeVisible();
 
       await deleteBtn.click();
       await page.waitForLoadState('networkidle');
@@ -68,40 +65,15 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await expect(page.locator('body')).not.toContainText(/error occurred|fatal|exception/i);
 
       // Confirm deletion
-      const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-      if (await yesBtn.count() > 0) {
-        await yesBtn.click();
-        await page.waitForLoadState('networkidle');
+      await page.locator('button[name="confirm"]').click();
+      await page.waitForLoadState('networkidle');
 
-        // BUG CHECK: Should NOT show error page after successful deletion
-        // Issue #971: "An error occurred while processing the request" shows but deletion works
-        const afterDeleteText = await page.locator('body').textContent();
+      // Issue #971: "An error occurred while processing the request" showed although the deletion worked
+      await expect(page.locator('body')).not.toContainText(/error occurred/i);
+      await expect(page.locator('[data-testid="system-message"]')).toContainText(/success/i);
 
-        // Should show success or redirect to zones list
-        const hasError = afterDeleteText.toLowerCase().includes('error occurred');
-        const hasSuccess = afterDeleteText.toLowerCase().includes('success') ||
-                          afterDeleteText.toLowerCase().includes('deleted') ||
-                          afterDeleteText.toLowerCase().includes('zone');
-
-        // Without an error the page must actually say the deletion happened
-        if (!hasError) {
-          expect(hasSuccess).toBe(true);
-        }
-
-        // If we see "error occurred" but deletion actually worked, that's the bug
-        if (hasError) {
-          // Verify zones were actually deleted
-          let stillExists = false;
-          for (const domain of testZones) {
-            if (await zoneExists(page, domain)) {
-              stillExists = true;
-              break;
-            }
-          }
-
-          // If zones don't exist anymore but we got error message = BUG #971
-          expect(stillExists || !hasError, 'BUG #971: Error message shown but deletion succeeded').toBeTruthy();
-        }
+      for (const domain of testZones) {
+        expect(await zoneExists(page, domain), `${domain} should be deleted`).toBe(false);
       }
     });
 
@@ -125,15 +97,12 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await deleteBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-      if (await yesBtn.count() > 0) {
-        await yesBtn.click();
-        await page.waitForLoadState('networkidle');
+      await page.locator('button[name="confirm"]').click();
+      await page.waitForLoadState('networkidle');
 
-        // Verify the zone was actually deleted
-        const zoneDeleted = !(await zoneExists(page, singleZone));
-        expect(zoneDeleted, 'Zone should be deleted').toBeTruthy();
-      }
+      // Verify the zone was actually deleted
+      const zoneDeleted = !(await zoneExists(page, singleZone));
+      expect(zoneDeleted, 'Zone should be deleted').toBeTruthy();
     });
 
     test('should redirect to zones list after successful deletion', async ({ page }) => {
@@ -189,13 +158,10 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await deleteBtn.click();
       await page.waitForLoadState('networkidle');
 
-      const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-      if (await yesBtn.count() > 0) {
-        await yesBtn.click();
-        await page.waitForLoadState('networkidle');
-      }
+      await page.locator('button[name="confirm"]').click();
+      await page.waitForLoadState('networkidle');
 
-      // Verify it's gone (even if error message showed)
+      // Verify it's gone
       expect(await zoneExists(page, verifyZone)).toBe(false);
     });
   });
@@ -231,9 +197,8 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
 
       // Cleanup - delete the zone
       const cancelZoneId = await findZoneIdByName(page, cancelZone);
-      if (cancelZoneId) {
-        await deleteZoneById(page, cancelZoneId);
-      }
+      expect(cancelZoneId, `zone ${cancelZone} must still exist`).toBeTruthy();
+      await deleteZoneById(page, cancelZoneId);
     });
   });
 });

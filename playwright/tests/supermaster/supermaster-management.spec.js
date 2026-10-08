@@ -47,22 +47,20 @@ test.describe('Supermaster Management', () => {
     await page.waitForLoadState('networkidle');
 
     const searchInput = page.locator('#supermaster-search');
-    const hasSupermasters = await page.locator('.supermaster-row').count() > 0;
+    // test-extra-data-*.sql seeds supermasters
+    await expect(page.locator('.supermaster-row').first()).toBeVisible();
+    await expect(searchInput).toBeVisible();
 
-    if (hasSupermasters) {
-      await expect(searchInput).toBeVisible();
+    // Type search and verify filtering
+    const initialCount = await page.locator('.supermaster-row').count();
+    await searchInput.fill('zzzznonexistent');
+    const visibleAfter = await page.locator('.supermaster-row:visible').count();
+    expect(visibleAfter).toBe(0);
 
-      // Type search and verify filtering
-      const initialCount = await page.locator('.supermaster-row').count();
-      await searchInput.fill('zzzznonexistent');
-      const visibleAfter = await page.locator('.supermaster-row:visible').count();
-      expect(visibleAfter).toBe(0);
-
-      // Clear search
-      await page.locator('#clear-supermaster-search').click();
-      const visibleAfterClear = await page.locator('.supermaster-row:visible').count();
-      expect(visibleAfterClear).toBe(initialCount);
-    }
+    // Clear search
+    await page.locator('#clear-supermaster-search').click();
+    const visibleAfterClear = await page.locator('.supermaster-row:visible').count();
+    expect(visibleAfterClear).toBe(initialCount);
   });
 
   test('should add a new supermaster', async ({ page }) => {

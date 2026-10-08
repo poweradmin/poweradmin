@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Run serially: a single zone is mutated and the same change-log rows are
@@ -35,22 +36,10 @@ test.describe('Record Change Log', () => {
   });
 
   test('record create + edit + delete each appear in the change log', async ({ page }) => {
-    // Pick the first existing zone and edit it. We don't create a fresh
-    // zone here because the change log is admin-wide and assertions can
-    // rely on whichever zone is editable.
-    await page.goto('/zones/forward');
-    await page.waitForLoadState('networkidle');
-
-    const editLink = page.locator('a[href*="/zones/"][href$="/edit"]').first();
-    if ((await editLink.count()) === 0) {
-      test.skip(true, 'no zone available to mutate');
-    }
-
-    const zoneEditUrl = await editLink.getAttribute('href');
-    const zoneIdMatch = zoneEditUrl.match(/\/zones\/(\d+)\/edit/);
-    expect(zoneIdMatch, 'zone edit href should contain numeric zone id').not.toBeNull();
-    const zoneId = zoneIdMatch[1];
-    await editLink.click();
+    // admin-zone is seeded; the change log is admin-wide so any editable zone works.
+    const zoneId = await getTestZoneId(page, 'admin');
+    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
+    await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
 
     // --- create ---

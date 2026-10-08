@@ -14,7 +14,7 @@ test.describe.configure({ mode: 'serial' });
 test.describe('DNS Wizard', () => {
   // The zone list has no wizard link and its edit link is an icon with no text,
   // so the zone id comes from that link's href. Asserts rather than returning
-  // false, otherwise every caller's `if (found)` silently passes.
+  // false, otherwise a caller's guard on the result silently passes.
   async function navigateToWizard(page, zoneName) {
     await page.goto('/zones/forward');
 
@@ -32,46 +32,38 @@ test.describe('DNS Wizard', () => {
     test('admin should access DNS wizard page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        await expect(page).toHaveURL(/.*zones\/\d+\/wizard/);
-      }
+      await navigateToWizard(page, 'admin-zone');
+      await expect(page).toHaveURL(/.*zones\/\d+\/wizard/);
     });
 
     test('should display wizard type selection', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/wizard|record type|select/i);
-      }
+      await navigateToWizard(page, 'admin-zone');
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText.toLowerCase()).toMatch(/wizard|record type|select/i);
     });
 
     test('should display available wizard types', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        const bodyText = await page.locator('body').textContent();
-        // Common wizard types
-        const hasWizardTypes = bodyText.includes('SPF') ||
-                               bodyText.includes('DMARC') ||
-                               bodyText.includes('DKIM') ||
-                               bodyText.includes('CAA') ||
-                               bodyText.includes('SRV');
-        expect(hasWizardTypes).toBeTruthy();
-      }
+      await navigateToWizard(page, 'admin-zone');
+      const bodyText = await page.locator('body').textContent();
+      // Common wizard types
+      const hasWizardTypes = bodyText.includes('SPF') ||
+                             bodyText.includes('DMARC') ||
+                             bodyText.includes('DKIM') ||
+                             bodyText.includes('CAA') ||
+                             bodyText.includes('SRV');
+      expect(hasWizardTypes).toBeTruthy();
     });
 
     test('should have clickable wizard type cards', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        const wizardLinks = page.locator('a[href*="/wizard/"]');
-        expect(await wizardLinks.count()).toBeGreaterThan(0);
-      }
+      await navigateToWizard(page, 'admin-zone');
+      const wizardLinks = page.locator('a[href*="/wizard/"]');
+      expect(await wizardLinks.count()).toBeGreaterThan(0);
     });
   });
 
@@ -88,69 +80,58 @@ test.describe('DNS Wizard', () => {
     test('should display wizard form fields', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        // Click first available wizard type
-        const wizardLink = page.locator('a[href*="/wizard/"]').first();
-        expect(await wizardLink.count()).toBeGreaterThan(0);
+      await navigateToWizard(page, 'admin-zone');
+      // Click first available wizard type
+      const wizardLink = page.locator('a[href*="/wizard/"]').first();
+      expect(await wizardLink.count()).toBeGreaterThan(0);
 
-        await wizardLink.click();
-        await page.waitForLoadState('domcontentloaded');
+      await wizardLink.click();
+      await page.waitForLoadState('domcontentloaded');
 
-        // Should have form fields
-        const wizardFields = page.locator('#wizardFields');
-        if (await wizardFields.count() > 0) {
-          const inputs = page.locator('.wizard-field');
-          expect(await inputs.count()).toBeGreaterThan(0);
-        }
-      }
+      // Should have form fields
+      await expect(page.locator('#wizardFields')).toBeVisible();
+      await expect(page.locator('.wizard-field').first()).toBeVisible();
     });
 
     test('should display CSRF token', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        const wizardLink = page.locator('a[href*="/wizard/"]').first();
-        expect(await wizardLink.count()).toBeGreaterThan(0);
+      await navigateToWizard(page, 'admin-zone');
+      const wizardLink = page.locator('a[href*="/wizard/"]').first();
+      expect(await wizardLink.count()).toBeGreaterThan(0);
 
-        await wizardLink.click();
-        await page.waitForLoadState('domcontentloaded');
+      await wizardLink.click();
+      await page.waitForLoadState('domcontentloaded');
 
-        const csrfToken = page.locator('input[name="_token"]');
-        expect(await csrfToken.count()).toBeGreaterThan(0);
-      }
+      const csrfToken = page.locator('input[name="_token"]');
+      expect(await csrfToken.count()).toBeGreaterThan(0);
     });
 
     test('should display submit button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        const wizardLink = page.locator('a[href*="/wizard/"]').first();
-        expect(await wizardLink.count()).toBeGreaterThan(0);
+      await navigateToWizard(page, 'admin-zone');
+      const wizardLink = page.locator('a[href*="/wizard/"]').first();
+      expect(await wizardLink.count()).toBeGreaterThan(0);
 
-        await wizardLink.click();
-        await page.waitForLoadState('domcontentloaded');
+      await wizardLink.click();
+      await page.waitForLoadState('domcontentloaded');
 
-        const submitBtn = page.locator('button[type="submit"], button:has-text("Create Record")');
-        expect(await submitBtn.count()).toBeGreaterThan(0);
-      }
+      const submitBtn = page.locator('button[type="submit"], button:has-text("Create Record")');
+      expect(await submitBtn.count()).toBeGreaterThan(0);
     });
 
     test('should display back/cancel links', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        const wizardLink = page.locator('a[href*="/wizard/"]').first();
-        expect(await wizardLink.count()).toBeGreaterThan(0);
+      await navigateToWizard(page, 'admin-zone');
+      const wizardLink = page.locator('a[href*="/wizard/"]').first();
+      expect(await wizardLink.count()).toBeGreaterThan(0);
 
-        await wizardLink.click();
-        await page.waitForLoadState('domcontentloaded');
+      await wizardLink.click();
+      await page.waitForLoadState('domcontentloaded');
 
-        await expect(page.locator('body')).toContainText(/back|cancel/i);
-      }
+      await expect(page.locator('body')).toContainText(/back|cancel/i);
     });
   });
 
@@ -158,11 +139,9 @@ test.describe('DNS Wizard', () => {
     test('wizard page should display breadcrumb', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToWizard(page, 'admin-zone');
-      if (found) {
-        const breadcrumb = page.locator('.breadcrumb');
-        expect(await breadcrumb.count()).toBeGreaterThan(0);
-      }
+      await navigateToWizard(page, 'admin-zone');
+      const breadcrumb = page.locator('.breadcrumb');
+      expect(await breadcrumb.count()).toBeGreaterThan(0);
     });
   });
 });

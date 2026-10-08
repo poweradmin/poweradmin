@@ -59,12 +59,8 @@ test.describe('Error Handling and Edge Cases', () => {
       await page.goto('/zones/add/master');
       await page.waitForLoadState('networkidle');
 
-      const zoneInput = page.locator('[data-testid="zone-name-input"], input[name*="zone_name"], input[name*="zonename"]').first();
-      if (await zoneInput.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
+      const zoneInput = page.locator('[data-testid="zone-name-input"]');
+      await expect(zoneInput).toBeVisible();
 
       await zoneInput.fill(testZone);
 
@@ -76,22 +72,10 @@ test.describe('Error Handling and Edge Cases', () => {
       // Check we end up on a valid page - no crashes
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-      // Clean up
-      await page.goto('/zones/forward?letter=all');
-      await page.waitForLoadState('networkidle');
-
-      const zoneRow = page.locator(`tr:has-text("${testZone}")`).first();
-      if (await zoneRow.count() > 0) {
-        const deleteLink = zoneRow.locator('a[href*="delete"]').first();
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-          await page.waitForLoadState('networkidle');
-          const confirmBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-          if (await confirmBtn.count() > 0) {
-            await confirmBtn.click();
-          }
-        }
-      }
+      // The zone was just created, so clean it up by id
+      const zoneId = await findZoneIdByName(page, testZone);
+      expect(zoneId, `zone ${testZone} must be created`).toBeTruthy();
+      await deleteZoneById(page, zoneId);
     });
   });
 
@@ -116,12 +100,8 @@ test.describe('Error Handling and Edge Cases', () => {
       await page.goto('/zones/add/master');
       await page.waitForLoadState('networkidle');
 
-      const zoneInput = page.locator('[data-testid="zone-name-input"], input[name*="zone_name"], input[name*="zonename"]').first();
-      if (await zoneInput.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
+      const zoneInput = page.locator('[data-testid="zone-name-input"]');
+      await expect(zoneInput).toBeVisible();
 
       // Fill out the form
       await zoneInput.fill(testZone);
@@ -144,22 +124,10 @@ test.describe('Error Handling and Edge Cases', () => {
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
 
-      // Clean up
-      await page.goto('/zones/forward?letter=all');
-      await page.waitForLoadState('networkidle');
-
-      const zoneRow = page.locator(`tr:has-text("${testZone}")`).first();
-      if (await zoneRow.count() > 0) {
-        const deleteLink = zoneRow.locator('a[href*="delete"]').first();
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-          await page.waitForLoadState('networkidle');
-          const confirmBtn = page.locator('button[type="submit"]:has-text("Delete"), input[value*="Delete"]').first();
-          if (await confirmBtn.count() > 0) {
-            await confirmBtn.click();
-          }
-        }
-      }
+      // The zone was just created, so clean it up by id
+      const zoneId = await findZoneIdByName(page, testZone);
+      expect(zoneId, `zone ${testZone} must be created`).toBeTruthy();
+      await deleteZoneById(page, zoneId);
     });
   });
 

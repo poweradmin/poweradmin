@@ -7,31 +7,18 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
-// Helper to get a zone ID for testing
-async function getTestZoneId(page) {
-  await page.goto('/zones/forward?letter=all');
-  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-  // which carries no zone id, so this helper used to return null for every test.
-  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-  expect(await editLink.count()).toBeGreaterThan(0);
-
-  const href = await editLink.getAttribute('href');
-  const match = href.match(/\/zones\/(\d+)\/edit/);
-  return match ? match[1] : null;
-  return null;
-}
-
 test.describe('Zone Operations', () => {
   test.describe('SOA Record Management', () => {
     test('should display SOA record in zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       const soaRow = page.locator('tr:has-text("SOA")');
@@ -40,8 +27,8 @@ test.describe('Zone Operations', () => {
 
     test('should access SOA edit page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
       // The zone page edits records inline and has no per-record edit link, so the
       // record id comes from the row's input names and the page is opened directly
@@ -59,8 +46,8 @@ test.describe('Zone Operations', () => {
 
     test('should display SOA serial number', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
 

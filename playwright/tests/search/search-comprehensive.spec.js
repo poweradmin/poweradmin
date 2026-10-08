@@ -5,24 +5,15 @@
  * zone search, record search, and search features.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 import zones from '../../fixtures/zones.json' with { type: 'json' };
 
-// Helper to get any zone name for testing
-async function findAnyZoneName(page) {
-  await page.goto('/zones/forward?letter=all');
-  const firstZoneLink = page.locator('table tbody tr td:first-child a').first();
-  if (await firstZoneLink.count() > 0) {
-    return await firstZoneLink.textContent();
-  }
-  return null;
-}
+// Own zone, so the search tests do not depend on what the shared database holds
+const zone = useFileZone('search');
 
 test.describe('Search Functionality', () => {
-  let testDomain = null;
-
   test.describe('Search Page Access', () => {
     test('should access search page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -55,37 +46,25 @@ test.describe('Search Functionality', () => {
   test.describe('Zone Search', () => {
     test('should search by exact zone name', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      testDomain = await findAnyZoneName(page);
-
-      if (!testDomain) {
-        test.info().annotations.push({ type: 'skip', description: 'No zones available for search test' });
-        return;
-      }
-
       await page.goto('/search');
-      await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill(testDomain);
+      await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill(zone.name);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Auto-retrying assertion: the click navigation may still be in flight
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expect(page.locator('body')).toContainText(zone.name);
     });
 
     test('should search by partial zone name', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      testDomain = await findAnyZoneName(page);
-
-      if (!testDomain) {
-        test.info().annotations.push({ type: 'skip', description: 'No zones available for search test' });
-        return;
-      }
-
       await page.goto('/search');
-      const partialName = testDomain.split('.')[0];
+      const partialName = zone.name.split('.')[0];
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill(partialName);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Auto-retrying assertion: the click navigation may still be in flight
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expect(page.locator('body')).toContainText(zone.name);
     });
 
     test('should handle no results', async ({ page }) => {
@@ -108,20 +87,14 @@ test.describe('Search Functionality', () => {
 
     test('should search case insensitively', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      testDomain = await findAnyZoneName(page);
-
-      if (!testDomain) {
-        test.info().annotations.push({ type: 'skip', description: 'No zones available for search test' });
-        return;
-      }
-
       await page.goto('/search');
-      const upperQuery = testDomain.toUpperCase();
+      const upperQuery = zone.name.toUpperCase();
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill(upperQuery);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Auto-retrying assertion: the click navigation may still be in flight
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expect(page.locator('body')).toContainText(zone.name);
     });
   });
 

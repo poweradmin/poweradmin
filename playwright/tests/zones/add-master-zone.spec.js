@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { deleteZoneById, findZoneIdByName, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Run tests serially as they depend on each other
@@ -18,160 +19,67 @@ test.describe('Master Zone Management', () => {
     await page.goto('/zones/add/master');
     await page.waitForLoadState('networkidle');
 
-    // Use flexible selectors
-    const zoneInput = page.locator('[data-testid="zone-name-input"], input[name*="zone_name"], input[name*="zonename"], input[name*="domain"]').first();
-    if (await zoneInput.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await zoneInput.fill(masterZone);
-
-    const submitBtn = page.locator('[data-testid="add-zone-button"], button[type="submit"], input[type="submit"]').first();
-    await submitBtn.click();
+    await page.locator('[data-testid="zone-name-input"]').fill(masterZone);
+    await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
     // Verify no errors occurred
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-    // Verify zone was created by checking zones list
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
-
-    // The zone was just created above, so its row must be in the list
-    await expect(page.locator(`tr:has-text("${masterZone}")`)).toHaveCount(1);
+    // The zone was just created above, so it must resolve by name
+    expect(await findZoneIdByName(page, masterZone), `zone ${masterZone} must be created`).toBeTruthy();
   });
 
   test('should add a reverse zone successfully', async ({ page }) => {
     await page.goto('/zones/add/master');
     await page.waitForLoadState('networkidle');
 
-    const zoneInput = page.locator('[data-testid="zone-name-input"], input[name*="zone_name"], input[name*="zonename"], input[name*="domain"]').first();
-    if (await zoneInput.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await zoneInput.fill(reverseZone);
-
-    const submitBtn = page.locator('[data-testid="add-zone-button"], button[type="submit"], input[type="submit"]').first();
-    await submitBtn.click();
+    await page.locator('[data-testid="zone-name-input"]').fill(reverseZone);
+    await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
     // Verify no errors occurred
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-    // Verify zone was created
-    await page.goto('/zones/reverse?reverse_type=all');
-    await page.waitForLoadState('networkidle');
-
-    const zoneRow = page.locator(`tr:has-text("${reverseZone}")`);
-    if (await zoneRow.count() > 0) {
-      await expect(zoneRow.first()).toBeVisible();
-    }
+    expect(await findZoneIdByName(page, reverseZone), `zone ${reverseZone} must be created`).toBeTruthy();
   });
 
   test('should add a record to a master zone successfully', async ({ page }) => {
-    await page.goto('/zones/forward?letter=all');
+    const zoneId = await findZoneIdByName(page, masterZone);
+    expect(zoneId, `zone ${masterZone} must exist from the first test`).toBeTruthy();
+
+    await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
 
-    const zoneRow = page.locator(`tr:has-text("${masterZone}")`);
-    if (await zoneRow.count() === 0) {
-      // Master zone wasn't created - skip gracefully
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    const editLink = zoneRow.locator('a[href*="/edit"]').first();
-    if (await editLink.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await editLink.click();
-    await page.waitForLoadState('networkidle');
-
-    // Use form input selectors - the add record form uses name/content inputs
-    const nameInput = page.locator('input[name*="name"]').first();
-    const contentInput = page.locator('input[name*="content"]').first();
-
-    if (await nameInput.count() === 0 || await contentInput.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await nameInput.fill('www');
-    await contentInput.fill('192.168.1.1');
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    // The add record form names its inputs plain name/content, inline rows use record[<id>][...]
+    await page.locator('input[name="name"]').first().fill('www');
+    await page.locator('input[name="content"], [data-testid="record-content-input"]').first().fill('192.168.1.1');
+    await page.getByRole('button', { name: 'Add record' }).click();
     await page.waitForLoadState('networkidle');
 
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+    await page.goto(`/zones/${zoneId}/edit`);
+    await expect(page.locator('input[value="192.168.1.1"]')).toHaveCount(1);
   });
 
   test('should delete a master zone successfully', async ({ page }) => {
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
+    const zoneId = await findZoneIdByName(page, masterZone);
+    expect(zoneId, `zone ${masterZone} must exist from the first test`).toBeTruthy();
 
-    const zoneRow = page.locator(`tr:has-text("${masterZone}")`);
-    if (await zoneRow.count() === 0) {
-      // Zone doesn't exist - nothing to delete
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    const deleteLink = zoneRow.locator('a[href*="/delete"]').first();
-    if (await deleteLink.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await deleteLink.click();
-    await page.waitForLoadState('networkidle');
-
-    const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes"), [data-testid="confirm-delete-zone"]').first();
-    if (await yesBtn.count() > 0) {
-      await yesBtn.click();
-      await page.waitForLoadState('networkidle');
-    }
+    expect(await deleteZoneById(page, zoneId), 'delete confirmation must be offered').toBe(true);
 
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    expect(await zoneExists(page, masterZone)).toBe(false);
   });
 
   test('should delete a reverse zone successfully', async ({ page }) => {
-    await page.goto('/zones/reverse?reverse_type=all');
-    await page.waitForLoadState('networkidle');
+    const zoneId = await findZoneIdByName(page, reverseZone);
+    expect(zoneId, `zone ${reverseZone} must exist from the second test`).toBeTruthy();
 
-    const zoneRow = page.locator(`tr:has-text("${reverseZone}")`);
-    if (await zoneRow.count() === 0) {
-      // Zone doesn't exist - nothing to delete
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    const deleteLink = zoneRow.locator('a[href*="/delete"]').first();
-    if (await deleteLink.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await deleteLink.click();
-    await page.waitForLoadState('networkidle');
-
-    const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes"), [data-testid="confirm-delete-zone"]').first();
-    if (await yesBtn.count() > 0) {
-      await yesBtn.click();
-      await page.waitForLoadState('networkidle');
-    }
+    expect(await deleteZoneById(page, zoneId), 'delete confirmation must be offered').toBe(true);
 
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    expect(await zoneExists(page, reverseZone)).toBe(false);
   });
 });

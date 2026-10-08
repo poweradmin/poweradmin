@@ -7,15 +7,15 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { createTemplate, deleteTemplate } from '../../helpers/templates.js';
-import { deleteZoneById, findZoneIdByName } from '../../helpers/zones.js';
+import { deleteZoneById, findZoneIdByName, uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Each test builds its own template and linked zone so the zones page under test
 // has something to show whatever else the suite has created or removed.
 async function createLinkedZone(page, label) {
-  const stamp = Date.now();
-  const templateId = await createTemplate(page, `unlink-${label}-${stamp}`);
-  const zoneName = `unlink-${label}-${stamp}.example.com`;
+  const name = uniqueName(`unl-${label}`);
+  const templateId = await createTemplate(page, name);
+  const zoneName = `${name}.example.com`;
 
   await page.goto('/zones/add/master');
   await page.locator('#domain').fill(zoneName);
@@ -159,12 +159,8 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
 
       // Look for edit links specifically in the templates table, not in dropdown menus
       const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        // No templates table, skip
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone|no.*template/i);
-        return;
-      }
+      // Seeded templates keep the list table rendered
+      await expect(templateTable.first()).toBeVisible();
 
       // Find a template edit link in the table body
       const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();

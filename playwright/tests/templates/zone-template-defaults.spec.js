@@ -11,14 +11,15 @@
  * (`owner = 0`) can carry the flag.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' with { type: 'json' };
+import { deleteTemplate } from '../../helpers/templates.js';
+import { uniqueName } from '../../helpers/zones.js';
 
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Zone Template Defaults (issue #973)', () => {
-  const templateName = `default-flag-${Date.now()}`;
+  const templateName = uniqueName('zdef');
   let templateId = null;
 
   test.beforeAll(async ({ browser }) => {
@@ -39,11 +40,11 @@ test.describe('Zone Template Defaults (issue #973)', () => {
     await page.waitForLoadState('networkidle');
     const row = page.locator(`tr:has-text("${templateName}")`).first();
     const editLink = row.locator('a[href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
-      const m = href && href.match(/\/templates\/(\d+)/);
-      if (m) templateId = m[1];
-    }
+    await expect(editLink).toBeVisible();
+    const href = await editLink.getAttribute('href');
+    const m = href && href.match(/\/templates\/(\d+)/);
+    expect(m, `no template id in ${href}`).not.toBeNull();
+    templateId = m[1];
     await ctx.close();
   });
 
@@ -51,20 +52,23 @@ test.describe('Zone Template Defaults (issue #973)', () => {
     if (!templateId) return;
     const ctx = await browser.newContext();
     const page = await ctx.newPage();
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    await page.goto(`/zones/templates/${templateId}/delete`).catch(() => {});
-    await page.waitForLoadState('networkidle');
-    const confirm = page.locator('a[href*="confirm"], button:has-text("Yes"), input[value="Yes"]').first();
-    if (await confirm.count() > 0) {
-      await confirm.click().catch(() => {});
-      await page.waitForLoadState('networkidle');
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      // A failed run can leave the system-wide default on this template
+      await page.goto('/zones/templates');
+      const unsetBtn = page.locator('.template-row').filter({ hasText: templateName })
+        .locator('form[action*="set-default"] button[title*="Unset"]');
+      if (await unsetBtn.count() > 0) {
+        await unsetBtn.click();
+        await page.waitForLoadState('networkidle');
+      }
+      await deleteTemplate(page, templateId);
+    } finally {
+      await ctx.close();
     }
-    await ctx.close();
   });
 
   test('admin sets a global template as default and sees the badge', async ({ page }) => {
-    test.skip(!templateId, 'template setup did not produce an id');
-
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     await page.goto('/zones/templates');
     await page.waitForLoadState('networkidle');
@@ -88,8 +92,6 @@ test.describe('Zone Template Defaults (issue #973)', () => {
   });
 
   test('add-zone form pre-selects the default template and labels the option', async ({ page }) => {
-    test.skip(!templateId, 'template setup did not produce an id');
-
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
     // The default flag is a single system-wide value, so claim it here instead
@@ -116,8 +118,6 @@ test.describe('Zone Template Defaults (issue #973)', () => {
   });
 
   test('admin unsets the default and the badge disappears', async ({ page }) => {
-    test.skip(!templateId, 'template setup did not produce an id');
-
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     await page.goto('/zones/templates');
     await page.waitForLoadState('networkidle');
@@ -138,8 +138,6 @@ test.describe('Zone Template Defaults (issue #973)', () => {
   });
 
   test('non-admin users do not see set-default controls', async ({ page }) => {
-    test.skip(!templateId, 'template setup did not produce an id');
-
     await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
     await page.goto('/zones/templates');
     await page.waitForLoadState('networkidle');

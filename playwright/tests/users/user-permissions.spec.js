@@ -77,11 +77,9 @@ test.describe('User Permission Combinations', () => {
 
     test('should delete any zone', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
-      const hasZones = await page.locator('table tr').count() > 1;
-      if (hasZones) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+      expect(await page.locator('table tr').count()).toBeGreaterThan(1);
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
     test('should access DNSSEC settings', async ({ page }) => {

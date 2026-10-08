@@ -5,16 +5,33 @@
  * adding, editing, and deleting zone templates.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { createTemplate, deleteTemplate } from '../../helpers/templates.js';
-import users from '../../fixtures/users.json' with { type: 'json' };
+import { uniqueName } from '../../helpers/zones.js';
+
+// Submits the add form with the given name and removes the template again
+async function createAndRemove(page, name, description = '') {
+  await page.goto('/zones/templates/add');
+  await page.locator('input[name*="name"], input[name*="templ"]').first().fill(name);
+  if (description) {
+    await page.locator('input[name*="descr"], textarea[name*="descr"]').first().fill(description);
+  }
+  await page.locator('button[type="submit"], input[type="submit"]').first().click();
+  await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+  await page.goto('/zones/templates');
+  const row = page.locator('.template-row').filter({ hasText: name });
+  await expect(row, `template ${name} must be listed`).toHaveCount(1);
+  const href = await row.locator('a[href$="/edit"]').getAttribute('href');
+  await deleteTemplate(page, href.match(/templates\/(\d+)\/edit/)[1]);
+}
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Zone Template CRUD Operations', () => {
-  const templateName = `test-template-${Date.now()}`;
+  const templateName = uniqueName('ztc');
   const templateDescription = 'Automated test template';
 
   test.describe('List Templates', () => {
@@ -28,13 +45,7 @@ test.describe('Zone Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/templates');
 
-      const hasTable = await page.locator('table').count() > 0;
-      if (hasTable) {
-        await expect(page.locator('table').first()).toBeVisible();
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).toMatch(/template|no.*template|empty/i);
-      }
+      await expect(page.locator('table').first()).toBeVisible();
     });
 
     test('should display add template button', async ({ page }) => {
@@ -55,11 +66,8 @@ test.describe('Zone Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/templates');
 
-      const hasTable = await page.locator('table').count() > 0;
-      if (hasTable) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/owner|user/);
-      }
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText.toLowerCase()).toMatch(/owner|user/);
     });
   });
 
@@ -90,35 +98,12 @@ test.describe('Zone Template CRUD Operations', () => {
 
     test('should create template with name only', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const uniqueName = `${templateName}-nameonly`;
-      await page.goto('/zones/templates/add');
-
-      await page.locator('input[name*="name"], input[name*="templ"]').first().fill(uniqueName);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      const bodyText = await page.locator('body').textContent();
-      const hasSuccess = bodyText.toLowerCase().includes('success') ||
-                         bodyText.toLowerCase().includes('created') ||
-                         bodyText.includes(uniqueName) ||
-                         page.url().includes('/zones/templates');
-      expect(hasSuccess).toBeTruthy();
+      await createAndRemove(page, `${templateName}-nameonly`);
     });
 
     test('should create template with name and description', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const uniqueName = `${templateName}-full`;
-      await page.goto('/zones/templates/add');
-
-      await page.locator('input[name*="name"], input[name*="templ"]').first().fill(uniqueName);
-
-      const descField = page.locator('input[name*="descr"], textarea[name*="descr"]').first();
-      await expect(descField).toBeVisible();
-      await descField.fill(templateDescription);
-
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await createAndRemove(page, `${templateName}-full`, templateDescription);
     });
 
     test('should reject empty template name', async ({ page }) => {
@@ -137,57 +122,43 @@ test.describe('Zone Template CRUD Operations', () => {
 
     test('should allow template name with special characters', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const uniqueName = `${templateName}-special-chars-@#`;
-      await page.goto('/zones/templates/add');
-
-      await page.locator('input[name*="name"], input[name*="templ"]').first().fill(uniqueName);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await createAndRemove(page, `${templateName}-special-chars-@#`);
     });
   });
 
   test.describe('Edit Template', () => {
     test('should access edit template page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-
-      // Use table-specific selector to avoid matching dropdown menu items
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        // No templates exist, skip
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-        return;
+      const ownName = `${templateName}-access`;
+      const templateId = await createTemplate(page, ownName);
+      try {
+        expect(templateId, `template ${ownName} must be created`).toBeTruthy();
+        await page.goto('/zones/templates');
+        await page.locator('.template-row').filter({ hasText: ownName }).locator('a[href$="/edit"]').click();
+        await expect(page).toHaveURL(new RegExp(`/zones/templates/${templateId}/edit`));
+      } finally {
+        if (templateId) {
+          await deleteTemplate(page, templateId);
+        }
       }
-
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      await expect(editLink).toBeVisible();
-      await editLink.click();
-      await page.waitForLoadState('networkidle');
-      await expect(page).toHaveURL(/.*zones\/templates\/\d+\/edit/);
     });
 
     test('should display current template name', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
+      const ownName = `${templateName}-display`;
+      const templateId = await createTemplate(page, ownName);
+      try {
+        expect(templateId, `template ${ownName} must be created`).toBeTruthy();
+        await page.goto(`/zones/templates/${templateId}/edit`);
 
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        return; // No templates, skip
+        // The records table above this form has its own name inputs, so target the
+        // template name field directly rather than the first match on the page.
+        await expect(page.locator('#templ_name')).toHaveValue(ownName);
+      } finally {
+        if (templateId) {
+          await deleteTemplate(page, templateId);
+        }
       }
-
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      await expect(editLink).toBeVisible();
-      await editLink.click();
-      await page.waitForLoadState('networkidle');
-
-      // The records table above this form has its own name inputs, so target the
-      // template name field directly rather than the first match on the page.
-      const nameField = page.locator('#templ_name');
-      const value = await nameField.inputValue();
-      expect(value.length).toBeGreaterThan(0);
     });
 
     test('should update template name', async ({ page }) => {
@@ -214,67 +185,67 @@ test.describe('Zone Template CRUD Operations', () => {
 
     test('should update template description', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        return; // No templates, skip
-      }
-
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      await expect(editLink).toBeVisible();
-      await editLink.click();
-      await page.waitForLoadState('networkidle');
-
-      const descField = page.locator('#templ_descr');
-      if (await descField.count() > 0) {
-        await descField.fill(`Updated description ${Date.now()}`);
+      const ownName = `${templateName}-descr`;
+      const templateId = await createTemplate(page, ownName);
+      try {
+        expect(templateId, `template ${ownName} must be created`).toBeTruthy();
+        const newDescription = `Updated description ${ownName}`;
+        await page.goto(`/zones/templates/${templateId}/edit`);
+        await page.locator('#templ_descr').fill(newDescription);
         // Save the template details, not the first submit on the page: that is
         // "Update zones", which renders disabled when no zones use the template.
         await page.locator('button[type="submit"][name="edit"]').click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
         await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+        await page.goto(`/zones/templates/${templateId}/edit`);
+        await expect(page.locator('#templ_descr')).toHaveValue(newDescription);
+      } finally {
+        if (templateId) {
+          await deleteTemplate(page, templateId);
+        }
       }
     });
   });
 
   test.describe('Delete Template', () => {
+    // Opens the delete page of an own template; nothing is deleted until confirmed
+    async function withOwnTemplate(page, suffix, fn) {
+      const ownName = `${templateName}-${suffix}`;
+      const templateId = await createTemplate(page, ownName);
+      try {
+        expect(templateId, `template ${ownName} must be created`).toBeTruthy();
+        await page.goto('/zones/templates');
+        await page.locator('.template-row').filter({ hasText: ownName }).locator('a[href$="/delete"]').click();
+        await fn(templateId);
+      } finally {
+        if (templateId) {
+          await deleteTemplate(page, templateId);
+        }
+      }
+    }
+
     test('should access delete confirmation', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      await expect(deleteLink).toBeVisible();
-      await deleteLink.click();
-      await expect(page).toHaveURL(/.*delete/);
+      await withOwnTemplate(page, 'delete-access', async templateId => {
+        await expect(page).toHaveURL(new RegExp(`/zones/templates/${templateId}/delete`));
+      });
     });
 
     test('should display confirmation message', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      await expect(deleteLink).toBeVisible();
-      await deleteLink.click();
-
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
+      await withOwnTemplate(page, 'delete-confirm', async () => {
+        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
+      });
     });
 
     test('should cancel delete and return to list', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      await expect(deleteLink).toBeVisible();
-      await deleteLink.click();
-
-      const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
-      if (await noBtn.count() > 0) {
+      await withOwnTemplate(page, 'delete-cancel', async () => {
+        const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
+        await expect(noBtn).toBeVisible();
         await noBtn.click();
-        await expect(page).toHaveURL(/.*zones\/templates/);
-      }
+        await expect(page).toHaveURL(/.*zones\/templates$/);
+      });
     });
   });
 

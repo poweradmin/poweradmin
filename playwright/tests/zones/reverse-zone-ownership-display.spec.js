@@ -8,6 +8,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getTestZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Reverse Zone Ownership Display (Issue #1180)', () => {
@@ -17,7 +18,8 @@ test.describe('Reverse Zone Ownership Display (Issue #1180)', () => {
 
     const rows = page.locator('tbody tr');
     const count = await rows.count();
-    test.skip(count === 0, 'No reverse zones in this environment');
+    // 2.0.192.in-addr.arpa and 8.b.d.0.1.0.0.2.ip6.arpa are seeded
+    expect(count, 'seeded reverse zones must be listed').toBeGreaterThan(0);
 
     for (let i = 0; i < count; i++) {
       const ownerCell = rows.nth(i).locator('td').nth(4);
@@ -32,15 +34,9 @@ test.describe('Reverse Zone Ownership Display (Issue #1180)', () => {
 
   test('ownership page does not show duplicate user owners', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    await page.goto('/zones/reverse');
-
-    const editLink = page.locator('tbody tr a[href*="/edit"]').first();
-    test.skip(await editLink.count() === 0, 'No reverse zones in this environment');
-
-    const editHref = await editLink.getAttribute('href');
-    const match = editHref.match(/\/zones\/(\d+)/);
-    test.skip(!match, 'Could not derive zone id');
-    await page.goto(`/zones/${match[1]}/ownership`);
+    const zoneId = await getTestZoneId(page, 'reverseIPv4');
+    expect(zoneId, '2.0.192.in-addr.arpa must be seeded').toBeTruthy();
+    await page.goto(`/zones/${zoneId}/ownership`);
 
     const ownerNames = await page
       .locator('.card')

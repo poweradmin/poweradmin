@@ -17,125 +17,69 @@ test.describe('API Keys Management', () => {
     await toolsMenu.locator('text=API Keys').click();
 
     await expect(page).toHaveURL(/.*settings\/api-keys/);
-
-    // Should either show the page or permission error
-    const bodyText = await page.locator('body').textContent();
-
-    if (bodyText?.includes('You do not have permission')) {
-      await expect(page.locator('body')).toContainText('You do not have permission to manage API keys');
-      console.log('User does not have API key management permissions');
-    } else {
-      await expect(page.locator('body')).toContainText('API Keys Management');
-      console.log('User has API key management permissions');
-    }
+    await expect(page.locator('body')).toContainText('API Keys Management');
+    await expect(page.locator('body')).not.toContainText('You do not have permission');
   });
 
-  test('should show appropriate message for user permissions', async ({ page }) => {
+  test('should allow the administrator to manage API keys', async ({ page }) => {
     await page.goto('/settings/api-keys');
 
-    const bodyText = await page.locator('body').textContent();
-
-    if (bodyText?.includes('You do not have permission')) {
-      await expect(page.locator('body')).toContainText('You do not have permission to manage API keys');
-      console.log('Test passed: Permission check working correctly');
-    } else if (bodyText?.includes('API Keys Management')) {
-      await expect(page.locator('body')).toContainText('API Keys Management');
-
-      // Check for table or empty state message
-      const hasTable = await page.locator('table').count() > 0;
-      if (hasTable) {
-        await expect(page.locator('table')).toBeVisible();
-        console.log('API keys table found');
-      } else {
-        await expect(page.locator('body')).toContainText('No API keys found');
-        console.log('Empty state shown - no API keys exist');
-      }
-    }
+    await expect(page.locator('body')).toContainText('API Keys Management');
+    await expect(page.locator('body')).not.toContainText('You do not have permission');
   });
 
-  test('should handle API key creation if user has permissions', async ({ page }) => {
-    // Navigate to API keys page via UI
-    await page.locator('.dropdown-toggle:has-text("Tools")').click();
-    await page.locator('.dropdown-menu >> text=API Keys').click();
+  test('should handle API key creation', async ({ page }) => {
+    await page.goto('/settings/api-keys');
+    await expect(page.locator('body')).toContainText('API Keys Management');
+
+    // A per-user cap hides the add button; that is configuration, not a failure
+    const atCapacity = (await page.locator('body').textContent()).includes('maximum number of API keys');
+    test.skip(atCapacity, 'the administrator is at the API key limit');
+
+    await page.locator('text=Add new API key').click();
+    await expect(page).toHaveURL(/.*settings\/api-keys\/add/);
+    await expect(page.locator('body')).toContainText('Add API Key');
+
+    // Fill form
+    await page.locator('input[name="name"]').fill('E2E Playwright Key');
+    await page.locator('button[type="submit"]:has-text("Create API Key")').click();
+
+    // Verify success
+    await expect(page.locator('body')).toContainText('API Key Created Successfully', { timeout: 10000 });
+    await expect(page.locator('body')).toContainText('IMPORTANT: Save your API key now!');
+
+    // Go back to list
+    await page.locator('text=Return to API Keys').click();
+
+    // Verify key appears in list
+    await expect(page.locator('table tbody')).toContainText('E2E Playwright Key');
+
+    // Clean up: Delete the test key (icon-only button, match by href pattern)
+    await page.locator('tr', { hasText: 'E2E Playwright Key' }).locator('a[href*="/delete"]').click();
+
+    // Confirm deletion
+    await expect(page.locator('body')).toContainText('Delete API Key');
+    await page.locator('button[type="submit"]').click();
+
+    // Verify deletion
     await expect(page).toHaveURL(/.*settings\/api-keys/);
-
-    const bodyText = await page.locator('body').textContent();
-
-    if (bodyText?.includes('You do not have permission')) {
-      console.log('Skipping API key creation test - user lacks permissions');
-      await expect(page.locator('body')).toContainText('You do not have permission to manage API keys');
-    } else {
-      // User has permissions, test functionality
-      const hasAddButton = await page.locator('text=Add new API key').count() > 0;
-
-      if (hasAddButton) {
-        // Test creation flow
-        await page.locator('text=Add new API key').click();
-        await expect(page).toHaveURL(/.*settings\/api-keys\/add/);
-        await expect(page.locator('body')).toContainText('Add API Key');
-
-        // Fill form
-        await page.locator('input[name="name"]').fill('E2E Playwright Key');
-        await page.locator('button[type="submit"]:has-text("Create API Key")').click();
-
-        // Verify success
-        await expect(page.locator('body')).toContainText('API Key Created Successfully', { timeout: 10000 });
-        await expect(page.locator('body')).toContainText('IMPORTANT: Save your API key now!');
-
-        // Go back to list
-        await page.locator('text=Return to API Keys').click();
-
-        // Verify key appears in list
-        await expect(page.locator('table tbody')).toContainText('E2E Playwright Key');
-
-        // Clean up: Delete the test key (icon-only button, match by href pattern)
-        await page.locator('tr', { hasText: 'E2E Playwright Key' }).locator('a[href*="/delete"]').click();
-
-        // Confirm deletion
-        await expect(page.locator('body')).toContainText('Delete API Key');
-        await page.locator('button[type="submit"]').click();
-
-        // Verify deletion
-        await expect(page).toHaveURL(/.*settings\/api-keys/);
-        await expect(page.locator('body')).not.toContainText('E2E Playwright Key');
-        console.log('✓ E2E Playwright Key created and cleaned up successfully');
-      } else {
-        console.log('Add button not available - might be at max capacity');
-        if (bodyText?.includes('maximum number of API keys')) {
-          await expect(page.locator('body')).toContainText('You have reached the maximum number of API keys allowed');
-        }
-      }
-    }
+    await expect(page.locator('body')).not.toContainText('E2E Playwright Key');
   });
 
-  test('should display API key management interface correctly if accessible', async ({ page }) => {
+  test('should display API key management interface correctly', async ({ page }) => {
     await page.goto('/settings/api-keys');
 
-    const bodyText = await page.locator('body').textContent();
+    await expect(page.locator('body')).toContainText('API Keys Management');
+    await expect(page.locator('body')).toContainText('API keys allow external applications');
 
-    if (bodyText?.includes('You do not have permission')) {
-      console.log('Permission check working - showing error page');
-      await expect(page.locator('body')).toContainText('You do not have permission to manage API keys');
+    // The list is either empty or a table with the standard columns, depending on earlier runs
+    if (await page.locator('table').count() > 0) {
+      await expect(page.locator('table thead')).toContainText('Name');
+      await expect(page.locator('table thead')).toContainText('Status');
+      await expect(page.locator('table thead')).toContainText('Created at');
+      await expect(page.locator('table thead')).toContainText('Actions');
     } else {
-      // User has access, verify interface elements
-      await expect(page.locator('body')).toContainText('API Keys Management');
-      await expect(page.locator('body')).toContainText('API keys allow external applications');
-
-      const hasTable = await page.locator('table').count() > 0;
-
-      if (hasTable) {
-        // Verify table structure
-        await expect(page.locator('table thead')).toContainText('Name');
-        await expect(page.locator('table thead')).toContainText('Status');
-        await expect(page.locator('table thead')).toContainText('Created at');
-        await expect(page.locator('table thead')).toContainText('Actions');
-
-        console.log('API keys table structure correct');
-      } else {
-        // Empty state
-        await expect(page.locator('body')).toContainText('No API keys found');
-        console.log('Empty state displayed correctly');
-      }
+      await expect(page.locator('body')).toContainText('No API keys found');
     }
   });
 });

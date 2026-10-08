@@ -8,13 +8,37 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensurePermTemplateExists } from '../../helpers/templates.js';
+import { uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Permission Template CRUD Operations', () => {
-  const templateName = `perm-template-${Date.now()}`;
+  const templateName = uniqueName('ptc');
+
+  // Removes every template whose name starts with the tag, whatever state a failed test left
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/permissions/templates');
+      const hrefs = await page.locator('tbody tr').evaluateAll((trs, prefix) => trs
+        .filter(tr => tr.querySelector('td')?.textContent.trim().toLowerCase().startsWith(prefix))
+        .map(tr => tr.querySelector('a[href$="/edit"]')?.getAttribute('href')), templateName);
+      for (const href of hrefs) {
+        const id = href?.match(/templates\/(\d+)\/edit/)?.[1];
+        if (id) {
+          await page.goto(`/permissions/templates/${id}/delete`);
+          await page.locator('button[name="confirm"]').click();
+          await page.waitForLoadState('networkidle');
+        }
+      }
+    } finally {
+      await page.close();
+    }
+  });
+
 
   test.describe('List Permission Templates', () => {
     test('admin should access permission templates list', async ({ page }) => {
@@ -28,13 +52,7 @@ test.describe('Permission Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
 
-      const hasTable = await page.locator('table').count() > 0;
-      if (hasTable) {
-        await expect(page.locator('table').first()).toBeVisible();
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).toMatch(/template|no.*template|empty/i);
-      }
+      await expect(page.locator('table').first()).toBeVisible();
     });
 
     test('should display add template button', async ({ page }) => {
@@ -129,8 +147,8 @@ test.describe('Permission Template CRUD Operations', () => {
 
       await page.locator('input[name*="name"], input[name*="templ"]').first().fill(uniqueName);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.waitForLoadState('networkidle');
 
-      // Auto-retrying assertion: the click navigation may still be in flight
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
@@ -152,8 +170,8 @@ test.describe('Permission Template CRUD Operations', () => {
       }
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.waitForLoadState('networkidle');
 
-      // Auto-retrying assertion: the click navigation may still be in flight
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 

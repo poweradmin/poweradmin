@@ -65,39 +65,18 @@ test.describe('User Management Error Validation', () => {
   test('should update user description successfully', async ({ page }) => {
     await page.goto('/users');
 
-    // Find first user edit link or go to user edit page
-    const editLinks = await page.locator('table a[href*="/users/"][href$="/edit"]').count();
+    const editLink = page.locator('table a[href*="/users/"][href$="/edit"]').first();
+    await expect(editLink).toBeVisible();
+    await editLink.click();
 
-    if (editLinks > 0) {
-      await page.locator('table a[href*="/users/"][href$="/edit"]').first().click();
+    // Update description field
+    const descriptionField = page.locator('input[name*="description"], textarea[name*="description"], input[name*="descr"]').first();
+    await descriptionField.fill('Updated test description');
 
-      // Update description field
-      const descriptionField = page.locator('input[name*="description"], textarea[name*="description"], input[name*="descr"]').first();
-      await descriptionField.fill('Updated test description');
+    // Submit form
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Submit form
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Should show success message or redirect
-      const successIndicators = [
-        page.locator('[data-testid="success-message"]'),
-        page.locator('.alert-success'),
-        page.locator('.success')
-      ];
-
-      let foundSuccess = false;
-      for (const indicator of successIndicators) {
-        if (await indicator.count() > 0) {
-          foundSuccess = true;
-          break;
-        }
-      }
-
-      // If no success message, at least verify we're not on an error page
-      if (!foundSuccess) {
-        await expect(page.locator('.alert-danger, .error')).not.toBeVisible();
-      }
-    }
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/updated successfully/i);
   });
 
   test('should validate required fields when editing user', async ({ page }) => {

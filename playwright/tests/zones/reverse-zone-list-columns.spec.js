@@ -32,7 +32,8 @@ test.describe('Reverse Zone List Columns (Issue #1186)', () => {
     await page.goto('/zones/reverse');
 
     const rows = page.locator('tbody tr');
-    test.skip(await rows.count() === 0, 'No reverse zones in this environment');
+    // The reverse zones 2.0.192.in-addr.arpa and 8.b.d.0.1.0.0.2.ip6.arpa are seeded
+    expect(await rows.count(), 'seeded reverse zones must be listed').toBeGreaterThan(0);
 
     const serialIdx = await getColumnIndex(page, 'Serial');
     expect(serialIdx, 'Serial column must be present when preference is on').toBeGreaterThan(-1);
@@ -52,7 +53,8 @@ test.describe('Reverse Zone List Columns (Issue #1186)', () => {
     await page.goto('/zones/reverse');
 
     const rows = page.locator('tbody tr');
-    test.skip(await rows.count() === 0, 'No reverse zones in this environment');
+    // The reverse zones 2.0.192.in-addr.arpa and 8.b.d.0.1.0.0.2.ip6.arpa are seeded
+    expect(await rows.count(), 'seeded reverse zones must be listed').toBeGreaterThan(0);
 
     const templateIdx = await getColumnIndex(page, 'Template');
     expect(templateIdx, 'Template column must be present when preference is on').toBeGreaterThan(-1);

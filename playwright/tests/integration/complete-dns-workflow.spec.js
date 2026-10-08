@@ -1,192 +1,94 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { createZone, deleteZoneById, findZoneIdByName, uniqueName, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Run tests serially as they depend on each other
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Complete DNS Management Workflow Integration', () => {
-  const timestamp = Date.now();
-  const companyName = `playwright-${timestamp}`;
-  const primaryDomain = `${companyName}.com`;
+  const companyName = uniqueName('flow');
+  const primaryDomain = `${companyName}.example.com`;
+  let zoneId = null;
+
+  // Add one record through the form at the top of the zone edit page
+  async function addRecord(page, { type, name, content, prio }) {
+    await page.goto(`/zones/${zoneId}/edit`);
+    await page.waitForLoadState('domcontentloaded');
+
+    await page.locator('#recordTypeSelectTop').selectOption(type);
+    await page.locator('input[name="name"]').first().fill(name);
+    await page.locator('#recordContentTop').fill(content);
+    if (prio !== undefined) {
+      await page.locator('#priorityFieldTop').fill(prio);
+    }
+    await page.getByRole('button', { name: 'Add record' }).click();
+    await page.waitForLoadState('domcontentloaded');
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+  }
+
+  async function storedContents(page) {
+    await page.goto(`/zones/${zoneId}/edit`);
+    await page.waitForLoadState('domcontentloaded');
+    return page.locator('[name^="record["][name$="[content]"]').evaluateAll(els => els.map(e => e.value));
+  }
+
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const id = zoneId ?? await findZoneIdByName(page, primaryDomain);
+    if (id) {
+      await deleteZoneById(page, id);
+    }
+    await page.close();
+  });
 
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
   test('should complete full company DNS setup workflow', async ({ page }) => {
+    // Six record adds and an edit page reload are many page loads under load
+    test.slow();
+
     // Step 1: Create primary company domain
-    await page.goto('/zones/add/master');
-    await page.waitForLoadState('networkidle');
-
-    const zoneInput = page.locator('[data-testid="zone-name-input"], input[name*="zone_name"], input[name*="zonename"], input[name*="domain"]').first();
-    if (await zoneInput.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await zoneInput.fill(primaryDomain);
-
-    // Set company admin email if available
-    const emailInput = page.locator('input[name*="email"], input[type="email"]').first();
-    if (await emailInput.count() > 0) {
-      await emailInput.fill(`admin@${primaryDomain}`);
-    }
-
-    const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-    await submitBtn.click();
-    await page.waitForLoadState('networkidle');
-
-    // Verify no errors
-    let bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-
-    // Verify domain creation
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
-
-    bodyText = await page.locator('body').textContent();
-    if (!bodyText.includes(primaryDomain)) {
-      // Domain may not have been created - continue but note it
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
+    zoneId = await createZone(page, primaryDomain);
+    expect(zoneId, `zone ${primaryDomain} must be created`).toBeTruthy();
 
     // Step 2: Add essential DNS records for company infrastructure
-    const zoneRow = page.locator(`tr:has-text("${primaryDomain}")`);
-    const editLink = zoneRow.locator('a[href*="/edit"]').first();
-    if (await editLink.count() === 0) {
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
+    await addRecord(page, { type: 'A', name: 'www', content: '192.168.1.10' });
+    await addRecord(page, { type: 'A', name: '@', content: '192.168.1.10' });
+    await addRecord(page, { type: 'A', name: 'mail', content: '192.168.1.20' });
+    await addRecord(page, { type: 'MX', name: '@', content: `mail.${primaryDomain}.`, prio: '10' });
+    await addRecord(page, { type: 'CNAME', name: 'ftp', content: `${primaryDomain}.` });
+    await addRecord(page, { type: 'TXT', name: '@', content: '"v=spf1 mx a ip4:192.168.1.20 -all"' });
 
-    await editLink.click();
-    await page.waitForLoadState('networkidle');
-
-    // Check if record form exists
-    const typeSelect = page.locator('select[name*="type"]').first();
-    const nameInput = page.locator('input[name*="name"]').first();
-    const contentInput = page.locator('input[name*="content"]').first();
-
-    if (await typeSelect.count() === 0 || await nameInput.count() === 0 || await contentInput.count() === 0) {
-      bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // Add website A record (www)
-    await typeSelect.selectOption('A');
-    await nameInput.clear();
-    await nameInput.fill('www');
-    await contentInput.clear();
-    await contentInput.fill('192.168.1.10');
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
-
-    // Add root domain A record
-    await typeSelect.selectOption('A');
-    await nameInput.clear();
-    await nameInput.fill('@');
-    await contentInput.clear();
-    await contentInput.fill('192.168.1.10');
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
-
-    // Add mail server A record
-    await typeSelect.selectOption('A');
-    await nameInput.clear();
-    await nameInput.fill('mail');
-    await contentInput.clear();
-    await contentInput.fill('192.168.1.20');
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
-
-    // Add MX record for email
-    await typeSelect.selectOption('MX');
-    await nameInput.clear();
-    await nameInput.fill('@');
-    await contentInput.clear();
-    await contentInput.fill(`mail.${primaryDomain}.`);
-
-    // Set MX priority if available
-    const prioInput = page.locator('input[name*="prio"], input[name*="priority"]').first();
-    if (await prioInput.count() > 0) {
-      await prioInput.clear();
-      await prioInput.fill('10');
-    }
-
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
-
-    // Add CNAME for common services
-    await typeSelect.selectOption('CNAME');
-    await nameInput.clear();
-    await nameInput.fill('ftp');
-    await contentInput.clear();
-    await contentInput.fill(`${primaryDomain}.`);
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
-
-    // Add TXT record for SPF
-    await typeSelect.selectOption('TXT');
-    await nameInput.clear();
-    await nameInput.fill('@');
-    await contentInput.clear();
-    await contentInput.fill('"v=spf1 mx a ip4:192.168.1.20 -all"');
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
-
-    bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    const contents = await storedContents(page);
+    expect(contents).toContain('192.168.1.10');
+    expect(contents).toContain('192.168.1.20');
+    // The app strips the trailing dot from hostnames before storing them
+    expect(contents).toContain(`mail.${primaryDomain}`);
+    expect(contents).toContain(primaryDomain);
+    expect(contents).toContain('"v=spf1 mx a ip4:192.168.1.20 -all"');
   });
 
   test('should validate complete DNS infrastructure', async ({ page }) => {
-    // Final validation - check all components are working
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
+    expect(await findZoneIdByName(page, primaryDomain), `zone ${primaryDomain} must exist`).toBe(zoneId);
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-
-    // Verify primary domain exists
-    if (!bodyText.includes(primaryDomain)) {
-      // Domain wasn't created in previous test - skip gracefully
-      return;
+    // Every record type added by the previous test is listed
+    await page.goto(`/zones/${zoneId}/edit`);
+    const types = await page.locator('[name^="record["][name$="[type]"]').evaluateAll(els => els.map(e => e.value));
+    for (const type of ['SOA', 'A', 'MX', 'CNAME', 'TXT']) {
+      expect(types, `${type} record must be listed`).toContain(type);
     }
-
-    // Check individual domain records
-    const zoneRow = page.locator(`tr:has-text("${primaryDomain}")`);
-    const editLink = zoneRow.locator('a[href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      await editLink.click();
-      await page.waitForLoadState('networkidle');
-
-      // Verify some records are present
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-    }
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should clean up test domains', async ({ page }) => {
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
-
-    // Clean up test domains
-    const zoneRow = page.locator(`tr:has-text("${primaryDomain}")`);
-    if (await zoneRow.count() > 0) {
-      const deleteLink = zoneRow.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await page.waitForLoadState('networkidle');
-
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) {
-          await yesBtn.click();
-          await page.waitForLoadState('networkidle');
-        }
-      }
-    }
+    expect(zoneId, 'the workflow zone must have been created').toBeTruthy();
+    expect(await deleteZoneById(page, zoneId), 'delete confirmation must be offered').toBe(true);
 
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    expect(await zoneExists(page, primaryDomain)).toBe(false);
   });
 });

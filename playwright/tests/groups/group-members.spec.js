@@ -5,9 +5,9 @@
  * adding and removing users from groups.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' with { type: 'json' };
+import { uniqueName } from '../../helpers/zones.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -35,18 +35,32 @@ test.describe('Group Members Management', () => {
     await page.waitForLoadState('domcontentloaded');
   }
 
-  // Helper to find a group ID by navigating to the list and clicking members link
+  // Opens the page of a group; the callers use seeded or just-created groups
   async function navigateToGroupMembers(page, groupName) {
     await page.goto('/groups');
     const row = page.locator(`tr:has-text("${groupName}")`);
-    if (await row.count() > 0) {
-      const membersLink = row.locator('a[href*="/members"]').first();
-      if (await membersLink.count() > 0) {
-        await membersLink.click();
-        return true;
-      }
+    await expect(row, `group ${groupName} must be listed`).not.toHaveCount(0);
+    await row.locator('a[href*="/members"]').first().click();
+    return true;
+  }
+
+  // Creates a group with one member, runs fn on its members page, then deletes the group
+  async function withGroupHavingMember(page, fn) {
+    const groupName = uniqueName('gmo');
+    await createGroup(page, groupName);
+    try {
+      await navigateToGroupMembers(page, groupName);
+      const available = page.locator('#add-form .available-checkbox').first();
+      await expect(available).toHaveCount(1);
+      const userId = await available.getAttribute('value');
+      await available.check();
+      await page.locator('#add-btn').click();
+      await page.waitForLoadState('domcontentloaded');
+      await expect(page.locator(`#remove-form .member-checkbox[value="${userId}"]`)).toHaveCount(1);
+      await fn();
+    } finally {
+      await deleteGroup(page, groupName);
     }
-    return false;
   }
 
   /** Opens the members page of a seeded group, which the test data always provides. */
@@ -62,35 +76,28 @@ test.describe('Group Members Management', () => {
     test('admin should access group members page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupMembers(page, 'Zone Managers');
-      if (found) {
-        await expect(page).toHaveURL(/.*groups\/\d+\/members/);
-      }
+      await navigateToGroupMembers(page, 'Zone Managers');
+      await expect(page).toHaveURL(/.*groups\/\d+\/members/);
     });
 
     test('should display current members list', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupMembers(page, 'Zone Managers');
-      if (found) {
-        // Zone Managers has 'manager' as a member from test data
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/manager|member/i);
-      }
+      await navigateToGroupMembers(page, 'Zone Managers');
+      // Zone Managers has 'manager' as a member from test data
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/manager|member/i);
     });
 
     test('should display add members panel', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupMembers(page, 'Viewers');
-      if (found) {
-        const addForm = page.locator('#add-form');
-        expect(await addForm.count()).toBeGreaterThanOrEqual(0);
+      await navigateToGroupMembers(page, 'Viewers');
+      await expect(page.locator('#add-form')).toHaveCount(1);
 
-        // Should have available users checkboxes or list
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/add|available|member/i);
-      }
+      // Should have available users checkboxes or list
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/add|available|member/i);
     });
   });
 
@@ -100,7 +107,7 @@ test.describe('Group Members Management', () => {
     test('should add user to group', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const groupName = `Members Test ${Date.now()}`;
+      const groupName = uniqueName('gm');
       await createGroup(page, groupName);
 
       try {
@@ -134,45 +141,40 @@ test.describe('Group Members Management', () => {
     test('should display remove button for current members', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupMembers(page, 'Zone Managers');
-      if (found) {
-        const removeBtn = page.locator('#remove-btn');
-        expect(await removeBtn.count()).toBeGreaterThanOrEqual(0);
-      }
+      await navigateToGroupMembers(page, 'Zone Managers');
+      const removeBtn = page.locator('#remove-btn');
+      // Zone Managers has members in the test data, so the remove form renders
+      await expect(removeBtn).toHaveCount(1);
     });
 
     test('should display member checkboxes', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const found = await navigateToGroupMembers(page, 'Editors');
-      if (found) {
-        const checkboxes = page.locator('#remove-form .member-checkbox');
-        // Editors has manager and client from test data
-        expect(await checkboxes.count()).toBeGreaterThanOrEqual(0);
-      }
+      await withGroupHavingMember(page, async () => {
+        await expect(page.locator('#remove-form .member-checkbox')).toHaveCount(1);
+      });
     });
 
     test('should have select all checkbox', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      // Editors is seeded with manager and client, so the members table renders
-      await openSeededGroupMembers(page, 'Editors');
-
-      await expect(page.locator('#select-all-current')).toBeVisible();
+      await withGroupHavingMember(page, async () => {
+        await expect(page.locator('#select-all-current')).toBeVisible();
+      });
     });
 
     test('should display selection count badge', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      await openSeededGroupMembers(page, 'Editors');
+      await withGroupHavingMember(page, async () => {
+        const countBadge = page.locator('#member-remove-count');
+        await expect(countBadge).toBeVisible();
+        await expect(countBadge).toContainText('0');
 
-      const countBadge = page.locator('#member-remove-count');
-      await expect(countBadge).toBeVisible();
-      await expect(countBadge).toContainText('0');
-
-      // Checking a member must move the counter
-      await page.locator('.member-checkbox').first().check();
-      await expect(countBadge).toContainText('1');
+        // Checking a member must move the counter
+        await page.locator('.member-checkbox').first().check();
+        await expect(countBadge).toContainText('1');
+      });
     });
   });
 });

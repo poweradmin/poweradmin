@@ -7,7 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { createZone, deleteZoneById, isApiModeInstance } from '../../helpers/zones.js';
+import { createZone, deleteZoneById, getTestZoneId, isApiModeInstance } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Zone List Sorting', () => {
@@ -203,25 +203,11 @@ test.describe('Zone List Sorting', () => {
 });
 
 test.describe('Record List Sorting', () => {
-  // Helper to get a zone ID for testing
-  async function getTestZoneId(page) {
-    await page.goto('/zones/forward?letter=all');
-    // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-    // which carries no zone id, so this helper used to return null for every test.
-      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)\/edit/);
-      return match ? match[1] : null;
-    }
-    return null;
-  }
-
   test.describe('Extended Sort Columns', () => {
     test('should allow sorting records by ID', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit?record_sort_by=id&sort_direction=ASC`);
       await page.waitForLoadState('networkidle');
@@ -302,8 +288,8 @@ test.describe('Record List Sorting', () => {
 
     test('should allow sorting records by name', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit?record_sort_by=name&sort_direction=DESC`);
       await page.waitForLoadState('networkidle');
@@ -314,8 +300,8 @@ test.describe('Record List Sorting', () => {
 
     test('should allow sorting records by type', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit?record_sort_by=type&sort_direction=ASC`);
       await page.waitForLoadState('networkidle');

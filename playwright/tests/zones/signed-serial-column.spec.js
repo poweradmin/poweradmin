@@ -3,63 +3,62 @@
  *
  * The serial served by PowerDNS (SOA-EDIT applied) is shown in the zone list
  * behind the display_signed_serial_in_zone_list setting (API backend only),
- * and on the edit page for signed zones. Tests skip on instances where the
- * setting or DNSSEC data is not available.
+ * and on the edit page for signed zones. The list test skips on instances
+ * where the setting is off. Both tests run on throwaway zones.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getColumnIndex } from '../../helpers/zones.js';
+import { getColumnIndex, openZoneListPageFor } from '../../helpers/zones.js';
+import { ensureZoneSigned } from '../../helpers/dnssec.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Signed Serial Display (Issue #1378)', () => {
-  test('zone list shows signed serial only for signed zones', async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
-
-    const rows = page.locator('tbody tr');
-    test.skip(await rows.count() === 0, 'No forward zones in this environment');
-
-    const signedIdx = await getColumnIndex(page, 'Signed serial');
-    test.skip(signedIdx === -1, 'display_signed_serial_in_zone_list not enabled on this instance');
-
-    // Pair each row's signed-serial cell with its DNSSEC lock state
-    const rowStates = await page.evaluate((idx) => {
-      return Array.from(document.querySelectorAll('tbody tr')).map(r => ({
-        signedSerial: r.querySelectorAll('td')[idx]?.innerText.trim() ?? '',
-        secured: !!r.querySelector('i.bi-lock-fill'),
-      }));
-    }, signedIdx);
-
-    const securedRows = rowStates.filter(r => r.secured);
-    test.skip(securedRows.length === 0, 'No signed zones in this environment');
-
-    for (const row of securedRows) {
-      expect(row.signedSerial, 'signed zones must show a numeric signed serial').toMatch(/^\d+$/);
-    }
-    for (const row of rowStates.filter(r => !r.secured)) {
-      expect(row.signedSerial, 'unsigned zones must not show a signed serial').toBe('');
+  test.beforeAll(async ({ browser, workerZone }) => {
+    const page = await browser.newPage();
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await ensureZoneSigned(page, workerZone.id);
+    } finally {
+      await page.close();
     }
   });
 
-  test('edit page shows signed serial for a signed zone', async ({ page }) => {
+  // The zone list row of one zone: its lock state and signed-serial cell
+  async function listRowState(page, zoneName) {
+    const found = await openZoneListPageFor(page, zoneName);
+    expect(found, `${zoneName} must be listed`).toBe(true);
+    const signedIdx = await getColumnIndex(page, 'Signed serial');
+    if (signedIdx === -1) {
+      return null;
+    }
+    return page.evaluate(({ idx, name }) => {
+      const row = Array.from(document.querySelectorAll('tbody tr')).find(r => r.innerText.includes(name));
+      return {
+        signedSerial: row.querySelectorAll('td')[idx]?.innerText.trim() ?? '',
+        secured: !!row.querySelector('i.bi-lock-fill'),
+      };
+    }, { idx: signedIdx, name: zoneName });
+  }
+
+  test('zone list shows signed serial only for signed zones', async ({ page, workerZone, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
 
-    // Find a signed zone's edit link via its row lock icon
-    const editHref = await page.evaluate(() => {
-      const row = Array.from(document.querySelectorAll('tbody tr'))
-        .find(r => r.querySelector('i.bi-lock-fill'));
-      return row?.querySelector('a[href*="/edit"]')?.getAttribute('href') ?? null;
-    });
-    test.skip(!editHref, 'No signed zones in this environment');
+    const signed = await listRowState(page, workerZone.name);
+    test.skip(signed === null, 'display_signed_serial_in_zone_list not enabled on this instance');
+    expect(signed.secured, 'the worker zone was signed in beforeAll').toBe(true);
+    expect(signed.signedSerial, 'a signed zone must show a numeric signed serial').toMatch(/^\d+$/);
 
-    await page.goto(editHref);
-    await page.waitForLoadState('networkidle');
+    const unsigned = await listRowState(page, tempZone.name);
+    expect(unsigned.secured, 'a fresh zone is not signed').toBe(false);
+    expect(unsigned.signedSerial, 'an unsigned zone must not show a signed serial').toBe('');
+  });
+
+  test('edit page shows signed serial for a signed zone', async ({ page, workerZone }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto(`/zones/${workerZone.id}/edit`);
 
     // Signed serial sits in the Zone Configuration card, which renders expanded
     await expect(page.locator('p:has-text("Signed serial:")')).toBeVisible();

@@ -1,12 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { addTemplateRecord, createTemplate, deleteTemplate } from '../../helpers/templates.js';
-import users from '../../fixtures/users.json' with { type: 'json' };
+import { deleteZoneById, findZoneIdByName, uniqueName } from '../../helpers/zones.js';
 
 test.describe('Zone Template Management', () => {
-  // Use a fixed template name with timestamp for this test run
-  const templateName = `PW-Test-Template-${Date.now()}`;
-  const testZone = `template-zone-${Date.now()}.com`;
+  const templateName = uniqueName('ztm');
 
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -25,22 +23,26 @@ test.describe('Zone Template Management', () => {
     await page.goto('/zones/templates/add');
     await page.waitForLoadState('networkidle');
 
-    // Fill template form
     const nameInput = page.locator('[data-testid="zone-templ-name-input"], input[name*="name"], input[name*="templ"]').first();
     await nameInput.fill(templateName);
+    await page.locator('[data-testid="zone-templ-desc-input"], textarea[name*="desc"], input[name*="desc"]').first()
+      .fill('Template created by Playwright tests');
 
-    const descInput = page.locator('[data-testid="zone-templ-desc-input"], textarea[name*="desc"], input[name*="desc"]').first();
-    if (await descInput.count() > 0) {
-      await descInput.fill('Template created by Playwright tests');
-    }
-
-    // Submit form
     const submitBtn = page.locator('[data-testid="add-zone-templ-button"], button[type="submit"], input[type="submit"]').first();
     await submitBtn.click();
     await page.waitForLoadState('networkidle');
 
-    // Verify success - should redirect to templates list or show success message
-    await expect(page.locator('body')).toContainText(/success|added|template/i);
+    await page.goto('/zones/templates');
+    const row = page.locator('.template-row').filter({ hasText: templateName });
+    try {
+      await expect(row, `template ${templateName} must be listed`).toHaveCount(1);
+    } finally {
+      const href = await row.locator('a[href$="/edit"]').first().getAttribute('href').catch(() => null);
+      const id = href?.match(/templates\/(\d+)\/edit/)?.[1];
+      if (id) {
+        await deleteTemplate(page, id);
+      }
+    }
   });
 
   test('should add records to a zone template', async ({ page }) => {
@@ -61,105 +63,70 @@ test.describe('Zone Template Management', () => {
   });
 
   test('should apply a zone template when creating a zone', async ({ page }) => {
-    // Navigate to add master zone
-    await page.goto('/zones/add/master');
-    await page.waitForLoadState('networkidle');
+    test.slow();
+    const ownName = `${templateName}-apply`;
+    const zoneName = `${ownName}.example.com`;
+    const templateId = await createTemplate(page, ownName);
+    let zoneId = null;
+    try {
+      expect(templateId, `template ${ownName} must be created`).toBeTruthy();
+      await addTemplateRecord(page, templateId, { type: 'A', name: 'www', content: '192.168.1.11' });
 
-    // Fill zone name
-    const zoneInput = page.locator('[data-testid="zone-name-input"], input[name*="zone_name"], input[name*="zonename"]').first();
-    await zoneInput.fill(testZone);
+      await page.goto('/zones/add/master');
+      await page.locator('#domain').fill(zoneName);
+      await page.locator('#zone_template').selectOption(templateId);
+      await page.locator('button[type="submit"]').first().click();
+      await expect(page.locator('body')).toContainText(/success|added|created/i);
 
-    // Select template if dropdown exists and has options
-    const templateSelect = page.locator('[data-testid="zone-template-select"], select[name*="template"]').first();
-    if (await templateSelect.count() > 0) {
-      // Get available options
-      const options = await templateSelect.locator('option').allTextContents();
-      // Find a template option that isn't empty/none
-      const validOption = options.find(opt => opt && !opt.match(/none|select|choose/i) && opt.trim());
-      if (validOption) {
-        await templateSelect.selectOption({ label: validOption.trim() });
+      zoneId = await findZoneIdByName(page, zoneName);
+      expect(zoneId, `zone ${zoneName} must be created`).toBeTruthy();
+    } finally {
+      if (zoneId) {
+        await deleteZoneById(page, zoneId);
+      }
+      if (templateId) {
+        await deleteTemplate(page, templateId);
       }
     }
-
-    // Submit
-    const submitBtn = page.locator('[data-testid="add-zone-button"], button[type="submit"], input[type="submit"]').first();
-    await submitBtn.click();
-    await page.waitForLoadState('networkidle');
-
-    // Verify zone creation
-    await expect(page.locator('body')).toContainText(/success|added|created|already exists/i);
   });
 
   test('should edit a zone template', async ({ page }) => {
-    await page.goto('/zones/templates');
-    await page.waitForLoadState('networkidle');
+    const ownName = `${templateName}-edit`;
+    const templateId = await createTemplate(page, ownName);
+    try {
+      expect(templateId, `template ${ownName} must be created`).toBeTruthy();
 
-    // Find any template row
-    const templateRow = page.locator('table tbody tr').first();
-    if (await templateRow.count() === 0) {
-      test.skip('No templates found to edit');
-      return;
+      await page.goto('/zones/templates');
+      const templateRow = page.locator('table tbody tr').filter({ hasText: ownName });
+      await expect(templateRow).toHaveCount(1);
+      await templateRow.locator('a[href$="/edit"]').click();
+
+      await expect(page).toHaveURL(new RegExp(`/zones/templates/${templateId}/edit`));
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expect(page.locator('input[name="templ_name"]')).toHaveValue(ownName);
+    } finally {
+      if (templateId) {
+        await deleteTemplate(page, templateId);
+      }
     }
-
-    // Click edit link
-    const editLink = templateRow.locator('a[href*="edit"]').first();
-    if (await editLink.count() === 0 || !(await editLink.isEnabled())) {
-      test.skip('No editable template found');
-      return;
-    }
-
-    await editLink.click();
-    await page.waitForLoadState('networkidle');
-
-    // Just verify the edit page loads without errors
-    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should delete a zone template', async ({ page }) => {
-    // First, ensure test zone is cleaned up if it exists
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
+    // Own template so the test does not depend on another test having run first
+    const ownName = `${templateName}-delete`;
+    const templateId = await createTemplate(page, ownName);
+    expect(templateId, `template ${ownName} must be created`).toBeTruthy();
 
-    const zoneRow = page.locator(`tr:has-text("${testZone}")`).first();
-    if (await zoneRow.count() > 0) {
-      const deleteLink = zoneRow.locator('a[href*="delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await page.waitForLoadState('networkidle');
-        const confirmBtn = page.locator('button[type="submit"]:has-text("Delete"), input[value*="Delete"]').first();
-        if (await confirmBtn.count() > 0) {
-          await confirmBtn.click();
-          await page.waitForLoadState('networkidle');
-        }
-      }
-    }
-
-    // Now delete the template
     await page.goto('/zones/templates');
+    const templateRow = page.locator('table tbody tr').filter({ hasText: ownName });
+    await expect(templateRow).toHaveCount(1);
+    await templateRow.locator('a[href$="/delete"]').click();
+
+    await page.locator('button[name="confirm"]').click();
     await page.waitForLoadState('networkidle');
-
-    const templateRow = page.locator(`tr:has-text("${templateName}")`).first();
-    if (await templateRow.count() === 0) {
-      test.skip('Test template not found to delete');
-      return;
-    }
-
-    const deleteLink = templateRow.locator('a[href*="delete"]').first();
-    if (await deleteLink.count() === 0) {
-      test.skip('Delete link not found for template');
-      return;
-    }
-
-    await deleteLink.click();
-    await page.waitForLoadState('networkidle');
-
-    // Confirm deletion
-    const confirmBtn = page.locator('[data-testid="confirm-delete-zone-templ"], button[type="submit"]:has-text("Delete"), input[value*="Delete"]').first();
-    if (await confirmBtn.count() > 0) {
-      await confirmBtn.click();
-      await page.waitForLoadState('networkidle');
-    }
 
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await page.goto('/zones/templates');
+    await expect(page.locator('table tbody tr').filter({ hasText: ownName })).toHaveCount(0);
   });
 });

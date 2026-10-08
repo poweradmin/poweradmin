@@ -5,27 +5,14 @@
  * Requires zone_import_export module to be enabled.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' with { type: 'json' };
-
-// Helper to get a zone ID for testing
-async function getTestZoneId(page) {
-  await page.goto('/zones/forward?letter=all');
-  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-  // which carries no zone id, so this helper used to return null for every test.
-  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-  await expect(editLink).toBeVisible();
-  const href = await editLink.getAttribute('href');
-  const match = href.match(/\/zones\/([^/]+)\/edit/);
-  expect(match, `no zone id in ${href}`).not.toBeNull();
-  return match[1];
-}
+import { addRecord } from '../../helpers/zones.js';
 
 test.describe('Zone File Export Module', () => {
-  test('should show Zone File option in Export dropdown when module is enabled', async ({ page }) => {
+  test('should show Zone File option in Export dropdown when module is enabled', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/edit`);
 
@@ -36,12 +23,11 @@ test.describe('Zone File Export Module', () => {
     await expect(zoneFileLink).toHaveAttribute('href', new RegExp(`/zones/${zoneId}/export/zonefile$`));
   });
 
-  test('should download zone file', async ({ page }) => {
+  test('should download zone file', async ({ page, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = tempZone.id;
 
-    // Try to download - module might not be enabled
-    const downloadPromise = page.waitForEvent('download', { timeout: 5000 }).catch(() => null);
+    const downloadPromise = page.waitForEvent('download');
 
     // Navigating to a download URL aborts the navigation once the transfer starts,
     // so page.goto() rejects with "Download is starting" - the download still fires.
@@ -49,42 +35,28 @@ test.describe('Zone File Export Module', () => {
 
     const download = await downloadPromise;
 
-    if (download) {
-      // Module is enabled and working - verify filename
-      expect(download.suggestedFilename()).toMatch(/\.zone$/);
-    } else {
-      // Module might be disabled or route not found
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    }
+    expect(download.suggestedFilename()).toMatch(/\.zone$/);
   });
 
-  test('should contain valid BIND zone file content', async ({ page, request }) => {
+  test('should contain valid BIND zone file content', async ({ page, request, tempZone }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = tempZone.id;
+    await addRecord(page, zoneId, { name: 'www', type: 'A', content: '192.0.2.77', ttl: 3600 });
 
     // Get cookies from authenticated session
     const cookies = await page.context().cookies();
     const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join('; ');
 
-    const baseURL = page.url().split('/zones')[0];
-    const response = await request.get(`${baseURL}/zones/${zoneId}/export/zonefile`, {
+    const response = await request.get(`/zones/${zoneId}/export/zonefile`, {
       headers: { Cookie: cookieHeader }
     });
 
-    if (response.status() === 404) {
-      // Module not enabled - skip
-      return;
-    }
-
+    expect(response.status()).toBe(200);
     const body = await response.text();
 
-    // Zone file should contain standard directives
-    if (body.includes('$ORIGIN')) {
-      expect(body).toContain('$ORIGIN');
-      expect(body).toMatch(/\bIN\b/);
-      expect(body).toMatch(/SOA|NS|A|AAAA|MX|CNAME|TXT/);
-    }
+    // The export prints absolute names (no $ORIGIN), one tab-separated line per record
+    expect(body).toMatch(new RegExp(`^${tempZone.name.replace(/\./g, '\\.')}\\.\\s+\\d+\\s+IN\\s+SOA\\s`, 'm'));
+    expect(body).toMatch(new RegExp(`^www\\.${tempZone.name.replace(/\./g, '\\.')}\\.\\s+3600\\s+IN\\s+A\\s+192\\.0\\.2\\.77$`, 'm'));
   });
 
   test('should deny zone file export for non-authenticated users', async ({ page }) => {

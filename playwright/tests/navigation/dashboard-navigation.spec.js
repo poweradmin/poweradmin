@@ -62,26 +62,13 @@ test.describe('Dashboard and Navigation', () => {
   test('should show dashboard cards or widgets', async ({ page }) => {
     await page.goto('/');
 
-    // Look for dashboard cards/widgets
-    const hasCards = await page.locator('.card, .widget, .panel').count() > 0;
-    if (hasCards) {
-      await expect(page.locator('.card, .widget, .panel').first()).toBeVisible();
-    } else {
-      // Alternative: check for dashboard links
-      await expect(page.locator('a[data-testid*="link"], button[data-testid*="button"]')).toHaveCount(await page.locator('a[data-testid*="link"], button[data-testid*="button"]').count());
-    }
+    await expect(page.locator('.card, .widget, .panel').first()).toBeVisible();
   });
 
   test('should have breadcrumb navigation on sub-pages', async ({ page }) => {
     await page.goto('/users/add');
 
-    const hasBreadcrumb = await page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').count() > 0;
-    if (hasBreadcrumb) {
-      await expect(page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').first()).toBeVisible();
-    } else {
-      // Check for page content indicator (card-header or form)
-      await expect(page.locator('.card-header strong, .card-header, form').first()).toBeVisible();
-    }
+    await expect(page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').first()).toBeVisible();
   });
 
   test('should handle responsive navigation', async ({ page }) => {
@@ -90,7 +77,7 @@ test.describe('Dashboard and Navigation', () => {
     await page.goto('/');
 
     // Navigation should still be accessible
-    await expect(page.locator('nav, .navbar, .navigation, header')).toHaveCount(await page.locator('nav, .navbar, .navigation, header').count());
+    await expect(page.locator('nav, .navbar, .navigation, header').first()).toBeVisible();
 
     // Reset viewport
     await page.setViewportSize({ width: 1280, height: 720 });
@@ -113,13 +100,6 @@ test.describe('Dashboard and Navigation', () => {
     expect(response?.status()).toBe(404);
 
     const bodyText = await page.locator('body').textContent();
-    const has404 = bodyText?.includes('404') || bodyText?.includes('not found');
-
-    if (has404) {
-      expect(bodyText).toMatch(/404|not found/i);
-    } else {
-      // Might redirect to home or show different error
-      console.log('No 404 page found, application might redirect');
-    }
+    expect(bodyText).toMatch(/404|not found/i);
   });
 });
