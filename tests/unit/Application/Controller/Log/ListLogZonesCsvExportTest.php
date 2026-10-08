@@ -90,4 +90,27 @@ class ListLogZonesCsvExportTest extends TestCase
         $this->assertSame('3600', $parsed[0]['ttl']);
         $this->assertArrayNotHasKey('key1', $parsed[0]);
     }
+
+    public function testQuotesAreDoubledAndBackslashesKeptLiteral(): void
+    {
+        $controller = new ListLogZonesController([], true, $this->environment());
+
+        $output = fopen('php://memory', 'w+');
+        (new ReflectionMethod($controller, 'writeCsvRows'))->invoke($controller, $output, [
+            ['content' => 'say \\"hi\\"', 'path' => 'C:\\zones\\', 'note' => '=1+1'],
+        ]);
+        rewind($output);
+        $csv = (string)stream_get_contents($output);
+        fclose($output);
+
+        $this->assertStringContainsString('"say \\""hi\\"""', $csv);
+        $rows = array_map(
+            static fn(string $line): array => str_getcsv($line, ',', '"', ''),
+            array_values(array_filter(explode("\n", $csv)))
+        );
+        $this->assertSame([
+            ['content', 'path', 'note'],
+            ['say \\"hi\\"', 'C:\\zones\\', "'=1+1"],
+        ], $rows);
+    }
 }
