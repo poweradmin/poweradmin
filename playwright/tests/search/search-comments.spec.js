@@ -8,9 +8,9 @@
  * - Comments displayed in search results
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { createZone, deleteZoneById, findAnyZoneId } from '../../helpers/zones.js';
+import { addRecord, createZone, deleteZoneById, findAnyZoneId, isApiModeInstance, uniqueName } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Search Comments Feature', () => {
@@ -176,6 +176,45 @@ test.describe('Search Comments Feature', () => {
       } finally {
         await deleteZoneById(page, zoneId);
       }
+    });
+  });
+
+  test.describe('Linked Comment Matching', () => {
+    test.describe.configure({ mode: 'serial' });
+    const zone = useFileZone('cmtlink');
+
+    test('should match a linked comment only on its own record, not on its RRset sibling', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+      const label = uniqueName('cmtlink');
+      const marker = `linkedmarker${Date.now()}`;
+
+      await page.goto(`/zones/${zone.id}/records/add`);
+      const commentInput = page.locator('input[name="records[0][comment]"]');
+      test.skip(await commentInput.count() === 0, 'Record comments are disabled on this instance');
+
+      // The sibling goes first and carries no comment; the second record of the RRset gets the linked one
+      await addRecord(page, zone.id, { name: label, type: 'A', content: '192.0.2.71' });
+
+      await page.goto(`/zones/${zone.id}/records/add`);
+      await page.locator('input[name="records[0][name]"]').fill(label);
+      await page.locator('select[name="records[0][type]"]').selectOption('A');
+      await page.locator('input[name="records[0][content]"]').fill('192.0.2.72');
+      await commentInput.fill(marker);
+      await page.locator('button[name="commit"]').click();
+      await expect(page.locator('body')).toContainText(/success/i);
+
+      await page.goto('/search');
+      await page.locator('#records_check').check();
+      await page.locator('#comments_check').check();
+      await page.locator('input[name="query"]').fill(marker);
+      await page.locator('button[name="do_search"]').click();
+
+      await expect(page.locator('body')).toContainText('Records found');
+      await expect(page.locator('tr:has-text("192.0.2.72")')).toHaveCount(1);
+      // API-backend instances store comments per RRset, so both records legitimately match there
+      const siblingRows = isApiModeInstance(test.info().project.use.baseURL ?? process.env.BASE_URL) ? 1 : 0;
+      await expect(page.locator('tr:has-text("192.0.2.71")')).toHaveCount(siblingRows);
     });
   });
 
