@@ -3502,9 +3502,10 @@ test_api_documentation() {
     print_test "Swagger UI endpoint"
     response=$(curl -s -w "%{http_code}" "${API_BASE_URL}/api/docs" 2>/dev/null || echo "000")
     http_code="${response: -3}"
+    body="${response%???}"
     if [[ "$http_code" == "200" ]]; then
         print_pass "Swagger UI endpoint accessible"
-    elif [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
+    elif [[ ( "$http_code" == "404" || "$http_code" == "503" ) && "$body" == *"API documentation is disabled"* ]]; then
         skip_counted "Swagger UI endpoint not available (HTTP $http_code, API docs disabled)"
     else
         print_fail "Swagger UI endpoint - Unexpected status $http_code"
@@ -3520,7 +3521,7 @@ test_api_documentation() {
         body="${response%???}"
 
         if [[ "$http_code" != "200" ]]; then
-            if [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
+            if [[ ( "$http_code" == "404" || "$http_code" == "503" ) && "$body" == *"API documentation is disabled"* ]]; then
                 skip_counted "OpenAPI spec at ${docs_path} not available (HTTP $http_code, API docs disabled)"
             else
                 print_fail "${docs_path} - Unexpected status $http_code"
@@ -3661,7 +3662,8 @@ main() {
 
     # Run test suites. The docs and removed-v1 checks are independent of test
     # data, so they run first and still report if a later suite aborts the run.
-    # A suite that aborts has already counted its failure; keep running the rest.
+    # errexit is suspended inside each suite (it is called left of ||), so every
+    # assertion runs and is tallied; keep running the rest.
     test_api_documentation || true
     test_v1_removed || true
     test_rrsets || true
