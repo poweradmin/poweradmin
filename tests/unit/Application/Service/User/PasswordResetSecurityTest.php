@@ -670,4 +670,160 @@ class PasswordResetSecurityTest extends TestCase
         $this->assertTrue($result['allowed']);
         $this->assertArrayNotHasKey('auth_method', $result);
     }
+
+    /**
+     * When the token was already claimed by another request, the password must stay unchanged.
+     */
+    public function testResetPasswordRefusesTokenAlreadyClaimed(): void
+    {
+        $token = str_repeat('b', 64);
+        $email = 'sql@example.com';
+
+        $this->tokenRepository->method('findByToken')->willReturn([
+            'id' => 11,
+            'token' => DbPasswordResetTokenRepository::hashToken($token),
+            'email' => $email,
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+            'used' => 0,
+        ]);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 7, 'username' => 'sql', 'email' => $email, 'auth_method' => 'sql',
+        ]);
+        $this->tokenRepository->expects($this->once())->method('markAsUsed')->with(11)->willReturn(false);
+        $this->userRepository->expects($this->never())->method('updatePassword');
+
+        $this->assertFalse($this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!'));
+    }
+
+    public function testAFailedPasswordSaveReleasesTheClaimSoTheLinkCanBeRetried(): void
+    {
+        $token = str_repeat('e', 64);
+        $email = 'sql@example.com';
+
+        $this->tokenRepository->method('findByToken')->willReturn([
+            'id' => 14,
+            'token' => DbPasswordResetTokenRepository::hashToken($token),
+            'email' => $email,
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+            'used' => 0,
+        ]);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 7, 'username' => 'sql', 'email' => $email, 'auth_method' => 'sql',
+        ]);
+        $this->authService->method('hashPassword')->willReturn('hashed');
+        $this->tokenRepository->method('markAsUsed')->willReturn(true);
+        $this->userRepository->method('updatePassword')->willReturn(false);
+        $this->tokenRepository->expects($this->once())->method('releaseClaim')->with(14);
+
+        $this->assertFalse($this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!'));
+    }
+
+    public function testAHashingFailureLeavesTheTokenUntouched(): void
+    {
+        $token = str_repeat('f', 64);
+        $email = 'sql@example.com';
+
+        $this->tokenRepository->method('findByToken')->willReturn([
+            'id' => 15,
+            'token' => DbPasswordResetTokenRepository::hashToken($token),
+            'email' => $email,
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+            'used' => 0,
+        ]);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 7, 'username' => 'sql', 'email' => $email, 'auth_method' => 'sql',
+        ]);
+        $this->authService->method('hashPassword')->willThrowException(new \RuntimeException('hash failed'));
+        $this->tokenRepository->expects($this->never())->method('markAsUsed');
+
+        $this->expectException(\RuntimeException::class);
+        $this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!');
+    }
+
+    public function testWithoutSingleUseClaimThePasswordChangesBeforeTheTokenIsMarked(): void
+    {
+        $token = str_repeat('d', 64);
+        $email = 'sql@example.com';
+        $calls = [];
+
+        $this->tokenRepository->method('findByToken')->willReturn([
+            'id' => 13,
+            'token' => DbPasswordResetTokenRepository::hashToken($token),
+            'email' => $email,
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+            'used' => 0,
+        ]);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 7, 'username' => 'sql', 'email' => $email, 'auth_method' => 'sql',
+        ]);
+        $this->authService->method('hashPassword')->willReturn('hashed');
+        $this->tokenRepository->method('markAsUsed')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'claim';
+            return false;
+        });
+        $this->userRepository->method('updatePassword')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'update';
+            return true;
+        });
+
+        $this->assertTrue($this->passwordResetService->resetPassword($token, 'N3w-Passw0rd!'));
+        $this->assertSame(['update', 'claim'], $calls);
+    }
+
+    private function serviceWithSingleUseClaim(): PasswordResetService
+    {
+        $config = new FakeConfiguration([
+            'security' => [
+                'password_reset' => [
+                    'enabled' => true,
+                    'token_lifetime' => 3600,
+                    'single_use_claim' => true,
+                ]
+            ],
+            'interface' => [
+                'application_url' => 'https://test.example'
+            ]
+        ]);
+
+        return new PasswordResetService(
+            $this->tokenRepository,
+            $this->userRepository,
+            $this->mailService,
+            $config,
+            $this->authService,
+            new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false),
+            $this->logger,
+            new UrlService($config, new ProtocolDetector(), $this->logger)
+        );
+    }
+
+    public function testResetPasswordClaimsTokenBeforeChangingPassword(): void
+    {
+        $token = str_repeat('c', 64);
+        $email = 'sql@example.com';
+        $calls = [];
+
+        $this->tokenRepository->method('findByToken')->willReturn([
+            'id' => 12,
+            'token' => DbPasswordResetTokenRepository::hashToken($token),
+            'email' => $email,
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+            'used' => 0,
+        ]);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 7, 'username' => 'sql', 'email' => $email, 'auth_method' => 'sql',
+        ]);
+        $this->authService->method('hashPassword')->willReturn('hashed');
+        $this->tokenRepository->method('markAsUsed')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'claim';
+            return true;
+        });
+        $this->userRepository->method('updatePassword')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'update';
+            return true;
+        });
+
+        $this->assertTrue($this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!'));
+        $this->assertSame(['claim', 'update'], $calls);
+    }
 }

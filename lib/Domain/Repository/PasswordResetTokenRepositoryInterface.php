@@ -41,9 +41,14 @@ interface PasswordResetTokenRepositoryInterface
     public function findByToken(string $token): ?array;
 
     /**
-     * Mark a token as used.
+     * Mark a token as used. Returns false when the token was already used.
      */
     public function markAsUsed(int $tokenId): bool;
+
+    /**
+     * Undo markAsUsed() after the password change it guarded failed, so the link works again.
+     */
+    public function releaseClaim(int $tokenId): bool;
 
     /**
      * Count recent attempts for an email address.

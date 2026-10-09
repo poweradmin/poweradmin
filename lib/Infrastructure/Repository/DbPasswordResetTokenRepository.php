@@ -90,13 +90,25 @@ final class DbPasswordResetTokenRepository implements PasswordResetTokenReposito
     }
 
     /**
-     * Mark a token as used
+     * Mark a token as used. Only an unused token can be claimed, so of two requests
+     * redeeming the same token only the first gets true.
      */
     public function markAsUsed(int $tokenId): bool
     {
         $db_type = $this->config->get('database', 'type');
-        $sql = "UPDATE password_reset_tokens 
-                SET used = " . DbCompat::boolTrue($db_type) . " 
+        $sql = "UPDATE password_reset_tokens
+                SET used = " . DbCompat::boolTrue($db_type) . "
+                WHERE id = :id AND used = " . DbCompat::boolFalse($db_type);
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':id' => $tokenId]) && $stmt->rowCount() === 1;
+    }
+
+    public function releaseClaim(int $tokenId): bool
+    {
+        $db_type = $this->config->get('database', 'type');
+        $sql = "UPDATE password_reset_tokens
+                SET used = " . DbCompat::boolFalse($db_type) . "
                 WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);
