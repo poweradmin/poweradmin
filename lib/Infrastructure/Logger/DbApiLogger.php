@@ -33,8 +33,16 @@ class DbApiLogger
         $this->db = $db;
     }
 
+    private const EVENT_MAX_LENGTH = 2048;
+
     public function doLog($msg, $priority): void
     {
+        // log_*.event is varchar(2048); an over-long message would abort the request on strict MySQL and PostgreSQL.
+        $msg = (string) $msg;
+        if (mb_strlen($msg, 'UTF-8') > self::EVENT_MAX_LENGTH) {
+            $msg = mb_substr($msg, 0, self::EVENT_MAX_LENGTH - 3, 'UTF-8') . '...';
+        }
+
         try {
             $stmt = $this->db->prepare('INSERT INTO log_api (event, priority) VALUES (:msg, :priority)');
             $stmt->execute([
