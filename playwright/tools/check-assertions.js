@@ -41,14 +41,43 @@ const path = require('path');
 const TESTS_DIR = path.join(__dirname, '..', 'tests');
 
 // test.describe must not match - a describe block spans the whole file and would swallow its tests
-const TEST_START = /^\s*test(?!\.describe)(?:\.\w+)*\s*\(\s*['"`](.+?)['"`]/;
+const TEST_START = /^\s*test(?!\.(?:describe|step)\b)(?:\.\w+)*\s*\(\s*['"`](.+?)['"`]/;
 const EXISTENCE_GUARD = /if\s*\(\s*await\s+.*\.(?:count\s*\(\s*\)\s*[>!=]|isVisible\s*\(\s*\))/;
 const SILENT_RETURN = /^\s*if\s*\(\s*![A-Za-z_$][\w$]*\s*\)\s*(?:return\s*;?\s*$|\{\s*return\s*;?\s*\})/;
 const SILENT_RETURN_BLOCK_OPEN = /^\s*if\s*\(\s*![A-Za-z_$][\w$]*\s*\)\s*\{\s*$/;
 const BARE_RETURN = /^\s*return\s*;?\s*$/;
 const BLOCK_ENDERS = /expect\(|test\.skip\(|\bthrow\b/;
 
-/** Blank out comments, strings and regex literals so brace counting is not fooled by braces inside them. */
+/**
+ * Index of the callback body's opening brace on this line, or -1. The brace counts only at
+ * paren depth 1 (directly inside test(...)) after `=>` or the `)` closing a function's
+ * parameters, so an options object or a destructured parameter is never taken for the body.
+ * `state` carries the paren depth across lines for multi-line headers.
+ */
+function findBodyBrace(code, state) {
+  for (let k = 0; k < code.length; k++) {
+    const c = code[k];
+    if (c === '(') {
+      state.parens++;
+      if (state.parens === 2 && /function\s*[\w$]*\s*$/.test(code.slice(0, k))) {
+        state.funcParen = 2;
+      }
+    } else if (c === ')') {
+      if (state.parens === state.funcParen && state.funcParen > 0) {
+        state.armed = true;
+        state.funcParen = 0;
+      }
+      state.parens--;
+    } else if (c === '=' && code[k + 1] === '>' && state.parens === 1) {
+      state.armed = true;
+    } else if (c === '{' && state.armed && state.parens === 1) {
+      return k;
+    }
+  }
+  return -1;
+}
+
+/** Blank out comments and string literals so brace counting is not fooled by braces inside them. */
 function stripNoise(line) {
   return line
     .replace(/\\./g, '')
@@ -88,6 +117,7 @@ function analyseFile(file) {
     const assertions = [];
     let depth = 0;
     let opened = false;
+    const header = { parens: 0, armed: false, funcParen: 0 };
     let base = null;
     let j = i;
     let skipsSilently = false;
@@ -95,6 +125,11 @@ function analyseFile(file) {
     let returnDepth = null;
 
     for (; j < lines.length; j++) {
+      // Tests cannot nest, so a new declaration means this opener was missed (braceless callback)
+      if (!opened && j > i && TEST_START.test(lines[j])) {
+        j--;
+        break;
+      }
       const raw = lines[j];
       const code = stripNoise(raw);
       const depthBefore = depth;
@@ -125,11 +160,13 @@ function analyseFile(file) {
         assertions.push({ depth: depthBefore, line: j + 1, afterReturn: returnDepth !== null });
       }
 
-      depth += (code.match(/{/g) || []).length - (code.match(/}/g) || []).length;
-      if (!opened && code.includes('{')) {
+      const braceAt = opened ? -1 : findBodyBrace(code, header);
+      if (braceAt >= 0) {
+        const before = code.slice(0, braceAt);
+        base = depthBefore + (before.match(/{/g) || []).length - (before.match(/}/g) || []).length;
         opened = true;
-        base = depth - 1;
       }
+      depth += (code.match(/{/g) || []).length - (code.match(/}/g) || []).length;
       if (opened && depth <= base) {
         break;
       }
