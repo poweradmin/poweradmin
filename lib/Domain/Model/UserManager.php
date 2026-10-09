@@ -328,6 +328,24 @@ class UserManager
         return (bool)$response;
     }
 
+
+    /**
+     * Accepts what the original check accepted plus RFC 5322 local parts such as
+     * user+tag@example.com, so no address that saved before is refused now (#1674).
+     */
+    public static function isAcceptableEmail(Validator $validation, string $email): bool
+    {
+        if ($validation->isValidEmail($email)) {
+            return true;
+        }
+        $at = strrpos($email, '@');
+
+        // The domain still has to pass the configured hostname policy (dns.strict_tld_check)
+        return $at !== false
+            && filter_var($email, FILTER_VALIDATE_EMAIL) !== false
+            && $validation->isValidEmail('a' . substr($email, $at));
+    }
+
     /**
      * Check whether an email address is already assigned to a user.
      *
@@ -448,7 +466,7 @@ class UserManager
 
         if (($id == $_SESSION["userid"] && $perm_edit_own) || ($id != $_SESSION["userid"] && $perm_edit_others)) {
             $validation = new Validator($this->db, $this->config);
-            if (!$validation->isValidEmail($email)) {
+            if (!self::isAcceptableEmail($validation, $email)) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
 
                 return false;
@@ -1048,7 +1066,7 @@ class UserManager
 
         if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION["userid"] && $perm_edit_others)) {
             $validation = new Validator($this->db, $this->config);
-            if (!$validation->isValidEmail($details['email'])) {
+            if (!self::isAcceptableEmail($validation, $details['email'])) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
 
                 return false;
@@ -1203,7 +1221,7 @@ class UserManager
             $this->messageService->addSystemError(_('Enter a valid user name.'));
 
             return false;
-        } elseif (!$validation->isValidEmail($details['email'])) {
+        } elseif (!self::isAcceptableEmail($validation, $details['email'])) {
             $this->messageService->addSystemError(_('Enter a valid email address.'));
 
             return false;
