@@ -5,9 +5,9 @@
 Start the devcontainer (see the `devcontainer-testing` skill). Instances:
 MySQL `:8080`, PostgreSQL `:8081`, SQLite `:8082`; API backend mode `:8083`-`:8085`.
 
-The `install/` folder redirects every request to the installer, so rename it
-for the run (`./scripts/toggle_install.sh` toggles `install` and `install.old`)
-and restore it afterwards.
+While `install/` exists the login page renders empty and a footer warning shows, so
+rename it for the run (`mv install install.old`) and restore it afterwards
+(`mv install.old install`); the maintainer-local `scripts/toggle_install.sh` does the same.
 
 ```bash
 BASE_URL=http://localhost:8080 npx playwright test playwright/tests/zones --project=chromium --workers=2
