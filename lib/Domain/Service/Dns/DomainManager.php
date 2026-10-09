@@ -249,6 +249,7 @@ final class DomainManager implements DomainManagerInterface
         try {
             $domain_id = $this->backendProvider->createZone($domain, $type, $slave_master);
         } catch (\Exception $e) {
+            $this->logger->error('Zone creation for {domain} failed in the backend: {error}', ['domain' => $domain, 'error' => $e->getMessage()]);
             return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
         }
         if ($domain_id === false) {

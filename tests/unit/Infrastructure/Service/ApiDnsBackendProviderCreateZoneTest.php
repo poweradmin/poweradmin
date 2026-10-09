@@ -29,6 +29,7 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
+use TestHelpers\FlakyMarkerLockPdo;
 use RuntimeException;
 
 /**
@@ -176,5 +177,130 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->assertSame(9, $zoneId);
         $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
         $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
+    }
+
+    public function testARowAdoptedByAConcurrentSyncBeforeTheMarkerLockIsSettledOnNotInserted(): void
+    {
+        // The sync commits its row after createZone() starts but before the allocator holds the marker lock
+        $db = new class ('sqlite::memory:') extends PDO {
+            public bool $adopted = false;
+
+            public function prepare(string $query, array $options = []): \PDOStatement|false
+            {
+                if (!$this->adopted && str_starts_with($query, 'SELECT setting_value FROM app_settings')) {
+                    $this->adopted = true;
+                    $this->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type) VALUES (5, 5, 'example.com', 'NATIVE')");
+                }
+                return parent::prepare($query, $options);
+            }
+        };
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        foreach ($this->db->query("SELECT sql FROM sqlite_master WHERE type = 'table'")->fetchAll(PDO::FETCH_COLUMN) as $ddl) {
+            $db->exec($ddl);
+        }
+        $db->exec("CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)");
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $client->expects($this->never())->method('deleteZone');
+
+        $zoneId = $this->providerWithClient($client, $db)->createZone('example.com', 'MASTER');
+
+        $this->assertSame(5, $zoneId);
+        $this->assertSame(1, (int)$db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
+        $this->assertSame('MASTER', $db->query("SELECT zone_type FROM zones WHERE id = 5")->fetchColumn());
+        $this->assertFalse($db->inTransaction());
+    }
+
+    /** A connection whose first N attempts at the marker lock fail as a deadlock victim, or always with another error. */
+    private function flakyDb(int $deadlocks, ?string $alwaysFail = null): FlakyMarkerLockPdo
+    {
+        $db = new FlakyMarkerLockPdo('sqlite::memory:');
+        $db->deadlocks = $deadlocks;
+        $db->alwaysFail = $alwaysFail;
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        foreach ($this->db->query("SELECT sql FROM sqlite_master WHERE type = 'table'")->fetchAll(PDO::FETCH_COLUMN) as $ddl) {
+            $db->exec($ddl);
+        }
+
+        return $db;
+    }
+
+    private function providerWithClient(PowerdnsApiClient $client, PDO $db, ?\Psr\Log\LoggerInterface $logger = null): ApiDnsBackendProvider
+    {
+        return new ApiDnsBackendProvider($client, $db, $this->createMock(ConfigurationInterface::class), $logger ?? new NullLogger());
+    }
+
+    public function testADeadlockVictimIsRetriedAndNoZoneIsRemovedFromPowerDns(): void
+    {
+        $db = $this->flakyDb(2);
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $client->expects($this->never())->method('deleteZone');
+
+        $zoneId = $this->providerWithClient($client, $db)->createZone('example.com', 'MASTER');
+
+        $this->assertGreaterThan(0, $zoneId);
+        $this->assertSame(3, $db->attempts);
+        $this->assertSame(1, (int)$db->query("SELECT COUNT(*) FROM zones WHERE zone_name = 'example.com'")->fetchColumn());
+        $this->assertFalse($db->inTransaction());
+    }
+
+    public function testTheZoneIsRemovedFromPowerDnsWhenItsLocalRowKeepsFailing(): void
+    {
+        $db = $this->flakyDb(0, 'disk is full');
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $deleted = [];
+        $client->expects($this->once())->method('deleteZone')->willReturnCallback(function ($zone) use (&$deleted): bool {
+            $deleted[] = $zone->getName();
+
+            return true;
+        });
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with(
+            $this->stringContains('could not be stored'),
+            $this->callback(static fn(array $context): bool => $context['class'] === \PDOException::class && str_contains($context['error'], 'disk is full'))
+        );
+
+        try {
+            $this->providerWithClient($client, $db, $logger)->createZone('example.com', 'MASTER');
+            $this->fail('Expected the local failure to propagate');
+        } catch (\PDOException $e) {
+            $this->assertStringContainsString('disk is full', $e->getMessage());
+        }
+
+        $this->assertSame(['example.com.'], $deleted);
+        $this->assertSame(1, $db->attempts, 'A failure that is not a lock conflict is not retried');
+    }
+
+    public function testAZoneStillFailingAfterEveryRetryIsRemovedFromPowerDns(): void
+    {
+        $db = $this->flakyDb(100);
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $client->expects($this->once())->method('deleteZone')->willReturn(true);
+
+        try {
+            $this->providerWithClient($client, $db)->createZone('example.com', 'MASTER');
+            $this->fail('Expected the deadlock to propagate once the retries ran out');
+        } catch (\PDOException $e) {
+            $this->assertSame('40001', $e->errorInfo[0]);
+        }
+
+        $this->assertSame(\Poweradmin\Infrastructure\Database\DeadlockRetry::MAX_ATTEMPTS, $db->attempts);
+    }
+
+    public function testAFailedCleanupDoesNotHideTheOriginalError(): void
+    {
+        $db = $this->flakyDb(0, 'disk is full');
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $client->method('deleteZone')->willThrowException(new RuntimeException('pdns down'));
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects($this->exactly(2))->method('error');
+
+        $this->expectException(\PDOException::class);
+        $this->expectExceptionMessage('disk is full');
+        $this->providerWithClient($client, $db, $logger)->createZone('example.com', 'MASTER');
     }
 }

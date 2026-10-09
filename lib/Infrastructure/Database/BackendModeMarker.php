@@ -47,19 +47,57 @@ final class BackendModeMarker
     public const OVERRIDE_HINT = 'If this database was never used with the API backend, set the app_settings row backend.zone_ids to "sql".';
 
     /**
-     * Run inside the zone id allocator's transaction, whose lock serializes concurrent writers.
+     * Run first in the zone id allocator's transaction. The marker row stays locked until it ends,
+     * so concurrent writers queue on this one row instead of on the gaps between zones rows.
      */
     public static function markApi(PDO $db): void
     {
-        $update = $db->prepare("UPDATE app_settings SET setting_value = :value WHERE setting_key = :key AND setting_value <> :current");
-        $update->execute([':value' => self::API, ':key' => self::MARKER, ':current' => self::API]);
+        $current = self::lockMarker($db);
 
-        $insert = $db->prepare(
-            "INSERT INTO app_settings (setting_key, setting_value, value_type)
-             SELECT :key, :value, 'string'
-             WHERE NOT EXISTS (SELECT 1 FROM app_settings WHERE setting_key = :existing)"
+        if ($current === false) {
+            $insert = $db->prepare(
+                "INSERT INTO app_settings (setting_key, setting_value, value_type)
+                 SELECT :key, :value, 'string'
+                 WHERE NOT EXISTS (SELECT 1 FROM app_settings WHERE setting_key = :existing)"
+            );
+            try {
+                $insert->execute([':key' => self::MARKER, ':value' => self::API, ':existing' => self::MARKER]);
+
+                return;
+            } catch (PDOException $e) {
+                // Under READ COMMITTED a missing row takes no gap lock, so both first writers get here
+                if (!self::isDuplicateKey($e)) {
+                    throw $e;
+                }
+            }
+
+            $current = self::lockMarker($db);
+            if ($current === false) {
+                throw new \RuntimeException('The backend marker row disappeared while it was being created');
+            }
+        }
+
+        if ($current !== self::API) {
+            $update = $db->prepare("UPDATE app_settings SET setting_value = :value WHERE setting_key = :key");
+            $update->execute([':value' => self::API, ':key' => self::MARKER]);
+        }
+    }
+
+    private static function lockMarker(PDO $db): mixed
+    {
+        $lock = $db->prepare(
+            "SELECT setting_value FROM app_settings WHERE setting_key = :key" . DbCompat::rowLock((string)$db->getAttribute(PDO::ATTR_DRIVER_NAME))
         );
-        $insert->execute([':key' => self::MARKER, ':value' => self::API, ':existing' => self::MARKER]);
+        $lock->execute([':key' => self::MARKER]);
+
+        return $lock->fetchColumn();
+    }
+
+    private static function isDuplicateKey(PDOException $e): bool
+    {
+        $sqlState = $e->errorInfo[0] ?? $e->getCode();
+
+        return $sqlState === '23000' || $sqlState === '23505';
     }
 
     /**

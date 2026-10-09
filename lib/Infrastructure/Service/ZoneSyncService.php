@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
+use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
@@ -243,42 +244,49 @@ class ZoneSyncService
              VALUES (NULL, :owner, 0, '', :zone_name, :zone_type, :zone_master)"
         );
 
-        $adopters = $this->accountOwners?->limitedAdopters(array_map(static fn(array $zone): string => (string)($zone['account'] ?? ''), array_values($missing))) ?? [];
-
         // Wrap in a single transaction so the initial sync on a large PowerDNS
         // (thousands of zones) completes in seconds instead of minutes. Without
         // this each insert and its canonical id would be auto-committed individually.
         $ownsTransaction = !$this->transaction->inTransaction();
-        if ($ownsTransaction) {
-            $this->transaction->begin();
-        }
-
-        $count = 0;
-        try {
-            // User rows before the zones rows, the order every grant locks them in
-            $this->accountOwners?->lockAdopters($adopters);
-            // Locks the zones rows before any insert, so a concurrent zone create waits
-            $allocator = new CanonicalZoneIdAllocator($this->db);
-            foreach ($missing as $name => $zone) {
-                $insertStmt->bindValue(':owner', $this->accountOwners?->adopterFor((string)($zone['account'] ?? '')) ?? 0, PDO::PARAM_INT);
-                $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
-                $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
-                $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
-                if ($insertStmt->execute()) {
-                    // The canonical id: the row id, unless another zone or grant already uses that number
-                    $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
-                    $count++;
-                }
-            }
+        $attempt = function () use ($missing, $insertStmt, $ownsTransaction): int {
+            // Before the transaction opens, and again on a retry, which resets the lookup's counters
+            $adopters = $this->accountOwners?->limitedAdopters(array_map(static fn(array $zone): string => (string)($zone['account'] ?? ''), array_values($missing))) ?? [];
             if ($ownsTransaction) {
-                $this->transaction->commit();
+                $this->transaction->begin();
             }
-        } catch (\Throwable $e) {
-            if ($ownsTransaction && $this->transaction->inTransaction()) {
-                $this->transaction->rollBack();
+
+            $count = 0;
+            try {
+                // User rows before the zones rows, the order every grant locks them in
+                $this->accountOwners?->lockAdopters($adopters);
+                // Locks the backend marker row before any insert, so a concurrent zone create waits
+                $allocator = new CanonicalZoneIdAllocator($this->db);
+                foreach ($missing as $name => $zone) {
+                    $insertStmt->bindValue(':owner', $this->accountOwners?->adopterFor((string)($zone['account'] ?? '')) ?? 0, PDO::PARAM_INT);
+                    $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
+                    $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
+                    $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
+                    if ($insertStmt->execute()) {
+                        // The canonical id: the row id, unless another zone or grant already uses that number
+                        $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
+                        $count++;
+                    }
+                }
+                if ($ownsTransaction) {
+                    $this->transaction->commit();
+                }
+            } catch (\Throwable $e) {
+                if ($ownsTransaction && $this->transaction->inTransaction()) {
+                    $this->transaction->rollBack();
+                }
+                throw $e;
             }
-            throw $e;
-        }
+
+            return $count;
+        };
+
+        // A caller's transaction cannot be replayed from here, so only our own is retried
+        $count = $ownsTransaction ? DeadlockRetry::run($attempt) : $attempt();
 
         $heldBack = $this->accountOwners?->heldBack() ?? 0;
         if ($heldBack > 0) {

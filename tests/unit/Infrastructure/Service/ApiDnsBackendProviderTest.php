@@ -395,7 +395,7 @@ class ApiDnsBackendProviderTest extends TestCase
             ->method('createZoneWithData')
             ->willReturn(['name' => 'newzone.com.']);
 
-        // First prepare: SELECT id FROM zones WHERE zone_name = :name -> false (not found)
+        // After the allocator's marker prepares: SELECT id FROM zones WHERE zone_name = :name -> false (not found)
         $stmtSelect = $this->createMock(PDOStatement::class);
         $stmtSelect->method('execute');
         $stmtSelect->method('fetch')->willReturn(false);
@@ -419,9 +419,9 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtUpdate->method('execute');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
+            $stmtMarker,
+            $stmtMarker,
             $stmtSelect,
-            $stmtMarker,
-            $stmtMarker,
             $stmtInsert,
             $stmtIds,
             $stmtIds,

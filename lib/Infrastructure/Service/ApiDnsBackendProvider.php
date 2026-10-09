@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
+use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
@@ -100,52 +101,21 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
             return false;
         }
 
-        // Store zone_name in local zones table for API-mode identification.
-        // The caller (DomainManager) will insert into zones table with the returned ID
-        // as domain_id. We look up if there's already an entry with this zone_name.
-        $stmt = $this->db->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
-        $stmt->execute([':name' => $domain]);
-        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (is_array($existing)) {
-            // Update existing entry
-            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master WHERE id = :id");
-            $stmt->bindValue(':type', strtoupper($type));
-            $stmt->bindValue(':master', $slaveMaster);
-            $stmt->bindValue(':id', (int)$existing['id'], PDO::PARAM_INT);
-            $stmt->execute();
-            // Callers address the zone by its canonical id, which differs from the row id on migrated rows
-            return (int)($existing['domain_id'] ?: $existing['id']);
-        }
-
-        // The insert and its domain_id backfill must land together. Committed apart, an
-        // interrupted request strands the row at a domain_id no canonical read resolves.
-        $ownsTransaction = !$this->transaction->inTransaction();
-        if ($ownsTransaction) {
-            $this->transaction->begin();
-        }
-
+        // The zone now exists in PowerDNS; if the local row cannot be written it must not stay
+        // behind, or the user sees a failure and a retry then collides with the orphan.
         try {
-            // Locks the zones rows before the insert, so concurrent creators queue instead of deadlocking
-            $allocator = new CanonicalZoneIdAllocator($this->db);
-
-            // Insert a placeholder entry. The caller will update it with owner/template info.
-            $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (NULL, NULL, 0, :name, :type, :master)");
-            $stmt->bindValue(':name', $domain);
-            $stmt->bindValue(':type', strtoupper($type));
-            $stmt->bindValue(':master', $slaveMaster);
-            $stmt->execute();
-
-            // The canonical id: the row id, unless another zone or grant already uses that number
-            $zonesId = $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
-
-            if ($ownsTransaction) {
-                $this->transaction->commit();
-            }
+            $zonesId = $this->storeLocalZoneRow($domain, $type, $slaveMaster);
         } catch (\Throwable $e) {
-            if ($ownsTransaction) {
-                $this->rollBackIfOpen();
-            }
+            $this->logger->error(
+                'Zone {zone} was created in PowerDNS but its local row could not be stored ({class}, SQLSTATE {state}): {error}',
+                [
+                    'zone' => $domain,
+                    'class' => get_class($e),
+                    'state' => $e instanceof \PDOException ? (string)($e->errorInfo[0] ?? $e->getCode()) : '-',
+                    'error' => $e->getMessage(),
+                ]
+            );
+            $this->removeOrphanedZone($apiName);
             throw $e;
         }
 
@@ -153,6 +123,83 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
         $this->localZoneIds = null;
 
         return $zonesId;
+    }
+
+    /**
+     * Records the zone in the local zones table and returns its canonical id. Retries the
+     * transaction when the database rolls it back as a deadlock victim.
+     */
+    private function storeLocalZoneRow(string $domain, string $type, string $slaveMaster): int
+    {
+        // The caller (DomainManager) will fill in the owner and template of this row.
+        // The insert and its domain_id backfill must land together. Committed apart, an
+        // interrupted request strands the row at a domain_id no canonical read resolves.
+        $ownsTransaction = !$this->transaction->inTransaction();
+        $attempt = function () use ($domain, $type, $slaveMaster, $ownsTransaction): int {
+            if ($ownsTransaction) {
+                $this->transaction->begin();
+            }
+
+            try {
+                // Locks the backend marker row first, so concurrent creators queue instead of deadlocking
+                $allocator = new CanonicalZoneIdAllocator($this->db);
+
+                // Read under the marker lock, so a zone adopted by a concurrent sync is seen, not collided with
+                $stmt = $this->db->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
+                $stmt->execute([':name' => $domain]);
+                $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if (is_array($existing)) {
+                    $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master WHERE id = :id");
+                    $stmt->bindValue(':type', strtoupper($type));
+                    $stmt->bindValue(':master', $slaveMaster);
+                    $stmt->bindValue(':id', (int)$existing['id'], PDO::PARAM_INT);
+                    $stmt->execute();
+                    if ($ownsTransaction) {
+                        $this->transaction->commit();
+                    }
+
+                    // Callers address the zone by its canonical id, which differs from the row id on migrated rows
+                    return (int)($existing['domain_id'] ?: $existing['id']);
+                }
+
+                // Insert a placeholder entry. The caller will update it with owner/template info.
+                $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (NULL, NULL, 0, :name, :type, :master)");
+                $stmt->bindValue(':name', $domain);
+                $stmt->bindValue(':type', strtoupper($type));
+                $stmt->bindValue(':master', $slaveMaster);
+                $stmt->execute();
+
+                // The canonical id: the row id, unless another zone or grant already uses that number
+                $zonesId = $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
+
+                if ($ownsTransaction) {
+                    $this->transaction->commit();
+                }
+
+                return $zonesId;
+            } catch (\Throwable $e) {
+                if ($ownsTransaction) {
+                    $this->rollBackIfOpen();
+                }
+                throw $e;
+            }
+        };
+
+        // A caller's transaction cannot be replayed from here, so only our own is retried
+        return $ownsTransaction ? DeadlockRetry::run($attempt) : $attempt();
+    }
+
+    private function removeOrphanedZone(string $apiName): void
+    {
+        try {
+            $removed = $this->client->deleteZone(new Zone($apiName));
+        } catch (\Throwable $e) {
+            $removed = false;
+        }
+        if (!$removed) {
+            $this->logger->error('Zone {zone} could not be removed from PowerDNS after its local row failed; delete it there by hand', ['zone' => $apiName]);
+        }
     }
 
     /**

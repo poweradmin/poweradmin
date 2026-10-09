@@ -32,7 +32,8 @@ use Poweradmin\Domain\Database\DbCompat;
  * an API key scope already uses that number as a zone id. Then the row itself moves to an
  * id above all of them, so it never takes over (or inherits the grants of) another zone's
  * id, and rows created after it get their own ids again. Build one per transaction before
- * inserting: the zones rows are read with a lock, so concurrent creators queue up.
+ * inserting: the backend marker row is locked first, so concurrent creators queue up, and the
+ * zones rows are then read with a lock.
  */
 final class CanonicalZoneIdAllocator
 {
@@ -51,11 +52,13 @@ final class CanonicalZoneIdAllocator
             // Row locks only cover rows a statement sees; this serializes creators even with none
             $db->prepare("SELECT pg_advisory_xact_lock(" . self::PGSQL_LOCK_KEY . ")")->execute();
         }
+        // Locks the one marker row so creators queue before touching zones: locking the zones
+        // rows first leaves two creators each holding the gap the other must insert into, a
+        // deadlock on InnoDB. Rows written from here on carry canonical ids, which the SQL
+        // backend cannot read
+        BackendModeMarker::markApi($db);
         $zones = $db->prepare("SELECT id, domain_id FROM zones" . DbCompat::rowLock($this->driver));
         $zones->execute();
-        // Under the lock, so concurrent creators cannot both insert the marker. Rows written
-        // from here on carry canonical ids, which the SQL backend cannot read
-        BackendModeMarker::markApi($db);
         foreach ($zones->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $domainId = (int)($row['domain_id'] ?? 0);
             // A row without domain_id is keyed by its own id, which no other row can reuse
