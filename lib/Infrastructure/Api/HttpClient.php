@@ -112,15 +112,34 @@ class HttpClient
     {
         try {
             $context = stream_context_create(ProxyContext::applyTo($options, $url));
-            $response = @file_get_contents($url, false, $context);
+            // fopen + wrapper_data instead of file_get_contents + $http_response_header, which PHP 8.5 deprecates
+            $stream = @fopen($url, 'r', false, $context);
+            $response = false;
+            $responseHeaders = [];
+            $readTimedOut = false;
+            if ($stream !== false) {
+                try {
+                    $response = @stream_get_contents($stream);
+                    $meta = stream_get_meta_data($stream);
+                    $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
+                    $readTimedOut = !empty($meta['timed_out']);
+                } finally {
+                    fclose($stream);
+                }
+            }
+
+            // A read timeout leaves a partial body; treat it as a failed request, not a bad payload
+            if ($readTimedOut) {
+                $response = false;
+            }
 
             if ($response === false) {
                 $error = error_get_last();
                 $errorDetails = [
                     'url' => $url,
                     'method' => $method,
-                    'error' => $error['message'] ?? 'Unknown error',
-                    'code' => $error['type'] ?? 0
+                    'error' => $readTimedOut ? 'Read timed out' : ($error['message'] ?? 'Unknown error'),
+                    'code' => $readTimedOut ? 0 : ($error['type'] ?? 0)
                 ];
 
                 // Detect common misconfigurations and provide helpful error messages
@@ -130,7 +149,7 @@ class HttpClient
                 throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
             }
 
-            $responseCode = $this->getResponseCode($http_response_header);
+            $responseCode = $this->getResponseCode($responseHeaders);
 
             // For 204 No Content responses, don't try to parse JSON
             if ($responseCode === 204) {
@@ -226,12 +245,15 @@ class HttpClient
 
     private function getResponseCode(array $headers): ?int
     {
-        if (isset($headers[0])) {
-            preg_match('/\s(\d{3})\s/', $headers[0], $match);
-            return isset($match[1]) ? (int)$match[1] : null;
+        // The wrapper lists every redirect hop; the last status line is the final response
+        $code = null;
+        foreach ($headers as $header) {
+            if (is_string($header) && preg_match('/^HTTP\/\S+\s+(\d{3})/', $header, $match)) {
+                $code = (int)$match[1];
+            }
         }
 
-        return null;
+        return $code;
     }
 
     /**

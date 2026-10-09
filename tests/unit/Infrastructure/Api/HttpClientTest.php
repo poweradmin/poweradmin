@@ -210,6 +210,27 @@ class HttpClientTest extends TestCase
         }
     }
 
+    #[\PHPUnit\Framework\Attributes\DataProvider('responseHeaderProvider')]
+    public function testGetResponseCodeReadsStatusLine(array $headers, ?int $expected): void
+    {
+        $method = $this->getPrivateMethod('getResponseCode');
+
+        $this->assertSame($expected, $method->invoke($this->httpClient, $headers));
+    }
+
+    public static function responseHeaderProvider(): array
+    {
+        return [
+            'ok' => [['HTTP/1.1 200 OK', 'Content-Type: application/json'], 200],
+            'no content' => [['HTTP/1.1 204 No Content'], 204],
+            'not found' => [['HTTP/1.1 404 Not Found'], 404],
+            'no reason phrase' => [['HTTP/1.1 422'], 422],
+            'redirect then final' => [['HTTP/1.1 301 Moved Permanently', 'Location: /x', 'HTTP/1.1 200 OK', 'Content-Length: 2'], 200],
+            'empty' => [[], null],
+            'garbage' => [['nonsense'], null],
+        ];
+    }
+
     /**
      * Helper method to access private methods for testing
      */

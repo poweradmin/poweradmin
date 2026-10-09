@@ -110,15 +110,23 @@ class ZoneFileExportController extends BaseController
 
             $context = stream_context_create($this->moduleServices()->proxyContext()->applyTo($options, $url));
 
-            $response = @file_get_contents($url, false, $context);
+            $stream = @fopen($url, 'r', false, $context);
+            if ($stream === false) {
+                return null;
+            }
 
-            if ($response === false) {
+            $response = @stream_get_contents($stream);
+            $meta = stream_get_meta_data($stream);
+            fclose($stream);
+
+            if ($response === false || !empty($meta['timed_out'])) {
                 return null;
             }
 
             $responseCode = 0;
-            if (!empty($http_response_header)) {
-                foreach ($http_response_header as $header) {
+            $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
+            if (!empty($responseHeaders)) {
+                foreach ($responseHeaders as $header) {
                     if (preg_match('/^HTTP\/\S+\s+(\d{3})/', $header, $matches)) {
                         $responseCode = (int)$matches[1];
                     }
