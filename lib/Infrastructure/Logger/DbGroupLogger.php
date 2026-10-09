@@ -29,6 +29,9 @@ use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class DbGroupLogger
 {
+    // Characters, not bytes: log_*.event is varchar(2048) and a longer value fails the INSERT.
+    private const EVENT_MAX_LENGTH = 2048;
+
     private PDOCommon $db;
     private ConfigurationManager $config;
 
@@ -41,6 +44,11 @@ class DbGroupLogger
 
     public function doLog($msg, $group_id, $priority): void
     {
+        $msg = (string) $msg;
+        if (mb_strlen($msg, 'UTF-8') > self::EVENT_MAX_LENGTH) {
+            $msg = mb_substr($msg, 0, self::EVENT_MAX_LENGTH - 3, 'UTF-8') . '...';
+        }
+
         $dblog_use = $this->config->get('logging', 'database_enabled');
 
         if (!$dblog_use) {

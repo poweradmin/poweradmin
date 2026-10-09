@@ -29,6 +29,9 @@ use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DbZoneLogger
 {
+    // Characters, not bytes: log_*.event is varchar(2048) and a longer value fails the INSERT.
+    private const EVENT_MAX_LENGTH = 2048;
+
     private PDOCommon $db;
     private ConfigurationManager $config;
 
@@ -41,6 +44,11 @@ class DbZoneLogger
 
     public function doLog($msg, $zone_id, $priority): void
     {
+        $msg = (string) $msg;
+        if (mb_strlen($msg, 'UTF-8') > self::EVENT_MAX_LENGTH) {
+            $msg = mb_substr($msg, 0, self::EVENT_MAX_LENGTH - 3, 'UTF-8') . '...';
+        }
+
         $stmt = $this->db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
         $stmt->execute([
             ':msg' => $msg,
