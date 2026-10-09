@@ -29,6 +29,7 @@ NC='\033[0m' # No Color
 TOTAL_TESTS=0
 PASSED_TESTS=0
 FAILED_TESTS=0
+SKIPPED_TESTS=0
 
 # Stored IDs
 TEST_ZONE_ID=""
@@ -69,6 +70,20 @@ print_pass() {
 print_fail() {
     echo -e "${RED}✗ FAIL: $1${NC}"
     FAILED_TESTS=$((FAILED_TESTS + 1))
+}
+
+# A skip is for a feature the instance does not offer (disabled, unsupported
+# by PowerDNS) or a runner without the tools a test needs. Never use it to
+# hide a failure. Counts toward the total so passed+failed+skipped adds up.
+skip() {
+    increment_test
+    skip_counted "$1"
+}
+
+# For callers that already called increment_test for the test being skipped.
+skip_counted() {
+    echo -e "${YELLOW}- SKIP: $1${NC}"
+    SKIPPED_TESTS=$((SKIPPED_TESTS + 1))
 }
 
 print_info() {
@@ -433,6 +448,11 @@ test_ptr_autocreation() {
         fi
     fi
 
+    # The reverse zone outlives a run, so a PTR left by the previous run would make creation report "already exists"
+    if [[ -n "$TEST_REVERSE_ZONE_ID" ]]; then
+        cleanup_stale_ptr_records "100.2.0.192.in-addr.arpa"
+    fi
+
     # Test 1: Create A record WITH PTR auto-creation
     local record_with_ptr='{
         "name": "host1",
@@ -445,14 +465,11 @@ test_ptr_autocreation() {
 
     # Check if PTR was created (response should mention it)
     increment_test
-    if [[ "$LAST_RESPONSE_BODY" =~ "ptr_created" ]]; then
-        if [[ "$LAST_RESPONSE_BODY" =~ "\"ptr_created\":true" ]]; then
-            print_pass "PTR record auto-creation succeeded"
-        else
-            print_info "PTR record auto-creation was attempted but may have failed (check reverse zone)"
-        fi
+    if [[ "$LAST_RESPONSE_BODY" =~ "\"ptr_created\":true" ]]; then
+        print_pass "PTR record auto-creation succeeded"
     else
-        print_info "Response doesn't include PTR status (old API version?)"
+        print_fail "PTR record auto-creation did not report ptr_created:true"
+        echo "Response: $LAST_RESPONSE_BODY"
     fi
 
     # Test 2: Create A record WITHOUT PTR auto-creation (default)
@@ -492,7 +509,7 @@ test_ptr_autocreation() {
         if [[ "$LAST_RESPONSE_BODY" =~ "100.2.0.192.in-addr.arpa" ]]; then
             print_pass "PTR record found in reverse zone"
         else
-            print_info "PTR record not found (may require manual verification)"
+            print_fail "PTR record 100.2.0.192.in-addr.arpa not found in the reverse zone"
         fi
     fi
 
@@ -524,8 +541,8 @@ test_ptr_update() {
     print_section "PTR Update Tests"
 
     if [[ -z "$TEST_ZONE_ID" || -z "$TEST_REVERSE_ZONE_ID" ]]; then
-        print_info "Skipping PTR update tests - PTR auto-creation didn't run"
-        return 0
+        print_fail "PTR update tests need the forward and reverse test zones, which were not set up"
+        return 1
     fi
 
     cleanup_stale_ptr_records "200.2.0.192.in-addr.arpa" "201.2.0.192.in-addr.arpa" "202.2.0.192.in-addr.arpa"
@@ -539,7 +556,7 @@ test_ptr_update() {
         "create_ptr": true
     }'
     if ! api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records" "$seed" 201 "Seed A record (192.0.2.200) with PTR"; then
-        print_info "Failed to seed record - skipping PTR update tests"
+        print_fail "Failed to seed record - skipping PTR update tests"
         return 1
     fi
     local PTR_UPD_RECORD_ID
@@ -612,8 +629,8 @@ test_ttl_defaults() {
     print_section "TTL Default Resolution Tests"
 
     if [[ -z "$TEST_ZONE_ID" || -z "$TEST_REVERSE_ZONE_ID" ]]; then
-        print_info "Skipping TTL default tests - PTR auto-creation didn't run"
-        return 0
+        print_fail "TTL default tests need the forward and reverse test zones, which were not set up"
+        return 1
     fi
 
     # Create an A record on the forward zone without a ttl field.
@@ -741,17 +758,18 @@ test_bulk_operations() {
     # Test 5: Verify rollback (valid record should not exist)
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records" "" 200 "Verify rollback"
 
-    increment_test
     if [[ "${DNS_BACKEND:-sql}" == "api" ]]; then
         # Writes go straight to PowerDNS over REST, which no PDO transaction can
         # undo, so the controller deliberately skips one (ZonesRecordsBulkController
         # sets $useTransaction = !isApiBackend()). A partial batch is expected here.
-        print_info "Atomic rollback is not available on the API backend - skipping"
+        skip "Atomic rollback is not available on the API backend"
     # Match the full field: a bare 192.0.2.20 is also a prefix of the
     # 192.0.2.20x addresses the PTR tests leave in this same zone
     elif [[ ! "$LAST_RESPONSE_BODY" =~ \"content\":\"192\.0\.2\.20\" ]]; then
+        increment_test
         print_pass "Transaction rolled back correctly (no partial records)"
     else
+        increment_test
         print_fail "Rollback failed - found record that should have been rolled back"
     fi
 
@@ -1252,8 +1270,8 @@ test_groups() {
                 print_fail "Failed to assign zone"
             fi
         elif [[ "$http_code" == "400" ]]; then
-            print_info "Zone assignment skipped (may already exist or invalid zone)"
-            PASSED_TESTS=$((PASSED_TESTS + 1))
+            print_fail "Zone assignment returned 400, expected 201"
+            echo "Response: $body"
         else
             print_fail "Failed to assign zone (HTTP $http_code)"
         fi
@@ -1272,8 +1290,8 @@ test_groups() {
         http_code=$(echo "$response" | tail -n1)
         body=$(echo "$response" | sed '$d')
 
-        if [[ "$http_code" == "200" ]] || [[ "$http_code" == "404" ]]; then
-            print_pass "Zone unassigned (or not found)"
+        if [[ "$http_code" == "200" ]]; then
+            print_pass "Zone unassigned"
         else
             print_fail "Failed to unassign zone (HTTP $http_code)"
         fi
@@ -1931,7 +1949,7 @@ test_zone_dnssec() {
         "${API_BASE_URL}/api/v2/zones/${TEST_DNSSEC_ZONE_ID}/dnssec")
 
     if [[ "$probe_code" == "501" ]]; then
-        print_info "DNSSEC endpoints return 501 (PowerDNS API not configured) - skipping live sign/unsign tests"
+        skip "DNSSEC sign/unsign tests: endpoints return 501 (PowerDNS API not configured)"
     else
         # Status on an unsigned zone
         api_request_v2 "GET" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" "" 200 "Get DNSSEC status (unsigned)"
@@ -2033,7 +2051,7 @@ test_server_status() {
         "${API_BASE_URL}/api/v2/server/status")
 
     if [[ "$probe_code" == "501" ]]; then
-        print_info "Server status endpoint returns 501 (PowerDNS API not configured) - skipping live checks"
+        skip "Server status live checks: endpoint returns 501 (PowerDNS API not configured)"
         return 0
     fi
 
@@ -2056,9 +2074,13 @@ test_server_status() {
 # Access checks run before the PowerDNS API check, so they need no live PowerDNS.
 test_server_status_access() {
     local mgr_id
-    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null) || [[ -z "$mgr_id" ]]; then
-        print_info "Database access not available - skipping server status access tests"
+    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null); then
+        skip "Server status access tests: database client or credentials not available to this runner"
         return 0
+    fi
+    if [[ -z "$mgr_id" ]]; then
+        print_fail "Seeded user 'manager' not found - server status access tests cannot run"
+        return 1
     fi
     mgr_id=$(echo "$mgr_id" | tr -d '[:space:]')
     local owner_id
@@ -2110,7 +2132,7 @@ test_zone_dnssec_keys() {
         "${API_BASE_URL}/api/v2/zones/${zone_id}/dnssec/keys")
 
     if [[ "$probe_code" == "501" ]]; then
-        print_info "DNSSEC key endpoints return 501 (PowerDNS API not configured) - skipping live key tests"
+        skip "DNSSEC key tests: endpoints return 501 (PowerDNS API not configured)"
     else
         api_request_v2 "POST" "/zones/${zone_id}/records" \
             "{\"name\":\"${zone_name}\",\"type\":\"NS\",\"content\":\"ns1.example.com\"}" 201 "Add apex NS1 record"
@@ -2332,8 +2354,8 @@ test_users_group_assignment() {
         | jq -r --arg n "$group_name" '.data.groups[]? | select(.name == $n) | .id' 2>/dev/null)
 
     if [[ -z "$group_id" || "$group_id" == "null" ]]; then
-        print_info "Skipping group-assignment tests: seeded group '$group_name' not found"
-        return
+        print_fail "Seeded group '$group_name' not found - group-assignment tests cannot run"
+        return 1
     fi
 
     # An ID and that same group's name in one list must collapse to a single membership
@@ -3295,9 +3317,13 @@ test_api_key_scopes() {
     # These tests seed scoped keys directly in the database; skip cleanly when
     # the DB client or credentials are not available to this runner.
     local owner_id
-    if ! owner_id=$(db_exec "SELECT id FROM users WHERE username='admin' LIMIT 1;" 2>/dev/null) || [[ -z "$owner_id" ]]; then
-        print_info "Database access not available - skipping API key scope tests"
+    if ! owner_id=$(db_exec "SELECT id FROM users WHERE username='admin' LIMIT 1;" 2>/dev/null); then
+        skip "API key scope tests: database client or credentials not available to this runner"
         return 0
+    fi
+    if [[ -z "$owner_id" ]]; then
+        print_fail "Seeded user 'admin' not found - API key scope tests cannot run"
+        return 1
     fi
     owner_id=$(echo "$owner_id" | tr -d '[:space:]')
 
@@ -3309,7 +3335,7 @@ test_api_key_scopes() {
     # Clean any leftovers from a previous run, then seed fresh keys.
     db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone','scopetest-cu');" >/dev/null 2>&1 || true
 
-    db_exec "INSERT INTO api_keys (name, secret_key, created_by, is_readonly) VALUES ('scopetest-ro', '$(hash_api_key "$ro_secret")', ${owner_id}, 1);" >/dev/null 2>&1
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by, is_readonly) VALUES ('scopetest-ro', '$(hash_api_key "$ro_secret")', ${owner_id}, TRUE);" >/dev/null 2>&1
     db_exec "INSERT INTO api_keys (name, secret_key, created_by, allowed_operations) VALUES ('scopetest-ops', '$(hash_api_key "$ops_secret")', ${owner_id}, 'view,create');" >/dev/null 2>&1
     db_exec "INSERT INTO api_keys (name, secret_key, created_by) VALUES ('scopetest-zone', '$(hash_api_key "$zone_secret")', ${owner_id});" >/dev/null 2>&1
     db_exec "INSERT INTO api_keys (name, secret_key, created_by, allowed_operations) VALUES ('scopetest-cu', '$(hash_api_key "$cu_secret")', ${owner_id}, 'view,create,update');" >/dev/null 2>&1
@@ -3419,9 +3445,13 @@ test_zone_overlap_guard() {
     # Seeds a non-ueberuser key directly in the DB (ueberusers bypass the guard);
     # skip cleanly when the DB client or credentials are unavailable.
     local mgr_id
-    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null) || [[ -z "$mgr_id" ]]; then
-        print_info "Database access not available - skipping zone overlap guard tests"
+    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null); then
+        skip "Zone overlap guard tests: database client or credentials not available to this runner"
         return 0
+    fi
+    if [[ -z "$mgr_id" ]]; then
+        print_fail "Seeded user 'manager' not found - zone overlap guard tests cannot run"
+        return 1
     fi
     mgr_id=$(echo "$mgr_id" | tr -d '[:space:]')
 
@@ -3475,7 +3505,7 @@ test_api_documentation() {
     if [[ "$http_code" == "200" ]]; then
         print_pass "Swagger UI endpoint accessible"
     elif [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
-        print_info "Swagger UI endpoint not available in test environment"
+        skip_counted "Swagger UI endpoint not available (HTTP $http_code, API docs disabled)"
     else
         print_fail "Swagger UI endpoint - Unexpected status $http_code"
     fi
@@ -3491,7 +3521,7 @@ test_api_documentation() {
 
         if [[ "$http_code" != "200" ]]; then
             if [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
-                print_info "${docs_path} not available in test environment"
+                skip_counted "OpenAPI spec at ${docs_path} not available (HTTP $http_code, API docs disabled)"
             else
                 print_fail "${docs_path} - Unexpected status $http_code"
             fi
@@ -3568,7 +3598,7 @@ test_change_requests() {
     probe_code=$(curl -s -o /dev/null -w "%{http_code}" -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
         "${API_BASE_URL}/api/v2/change-requests" 2>/dev/null || echo "000")
     if [[ "$probe_code" == "404" ]]; then
-        print_info "approval.enabled is off (GET /change-requests answered 404) - skipping change request tests"
+        skip "Change request tests: approval.enabled is off (GET /change-requests answered 404)"
         return 0
     fi
 
@@ -3631,32 +3661,33 @@ main() {
 
     # Run test suites. The docs and removed-v1 checks are independent of test
     # data, so they run first and still report if a later suite aborts the run.
-    test_api_documentation
-    test_v1_removed
-    test_rrsets
-    test_record_listing
-    test_ptr_autocreation
-    test_ptr_update
-    test_ttl_defaults
-    test_bulk_operations
-    test_disabled_records
-    test_master_port_syntax
-    test_zone_status_codes
-    test_groups
-    test_zone_owners
-    test_zone_metadata
-    test_zone_dnssec
-    test_server_status
-    test_zone_dnssec_keys
-    test_users_crud
-    test_zone_templates
-    test_users_ldap_sync
-    test_users_perm_templ_validation
-    test_users_self_edit_guard
-    test_limited_user_gates
-    test_api_key_scopes
-    test_zone_overlap_guard
-    test_change_requests
+    # A suite that aborts has already counted its failure; keep running the rest.
+    test_api_documentation || true
+    test_v1_removed || true
+    test_rrsets || true
+    test_record_listing || true
+    test_ptr_autocreation || true
+    test_ptr_update || true
+    test_ttl_defaults || true
+    test_bulk_operations || true
+    test_disabled_records || true
+    test_master_port_syntax || true
+    test_zone_status_codes || true
+    test_groups || true
+    test_zone_owners || true
+    test_zone_metadata || true
+    test_zone_dnssec || true
+    test_server_status || true
+    test_zone_dnssec_keys || true
+    test_users_crud || true
+    test_zone_templates || true
+    test_users_ldap_sync || true
+    test_users_perm_templ_validation || true
+    test_users_self_edit_guard || true
+    test_limited_user_gates || true
+    test_api_key_scopes || true
+    test_zone_overlap_guard || true
+    test_change_requests || true
 
     # Cleanup
     cleanup
@@ -3666,6 +3697,7 @@ main() {
     echo -e "Total Tests: ${TOTAL_TESTS}"
     echo -e "${GREEN}Passed: ${PASSED_TESTS}${NC}"
     echo -e "${RED}Failed: ${FAILED_TESTS}${NC}"
+    echo -e "${YELLOW}Skipped: ${SKIPPED_TESTS}${NC}"
 
     local pass_rate=0
     if [[ $TOTAL_TESTS -gt 0 ]]; then
@@ -3673,12 +3705,22 @@ main() {
     fi
     echo -e "Pass Rate: ${pass_rate}%"
 
+    local unaccounted=$((TOTAL_TESTS - PASSED_TESTS - FAILED_TESTS - SKIPPED_TESTS))
+    if [[ $unaccounted -ne 0 ]]; then
+        echo -e "${RED}${unaccounted} test(s) were started but never passed, failed or skipped${NC}"
+        exit 1
+    fi
+
     # Exit with error if any tests failed
     if [[ $FAILED_TESTS -gt 0 ]]; then
         exit 1
     fi
 
-    echo -e "\n${GREEN}All tests passed!${NC}\n"
+    if [[ $SKIPPED_TESTS -gt 0 ]]; then
+        echo -e "\n${GREEN}All executed tests passed${NC} ${YELLOW}(${SKIPPED_TESTS} skipped)${NC}\n"
+    else
+        echo -e "\n${GREEN}All tests passed!${NC}\n"
+    fi
 }
 
 # Run main function
