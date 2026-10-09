@@ -133,6 +133,14 @@ class EditRecordController extends BaseController
 
         $validationFailed = false;
         if ($this->isPost()) {
+            // Permissions, the audit row and the serial bump are all keyed to the zone
+            // of the record in the URL, so the posted row must be that same record.
+            $postedId = RecordIdHelper::normalizeId((string)$this->httpRequest->getPostParam('rid', ''));
+            if ($postedId !== RecordIdHelper::normalizeId(is_int($record_id) ? $record_id : (string)$record_id)) {
+                $this->showError(_('Invalid record ID.'));
+                return;
+            }
+
             $validationFailed = $edit_mode === ChangeApprovalPolicy::MODE_REQUEST
                 ? !$this->requestRecordEdit($zid)
                 : !$this->saveRecord($zid);

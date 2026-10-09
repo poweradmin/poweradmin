@@ -352,6 +352,17 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->assertSame([['success', 'The record has been updated successfully.']], $this->messagesFor('edit'));
     }
 
+    public function testAPostedRowOtherThanTheRecordInTheUrlIsRefused(): void
+    {
+        $this->post(['rid' => (string)(self::RECORD_ID + 1), 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9', 'ttl' => '300']);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
+        $this->assertSame('Invalid record ID.', $halt->target);
+        $this->assertNull($this->editedRecord, 'nothing is written');
+    }
+
     public function testTheSavedRowIsNormalisedBeforeItReachesTheRecordManager(): void
     {
         $this->post([
