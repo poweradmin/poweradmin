@@ -127,15 +127,30 @@ class UserManagementService
      */
     public function getUsersList(Pagination $pagination): array
     {
-        $users = $this->userRepository->getUsersList(
-            $pagination->getOffset(),
-            $pagination->getLimit()
-        );
-
         return [
-            'data' => $this->profileAssembler->assembleList($users),
+            'data' => $this->getUsersPage($pagination),
             'total_count' => $this->userRepository->getTotalUserCount()
         ];
+    }
+
+    /**
+     * Get one page of users with their details and permissions, without counting them
+     *
+     * @return list<array>
+     */
+    public function getUsersPage(Pagination $pagination): array
+    {
+        return $this->profileAssembler->assembleList(
+            $this->userRepository->getUsersList($pagination->getOffset(), $pagination->getLimit())
+        );
+    }
+
+    /**
+     * Count all users
+     */
+    public function countUsers(): int
+    {
+        return $this->userRepository->getTotalUserCount();
     }
 
     /**

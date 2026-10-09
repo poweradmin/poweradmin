@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Application\Service\User\UserCommandFactory;
 use Poweradmin\Application\Service\Zone\ZoneLimitInput;
@@ -358,50 +359,29 @@ class UsersController extends PublicApiController
                 return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200);
             }
 
-            // Get pagination parameters (defaults to returning all users)
-            $perPage = (int)$this->request->query->get('per_page', 0);
+            // Without per_page every user is returned
+            [$page, $perPage] = $this->pagingParameters();
+            $responseData = ['meta' => ['timestamp' => date('Y-m-d H:i:s')]];
 
-            // If per_page is 0 or not specified, return all users
             if ($perPage === 0) {
-                // Get all users without pagination
-                $pagination = new Pagination(0, PHP_INT_MAX, 1);
-                $result = $this->userManagementService->getUsersList($pagination);
-                $users = $result['data'];
-
-                $responseData = [
-                    'meta' => [
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]
-                ];
-
-                return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200, $responseData);
-            } else {
-                // Use pagination
-                $page = max(1, (int)$this->request->query->get('page', 1));
-                $perPage = min(self::MAX_PAGE_SIZE, max(1, $perPage));
-
-                // Create pagination object
-                $pagination = new Pagination(0, $perPage, $page);
-
-                // Use the domain service to get users list
-                $result = $this->userManagementService->getUsersList($pagination);
-                $users = $result['data'];
-                $totalCount = $result['total_count'];
-
-                $responseData = [
-                    'pagination' => [
-                        'current_page' => $page,
-                        'per_page' => $perPage,
-                        'total' => $totalCount,
-                        'last_page' => (int)ceil($totalCount / $perPage)
-                    ],
-                    'meta' => [
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]
-                ];
+                $users = $this->userManagementService->getUsersPage(new Pagination(0, PHP_INT_MAX, 1));
 
                 return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200, $responseData);
             }
+
+            $totalCount = $this->userManagementService->countUsers();
+            // Checked before the offset, which overflows to a float for a huge page
+            $users = ListPaging::isPastEnd($page, $perPage, $totalCount)
+                ? []
+                : $this->userManagementService->getUsersPage(new Pagination(0, $perPage, $page));
+
+            return $this->returnApiResponse(
+                ['users' => $users],
+                true,
+                'Users retrieved successfully',
+                200,
+                $responseData + ListPaging::extra($page, $perPage, $totalCount)
+            );
         } catch (\Throwable $e) {
             return $this->handleException($e, 'UsersController::listUsers', 'Failed to retrieve users');
         }
