@@ -243,6 +243,11 @@ class BasicAuthenticationMiddleware
      */
     private function ldapAuthenticatorApiAuth(int $userId, string $username, string $password): bool
     {
+        // A zero-length credential would be an unauthenticated bind, which some directories accept
+        if ($password === '') {
+            return false;
+        }
+
         // Get LDAP connection settings from config
         $ldapUri = $this->config->get('ldap', 'uri', '');
         $ldapBaseDn = $this->config->get('ldap', 'base_dn', '');
