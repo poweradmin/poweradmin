@@ -225,18 +225,43 @@ class RecordCommentSubqueryTest extends TestCase
     }
 
     #[DataProvider('engines')]
-    public function testSearchByLinkedCommentTextReturnsTheLinkedRecordAndItsRRsetSibling(string $engine): void
+    public function testSearchByLinkedCommentTextReturnsOnlyTheLinkedRecord(string $engine): void
     {
         $db = $this->open($engine);
 
-        // Search matches rcl.record_id OR the RRset triple, so sibling 192.0.2.6 comes back too,
-        // while the display join excludes linked comments from the fallback and shows it as null.
+        // The display join shows a linked comment on its own record only, so search must not
+        // return the RRset sibling 192.0.2.6, which displays no comment.
+        $this->assertSame(
+            ['mail.example.com/A/192.0.2.3' => 'Linked per-record comment'],
+            $this->searchComments($db, 'Linked per-record', true)
+        );
+    }
+
+    #[DataProvider('engines')]
+    public function testSearchByUnlinkedRRsetCommentReturnsEveryRecordOfTheRRset(string $engine): void
+    {
+        $db = $this->open($engine);
+        RecordCommentFixture::addRecord($db, 9, 'www.example.com', 'A', '192.0.2.9');
+
         $this->assertSame(
             [
-                'mail.example.com/A/192.0.2.3' => 'Linked per-record comment',
-                'mail.example.com/A/192.0.2.6' => null,
+                'www.example.com/A/192.0.2.2' => 'Legacy RRset comment',
+                'www.example.com/A/192.0.2.9' => 'Legacy RRset comment',
             ],
-            $this->searchComments($db, 'Linked per-record', true)
+            $this->searchComments($db, 'Legacy RRset', true)
+        );
+    }
+
+    #[DataProvider('engines')]
+    public function testSearchByHiddenRRsetCommentSkipsRecordsWithTheirOwnLinkedComment(string $engine): void
+    {
+        $db = $this->open($engine);
+        // Record 2 displays its linked comment, so the unlinked RRset text is hidden on it
+        RecordCommentFixture::addRecord($db, 9, 'example.com', 'A', '192.0.2.9');
+
+        $this->assertSame(
+            ['example.com/A/192.0.2.9' => 'Unlinked RRset fallback'],
+            $this->searchComments($db, 'Unlinked RRset fallback', true)
         );
     }
 

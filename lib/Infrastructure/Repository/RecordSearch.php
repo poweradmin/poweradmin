@@ -366,10 +366,20 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
             $castId = DbCompat::castToString($db_type, "$records_table.id");
             $whereConditions .= " OR EXISTS (
                 SELECT 1 FROM $comments_table c
-                LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
-                WHERE (rcl.record_id = $castId
-                    OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
-                AND c.comment LIKE :search_string_comment
+                WHERE c.comment LIKE :search_string_comment
+                AND (EXISTS (
+                        SELECT 1 FROM $links_table rcl
+                        WHERE rcl.comment_id = c.id AND rcl.record_id = $castId
+                    )
+                    OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type
+                        AND NOT EXISTS (
+                            SELECT 1 FROM $links_table rcl2
+                            WHERE rcl2.comment_id = c.id
+                        )
+                        AND NOT EXISTS (
+                            SELECT 1 FROM $links_table rcl3
+                            WHERE rcl3.record_id = $castId
+                        )))
             )";
             $params[':search_string_comment'] = $this->buildRawSearchString($parameters);
         }
@@ -422,10 +432,20 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
             $castId = DbCompat::castToString($db_type, "$records_table.id");
             $whereConditions .= " OR EXISTS (
                 SELECT 1 FROM $comments_table c
-                LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
-                WHERE (rcl.record_id = $castId
-                    OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
-                AND c.comment LIKE :search_string_comment
+                WHERE c.comment LIKE :search_string_comment
+                AND (EXISTS (
+                        SELECT 1 FROM $links_table rcl
+                        WHERE rcl.comment_id = c.id AND rcl.record_id = $castId
+                    )
+                    OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type
+                        AND NOT EXISTS (
+                            SELECT 1 FROM $links_table rcl2
+                            WHERE rcl2.comment_id = c.id
+                        )
+                        AND NOT EXISTS (
+                            SELECT 1 FROM $links_table rcl3
+                            WHERE rcl3.record_id = $castId
+                        )))
             )";
             $params[':search_string_comment'] = $this->buildRawSearchString($parameters);
         }
