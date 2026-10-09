@@ -82,7 +82,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         try {
             $this->poweradminDb = $this->createScratchPoweradminDatabase();
         } catch (PDOException $e) {
-            $this->markTestSkipped('Poweradmin database not available: ' . $e->getMessage());
+            $this->markTestSkipped('Scratch Poweradmin database could not be set up (needs root credentials): ' . $e->getMessage());
         }
 
         // Try connecting to the PowerDNS API
@@ -131,16 +131,21 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         );
         $root->exec('DROP DATABASE IF EXISTS ' . self::SCRATCH_DB);
         $root->exec('CREATE DATABASE ' . self::SCRATCH_DB);
-        foreach (['zones', 'zones_groups', 'api_key_zones', 'app_settings'] as $table) {
-            $root->exec('CREATE TABLE ' . self::SCRATCH_DB . ".$table LIKE " . self::POWERADMIN_DB_NAME . ".$table");
-        }
+        try {
+            foreach (['zones', 'zones_groups', 'api_key_zones', 'app_settings'] as $table) {
+                $root->exec('CREATE TABLE ' . self::SCRATCH_DB . ".$table LIKE " . self::POWERADMIN_DB_NAME . ".$table");
+            }
 
-        return new PDO(
-            'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::SCRATCH_DB,
-            self::ROOT_USER,
-            self::ROOT_PASS,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-        );
+            return new PDO(
+                'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::SCRATCH_DB,
+                self::ROOT_USER,
+                self::ROOT_PASS,
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+            );
+        } catch (PDOException $e) {
+            $root->exec('DROP DATABASE IF EXISTS ' . self::SCRATCH_DB);
+            throw $e;
+        }
     }
 
     /**
