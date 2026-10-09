@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Playwright configuration for Poweradmin E2E tests
  *
- * Isolation rules: writes go to throwaway objects (tempZone / workerZone fixtures,
+ * Isolation rules: writes go to throwaway objects (tempZone / useFileZone() fixtures,
  * createTempZone, uniqueName in playwright/helpers/zones.js); seeded data
  * (fixtures/zones.json, users.json) is read-only; never assert exact counts on
  * shared pages, scope to your own object; clean up in teardown; every spec file
