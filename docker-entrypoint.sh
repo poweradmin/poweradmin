@@ -430,6 +430,17 @@ validate_database_config() {
                 log "ERROR: DB_NAME is required for ${DB_TYPE} database"
                 exit 1
             fi
+            # An empty or 0 port means the driver default, as it always has
+            if [ -n "${DB_PORT:-}" ] && [ "${DB_PORT}" != "0" ]; then
+                if ! [[ "${DB_PORT}" =~ ^[0-9]{1,5}$ ]] || [ "$((10#${DB_PORT}))" -lt 1 ] || [ "$((10#${DB_PORT}))" -gt 65535 ]; then
+                    log "ERROR: DB_PORT must be a port number between 1 and 65535, got '${DB_PORT}'"
+                    exit 1
+                fi
+                # The MySQL client and PDO both treat "localhost" as the unix socket and ignore the port
+                if [ "${DB_TYPE}" = "mysql" ] && [ "${DB_HOST,,}" = "localhost" ]; then
+                    log "WARNING: DB_HOST=localhost connects through the MySQL socket and ignores DB_PORT=${DB_PORT}; set DB_HOST=127.0.0.1 to use TCP"
+                fi
+            fi
             ;;
         *)
             log "ERROR: Unsupported database type: ${DB_TYPE}. Supported types: sqlite, mysql, pgsql"
