@@ -57,6 +57,7 @@ return [
         'global_token_validation' => true,       // Enable token validation for all forms (added in 3.9.0)
         'trusted_proxies' => [],                 // Reverse proxy IPs/CIDRs/wildcards allowed to set X-Forwarded-For/X-Real-IP; private/loopback peers are always trusted (added in 4.5.0)
         'protect_last_admin_on_edit' => false,   // Refuse a user edit that moves the last super admin to a template without super admin; delete, disable and API PATCH always refuse (added in 4.6.0)
+        'strict_session_gates' => false,         // Hold internal API calls with a 403, and match API paths by segment, while required MFA setup or a user agreement is pending (added in 4.6.0)
         /**
          * Password Policy Settings
          */

@@ -49,6 +49,10 @@ use Poweradmin\Application\Service\Web\AuditService;
  */
 final class SessionAuthenticator
 {
+    public const GATE_SKIP = 'skip';
+    public const GATE_JSON = 'json';
+    public const GATE_REDIRECT = 'redirect';
+
     private LoggerInterface $logger;
     private AuthenticationService $authService;
     private PDO $db;
@@ -389,9 +393,8 @@ final class SessionAuthenticator
         // Get the current request path (without base_url_prefix)
         $currentPath = $this->getCurrentRequestPath();
 
-        // Skip agreement check for API requests and specific paths
-        $skipPaths = ['/user-agreement', '/logout', '/mfa/verify', '/mfa/setup'];
-        if ($this->isPathInList($currentPath, $skipPaths) || str_contains($currentPath, '/api/')) {
+        $action = self::gateAction($currentPath, ['/user-agreement', '/logout', '/mfa/verify', '/mfa/setup'], $_SERVER['REQUEST_METHOD'] ?? 'GET', $this->strictSessionGates());
+        if ($action === self::GATE_SKIP) {
             return;
         }
 
@@ -403,6 +406,10 @@ final class SessionAuthenticator
         $userId = $userContextService->getLoggedInUserId();
         if ($userId && $agreementService->isAgreementRequired($userId)) {
             $this->logger->info('User agreement required for user {userid}', ['userid' => $userId]);
+
+            if ($action === self::GATE_JSON) {
+                $this->haltInternalApi('User agreement must be accepted first');
+            }
 
             // Redirect to agreement page - user will be sent to index after acceptance
             $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
@@ -428,9 +435,8 @@ final class SessionAuthenticator
         // Get the current request path (without base_url_prefix)
         $currentPath = $this->getCurrentRequestPath();
 
-        // Skip MFA enforcement check for specific paths and API requests
-        $skipPaths = ['/logout', '/mfa/verify', '/mfa/setup'];
-        if ($this->isPathInList($currentPath, $skipPaths) || str_contains($currentPath, '/api/')) {
+        $action = self::gateAction($currentPath, ['/logout', '/mfa/verify', '/mfa/setup'], $_SERVER['REQUEST_METHOD'] ?? 'GET', $this->strictSessionGates());
+        if ($action === self::GATE_SKIP) {
             return;
         }
 
@@ -445,6 +451,10 @@ final class SessionAuthenticator
         // Check if MFA setup is required for this user
         if ($mfaService->isMfaSetupRequired($userId, $this->db, $userContextService->getAuthMethod())) {
             $this->logger->info('MFA setup required for user {userid}', ['userid' => $userId]);
+
+            if ($action === self::GATE_JSON) {
+                $this->haltInternalApi('Multi-factor authentication setup required');
+            }
 
             // Set a session flag to indicate this is an enforced setup
             $this->session->set(AuthFlowSessionKeys::MFA_SETUP_ENFORCED, true);
@@ -483,20 +493,57 @@ final class SessionAuthenticator
     }
 
     /**
-     * Check if the current path matches any path in the skip list.
+     * How a session gate (user agreement, MFA enrolment) treats a request path.
      *
-     * @param string $currentPath The current request path
-     * @param array $skipPaths List of paths to skip
-     * @return bool True if path should be skipped
+     * The key-authenticated public APIs carry no session and are skipped. The internal
+     * API runs on the session, so it is held back with a JSON 403 until the user
+     * complies, except the preference read every page makes, the setup pages included.
+     * Matching is on whole API path segments, so a web page such as /settings/api/logs
+     * is still redirected.
+     *
+     * @param string $currentPath Request path without base_url_prefix
+     * @param string[] $skipPaths Pages the gate itself sends the user to
+     * Without security.strict_session_gates every path containing /api/ is skipped,
+     * as before 4.6.0.
+     *
+     * @param string $method HTTP method; only a read of the preferences is let through
      */
-    private function isPathInList(string $currentPath, array $skipPaths): bool
+    public static function gateAction(string $currentPath, array $skipPaths, string $method = 'GET', bool $strict = true): string
     {
         foreach ($skipPaths as $skipPath) {
             if ($currentPath === $skipPath || str_starts_with($currentPath, $skipPath . '/')) {
-                return true;
+                return self::GATE_SKIP;
             }
         }
-        return false;
+
+        if (!$strict) {
+            return str_contains($currentPath, '/api/') ? self::GATE_SKIP : self::GATE_REDIRECT;
+        }
+
+        if (preg_match('#/api/v\d+(/|$)#', $currentPath) === 1) {
+            return self::GATE_SKIP;
+        }
+
+        if (preg_match('#/api/internal(/|$)#', $currentPath) === 1) {
+            return strtoupper($method) === 'GET' && str_ends_with(rtrim($currentPath, '/'), '/api/internal/user-preferences')
+                ? self::GATE_SKIP
+                : self::GATE_JSON;
+        }
+
+        return self::GATE_REDIRECT;
+    }
+
+    private function strictSessionGates(): bool
+    {
+        return (bool)$this->configManager->get('security', 'strict_session_gates', false);
+    }
+
+    private function haltInternalApi(string $message): never
+    {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => true, 'message' => $message]);
+        throw new RequestHalted(RequestHalted::KIND_RESPONSE, '403');
     }
 
     /**
