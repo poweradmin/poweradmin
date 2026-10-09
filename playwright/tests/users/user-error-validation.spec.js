@@ -66,17 +66,17 @@ test.describe('User Management Error Validation', () => {
   test('should update user description successfully', async ({ page }, testInfo) => {
     // Edits a throwaway user so the seeded accounts keep their data
     const username = uniqueName('uev', testInfo);
-    await page.goto('/users/add');
-    await page.locator('input[name="username"]').fill(username);
-    await page.locator('input[name="fullname"]').fill(username);
-    await page.locator('input[name="email"]').fill(`${username}@example.com`);
-    await page.locator('input[name="password"]').fill('TestP@ssw0rd123');
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await expect(page.locator('[data-testid="system-message"]'))
-      .toContainText(/user has been created successfully/i);
-
     const rowFor = () => page.locator(`tr:has(input[value="${username}"])`);
     try {
+      await page.goto('/users/add');
+      await page.locator('input[name="username"]').fill(username);
+      await page.locator('input[name="fullname"]').fill(username);
+      await page.locator('input[name="email"]').fill(`${username}@example.com`);
+      await page.locator('input[name="password"]').fill('TestP@ssw0rd123');
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await expect(page.locator('[data-testid="system-message"]'))
+        .toContainText(/user has been created successfully/i);
+
       await page.goto(`/users?search=${username}`);
       await expect(rowFor()).toHaveCount(1);
       await rowFor().locator('a[href$="/edit"]').first().click();
