@@ -26,6 +26,9 @@ use PDO;
 
 class DbApiLogger
 {
+    // The event column is varchar(2048); cut by characters so a long record cannot fail the INSERT.
+    private const EVENT_MAX_LENGTH = 2048;
+
     private PDO $db;
 
     public function __construct($db)
@@ -35,6 +38,11 @@ class DbApiLogger
 
     public function doLog($msg, $priority): void
     {
+        $msg = (string) $msg;
+        if (mb_strlen($msg, 'UTF-8') > self::EVENT_MAX_LENGTH) {
+            $msg = mb_substr($msg, 0, self::EVENT_MAX_LENGTH - 3, 'UTF-8') . '...';
+        }
+
         try {
             $stmt = $this->db->prepare('INSERT INTO log_api (event, priority) VALUES (:msg, :priority)');
             $stmt->execute([
