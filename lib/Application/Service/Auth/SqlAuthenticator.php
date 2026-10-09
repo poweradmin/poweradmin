@@ -144,7 +144,8 @@ final class SqlAuthenticator
             return AuthOutcome::failure(_('The user account is disabled.'));
         }
 
-        if ($userAuthService->requiresRehash($rowObj['password'])) {
+        // bcrypt verify ignores everything after a NUL byte but bcrypt hashing throws on it
+        if (!str_contains($sessionPassword, "\0") && $userAuthService->requiresRehash($rowObj['password'])) {
             $this->logger->info('Password requires rehashing for user {username}', ['username' => $username]);
             $this->userRepository->updatePassword((int)$rowObj["id"], $userAuthService->hashPassword($sessionPassword));
         }

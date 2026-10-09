@@ -221,8 +221,7 @@ final class LdapAuthenticator
         $session_pass = $credentials !== null
             ? $credentials->password
             : $passwordEncryptionService->decrypt($this->userContextService->getSessionData(SessionKeys::USERPWD));
-        // A zero-length credential would be an unauthenticated bind, which some directories accept
-        if ($session_pass === '' || !@ldap_bind($ldapconn, $user_dn, $session_pass)) {
+        if (!LdapBindPassword::isUsable($session_pass) || !@ldap_bind($ldapconn, $user_dn, $session_pass)) {
             $this->logger->warning('LDAP authentication failed for user {username}', ['username' => $username]);
             if ($isLogin) {
                 $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::WRONG_PASSWORD);

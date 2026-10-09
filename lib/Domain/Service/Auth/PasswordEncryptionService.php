@@ -66,7 +66,9 @@ class PasswordEncryptionService
 
         $decrypted = openssl_decrypt($encryptedPassword, self::ALGORITHM, $key, 0, $iv);
 
-        return $decrypted === false ? '' : rtrim($decrypted, "\0");
+        // openssl_encrypt() pads with PKCS#7, so the plaintext comes back byte for byte; trimming NUL
+        // bytes would let a password that was refused at login pass on the next request
+        return $decrypted === false ? '' : $decrypted;
     }
 
     private function computeKey(): string

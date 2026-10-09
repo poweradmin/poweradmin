@@ -245,8 +245,7 @@ class BasicAuthenticationMiddleware
      */
     private function ldapAuthenticatorApiAuth(int $userId, string $username, #[\SensitiveParameter] string $password): bool
     {
-        // A zero-length credential would be an unauthenticated bind, which some directories accept
-        if ($password === '') {
+        if (!LdapBindPassword::isUsable($password)) {
             return false;
         }
 

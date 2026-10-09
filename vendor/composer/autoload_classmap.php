@@ -1243,6 +1243,7 @@ return array(
     'Poweradmin\\Application\\Service\\Auth\\CsrfTokenService' => $baseDir . '/lib/Application/Service/Auth/CsrfTokenService.php',
     'Poweradmin\\Application\\Service\\Auth\\ExternalSessionGuard' => $baseDir . '/lib/Application/Service/Auth/ExternalSessionGuard.php',
     'Poweradmin\\Application\\Service\\Auth\\LdapAuthenticator' => $baseDir . '/lib/Application/Service/Auth/LdapAuthenticator.php',
+    'Poweradmin\\Application\\Service\\Auth\\LdapBindPassword' => $baseDir . '/lib/Application/Service/Auth/LdapBindPassword.php',
     'Poweradmin\\Application\\Service\\Auth\\LoginAttemptService' => $baseDir . '/lib/Application/Service/Auth/LoginAttemptService.php',
     'Poweradmin\\Application\\Service\\Auth\\LoginCredentials' => $baseDir . '/lib/Application/Service/Auth/LoginCredentials.php',
     'Poweradmin\\Application\\Service\\Auth\\MfaVerificationMailer' => $baseDir . '/lib/Application/Service/Auth/MfaVerificationMailer.php',

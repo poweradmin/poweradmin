@@ -1653,6 +1653,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\Auth\\CsrfTokenService' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/CsrfTokenService.php',
         'Poweradmin\\Application\\Service\\Auth\\ExternalSessionGuard' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/ExternalSessionGuard.php',
         'Poweradmin\\Application\\Service\\Auth\\LdapAuthenticator' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/LdapAuthenticator.php',
+        'Poweradmin\\Application\\Service\\Auth\\LdapBindPassword' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/LdapBindPassword.php',
         'Poweradmin\\Application\\Service\\Auth\\LoginAttemptService' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/LoginAttemptService.php',
         'Poweradmin\\Application\\Service\\Auth\\LoginCredentials' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/LoginCredentials.php',
         'Poweradmin\\Application\\Service\\Auth\\MfaVerificationMailer' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/MfaVerificationMailer.php',

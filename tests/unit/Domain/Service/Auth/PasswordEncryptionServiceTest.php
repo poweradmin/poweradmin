@@ -110,6 +110,13 @@ class PasswordEncryptionServiceTest extends TestCase
         $this->assertSame('0', $this->service->decrypt($this->service->encrypt('0')));
     }
 
+    public function testPasswordWithNulBytesRoundTripsUnchanged(): void
+    {
+        foreach (["secret\0", "\0secret", "sec\0ret", "\0\0"] as $password) {
+            $this->assertSame($password, $this->service->decrypt($this->service->encrypt($password)));
+        }
+    }
+
     public function testDecryptionOfBareZeroReturnsEmptyString(): void
     {
         $this->assertSame('', $this->service->decrypt('0'));

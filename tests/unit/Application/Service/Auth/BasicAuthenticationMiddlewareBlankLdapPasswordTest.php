@@ -54,6 +54,11 @@ class BasicAuthenticationMiddlewareBlankLdapPasswordTest extends TestCase
         $this->assertFalse($this->ldapAuth(''));
     }
 
+    public function testPasswordWithANulByteIsRefusedBeforeTheDirectoryIsContacted(): void
+    {
+        $this->assertFalse($this->ldapAuth("\0secret"));
+    }
+
     public function testNonEmptyPasswordStillGoesToTheDirectory(): void
     {
         $this->expectException(RuntimeException::class);

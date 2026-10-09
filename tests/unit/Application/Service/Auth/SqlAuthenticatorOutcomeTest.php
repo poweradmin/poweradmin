@@ -205,6 +205,18 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $this->assertFalse($this->session->has(SessionKeys::USERID));
     }
 
+    public function testPasswordWithANulByteDoesNotTriggerARehashThatBcryptCannotHash(): void
+    {
+        // bcrypt verify stops at the NUL, so this matches; a cost-10 hash against cost 4 config wants a rehash
+        $this->storeCredentials('alice', self::PASSWORD . "\0");
+        $this->users->expects($this->never())->method('updatePassword');
+
+        $row = $this->userRow(['password' => password_hash(self::PASSWORD, PASSWORD_BCRYPT, ['cost' => 10])]);
+        $outcome = $this->authenticator($row)->authenticate();
+
+        $this->assertSame(AuthOutcomeStatus::Success, $outcome->status);
+    }
+
     private function assertFailure(AuthOutcome $outcome, string $message): void
     {
         $this->assertSame(AuthOutcomeStatus::Failure, $outcome->status);
