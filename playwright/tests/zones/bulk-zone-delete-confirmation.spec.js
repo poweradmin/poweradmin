@@ -9,7 +9,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { deleteZoneById, findZoneIdByName, openZoneListPageFor, zoneExists } from '../../helpers/zones.js';
+import { createZone, deleteZoneById, findZoneIdByName, openZoneListPageFor, zoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -28,11 +28,9 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
     test('should create test zones for deletion', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
+      // createZone waits for the redirect, which networkidle does not reliably do
       for (const domain of testZones) {
-        await page.goto('/zones/add/master');
-        await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(domain);
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-        await page.waitForLoadState('networkidle');
+        await createZone(page, domain);
       }
 
       // Verify zones were created

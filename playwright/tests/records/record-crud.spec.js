@@ -1,7 +1,7 @@
 import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectRecordAdded } from './record-assert.js';
-import { uniqueName } from '../../helpers/zones.js';
+import { uniqueName, isApiModeInstance } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -169,16 +169,18 @@ test.describe('Record CRUD Operations', () => {
       await expectRecordAdded(page, zoneId, { name: `_dmarc.${label}`, content: 'v=DMARC1' });
     });
 
-    test('should add TXT record with special characters', async ({ page }) => {
+    test('should add TXT record with special characters', async ({ page, baseURL }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = zone.id;
       const label = uniqueName('special');
+      // The PowerDNS API rejects backslash-escaped quotes in TXT content (422), the SQL backend stores them
+      const txtContent = isApiModeInstance(baseURL) ? '"test=value; key=123 & more"' : '"test=\\"value\\"; key=123"';
 
       await page.goto(`/zones/${zoneId}/records/add`);
 
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(label);
-      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('"test=\\"value\\"; key=123"');
+      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill(txtContent);
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 

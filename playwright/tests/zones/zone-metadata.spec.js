@@ -133,17 +133,20 @@ test.describe('Zone Metadata Editor', () => {
 
     await page.goto(`/zones/${zoneId}/metadata`);
 
-    // Add new row
-    await page.locator('#add-metadata-row').click();
-
-    // Select SOA-EDIT-API on the last row
-    const lastKindSelect = page.locator('.metadata-kind-select').last();
-    await lastKindSelect.selectOption('SOA-EDIT-API');
+    // A zone created through the API backend already carries a SOA-EDIT-API row,
+    // and the kind accepts a single row, so edit that row instead of adding one.
+    const kindSelects = page.locator('.metadata-kind-select');
+    const kinds = await kindSelects.evaluateAll(els => els.map(el => el.value));
+    let row = page.locator('#metadata-rows tr').nth(kinds.indexOf('SOA-EDIT-API'));
+    if (!kinds.includes('SOA-EDIT-API')) {
+      await page.locator('#add-metadata-row').click();
+      row = page.locator('#metadata-rows tr').last();
+      await row.locator('.metadata-kind-select').selectOption('SOA-EDIT-API');
+    }
 
     // Kinds with a fixed vocabulary swap the free-text input for a select and
     // disable the input, so SOA-EDIT-API takes its value from the dropdown.
-    const lastContentSelect = page.locator('.metadata-content-select').last();
-    await lastContentSelect.selectOption('DEFAULT');
+    await row.locator('.metadata-content-select').selectOption('DEFAULT');
 
     // Save
     await page.locator('[data-testid="save-zone-metadata"]').click();
