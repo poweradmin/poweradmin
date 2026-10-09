@@ -49,6 +49,7 @@ final class UserFormMessages
             UserManagementService::ERR_INVALID_LDAP, UserManagementService::ERR_INVALID_AUTH_METHOD => _('Invalid or unexpected input given.'),
             UserManagementService::ERR_NOT_FOUND => _('User does not exist.'),
             UserManagementService::ERR_LAST_ADMIN => _('Cannot disable the last remaining super admin user.'),
+            UserManagementService::ERR_LAST_ADMIN_DEMOTE => _('Cannot remove super admin from the last remaining super admin user.'),
             // The write message carries the driver's text, which is for the log, not the page.
             UserManagementService::ERR_WRITE => _('The user could not be saved.'),
             default => (string)($result['message'] ?? ''),

@@ -126,7 +126,8 @@ final class UserServices
             $this->services->domainManager(),
             $this->services->zoneManagementService(),
             (bool)$this->config->get('remote_user', 'enabled', false),
-            $this->services->zoneOwnershipLimit()
+            $this->services->zoneOwnershipLimit(),
+            (bool)$this->config->get('security', 'protect_last_admin_on_edit', false)
         );
     }
 

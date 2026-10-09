@@ -347,11 +347,31 @@ class UserManagementServiceTest extends TestCase
         return is_array($command) ? $command : $this->service->createUser($command);
     }
 
-    private function updateUser(int $userId, array $input): array
+    private function updateUser(int $userId, array $input, ?UserManagementService $service = null): array
     {
         $command = UserCommandFactory::update($input);
 
-        return is_array($command) ? $command : $this->service->updateUser($userId, $command);
+        return is_array($command) ? $command : ($service ?? $this->service)->updateUser($userId, $command);
+    }
+
+    private function serviceProtectingLastAdminOnEdit(): UserManagementService
+    {
+        $passwordPolicy = $this->createMock(PasswordPolicyService::class);
+        $passwordPolicy->method('validatePassword')->willReturn([]);
+
+        return new UserManagementService(
+            $this->userRepository,
+            $this->permissionService,
+            new UserProfileAssembler($this->permissionService, $this->groupRepository),
+            new UserAuthenticationService('bcrypt', 4),
+            $passwordPolicy,
+            false,
+            $this->domainManager,
+            $this->createMock(ZoneManagementService::class),
+            false,
+            null,
+            true
+        );
     }
 
     // ========== createUser tests ==========
@@ -792,6 +812,52 @@ class UserManagementServiceTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('Cannot disable the last remaining super admin', $result['message']);
         $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserBlocksDemotingLastUberuser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('templateGrantsUberuser')->with(5)->willReturn(false);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(1, ['perm_templ' => 5], $this->serviceProtectingLastAdminOnEdit());
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('Cannot remove super admin from the last remaining super admin', $result['message']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_LAST_ADMIN_DEMOTE, $result['code']);
+    }
+
+    #[Test]
+    public function testUpdateUserAllowsLastUberuserToKeepASuperAdminTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('templateGrantsUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('updateUser')->willReturn(true);
+
+        $result = $this->updateUser(1, ['perm_templ' => 1], $this->serviceProtectingLastAdminOnEdit());
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserKeepsTodaysBehaviourWhenTheEditGuardIsOff(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->willReturn(true);
+        $this->userRepository->method('templateGrantsUberuser')->willReturn(false);
+        $this->userRepository->expects($this->once())->method('updateUser')->willReturn(true);
+
+        $this->assertTrue($this->updateUser(1, ['perm_templ' => 5])['success']);
     }
 
     #[Test]

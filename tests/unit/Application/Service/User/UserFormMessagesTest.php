@@ -52,6 +52,12 @@ class UserFormMessagesTest extends TestCase
         $this->assertStringContainsString('do not have the permission', UserFormMessages::templateAssignmentError(PermissionService::TEMPLATE_ASSIGN_DENIED));
     }
 
+    public function testLastAdminRefusalsSayWhichChangeWasRefused(): void
+    {
+        $this->assertSame('Cannot disable the last remaining super admin user.', UserFormMessages::errorMessage(['code' => UserManagementService::ERR_LAST_ADMIN]));
+        $this->assertSame('Cannot remove super admin from the last remaining super admin user.', UserFormMessages::errorMessage(['code' => UserManagementService::ERR_LAST_ADMIN_DEMOTE]));
+    }
+
     public function testPolicyMessagesPassThrough(): void
     {
         $result = ['message' => 'Password must be at least 8 characters long', 'code' => UserManagementService::ERR_PASSWORD_POLICY];

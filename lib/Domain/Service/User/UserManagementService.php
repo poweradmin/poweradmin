@@ -59,6 +59,7 @@ class UserManagementService
     public const ERR_NOT_FOUND = 'not_found';
     public const ERR_PASSWORD_FORBIDDEN = 'password_forbidden';
     public const ERR_LAST_ADMIN = 'last_admin';
+    public const ERR_LAST_ADMIN_DEMOTE = 'last_admin_demote';
     public const ERR_TRANSFER_TARGET = 'transfer_target';
     public const ERR_ZONE_DELETE_FORBIDDEN = 'zone_delete_forbidden';
     public const ERR_ZONE_META_FORBIDDEN = 'zone_meta_forbidden';
@@ -72,6 +73,7 @@ class UserManagementService
     private PasswordPolicyInterface $passwordPolicy;
     private bool $ldapEnabled;
     private bool $remoteUserEnabled;
+    private bool $protectLastAdminOnEdit;
     private ?ZoneOwnershipLimit $ownershipLimit;
     private DomainManagerInterface $domainManager;
     private ZoneManagementService $zones;
@@ -86,9 +88,11 @@ class UserManagementService
         DomainManagerInterface $domainManager,
         ZoneManagementService $zones,
         bool $remoteUserEnabled = false,
-        ?ZoneOwnershipLimit $ownershipLimit = null
+        ?ZoneOwnershipLimit $ownershipLimit = null,
+        bool $protectLastAdminOnEdit = false
     ) {
         $this->ownershipLimit = $ownershipLimit;
+        $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
         $this->userRepository = $userRepository;
         $this->permissions = $permissionService;
         $this->profileAssembler = $profileAssembler;
@@ -441,6 +445,24 @@ class UserManagementService
                 'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
                 'refusal' => Refusal::CONFLICT,
                 'code' => self::ERR_LAST_ADMIN,
+            ];
+        }
+
+        // Same guard as assignPermissionTemplate(): the edit form and API PUT must not
+        // move the last super admin to a template without the super admin permission.
+        // Opt-in through security.protect_last_admin_on_edit, so existing installs keep
+        // today's behaviour until they turn it on.
+        if (
+            $this->protectLastAdminOnEdit
+            && $command->permissionTemplateId !== null
+            && $this->userRepository->isLastUberuser($userId)
+            && !$this->userRepository->templateGrantsUberuser($command->permissionTemplateId)
+        ) {
+            return [
+                'success' => false,
+                'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
+                'refusal' => Refusal::CONFLICT,
+                'code' => self::ERR_LAST_ADMIN_DEMOTE,
             ];
         }
 
