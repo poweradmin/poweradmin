@@ -75,12 +75,14 @@ class DbPermissionTemplateRepositoryTest extends SqliteIntegrationTestCase
     #[Test]
     public function addingATemplateStoresItsDetailsAndPermissions(): void
     {
-        $this->assertTrue($this->repository->addPermissionTemplate([
+        $id = $this->repository->addPermissionTemplate([
             'templ_name' => 'With Perms',
             'templ_descr' => 'Description',
             'template_type' => 'group',
             'perm_id' => [47, 53],
-        ]));
+        ]);
+
+        $this->assertSame($this->newTemplateId(), $id);
 
         $this->assertSame(
             ['name' => 'With Perms', 'descr' => 'Description', 'template_type' => 'group'],
@@ -92,10 +94,10 @@ class DbPermissionTemplateRepositoryTest extends SqliteIntegrationTestCase
     #[Test]
     public function addingATemplateWithoutPermIdsLeavesItEmptyAndDefaultsToAUserTemplate(): void
     {
-        $this->assertTrue($this->repository->addPermissionTemplate([
+        $this->repository->addPermissionTemplate([
             'templ_name' => 'Empty',
             'templ_descr' => 'No perms',
-        ]));
+        ]);
 
         $this->assertSame('user', $this->templateRow('Empty')['template_type']);
         $this->assertSame([], $this->permissionIds($this->newTemplateId()));
@@ -214,7 +216,7 @@ class DbPermissionTemplateRepositoryTest extends SqliteIntegrationTestCase
 
         $repository = new DbPermissionTemplateRepository($db, $this->sqliteConfiguration());
 
-        $this->assertTrue($repository->addPermissionTemplate([
+        $this->assertSame(42, $repository->addPermissionTemplate([
             'templ_name' => 'Test Template',
             'templ_descr' => 'Description',
             'template_type' => 'user',

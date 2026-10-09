@@ -270,7 +270,11 @@ class PermissionTemplatesController extends PublicApiController
                     properties: [
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
                         'message' => new OA\Property(property: 'message', type: 'string', example: 'Permission template created successfully'),
-                        'data' => new OA\Property(property: 'data', type: 'object', nullable: true, example: null)
+                        'data' => new OA\Property(
+                            property: 'data',
+                            properties: [new OA\Property(property: 'id', type: 'integer', example: 7)],
+                            type: 'object'
+                        )
                     ]
                 )
             ),
@@ -327,7 +331,7 @@ class PermissionTemplatesController extends PublicApiController
                 return $this->returnApiError($result['message'], $result['status']);
             }
 
-            return $this->returnApiResponse(null, true, $result['message'], $result['status']);
+            return $this->returnApiResponse(['id' => $result['id'] ?? null], true, $result['message'], $result['status']);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::createTemplate', 'Failed to create permission template');
         }

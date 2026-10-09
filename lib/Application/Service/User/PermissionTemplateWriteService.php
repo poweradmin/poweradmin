@@ -42,7 +42,7 @@ readonly class PermissionTemplateWriteService
 
     /**
      * @param array<string, mixed> $details Repository payload: templ_name, templ_descr, template_type, perm_id
-     * @return array{success: bool, message: string, status: int}
+     * @return array{success: bool, message: string, status: int, id?: int}
      */
     public function create(int $callerId, array $details): array
     {
@@ -57,11 +57,9 @@ readonly class PermissionTemplateWriteService
             return ['success' => false, 'message' => $error, 'status' => 403];
         }
 
-        if (!$this->templateRepository->addPermissionTemplate($details)) {
-            return ['success' => false, 'message' => 'Failed to create permission template', 'status' => 500];
-        }
+        $templateId = $this->templateRepository->addPermissionTemplate($details);
 
-        return ['success' => true, 'message' => 'Permission template created successfully', 'status' => 201];
+        return ['success' => true, 'message' => 'Permission template created successfully', 'status' => 201, 'id' => $templateId];
     }
 
     /**

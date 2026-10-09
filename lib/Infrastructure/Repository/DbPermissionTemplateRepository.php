@@ -52,9 +52,9 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
      *
      * @param array $details Permission template details [templ_name,templ_descr,template_type,perm_id]
      *
-     * @return boolean true on success, false otherwise
+     * @return int The new template's id
      */
-    public function addPermissionTemplate(array $details): bool
+    public function addPermissionTemplate(array $details): int
     {
         $template_type = $details['template_type'] ?? 'user';
 
@@ -81,7 +81,7 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
             }
 
             $this->transaction()->commit();
-            return true;
+            return (int)$perm_templ_id;
         } catch (Throwable $e) {
             $this->transaction()->rollBack();
             throw $e;

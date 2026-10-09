@@ -33,9 +33,9 @@ interface PermissionTemplateRepositoryInterface
      * Add a permission template. Write through PermissionTemplateWriteService; it carries the content guard.
      *
      * @param array $details Permission template details [templ_name,templ_descr,template_type,perm_id]
-     * @return bool true on success, false otherwise
+     * @return int The new template's id
      */
-    public function addPermissionTemplate(array $details): bool;
+    public function addPermissionTemplate(array $details): int;
 
     /**
      * Permissions available (template id 0) or assigned to one template.

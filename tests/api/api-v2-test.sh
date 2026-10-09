@@ -3178,7 +3178,9 @@ lug_test_templ() {
     lug_as lug_templ "POST" "/permission-templates" '{"name":"lug_escalate_templ","descr":"x","permissions":[53]}' 403 "templ: template granting ueberuser rejected"
     assert_json "templ: no escalation template was created" "$(lug_admin_get '/permission-templates')" '[.data.templates[] | select(.name == "lug_escalate_templ")] | length' "0"
     lug_as lug_templ "POST" "/permission-templates" '{"name":"lug_created_templ","descr":"x","permissions":[56]}' 201 "templ: may create an ordinary template"
+    local created_body="$LAST_RESPONSE_BODY"
     created=$(lug_lookup_perm_templ "lug_created_templ")
+    assert_json "templ: create returns the new template id" "$created_body" '.data.id | tostring' "$created"
     if [[ -n "$created" ]]; then
         lug_as lug_templ "PUT" "/permission-templates/${created}" '{"name":"lug_created_templ","descr":"x","permissions":[56,53]}' 403 "templ: adding ueberuser to own template rejected"
         lug_as lug_templ "PUT" "/permission-templates/${created}" '{"name":"lug_created_templ","descr":"y","permissions":[56,43]}' 200 "templ: may edit an ordinary template"
