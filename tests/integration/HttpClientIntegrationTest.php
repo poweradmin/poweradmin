@@ -30,7 +30,8 @@ use Poweradmin\Infrastructure\Api\HttpClient;
  * Real HTTP calls through HttpClient against the API-mode PowerDNS devcontainer instance.
  *
  * Guards the response-header handling: it must work on every PHP version, including 8.5
- * where $http_response_header is deprecated. Skipped when the API is unreachable.
+ * where $http_response_header is deprecated. The PowerDNS-backed tests are skipped when the API
+ * is unreachable; the stub-server and connection-refused tests need no PowerDNS.
  * Set POWERADMIN_TEST_PDNS_API_URL when the API is not on 127.0.0.1:8186 (for example
  * http://host.docker.internal:8186 from a container).
  */
@@ -48,7 +49,10 @@ class HttpClientIntegrationTest extends TestCase
     {
         $this->apiUrl = getenv('POWERADMIN_TEST_PDNS_API_URL') ?: self::DEFAULT_API_URL;
         $this->client = new HttpClient($this->apiUrl, self::API_KEY, null, 5, true);
+    }
 
+    private function requirePowerDns(): void
+    {
         try {
             $this->client->makeRequest('GET', '/api/v1/servers/localhost');
         } catch (ApiErrorException $e) {
@@ -93,6 +97,7 @@ class HttpClientIntegrationTest extends TestCase
 
     public function testGetReturnsStatus200AndDecodedJson(): void
     {
+        $this->requirePowerDns();
         $result = $this->client->makeRequest('GET', '/api/v1/servers/localhost');
 
         $this->assertSame(200, $result['responseCode']);
@@ -101,6 +106,7 @@ class HttpClientIntegrationTest extends TestCase
 
     public function testPatchReturnsStatus204WithEmptyData(): void
     {
+        $this->requirePowerDns();
         $this->createZone();
 
         $result = $this->patchA('192.0.2.1');
@@ -111,6 +117,7 @@ class HttpClientIntegrationTest extends TestCase
 
     public function testNotFoundBodyIsPassedThroughInException(): void
     {
+        $this->requirePowerDns();
         try {
             $this->client->makeRequest('GET', self::ZONES . '/does-not-exist-' . bin2hex(random_bytes(4)) . '.example.');
             $this->fail('Expected ApiErrorException');
@@ -123,6 +130,7 @@ class HttpClientIntegrationTest extends TestCase
 
     public function testRejectedRecordBodyIsPassedThroughInException(): void
     {
+        $this->requirePowerDns();
         $this->createZone();
 
         try {
@@ -164,7 +172,14 @@ class HttpClientIntegrationTest extends TestCase
         if (!is_resource($process)) {
             $this->markTestSkipped('Cannot start the stub server');
         }
-        fgets($pipes[1]);
+        $ready = fgets($pipes[1]);
+        if ($ready !== "ready\n") {
+            proc_terminate($process);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            proc_close($process);
+            $this->fail('Stub server did not start: ' . var_export($ready, true));
+        }
 
         return [$process, $port];
     }

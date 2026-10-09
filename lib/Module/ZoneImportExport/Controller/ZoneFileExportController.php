@@ -101,7 +101,7 @@ class ZoneFileExportController extends BaseController
 
             $options = [
                 'http' => [
-                    'header' => "X-API-Key: $apiKey\r\n",
+                    'header' => "X-API-Key: $apiKey\r\nAccept: text/plain\r\n",
                     'method' => 'GET',
                     'ignore_errors' => true,
                     'timeout' => 10,
@@ -124,16 +124,21 @@ class ZoneFileExportController extends BaseController
             }
 
             $responseCode = 0;
+            $contentType = '';
             $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
             if (!empty($responseHeaders)) {
                 foreach ($responseHeaders as $header) {
                     if (preg_match('/^HTTP\/\S+\s+(\d{3})/', $header, $matches)) {
                         $responseCode = (int)$matches[1];
+                        $contentType = '';
+                    } elseif (stripos($header, 'Content-Type:') === 0) {
+                        $contentType = strtolower(trim(substr($header, 13)));
                     }
                 }
             }
 
-            if ($responseCode === 200 && !empty(trim($response))) {
+            // PowerDNS answers with JSON instead of a zone file unless text/plain is accepted.
+            if ($responseCode === 200 && str_starts_with($contentType, 'text/plain') && !empty(trim($response))) {
                 return $response;
             }
         } catch (\Exception $e) {
