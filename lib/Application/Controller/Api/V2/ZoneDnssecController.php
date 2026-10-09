@@ -41,6 +41,29 @@ use Exception;
 /**
  * /api/v2/zones/{id}/dnssec: reports the signing status of a zone and signs or unsigns it.
  */
+#[OA\Schema(
+    schema: 'ZoneDnssecStatus',
+    description: 'DNSSEC signing status of a zone',
+    properties: [
+        new OA\Property(property: 'enabled', type: 'boolean', description: 'Whether the zone is DNSSEC signed', example: true),
+        new OA\Property(property: 'presigned', type: 'boolean', description: 'Whether the zone is presigned (DNSSEC managed at the primary server)', example: false),
+        new OA\Property(
+            property: 'ds_records',
+            type: 'array',
+            items: new OA\Items(
+                properties: [
+                    new OA\Property(property: 'key_tag', type: 'integer', example: 12345),
+                    new OA\Property(property: 'algorithm', type: 'integer', example: 13),
+                    new OA\Property(property: 'digest_type', type: 'integer', example: 2),
+                    new OA\Property(property: 'digest', type: 'string', example: 'ABC123DEF456'),
+                ],
+                type: 'object'
+            )
+        ),
+        new OA\Property(property: 'dnskey', type: 'string', nullable: true, example: '257 3 13 ...'),
+    ],
+    type: 'object'
+)]
 class ZoneDnssecController extends PublicApiController
 {
     protected DomainRepositoryInterface $domainRepository;
@@ -107,28 +130,7 @@ class ZoneDnssecController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'DNSSEC status retrieved successfully'),
-                new OA\Property(
-                    property: 'data',
-                    properties: [
-                        new OA\Property(property: 'enabled', type: 'boolean', example: true),
-                        new OA\Property(property: 'presigned', type: 'boolean', description: 'Whether the zone is presigned (DNSSEC managed at the primary server)', example: false),
-                        new OA\Property(
-                            property: 'ds_records',
-                            type: 'array',
-                            items: new OA\Items(
-                                properties: [
-                                    new OA\Property(property: 'key_tag', type: 'integer', example: 12345),
-                                    new OA\Property(property: 'algorithm', type: 'integer', example: 13),
-                                    new OA\Property(property: 'digest_type', type: 'integer', example: 2),
-                                    new OA\Property(property: 'digest', type: 'string', example: 'ABC123DEF456'),
-                                ],
-                                type: 'object'
-                            )
-                        ),
-                        new OA\Property(property: 'dnskey', type: 'string', nullable: true, example: '257 3 13 ...'),
-                    ],
-                    type: 'object'
-                )
+                new OA\Property(property: 'data', ref: '#/components/schemas/ZoneDnssecStatus'),
             ],
             type: 'object'
         )
@@ -196,7 +198,18 @@ class ZoneDnssecController extends PublicApiController
             )
         ]
     )]
-    #[OA\Response(response: 200, description: 'DNSSEC status updated successfully')]
+    #[OA\Response(
+        response: 200,
+        description: 'DNSSEC status updated successfully',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', example: 'DNSSEC enabled successfully'),
+                new OA\Property(property: 'data', ref: '#/components/schemas/ZoneDnssecStatus'),
+            ],
+            type: 'object'
+        )
+    )]
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden')]

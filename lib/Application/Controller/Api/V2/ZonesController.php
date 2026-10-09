@@ -655,6 +655,7 @@ class ZonesController extends PublicApiController
                             property: 'zone',
                             properties: [
                                 new OA\Property(property: 'id', type: 'integer', example: 123),
+                                new OA\Property(property: 'canonical_id', type: 'integer', example: 123, description: 'Same as id, kept for clients that read it'),
                                 new OA\Property(property: 'name', type: 'string', example: 'example.com'),
                                 new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
                                 new OA\Property(property: 'masters', type: 'string', nullable: true, example: null),

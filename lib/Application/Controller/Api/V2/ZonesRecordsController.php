@@ -288,6 +288,7 @@ class ZonesRecordsController extends PublicApiController
                             property: 'record',
                             properties: [
                                 new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 1),
+                                new OA\Property(property: 'zone_id', type: 'integer', example: 1),
                                 new OA\Property(property: 'name', type: 'string', example: 'www'),
                                 new OA\Property(property: 'type', type: 'string', example: 'A'),
                                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
@@ -653,13 +654,15 @@ class ZonesRecordsController extends PublicApiController
                             property: 'record',
                             properties: [
                                 new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 1),
+                                new OA\Property(property: 'zone_id', type: 'integer', example: 1),
                                 new OA\Property(property: 'name', type: 'string', example: 'www'),
                                 new OA\Property(property: 'type', type: 'string', example: 'A'),
                                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                                 new OA\Property(property: 'priority', type: 'integer', example: 10),
                                 new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
-                                new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record)')
+                                new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record)'),
+                                new OA\Property(property: 'ptr_updated', type: 'boolean', example: false, description: 'Whether the matching PTR record was updated as well'),
                             ],
                             type: 'object'
                         )
