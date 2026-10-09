@@ -2090,6 +2090,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Logger\\DbGroupLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/DbGroupLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\DbUserLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/DbUserLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\DbZoneLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/DbZoneLogger.php',
+        'Poweradmin\\Infrastructure\\Logger\\LogEventColumn' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/LogEventColumn.php',
         'Poweradmin\\Infrastructure\\Logger\\LogHandlerInterface' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/LogHandlerInterface.php',
         'Poweradmin\\Infrastructure\\Logger\\Logger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/Logger.php',
         'Poweradmin\\Infrastructure\\Logger\\NativeLogHandler' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/NativeLogHandler.php',

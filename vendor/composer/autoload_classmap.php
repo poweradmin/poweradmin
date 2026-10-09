@@ -1680,6 +1680,7 @@ return array(
     'Poweradmin\\Infrastructure\\Logger\\DbGroupLogger' => $baseDir . '/lib/Infrastructure/Logger/DbGroupLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\DbUserLogger' => $baseDir . '/lib/Infrastructure/Logger/DbUserLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\DbZoneLogger' => $baseDir . '/lib/Infrastructure/Logger/DbZoneLogger.php',
+    'Poweradmin\\Infrastructure\\Logger\\LogEventColumn' => $baseDir . '/lib/Infrastructure/Logger/LogEventColumn.php',
     'Poweradmin\\Infrastructure\\Logger\\LogHandlerInterface' => $baseDir . '/lib/Infrastructure/Logger/LogHandlerInterface.php',
     'Poweradmin\\Infrastructure\\Logger\\Logger' => $baseDir . '/lib/Infrastructure/Logger/Logger.php',
     'Poweradmin\\Infrastructure\\Logger\\NativeLogHandler' => $baseDir . '/lib/Infrastructure/Logger/NativeLogHandler.php',
