@@ -89,6 +89,30 @@ BEGIN
     END LOOP;
 END $$;
 
+-- The same lagging sequences made the 4.1.0 update drop the Zone Manager template and the
+-- DNS Editor (now Editor) grants (#1673). Restore both, but only where they are still missing.
+INSERT INTO perm_templ (name, descr, template_type)
+SELECT 'Zone Manager', 'Full management of own zones including creation, editing, deletion, and templates.', 'user'
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ WHERE name = 'Zone Manager' AND template_type = 'user');
+
+INSERT INTO perm_templ_items (templ_id, perm_id)
+SELECT pt.id, pi.id
+FROM (VALUES
+    ('Zone Manager', 'zone_master_add'), ('Zone Manager', 'zone_slave_add'),
+    ('Zone Manager', 'zone_content_view_own'), ('Zone Manager', 'zone_content_edit_own'),
+    ('Zone Manager', 'zone_meta_edit_own'), ('Zone Manager', 'search'),
+    ('Zone Manager', 'user_edit_own'), ('Zone Manager', 'zone_templ_add'),
+    ('Zone Manager', 'zone_templ_edit'), ('Zone Manager', 'api_manage_keys'),
+    ('Zone Manager', 'zone_delete_own'), ('Zone Manager', 'zone_metadata_view_own'),
+    ('Zone Manager', 'zone_ownership_view_own'),
+    ('Editor', 'zone_content_view_own'), ('Editor', 'search'),
+    ('Editor', 'user_edit_own'), ('Editor', 'zone_content_edit_own_as_client'),
+    ('Editor', 'zone_metadata_view_own'), ('Editor', 'zone_ownership_view_own')
+) AS g(templ, perm)
+JOIN perm_templ pt ON pt.name = g.templ AND pt.template_type = 'user'
+JOIN perm_items pi ON pi.name = g.perm
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items pti WHERE pti.templ_id = pt.id);
+
 -- Databases upgraded from 4.0.0-4.0.4 straight to 4.1.0 or later never ran the 4.0.5
 -- update (records_zone_templ primary key, #906), and no update added the zones indexes.
 DO $$
