@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 
 class DbUserLogger
 {
+    private const EVENT_MAX_LENGTH = 2048;
+
     private PDOLayer $db;
 
     public function __construct($db)
@@ -39,9 +41,20 @@ class DbUserLogger
     {
         $stmt = $this->db->prepare('INSERT INTO log_users (event, priority) VALUES (:msg, :priority)');
         $stmt->execute([
-            ':msg' => $msg,
+            ':msg' => $this->fitEvent($msg),
             ':priority' => $priority,
         ]);
+    }
+
+    // The event column is varchar(2048); strict MySQL and PostgreSQL reject longer values after the change was committed
+    private function fitEvent($msg): string
+    {
+        $msg = (string)$msg;
+        if (mb_strlen($msg, 'UTF-8') <= self::EVENT_MAX_LENGTH) {
+            return $msg;
+        }
+
+        return mb_substr($msg, 0, self::EVENT_MAX_LENGTH - 3, 'UTF-8') . '...';
     }
 
     public function count_all_logs()

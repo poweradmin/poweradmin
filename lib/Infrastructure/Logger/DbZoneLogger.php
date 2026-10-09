@@ -29,6 +29,8 @@ use Poweradmin\AppConfiguration;
 
 class DbZoneLogger
 {
+    private const EVENT_MAX_LENGTH = 2048;
+
     private PDOLayer $db;
     private AppConfiguration $config;
 
@@ -42,10 +44,21 @@ class DbZoneLogger
     {
         $stmt = $this->db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
         $stmt->execute([
-            ':msg' => $msg,
+            ':msg' => $this->fitEvent($msg),
             ':zone_id' => $zone_id,
             ':priority' => $priority,
         ]);
+    }
+
+    // The event column is varchar(2048); strict MySQL and PostgreSQL reject longer values after the change was committed
+    private function fitEvent($msg): string
+    {
+        $msg = (string)$msg;
+        if (mb_strlen($msg, 'UTF-8') <= self::EVENT_MAX_LENGTH) {
+            return $msg;
+        }
+
+        return mb_substr($msg, 0, self::EVENT_MAX_LENGTH - 3, 'UTF-8') . '...';
     }
 
     public function count_all_logs()
