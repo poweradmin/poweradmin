@@ -50,11 +50,24 @@ class DbZoneLogger
         return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
+    // The event column is varchar(2048) on every database; an overlong message would fail the INSERT.
+    private const EVENT_MAX_LENGTH = 2048;
+
+    private function fitEvent($msg): string
+    {
+        $msg = (string) $msg;
+        if (mb_strlen($msg, 'UTF-8') <= self::EVENT_MAX_LENGTH) {
+            return $msg;
+        }
+
+        return mb_substr($msg, 0, self::EVENT_MAX_LENGTH - 3, 'UTF-8') . '...';
+    }
+
     public function doLog($msg, $zone_id, $priority): void
     {
         $stmt = $this->db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
         $stmt->execute([
-            ':msg' => $msg,
+            ':msg' => $this->fitEvent($msg),
             ':zone_id' => $zone_id,
             ':priority' => $priority,
         ]);
