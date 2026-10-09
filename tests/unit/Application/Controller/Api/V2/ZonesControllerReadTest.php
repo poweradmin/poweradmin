@@ -58,7 +58,7 @@ class ZonesControllerReadTest extends V2ControllerTestCase
         $this->permissions->method('canViewZone')->willReturn(true);
     }
 
-    public function testAnEmptyListStillCarriesPaginationMetadata(): void
+    public function testAnEmptyListWithoutPerPageHasNoPaginationBlock(): void
     {
         $this->permissions->method('getUserVisibleZoneIds')->willReturn([]);
         $this->zones->method('getZoneCountFiltered')->willReturn(0);
@@ -69,7 +69,7 @@ class ZonesControllerReadTest extends V2ControllerTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame([], $body['data']['zones']);
-        $this->assertSame(['current_page' => 1, 'per_page' => 0, 'total' => 0, 'last_page' => 1], $body['pagination']);
+        $this->assertArrayNotHasKey('pagination', $body);
     }
 
     public function testWithoutPerPageEveryZoneIsReturnedAndNoPaginationBlockIsAdded(): void

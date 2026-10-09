@@ -182,15 +182,13 @@ class ZonesController extends PublicApiController
 
             // If user has no view permissions or name filter matches nothing, return empty result immediately
             if ($totalCount === 0) {
-                return $this->returnApiResponse(['zones' => []], true, 'Zones retrieved successfully', 200, [
-                    'meta' => ['timestamp' => date('Y-m-d H:i:s')],
-                    'pagination' => [
-                        'current_page' => 1,
-                        'per_page' => $perPage,
-                        'total' => 0,
-                        'last_page' => 1
-                    ]
-                ]);
+                return $this->returnApiResponse(
+                    ['zones' => []],
+                    true,
+                    'Zones retrieved successfully',
+                    200,
+                    ['meta' => ['timestamp' => date('Y-m-d H:i:s')]] + ListPaging::extra($page, $perPage, 0)
+                );
             }
 
             if ($perPage === 0) {
