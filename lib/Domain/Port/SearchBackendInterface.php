@@ -35,9 +35,9 @@ interface SearchBackendInterface
      * Poweradmin metadata (ownership, permissions).
      *
      * @param string $query Search query (supports wildcards)
-     * @param string $objectType Filter: 'all', 'zone', 'record'
+     * @param string $objectType Filter: 'all', 'zone', 'record', or 'comment' (API backend only)
      * @param int $max Maximum results
-     * @return array{zones: array, records: array}
+     * @return array{zones: array, records: array, comments?: array} comments lists RRset comment hits (API backend)
      */
     public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array;
 }

@@ -1195,6 +1195,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
         $zones = [];
         $records = [];
+        $comments = [];
 
         // Build local zone lookup
         $stmt = $this->db->query("SELECT id, domain_id, zone_name FROM zones WHERE zone_name IS NOT NULL");
@@ -1216,6 +1217,19 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
                     'id' => $zoneId,
                     'name' => $name,
                     'type' => strtoupper($result['kind'] ?? ''),
+                ];
+            } elseif ($objType === 'comment') {
+                $zoneName = rtrim($result['zone'] ?? '', '.');
+                $domainId = 0;
+                if (isset($localZones[$zoneName])) {
+                    $domainId = (int)($localZones[$zoneName]['domain_id'] ?: $localZones[$zoneName]['id']);
+                }
+                $comments[] = [
+                    'domain_id' => $domainId,
+                    'zone_name' => $zoneName,
+                    'name' => $name,
+                    'type' => $result['type'] ?? '',
+                    'comment' => $result['content'] ?? '',
                 ];
             } elseif ($objType === 'record') {
                 $content = $result['content'] ?? '';
@@ -1252,7 +1266,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
             }
         }
 
-        return ['zones' => $zones, 'records' => $records];
+        return ['zones' => $zones, 'records' => $records, 'comments' => $comments];
     }
 
     // ---------------------------------------------------------------

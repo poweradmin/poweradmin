@@ -150,7 +150,13 @@ class RepositoryFactory implements RepositoryFactoryInterface
     public function createRecordSearch(): RecordSearchInterface
     {
         if ($this->backendProvider->isApiBackend()) {
-            return new ApiRecordSearch($this->db, $this->backendProvider, $this->createZoneRepository());
+            return new ApiRecordSearch(
+                $this->db,
+                $this->backendProvider,
+                $this->createZoneRepository(),
+                (bool)$this->config->get('interface', 'show_record_comments', false),
+                $this->logger
+            );
         }
         return new RecordSearch($this->db, $this->config, $this->config->get('database', 'type', 'mysql'));
     }

@@ -23,8 +23,11 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordSearchInterface;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
@@ -34,6 +37,22 @@ use Poweradmin\Infrastructure\Utility\ResultPaginator;
  */
 final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterface
 {
+    private const SEARCH_LIMIT = 10000;
+    private const MAX_COMMENT_ZONES = 50;
+
+    /** @var array<string, array> Comment-matched rows per (query, mode, view, user), shared by the page and the count */
+    private array $commentRows = [];
+
+    public function __construct(
+        PDO $db,
+        DnsBackendProviderInterface $backendProvider,
+        ZoneRepositoryInterface $zoneRepository,
+        private readonly bool $recordCommentsEnabled = false,
+        private readonly ?LoggerInterface $logger = null
+    ) {
+        parent::__construct($db, $backendProvider, $zoneRepository);
+    }
+
     public function searchRecords(
         array $parameters,
         string $permissionView,
@@ -55,16 +74,17 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
             return [];
         }
 
+        $rawQuery = trim($query);
         $parameters = $this->preprocessSearchQuery($parameters);
         $query = $parameters['query'];
 
-        $results = $this->backendProvider->searchDnsData($query, 'record', 10000);
+        $results = $this->backendProvider->searchDnsData($query, 'record', self::SEARCH_LIMIT);
         $records = $results['records'];
 
         // A reverse query is a second search whose new rows are appended
         $reverseQuery = $parameters['reverse_query'] ?? '';
         if (!empty($reverseQuery)) {
-            $reverseResults = $this->backendProvider->searchDnsData($reverseQuery, 'record', 10000);
+            $reverseResults = $this->backendProvider->searchDnsData($reverseQuery, 'record', self::SEARCH_LIMIT);
             $reverseRecords = $reverseResults['records'];
             if (!empty($reverseRecords)) {
                 $seenKeys = [];
@@ -80,10 +100,6 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
             }
         }
 
-        if (empty($records)) {
-            return [];
-        }
-
         // Wildcard off means an exact match on name or content, or on the reverse form
         if (isset($parameters['wildcard']) && !$parameters['wildcard']) {
             $records = array_values(array_filter($records, function ($record) use ($query, $reverseQuery) {
@@ -93,9 +109,15 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
                     || strcasecmp($content, $query) === 0
                     || (!empty($reverseQuery) && (strcasecmp($name, $reverseQuery) === 0 || strcasecmp($content, $reverseQuery) === 0));
             }));
-            if (empty($records)) {
-                return [];
-            }
+        }
+
+        if ($this->recordCommentsEnabled && !empty($parameters['comments'])) {
+            $exact = isset($parameters['wildcard']) && !$parameters['wildcard'];
+            $records = $this->mergeCommentMatches($records, $this->commentMatches($rawQuery, $exact, $permissionView, $userId));
+        }
+
+        if (empty($records)) {
+            return [];
         }
 
         $typeFilter = $parameters['type_filter'] ?? '';
@@ -161,6 +183,98 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
     public function getTotalRecords(array $parameters, string $permissionView, ?int $userId, bool $groupRecords): int
     {
         return count($this->searchRecords($parameters, $permissionView, $userId, 'name', 'ASC', $groupRecords, PHP_INT_MAX, false, 1));
+    }
+
+    /**
+     * Comment-matched rows, computed once per request for a given search and user.
+     */
+    private function commentMatches(string $query, bool $exact, string $permissionView, ?int $userId): array
+    {
+        $key = $query . "\0" . (int)$exact . "\0" . $permissionView . "\0" . (int)$userId;
+        if (!isset($this->commentRows[$key])) {
+            $this->commentRows[$key] = $this->findRecordsByComment($query, $exact, $permissionView === 'own' ? $userId : null);
+        }
+
+        return $this->commentRows[$key];
+    }
+
+    /**
+     * Records of every RRset whose comment matches. PowerDNS comments belong to
+     * the whole RRset, so all of its records match, one zone fetch per zone.
+     * With an owner id, zones that user cannot see are dropped before any fetch.
+     */
+    private function findRecordsByComment(string $query, bool $exact, ?int $ownerId): array
+    {
+        $hits = $this->backendProvider->searchDnsData($query, 'comment', self::SEARCH_LIMIT)['comments'] ?? [];
+        $ownedIds = $ownerId !== null ? $this->ownedZoneIds($ownerId) : null;
+
+        $rrsetsByZone = [];
+        $zoneIds = [];
+        foreach ($hits as $hit) {
+            if ($exact && strcasecmp((string)($hit['comment'] ?? ''), $query) !== 0) {
+                continue;
+            }
+            if ($ownedIds !== null && !in_array($hit['domain_id'] ?? 0, $ownedIds, true)) {
+                continue;
+            }
+            $zoneName = (string)($hit['zone_name'] ?? '');
+            $zoneIds[$zoneName] = $hit['domain_id'] ?? 0;
+            $rrsetsByZone[$zoneName][strtolower(($hit['name'] ?? '') . '|' . ($hit['type'] ?? ''))] = true;
+        }
+
+        if (count($rrsetsByZone) > self::MAX_COMMENT_ZONES) {
+            $this->logger?->warning('Comment search matched {zones} zones, listing the first {max}', [
+                'zones' => count($rrsetsByZone),
+                'max' => self::MAX_COMMENT_ZONES,
+            ]);
+            $rrsetsByZone = array_slice($rrsetsByZone, 0, self::MAX_COMMENT_ZONES, true);
+        }
+
+        $records = [];
+        foreach ($rrsetsByZone as $zoneName => $rrsets) {
+            foreach ($this->backendProvider->getZoneRecords($zoneIds[$zoneName], (string)$zoneName) as $record) {
+                if (isset($rrsets[strtolower(($record['name'] ?? '') . '|' . ($record['type'] ?? ''))])) {
+                    $record['zone_name'] = $zoneName;
+                    $records[] = $record;
+                }
+            }
+        }
+
+        return $records;
+    }
+
+    /**
+     * Append the comment matches that the name or content search did not already find.
+     */
+    private function mergeCommentMatches(array $records, array $commentRecords): array
+    {
+        $seen = [];
+        foreach ($records as $record) {
+            $seen[$this->recordKey($record)] = true;
+        }
+        foreach ($commentRecords as $record) {
+            $key = $this->recordKey($record);
+            if (!isset($seen[$key])) {
+                $seen[$key] = true;
+                $records[] = $record;
+            }
+        }
+
+        return $records;
+    }
+
+    /**
+     * The record's stable identity: its encoded id, else zone id, name, type, exact content and priority.
+     */
+    private function recordKey(array $record): string
+    {
+        $id = $record['id'] ?? '';
+        if (is_string($id) && $id !== '') {
+            return $id;
+        }
+
+        return ($record['domain_id'] ?? 0) . '|' . strtolower($record['name'] ?? '') . '|' . ($record['type'] ?? '')
+            . '|' . ($record['content'] ?? '') . '|' . ($record['prio'] ?? 0);
     }
 
     /**

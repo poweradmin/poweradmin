@@ -218,6 +218,53 @@ test.describe('Search Comments Feature', () => {
     });
   });
 
+  test.describe('API Backend RRset Comment Matching', () => {
+    test.describe.configure({ mode: 'serial' });
+    const zone = useFileZone('cmtrrset');
+
+    test('should return every record of an RRset whose comment matches', async ({ page }) => {
+      test.skip(!isApiModeInstance(test.info().project.use.baseURL ?? process.env.BASE_URL), 'SQL instances are covered by the linked comment test');
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+      const label = uniqueName('cmtrrset');
+      const marker = `rrsetmarker${Date.now()}`;
+
+      await page.goto(`/zones/${zone.id}/records/add`);
+      const commentInput = page.locator('input[name="records[0][comment]"]');
+      test.skip(await commentInput.count() === 0, 'Record comments are disabled on this instance');
+
+      // The uncommented record goes first, then the commented one joins its RRset
+      await addRecord(page, zone.id, { name: label, type: 'A', content: '192.0.2.82' });
+
+      await page.goto(`/zones/${zone.id}/records/add`);
+      await page.locator('input[name="records[0][name]"]').fill(label);
+      await page.locator('select[name="records[0][type]"]').selectOption('A');
+      await page.locator('input[name="records[0][content]"]').fill('192.0.2.81');
+      await commentInput.fill(marker);
+      await page.locator('button[name="commit"]').click();
+      await expect(page.locator('body')).toContainText(/success/i);
+
+      await page.goto('/search');
+      await page.locator('#records_check').check();
+      await page.locator('#comments_check').check();
+      await page.locator('input[name="query"]').fill(marker);
+      await page.locator('button[name="do_search"]').click();
+
+      await expect(page.locator('body')).toContainText('Records found');
+      await expect(page.locator('tr:has-text("192.0.2.81")')).toHaveCount(1);
+      await expect(page.locator('tr:has-text("192.0.2.82")')).toHaveCount(1);
+
+      // With the comments option off the marker matches no record
+      await page.goto('/search');
+      await page.locator('#records_check').check();
+      await page.locator('#comments_check').uncheck();
+      await page.locator('input[name="query"]').fill(marker);
+      await page.locator('button[name="do_search"]').click();
+
+      await expect(page.locator('tr:has-text("192.0.2.81")')).toHaveCount(0);
+    });
+  });
+
   test.describe('Search Results Comment Display', () => {
     test('should show comment column in zone results when enabled', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);

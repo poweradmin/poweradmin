@@ -1992,6 +1992,32 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue(RecordIdentifier::isEncoded($result['records'][0]['id']));
     }
 
+    public function testSearchDnsDataMapsCommentHitsWithTheCanonicalZoneId(): void
+    {
+        $this->mockClient->method('searchData')->willReturn([
+            ['object_type' => 'comment', 'name' => 'www.example.com.', 'type' => 'A', 'content' => 'rotate in march', 'zone' => 'example.com.'],
+            ['object_type' => 'comment', 'name' => 'mail.local.org.', 'type' => 'MX', 'content' => 'legacy', 'zone' => 'local.org.'],
+            ['object_type' => 'comment', 'name' => 'x.unknown.net.', 'type' => 'TXT', 'content' => 'orphan', 'zone' => 'unknown.net.'],
+        ]);
+
+        $stmtZones = $this->createMock(PDOStatement::class);
+        $stmtZones->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 5, 'domain_id' => 42, 'zone_name' => 'example.com'],
+            ['id' => 9, 'domain_id' => null, 'zone_name' => 'local.org'],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($stmtZones);
+
+        $result = $this->provider->searchDnsData('march', 'comment');
+
+        $this->assertSame([], $result['records']);
+        $this->assertSame([
+            ['domain_id' => 42, 'zone_name' => 'example.com', 'name' => 'www.example.com', 'type' => 'A', 'comment' => 'rotate in march'],
+            ['domain_id' => 9, 'zone_name' => 'local.org', 'name' => 'mail.local.org', 'type' => 'MX', 'comment' => 'legacy'],
+            ['domain_id' => 0, 'zone_name' => 'unknown.net', 'name' => 'x.unknown.net', 'type' => 'TXT', 'comment' => 'orphan'],
+        ], $result['comments']);
+    }
+
     // ---------------------------------------------------------------
     // getZones returns API kind regardless of local cache
     // ---------------------------------------------------------------
