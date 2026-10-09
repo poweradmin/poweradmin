@@ -63,11 +63,11 @@ Poweradmin maintains multiple release branches:
 |--------|--------|---------|
 | `master` | Development | Experimental features, unstable |
 | `release/4.x` | Stable | Current release with new features |
-| `release/3.x` | **LTS** | Bug fixes and security updates for at least 2 years |
+| `release/3.x` | **LTS** | Bug fixes and security updates until December 2027 |
 
 ### Long-Term Support (LTS)
 
-The **3.x branch** is designated as Long-Term Support (LTS). This branch will receive bug fixes and security updates for at least two years, providing a stable option for organizations that prefer stability over immediate upgrades to the 4.x series.
+The **3.x branch** is designated as Long-Term Support (LTS). This branch will receive bug fixes and security updates until December 2027, providing a stable option for organizations that prefer stability over immediate upgrades to the 4.x series.
 
 **LTS Guidelines:**
 - No breaking changes - all updates are backwards compatible
