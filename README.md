@@ -9,6 +9,8 @@
 
 [Poweradmin](https://www.poweradmin.org) is a DNS administration tool for PowerDNS that can be driven through a friendly web UI, a REST API, or both at the same time. Use the UI for day-to-day operations, the API for scripts and infrastructure-as-code, or run completely headless after the initial setup - the same validation runs on every path. It can work directly against the PowerDNS database (with API-assisted DNSSEC) or run entirely through the PowerDNS API in API backend mode.
 
+**DNSSEC-safe via the PowerDNS API.** In API backend mode (4.3.0+) every change goes through the PowerDNS REST API, so PowerDNS itself keeps NSEC/NSEC3 chains correct and Poweradmin needs no access to its database. With the default SQL backend, set the PowerDNS API URL and key, and Poweradmin will rectify signed zones through the API after each change it makes. See [PowerDNS API](https://docs.poweradmin.org/configuration/powerdns-api/) and [DNSSEC](https://docs.poweradmin.org/configuration/dnssec/).
+
 ![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/zone-editor.png)
 
 ```bash
@@ -18,7 +20,7 @@ docker run -d --name poweradmin -p 8080:80 -e DB_TYPE=sqlite -e PA_CREATE_ADMIN=
 ## Features
 
 - All zone types (master, native, slave, producer and consumer), catalog zone membership, supermasters, and zone templates
-- Native PowerDNS API backend mode - manage zones without direct access to the PowerDNS database
+- DNSSEC-safe via the PowerDNS API - API backend mode needs no direct access to the PowerDNS database, and the SQL backend rectifies signed zones through the API
 - Version-aware interface that adapts record types, metadata kinds, and terminology to the connected PowerDNS version
 - DNSSEC operations, plus a zone metadata editor for PowerDNS `domainmetadata`
 - REST API with OpenAPI documentation, and API keys that can be made read-only, restricted to specific operations, or scoped to specific zones
