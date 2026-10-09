@@ -7,7 +7,7 @@
 
 import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { addRecord } from '../../helpers/zones.js';
+import { addRecord, isApiModeInstance } from '../../helpers/zones.js';
 
 test.describe('Zone File Export Module', () => {
   test('should show Zone File option in Export dropdown when module is enabled', async ({ page, tempZone }) => {
@@ -57,6 +57,31 @@ test.describe('Zone File Export Module', () => {
     // The export opens with $ORIGIN/$TTL but prints every record with its absolute name, tab-separated
     expect(body).toMatch(new RegExp(`^${tempZone.name.replace(/\./g, '\\.')}\\.\\s+\\d+\\s+IN\\s+SOA\\s`, 'm'));
     expect(body).toMatch(new RegExp(`^www\\.${tempZone.name.replace(/\./g, '\\.')}\\.\\s+3600\\s+IN\\s+A\\s+192\\.0\\.2\\.77$`, 'm'));
+  });
+
+  test('should export the zone served by PowerDNS on an API-backend instance', async ({ page, request, tempZone, baseURL }) => {
+    test.skip(!isApiModeInstance(baseURL), 'the PowerDNS API export path only applies to API-backend instances');
+
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const zoneId = tempZone.id;
+    await addRecord(page, zoneId, { name: 'api-export', type: 'A', content: '192.0.2.88', ttl: 3600 });
+
+    const cookies = await page.context().cookies();
+    const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join('; ');
+
+    const response = await request.get(`/zones/${zoneId}/export/zonefile`, {
+      headers: { Cookie: cookieHeader }
+    });
+
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-disposition']).toContain(`${tempZone.name}.zone`);
+    const body = await response.text();
+    const escapedZone = tempZone.name.replace(/\./g, '\\.');
+
+    // The PowerDNS export has no $ORIGIN header and tab-separated fields; the database fallback has both $ORIGIN and spaces.
+    expect(body).not.toContain('$ORIGIN');
+    expect(body).toMatch(new RegExp(`^${escapedZone}\\.\\t\\d+\\tIN\\tSOA\\t`, 'm'));
+    expect(body).toMatch(new RegExp(`^api-export\\.${escapedZone}\\.\\t3600\\tIN\\tA\\t192\\.0\\.2\\.88$`, 'm'));
   });
 
   test('should deny zone file export for non-authenticated users', async ({ page }) => {
