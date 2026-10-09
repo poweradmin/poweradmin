@@ -29,7 +29,6 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
@@ -52,9 +51,6 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     private ?ApiDnsBackendProvider $provider = null;
     private array $createdZones = [];
     private array $createdAutoprimaries = [];
-    /** The backend marker before the test, restored so the SQL-mode devcontainer instance keeps working. */
-    private string|false|null $backendMarker = null;
-
     private const PDNS_API_URL = 'http://localhost:8181';
     private const PDNS_API_KEY = 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA';
     private const DB_HOST = '127.0.0.1';
@@ -63,6 +59,9 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     private const POWERADMIN_DB_NAME = 'poweradmin';
     private const DB_USER = 'pdns';
     private const DB_PASS = 'poweradmin';
+    private const ROOT_USER = 'root';
+    private const ROOT_PASS = 'uberuser';
+    private const SCRATCH_DB = 'poweradmin_it_api_provider';
 
     protected function setUp(): void
     {
@@ -78,15 +77,10 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             $this->markTestSkipped('MariaDB not available: ' . $e->getMessage());
         }
 
-        // The provider writes Poweradmin-native `zones` rows, which live in a
-        // different database from the PowerDNS tables this test verifies against.
+        // The provider writes Poweradmin-native `zones` rows and the API backend marker, so they go
+        // to a scratch database: the shared poweradmin database serves the SQL-mode devcontainer app.
         try {
-            $this->poweradminDb = new PDO(
-                'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::POWERADMIN_DB_NAME,
-                self::DB_USER,
-                self::DB_PASS,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
+            $this->poweradminDb = $this->createScratchPoweradminDatabase();
         } catch (PDOException $e) {
             $this->markTestSkipped('Poweradmin database not available: ' . $e->getMessage());
         }
@@ -125,15 +119,28 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         ]);
 
         $this->provider = new ApiDnsBackendProvider($this->client, $this->poweradminDb, $config, new NullLogger());
-        $this->backendMarker = $this->readBackendMarker();
     }
 
-    private function readBackendMarker(): string|false
+    private function createScratchPoweradminDatabase(): PDO
     {
-        $stmt = $this->poweradminDb->prepare("SELECT setting_value FROM app_settings WHERE setting_key = :key");
-        $stmt->execute([':key' => BackendModeMarker::MARKER]);
+        $root = new PDO(
+            'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT,
+            self::ROOT_USER,
+            self::ROOT_PASS,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
+        $root->exec('DROP DATABASE IF EXISTS ' . self::SCRATCH_DB);
+        $root->exec('CREATE DATABASE ' . self::SCRATCH_DB);
+        foreach (['zones', 'zones_groups', 'api_key_zones', 'app_settings'] as $table) {
+            $root->exec('CREATE TABLE ' . self::SCRATCH_DB . ".$table LIKE " . self::POWERADMIN_DB_NAME . ".$table");
+        }
 
-        return $stmt->fetchColumn();
+        return new PDO(
+            'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::SCRATCH_DB,
+            self::ROOT_USER,
+            self::ROOT_PASS,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
     }
 
     /**
@@ -175,19 +182,6 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             }
         }
 
-        // Creating zones marks the shared database as API mode; put back what was there
-        if ($this->backendMarker !== null && $this->poweradminDb !== null) {
-            try {
-                $this->poweradminDb->prepare("DELETE FROM app_settings WHERE setting_key = :key")->execute([':key' => BackendModeMarker::MARKER]);
-                if ($this->backendMarker !== false) {
-                    $this->poweradminDb->prepare("INSERT INTO app_settings (setting_key, setting_value, value_type) VALUES (:key, :value, 'string')")
-                        ->execute([':key' => BackendModeMarker::MARKER, ':value' => $this->backendMarker]);
-                }
-            } catch (Exception $e) {
-                // Ignore cleanup errors
-            }
-        }
-
         // Clean up any autoprimaries created during tests
         foreach ($this->createdAutoprimaries as [$ip, $ns]) {
             try {
@@ -197,7 +191,16 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             }
         }
 
+        if ($this->poweradminDb !== null) {
+            try {
+                $this->poweradminDb->exec('DROP DATABASE IF EXISTS ' . self::SCRATCH_DB);
+            } catch (Exception $e) {
+                // Ignore cleanup errors
+            }
+        }
+
         $this->db = null;
+        $this->poweradminDb = null;
         $this->client = null;
         $this->provider = null;
     }
