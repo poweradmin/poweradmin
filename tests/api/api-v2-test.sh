@@ -403,6 +403,84 @@ test_record_listing() {
 }
 
 ##############################################################################
+# Test: Zone and User Listing (q filter, sort, paging)
+##############################################################################
+
+cleanup_existing_listing_test_data() {
+    # The listing tests assert exact counts, so leftovers of an aborted run must go first
+    local zones users id
+    zones=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/zones" 2>/dev/null)
+    for id in $(echo "$zones" | jq -r '.data.zones[]? | select(.name | IN("zlist-a.example.com", "zlist-b.example.com", "zlist-c.example.com")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+            "${API_BASE_URL}/api/v2/zones/${id}" >/dev/null 2>&1 || true
+    done
+
+    users=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null)
+    for id in $(echo "$users" | jq -r '.data.users[]? | select(.username | IN("zlist_user_a", "zlist_user_b")) | .user_id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+            "${API_BASE_URL}/api/v2/users/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+test_zone_user_listing() {
+    print_section "Zone and User Listing Tests (q filter, sort, paging)"
+
+    cleanup_existing_listing_test_data
+
+    local zone_ids=()
+    local zone
+    for zone in '{"name":"zlist-b.example.com","type":"MASTER"}' '{"name":"zlist-a.example.com","type":"NATIVE"}' '{"name":"zlist-c.example.com","type":"MASTER"}'; do
+        if api_request_v2 "POST" "/zones" "$zone" 201 "Create zone for listing tests"; then
+            zone_ids+=("$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")")
+        fi
+    done
+
+    # Substring filter on the zone name, case-insensitive
+    api_request_v2 "GET" "/zones?q=ZLIST-" "" 200 "Filter zones by name substring"
+    assert_json "q finds the three listing zones" "$LAST_RESPONSE_BODY" '.data.zones | length' "3"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+
+    # Sorting
+    api_request_v2 "GET" "/zones?q=zlist-&sort=type:desc,name" "" 200 "Sort zones by type desc, then name"
+    assert_json "NATIVE before MASTER, then by name" "$LAST_RESPONSE_BODY" '.data.zones | map(.name) | join(",")' "zlist-a.example.com,zlist-b.example.com,zlist-c.example.com"
+    api_request_v2 "GET" "/zones?sort=count_records" "" 400 "Reject unknown zone sort field"
+
+    # Paging after filter and sort
+    api_request_v2 "GET" "/zones?q=zlist-&sort=name:desc&per_page=2&page=2" "" 200 "Second page of filtered zones"
+    assert_json "Second page holds the last zone" "$LAST_RESPONSE_BODY" '.data.zones | map(.name) | join(",")' "zlist-a.example.com"
+    assert_json "Pagination total counts the filtered zones" "$LAST_RESPONSE_BODY" '.pagination.total' "3"
+    assert_json "Pagination last_page" "$LAST_RESPONSE_BODY" '.pagination.last_page' "2"
+
+    local user_ids=()
+    local user
+    for user in '{"username":"zlist_user_b","password":"SecureTestPass1234","fullname":"Listing Bravo","email":"zlist-b@example.com","description":"","perm_templ":1,"active":true}' \
+                '{"username":"zlist_user_a","password":"SecureTestPass1234","fullname":"Listing Alpha","email":"zlist-a@example.com","description":"","perm_templ":1,"active":true}'; do
+        if api_request_v2 "POST" "/users" "$user" 201 "Create user for listing tests"; then
+            user_ids+=("$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')")
+        fi
+    done
+
+    api_request_v2 "GET" "/users?q=ZLIST&sort=username:desc" "" 200 "Filter and sort users"
+    assert_json "q finds both users, sorted by username descending" "$LAST_RESPONSE_BODY" '.data.users | map(.username) | join(",")' "zlist_user_b,zlist_user_a"
+    api_request_v2 "GET" "/users?q=listing%20alpha" "" 200 "Filter users by full name"
+    assert_json "Full name search finds one user" "$LAST_RESPONSE_BODY" '.data.users | map(.username) | join(",")' "zlist_user_a"
+    api_request_v2 "GET" "/users?q=zlist&sort=email&per_page=1&page=2" "" 200 "Second page of filtered users"
+    assert_json "Second page by email holds user b" "$LAST_RESPONSE_BODY" '.data.users | map(.username) | join(",")' "zlist_user_b"
+    assert_json "User pagination total counts the filtered users" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "/users?sort=password" "" 400 "Reject unknown user sort field"
+
+    local id
+    for id in "${user_ids[@]}"; do
+        api_request_v2 "DELETE" "/users/${id}" "" 200 "Delete listing test user" || true
+    done
+    for id in "${zone_ids[@]}"; do
+        api_request_v2 "DELETE" "/zones/${id}" "" 204 "Delete listing test zone" || true
+    done
+}
+
+##############################################################################
 # Test: PTR Auto-Creation
 ##############################################################################
 
@@ -2544,6 +2622,7 @@ cleanup_existing_test_zones() {
         "disabled-test.example.com"
         "group-assign-test.example.com"
         "change-request-test.example.com"
+        "listing-test.example.com"
     )
 
     local all_zones
@@ -3668,6 +3747,7 @@ main() {
     test_v1_removed || true
     test_rrsets || true
     test_record_listing || true
+    test_zone_user_listing || true
     test_ptr_autocreation || true
     test_ptr_update || true
     test_ttl_defaults || true
