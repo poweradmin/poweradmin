@@ -257,4 +257,28 @@ class UserZoneTransferSharedOwnershipIntegrationTest extends TestCase
 
         $this->assertTrue(self::lockIsFree($other, $api));
     }
+
+    public function testAZoneGrantedToTheSenderMidTransferLeavesTheReceiverOneRowOnPostgresql(): void
+    {
+        $db = $this->connect('pgsql');
+        $db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (1, 11, 1, 'b.example'), (2, 10, 2, 'a.example')");
+        // Stands in for a concurrent grant of zone 10 to the sender committing between the dedupe and the move
+        $db->exec("CREATE SEQUENCE transfer_deletes");
+        $db->exec("CREATE FUNCTION grant_sender_mid_transfer() RETURNS trigger LANGUAGE plpgsql AS $$
+            BEGIN
+                IF nextval('transfer_deletes') = 2 THEN
+                    INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (99, 10, 1, NULL);
+                END IF;
+                RETURN NULL;
+            END $$");
+        $db->exec("CREATE TRIGGER grant_sender AFTER DELETE ON zones FOR EACH STATEMENT EXECUTE FUNCTION grant_sender_mid_transfer()");
+        $repository = new DbUserRepository($db, new FakeConfiguration([]), false);
+
+        $this->assertTrue($repository->transferUserZones(self::FROM, self::TO));
+
+        $this->assertGreaterThanOrEqual(2, (int)$db->query("SELECT last_value FROM transfer_deletes")->fetchColumn(), 'the late grant was injected');
+        $this->assertSame(0, (int)$db->query("SELECT COUNT(*) FROM zones WHERE owner = 1")->fetchColumn());
+        $this->assertSame([10 => [2], 11 => [2]], $this->ownersByZone($db, false));
+        $this->assertSame(1, (int)$db->query("SELECT COUNT(*) FROM zones WHERE zone_name = 'a.example'")->fetchColumn());
+    }
 }

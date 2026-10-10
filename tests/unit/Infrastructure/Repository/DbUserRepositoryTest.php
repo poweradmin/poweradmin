@@ -707,7 +707,8 @@ class DbUserRepositoryTest extends TestCase
         $this->assertStringContainsString('DELETE FROM zones', $prepared[2]);
         $this->assertStringContainsString('DELETE FROM zones', $prepared[3]);
         $this->assertStringContainsString('UPDATE zones SET owner', $prepared[4]);
-        $this->assertCount(5, $prepared);
+        $this->assertStringContainsString('DELETE FROM zones', $prepared[5]);
+        $this->assertCount(6, $prepared);
     }
 
     // ========== assignPermissionTemplate tests ==========

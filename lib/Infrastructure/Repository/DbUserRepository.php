@@ -983,6 +983,9 @@ class DbUserRepository implements UserRepositoryInterface
             $this->dropSharedOwnerships($fromUserId, $toUserId);
             $stmt = $this->db->prepare("UPDATE zones SET owner = :toUserId WHERE owner = :fromUserId");
             $moved = $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
+            if (!$this->isApiBackend) {
+                $this->dropReceiverDuplicates($toUserId);
+            }
             if ($owns) {
                 $transaction->commit();
             }
@@ -1019,6 +1022,30 @@ class DbUserRepository implements UserRepositoryInterface
             $stmt->execute([':id' => $zoneId]);
             $stmt->fetchAll();
         }
+    }
+
+    /**
+     * On PostgreSQL a zone granted to the sender after its domains rows were locked can commit
+     * between the dedupe and the move; this drops the receiver's resulting unnamed duplicate.
+     */
+    private function dropReceiverDuplicates(int $toUserId): void
+    {
+        $stmt = $this->db->prepare(
+            "DELETE FROM zones
+             WHERE owner = :toUserId AND zone_name IS NULL
+               AND id IN (
+                   SELECT id FROM (
+                       SELECT z.id FROM zones z
+                       WHERE z.owner = :dupOwner AND z.zone_name IS NULL
+                         AND EXISTS (
+                             SELECT 1 FROM zones k
+                             WHERE k.owner = z.owner AND k.domain_id = z.domain_id AND k.id <> z.id
+                               AND (k.zone_name IS NOT NULL OR k.id < z.id)
+                         )
+                   ) AS duplicates
+               )"
+        );
+        $stmt->execute([':toUserId' => $toUserId, ':dupOwner' => $toUserId]);
     }
 
     /**
