@@ -16216,3 +16216,8 @@ msgstr "このグループが所有できるゾーンの数。空欄の場合は
 msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "メンバー %d 人"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "コメントの一致結果は50ゾーンまでに制限されています。さらに表示するには検索条件を絞り込んでください。"

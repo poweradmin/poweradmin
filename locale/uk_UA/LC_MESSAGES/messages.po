@@ -16332,3 +16332,8 @@ msgid_plural "%d members"
 msgstr[0] "%d учасник"
 msgstr[1] "%d учасники"
 msgstr[2] "%d учасників"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Збіги в коментарях обмежено 50 зонами; уточніть пошук, щоб побачити більше."

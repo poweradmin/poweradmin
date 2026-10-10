@@ -16154,3 +16154,8 @@ msgid_plural "%d members"
 msgstr[0] "%d člen"
 msgstr[1] "%d členovia"
 msgstr[2] "%d členov"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Zhody v komentároch boli obmedzené na 50 zón; spresnite vyhľadávanie, aby ste videli viac."

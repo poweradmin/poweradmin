@@ -16251,3 +16251,8 @@ msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d medlem"
 msgstr[1] "%d medlemmer"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Match i bemærkninger blev begrænset til 50 zoner; præciser din søgning for at se flere."

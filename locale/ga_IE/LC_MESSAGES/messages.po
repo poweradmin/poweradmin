@@ -16668,3 +16668,8 @@ msgstr[1] "%d bhall"
 msgstr[2] "%d bhall"
 msgstr[3] "%d mball"
 msgstr[4] "%d ball"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Cuireadh teorainn de 50 crios leis na hiarrachtaí comhoiriúnaithe i nótaí tráchta; cuir snas ar do chuardach chun tuilleadh a fheiceáil."

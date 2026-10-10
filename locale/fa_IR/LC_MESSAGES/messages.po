@@ -16104,3 +16104,8 @@ msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d عضو"
 msgstr[1] "%d عضو"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "نتایج مطابق در نظرات به 50 منطقه محدود شد؛ برای دیدن موارد بیشتر جستجوی خود را دقیق‌تر کنید."

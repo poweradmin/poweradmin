@@ -15954,3 +15954,8 @@ msgstr[2] "%d عضوان"
 msgstr[3] "%d أعضاء"
 msgstr[4] "%d عضوًا"
 msgstr[5] "%d عضو"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "اقتصرت نتائج التعليقات على 50 منطقة؛ دقّق بحثك لعرض المزيد."

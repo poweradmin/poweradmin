@@ -16265,3 +16265,8 @@ msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d üye"
 msgstr[1] "%d üye"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Yorum eşleşmeleri 50 zonla sınırlandı; daha fazlasını görmek için aramanızı daraltın."

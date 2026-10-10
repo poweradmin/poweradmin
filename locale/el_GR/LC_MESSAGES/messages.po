@@ -16771,3 +16771,8 @@ msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d μέλος"
 msgstr[1] "%d μέλη"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Τα αποτελέσματα στα σχόλια περιορίστηκαν σε 50 ζώνες. Διευκρινίστε την αναζήτησή σας για να δείτε περισσότερα."

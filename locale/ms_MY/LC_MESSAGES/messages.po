@@ -16344,3 +16344,8 @@ msgstr "Bilangan zon yang boleh dimiliki oleh kumpulan ini. Biarkan kosong untuk
 msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d ahli"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Padanan komen dihadkan kepada 50 zon; perhalusi carian anda untuk melihat lebih banyak."

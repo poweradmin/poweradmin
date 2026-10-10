@@ -16006,3 +16006,8 @@ msgstr "이 그룹이 소유할 수 있는 존 수입니다. 기본값을 사용
 msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "구성원 %d명"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "주석 일치 항목이 50개 존으로 제한되었습니다. 더 보려면 검색을 세분화하세요."

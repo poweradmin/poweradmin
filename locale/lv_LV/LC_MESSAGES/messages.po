@@ -15979,3 +15979,8 @@ msgid_plural "%d members"
 msgstr[0] "%d dalībnieks"
 msgstr[1] "%d dalībnieki"
 msgstr[2] "%d dalībnieku"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Komentāru atbilstības tika ierobežotas līdz 50 zonām; precizējiet meklēšanu, lai redzētu vairāk."

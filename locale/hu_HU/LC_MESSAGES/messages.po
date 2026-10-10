@@ -16408,3 +16408,8 @@ msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d tag"
 msgstr[1] "%d tag"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "A megjegyzésekben talált egyezések 50 zónára lettek korlátozva; szűkítse a keresést a további találatok megtekintéséhez."

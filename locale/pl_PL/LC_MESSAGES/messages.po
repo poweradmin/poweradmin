@@ -16389,3 +16389,8 @@ msgid_plural "%d members"
 msgstr[0] "%d członek"
 msgstr[1] "%d członkowie"
 msgstr[2] "%d członków"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Dopasowania w komentarzach ograniczono do 50 stref; zawęź wyszukiwanie, aby zobaczyć więcej."

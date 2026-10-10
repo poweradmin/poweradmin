@@ -15957,3 +15957,8 @@ msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d सदस्य"
 msgstr[1] "%d सदस्य"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "टिप्पणियों में मिले परिणाम 50 ज़ोन तक सीमित थे; और देखने के लिए अपनी खोज को परिष्कृत करें।"

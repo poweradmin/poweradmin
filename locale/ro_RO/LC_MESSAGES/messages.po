@@ -16724,3 +16724,8 @@ msgid_plural "%d members"
 msgstr[0] "%d membru"
 msgstr[1] "%d membri"
 msgstr[2] "%d de membri"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Potrivirile din comentarii au fost limitate la 50 de zone; rafinați căutarea pentru a vedea mai multe."

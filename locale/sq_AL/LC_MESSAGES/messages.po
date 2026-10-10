@@ -16558,3 +16558,8 @@ msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d anëtar"
 msgstr[1] "%d anëtarë"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Përputhjet në komente u kufizuan në 50 zona; përmirësoni kërkimin tuaj për të parë më shumë."

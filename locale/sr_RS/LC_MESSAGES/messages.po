@@ -16026,3 +16026,8 @@ msgid_plural "%d members"
 msgstr[0] "%d члан"
 msgstr[1] "%d члана"
 msgstr[2] "%d чланова"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Подударања у коментарима ограничена су на 50 зона; прецизирајте претрагу да бисте видели више."

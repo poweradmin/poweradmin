@@ -15506,3 +15506,8 @@ msgstr "จำนวนโซนที่กลุ่มนี้เป็นเ
 msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "สมาชิก %d คน"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "ผลการค้นหาที่ตรงกันในหมายเหตุถูกจำกัดไว้ที่ 50 โซน โปรดปรับการค้นหาให้แคบลงเพื่อดูเพิ่มเติม"

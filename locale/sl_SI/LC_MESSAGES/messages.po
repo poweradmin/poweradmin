@@ -16286,3 +16286,8 @@ msgstr[0] "%d član"
 msgstr[1] "%d člana"
 msgstr[2] "%d člani"
 msgstr[3] "%d članov"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Zadetki v opombah so omejeni na 50 con; natančneje opredelite iskanje, da vidite več."

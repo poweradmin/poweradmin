@@ -16148,3 +16148,8 @@ msgstr "Số vùng nhóm này được phép sở hữu. Để trống để dù
 msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d thành viên"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Kết quả khớp trong bình luận đã bị giới hạn ở 50 vùng; hãy tinh chỉnh tìm kiếm để xem thêm."

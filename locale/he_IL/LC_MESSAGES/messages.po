@@ -15773,3 +15773,8 @@ msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d חבר"
 msgstr[1] "%d חברים"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "ההתאמות בהערות הוגבלו ל-50 אזורים; צמצם את החיפוש כדי לראות עוד."

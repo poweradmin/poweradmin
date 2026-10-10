@@ -15193,3 +15193,8 @@ msgid "%d member"
 msgid_plural "%d members"
 msgstr[0] "%d 位成員"
 msgstr[1] "%d 位成員"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "備註符合結果已限制為 50 個區域；請縮小搜尋範圍以查看更多。"

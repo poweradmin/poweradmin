@@ -16392,3 +16392,8 @@ msgid_plural "%d members"
 msgstr[0] "%d член"
 msgstr[1] "%d члена"
 msgstr[2] "%d членов"
+
+#: templates/default/search.html:115
+msgid ""
+"Comment matches were limited to 50 zones; refine your search to see more."
+msgstr "Совпадения в комментариях ограничены 50 зонами; уточните поиск, чтобы увидеть больше."
