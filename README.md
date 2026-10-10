@@ -11,6 +11,8 @@
 
 **DNSSEC-safe via the PowerDNS API.** In API backend mode (4.3.0+) every change goes through the PowerDNS REST API, so PowerDNS itself keeps NSEC/NSEC3 chains correct and Poweradmin needs no access to its database. With the default SQL backend, set the PowerDNS API URL and key, and Poweradmin will rectify signed zones through the API after each change it makes. See [PowerDNS API](https://docs.poweradmin.org/configuration/powerdns-api/) and [DNSSEC](https://docs.poweradmin.org/configuration/dnssec/).
 
+**Known issue:** PowerDNS Auth 5.1.x drops one level of backslash escaping from records written through its API (PowerDNS issue 18159). In API backend mode, records holding `\\` or `\"` can be changed or refused when any record with the same name and type is saved. Poweradmin warns before such saves; see [PowerDNS API](https://docs.poweradmin.org/configuration/powerdns-api/).
+
 ![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/zone-editor.png)
 
 ```bash
