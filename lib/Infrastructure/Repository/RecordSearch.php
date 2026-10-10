@@ -154,8 +154,8 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
         }
 
         // Per-record comments via linking table, with fallback to RRset-based comments for legacy data
-        // Uses COALESCE with two subqueries to avoid ORDER BY with outer table
-        // references which SQLite does not support in correlated subqueries.
+        // Uses COALESCE with two subqueries; their ORDER BY must not reference
+        // the outer table.
         $links_table = 'record_comment_links';
         $castId = DbCompat::castToString($db_type, "$records_table.id");
         $commentExpr = '';
@@ -178,6 +178,7 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
                           SELECT 1 FROM $links_table rcl2
                           WHERE rcl2.comment_id = c.id
                       )
+                    ORDER BY c.id
                     LIMIT 1
                 )
             )";
@@ -344,6 +345,43 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
     }
 
     /**
+     * OR-ed comment condition for the record search. A record matches its linked
+     * comment, or, when it has none, the one unlinked RRset comment the result
+     * list displays (lowest id), so a match never hides behind another comment.
+     */
+    private function commentSearchCondition(string $records_table): string
+    {
+        $tableNameService = new TableNameService($this->config);
+        $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
+        $links_table = 'record_comment_links';
+        $db_type = $this->config->get('database', 'type');
+        $castId = DbCompat::castToString($db_type, "$records_table.id");
+
+        return " OR EXISTS (
+                SELECT 1 FROM $comments_table c
+                WHERE c.comment LIKE :search_string_comment
+                AND (EXISTS (
+                        SELECT 1 FROM $links_table rcl
+                        WHERE rcl.comment_id = c.id AND rcl.record_id = $castId
+                    )
+                    OR (c.id = (
+                            SELECT c2.id FROM $comments_table c2
+                            WHERE c2.domain_id = $records_table.domain_id AND c2.name = $records_table.name AND c2.type = $records_table.type
+                            AND NOT EXISTS (
+                                SELECT 1 FROM $links_table rcl2
+                                WHERE rcl2.comment_id = c2.id
+                            )
+                            ORDER BY c2.id
+                            LIMIT 1
+                        )
+                        AND NOT EXISTS (
+                            SELECT 1 FROM $links_table rcl3
+                            WHERE rcl3.record_id = $castId
+                        )))
+            )";
+    }
+
+    /**
      * Build WHERE conditions for fetch records query
      */
     private function buildWhereConditionsFetch(string $records_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, bool $iface_record_comments, array $parameters, string $permission_view, ?int $userId, array &$params): string
@@ -364,28 +402,7 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
         }
 
         if ($iface_record_comments && $parameters['comments']) {
-            $tableNameService = new TableNameService($this->config);
-            $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
-            $links_table = 'record_comment_links';
-            $db_type = $this->config->get('database', 'type');
-            $castId = DbCompat::castToString($db_type, "$records_table.id");
-            $whereConditions .= " OR EXISTS (
-                SELECT 1 FROM $comments_table c
-                WHERE c.comment LIKE :search_string_comment
-                AND (EXISTS (
-                        SELECT 1 FROM $links_table rcl
-                        WHERE rcl.comment_id = c.id AND rcl.record_id = $castId
-                    )
-                    OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type
-                        AND NOT EXISTS (
-                            SELECT 1 FROM $links_table rcl2
-                            WHERE rcl2.comment_id = c.id
-                        )
-                        AND NOT EXISTS (
-                            SELECT 1 FROM $links_table rcl3
-                            WHERE rcl3.record_id = $castId
-                        )))
-            )";
+            $whereConditions .= $this->commentSearchCondition($records_table);
             $params[':search_string_comment'] = $this->buildRawSearchString($parameters);
         }
 
@@ -429,29 +446,8 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
             $params[':reverse_search_string2'] = $reverse_search_string;
         }
 
-        if ($parameters['comments']) {
-            $tableNameService = new TableNameService($this->config);
-            $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
-            $links_table = 'record_comment_links';
-            $db_type = $this->config->get('database', 'type');
-            $castId = DbCompat::castToString($db_type, "$records_table.id");
-            $whereConditions .= " OR EXISTS (
-                SELECT 1 FROM $comments_table c
-                WHERE c.comment LIKE :search_string_comment
-                AND (EXISTS (
-                        SELECT 1 FROM $links_table rcl
-                        WHERE rcl.comment_id = c.id AND rcl.record_id = $castId
-                    )
-                    OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type
-                        AND NOT EXISTS (
-                            SELECT 1 FROM $links_table rcl2
-                            WHERE rcl2.comment_id = c.id
-                        )
-                        AND NOT EXISTS (
-                            SELECT 1 FROM $links_table rcl3
-                            WHERE rcl3.record_id = $castId
-                        )))
-            )";
+        if ($this->config->get('interface', 'show_record_comments', false) && $parameters['comments']) {
+            $whereConditions .= $this->commentSearchCondition($records_table);
             $params[':search_string_comment'] = $this->buildRawSearchString($parameters);
         }
 

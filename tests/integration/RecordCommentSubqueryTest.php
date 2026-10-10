@@ -27,8 +27,10 @@ use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordRow;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\RecordSearch;
 use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
+use TestHelpers\FakeConfiguration;
 use TestHelpers\RecordCommentFixture;
 
 /**
@@ -263,6 +265,83 @@ class RecordCommentSubqueryTest extends TestCase
             ['example.com/A/192.0.2.9' => 'Unlinked RRset fallback'],
             $this->searchComments($db, 'Unlinked RRset fallback', true)
         );
+    }
+
+    private function commentSearch(PDO $db, bool $recordCommentsEnabled): RecordSearch
+    {
+        $config = new FakeConfiguration([
+            'database' => ['type' => $this->engine, 'pdns_db_name' => ''],
+            'interface' => ['show_record_comments' => $recordCommentsEnabled],
+        ]);
+
+        return new RecordSearch($db, $config, $this->engine);
+    }
+
+    /** @return array<string, mixed> */
+    private function commentSearchParameters(string $query): array
+    {
+        return [
+            'query' => $query,
+            'zones' => false,
+            'records' => true,
+            'comments' => true,
+            'wildcard' => true,
+            'reverse' => false,
+            'type_filter' => '',
+            'content_filter' => '',
+        ];
+    }
+
+    #[DataProvider('engines')]
+    public function testCountMatchesRowsWhenRecordCommentsAreDisabled(string $engine): void
+    {
+        $db = $this->open($engine);
+        $search = $this->commentSearch($db, false);
+        $parameters = $this->commentSearchParameters('Legacy RRset');
+
+        $rows = $search->searchRecords($parameters, 'all', null, 'name', 'ASC', false, 100, false, 1);
+
+        $this->assertCount(0, $rows);
+        $this->assertSame(0, $search->getTotalRecords($parameters, 'all', null, false));
+    }
+
+    #[DataProvider('engines')]
+    public function testCountMatchesRowsWhenRecordCommentsAreEnabled(string $engine): void
+    {
+        $db = $this->open($engine);
+        $search = $this->commentSearch($db, true);
+        $parameters = $this->commentSearchParameters('Legacy RRset');
+
+        $rows = $search->searchRecords($parameters, 'all', null, 'name', 'ASC', false, 100, true, 1);
+
+        $this->assertCount(1, $rows);
+        $this->assertSame(1, $search->getTotalRecords($parameters, 'all', null, false));
+    }
+
+    #[DataProvider('engines')]
+    public function testSearchMatchesOnlyTheUnlinkedRRsetCommentTheRecordDisplays(string $engine): void
+    {
+        $db = $this->open($engine);
+        // Two unlinked comments on one RRset: the lower id is the one displayed
+        // Inserted out of id order so the lowest id is not the first row stored
+        RecordCommentFixture::addComment($db, 6, 'ftp.example.com', 'A', 'Hidden ftp comment');
+        RecordCommentFixture::addComment($db, 5, 'ftp.example.com', 'A', 'Shown ftp comment');
+
+        $this->assertSame(
+            ['ftp.example.com/A/192.0.2.7' => 'Shown ftp comment'],
+            $this->searchComments($db, 'Shown ftp', true)
+        );
+        $this->assertSame([], $this->searchComments($db, 'Hidden ftp', true));
+
+        $key = 'ftp.example.com/A/192.0.2.7';
+        $this->assertSame('Shown ftp comment', $this->zoneListingComments($db)[$key]);
+        $this->assertSame('Shown ftp comment', $this->filteredComments($db)[$key]);
+        $repository = new DbRecordCommentRepository($db, RecordCommentFixture::config($this->engine));
+        $this->assertSame('Shown ftp comment', $repository->find(1, 'ftp.example.com', 'A')?->getComment());
+
+        $search = $this->commentSearch($db, true);
+        $this->assertSame(0, $search->getTotalRecords($this->commentSearchParameters('Hidden ftp'), 'all', null, false));
+        $this->assertSame(1, $search->getTotalRecords($this->commentSearchParameters('Shown ftp'), 'all', null, false));
     }
 
     #[DataProvider('otherEngines')]

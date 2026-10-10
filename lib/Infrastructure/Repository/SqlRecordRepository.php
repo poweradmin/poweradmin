@@ -194,6 +194,7 @@ final class SqlRecordRepository implements RecordRepositoryInterface
                           SELECT 1 FROM $links_table rcl2
                           WHERE rcl2.comment_id = c.id
                       )
+                    ORDER BY c.id
                     LIMIT 1
                 )
             )";

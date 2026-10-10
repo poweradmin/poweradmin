@@ -138,6 +138,7 @@ final class DbRecordCommentRepository implements RecordCommentRepositoryInterfac
         $query = "SELECT c.* FROM {$this->comments_table} c
                   WHERE c.domain_id = :domain_id AND c.name = :name AND c.type = :type
                   AND NOT EXISTS (SELECT 1 FROM {$this->links_table} rcl WHERE rcl.comment_id = c.id)
+                  ORDER BY c.id
                   LIMIT 1";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([
