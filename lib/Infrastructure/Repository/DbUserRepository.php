@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
+use LogicException;
 use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
@@ -519,10 +520,14 @@ class DbUserRepository implements UserRepositoryInterface
      *
      * @param int $offset Starting offset for pagination
      * @param int $limit Maximum number of users to return
+     * @param string|null $search Case-insensitive substring filter on username, full name, email or description
+     * @param list<array{field: string, desc: bool}> $sort Sort keys (id, username, fullname or email); empty sorts by id
      * @return array Array of user data with zone counts
      */
-    public function getUsersList(int $offset, int $limit): array
+    public function getUsersList(int $offset, int $limit, ?string $search = null, array $sort = []): array
     {
+        [$searchCondition, $searchBindings] = $this->buildUserSearchFilter($search);
+
         $query = "SELECT users.id AS id,
             users.username AS username,
             users.fullname AS fullname,
@@ -537,6 +542,7 @@ class DbUserRepository implements UserRepositoryInterface
             LEFT JOIN zones ON users.id = zones.owner
             LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
                  AND perm_templ.template_type = 'user'
+            WHERE 1=1" . $searchCondition . "
             GROUP BY
             users.id,
             users.username,
@@ -547,12 +553,15 @@ class DbUserRepository implements UserRepositoryInterface
             users.max_zones,
             perm_templ.name,
             users.active
-            ORDER BY users.id
+            ORDER BY " . self::userListOrder($sort) . "
             LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        foreach ($searchBindings as $placeholder => $value) {
+            $stmt->bindValue($placeholder, $value, PDO::PARAM_STR);
+        }
         $stmt->execute();
 
         $users = [];
@@ -608,6 +617,30 @@ class DbUserRepository implements UserRepositoryInterface
             ];
         }
         return $users;
+    }
+
+    /**
+     * ORDER BY for the user list. Text columns compare lowercased so the order is
+     * the same on every database; the id tiebreaker keeps pages stable.
+     *
+     * @param list<array{field: string, desc: bool}> $sort
+     */
+    private static function userListOrder(array $sort): string
+    {
+        $clauses = [];
+        foreach ($sort as $key) {
+            $direction = $key['desc'] ? 'DESC' : 'ASC';
+            $clauses[] = match ($key['field']) {
+                'id' => "users.id $direction",
+                'username' => "LOWER(users.username) $direction",
+                'fullname' => "LOWER(users.fullname) $direction",
+                'email' => "LOWER(users.email) $direction",
+                default => throw new LogicException("Unknown sort field '{$key['field']}'"),
+            };
+        }
+        $clauses[] = 'users.id';
+
+        return implode(', ', $clauses);
     }
 
     /**

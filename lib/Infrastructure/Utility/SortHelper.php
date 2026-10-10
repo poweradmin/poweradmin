@@ -34,7 +34,15 @@ final class SortHelper
      */
     public static function getNaturalSortOrder(string $table, string $dbType, string $direction = 'ASC'): string
     {
-        $nameField = "$table.name";
+        return self::naturalSortOrder("$table.name", $dbType, $direction);
+    }
+
+    /**
+     * ORDER BY clause that sorts any name column naturally, for tables whose
+     * name column is not called name (e.g. zones.zone_name in API mode).
+     */
+    public static function naturalSortOrder(string $nameField, string $dbType, string $direction = 'ASC'): string
+    {
         $direction = SortDirection::fromRequest($direction)->value;
 
         $naturalSort = match ($dbType) {

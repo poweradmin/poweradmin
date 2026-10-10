@@ -140,21 +140,25 @@ class UserManagementService
     /**
      * Get one page of users with their details and permissions, without counting them
      *
+     * @param string|null $search Case-insensitive substring filter on username, full name, email or description
+     * @param list<array{field: string, desc: bool}> $sort Sort keys (id, username, fullname or email); empty sorts by id
      * @return list<array>
      */
-    public function getUsersPage(Pagination $pagination): array
+    public function getUsersPage(Pagination $pagination, ?string $search = null, array $sort = []): array
     {
         return $this->profileAssembler->assembleList(
-            $this->userRepository->getUsersList($pagination->getOffset(), $pagination->getLimit())
+            $this->userRepository->getUsersList($pagination->getOffset(), $pagination->getLimit(), $search, $sort)
         );
     }
 
     /**
-     * Count all users
+     * Count all users, or those matching the search
+     *
+     * @param string|null $search Case-insensitive substring filter on username, full name, email or description
      */
-    public function countUsers(): int
+    public function countUsers(?string $search = null): int
     {
-        return $this->userRepository->getTotalUserCount();
+        return $this->userRepository->getTotalUserCount(null, $search);
     }
 
     /**

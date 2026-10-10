@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\ZoneResource;
 use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Service\Zone\ZoneOwnershipInputFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipInput;
@@ -43,6 +44,9 @@ use Poweradmin\Application\Http\RefusalStatus;
  */
 class ZonesController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /zones */
+    private const ZONE_SORT_FIELDS = ['name', 'type', 'id'];
+
     private ZoneRepositoryInterface $zoneRepository;
     private DomainRepositoryInterface $domainRepository;
     private ZoneManagementService $zoneManagementService;
@@ -110,6 +114,21 @@ class ZonesController extends PublicApiController
         required: false,
         schema: new OA\Schema(type: 'string', example: 'example.com')
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on the zone name (optional)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'example')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, id. Default: name',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'type,name:desc')
+    )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(
         response: 200,
         description: 'Zones retrieved successfully',
@@ -157,6 +176,12 @@ class ZonesController extends PublicApiController
 
             // Get filter parameters
             $nameFilter = $this->request->query->get('name');
+            $nameContains = trim((string)$this->request->query->get('q', ''));
+            $nameContains = $nameContains === '' ? null : $nameContains;
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::ZONE_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
 
             // Without per_page every zone is returned, like PowerDNS
             [$page, $perPage] = $this->pagingParameters();
@@ -178,7 +203,7 @@ class ZonesController extends PublicApiController
             }
 
             // Get total count for metadata (permission-filtered and name-filtered)
-            $totalCount = $this->zoneRepository->getZoneCountFiltered($visibleZoneIds, $filterUserId, $nameFilter);
+            $totalCount = $this->zoneRepository->getZoneCountFiltered($visibleZoneIds, $filterUserId, $nameFilter, $nameContains);
 
             // If user has no view permissions or name filter matches nothing, return empty result immediately
             if ($totalCount === 0) {
@@ -192,12 +217,12 @@ class ZonesController extends PublicApiController
             }
 
             if ($perPage === 0) {
-                $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter);
+                $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, null, null, $nameContains, $sort->fields());
             } else {
                 // Checked before the offset, which overflows to a float for a huge page
                 $zones = ListPaging::isPastEnd($page, $perPage, $totalCount)
                     ? []
-                    : $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, ($page - 1) * $perPage, $perPage);
+                    : $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, ($page - 1) * $perPage, $perPage, $nameContains, $sort->fields());
             }
 
             $formattedZones = array_map(ZoneResource::summary(...), $zones);

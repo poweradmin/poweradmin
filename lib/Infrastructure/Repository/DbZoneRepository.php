@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
+use LogicException;
 use PDO;
 use Poweradmin\Domain\Model\ZoneDetail;
 use Poweradmin\Domain\Model\ZoneSummary;
@@ -42,6 +43,7 @@ use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
+use Poweradmin\Infrastructure\Utility\SortHelper;
 
 /**
  * SQL zone repository over the PowerDNS domains and records tables plus the zones and zones_groups ownership tables.
@@ -1134,7 +1136,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param int[]|null $zoneIds Array of allowed zone IDs, or null for all zones
      * @return int Count of zones the user can access
      */
-    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null): int
+    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?string $nameContains = null): int
     {
 
         // If empty array, user can't see any zones
@@ -1146,7 +1148,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         // Build the WHERE conditions: ownership (when a user is given) AND an explicit
         // zone-id allowlist (when provided). Both are optional and combine with AND.
-        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter, $nameContains);
 
         if ($conditions === []) {
             $query = "SELECT COUNT(*) FROM $domains_table d";
@@ -1173,9 +1175,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param int[]|null $zoneIds Explicit zone-id allowlist, or null for no id restriction
      * @param int|null $userId Owner to filter by, or null for no ownership restriction
      * @param string|null $nameFilter Optional exact zone-name filter
+     * @param string|null $nameContains Optional case-insensitive zone-name substring filter
      * @return array{0: string[], 1: array<string, mixed>} [conditions, bind params]
      */
-    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter): array
+    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter, ?string $nameContains = null): array
     {
         $conditions = [];
         $params = [];
@@ -1207,7 +1210,41 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $params[':name_filter'] = $nameFilter;
         }
 
+        $nameContains = trim((string)$nameContains);
+        if ($nameContains !== '') {
+            // LOWER() on both sides because PostgreSQL LIKE is case-sensitive
+            $conditions[] = "LOWER(d.name) LIKE LOWER(:name_contains) ESCAPE '!'";
+            $params[':name_contains'] = '%' . DbCompat::escapeLike($nameContains) . '%';
+        }
+
         return [$conditions, $params];
+    }
+
+    /**
+     * ORDER BY for the zone list. The id tiebreaker keeps pages stable when sort
+     * values repeat; no sort keeps the plain name order the list always had.
+     *
+     * @param list<array{field: string, desc: bool}> $sort
+     */
+    private function zoneListOrder(array $sort): string
+    {
+        if ($sort === []) {
+            return 'd.name';
+        }
+
+        $clauses = [];
+        foreach ($sort as $key) {
+            $direction = $key['desc'] ? 'DESC' : 'ASC';
+            $clauses[] = match ($key['field']) {
+                'name' => SortHelper::getNaturalSortOrder('d', $this->db_type, $direction),
+                'type' => "d.type $direction",
+                'id' => "d.id $direction",
+                default => throw new LogicException("Unknown sort field '{$key['field']}'"),
+            };
+        }
+        $clauses[] = 'd.id';
+
+        return implode(', ', $clauses);
     }
 
     /**
@@ -1218,9 +1255,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param string|null $nameFilter Optional zone name filter (exact match)
      * @param int|null $offset Pagination offset
      * @param int|null $limit Pagination limit
+     * @param string|null $nameContains Optional case-insensitive zone name substring filter
+     * @param list<array{field: string, desc: bool}> $sort Sort keys (name, type or id); empty keeps the name order
      * @return array Array of zones the user can access
      */
-    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array
+    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null, ?string $nameContains = null, array $sort = []): array
     {
 
         // If empty array, user can't see any zones
@@ -1232,7 +1271,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Ownership and explicit zone-id allowlist conditions (both optional).
-        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter, $nameContains);
 
         $query = "SELECT d.id, d.name, d.type, d.master,
                          COALESCE(MIN(z.owner), 0) as owner,
@@ -1248,7 +1287,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Add GROUP BY and ORDER BY
         // Group only by domain columns to avoid duplicates when zones have multiple owners
         $query .= " GROUP BY d.id, d.name, d.type, d.master
-                    ORDER BY d.name";
+                    ORDER BY " . $this->zoneListOrder($sort);
 
         // Add pagination only if limit is specified
         if ($limit !== null && $limit > 0) {

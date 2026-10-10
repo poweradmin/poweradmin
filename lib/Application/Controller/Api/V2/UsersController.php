@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Application\Service\User\UserCommandFactory;
 use Poweradmin\Application\Service\Zone\ZoneLimitInput;
@@ -55,6 +56,9 @@ class UsersController extends PublicApiController
 
     /** Guards against a single request fanning out into thousands of membership queries. */
     private const MAX_GROUPS_PER_REQUEST = 50;
+
+    /** Fields accepted by the `sort` parameter of GET /users */
+    private const USER_SORT_FIELDS = ['id', 'username', 'fullname', 'email'];
 
     private UserManagementService $userManagementService;
     private ApiPermissionService $apiPermissionService;
@@ -272,6 +276,21 @@ class UsersController extends PublicApiController
         required: false,
         schema: new OA\Schema(type: 'string')
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on username, full name, email or description (optional, ignored together with username or email)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'admin')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, username, fullname, email. Default: id',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'username')
+    )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(
         response: 200,
         description: 'Users retrieved successfully',
@@ -339,6 +358,12 @@ class UsersController extends PublicApiController
             // Get filter parameters
             $username = $this->request->query->get('username');
             $email = $this->request->query->get('email');
+            $search = trim((string)$this->request->query->get('q', ''));
+            $search = $search === '' ? null : $search;
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::USER_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
 
             // Handle filtering
             if ($username || $email) {
@@ -364,16 +389,16 @@ class UsersController extends PublicApiController
             $responseData = ['meta' => ['timestamp' => date('Y-m-d H:i:s')]];
 
             if ($perPage === 0) {
-                $users = $this->userManagementService->getUsersPage(new Pagination(0, PHP_INT_MAX, 1));
+                $users = $this->userManagementService->getUsersPage(new Pagination(0, PHP_INT_MAX, 1), $search, $sort->fields());
 
                 return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200, $responseData);
             }
 
-            $totalCount = $this->userManagementService->countUsers();
+            $totalCount = $this->userManagementService->countUsers($search);
             // Checked before the offset, which overflows to a float for a huge page
             $users = ListPaging::isPastEnd($page, $perPage, $totalCount)
                 ? []
-                : $this->userManagementService->getUsersPage(new Pagination(0, $perPage, $page));
+                : $this->userManagementService->getUsersPage(new Pagination(0, $perPage, $page), $search, $sort->fields());
 
             return $this->returnApiResponse(
                 ['users' => $users],
