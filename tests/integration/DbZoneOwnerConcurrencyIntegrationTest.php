@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
@@ -46,6 +47,7 @@ use TestHelpers\FakeConfiguration;
  *
  * Needs pcntl and the devcontainer (MariaDB, PostgreSQL); skipped otherwise.
  */
+#[Group('concurrency')]
 class DbZoneOwnerConcurrencyIntegrationTest extends TestCase
 {
     // Per-process names, so parallel suite runs do not drop each other's scratch data;
