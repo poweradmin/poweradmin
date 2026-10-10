@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Presenter\RecordFormFieldPresenter;
 use Poweradmin\Domain\Service\Validation\RecordField;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Pins which form input each refusal DnsRecordValidationService and its shared
@@ -100,5 +101,21 @@ class RecordFormFieldPresenterTest extends TestCase
     public function testNamedFieldWinsOverTheMessage(): void
     {
         $this->assertSame('ttl', RecordFormFieldPresenter::fieldId(RecordField::TTL, 'Invalid value for TTL field. It must be numeric.'));
+    }
+
+    public function testReasonlessBackendFailureHighlightsNoInput(): void
+    {
+        $this->assertSame('', RecordFormFieldPresenter::fieldId(null, 'Failed to add record to DNS backend.', Refusal::BACKEND_FAILURE));
+        $this->assertSame('', RecordFormFieldPresenter::fieldId(null, 'Failed to update record in DNS backend.', Refusal::BACKEND_FAILURE));
+    }
+
+    public function testBackendFailureWithAReasonKeepsTheNamedField(): void
+    {
+        $this->assertSame('content', RecordFormFieldPresenter::fieldId(RecordField::CONTENT, 'Failed to add record to DNS backend: bad', Refusal::BACKEND_FAILURE));
+    }
+
+    public function testOtherRefusalsStillReadTheMessage(): void
+    {
+        $this->assertSame('ttl', RecordFormFieldPresenter::fieldId(null, 'Invalid TTL', Refusal::INVALID_INPUT));
     }
 }

@@ -722,7 +722,7 @@ class EditController extends BaseController
             $this->formStateService()->rememberAddRecordError([
                 'error' => true,
                 'errorMessage' => $added->record->message,
-                'fieldError' => RecordFormFieldPresenter::fieldId($added->record->field, (string)$added->record->message)
+                'fieldError' => RecordFormFieldPresenter::fieldId($added->record->field, (string)$added->record->message, $added->record->refusal)
             ]);
             return false;
         }

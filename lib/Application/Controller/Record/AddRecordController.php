@@ -134,7 +134,7 @@ class AddRecordController extends BaseController
                 'comment' => $comment,
                 'error' => true,
                 'errorMessage' => $added->record->message,
-                'fieldError' => RecordFormFieldPresenter::fieldId($added->record->field, (string)$added->record->message),
+                'fieldError' => RecordFormFieldPresenter::fieldId($added->record->field, (string)$added->record->message, $added->record->refusal),
             ]);
 
             $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);

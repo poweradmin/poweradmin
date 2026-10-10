@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Presenter;
 
 use Poweradmin\Domain\Service\Validation\RecordField;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Maps a refused record write to the record form input it should highlight.
@@ -37,10 +38,15 @@ final class RecordFormFieldPresenter
     public const FIELD_TTL = 'ttl';
     public const FIELD_PRIO = 'prio';
     public const FIELD_DUPLICATE = 'name-content-duplicate';
+    public const FIELD_NONE = '';
 
-    public static function fieldId(?RecordField $field, string $message): string
+    public static function fieldId(?RecordField $field, string $message, ?Refusal $refusal = null): string
     {
-        return $field === null ? self::fieldForMessage($message) : self::idFor($field);
+        if ($field !== null) {
+            return self::idFor($field);
+        }
+        // A backend failure without a PowerDNS reason says nothing about any input
+        return $refusal === Refusal::BACKEND_FAILURE ? self::FIELD_NONE : self::fieldForMessage($message);
     }
 
     public static function idFor(RecordField $field): string

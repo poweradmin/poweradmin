@@ -316,7 +316,7 @@ class RecordManager implements RecordManagerInterface
                 if ($ownTransaction) {
                     $this->transaction->rollBack();
                 }
-                return RecordWriteResult::backendFailure(self::backendFailureMessage(_('Failed to add record to DNS backend.'), $this->writeRejection()), RecordField::CONTENT);
+                return $this->writeBackendFailure(_('Failed to add record to DNS backend.'));
             }
 
             $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
@@ -352,6 +352,17 @@ class RecordManager implements RecordManagerInterface
         }
 
         return RecordWriteResult::ok($recordId);
+    }
+
+    /**
+     * The content input is flagged only when PowerDNS gave a reason for refusing the write;
+     * a transport fault or an SQL failure says nothing about the content.
+     */
+    private function writeBackendFailure(string $message): RecordWriteResult
+    {
+        $text = self::backendFailureMessage($message, $this->writeRejection());
+
+        return RecordWriteResult::backendFailure($text, $text !== $message ? RecordField::CONTENT : null);
     }
 
     private function writeRejection(): ?string
@@ -501,7 +512,7 @@ class RecordManager implements RecordManagerInterface
                 $comment
             )
         ) {
-            return RecordWriteResult::backendFailure(self::backendFailureMessage(_('Failed to update record in DNS backend.'), $this->writeRejection()), RecordField::CONTENT);
+            return $this->writeBackendFailure(_('Failed to update record in DNS backend.'));
         }
 
         $afterRecord = [

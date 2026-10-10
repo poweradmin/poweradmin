@@ -420,6 +420,19 @@ class AddRecordControllerTest extends SeamControllerTestCase
         ], $formData);
     }
 
+    public function testABackendFailureWithoutAReasonHighlightsNoInput(): void
+    {
+        $this->addResults = [RecordAddResult::refused(RecordWriteResult::backendFailure('Failed to add record to DNS backend.'))];
+        $this->post(['type' => 'A', 'content' => '192.0.2.1', 'name' => 'www', 'ttl' => '300']);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $formId = substr($halt->target, strlen('/zones/12/records/add?form_id='));
+        $formData = (new FormStateService($this->session))->getFormData($formId);
+        $this->assertSame('Failed to add record to DNS backend.', $formData['errorMessage']);
+        $this->assertSame('', $formData['fieldError']);
+    }
+
     // ------------------------------------------------------ multiple records
 
     public function testMultiRecordModeNeedsBothTheFlagAndAnArrayOfRecords(): void
