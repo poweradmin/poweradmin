@@ -26,7 +26,6 @@ use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
-use LogicException;
 use PDO;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\ZoneDetail;
@@ -1141,23 +1140,11 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
      */
     private function zoneListOrder(array $sort): string
     {
-        if ($sort === []) {
-            return 'z.zone_name';
-        }
-
-        $clauses = [];
-        foreach ($sort as $key) {
-            $direction = $key['desc'] ? 'DESC' : 'ASC';
-            $clauses[] = match ($key['field']) {
-                'name' => SortHelper::naturalSortOrder('z.zone_name', $this->dbType, $direction),
-                'type' => "z.zone_type $direction",
-                'id' => $this->canonicalId('z') . " $direction",
-                default => throw new LogicException("Unknown sort field '{$key['field']}'"),
-            };
-        }
-        $clauses[] = 'z.id';
-
-        return implode(', ', $clauses);
+        return SortHelper::orderBy($sort, [
+            'name' => fn(string $direction): string => SortHelper::naturalSortOrder('z.zone_name', $this->dbType, $direction),
+            'type' => 'z.zone_type',
+            'id' => $this->canonicalId('z'),
+        ], 'z.id', 'z.zone_name');
     }
 
     /**

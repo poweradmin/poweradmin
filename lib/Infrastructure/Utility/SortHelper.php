@@ -22,10 +22,13 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
+use Closure;
+use LogicException;
 use Poweradmin\Domain\Enum\SortDirection;
 
 /**
- * Per-database ORDER BY clauses that sort zone and record names naturally instead of lexically.
+ * Per-database ORDER BY clauses that sort zone and record names naturally instead of
+ * lexically, and the ORDER BY of API lists sorted in SQL.
  */
 final class SortHelper
 {
@@ -52,5 +55,32 @@ final class SortHelper
         };
 
         return $naturalSort;
+    }
+
+    /**
+     * ORDER BY for an API list sorted in SQL, from the keys ListSort::fields() returns.
+     * Each allowed field maps to a fixed column, or to a closure that gets ASC or DESC
+     * and returns the clause (e.g. a natural name order), so request input never
+     * reaches the SQL. The tiebreaker comes last so pages stay stable when sort values
+     * repeat; without sort keys the list keeps its default order.
+     *
+     * @param list<array{field: string, desc: bool}> $sort
+     * @param array<string, string|Closure(string): string> $columns
+     */
+    public static function orderBy(array $sort, array $columns, string $tiebreaker, string $default): string
+    {
+        if ($sort === []) {
+            return $default;
+        }
+
+        $clauses = [];
+        foreach ($sort as $key) {
+            $column = $columns[$key['field']] ?? throw new LogicException("Unknown sort field '{$key['field']}'");
+            $direction = $key['desc'] ? 'DESC' : 'ASC';
+            $clauses[] = $column instanceof Closure ? $column($direction) : "$column $direction";
+        }
+        $clauses[] = $tiebreaker;
+
+        return implode(', ', $clauses);
     }
 }
