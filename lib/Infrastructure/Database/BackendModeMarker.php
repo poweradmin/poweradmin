@@ -55,20 +55,22 @@ final class BackendModeMarker
         $current = self::lockMarker($db);
 
         if ($current === false) {
+            // A losing insert must not raise: on PostgreSQL a failed statement aborts the transaction
+            $driver = (string)$db->getAttribute(PDO::ATTR_DRIVER_NAME);
+            $verb = $driver === 'sqlite' ? 'INSERT OR IGNORE' : 'INSERT';
+            $onConflict = match ($driver) {
+                'pgsql' => ' ON CONFLICT (setting_key) DO NOTHING',
+                'mysql' => ' ON DUPLICATE KEY UPDATE setting_key = setting_key',
+                default => '',
+            };
             $insert = $db->prepare(
-                "INSERT INTO app_settings (setting_key, setting_value, value_type)
+                "$verb INTO app_settings (setting_key, setting_value, value_type)
                  SELECT :key, :value, 'string'
-                 WHERE NOT EXISTS (SELECT 1 FROM app_settings WHERE setting_key = :existing)"
+                 WHERE NOT EXISTS (SELECT 1 FROM app_settings WHERE setting_key = :existing)" . $onConflict
             );
-            try {
-                $insert->execute([':key' => self::MARKER, ':value' => self::API, ':existing' => self::MARKER]);
-
+            $insert->execute([':key' => self::MARKER, ':value' => self::API, ':existing' => self::MARKER]);
+            if ($insert->rowCount() > 0) {
                 return;
-            } catch (PDOException $e) {
-                // Under READ COMMITTED a missing row takes no gap lock, so both first writers get here
-                if (!self::isDuplicateKey($e)) {
-                    throw $e;
-                }
             }
 
             $current = self::lockMarker($db);
@@ -91,13 +93,6 @@ final class BackendModeMarker
         $lock->execute([':key' => self::MARKER]);
 
         return $lock->fetchColumn();
-    }
-
-    private static function isDuplicateKey(PDOException $e): bool
-    {
-        $sqlState = $e->errorInfo[0] ?? $e->getCode();
-
-        return $sqlState === '23000' || $sqlState === '23505';
     }
 
     /**

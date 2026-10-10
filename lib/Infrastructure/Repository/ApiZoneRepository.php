@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
+use Poweradmin\Infrastructure\Database\DeadlockRetry;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use PDO;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
@@ -759,6 +762,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function lockZoneOwners(int $zoneId): void
     {
+        $this->queueOwnershipWriters();
         $canonical = $this->resolveCanonicalRow($zoneId);
         if ($canonical === null) {
             return;
@@ -775,30 +779,114 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Locks the backend marker row, the one row every writer of zone ownership queues on. The
+     * locking read leaves the MySQL snapshot unset, so what the caller reads after it includes
+     * whatever the writer ahead of it committed. Locking the zones rows instead leaves two
+     * writers each holding a gap the other must insert into, a deadlock on InnoDB.
+     */
+    private function queueOwnershipWriters(): void
+    {
+        BackendModeMarker::markApi($this->db);
+    }
+
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
+        $transaction = new PdoTransaction($this->db);
+        if ($transaction->inTransaction()) {
+            $syncRowId = null;
+            $added = $this->insertOwnerRow($zoneId, $userId, $syncRowId);
+            if ($syncRowId !== null) {
+                $this->syncZoneAccount($syncRowId);
+            }
+
+            return $added;
+        }
+
+        // A lost lock race rolls the whole transaction back, so it is replayed whole
+        $syncRowId = null;
+        $added = DeadlockRetry::run(function () use ($transaction, $zoneId, $userId, &$syncRowId): bool {
+            $syncRowId = null;
+            $transaction->begin();
+            try {
+                $added = $this->insertOwnerRow($zoneId, $userId, $syncRowId);
+                $transaction->commit();
+
+                return $added;
+            } catch (\Throwable $e) {
+                if ($transaction->inTransaction()) {
+                    $transaction->rollBack();
+                }
+                throw $e;
+            }
+        });
+        // PowerDNS is told only once the lock is released and the row is committed
+        if ($syncRowId !== null) {
+            $this->syncZoneAccount($syncRowId);
+        }
+
+        return $added;
+    }
+
+    /**
+     * Adds the owner row once the writers ahead have finished, so a concurrent request for the
+     * same user cannot store a second row. A user who already owns the zone counts as added.
+     * $syncRowId gets the zones row whose PowerDNS account the caller must refresh once it may.
+     */
+    private function insertOwnerRow(int $zoneId, int $userId, ?int &$syncRowId): bool
+    {
+        $this->queueOwnershipWriters();
         $canonical = $this->resolveCanonicalRow($zoneId);
         // An owner row keyed by a shared id would grant nothing (see SharedZoneIds)
         if ($canonical === null || $this->isSharedZoneId($zoneId)) {
             return false;
         }
         $cid = (int)$canonical['id'];
+        // A joined transaction may hold a snapshot taken before the marker lock was granted
+        if (!$this->zoneRowStillExists($cid)) {
+            return false;
+        }
+        if ($this->isUserZoneOwner($zoneId, $userId)) {
+            return true;
+        }
         $canonicalId = self::canonicalIdOf($canonical);
 
+        // The check sits in the insert: its read is current even where the transaction's snapshot predates the owner row
         $stmt = $this->db->prepare(
             "INSERT INTO zones (domain_id, owner, zone_templ_id)
-             VALUES (:domain_id, :owner, :zone_templ_id)"
+             SELECT :domain_id, :owner, :zone_templ_id
+             WHERE NOT EXISTS (
+                 SELECT 1 FROM zones z
+                 WHERE z.owner = :existing_owner
+                   AND (z.id = :cid OR (z.zone_name IS NULL AND z.domain_id = :cid_e))
+             )"
         );
         $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', (int)($canonical['zone_templ_id'] ?? 0), PDO::PARAM_INT);
+        $stmt->bindValue(':existing_owner', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
         $stmt->execute();
 
-        $added = $stmt->rowCount() > 0;
-        if ($added) {
-            $this->syncZoneAccount($cid);
+        if ($stmt->rowCount() > 0) {
+            $syncRowId = $cid;
         }
-        return $added;
+
+        return true;
+    }
+
+    /**
+     * A locking primary key read, which sees the latest committed row even where the
+     * transaction's snapshot predates a delete.
+     */
+    private function zoneRowStillExists(int $rowId): bool
+    {
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE id = :id" . DbCompat::rowLock($this->dbType));
+        $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) !== [];
     }
 
     public function removeOwnerFromZone(int $zoneId, int $userId): bool
@@ -877,7 +965,36 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 return false;
             }
         }
-        if ($this->isSharedZoneId($zoneId)) {
+        $shared = $this->isSharedZoneId($zoneId);
+        $transaction = new PdoTransaction($this->db);
+        if ($transaction->inTransaction()) {
+            $this->queueOwnershipWriters();
+
+            return $this->deleteLocalZoneRows($cid, $canonicalId, $shared);
+        }
+
+        // Queued on the marker lock first, so an owner add that ran ahead has committed its rows
+        // before they are deleted and one that follows finds no zone to key a row by
+        return DeadlockRetry::run(function () use ($transaction, $cid, $canonicalId, $shared): bool {
+            $transaction->begin();
+            try {
+                $this->queueOwnershipWriters();
+                $deleted = $this->deleteLocalZoneRows($cid, $canonicalId, $shared);
+                $transaction->commit();
+
+                return $deleted;
+            } catch (\Throwable $e) {
+                if ($transaction->inTransaction()) {
+                    $transaction->rollBack();
+                }
+                throw $e;
+            }
+        });
+    }
+
+    private function deleteLocalZoneRows(int $cid, int $canonicalId, bool $shared): bool
+    {
+        if ($shared) {
             // Grants keyed by a shared id cannot be attributed, so they go too rather than
             // falling to the surviving zone; its template links stay, being data, not access
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
