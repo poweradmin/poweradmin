@@ -390,7 +390,11 @@ class EditController extends BaseController
             importEnabled: $this->moduleProvides(ModuleInterface::CAP_ZONE_IMPORT),
         );
 
-        $this->render('edit.html', $presenter->toTemplateVariables() + ['pagination_items' => $paginationVariables['pagination_items']]);
+        $this->render('edit.html', $presenter->toTemplateVariables() + [
+            'pagination_items' => $paginationVariables['pagination_items'],
+            'api_escape_warning' => $this->isApiBackend(),
+            'api_escape_rrsets' => $this->apiEscapeRiskRrsets($zone_id, $zone_name),
+        ]);
     }
 
     /**

@@ -218,6 +218,8 @@ class AddRecordController extends BaseController
             ),
             'form_data' => $formData,
             'saved_records' => $savedRecords,
+            'api_escape_warning' => $this->isApiBackend(),
+            'api_escape_rrsets' => $this->apiEscapeRiskRrsets($zone_id, $zone_name),
         ]);
     }
 

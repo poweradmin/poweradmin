@@ -242,6 +242,8 @@ class BulkRecordAddController extends BaseController
             'display_hostname_only' => $this->services()->userPreferenceService()->getDisplayHostnameOnly(
                 $this->getUserContextService()->getLoggedInUserId()
             ),
+            'api_escape_warning' => $this->isApiBackend(),
+            'api_escape_rrsets' => $zone_name !== null ? $this->apiEscapeRiskRrsets($zone_id, $zone_name) : [],
         ]);
     }
 

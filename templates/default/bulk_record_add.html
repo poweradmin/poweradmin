@@ -5,6 +5,8 @@
     {label: 'Bulk add records'|trans},
 ]) }}
 
+{% include '_partials/api_escape_warning.html' with {api_mode: api_escape_warning, rrsets: api_escape_rrsets} only %}
+
 {% if message %}
 {% include 'message_alert.html' with {message: message} only %}
 {% endif %}

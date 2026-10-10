@@ -1963,6 +1963,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\DnsValidation\\URIRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/URIRecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\WALLETRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/WALLETRecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\ZONEMDRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php',
+        'Poweradmin\\Domain\\Service\\Dns\\ApiEscapeRisk' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/ApiEscapeRisk.php',
         'Poweradmin\\Domain\\Service\\Dns\\BatchReverseRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/BatchReverseRecordCreator.php',
         'Poweradmin\\Domain\\Service\\Dns\\BindZoneFileGenerator' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/BindZoneFileGenerator.php',
         'Poweradmin\\Domain\\Service\\Dns\\BulkRecordParser' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/BulkRecordParser.php',

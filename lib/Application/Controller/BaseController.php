@@ -49,6 +49,7 @@ use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use PDO;
+use Poweradmin\Domain\Service\Dns\ApiEscapeRisk;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Infrastructure\Database\DebugPDO;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -397,6 +398,21 @@ abstract class BaseController
     protected function isApiBackend(): bool
     {
         return $this->backendCapabilities()->isApiBackend();
+    }
+
+    /**
+     * RRsets of the zone that PowerDNS Auth 5.1.x would alter on the next API write
+     * to them; always empty on the SQL backend, which writes content as entered.
+     *
+     * @return list<string>
+     */
+    protected function apiEscapeRiskRrsets(int $zoneId, string $zoneName): array
+    {
+        if (!$this->isApiBackend()) {
+            return [];
+        }
+
+        return ApiEscapeRisk::affectedRrsets($this->services()->dnsBackendProvider()->getZoneRecords($zoneId, $zoneName));
     }
 
     /**

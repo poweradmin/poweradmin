@@ -1553,6 +1553,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\URIRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/URIRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\WALLETRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/WALLETRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\ZONEMDRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php',
+    'Poweradmin\\Domain\\Service\\Dns\\ApiEscapeRisk' => $baseDir . '/lib/Domain/Service/Dns/ApiEscapeRisk.php',
     'Poweradmin\\Domain\\Service\\Dns\\BatchReverseRecordCreator' => $baseDir . '/lib/Domain/Service/Dns/BatchReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\Dns\\BindZoneFileGenerator' => $baseDir . '/lib/Domain/Service/Dns/BindZoneFileGenerator.php',
     'Poweradmin\\Domain\\Service\\Dns\\BulkRecordParser' => $baseDir . '/lib/Domain/Service/Dns/BulkRecordParser.php',

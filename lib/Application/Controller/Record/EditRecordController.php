@@ -211,6 +211,9 @@ class EditRecordController extends BaseController
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
             'display_hostname_only' => $display_hostname_only,
+            'api_escape_warning' => $this->isApiBackend(),
+            // Only this record's RRset is rewritten by the save
+            'api_escape_rrsets' => array_values(array_intersect($this->apiEscapeRiskRrsets((int)$zid, $zone_name), [$record['name'] . ' ' . $record['type']])),
         ]);
     }
 
